@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="customactivityoncrash_error_activity_error_occurred_explanation">Необрабатываемое исключение.</string>
+    <string name="customactivityoncrash_error_activity_restart_app">Перезапуск</string>
+    <string name="customactivityoncrash_error_activity_close_app">Закрыть</string>
+    <string name="customactivityoncrash_error_activity_error_details">Детали</string>
+    <string name="customactivityoncrash_error_activity_error_details_title">Детали исключения</string>
+    <string name="customactivityoncrash_error_activity_error_details_close">Закрыть</string>
+    <string name="customactivityoncrash_error_activity_error_details_copy">Копировать</string>
+    <string name="customactivityoncrash_error_activity_error_details_copied">Скопировано</string>
+    <string name="customactivityoncrash_error_activity_error_details_clipboard_label">Информация об ошибке</string>
+</resources>

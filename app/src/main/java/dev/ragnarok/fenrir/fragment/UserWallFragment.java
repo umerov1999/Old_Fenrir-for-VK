@@ -1,0 +1,472 @@
+package dev.ragnarok.fenrir.fragment;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.text.InputType;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+import dev.ragnarok.fenrir.CheckUpdate;
+import dev.ragnarok.fenrir.Extra;
+import dev.ragnarok.fenrir.R;
+import dev.ragnarok.fenrir.activity.ActivityUtils;
+import dev.ragnarok.fenrir.activity.PhotosActivity;
+import dev.ragnarok.fenrir.adapter.horizontal.HorizontalOptionsAdapter;
+import dev.ragnarok.fenrir.model.FriendsCounters;
+import dev.ragnarok.fenrir.model.LocalPhoto;
+import dev.ragnarok.fenrir.model.ParcelableOwnerWrapper;
+import dev.ragnarok.fenrir.model.Post;
+import dev.ragnarok.fenrir.model.PostFilter;
+import dev.ragnarok.fenrir.model.User;
+import dev.ragnarok.fenrir.model.UserDetails;
+import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
+import dev.ragnarok.fenrir.mvp.presenter.UserWallPresenter;
+import dev.ragnarok.fenrir.mvp.view.IUserWallView;
+import dev.ragnarok.fenrir.picasso.PicassoInstance;
+import dev.ragnarok.fenrir.picasso.transforms.BlurTransformation;
+import dev.ragnarok.fenrir.place.PlaceFactory;
+import dev.ragnarok.fenrir.settings.CurrentTheme;
+import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.AssertUtils;
+import dev.ragnarok.fenrir.util.InputTextDialog;
+import dev.ragnarok.fenrir.util.Utils;
+import dev.ragnarok.fenrir.util.ViewUtils;
+import dev.ragnarok.fenrir.view.OnlineView;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
+public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPresenter>
+        implements IUserWallView {
+
+    private static final int REQUEST_UPLOAD_AVATAR = 46;
+    private UserHeaderHolder mHeaderHolder;
+
+    @Override
+    public void displayBaseUserInfo(User user) {
+        if (isNull(mHeaderHolder)) return;
+
+        mHeaderHolder.tvName.setText(user.getFullName());
+        mHeaderHolder.tvName.setTextColor(Utils.getVerifiedColor(requireActivity(), user.isVerified()));
+        mHeaderHolder.tvLastSeen.setText(UserInfoResolveUtil.getUserActivityLine(getContext(), user, true));
+
+        if (!user.getCanWritePrivateMessage())
+            mHeaderHolder.fabMessage.setImageResource(R.drawable.close);
+        else
+            mHeaderHolder.fabMessage.setImageResource(R.drawable.email);
+
+        String screenName = nonEmpty(user.getDomain()) ? "@" + user.getDomain() : null;
+        mHeaderHolder.tvScreenName.setText(screenName);
+        mHeaderHolder.tvScreenName.setTextColor(Utils.getVerifiedColor(requireActivity(), user.isVerified()));
+
+        String photoUrl = user.getMaxSquareAvatar();
+
+        if (nonEmpty(photoUrl)) {
+            PicassoInstance.with()
+                    .load(photoUrl)
+                    .transform(CurrentTheme.createTransformationForAvatar(requireActivity()))
+                    .into(mHeaderHolder.ivAvatar);
+
+            if (Settings.get().other().isShow_wall_cover()) {
+                PicassoInstance.with()
+                        .load(photoUrl)
+                        .transform(new BlurTransformation(6, 1, requireActivity()))
+                        .into(mHeaderHolder.vgCover);
+            }
+        }
+
+        Integer onlineIcon = ViewUtils.getOnlineIcon(true, user.isOnlineMobile(), user.getPlatform(), user.getOnlineApp());
+        if (!user.isOnline())
+            mHeaderHolder.ivOnline.setCircleColor(CurrentTheme.getColorFromAttrs(R.attr.icon_color_inactive, requireContext(), "#000000"));
+        else
+            mHeaderHolder.ivOnline.setCircleColor(CurrentTheme.getColorFromAttrs(R.attr.icon_color_active, requireContext(), "#000000"));
+
+        if (onlineIcon != null) {
+            mHeaderHolder.ivOnline.setIcon(onlineIcon);
+        }
+        if (user.getBlacklisted()) {
+            Utils.ColoredSnack(requireView(), R.string.blacklisted, BaseTransientBottomBar.LENGTH_LONG, Color.parseColor("#ccaa0000")).show();
+        }
+        mHeaderHolder.ivVerified.setVisibility(user.isVerified() ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void openUserDetails(int accountId, @NonNull User user, @NonNull UserDetails details) {
+        PlaceFactory.getUserDetailsPlace(accountId, user, details).tryOpenWith(requireActivity());
+    }
+
+    @Override
+    public void showAvatarUploadedMessage(int accountId, Post post) {
+        new MaterialAlertDialogBuilder(requireActivity())
+                .setTitle(R.string.success)
+                .setMessage(R.string.avatar_was_changed_successfully)
+                .setPositiveButton(R.string.button_show, (dialog, which) -> PlaceFactory.getPostPreviewPlace(accountId, post.getVkid(), post.getOwnerId(), post).tryOpenWith(requireActivity()))
+                .setNegativeButton(R.string.button_ok, null)
+                .show();
+    }
+
+    @Override
+    public void displayCounters(int friends, int mutual, int followers, int groups, int photos, int audios, int videos, int articles) {
+        if (nonNull(mHeaderHolder)) {
+            if (Settings.get().other().isShow_mutual_count()) {
+                setupCounterWith(mHeaderHolder.bFriends, friends, mutual);
+            } else {
+                setupCounter(mHeaderHolder.bFriends, friends);
+            }
+            setupCounter(mHeaderHolder.bGroups, groups);
+            setupCounter(mHeaderHolder.bPhotos, photos);
+            setupCounter(mHeaderHolder.bAudios, audios);
+            setupCounter(mHeaderHolder.bVideos, videos);
+            setupCounter(mHeaderHolder.bArticles, articles);
+        }
+    }
+
+    /*@Override
+    public void displayOwnerData(User user) {
+        if (isNull(mHeaderHolder)) return;
+
+        mHeaderHolder.tvName.setText(user.getFullName());
+        mHeaderHolder.tvLastSeen.setText(UserInfoResolveUtil.getUserActivityLine(requireActivity(), user));
+        mHeaderHolder.tvLastSeen.setAllCaps(false);
+
+        String screenName = "@" + user.screen_name;
+        mHeaderHolder.tvScreenName.setText(screenName);
+
+        if (isNull(user.status_audio)) {
+            String status = "\"" + user.status + "\"";
+            mHeaderHolder.tvStatus.setText(status);
+        } else {
+            String status = user.status_audio.artist + '-' + user.status_audio.title;
+            mHeaderHolder.tvStatus.setText(status);
+        }
+
+        mHeaderHolder.tvStatus.setVisibility(isEmpty(user.status) && user.status_audio == null ? View.GONE : View.VISIBLE);
+
+        String photoUrl = user.getMaxSquareAvatar();
+
+        if (nonEmpty(photoUrl)) {
+            PicassoInstance.with()
+                    .load(photoUrl)
+                    .transform(new RoundTransformation())
+                    .into(mHeaderHolder.ivAvatar);
+        }
+
+        Integer onlineIcon = ViewUtils.getOnlineIcon(user.online, user.online_mobile, user.platform, user.online_app);
+        mHeaderHolder.ivOnline.setVisibility(user.online ? View.VISIBLE : View.GONE);
+
+        if (onlineIcon != null) {
+            mHeaderHolder.ivOnline.setIcon(onlineIcon);
+        }
+
+        *//*View mainUserInfoView = mHeaderHolder.infoSections.findViewById(R.id.section_contact_info);
+        UserInfoResolveUtil.fillMainUserInfo(requireActivity(), mainUserInfoView, user, new LinkActionAdapter() {
+            @Override
+            public void onOwnerClick(int ownerId) {
+                onOpenOwner(ownerId);
+            }
+        });
+
+        UserInfoResolveUtil.fill(requireActivity(), mHeaderHolder.infoSections.findViewById(R.id.section_beliefs), user);
+        UserInfoResolveUtil.fillPersonalInfo(requireActivity(), mHeaderHolder.infoSections.findViewById(R.id.section_personal), user);*//*
+
+        SelectionUtils.addSelectionProfileSupport(getContext(), mHeaderHolder.avatarRoot, user);
+    }*/
+
+    @Override
+    public void displayUserStatus(String statusText, boolean swAudioIcon) {
+        if (nonNull(mHeaderHolder)) {
+            mHeaderHolder.tvStatus.setText(statusText);
+            mHeaderHolder.tvAudioStatus.setVisibility(swAudioIcon ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    @Override
+    protected int headerLayout() {
+        return R.layout.header_user_profile;
+    }
+
+    @Override
+    protected void onHeaderInflated(View headerRootView) {
+        mHeaderHolder = new UserHeaderHolder(headerRootView);
+        mHeaderHolder.ivAvatar.setOnClickListener(v -> getPresenter().fireAvatarClick());
+        mHeaderHolder.Runes.setVisibility(Settings.get().other().isRunes_show() ? View.VISIBLE : View.GONE);
+        mHeaderHolder.Valknut.setVisibility(Settings.get().other().isShow_pagan_symbol() ? View.VISIBLE : View.GONE);
+        if (Settings.get().other().getPaganSymbol() == 1) {
+            mHeaderHolder.Valknut.setImageResource(R.drawable.ic_igdr);
+        } else {
+            mHeaderHolder.Valknut.setImageResource(R.drawable.valknut);
+        }
+    }
+
+    @NotNull
+    @Override
+    public IPresenterFactory<UserWallPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
+        return () -> {
+            requireArguments();
+
+            int accoutnId = getArguments().getInt(Extra.ACCOUNT_ID);
+            int ownerId = getArguments().getInt(Extra.OWNER_ID);
+
+            ParcelableOwnerWrapper wrapper = getArguments().getParcelable(Extra.OWNER);
+            AssertUtils.requireNonNull(wrapper);
+
+            return new UserWallPresenter(accoutnId, ownerId, (User) wrapper.get(), requireActivity(), saveInstanceState);
+        };
+    }
+
+    @Override
+    public void displayWallFilters(List<PostFilter> filters) {
+        if (nonNull(mHeaderHolder)) {
+            mHeaderHolder.mPostFilterAdapter.setItems(filters);
+        }
+    }
+
+    @Override
+    public void notifyWallFiltersChanged() {
+        if (nonNull(mHeaderHolder)) {
+            mHeaderHolder.mPostFilterAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void setupPrimaryActionButton(@StringRes Integer resourceId) {
+        if (nonNull(mHeaderHolder) && nonNull(resourceId)) {
+            mHeaderHolder.bPrimaryAction.setText(resourceId);
+        }
+    }
+
+    @Override
+    public void openFriends(int accountId, int userId, int tab, FriendsCounters counters) {
+        PlaceFactory.getFriendsFollowersPlace(accountId, userId, tab, counters).tryOpenWith(requireActivity());
+    }
+
+    @Override
+    public void openGroups(int accountId, int userId, @Nullable User user) {
+        PlaceFactory.getCommunitiesPlace(accountId, userId)
+                .withParcelableExtra(Extra.USER, user)
+                .tryOpenWith(requireActivity());
+    }
+
+    @Override
+    public void showEditStatusDialog(String initialValue) {
+        new InputTextDialog.Builder(requireActivity())
+                .setInputType(InputType.TYPE_CLASS_TEXT)
+                .setTitleRes(R.string.edit_status)
+                .setHint(R.string.enter_your_status)
+                .setValue(initialValue)
+                .setAllowEmpty(true)
+                .setCallback(newValue -> getPresenter().fireNewStatusEntered(newValue))
+                .show();
+    }
+
+    @Override
+    public void showAddToFriendsMessageDialog() {
+        new InputTextDialog.Builder(requireActivity())
+                .setInputType(InputType.TYPE_CLASS_TEXT)
+                .setTitleRes(R.string.add_to_friends)
+                .setHint(R.string.attach_message)
+                .setAllowEmpty(true)
+                .setCallback(newValue -> getPresenter().fireAddToFrindsClick(newValue))
+                .show();
+    }
+
+    @Override
+    public void showDeleteFromFriendsMessageDialog() {
+        new MaterialAlertDialogBuilder(requireActivity())
+                .setTitle(R.string.delete_from_friends)
+                .setPositiveButton(R.string.button_yes, (dialogInterface, i) -> getPresenter().fireDeleteFromFriends())
+                .setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss())
+                .show();
+    }
+
+    @Override
+    public void showUnbanMessageDialog() {
+        new MaterialAlertDialogBuilder(requireActivity())
+                .setTitle(R.string.is_to_blacklist)
+                .setPositiveButton(R.string.button_yes, (dialogInterface, i) -> getPresenter().fireRemoveBlacklistClick())
+                .setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss())
+                .show();
+    }
+
+    @Override
+    public void showAvatarContextMenu(boolean canUploadAvatar) {
+        String[] items;
+        if (canUploadAvatar) {
+            items = new String[]{getString(R.string.open_photo), getString(R.string.open_avatar), getString(R.string.upload_new_photo)};
+        } else {
+            items = new String[]{getString(R.string.open_photo), getString(R.string.open_avatar)};
+        }
+
+        new MaterialAlertDialogBuilder(requireActivity()).setItems(items, (dialogInterface, i) -> {
+            switch (i) {
+                case 0:
+                    getPresenter().fireOpenAvatarsPhotoAlbum();
+                    break;
+                case 1:
+                    User usr = Objects.requireNonNull(getPresenter()).getUser();
+                    PlaceFactory.getSingleURLPhotoPlace(usr.getOriginalAvatar(), usr.getFullName(), "id" + usr.getId()).tryOpenWith(requireActivity());
+                    break;
+                case 2:
+                    Intent attachPhotoIntent = new Intent(requireActivity(), PhotosActivity.class);
+                    attachPhotoIntent.putExtra(PhotosActivity.EXTRA_MAX_SELECTION_COUNT, 1);
+                    startActivityForResult(attachPhotoIntent, REQUEST_UPLOAD_AVATAR);
+                    break;
+            }
+        }).setCancelable(true).show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_UPLOAD_AVATAR && resultCode == Activity.RESULT_OK) {
+            ArrayList<LocalPhoto> photos = data.getParcelableArrayListExtra(Extra.PHOTOS);
+            if (nonEmpty(photos)) {
+                getPresenter().fireNewAvatarPhotoSelected(photos.get(0));
+            }
+        }
+    }
+
+    @Override
+    public void InvalidateOptionsMenu() {
+        requireActivity().invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ActivityUtils.setToolbarTitle(this, R.string.profile);
+        ActivityUtils.setToolbarSubtitle(this, null);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        OptionView view = new OptionView();
+        getPresenter().fireOptionViewCreated(view);
+        menu.add(R.string.show_qr).setOnMenuItemClickListener(item -> {
+            getPresenter().fireShowQR(requireActivity());
+            return true;
+        });
+        menu.add(R.string.add_to_bookmarks).setOnMenuItemClickListener(item -> {
+            getPresenter().fireAddToBookmarks();
+            return true;
+        });
+        menu.add(R.string.mentions).setOnMenuItemClickListener(item -> {
+            if (!CheckUpdate.isFullVersion(requireActivity())) {
+                return true;
+            }
+            getPresenter().fireMentions();
+            return true;
+        });
+        if (!view.isMy) {
+            menu.add(R.string.report).setOnMenuItemClickListener(item -> {
+                getPresenter().fireReport();
+                return true;
+            });
+            if (!view.isBlacklistedByMe) {
+                menu.add(R.string.add_to_blacklist).setOnMenuItemClickListener(item -> {
+                    getPresenter().fireAddToBlacklistClick();
+                    return true;
+                });
+            }
+        }
+    }
+
+    private class UserHeaderHolder {
+        ImageView vgCover;
+        ViewGroup avatarRoot;
+        ImageView ivAvatar;
+        ImageView ivVerified;
+        TextView tvName;
+        TextView tvScreenName;
+        TextView tvStatus;
+        ImageView tvAudioStatus;
+        TextView tvLastSeen;
+        OnlineView ivOnline;
+
+        TextView bFriends;
+        TextView bGroups;
+        TextView bPhotos;
+        TextView bVideos;
+        TextView bAudios;
+        TextView bArticles;
+
+        FloatingActionButton fabMessage;
+        FloatingActionButton fabMoreInfo;
+        MaterialButton bPrimaryAction;
+
+        ImageView Valknut;
+        View Runes;
+
+        HorizontalOptionsAdapter<PostFilter> mPostFilterAdapter;
+
+        UserHeaderHolder(@NonNull View root) {
+            vgCover = root.findViewById(R.id.cover);
+            tvStatus = root.findViewById(R.id.fragment_user_profile_status);
+            tvAudioStatus = root.findViewById(R.id.fragment_user_profile_audio);
+            tvName = root.findViewById(R.id.fragment_user_profile_name);
+            tvScreenName = root.findViewById(R.id.fragment_user_profile_id);
+            tvLastSeen = root.findViewById(R.id.fragment_user_profile_activity);
+            avatarRoot = root.findViewById(R.id.fragment_user_profile_avatar_container);
+            ivAvatar = root.findViewById(R.id.avatar);
+            ivOnline = root.findViewById(R.id.header_navi_menu_online);
+            bFriends = root.findViewById(R.id.fragment_user_profile_bfriends);
+            bGroups = root.findViewById(R.id.fragment_user_profile_bgroups);
+            bPhotos = root.findViewById(R.id.fragment_user_profile_bphotos);
+            bVideos = root.findViewById(R.id.fragment_user_profile_bvideos);
+            bAudios = root.findViewById(R.id.fragment_user_profile_baudios);
+            bArticles = root.findViewById(R.id.fragment_user_profile_barticles);
+            fabMessage = root.findViewById(R.id.header_user_profile_fab_message);
+            fabMoreInfo = root.findViewById(R.id.info_btn);
+            bPrimaryAction = root.findViewById(R.id.subscribe_btn);
+            Valknut = root.findViewById(R.id.valknut_icon);
+            Runes = root.findViewById(R.id.runes_icon);
+            ivVerified = root.findViewById(R.id.item_verified);
+
+            RecyclerView filtersList = root.findViewById(R.id.post_filter_recyclerview);
+            filtersList.setLayoutManager(new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false));
+
+            mPostFilterAdapter = new HorizontalOptionsAdapter<>(Collections.emptyList());
+            mPostFilterAdapter.setListener(entry -> getPresenter().fireFilterClick(entry));
+            filtersList.setAdapter(mPostFilterAdapter);
+
+            tvStatus.setOnClickListener(v -> getPresenter().fireStatusClick());
+
+            fabMoreInfo.setOnClickListener(v -> getPresenter().fireMoreInfoClick());
+            bPrimaryAction.setOnClickListener(v -> getPresenter().firePrimaryActionsClick());
+            fabMessage.setOnClickListener(v -> getPresenter().fireChatClick());
+
+            root.findViewById(R.id.header_user_profile_photos_container).setOnClickListener(v -> getPresenter().fireHeaderPhotosClick());
+            root.findViewById(R.id.header_user_profile_friends_container).setOnClickListener(v -> getPresenter().fireHeaderFriendsClick());
+            root.findViewById(R.id.header_user_profile_audios_container).setOnClickListener(v -> getPresenter().fireHeaderAudiosClick());
+            root.findViewById(R.id.header_user_profile_articles_container).setOnClickListener(v -> getPresenter().fireHeaderArticlesClick());
+            root.findViewById(R.id.header_user_profile_groups_container).setOnClickListener(v -> getPresenter().fireHeaderGroupsClick());
+            root.findViewById(R.id.header_user_profile_videos_container).setOnClickListener(v -> getPresenter().fireHeaderVideosClick());
+        }
+    }
+}
