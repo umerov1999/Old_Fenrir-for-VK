@@ -17,8 +17,8 @@ android {
         minSdkVersion 21
         //noinspection OldTargetApi
         targetSdkVersion 29
-        versionCode 8
-        versionName '1.08'
+        versionCode 9
+        versionName '1.09'
 
         ndk {
             abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'

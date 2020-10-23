@@ -46,7 +46,7 @@ public class CheckUpdate {
                 });
         ProxyUtil.applyProxyConfig(builder, Injection.provideProxySettings().getActiveProxy());
         Request request = new Request.Builder()
-                .url("https://raw.githubusercontent.com/umerov1999/Fenrir-for-VK/master/current_version.json").build();
+                .url("https://raw.githubusercontent.com/umerov1999/Fenrir-for-VK/main/current_version.json").build();
 
         builder.build().newCall(request).enqueue(new Callback() {
             @Override
