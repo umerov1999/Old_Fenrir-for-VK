@@ -48,7 +48,6 @@ import java.util.List;
 
 import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.CheckUpdate;
-import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.R;
@@ -313,9 +312,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                             .compose(RxUtils.applyCompletableIOToMainSchedulers())
                             .subscribe(RxUtils.dummy(), t -> {/*TODO*/}));
 
-                    if (Constants.IS_DONATE == 2) {
-                        CheckUpdate.Do(this, mAccountId);
-                    }
+                    CheckUpdate.Do(this, mAccountId);
                     CheckMusicInPC();
 
                     if (Settings.get().other().isDelete_cache_images()) {

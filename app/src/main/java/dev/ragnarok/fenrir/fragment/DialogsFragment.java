@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import dev.ragnarok.fenrir.CheckUpdate;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
@@ -298,6 +299,9 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
                     } else if (selected.equals(addToShortcuts)) {
                         getPresenter().fireAddToLauncherShortcuts(dialog);
                     } else if (selected.equals(setHide)) {
+                        if(!CheckUpdate.isFullVersion(requireActivity())) {
+                            return;
+                        }
                         if (!Settings.get().security().isUsePinForSecurity()) {
                             CustomToast.CreateCustomToast(requireActivity()).showToastError(R.string.not_supported_hide);
                             PlaceFactory.getSecuritySettingsPlace().tryOpenWith(requireActivity());

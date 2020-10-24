@@ -81,7 +81,7 @@ public class CheckUpdate {
                         }
                         String Chenges_log = Chngs;
 
-                        if ((APK_VERS <= Constants.VERSION_APK && Constants.APK_ID.equals(apk_id)) || !Settings.get().other().isAuto_update())
+                        if ((APK_VERS <= Constants.VERSION_APK && Constants.APK_ID.equals(apk_id)) || !Settings.get().other().isAuto_update() || Constants.IS_DONATE != 2)
                             return;
 
                         Handler uiHandler = new Handler(context.getMainLooper());
