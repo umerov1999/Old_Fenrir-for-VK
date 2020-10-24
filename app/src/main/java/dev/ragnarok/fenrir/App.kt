@@ -29,10 +29,10 @@ class App : Application() {
     @SuppressLint("UnsafeExperimentalUsageWarning")
     override fun onCreate() {
         sInstanse = this
+        AppCompatDelegate.setDefaultNightMode(Settings.get().ui().nightMode)
         CrashConfig.Builder.create()
                 .apply()
         RLottieDrawable.init(this)
-        AppCompatDelegate.setDefaultNightMode(Settings.get().ui().nightMode)
         TagOptionSingleton.getInstance().isAndroid = true
         Security.addProvider(Conscrypt.newProvider())
         MusicUtils.registerBroadcast(this)

@@ -5,7 +5,8 @@
     <application>
         <activity
             android:name="com.developer.crashx.activity.DefaultErrorActivity"
-            android:process=":error_activity" />
+            android:process=":error_activity"
+            android:theme="@style/Crash.LightSpecific" />
         <provider
             android:name="com.developer.crashx.provider.CrashInitProvider"
             android:authorities="${applicationId}.crashinitprovider"

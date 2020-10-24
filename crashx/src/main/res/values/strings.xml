@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="customactivityoncrash_error_activity_error_occurred_explanation">Необрабатываемое исключение.</string>
+    <string name="customactivityoncrash_error_activity_error_occurred_need_send">Отправьте мне Детали исключения!!!</string>
     <string name="customactivityoncrash_error_activity_restart_app">Перезапуск</string>
     <string name="customactivityoncrash_error_activity_close_app">Закрыть</string>
     <string name="customactivityoncrash_error_activity_error_details">Детали</string>

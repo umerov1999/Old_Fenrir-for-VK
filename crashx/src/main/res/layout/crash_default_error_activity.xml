@@ -11,9 +11,7 @@
         android:layout_centerInParent="true"
         app:cardBackgroundColor="#FFFFFF"
         app:cardCornerRadius="10dp"
-        app:cardElevation="0dp"
-        app:cardPreventCornerOverlap="true"
-        app:cardUseCompatPadding="true">
+        app:cardElevation="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,7 +37,28 @@
                 android:layout_marginTop="@dimen/customactivityoncrash_activity_vertical_margin"
                 android:gravity="center"
                 android:text="@string/customactivityoncrash_error_activity_error_occurred_explanation"
+                android:textColor="#333333"
                 android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/customactivityoncrash_activity_vertical_margin"
+                android:gravity="center"
+                android:text="@string/customactivityoncrash_error_activity_error_occurred_need_send"
+                android:textColor="#2B2B2B"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/crash_error_activity_more_info_button"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/customactivityoncrash_activity_vertical_margin"
+                android:drawableBottom="@drawable/crash_ic_error"
+                android:text="@string/customactivityoncrash_error_activity_error_details"
+                android:textColor="@android:color/white"
                 android:textStyle="bold" />
 
             <com.google.android.material.button.MaterialButton
@@ -49,16 +68,6 @@
                 android:layout_marginTop="@dimen/customactivityoncrash_activity_vertical_margin"
                 android:drawableBottom="@drawable/crash_ic_close"
                 android:text="@string/customactivityoncrash_error_activity_close_app"
-                android:textColor="@android:color/white"
-                android:textStyle="bold" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/crash_error_activity_more_info_button"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/customactivityoncrash_activity_vertical_margin"
-                android:drawableBottom="@drawable/crash_ic_error"
-                android:text="@string/customactivityoncrash_error_activity_error_details"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
         </LinearLayout>
