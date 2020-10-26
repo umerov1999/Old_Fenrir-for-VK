@@ -4,9 +4,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class AudioPlaylistLink extends AbsLink {
 
-    public int ownerId;
-    public int playlistId;
-    public String access_key;
+    public final int ownerId;
+    public final int playlistId;
+    public final String access_key;
 
     public AudioPlaylistLink(int ownerId, int playlistId, String access_key) {
         super(PLAYLIST);

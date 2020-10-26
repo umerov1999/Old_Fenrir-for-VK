@@ -272,7 +272,7 @@ public class WallAdapter extends RecyclerBindableAdapter<Post, RecyclerView.View
 
     private static class DeletedHolder extends RecyclerView.ViewHolder {
 
-        Button bRestore;
+        final Button bRestore;
 
         DeletedHolder(View itemView) {
             super(itemView);
@@ -282,21 +282,21 @@ public class WallAdapter extends RecyclerBindableAdapter<Post, RecyclerView.View
 
     private abstract class AbsPostHolder extends RecyclerView.ViewHolder {
 
-        View root;
-        View topDivider;
-        TextView tvOwnerName;
-        ImageView ivOwnerAvatar;
-        View vTextContainer;
-        EmojiconTextView tvText;
-        TextView tvShowMore;
-        TextView tvTime;
-        ImageView ivFriendOnly;
-        TextView viewCounter;
-        View vSignerRoot;
-        ImageView ivSignerIcon;
-        TextView tvSignerName;
+        final View root;
+        final View topDivider;
+        final TextView tvOwnerName;
+        final ImageView ivOwnerAvatar;
+        final View vTextContainer;
+        final EmojiconTextView tvText;
+        final TextView tvShowMore;
+        final TextView tvTime;
+        final ImageView ivFriendOnly;
+        final TextView viewCounter;
+        final View vSignerRoot;
+        final ImageView ivSignerIcon;
+        final TextView tvSignerName;
 
-        AttachmentsHolder attachmentContainers;
+        final AttachmentsHolder attachmentContainers;
 
         AbsPostHolder(View itemView) {
             super(itemView);
@@ -323,10 +323,10 @@ public class WallAdapter extends RecyclerBindableAdapter<Post, RecyclerView.View
 
     private class NormalHolder extends AbsPostHolder {
 
-        View pinRoot;
-        CircleCounterButton likeButton;
-        CircleCounterButton shareButton;
-        CircleCounterButton commentsButton;
+        final View pinRoot;
+        final CircleCounterButton likeButton;
+        final CircleCounterButton shareButton;
+        final CircleCounterButton commentsButton;
 
         NormalHolder(View view) {
             super(view);
@@ -339,7 +339,7 @@ public class WallAdapter extends RecyclerBindableAdapter<Post, RecyclerView.View
 
     private class ScheludedHolder extends AbsPostHolder {
 
-        CircleCounterButton deleteButton;
+        final CircleCounterButton deleteButton;
 
         ScheludedHolder(View view) {
             super(view);

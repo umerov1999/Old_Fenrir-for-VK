@@ -18,13 +18,13 @@ public class FileItem implements Parcelable {
             return new FileItem[size];
         }
     };
-    public boolean directory;
-    public String file;
-    public String details;
-    public String path;
-    public int icon;
-    public long Modification;
-    public boolean canRead;
+    public final boolean directory;
+    public final String file;
+    public final String details;
+    public final String path;
+    public final int icon;
+    public final long Modification;
+    public final boolean canRead;
 
     public FileItem(boolean directory, String file, String details, int icon, long Modification, String path, boolean canRead) {
         this.directory = directory;

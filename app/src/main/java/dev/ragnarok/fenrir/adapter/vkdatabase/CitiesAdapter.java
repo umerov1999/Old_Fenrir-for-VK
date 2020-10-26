@@ -68,9 +68,9 @@ public class CitiesAdapter extends RecyclerView.Adapter<CitiesAdapter.Holder> {
 
     public static class Holder extends RecyclerView.ViewHolder {
 
-        TextView title;
-        TextView area;
-        TextView region;
+        final TextView title;
+        final TextView area;
+        final TextView region;
 
         public Holder(View itemView) {
             super(itemView);

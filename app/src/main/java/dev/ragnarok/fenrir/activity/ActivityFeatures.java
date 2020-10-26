@@ -44,7 +44,7 @@ public class ActivityFeatures {
     }
 
     private static class Feature {
-        Builder builder;
+        final Builder builder;
 
         Feature(Builder b) {
             builder = b;

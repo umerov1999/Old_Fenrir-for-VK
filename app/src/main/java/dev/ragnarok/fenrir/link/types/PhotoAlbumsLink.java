@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PhotoAlbumsLink extends AbsLink {
 
-    public int ownerId;
+    public final int ownerId;
 
     public PhotoAlbumsLink(int ownerId) {
         super(ALBUMS);

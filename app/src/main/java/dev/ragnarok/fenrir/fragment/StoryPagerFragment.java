@@ -351,9 +351,9 @@ public class StoryPagerFragment extends BaseMvpFragment<StoryPagerPresenter, ISt
 
     private final class Holder extends MultiHolder implements SurfaceHolder.Callback {
 
-        SurfaceView mSurfaceView;
-        ProgressBar mProgressBar;
-        AlternativeAspectRatioFrameLayout mAspectRatioLayout;
+        final SurfaceView mSurfaceView;
+        final ProgressBar mProgressBar;
+        final AlternativeAspectRatioFrameLayout mAspectRatioLayout;
         boolean mSurfaceReady;
 
         Holder(View rootView) {
@@ -423,7 +423,7 @@ public class StoryPagerFragment extends BaseMvpFragment<StoryPagerPresenter, ISt
         private final WeakPicassoLoadCallback mPicassoLoadCallback;
         public TouchImageView photo;
         public ProgressBar progress;
-        public FloatingActionButton reload;
+        public final FloatingActionButton reload;
         private boolean mLoadingNow;
 
         public PhotoViewHolder(View view) {
@@ -511,7 +511,7 @@ public class StoryPagerFragment extends BaseMvpFragment<StoryPagerPresenter, ISt
 
     private class Adapter extends RecyclerView.Adapter<MultiHolder> {
 
-        int mPageCount;
+        final int mPageCount;
 
         Adapter(int count) {
             mPageCount = count;

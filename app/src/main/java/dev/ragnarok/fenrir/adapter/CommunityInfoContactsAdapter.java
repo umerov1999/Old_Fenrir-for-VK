@@ -97,10 +97,10 @@ public class CommunityInfoContactsAdapter extends RecyclerView.Adapter<Community
 
     static class Holder extends RecyclerView.ViewHolder {
 
-        ImageView avatar;
-        OnlineView onlineView;
-        TextView name;
-        TextView role;
+        final ImageView avatar;
+        final OnlineView onlineView;
+        final TextView name;
+        final TextView role;
 
         Holder(View itemView) {
             super(itemView);

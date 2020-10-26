@@ -94,8 +94,8 @@ public class SpinnerOption extends BaseOption {
                 return new Entry[size];
             }
         };
-        public int id;
-        public int name;
+        public final int id;
+        public final int name;
 
         public Entry(int id, int name) {
             this.id = id;

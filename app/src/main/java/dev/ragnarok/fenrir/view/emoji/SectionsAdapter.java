@@ -98,8 +98,8 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.Holder
 
     public static class Holder extends RecyclerView.ViewHolder {
 
-        View root;
-        ImageView icon;
+        final View root;
+        final ImageView icon;
 
         public Holder(View itemView) {
             super(itemView);

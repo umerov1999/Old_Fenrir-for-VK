@@ -238,10 +238,10 @@ public class GifPagerFragment extends AbsDocumentPreviewFragment<GifPagerPresent
 
     private final class Holder extends RecyclerView.ViewHolder implements SurfaceHolder.Callback {
 
-        SurfaceView mSurfaceView;
-        SurfaceHolder mSurfaceHolder;
-        ProgressBar mProgressBar;
-        AlternativeAspectRatioFrameLayout mAspectRatioLayout;
+        final SurfaceView mSurfaceView;
+        final SurfaceHolder mSurfaceHolder;
+        final ProgressBar mProgressBar;
+        final AlternativeAspectRatioFrameLayout mAspectRatioLayout;
         boolean mSurfaceReady;
 
         Holder(View rootView) {
@@ -293,7 +293,7 @@ public class GifPagerFragment extends AbsDocumentPreviewFragment<GifPagerPresent
 
     private class Adapter extends RecyclerView.Adapter<Holder> {
 
-        int mPageCount;
+        final int mPageCount;
 
         Adapter(int count) {
             mPageCount = count;

@@ -4,10 +4,10 @@ import android.graphics.Color;
 
 public class ThemeValue {
 
-    public int color_primary;
-    public int color_secondary;
-    public String id;
-    public String name;
+    public final int color_primary;
+    public final int color_secondary;
+    public final String id;
+    public final String name;
 
     public ThemeValue(String color_primary, String color_secondary, String id, String name) {
         this.color_primary = Color.parseColor(color_primary);

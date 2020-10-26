@@ -953,9 +953,9 @@ public class AttachmentsViewBinder {
 
     private static class FriendsPostViewHolder implements IdentificableHolder {
         final OnAttachmentsActionCallback callback;
-        ImageView ivImage;
-        TextView tvTitle;
-        TextView tvDescription;
+        final ImageView ivImage;
+        final TextView tvTitle;
+        final TextView tvDescription;
 
         private FriendsPostViewHolder(View root, OnAttachmentsActionCallback callback) {
             ivImage = root.findViewById(R.id.item_link_pic);
@@ -973,11 +973,11 @@ public class AttachmentsViewBinder {
 
     private class VoiceHolder implements IdentificableHolder {
 
-        WaveFormView mWaveFormView;
-        ImageView mButtonPlay;
-        TextView mDurationText;
-        TextView TranscriptText;
-        TextView mDoTranscript;
+        final WaveFormView mWaveFormView;
+        final ImageView mButtonPlay;
+        final TextView mDurationText;
+        final TextView TranscriptText;
+        final TextView mDoTranscript;
 
         VoiceHolder(View itemView) {
             mWaveFormView = itemView.findViewById(R.id.item_voice_wave_form_view);

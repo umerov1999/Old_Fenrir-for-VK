@@ -35,7 +35,7 @@ public class Lyrics3Line extends AbstractDataType {
     /**
      *
      */
-    private LinkedList<Lyrics3TimeStamp> timeStamp = new LinkedList<Lyrics3TimeStamp>();
+    private LinkedList<Lyrics3TimeStamp> timeStamp = new LinkedList<>();
 
     /**
      *
@@ -155,7 +155,7 @@ public class Lyrics3Line extends AbstractDataType {
         }
         int delim;
         Lyrics3TimeStamp time;
-        timeStamp = new LinkedList<Lyrics3TimeStamp>();
+        timeStamp = new LinkedList<>();
         delim = lineString.indexOf("[", offset);
         while (delim >= 0) {
             offset = lineString.indexOf("]", delim) + 1;

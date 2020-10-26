@@ -87,10 +87,10 @@ public class DocsAdapter extends RecyclerBindableAdapter<Document, DocsAdapter.D
 
     static class DocViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tvExt;
-        ImageView ivImage;
-        TextView tvTitle;
-        TextView tvSize;
+        final TextView tvExt;
+        final ImageView ivImage;
+        final TextView tvTitle;
+        final TextView tvSize;
 
         private DocViewHolder(View root) {
             super(root);

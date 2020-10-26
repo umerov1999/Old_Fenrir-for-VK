@@ -67,7 +67,7 @@ abstract public class AbstractID3v1Tag extends AbstractID3Tag {
     //If field is less than maximum field length this is how it is terminated
     static final byte END_OF_FIELD = (byte) 0;
     //Used to detect end of field in String constructed from Data
-    protected static Pattern endofStringPattern = Pattern.compile("\\x00");
+    protected static final Pattern endofStringPattern = Pattern.compile("\\x00");
 
     /**
      * Does a v1tag or a v11tag exist

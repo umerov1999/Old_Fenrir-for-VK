@@ -65,10 +65,10 @@ public class LoadMoreFooterHelper {
     }
 
     public static class Holder {
-        public View container;
-        public ProgressBar progress;
-        public View bLoadMore;
-        public TextView tvEndOfList;
+        public final View container;
+        public final ProgressBar progress;
+        public final View bLoadMore;
+        public final TextView tvEndOfList;
 
         public Holder(View root) {
             container = root.findViewById(R.id.footer_load_more_root);

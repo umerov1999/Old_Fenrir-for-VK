@@ -4,8 +4,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class DocLink extends AbsLink {
 
-    public int ownerId;
-    public int docId;
+    public final int ownerId;
+    public final int docId;
 
     public DocLink(int ownerId, int docId) {
         super(DOC);

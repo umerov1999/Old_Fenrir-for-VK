@@ -499,20 +499,20 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
 
     class AudioHolder extends RecyclerView.ViewHolder {
 
-        TextView artist;
-        TextView title;
-        View play;
-        ImageView play_cover;
-        RLottieImageView visual;
-        TextView time;
-        ImageView saved;
-        ImageView lyric;
-        ImageView my;
-        ImageView quality;
-        View Track;
-        MaterialCardView selectionView;
-        MaterialCardView isSelectedView;
-        Animator.AnimatorListener animationAdapter;
+        final TextView artist;
+        final TextView title;
+        final View play;
+        final ImageView play_cover;
+        final RLottieImageView visual;
+        final TextView time;
+        final ImageView saved;
+        final ImageView lyric;
+        final ImageView my;
+        final ImageView quality;
+        final View Track;
+        final MaterialCardView selectionView;
+        final MaterialCardView isSelectedView;
+        final Animator.AnimatorListener animationAdapter;
         ObjectAnimator animator;
 
         AudioHolder(View itemView) {

@@ -177,7 +177,7 @@ public class FrameBodyETCO extends AbstractID3v2FrameBody implements ID3v24Frame
      * @return map of timing codes
      */
     public Map<Long, int[]> getTimingCodes() {
-        Map<Long, int[]> map = new LinkedHashMap<Long, int[]>();
+        Map<Long, int[]> map = new LinkedHashMap<>();
         List<EventTimingCode> codes = (List<EventTimingCode>) getObjectValue(DataTypes.OBJ_TIMED_EVENT_LIST);
         long lastTimestamp = 0;
         for (EventTimingCode code : codes) {

@@ -398,32 +398,32 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
     }
 
     private class UserHeaderHolder {
-        ImageView vgCover;
-        ViewGroup avatarRoot;
-        ImageView ivAvatar;
-        ImageView ivVerified;
-        TextView tvName;
-        TextView tvScreenName;
-        TextView tvStatus;
-        ImageView tvAudioStatus;
-        TextView tvLastSeen;
-        OnlineView ivOnline;
+        final ImageView vgCover;
+        final ViewGroup avatarRoot;
+        final ImageView ivAvatar;
+        final ImageView ivVerified;
+        final TextView tvName;
+        final TextView tvScreenName;
+        final TextView tvStatus;
+        final ImageView tvAudioStatus;
+        final TextView tvLastSeen;
+        final OnlineView ivOnline;
 
-        TextView bFriends;
-        TextView bGroups;
-        TextView bPhotos;
-        TextView bVideos;
-        TextView bAudios;
-        TextView bArticles;
+        final TextView bFriends;
+        final TextView bGroups;
+        final TextView bPhotos;
+        final TextView bVideos;
+        final TextView bAudios;
+        final TextView bArticles;
 
-        FloatingActionButton fabMessage;
-        FloatingActionButton fabMoreInfo;
-        MaterialButton bPrimaryAction;
+        final FloatingActionButton fabMessage;
+        final FloatingActionButton fabMoreInfo;
+        final MaterialButton bPrimaryAction;
 
-        ImageView Valknut;
-        View Runes;
+        final ImageView Valknut;
+        final View Runes;
 
-        HorizontalOptionsAdapter<PostFilter> mPostFilterAdapter;
+        final HorizontalOptionsAdapter<PostFilter> mPostFilterAdapter;
 
         UserHeaderHolder(@NonNull View root) {
             vgCover = root.findViewById(R.id.cover);

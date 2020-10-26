@@ -26,9 +26,9 @@ public class BaseOption implements Parcelable, Cloneable {
         }
     };
     public final int key;
-    public int optionType;
-    public boolean active;
-    public int title;
+    public final int optionType;
+    public final boolean active;
+    public final int title;
     public int parentDependencyKey;
     public int[] childDependencies;
 

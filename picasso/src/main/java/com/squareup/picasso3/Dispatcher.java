@@ -120,7 +120,7 @@ class Dispatcher {
         }
         dispatcherThread.quit();
         // Unregister network broadcast receiver on the main thread.
-        Picasso.HANDLER.post(() -> receiver.unregister());
+        Picasso.HANDLER.post(receiver::unregister);
     }
 
     void dispatchSubmit(Action action) {

@@ -125,11 +125,11 @@ public class FaveLinksAdapter extends RecyclerView.Adapter<FaveLinksAdapter.Hold
 
     public class Holder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
-        ImageView ivImage;
-        ImageView ivEmpty;
-        TextView tvTitle;
-        TextView tvDescription;
-        TextView tvURL;
+        final ImageView ivImage;
+        final ImageView ivEmpty;
+        final TextView tvTitle;
+        final TextView tvDescription;
+        final TextView tvURL;
 
         public Holder(View root) {
             super(root);

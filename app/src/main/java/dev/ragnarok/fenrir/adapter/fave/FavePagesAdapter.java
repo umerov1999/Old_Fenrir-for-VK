@@ -119,13 +119,13 @@ public class FavePagesAdapter extends RecyclerView.Adapter<FavePagesAdapter.Hold
 
     public class Holder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
-        ViewGroup avatar_root;
-        AspectRatioImageView avatar;
-        ImageView blacklisted;
-        TextView name;
-        TextView description;
-        OnlineView ivOnline;
-        ImageView ivVerified;
+        final ViewGroup avatar_root;
+        final AspectRatioImageView avatar;
+        final ImageView blacklisted;
+        final TextView name;
+        final TextView description;
+        final OnlineView ivOnline;
+        final ImageView ivVerified;
 
         public Holder(View itemView) {
             super(itemView);

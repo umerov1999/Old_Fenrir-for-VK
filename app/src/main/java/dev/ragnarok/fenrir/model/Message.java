@@ -20,7 +20,7 @@ import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 public class Message extends AbsModel implements Identificable, ISelectable {
 
-    public static Creator<Message> CREATOR = new Creator<Message>() {
+    public static final Creator<Message> CREATOR = new Creator<Message>() {
         public Message createFromParcel(Parcel source) {
             return new Message(source);
         }

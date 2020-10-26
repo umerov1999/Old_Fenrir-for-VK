@@ -4,8 +4,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class VideoLink extends AbsLink {
 
-    public int ownerId;
-    public int videoId;
+    public final int ownerId;
+    public final int videoId;
 
     public VideoLink(int ownerId, int videoId) {
         super(VIDEO);

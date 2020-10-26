@@ -78,7 +78,7 @@ public class KeyboardButtonAdapter extends RecyclerView.Adapter<KeyboardButtonAd
     }
 
     static class ButtonHolder extends RecyclerView.ViewHolder {
-        MaterialButton button;
+        final MaterialButton button;
 
         ButtonHolder(View itemView) {
             super(itemView);

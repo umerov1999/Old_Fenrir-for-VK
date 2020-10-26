@@ -60,7 +60,7 @@ public class ChairsAdapter extends RecyclerView.Adapter<ChairsAdapter.Holder> {
 
     public static class Holder extends RecyclerView.ViewHolder {
 
-        TextView name;
+        final TextView name;
 
         public Holder(View itemView) {
             super(itemView);

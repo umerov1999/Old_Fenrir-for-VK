@@ -225,6 +225,8 @@ public class KeyExchangeService extends Service {
             case SessionState.FAILED:
                 onReceiveSessionFailStatus(message);
                 break;
+            case SessionState.CLOSED:
+                break;
         }
     }
 
@@ -462,6 +464,14 @@ public class KeyExchangeService extends Service {
                 case SessionState.INITIATOR_FINISHED:
                     assertSessionState(session, SessionState.NO_INITIATOR_FINISHED);
                     processNoIniciatorFinished(accountId, peerId, session, message);
+                    break;
+                case SessionState.CLOSED:
+                    break;
+                case SessionState.FAILED:
+                    break;
+                case SessionState.INITIATOR_EMPTY:
+                    break;
+                case SessionState.NO_INITIATOR_EMPTY:
                     break;
             }
         } catch (InvalidSessionStateException e) {

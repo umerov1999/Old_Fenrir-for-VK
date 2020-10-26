@@ -103,11 +103,11 @@ public class LinksAdapter extends RecyclerBindableAdapter<Link, LinksAdapter.Lin
     }
 
     static class LinkViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivImage;
-        ImageView ivEmpty;
-        TextView tvTitle;
-        TextView tvDescription;
-        TextView tvURL;
+        final ImageView ivImage;
+        final ImageView ivEmpty;
+        final TextView tvTitle;
+        final TextView tvDescription;
+        final TextView tvURL;
 
         private LinkViewHolder(View root) {
             super(root);

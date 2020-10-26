@@ -65,12 +65,12 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView primary;
-        ImageView secondary;
-        ImageView selected;
-        ImageView gradient;
-        ViewGroup clicked;
-        TextView title;
+        final ImageView primary;
+        final ImageView secondary;
+        final ImageView selected;
+        final ImageView gradient;
+        final ViewGroup clicked;
+        final TextView title;
 
         public ViewHolder(View itemView) {
             super(itemView);

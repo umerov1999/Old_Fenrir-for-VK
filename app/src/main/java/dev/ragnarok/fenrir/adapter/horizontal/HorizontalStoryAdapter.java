@@ -81,10 +81,10 @@ public class HorizontalStoryAdapter extends RecyclerBindableAdapter<Story, Horiz
 
     static class Holder extends RecyclerView.ViewHolder {
 
-        MaterialCardView background;
-        ImageView story_image;
-        TextView name;
-        TextView expires;
+        final MaterialCardView background;
+        final ImageView story_image;
+        final TextView name;
+        final TextView expires;
 
         Holder(View itemView) {
             super(itemView);

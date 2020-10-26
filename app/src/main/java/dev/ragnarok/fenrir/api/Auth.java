@@ -14,7 +14,7 @@ import dev.ragnarok.fenrir.util.Utils;
 public class Auth {
 
     private static final String TAG = "Fenrir.Auth";
-    public static String redirect_url = "https://oauth.vk.com/blank.html";
+    public static final String redirect_url = "https://oauth.vk.com/blank.html";
 
     public static String getUrl(String api_id, String scope, String groupIds) throws UnsupportedEncodingException {
         String url = "https://oauth.vk.com/authorize?client_id=" + api_id;

@@ -137,8 +137,8 @@ public class SelectedProfilesAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private static class CheckViewHolder extends RecyclerView.ViewHolder {
 
-        TextView counter;
-        View root;
+        final TextView counter;
+        final View root;
 
         CheckViewHolder(View itemView) {
             super(itemView);
@@ -149,9 +149,9 @@ public class SelectedProfilesAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private class ProfileViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView avatar;
-        TextView name;
-        ImageView buttonRemove;
+        final ImageView avatar;
+        final TextView name;
+        final ImageView buttonRemove;
 
         ProfileViewHolder(View itemView) {
             super(itemView);

@@ -127,8 +127,6 @@ public class SliderPanel extends FrameLayout {
                     }
                     break;
                 case ViewDragHelper.STATE_DRAGGING:
-
-                    break;
                 case ViewDragHelper.STATE_SETTLING:
 
                     break;
@@ -210,8 +208,6 @@ public class SliderPanel extends FrameLayout {
                     }
                     break;
                 case ViewDragHelper.STATE_DRAGGING:
-
-                    break;
                 case ViewDragHelper.STATE_SETTLING:
 
                     break;
@@ -289,8 +285,6 @@ public class SliderPanel extends FrameLayout {
                     }
                     break;
                 case ViewDragHelper.STATE_DRAGGING:
-
-                    break;
                 case ViewDragHelper.STATE_SETTLING:
 
                     break;
@@ -368,8 +362,6 @@ public class SliderPanel extends FrameLayout {
                     }
                     break;
                 case ViewDragHelper.STATE_DRAGGING:
-
-                    break;
                 case ViewDragHelper.STATE_SETTLING:
 
                     break;
@@ -468,8 +460,6 @@ public class SliderPanel extends FrameLayout {
                     }
                     break;
                 case ViewDragHelper.STATE_DRAGGING:
-
-                    break;
                 case ViewDragHelper.STATE_SETTLING:
 
                     break;
@@ -566,8 +556,6 @@ public class SliderPanel extends FrameLayout {
                     }
                     break;
                 case ViewDragHelper.STATE_DRAGGING:
-
-                    break;
                 case ViewDragHelper.STATE_SETTLING:
 
                     break;

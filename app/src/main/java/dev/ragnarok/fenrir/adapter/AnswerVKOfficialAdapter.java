@@ -334,14 +334,14 @@ public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOffici
 
     public static class Holder extends RecyclerView.ViewHolder {
 
-        ImageView avatar;
-        TextView name;
-        TextView description;
-        TextView footer;
-        TextView time;
-        ImageView small;
-        TextView mHeaderTitle;
-        ShapeableImageView additional;
+        final ImageView avatar;
+        final TextView name;
+        final TextView description;
+        final TextView footer;
+        final TextView time;
+        final ImageView small;
+        final TextView mHeaderTitle;
+        final ShapeableImageView additional;
 
         public Holder(View itemView) {
             super(itemView);

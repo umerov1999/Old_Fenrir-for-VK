@@ -83,8 +83,8 @@ public class DocsAsImagesAdapter extends RecyclerBindableAdapter<Document, DocsA
 
     static class DocViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView image;
-        TextView title;
+        final ImageView image;
+        final TextView title;
 
         DocViewHolder(View root) {
             super(root);

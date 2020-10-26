@@ -190,11 +190,10 @@ public class ID3v24Frame extends AbstractID3v2Frame {
                 }
                 if (hasTimeStamp) {
                     frameBody = sync;
-                    frameBody.setHeader(this);
                 } else {
                     frameBody = unsync;
-                    frameBody.setHeader(this);
                 }
+                frameBody.setHeader(this);
                 break;
             case "INF":
                 value = ((FieldFrameBodyINF) field.getBody()).getAdditionalInformation();

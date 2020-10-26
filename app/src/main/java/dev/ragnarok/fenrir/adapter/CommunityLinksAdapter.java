@@ -97,9 +97,9 @@ public class CommunityLinksAdapter extends RecyclerView.Adapter<CommunityLinksAd
 
     static class Holder extends RecyclerView.ViewHolder {
 
-        TextView title;
-        TextView subtitle;
-        ImageView icon;
+        final TextView title;
+        final TextView subtitle;
+        final ImageView icon;
 
         Holder(View itemView) {
             super(itemView);

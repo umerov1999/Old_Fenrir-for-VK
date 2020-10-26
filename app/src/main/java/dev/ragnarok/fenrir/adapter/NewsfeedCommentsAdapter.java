@@ -322,11 +322,11 @@ public class NewsfeedCommentsAdapter extends AbsRecyclerViewAdapter<NewsfeedComm
 
     private static final class TopicHolder extends AbsHolder {
 
-        ImageView ownerAvatar;
-        ImageView creatorAvatar;
-        TextView commentsCounter;
-        TextView ownerName;
-        TextView title;
+        final ImageView ownerAvatar;
+        final ImageView creatorAvatar;
+        final TextView commentsCounter;
+        final TextView ownerName;
+        final TextView title;
 
         TopicHolder(View itemView) {
             super(itemView);
@@ -340,19 +340,19 @@ public class NewsfeedCommentsAdapter extends AbsRecyclerViewAdapter<NewsfeedComm
 
     abstract static class AbsHolder extends RecyclerView.ViewHolder {
 
-        View commentRoot;
+        final View commentRoot;
 
-        ImageView commentAvatar;
-        TextView commentAuthorName;
-        EmojiconTextView commentText;
-        TextView commentDatetime;
+        final ImageView commentAvatar;
+        final TextView commentAuthorName;
+        final EmojiconTextView commentText;
+        final TextView commentDatetime;
 
-        View commentLikeRoot;
-        TextView commentLikeCounter;
-        ImageView commentLikeIcon;
+        final View commentLikeRoot;
+        final TextView commentLikeCounter;
+        final ImageView commentLikeIcon;
 
-        ViewGroup commentAttachmentRoot;
-        AttachmentsHolder commentAttachmentHolder;
+        final ViewGroup commentAttachmentRoot;
+        final AttachmentsHolder commentAttachmentHolder;
 
         AbsHolder(View itemView) {
             super(itemView);
@@ -374,11 +374,11 @@ public class NewsfeedCommentsAdapter extends AbsRecyclerViewAdapter<NewsfeedComm
 
     private static class PhotoHolder extends AbsHolder {
 
-        ImageView ownerAvatar;
-        TextView ownerName;
-        TextView dateTime;
-        TextView title;
-        AspectRatioImageView image;
+        final ImageView ownerAvatar;
+        final TextView ownerName;
+        final TextView dateTime;
+        final TextView title;
+        final AspectRatioImageView image;
 
         PhotoHolder(View itemView) {
             super(itemView);
@@ -392,16 +392,16 @@ public class NewsfeedCommentsAdapter extends AbsRecyclerViewAdapter<NewsfeedComm
 
     private static class VideoHolder extends AbsHolder {
 
-        TextView title;
-        TextView datitime;
-        TextView viewsCounter;
+        final TextView title;
+        final TextView datitime;
+        final TextView viewsCounter;
 
-        ImageView service;
-        ImageView image;
-        TextView duration;
+        final ImageView service;
+        final ImageView image;
+        final TextView duration;
 
-        ImageView avatar;
-        TextView ownerName;
+        final ImageView avatar;
+        final TextView ownerName;
 
         VideoHolder(View itemView) {
             super(itemView);
@@ -420,27 +420,27 @@ public class NewsfeedCommentsAdapter extends AbsRecyclerViewAdapter<NewsfeedComm
 
     private static class PostHolder extends AbsHolder {
 
-        ImageView ownerAvatar;
-        TextView ownerName;
-        TextView postDatetime;
+        final ImageView ownerAvatar;
+        final TextView ownerName;
+        final TextView postDatetime;
 
-        View postTextRoot;
-        EmojiconTextView postText;
-        View buttonShowMore;
+        final View postTextRoot;
+        final EmojiconTextView postText;
+        final View buttonShowMore;
 
-        View signerRoot;
-        ImageView signerAvatar;
-        TextView signerName;
+        final View signerRoot;
+        final ImageView signerAvatar;
+        final TextView signerName;
 
-        AttachmentsHolder postAttachmentsHolder;
+        final AttachmentsHolder postAttachmentsHolder;
 
-        TextView viewsCounter;
+        final TextView viewsCounter;
 
-        View friendsOnlyIcon;
+        final View friendsOnlyIcon;
 
-        View topDivider;
+        final View topDivider;
 
-        View postRoot;
+        final View postRoot;
 
         PostHolder(View itemView) {
             super(itemView);

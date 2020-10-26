@@ -109,12 +109,12 @@ public class FaveVideosAdapter extends RecyclerView.Adapter<FaveVideosAdapter.Ho
     }
 
     public class Holder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
-        View card;
-        ImageView image;
-        TextView videoLenght;
-        ImageView videoService;
-        TextView title;
-        TextView viewsCount;
+        final View card;
+        final ImageView image;
+        final TextView videoLenght;
+        final ImageView videoService;
+        final TextView title;
+        final TextView viewsCount;
 
         public Holder(View itemView) {
             super(itemView);

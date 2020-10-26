@@ -43,7 +43,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
     /**
      *
      */
-    private HashMap<String, Lyrics3v2Field> fieldMap = new HashMap<String, Lyrics3v2Field>();
+    private HashMap<String, Lyrics3v2Field> fieldMap = new HashMap<>();
 
 
     public Lyrics3v2(Lyrics3v2 copyObject) {
@@ -216,7 +216,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
         seek(byteBuffer);
         filePointer = byteBuffer.position();
 
-        fieldMap = new HashMap<String, Lyrics3v2Field>();
+        fieldMap = new HashMap<>();
 
         Lyrics3v2Field lyric;
 

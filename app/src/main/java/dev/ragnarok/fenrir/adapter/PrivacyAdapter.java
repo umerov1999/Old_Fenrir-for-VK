@@ -240,8 +240,8 @@ public class PrivacyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     static class TitleViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title;
-        View buttonAdd;
+        final TextView title;
+        final View buttonAdd;
 
         TitleViewHolder(View itemView) {
             super(itemView);
@@ -253,9 +253,9 @@ public class PrivacyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     static class EntryViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView avatar;
-        View buttonRemove;
-        TextView title;
+        final ImageView avatar;
+        final View buttonRemove;
+        final TextView title;
 
         EntryViewHolder(View itemView) {
             super(itemView);

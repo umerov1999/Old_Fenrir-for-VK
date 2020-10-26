@@ -16,8 +16,8 @@ public class IdPair implements Parcelable {
             return new IdPair[size];
         }
     };
-    public int id;
-    public int ownerId;
+    public final int id;
+    public final int ownerId;
 
     public IdPair(int id, int ownerId) {
         this.id = id;

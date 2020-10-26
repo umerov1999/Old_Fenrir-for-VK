@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 public class UsersPart {
 
-    public ArrayList<User> users;
-    public int titleResId;
+    public final ArrayList<User> users;
+    public final int titleResId;
     public boolean enable;
     public Integer displayCount;
 

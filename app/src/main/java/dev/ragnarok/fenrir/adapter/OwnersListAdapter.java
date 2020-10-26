@@ -65,9 +65,9 @@ public class OwnersListAdapter extends ArrayAdapter<Owner> {
 
     private static class ViewHolder {
 
-        TextView tvName;
-        ImageView ivAvatar;
-        TextView subtitle;
+        final TextView tvName;
+        final ImageView ivAvatar;
+        final TextView subtitle;
 
         ViewHolder(View root) {
             tvName = root.findViewById(R.id.name);

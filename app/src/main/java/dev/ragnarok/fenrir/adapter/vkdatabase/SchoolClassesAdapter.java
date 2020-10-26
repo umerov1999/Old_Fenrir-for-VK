@@ -59,7 +59,7 @@ public class SchoolClassesAdapter extends RecyclerView.Adapter<SchoolClassesAdap
 
     public static class Holder extends RecyclerView.ViewHolder {
 
-        TextView name;
+        final TextView name;
 
         public Holder(View itemView) {
             super(itemView);

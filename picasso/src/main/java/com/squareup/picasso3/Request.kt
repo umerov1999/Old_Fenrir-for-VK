@@ -231,16 +231,20 @@ class Request internal constructor(builder: Builder) {
 
     private fun createKey(builder: StringBuilder): String {
         val data = this
-        if (data.stableKey != null) {
-            builder.ensureCapacity(data.stableKey.length + KEY_PADDING)
-            builder.append(data.stableKey)
-        } else if (data.uri != null) {
-            val path = data.uri.toString()
-            builder.ensureCapacity(path.length + KEY_PADDING)
-            builder.append(path)
-        } else {
-            builder.ensureCapacity(KEY_PADDING)
-            builder.append(data.resourceId)
+        when {
+            data.stableKey != null -> {
+                builder.ensureCapacity(data.stableKey.length + KEY_PADDING)
+                builder.append(data.stableKey)
+            }
+            data.uri != null -> {
+                val path = data.uri.toString()
+                builder.ensureCapacity(path.length + KEY_PADDING)
+                builder.append(path)
+            }
+            else -> {
+                builder.ensureCapacity(KEY_PADDING)
+                builder.append(data.resourceId)
+            }
         }
 
         builder.append(KEY_SEPARATOR)

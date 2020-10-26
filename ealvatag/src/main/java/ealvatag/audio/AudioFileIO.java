@@ -73,12 +73,7 @@ public class AudioFileIO {
                 .build();
 
         writerFactories = ImmutableMap.<String, AudioFileWriterFactory>builder()
-                .put(SupportedFileFormat.MP3.getFileSuffix(), new AudioFileWriterFactory() {
-                    @Override
-                    public AudioFileWriter make() {
-                        return new MP3FileWriter();
-                    }
-                })
+                .put(SupportedFileFormat.MP3.getFileSuffix(), MP3FileWriter::new)
                 .build();
     }
 

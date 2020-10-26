@@ -436,21 +436,21 @@ public class AudioContainer extends LinearLayout {
     }
 
     private class AudioHolder {
-        TextView tvTitle;
-        TextView tvSubtitle;
-        View ibPlay;
-        ImageView play_cover;
-        TextView time;
-        ImageView saved;
-        ImageView lyric;
-        ImageView my;
-        ImageView quality;
-        View Track;
-        MaterialCardView selectionView;
-        MaterialCardView isSelectedView;
-        Animator.AnimatorListener animationAdapter;
+        final TextView tvTitle;
+        final TextView tvSubtitle;
+        final View ibPlay;
+        final ImageView play_cover;
+        final TextView time;
+        final ImageView saved;
+        final ImageView lyric;
+        final ImageView my;
+        final ImageView quality;
+        final View Track;
+        final MaterialCardView selectionView;
+        final MaterialCardView isSelectedView;
+        final Animator.AnimatorListener animationAdapter;
         ObjectAnimator animator;
-        RLottieImageView visual;
+        final RLottieImageView visual;
 
         AudioHolder(View root) {
             tvTitle = root.findViewById(R.id.dialog_title);

@@ -101,9 +101,9 @@ public class CatalogLinksAdapter extends RecyclerBindableAdapter<Link, CatalogLi
     }
 
     static class LinkViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivImage;
-        TextView tvTitle;
-        TextView tvDescription;
+        final ImageView ivImage;
+        final TextView tvTitle;
+        final TextView tvDescription;
 
         private LinkViewHolder(View root) {
             super(root);

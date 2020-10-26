@@ -666,23 +666,23 @@ public class VKApiUser extends VKApiOwner {
         public static final int NO_COUNTER = -1;
 
         public int albums = NO_COUNTER;
-        public int videos = NO_COUNTER;
-        public int audios = NO_COUNTER;
+        public final int videos = NO_COUNTER;
+        public final int audios = NO_COUNTER;
         public int notes = NO_COUNTER;
-        public int friends = NO_COUNTER;
-        public int photos = NO_COUNTER;
-        public int groups = NO_COUNTER;
-        public int online_friends = NO_COUNTER;
-        public int mutual_friends = NO_COUNTER;
+        public final int friends = NO_COUNTER;
+        public final int photos = NO_COUNTER;
+        public final int groups = NO_COUNTER;
+        public final int online_friends = NO_COUNTER;
+        public final int mutual_friends = NO_COUNTER;
         public int user_videos = NO_COUNTER;
         public int user_photos = NO_COUNTER;
-        public int followers = NO_COUNTER;
+        public final int followers = NO_COUNTER;
         public int subscriptions = NO_COUNTER;
-        public int pages = NO_COUNTER;
+        public final int pages = NO_COUNTER;
         public int all_wall = NO_COUNTER;
         public int owner_wall = NO_COUNTER;
         public int postponed_wall = NO_COUNTER;
-        public int articles = NO_COUNTER;
+        public final int articles = NO_COUNTER;
 
         public Counters() {
 

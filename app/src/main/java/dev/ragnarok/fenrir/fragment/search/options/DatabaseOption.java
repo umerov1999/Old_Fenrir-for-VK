@@ -31,7 +31,7 @@ public class DatabaseOption extends BaseOption {
      * Тип данных, который находится в обьекте value
      * страна, город, университет и т.д.
      */
-    public int type;
+    public final int type;
     /**
      * Текущее значение опции
      */
@@ -105,8 +105,8 @@ public class DatabaseOption extends BaseOption {
                 return new Entry[size];
             }
         };
-        public int id;
-        public String title;
+        public final int id;
+        public final String title;
 
         public Entry(int id, String title) {
             this.id = id;

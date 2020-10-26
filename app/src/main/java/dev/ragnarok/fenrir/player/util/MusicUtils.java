@@ -42,9 +42,9 @@ public final class MusicUtils {
     private static final PublishSubject<Integer> SERVICE_BIND_PUBLISHER = PublishSubject.create();
     private static final String TAG = MusicUtils.class.getSimpleName();
     public static IAudioPlayerService mService;
-    public static HashMap<Integer, ArrayList<Audio>> Audios = new HashMap<>();
-    public static Set<String> CachedAudios = new ArraySet<>();
-    public static Set<String> RemoteAudios = new ArraySet<>();
+    public static final HashMap<Integer, ArrayList<Audio>> Audios = new HashMap<>();
+    public static final Set<String> CachedAudios = new ArraySet<>();
+    public static final Set<String> RemoteAudios = new ArraySet<>();
     private static int sForegroundActivities;
 
     static {
@@ -562,7 +562,7 @@ public final class MusicUtils {
 
     public static final class ServiceToken {
 
-        public ContextWrapper mWrappedContext;
+        public final ContextWrapper mWrappedContext;
 
         public ServiceToken(ContextWrapper context) {
             mWrappedContext = context;

@@ -17,7 +17,7 @@ public class FwdMessages extends AbsModel {
             return new FwdMessages[size];
         }
     };
-    public ArrayList<Message> fwds;
+    public final ArrayList<Message> fwds;
 
     public FwdMessages(ArrayList<Message> fwds) {
         this.fwds = fwds;

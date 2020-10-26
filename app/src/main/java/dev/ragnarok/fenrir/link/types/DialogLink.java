@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class DialogLink extends AbsLink {
 
-    public int peerId;
+    public final int peerId;
 
     public DialogLink(int peerId) {
         super(DIALOG);

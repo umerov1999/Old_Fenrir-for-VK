@@ -74,19 +74,17 @@ public class SawView extends View {
                 PATH.moveTo(offset, startH);
                 PATH.lineTo(offset + realToothWidth, startH);
                 PATH.lineTo(offset, endH);
-                PATH.lineTo(offset, startH);
 
-                canvas.drawPath(PATH, FILL_PAINT);
                 //canvas.drawLine(offset, endH, offset + realToothWidth, startH, STROKE_PAINT);
             } else {
                 PATH.reset();
                 PATH.moveTo(offset, startH);
                 PATH.lineTo(offset + realToothWidth, startH);
                 PATH.lineTo(offset + realToothWidth, endH);
-                PATH.lineTo(offset, startH);
-                canvas.drawPath(PATH, FILL_PAINT);
                 //canvas.drawLine(offset, startH, offset + realToothWidth, endH, STROKE_PAINT);
             }
+            PATH.lineTo(offset, startH);
+            canvas.drawPath(PATH, FILL_PAINT);
 
             offset = offset + realToothWidth;
             side = side == SIDE_DOWN ? SIDE_UP : SIDE_DOWN;

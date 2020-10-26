@@ -380,20 +380,20 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.DialogVi
 
     static class DialogViewHolder extends RecyclerView.ViewHolder {
 
-        View mContentRoot;
-        TextView mDialogTitle;
-        TextView mDialogMessage;
-        ImageView ivDialogType;
-        ImageView ivAvatar;
-        ImageView ivVerified;
-        ImageView blacklisted;
-        TextView tvUnreadCount;
-        ImageView ivUnreadTicks;
-        OnlineView ivOnline;
-        TextView tvDate;
-        View mDialogContentRoot;
-        TextView mHeaderTitle;
-        TextView EmptyAvatar;
+        final View mContentRoot;
+        final TextView mDialogTitle;
+        final TextView mDialogMessage;
+        final ImageView ivDialogType;
+        final ImageView ivAvatar;
+        final ImageView ivVerified;
+        final ImageView blacklisted;
+        final TextView tvUnreadCount;
+        final ImageView ivUnreadTicks;
+        final OnlineView ivOnline;
+        final TextView tvDate;
+        final View mDialogContentRoot;
+        final TextView mHeaderTitle;
+        final TextView EmptyAvatar;
 
         DialogViewHolder(View view) {
             super(view);

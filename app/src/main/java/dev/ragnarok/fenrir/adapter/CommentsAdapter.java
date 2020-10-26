@@ -242,7 +242,7 @@ public class CommentsAdapter extends RecyclerBindableAdapter<Comment, RecyclerVi
 
     private static class DeletedHolder extends RecyclerView.ViewHolder {
 
-        MaterialButton buttonRestore;
+        final MaterialButton buttonRestore;
 
         DeletedHolder(View itemView) {
             super(itemView);
@@ -252,18 +252,18 @@ public class CommentsAdapter extends RecyclerBindableAdapter<Comment, RecyclerVi
 
     private class NormalCommentHoler extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
-        TextView tvOwnerName;
-        ImageView ivOwnerAvatar;
-        EmojiconTextView tvText;
-        TextView tvTime;
-        ImageView ivLike;
-        TextView tvLikeCounter;
-        View selectionView;
-        View vAttachmentsRoot;
-        TextView item_comment_thread_counter;
+        final TextView tvOwnerName;
+        final ImageView ivOwnerAvatar;
+        final EmojiconTextView tvText;
+        final TextView tvTime;
+        final ImageView ivLike;
+        final TextView tvLikeCounter;
+        final View selectionView;
+        final View vAttachmentsRoot;
+        final TextView item_comment_thread_counter;
 
-        AttachmentsHolder attachmentContainers;
-        Animator.AnimatorListener animationAdapter;
+        final AttachmentsHolder attachmentContainers;
+        final Animator.AnimatorListener animationAdapter;
         ObjectAnimator animator;
 
         NormalCommentHoler(View root) {

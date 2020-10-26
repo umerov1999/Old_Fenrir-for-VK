@@ -228,19 +228,19 @@ public class FeedAdapter extends RecyclerBindableAdapter<News, FeedAdapter.PostH
     class PostHolder extends RecyclerView.ViewHolder implements IdentificableHolder {
 
         private final View cardView;
-        View topDivider;
-        TextView tvOwnerName;
-        ImageView ivOwnerAvatar;
-        View vTextRoot;
-        TextView tvText;
-        TextView tvShowMore;
-        TextView tvTime;
-        ViewGroup bottomActionsContainer;
-        CircleCounterButton likeButton;
-        CircleCounterButton shareButton;
-        CircleCounterButton commentsButton;
-        AttachmentsHolder attachmentsHolder;
-        TextView viewsCounter;
+        final View topDivider;
+        final TextView tvOwnerName;
+        final ImageView ivOwnerAvatar;
+        final View vTextRoot;
+        final TextView tvText;
+        final TextView tvShowMore;
+        final TextView tvTime;
+        final ViewGroup bottomActionsContainer;
+        final CircleCounterButton likeButton;
+        final CircleCounterButton shareButton;
+        final CircleCounterButton commentsButton;
+        final AttachmentsHolder attachmentsHolder;
+        final TextView viewsCounter;
 
         PostHolder(View root) {
             super(root);

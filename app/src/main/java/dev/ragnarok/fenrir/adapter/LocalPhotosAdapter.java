@@ -119,9 +119,9 @@ public class LocalPhotosAdapter extends RecyclerView.Adapter<LocalPhotosAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView photoImageView;
-        View selectedRoot;
-        TextView tvIndex;
+        final ImageView photoImageView;
+        final View selectedRoot;
+        final TextView tvIndex;
 
         public ViewHolder(View itemView) {
             super(itemView);

@@ -36,7 +36,7 @@ public abstract class AbstractDataTypeList<T extends AbstractDataType> extends A
 
     public AbstractDataTypeList(String identifier, AbstractTagFrameBody frameBody) {
         super(identifier, frameBody);
-        setValue(new ArrayList<T>());
+        setValue(new ArrayList<>());
     }
 
     /**
@@ -56,7 +56,7 @@ public abstract class AbstractDataTypeList<T extends AbstractDataType> extends A
     }
 
     public void setValue(List<T> list) {
-        super.setValue(list == null ? new ArrayList<T>() : new ArrayList<T>(list));
+        super.setValue(list == null ? new ArrayList<T>() : new ArrayList<>(list));
     }
 
     /**

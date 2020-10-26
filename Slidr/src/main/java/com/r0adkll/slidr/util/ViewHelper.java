@@ -104,9 +104,9 @@ public class ViewHelper {
     }
 
     static class ViewInfo {
-        View view;
-        int x;
-        int y;
+        final View view;
+        final int x;
+        final int y;
 
         public ViewInfo(View view, int x, int y) {
             this.view = view;

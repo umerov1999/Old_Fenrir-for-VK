@@ -4,7 +4,7 @@ import dev.ragnarok.fenrir.model.StickerSet;
 
 public class StickerSection extends AbsSection {
 
-    public StickerSet stickerSet;
+    public final StickerSet stickerSet;
 
     public StickerSection(StickerSet set) {
         super(TYPE_STICKER);

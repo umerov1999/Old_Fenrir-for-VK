@@ -355,7 +355,7 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
             }
         }
         int curr = sel;
-        callView(view -> view.openPhotoAlbum(getAccountId(), ownerId, -6, new ArrayList<Photo>(photos), curr));
+        callView(view -> view.openPhotoAlbum(getAccountId(), ownerId, -6, new ArrayList<>(photos), curr));
     }
 
     private void onAddFriendResult(int resultCode) {

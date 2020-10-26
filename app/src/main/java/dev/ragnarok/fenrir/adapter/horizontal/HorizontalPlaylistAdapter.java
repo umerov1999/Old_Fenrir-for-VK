@@ -103,16 +103,16 @@ public class HorizontalPlaylistAdapter extends RecyclerBindableAdapter<AudioPlay
 
     static class Holder extends RecyclerView.ViewHolder {
 
-        ImageView thumb;
-        TextView name;
-        TextView description;
-        TextView count;
-        TextView year;
-        TextView artist;
-        TextView genre;
-        TextView update;
-        View playlist_container;
-        FloatingActionButton add;
+        final ImageView thumb;
+        final TextView name;
+        final TextView description;
+        final TextView count;
+        final TextView year;
+        final TextView artist;
+        final TextView genre;
+        final TextView update;
+        final View playlist_container;
+        final FloatingActionButton add;
 
         public Holder(View itemView) {
             super(itemView);

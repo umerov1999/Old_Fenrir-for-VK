@@ -10,10 +10,7 @@ import dev.ragnarok.fenrir.mvp.view.ICommunityMembersView;
 
 public class CommunityMembersPresenter extends AccountDependencyPresenter<ICommunityMembersView> {
 
-    private final int groupId;
-
     public CommunityMembersPresenter(int accountId, int groupId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
-        this.groupId = groupId;
     }
 }

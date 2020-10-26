@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class AwayLink extends AbsLink {
 
-    public String link;
+    public final String link;
 
     public AwayLink(String link) {
         super(EXTERNAL_LINK);

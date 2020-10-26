@@ -78,9 +78,9 @@ public class LocalPhotoAlbumsAdapter extends RecyclerView.Adapter<LocalPhotoAlbu
 
     public static class Holder extends RecyclerView.ViewHolder {
 
-        ImageView image;
-        TextView title;
-        TextView subtitle;
+        final ImageView image;
+        final TextView title;
+        final TextView subtitle;
 
         public Holder(View itemView) {
             super(itemView);

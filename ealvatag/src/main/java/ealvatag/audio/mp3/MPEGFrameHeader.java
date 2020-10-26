@@ -35,14 +35,14 @@ public class MPEGFrameHeader {
     /**
      * Constants for MPEG Version
      */
-    public static final Map<Integer, String> mpegVersionMap = new HashMap<Integer, String>();
+    public static final Map<Integer, String> mpegVersionMap = new HashMap<>();
     public final static int VERSION_2_5 = 0;
     public final static int VERSION_2 = 2;
     public final static int VERSION_1 = 3;
     /**
      * Constants for MPEG Layer
      */
-    public static final Map<Integer, String> mpegLayerMap = new HashMap<Integer, String>();
+    public static final Map<Integer, String> mpegLayerMap = new HashMap<>();
     public final static int LAYER_I = 3;
     public final static int LAYER_II = 2;
     public final static int LAYER_III = 1;
@@ -76,7 +76,7 @@ public class MPEGFrameHeader {
     /**
      * Bit Rates, the setBitrate varies for different Version and Layer
      */
-    private static final Map<Integer, Integer> bitrateMap = new HashMap<Integer, Integer>();
+    private static final Map<Integer, Integer> bitrateMap = new HashMap<>();
     /**
      * Constants for Emphasis
      */
@@ -603,14 +603,11 @@ public class MPEGFrameHeader {
         int index = (mpegBytes[BYTE_4] & MASK_MP3_MODE_EXTENSION) >> 4;
         if (layer == LAYER_III) {
             modeExtension = modeExtensionLayerIIIMap.get(index);
-            if (getModeExtension() == null) {
-                throw new InvalidAudioFrameException("Invalid Mode Extension");
-            }
         } else {
             modeExtension = modeExtensionMap.get(index);
-            if (getModeExtension() == null) {
-                throw new InvalidAudioFrameException("Invalid Mode Extension");
-            }
+        }
+        if (getModeExtension() == null) {
+            throw new InvalidAudioFrameException("Invalid Mode Extension");
         }
     }
 

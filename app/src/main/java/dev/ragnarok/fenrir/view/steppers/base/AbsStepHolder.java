@@ -17,15 +17,15 @@ public abstract class AbsStepHolder<T extends AbsStepsHost<?>> extends RecyclerV
     private static int nextHolderId;
 
     public final int index;
-    public View counterRoot;
-    public TextView counterText;
-    public TextView titleText;
-    public View line;
-    public View contentRoot;
-    public ViewGroup content;
-    public MaterialButton buttonNext;
-    public MaterialButton buttonCancel;
-    protected View mContentView;
+    public final View counterRoot;
+    public final TextView counterText;
+    public final TextView titleText;
+    public final View line;
+    public final View contentRoot;
+    public final ViewGroup content;
+    public final MaterialButton buttonNext;
+    public final MaterialButton buttonCancel;
+    protected final View mContentView;
 
     public AbsStepHolder(ViewGroup parent, int internalLayoutRes, int stepIndex) {
         super(createVerticalMainHolderView(parent));

@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class AudiosLink extends AbsLink {
 
-    public int ownerId;
+    public final int ownerId;
 
     public AudiosLink(int ownerId) {
         super(AUDIOS);

@@ -413,12 +413,12 @@ public class AttchmentsEditorAdapter extends RecyclerBindableAdapter<AttachmenEn
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements IdentificableHolder {
 
-        ImageView photoImageView;
-        TextView tvTitle;
-        View vRemove;
-        CircleRoadProgress pbProgress;
-        View vTint;
-        View vTitleRoot;
+        final ImageView photoImageView;
+        final TextView tvTitle;
+        final View vRemove;
+        final CircleRoadProgress pbProgress;
+        final View vTint;
+        final View vTitleRoot;
 
         ViewHolder(View itemView) {
             super(itemView);

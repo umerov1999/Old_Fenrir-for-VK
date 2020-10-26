@@ -85,12 +85,12 @@ public class ShortedLinksAdapter extends RecyclerView.Adapter<ShortedLinksAdapte
     }
 
     public static class Holder extends RecyclerView.ViewHolder {
-        TextView short_link;
-        TextView original;
-        TextView time;
-        TextView views;
-        ImageView copy;
-        ImageView delete;
+        final TextView short_link;
+        final TextView original;
+        final TextView time;
+        final TextView views;
+        final ImageView copy;
+        final ImageView delete;
 
         public Holder(View itemView) {
             super(itemView);

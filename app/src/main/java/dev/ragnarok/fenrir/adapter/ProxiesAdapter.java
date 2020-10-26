@@ -82,14 +82,14 @@ public class ProxiesAdapter extends RecyclerBindableAdapter<ProxyConfig, Proxies
 
     static class Holder extends RecyclerView.ViewHolder {
 
-        TextView address;
-        TextView port;
-        TextView username;
-        TextView pass;
+        final TextView address;
+        final TextView port;
+        final TextView username;
+        final TextView pass;
 
-        View delete;
-        View setAsActive;
-        View disable;
+        final View delete;
+        final View setAsActive;
+        final View disable;
 
         Holder(View itemView) {
             super(itemView);

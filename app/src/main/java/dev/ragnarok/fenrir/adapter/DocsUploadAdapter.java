@@ -115,10 +115,10 @@ public class DocsUploadAdapter extends RecyclerView.Adapter<DocsUploadAdapter.Ho
 
     static class Holder extends RecyclerView.ViewHolder implements IdentificableHolder {
 
-        TextView title;
-        TextView status;
-        View buttonDelete;
-        CircleRoadProgress progress;
+        final TextView title;
+        final TextView status;
+        final View buttonDelete;
+        final CircleRoadProgress progress;
         //ImageView image;
 
         Holder(View itemView) {

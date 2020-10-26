@@ -17,8 +17,8 @@ public class AnswerVKOfficialList {
     }
 
     public static class AnswerField {
-        public int id;
-        public String photo;
+        public final int id;
+        public final String photo;
 
         public AnswerField(int id, String photo) {
             this.id = id;

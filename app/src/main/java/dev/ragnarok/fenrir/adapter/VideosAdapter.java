@@ -92,12 +92,12 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.Holder> {
 
     public static class Holder extends RecyclerView.ViewHolder {
 
-        View card;
-        ImageView image;
-        TextView videoLenght;
-        ImageView videoService;
-        TextView title;
-        TextView viewsCount;
+        final View card;
+        final ImageView image;
+        final TextView videoLenght;
+        final ImageView videoService;
+        final TextView title;
+        final TextView viewsCount;
 
         public Holder(View itemView) {
             super(itemView);

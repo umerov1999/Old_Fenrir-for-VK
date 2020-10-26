@@ -61,7 +61,7 @@ public class AudioFileImpl implements AudioFile {
     protected File file;
     protected AudioHeader audioHeader;
     protected TagFieldContainer tag;
-    protected String extension;         // we parsed it once to find the reader, so let's store it and not keep parsing
+    protected final String extension;         // we parsed it once to find the reader, so let's store it and not keep parsing
 
     /**
      * These constructors are used by the different readers, users should not use them.

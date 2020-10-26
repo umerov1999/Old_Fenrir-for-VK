@@ -567,7 +567,7 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
     }
 
     private static class ButtonHolder extends RecyclerView.ViewHolder {
-        MaterialButton button;
+        final MaterialButton button;
 
         public ButtonHolder(View itemView) {
             super(itemView);

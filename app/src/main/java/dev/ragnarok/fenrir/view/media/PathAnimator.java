@@ -142,7 +142,7 @@ public class PathAnimator {
     }
 
     private static class KeyFrame {
-        public ArrayList<Object> commands = new ArrayList<>();
+        public final ArrayList<Object> commands = new ArrayList<>();
         public float time;
     }
 

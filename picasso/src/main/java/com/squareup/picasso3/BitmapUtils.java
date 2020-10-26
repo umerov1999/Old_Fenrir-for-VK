@@ -57,8 +57,6 @@ final class BitmapUtils {
         if (justBounds || data.config != null || data.purgeable) {
             options = new BitmapFactory.Options();
             options.inJustDecodeBounds = justBounds;
-            options.inInputShareable = data.purgeable;
-            options.inPurgeable = data.purgeable;
             if (data.config != null) {
                 options.inPreferredConfig = data.config;
             }

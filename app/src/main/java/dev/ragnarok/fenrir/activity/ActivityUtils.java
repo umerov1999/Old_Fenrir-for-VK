@@ -182,8 +182,8 @@ public class ActivityUtils {
     }
 
     public static class StreamData {
-        public ArrayList<Uri> uris;
-        public String mime;
+        public final ArrayList<Uri> uris;
+        public final String mime;
 
         public StreamData(ArrayList<Uri> uris, String mime) {
             this.uris = uris;

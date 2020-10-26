@@ -64,7 +64,7 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.Hold
 
     public static class Holder extends RecyclerView.ViewHolder {
 
-        TextView name;
+        final TextView name;
 
         public Holder(View itemView) {
             super(itemView);

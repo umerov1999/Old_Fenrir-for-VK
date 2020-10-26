@@ -86,14 +86,14 @@ public class LogsAdapter extends RecyclerBindableAdapter<LogEventWrapper, LogsAd
 
     static class Holder extends RecyclerView.ViewHolder {
 
-        TextView tag;
-        TextView datetime;
-        TextView body;
+        final TextView tag;
+        final TextView datetime;
+        final TextView body;
 
-        View buttonShare;
+        final View buttonShare;
 
-        View bodyRoot;
-        View buttonExpand;
+        final View bodyRoot;
+        final View buttonExpand;
 
         Holder(View itemView) {
             super(itemView);

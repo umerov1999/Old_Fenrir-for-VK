@@ -11,7 +11,7 @@ public class FaveLink extends AbsLink {
     public static final String SECTION_LINKS = "links";
     public static final String SECTION_ARTICLES = "articles";
 
-    public String section;
+    public final String section;
 
     public FaveLink(String section) {
         super(FAVE);

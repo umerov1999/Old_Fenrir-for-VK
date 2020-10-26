@@ -105,7 +105,7 @@ public class Place implements Parcelable {
             return new Place[size];
         }
     };
-    public int type;
+    public final int type;
     public Fragment target;
     public int requestCode;
     private Bundle args;

@@ -51,7 +51,7 @@ public class DrawerCategotiesAdapter extends RecyclerView.Adapter<DrawerCategoti
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        CheckBox checkBox;
+        final CheckBox checkBox;
 
         public ViewHolder(View itemView) {
             super(itemView);

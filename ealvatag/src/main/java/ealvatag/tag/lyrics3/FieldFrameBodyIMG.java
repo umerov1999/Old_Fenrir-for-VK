@@ -38,7 +38,7 @@ public class FieldFrameBodyIMG extends AbstractLyrics3v2FieldFrameBody {
     /**
      *
      */
-    private ArrayList<Lyrics3Image> images = new ArrayList<Lyrics3Image>();
+    private ArrayList<Lyrics3Image> images = new ArrayList<>();
 
     /**
      * Creates a new FieldBodyIMG datatype.
@@ -255,7 +255,7 @@ public class FieldFrameBodyIMG extends AbstractLyrics3v2FieldFrameBody {
         String token;
         int offset = 0;
         int delim = imageString.indexOf(Lyrics3v2Fields.CRLF);
-        images = new ArrayList<Lyrics3Image>();
+        images = new ArrayList<>();
 
         while (delim >= 0) {
             token = imageString.substring(offset, delim);

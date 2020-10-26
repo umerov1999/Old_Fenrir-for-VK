@@ -31,7 +31,6 @@ public class VideoAlbumsPresenter extends AccountDependencyPresenter<IVideoAlbum
     private boolean endOfContent;
     private boolean actualDataReceived;
     private boolean netLoadingNow;
-    private int netLoadingOffset;
     private boolean cacheNowLoading;
 
     public VideoAlbumsPresenter(int accountId, int ownerId, String action, @Nullable Bundle savedInstanceState) {
@@ -55,7 +54,6 @@ public class VideoAlbumsPresenter extends AccountDependencyPresenter<IVideoAlbum
 
     private void requestActualData(int offset) {
         netLoadingNow = true;
-        netLoadingOffset = offset;
 
         resolveRefreshingView();
 

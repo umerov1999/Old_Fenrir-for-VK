@@ -103,11 +103,11 @@ public class PollAnswersAdapter extends RecyclerBindableAdapter<Poll.Answer, Pol
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tvCount;
-        MaterialCheckBox rbButton;
-        TextView tvTitle;
-        ProgressBar pbRate;
-        View mVotedRoot;
+        final TextView tvCount;
+        final MaterialCheckBox rbButton;
+        final TextView tvTitle;
+        final ProgressBar pbRate;
+        final View mVotedRoot;
 
         public ViewHolder(View itemView) {
             super(itemView);

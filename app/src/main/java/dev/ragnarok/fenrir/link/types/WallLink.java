@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class WallLink extends AbsLink {
 
-    public int ownerId;
+    public final int ownerId;
 
     public WallLink(int ownerId) {
         super(WALL);

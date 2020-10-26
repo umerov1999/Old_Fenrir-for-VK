@@ -99,12 +99,12 @@ public class PhotoAlbumsAdapter extends RecyclerView.Adapter<PhotoAlbumsAdapter.
 
     public static class Holder extends RecyclerView.ViewHolder {
 
-        ImageView thumb;
-        TextView name;
-        TextView description;
-        TextView count;
-        TextView update;
-        View album_container;
+        final ImageView thumb;
+        final TextView name;
+        final TextView description;
+        final TextView count;
+        final TextView update;
+        final View album_container;
 
         public Holder(View itemView) {
             super(itemView);

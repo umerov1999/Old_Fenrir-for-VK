@@ -1,7 +1,7 @@
 package dev.ragnarok.fenrir.link.internal;
 
 public class OtherLink extends AbsInternalLink {
-    public String Link;
+    public final String Link;
 
     public OtherLink(int start, int end, String link, String name) {
         this.start = start;

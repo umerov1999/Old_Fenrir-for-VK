@@ -18,12 +18,10 @@
 
     <TextView
         android:id="@+id/youtube_button_text"
-        android:layout_width="wrap_content"
+        android:layout_width="56dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:gravity="center"
-        android:maxWidth="56dp"
-        android:minWidth="56dp"
         android:textSize="14sp"
         tools:text="Like" />
 

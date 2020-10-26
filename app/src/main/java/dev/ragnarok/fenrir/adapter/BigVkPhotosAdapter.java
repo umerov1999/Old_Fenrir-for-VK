@@ -240,11 +240,11 @@ public class BigVkPhotosAdapter extends DifferentDataAdapter {
 
     private static class UploadViewHolder extends RecyclerView.ViewHolder implements IdentificableHolder {
 
-        ImageView image;
-        ImageView tint;
-        View progressRoot;
-        CircleRoadProgress progress;
-        TextView title;
+        final ImageView image;
+        final ImageView tint;
+        final View progressRoot;
+        final CircleRoadProgress progress;
+        final TextView title;
 
         UploadViewHolder(View itemView) {
             super(itemView);
@@ -292,17 +292,17 @@ public class BigVkPhotosAdapter extends DifferentDataAdapter {
 
     public static class PhotoViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView photoImageView;
-        TextView index;
-        View darkView;
-        ViewGroup bottomRoot;
-        ViewGroup bottomTop;
-        TextView tvLike;
-        TextView tvDate;
-        TextView tvComment;
-        ImageView ivLike;
-        ImageView ivComment;
-        ImageView ivDownload;
+        final ImageView photoImageView;
+        final TextView index;
+        final View darkView;
+        final ViewGroup bottomRoot;
+        final ViewGroup bottomTop;
+        final TextView tvLike;
+        final TextView tvDate;
+        final TextView tvComment;
+        final ImageView ivLike;
+        final ImageView ivComment;
+        final ImageView ivDownload;
 
         PhotoViewHolder(View itemView) {
             super(itemView);

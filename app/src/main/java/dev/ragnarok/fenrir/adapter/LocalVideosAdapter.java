@@ -122,11 +122,11 @@ public class LocalVideosAdapter extends RecyclerView.Adapter<LocalVideosAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        AspectRatioImageView photoImageView;
-        View selectedRoot;
-        TextView tvIndex;
-        TextView tvTitle;
-        TextView tvDuration;
+        final AspectRatioImageView photoImageView;
+        final View selectedRoot;
+        final TextView tvIndex;
+        final TextView tvTitle;
+        final TextView tvDuration;
 
         public ViewHolder(View itemView) {
             super(itemView);

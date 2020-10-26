@@ -13,9 +13,9 @@ public class CubicBezierInterpolator implements Interpolator {
 
     protected PointF start;
     protected PointF end;
-    protected PointF a = new PointF();
-    protected PointF b = new PointF();
-    protected PointF c = new PointF();
+    protected final PointF a = new PointF();
+    protected final PointF b = new PointF();
+    protected final PointF c = new PointF();
 
     public CubicBezierInterpolator(PointF start, PointF end) throws IllegalArgumentException {
         if (start.x < 0 || start.x > 1) {

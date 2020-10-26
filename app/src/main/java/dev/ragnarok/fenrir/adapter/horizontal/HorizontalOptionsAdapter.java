@@ -81,9 +81,9 @@ public class HorizontalOptionsAdapter<T extends Entry> extends RecyclerBindableA
 
     static class Holder extends RecyclerView.ViewHolder {
 
-        MaterialCardView background;
-        TextView title;
-        ImageView delete;
+        final MaterialCardView background;
+        final TextView title;
+        final ImageView delete;
 
         Holder(View itemView) {
             super(itemView);

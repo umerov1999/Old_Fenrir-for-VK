@@ -577,9 +577,9 @@ public class CommentsInteractor implements ICommentsInteractor {
 
     private static final class TempData {
 
-        Set<VKApiUser> profiles = new HashSet<>();
-        Set<VKApiCommunity> groups = new HashSet<>();
-        List<VKApiComment> comments = new ArrayList<>();
+        final Set<VKApiUser> profiles = new HashSet<>();
+        final Set<VKApiCommunity> groups = new HashSet<>();
+        final List<VKApiComment> comments = new ArrayList<>();
 
         void append(DefaultCommentsResponse response, int continueToCommentId) {
             if (nonNull(response.groups)) {

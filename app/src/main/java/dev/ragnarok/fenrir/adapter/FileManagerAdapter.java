@@ -66,9 +66,9 @@ public class FileManagerAdapter extends RecyclerView.Adapter<FileManagerAdapter.
 
     public static class Holder extends RecyclerView.ViewHolder {
 
-        TextView fileName;
-        TextView fileDetails;
-        ImageView icon;
+        final TextView fileName;
+        final TextView fileDetails;
+        final ImageView icon;
 
         public Holder(View itemView) {
             super(itemView);

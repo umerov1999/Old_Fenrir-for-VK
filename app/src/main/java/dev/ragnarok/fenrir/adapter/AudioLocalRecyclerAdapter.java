@@ -256,16 +256,16 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
 
     class AudioHolder extends RecyclerView.ViewHolder {
 
-        TextView artist;
-        TextView title;
-        View play;
-        ImageView play_cover;
-        View Track;
-        MaterialCardView selectionView;
-        Animator.AnimatorListener animationAdapter;
+        final TextView artist;
+        final TextView title;
+        final View play;
+        final ImageView play_cover;
+        final View Track;
+        final MaterialCardView selectionView;
+        final Animator.AnimatorListener animationAdapter;
         ObjectAnimator animator;
-        RLottieImageView visual;
-        TextView time;
+        final RLottieImageView visual;
+        final TextView time;
 
         AudioHolder(View itemView) {
             super(itemView);

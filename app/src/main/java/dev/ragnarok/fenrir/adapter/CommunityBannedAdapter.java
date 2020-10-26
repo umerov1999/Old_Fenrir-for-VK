@@ -131,12 +131,12 @@ public class CommunityBannedAdapter extends RecyclerView.Adapter<CommunityBanned
 
     static class Holder extends RecyclerView.ViewHolder {
 
-        ImageView avatar;
-        OnlineView onlineView;
+        final ImageView avatar;
+        final OnlineView onlineView;
 
-        TextView name;
-        TextView dateAndAdminInfo;
-        TextView comment;
+        final TextView name;
+        final TextView dateAndAdminInfo;
+        final TextView comment;
 
         Holder(View itemView) {
             super(itemView);

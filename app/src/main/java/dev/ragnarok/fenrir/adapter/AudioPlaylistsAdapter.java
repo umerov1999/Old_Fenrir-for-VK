@@ -120,15 +120,15 @@ public class AudioPlaylistsAdapter extends RecyclerView.Adapter<AudioPlaylistsAd
 
     public class Holder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
-        ImageView thumb;
-        TextView name;
-        TextView description;
-        TextView count;
-        TextView year;
-        TextView artist;
-        TextView genre;
-        TextView update;
-        View playlist_container;
+        final ImageView thumb;
+        final TextView name;
+        final TextView description;
+        final TextView count;
+        final TextView year;
+        final TextView artist;
+        final TextView genre;
+        final TextView update;
+        final View playlist_container;
 
         public Holder(View itemView) {
             super(itemView);

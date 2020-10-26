@@ -46,18 +46,10 @@ public class LikeFCMMessage {
 // key: context, value: {"feedback":true,"item_id":"456239045","owner_id":"280186075","type":"photo"}, class: class java.lang.String
 
     private final int accountId;
-    private final long from;
     private final String id;
-    private final String url;
-    private final long time;
-    private final boolean sound;
     private final String title;
     private final int from_id;
-    private final String body;
     private final int badge;
-    private final int to_id;
-    private final String group_id;
-    private final boolean is_feedback;
     private final int item_id;
     private final int owner_id;
     private final String like_type;
@@ -66,21 +58,21 @@ public class LikeFCMMessage {
     public LikeFCMMessage(int accountId, RemoteMessage remote) {
         this.accountId = accountId;
         Map<String, String> data = remote.getData();
-        from = Long.parseLong(remote.getFrom());
+        long from = Long.parseLong(remote.getFrom());
         id = data.get("id");
-        url = data.get("url");
-        time = Long.parseLong(data.get("time"));
-        sound = Integer.parseInt(data.get("sound")) == 1;
+        String url = data.get("url");
+        long time = Long.parseLong(data.get("time"));
+        boolean sound = Integer.parseInt(data.get("sound")) == 1;
         title = data.get("title");
         from_id = Integer.parseInt("from_id");
-        body = data.get("body");
+        String body = data.get("body");
         badge = Integer.parseInt(data.get("badge"));
-        to_id = Integer.parseInt(data.get("to_id"));
-        group_id = data.get("group_id");
+        int to_id = Integer.parseInt(data.get("to_id"));
+        String group_id = data.get("group_id");
 
         LikeContext context = new Gson().fromJson(data.get("context"), LikeContext.class);
 
-        is_feedback = context.feedback == 1;
+        boolean is_feedback = context.feedback == 1;
         item_id = context.item_id;
         owner_id = context.owner_id;
         like_type = context.type;

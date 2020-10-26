@@ -25,7 +25,7 @@ public abstract class AbsLink {
     public static final int PLAYLIST = 20;
     public static final int POLL = 21;
 
-    public int type;
+    public final int type;
 
     public AbsLink(int vkLinkType) {
         type = vkLinkType;

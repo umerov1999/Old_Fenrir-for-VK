@@ -4,8 +4,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class PollLink extends AbsLink {
 
-    public int ownerId;
-    public int Id;
+    public final int ownerId;
+    public final int Id;
 
     public PollLink(int ownerId, int Id) {
         super(POLL);

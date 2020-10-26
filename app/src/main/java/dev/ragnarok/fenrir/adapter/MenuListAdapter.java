@@ -137,10 +137,10 @@ public class MenuListAdapter extends RecyclerBindableAdapter<AbsMenuItem, Recycl
 
     private static class NormalHolder extends RecyclerView.ViewHolder {
 
-        ImageView imgIcon;
-        TextView txtTitle;
-        TextView tvCount;
-        MaterialCardView contentRoot;
+        final ImageView imgIcon;
+        final TextView txtTitle;
+        final TextView tvCount;
+        final MaterialCardView contentRoot;
 
         NormalHolder(View view) {
             super(view);
@@ -153,9 +153,9 @@ public class MenuListAdapter extends RecyclerBindableAdapter<AbsMenuItem, Recycl
 
     private static class RecentChatHolder extends RecyclerView.ViewHolder {
 
-        TextView tvChatTitle;
-        ImageView ivChatImage;
-        View contentRoot;
+        final TextView tvChatTitle;
+        final ImageView ivChatImage;
+        final View contentRoot;
 
         RecentChatHolder(View itemView) {
             super(itemView);

@@ -1147,7 +1147,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
 
     private static class CommentedState {
 
-        Integer firstCommentId;
+        final Integer firstCommentId;
         Integer lastCommentId;
 
         CommentedState(Integer firstCommentId, Integer lastCommentId) {

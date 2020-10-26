@@ -79,14 +79,14 @@ public class CommunitiesAdapter extends MultyDataAdapter<Community, CommunitiesA
 
     static class Holder extends RecyclerView.ViewHolder {
 
-        ViewGroup avatar_root;
-        View headerRoot;
-        TextView headerTitle;
+        final ViewGroup avatar_root;
+        final View headerRoot;
+        final TextView headerTitle;
 
-        View contentRoot;
-        TextView tvName;
-        ImageView ivAvatar;
-        TextView subtitle;
+        final View contentRoot;
+        final TextView tvName;
+        final ImageView ivAvatar;
+        final TextView subtitle;
 
         Holder(View root) {
             super(root);

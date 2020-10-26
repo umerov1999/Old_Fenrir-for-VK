@@ -223,7 +223,7 @@ public class SinglePhotoFragment extends BaseFragment
         private final WeakPicassoLoadCallback mPicassoLoadCallback;
         public TouchImageView photo;
         public ProgressBar progress;
-        public FloatingActionButton reload;
+        public final FloatingActionButton reload;
         private boolean mLoadingNow;
 
         public PhotoViewHolder(View view) {

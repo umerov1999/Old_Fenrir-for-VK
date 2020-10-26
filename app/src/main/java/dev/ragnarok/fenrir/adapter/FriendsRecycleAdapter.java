@@ -140,10 +140,10 @@ public class FriendsRecycleAdapter extends RecyclerView.Adapter<FriendsRecycleAd
 
     private static class ItemInfo {
 
-        User user;
-        boolean first;
-        int fullSectionCount;
-        int sectionTitleRes;
+        final User user;
+        final boolean first;
+        final int fullSectionCount;
+        final int sectionTitleRes;
 
         ItemInfo(User user, boolean first, int fullSectionCount, int sectionTitleRes) {
             this.user = user;
@@ -155,16 +155,16 @@ public class FriendsRecycleAdapter extends RecyclerView.Adapter<FriendsRecycleAd
 
     public class Holder extends RecyclerView.ViewHolder {
 
-        View header;
-        TextView headerTitle;
-        TextView headerCount;
+        final View header;
+        final TextView headerTitle;
+        final TextView headerCount;
 
-        TextView name;
-        TextView status;
-        ViewGroup avatarRoot;
-        ImageView avatar;
-        ImageView online;
-        ImageView ivVerified;
+        final TextView name;
+        final TextView status;
+        final ViewGroup avatarRoot;
+        final ImageView avatar;
+        final ImageView online;
+        final ImageView ivVerified;
 
         public Holder(View itemView) {
             super(itemView);

@@ -60,7 +60,6 @@ class RealtimeMessagesProcessor implements IRealtimeMessagesProcessor {
     private final IOwnersRepository ownersRepository;
     private final IMessagesRepository messagesInteractor;
     private volatile Entry current;
-    private long lastEnryProcessTime;
 
     RealtimeMessagesProcessor() {
         app = Injection.provideApplicationContext();
@@ -332,7 +331,7 @@ class RealtimeMessagesProcessor implements IRealtimeMessagesProcessor {
     }
 
     private void onResultReceived(long startTime, TmpResult result) {
-        lastEnryProcessTime = System.currentTimeMillis() - startTime;
+        long lastEnryProcessTime = System.currentTimeMillis() - startTime;
 
         Logger.d(TAG, "SUCCESS, data: " + result + ", time: " + lastEnryProcessTime);
 

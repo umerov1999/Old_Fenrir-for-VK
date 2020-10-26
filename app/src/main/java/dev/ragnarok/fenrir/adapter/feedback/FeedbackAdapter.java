@@ -286,9 +286,9 @@ public class FeedbackAdapter extends RecyclerBindableAdapter<Feedback, FeedbackA
 
     static class FeedbackHolder extends RecyclerView.ViewHolder {
 
-        View headerRoot;
-        View contentRoot;
-        TextView headerText;
+        final View headerRoot;
+        final View contentRoot;
+        final TextView headerText;
 
         FeedbackHolder(View itemView) {
             super(itemView);
@@ -300,12 +300,12 @@ public class FeedbackAdapter extends RecyclerBindableAdapter<Feedback, FeedbackA
 
     static class UsersHolder extends FeedbackHolder {
 
-        ImageView uAvatar;
-        TextView uName;
-        TextView uInfo;
-        TextView uTime;
-        OnlineView uChangable;
-        ImageView ivAttachment;
+        final ImageView uAvatar;
+        final TextView uName;
+        final TextView uInfo;
+        final TextView uTime;
+        final OnlineView uChangable;
+        final ImageView ivAttachment;
 
         UsersHolder(View root) {
             super(root);
@@ -320,20 +320,20 @@ public class FeedbackAdapter extends RecyclerBindableAdapter<Feedback, FeedbackA
 
     static class CommentHolder extends FeedbackHolder {
 
-        ImageView cOwnerAvatar;
-        OnlineView cChangable;
-        TextView cOwnerName;
-        TextView cOwnerText;
-        TextView cOwnerTime;
-        ImageView cReplyOwnerAvatar;
-        ImageView cReplyChangable;
-        TextView cReplyName;
-        TextView cReplyText;
-        TextView cReplyTime;
-        ViewGroup cReplyContainer;
-        View vAttachmentsRoot;
-        View vReplyAttachmentsRoot;
-        ImageView ivRightAttachment;
+        final ImageView cOwnerAvatar;
+        final OnlineView cChangable;
+        final TextView cOwnerName;
+        final TextView cOwnerText;
+        final TextView cOwnerTime;
+        final ImageView cReplyOwnerAvatar;
+        final ImageView cReplyChangable;
+        final TextView cReplyName;
+        final TextView cReplyText;
+        final TextView cReplyTime;
+        final ViewGroup cReplyContainer;
+        final View vAttachmentsRoot;
+        final View vReplyAttachmentsRoot;
+        final ImageView ivRightAttachment;
 
         CommentHolder(View root) {
             super(root);

@@ -4,8 +4,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class WallPostLink extends AbsLink {
 
-    public int ownerId;
-    public int postId;
+    public final int ownerId;
+    public final int postId;
 
     public WallPostLink(int ownerId, int postId) {
         super(WALL_POST);

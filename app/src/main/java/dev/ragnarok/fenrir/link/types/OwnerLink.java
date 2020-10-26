@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class OwnerLink extends AbsLink {
 
-    public int ownerId;
+    public final int ownerId;
 
     public OwnerLink(int id) {
         super(id > 0 ? PROFILE : GROUP);

@@ -15,7 +15,7 @@ import dev.ragnarok.fenrir.mvp.view.ISimpleOwnersView;
 
 public abstract class SimpleOwnersPresenter<V extends ISimpleOwnersView> extends AccountDependencyPresenter<V> {
 
-    List<Owner> data;
+    final List<Owner> data;
 
     public SimpleOwnersPresenter(int accountId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);

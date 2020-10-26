@@ -52,14 +52,12 @@ public class AttachmentsBottomSheetAdapter extends RecyclerView.Adapter<Recycler
     private final List<AttachmenEntry> data;
     private final ActionListener actionListener;
     private final SharedHolders<EntryHolder> holders;
-    private final Context context;
     private int nextHolderId;
 
     public AttachmentsBottomSheetAdapter(Context context, List<AttachmenEntry> data, ActionListener actionListener) {
         this.data = data;
         this.actionListener = actionListener;
         holders = new SharedHolders<>(false);
-        this.context = context;
     }
 
     @NonNull
@@ -379,7 +377,7 @@ public class AttachmentsBottomSheetAdapter extends RecyclerView.Adapter<Recycler
 
     private static class ImagesButtonHolder extends RecyclerView.ViewHolder {
 
-        View button;
+        final View button;
 
         ImagesButtonHolder(View itemView) {
             super(itemView);
@@ -389,12 +387,12 @@ public class AttachmentsBottomSheetAdapter extends RecyclerView.Adapter<Recycler
 
     private static class EntryHolder extends RecyclerView.ViewHolder implements IdentificableHolder {
 
-        ImageView image;
-        TextView title;
-        ViewGroup buttomRemove;
-        CircleRoadProgress progress;
-        ImageView Retry;
-        View tintView;
+        final ImageView image;
+        final TextView title;
+        final ViewGroup buttomRemove;
+        final CircleRoadProgress progress;
+        final ImageView Retry;
+        final View tintView;
 
         EntryHolder(View itemView) {
             super(itemView);

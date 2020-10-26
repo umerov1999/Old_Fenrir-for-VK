@@ -484,11 +484,11 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
 
     private static class ServiceMessageHolder extends RecyclerView.ViewHolder {
 
-        View root;
-        TextView tvAction;
-        View attachmentsRoot;
-        AttachmentsHolder mAttachmentsHolder;
-        Button Restore;
+        final View root;
+        final TextView tvAction;
+        final View attachmentsRoot;
+        final AttachmentsHolder mAttachmentsHolder;
+        final Button Restore;
 
         ServiceMessageHolder(View itemView) {
             super(itemView);
@@ -510,11 +510,11 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
 
     private static class StickerMessageHolder extends BaseMessageHolder {
 
-        RLottieImageView sticker;
+        final RLottieImageView sticker;
 
-        View attachmentsRoot;
-        AttachmentsHolder attachmentsHolder;
-        ViewGroup forwardMessagesRoot;
+        final View attachmentsRoot;
+        final AttachmentsHolder attachmentsHolder;
+        final ViewGroup forwardMessagesRoot;
 
         StickerMessageHolder(View itemView) {
             super(itemView);
@@ -534,12 +534,12 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
 
     private abstract static class BaseMessageHolder extends RecyclerView.ViewHolder {
 
-        View root;
-        EmojiconTextView user;
-        TextView status;
-        ImageView avatar;
-        OnlineView important;
-        Button Restore;
+        final View root;
+        final EmojiconTextView user;
+        final TextView status;
+        final ImageView avatar;
+        final OnlineView important;
+        final Button Restore;
 
         BaseMessageHolder(View itemView) {
             super(itemView);
@@ -553,8 +553,8 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
     }
 
     private class GiftMessageHolder extends BaseMessageHolder {
-        ImageView gift;
-        EmojiconTextView message;
+        final ImageView gift;
+        final EmojiconTextView message;
 
         GiftMessageHolder(View itemView) {
             super(itemView);
@@ -568,12 +568,12 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
     }
 
     private class MessageHolder extends BaseMessageHolder {
-        EmojiconTextView body;
-        ViewGroup forwardMessagesRoot;
-        BubbleLinearLayout bubble;
-        View attachmentsRoot;
-        AttachmentsHolder attachmentsHolder;
-        View encryptedView;
+        final EmojiconTextView body;
+        final ViewGroup forwardMessagesRoot;
+        final BubbleLinearLayout bubble;
+        final View attachmentsRoot;
+        final AttachmentsHolder attachmentsHolder;
+        final View encryptedView;
 
         MessageHolder(View itemView) {
             super(itemView);

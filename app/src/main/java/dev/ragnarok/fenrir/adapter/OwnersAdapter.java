@@ -169,13 +169,13 @@ public class OwnersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private class PeopleHolder extends RecyclerView.ViewHolder {
 
-        TextView name;
-        TextView subtitle;
-        ImageView avatar;
-        ImageView online;
-        ImageView ivVerified;
-        ViewGroup avatarRoot;
-        ImageView blacklisted;
+        final TextView name;
+        final TextView subtitle;
+        final ImageView avatar;
+        final ImageView online;
+        final ImageView ivVerified;
+        final ViewGroup avatarRoot;
+        final ImageView blacklisted;
 
         PeopleHolder(View itemView) {
             super(itemView);

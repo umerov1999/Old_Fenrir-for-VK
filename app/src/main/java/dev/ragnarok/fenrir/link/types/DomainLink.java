@@ -4,8 +4,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class DomainLink extends AbsLink {
 
-    public String fullLink;
-    public String domain;
+    public final String fullLink;
+    public final String domain;
 
     public DomainLink(String fullLink, String domain) {
         super(DOMAIN);

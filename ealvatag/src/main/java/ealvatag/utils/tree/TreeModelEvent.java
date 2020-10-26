@@ -36,11 +36,11 @@ public class TreeModelEvent extends EventObject {
     /**
      * Path to the parent of the nodes that have changed.
      */
-    protected TreePath path;
+    protected final TreePath path;
     /**
      * Indices identifying the position of where the children were.
      */
-    protected int[] childIndices;
+    protected final int[] childIndices;
     /**
      * Children that have been removed.
      */
@@ -284,16 +284,16 @@ public class TreeModelEvent extends EventObject {
         }
         if (childIndices != null) {
             retBuffer.append(" indices [ ");
-            for (int counter = 0; counter < childIndices.length; counter++) {
-                retBuffer.append(childIndices[counter])
+            for (int childIndex : childIndices) {
+                retBuffer.append(childIndex)
                         .append(" ");
             }
             retBuffer.append("]");
         }
         if (children != null) {
             retBuffer.append(" children [ ");
-            for (int counter = 0; counter < children.length; counter++) {
-                retBuffer.append(children[counter])
+            for (Object child : children) {
+                retBuffer.append(child)
                         .append(" ");
             }
             retBuffer.append("]");

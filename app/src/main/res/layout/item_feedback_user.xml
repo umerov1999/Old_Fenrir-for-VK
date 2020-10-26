@@ -34,7 +34,6 @@
         android:id="@+id/content_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/header_root"
         android:background="?attr/selectableItemBackground"
         android:paddingStart="16dp"
         android:paddingTop="10dp"

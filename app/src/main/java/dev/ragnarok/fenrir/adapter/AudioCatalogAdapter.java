@@ -211,11 +211,11 @@ public class AudioCatalogAdapter extends RecyclerView.Adapter<AudioCatalogAdapte
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView title;
-        TextView subtitle;
-        RecyclerView list;
-        AspectRatioImageView Image;
-        View catalog;
+        final TextView title;
+        final TextView subtitle;
+        final RecyclerView list;
+        final AspectRatioImageView Image;
+        final View catalog;
 
         public ViewHolder(View itemView) {
             super(itemView);

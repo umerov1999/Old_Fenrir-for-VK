@@ -140,11 +140,11 @@ public class ChatMembersListDomainAdapter extends RecyclerView.Adapter<ChatMembe
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        OnlineView vOnline;
-        ImageView ivAvatar;
-        TextView tvName;
-        TextView tvDomain;
-        TextView tvSubline;
+        final OnlineView vOnline;
+        final ImageView ivAvatar;
+        final TextView tvName;
+        final TextView tvDomain;
+        final TextView tvSubline;
 
         ViewHolder(View root) {
             super(root);

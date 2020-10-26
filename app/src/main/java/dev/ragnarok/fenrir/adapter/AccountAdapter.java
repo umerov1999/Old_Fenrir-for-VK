@@ -99,11 +99,11 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.Holder> 
 
     public static class Holder extends RecyclerView.ViewHolder {
 
-        TextView firstName;
-        TextView lastName;
-        ImageView avatar;
-        ImageView active;
-        View account;
+        final TextView firstName;
+        final TextView lastName;
+        final ImageView avatar;
+        final ImageView active;
+        final View account;
 
         public Holder(View itemView) {
             super(itemView);

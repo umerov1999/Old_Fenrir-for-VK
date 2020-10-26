@@ -82,9 +82,9 @@ public class VideoAlbumsNewAdapter extends RecyclerView.Adapter<VideoAlbumsNewAd
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivPhoto;
-        TextView tvCount;
-        TextView tvTitle;
+        final ImageView ivPhoto;
+        final TextView tvCount;
+        final TextView tvTitle;
 
         ViewHolder(View root) {
             super(root);

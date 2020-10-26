@@ -115,12 +115,12 @@ public class OwnerArticlesAdapter extends RecyclerView.Adapter<OwnerArticlesAdap
 
     public static class Holder extends RecyclerView.ViewHolder {
 
-        ImageView ivPhoto;
-        ImageView btFave;
-        TextView ivSubTitle;
-        TextView ivTitle;
-        TextView ivName;
-        Button ivButton;
+        final ImageView ivPhoto;
+        final ImageView btFave;
+        final TextView ivSubTitle;
+        final TextView ivTitle;
+        final TextView ivName;
+        final Button ivButton;
 
         public Holder(View root) {
             super(root);

@@ -90,13 +90,13 @@ public class FavePhotosAdapter extends RecyclerView.Adapter<FavePhotosAdapter.Vi
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        View cardView;
-        ImageView photoImageView;
-        ViewGroup vgBottom;
-        TextView tvLike;
-        TextView tvComment;
-        ImageView ivLike;
-        ImageView ivComment;
+        final View cardView;
+        final ImageView photoImageView;
+        final ViewGroup vgBottom;
+        final TextView tvLike;
+        final TextView tvComment;
+        final ImageView ivLike;
+        final ImageView ivComment;
 
         public ViewHolder(View itemView) {
             super(itemView);

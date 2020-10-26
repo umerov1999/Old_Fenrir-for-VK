@@ -89,7 +89,6 @@ public class FirebaseInstallationServiceClient {
     private static final Charset UTF_8 = StandardCharsets.UTF_8;
     private static final String SDK_VERSION_PREFIX = "a:";
     private static final String FIS_TAG = "Firebase-Installations";
-    private final Context context;
     private final Provider<UserAgentPublisher> userAgentPublisher;
     private final Provider<HeartBeatInfo> heartbeatInfo;
 
@@ -97,7 +96,6 @@ public class FirebaseInstallationServiceClient {
             @NonNull Context context,
             @NonNull Provider<UserAgentPublisher> publisher,
             @NonNull Provider<HeartBeatInfo> heartbeatInfo) {
-        this.context = context;
         userAgentPublisher = publisher;
         this.heartbeatInfo = heartbeatInfo;
     }
@@ -226,8 +224,7 @@ public class FirebaseInstallationServiceClient {
         if (errorStream == null) {
             return null;
         }
-        BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream, UTF_8));
-        try {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream, UTF_8))) {
             StringBuilder response = new StringBuilder();
             for (String input = reader.readLine(); input != null; input = reader.readLine()) {
                 response.append(input).append('\n');
@@ -237,12 +234,6 @@ public class FirebaseInstallationServiceClient {
                     conn.getResponseCode(), conn.getResponseMessage(), response);
         } catch (IOException ignored) {
             return null;
-        } finally {
-            try {
-                reader.close();
-            } catch (IOException ignored) {
-
-            }
         }
     }
 
@@ -511,29 +502,35 @@ public class FirebaseInstallationServiceClient {
         reader.beginObject();
         while (reader.hasNext()) {
             String name = reader.nextName();
-            if (name.equals("name")) {
-                builder.setUri(reader.nextString());
-            } else if (name.equals("fid")) {
-                builder.setFid(reader.nextString());
-            } else if (name.equals("refreshToken")) {
-                builder.setRefreshToken(reader.nextString());
-            } else if (name.equals("authToken")) {
-                reader.beginObject();
-                while (reader.hasNext()) {
-                    String key = reader.nextName();
-                    if (key.equals("token")) {
-                        tokenResult.setToken(reader.nextString());
-                    } else if (key.equals("expiresIn")) {
-                        tokenResult.setTokenExpirationTimestamp(
-                                parseTokenExpirationTimestamp(reader.nextString()));
-                    } else {
-                        reader.skipValue();
+            switch (name) {
+                case "name":
+                    builder.setUri(reader.nextString());
+                    break;
+                case "fid":
+                    builder.setFid(reader.nextString());
+                    break;
+                case "refreshToken":
+                    builder.setRefreshToken(reader.nextString());
+                    break;
+                case "authToken":
+                    reader.beginObject();
+                    while (reader.hasNext()) {
+                        String key = reader.nextName();
+                        if (key.equals("token")) {
+                            tokenResult.setToken(reader.nextString());
+                        } else if (key.equals("expiresIn")) {
+                            tokenResult.setTokenExpirationTimestamp(
+                                    parseTokenExpirationTimestamp(reader.nextString()));
+                        } else {
+                            reader.skipValue();
+                        }
                     }
-                }
-                builder.setAuthToken(tokenResult.build());
-                reader.endObject();
-            } else {
-                reader.skipValue();
+                    builder.setAuthToken(tokenResult.build());
+                    reader.endObject();
+                    break;
+                default:
+                    reader.skipValue();
+                    break;
             }
         }
         reader.endObject();

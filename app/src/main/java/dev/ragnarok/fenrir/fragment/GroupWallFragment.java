@@ -315,25 +315,25 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
     }
 
     private class GroupHeaderHolder {
-        ImageView vgCover;
-        ImageView ivAvatar;
-        TextView tvName;
-        TextView tvStatus;
-        ImageView tvAudioStatus;
-        TextView tvScreenName;
+        final ImageView vgCover;
+        final ImageView ivAvatar;
+        final TextView tvName;
+        final TextView tvStatus;
+        final ImageView tvAudioStatus;
+        final TextView tvScreenName;
 
-        TextView bTopics;
-        TextView bArticles;
-        TextView bMembers;
-        TextView bDocuments;
-        TextView bPhotos;
-        TextView bAudios;
-        TextView bVideos;
-        MaterialButton primaryActionButton;
-        MaterialButton secondaryActionButton;
+        final TextView bTopics;
+        final TextView bArticles;
+        final TextView bMembers;
+        final TextView bDocuments;
+        final TextView bPhotos;
+        final TextView bAudios;
+        final TextView bVideos;
+        final MaterialButton primaryActionButton;
+        final MaterialButton secondaryActionButton;
 
-        FloatingActionButton fabMessage;
-        HorizontalOptionsAdapter<PostFilter> mFiltersAdapter;
+        final FloatingActionButton fabMessage;
+        final HorizontalOptionsAdapter<PostFilter> mFiltersAdapter;
 
         GroupHeaderHolder(@NonNull View root) {
             vgCover = root.findViewById(R.id.cover);

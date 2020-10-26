@@ -87,9 +87,9 @@ public class VkPhotoAlbumsAdapter extends RecyclerView.Adapter<VkPhotoAlbumsAdap
 
     public static class Holder extends RecyclerView.ViewHolder {
 
-        ImageView imageView;
-        TextView title;
-        TextView counterText;
+        final ImageView imageView;
+        final TextView title;
+        final TextView counterText;
 
         public Holder(View itemView) {
             super(itemView);

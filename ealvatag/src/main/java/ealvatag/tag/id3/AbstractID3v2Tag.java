@@ -172,8 +172,8 @@ public abstract class AbstractID3v2Tag extends AbstractID3Tag implements TagFiel
     public static Optional<Id3v2Header> getHeader(Buffer buffer) throws EOFException {
         buffer.require(10);
 
-        for (int i = 0; i < TAG_ID.length; i++) {
-            if (buffer.readByte() != TAG_ID[i]) {
+        for (byte b : TAG_ID) {
+            if (buffer.readByte() != b) {
                 return Optional.absent();
             }
         }
