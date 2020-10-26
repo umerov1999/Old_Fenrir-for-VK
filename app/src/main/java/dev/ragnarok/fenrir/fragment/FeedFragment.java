@@ -315,7 +315,7 @@ public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedVi
 
     @Override
     public void askToReload() {
-        Snackbar.make(getView(), R.string.update_news, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.button_yes, v -> {
+        Snackbar.make(requireView(), R.string.update_news, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.do_update, v -> {
             mFeedLayoutManager.scrollToPosition(0);
             getPresenter().fireRefresh();
         }).show();

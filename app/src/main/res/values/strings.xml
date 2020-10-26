@@ -295,12 +295,12 @@
 
     <string name="emojis_type_title">Использовать системные смайлы</string>
     <string name="emojis_full_screen">Стикеры на весь экран</string>
-    <string name="stickers_by_theme">Дневные/Ночные стикеры</string>
+    <string name="stickers_by_theme">Дневные/ночные стикеры</string>
     <string name="stickers_by_new">Стикеры от новых к старым</string>
     <string name="stickers_by_theme_summary">Могут некорректно отображаться при выборе</string>
     <string name="appearance_settings">Внешний вид</string>
     <string name="behaviour_settings">Поведение</string>
-    <string name="music_settings">Плеер</string>
+    <string name="music_settings">Плеер и музыка</string>
 
     <string name="wall_post">Запись на стене</string>
 
@@ -1364,9 +1364,9 @@
     <string name="biometric_not_support">Данная функция не поддерживается"</string>
     <string name="show_recent_dialogs">Отображать последние чаты</string>
     <string name="show_mini_player">Показывать мини-плеер</string>
-    <string name="audio_in_status">Аудио в статусе</string>
+    <string name="audio_in_status">Обновлять аудио в статусе</string>
     <string name="audio_in_status_summary">Обновление происходит, если открыть основной плеер</string>
-    <string name="show_audio_top">Популярные треки</string>
+    <string name="show_audio_top">Показывать популярные треки</string>
     <string name="my_message_no_color">Отключить цвет исходящих сообщений</string>
     <string name="show_audio_cover">Показывать обложки аудио</string>
     <string name="do_upload_video">Загрузить видео из локального хранилища?</string>
@@ -1386,7 +1386,8 @@
     <string name="custom_message_color">Первый цвет исходящего сообщения</string>
     <string name="usage_custom_message_color">Задать цвет исходящего сообщения</string>
     <string name="last_read">Последнее прочитанное</string>
-    <string name="enable_last_read">Быстрый переход к последнему прочитанному сообщению</string>
+    <string name="enable_last_read">Переход к последнему прочитанному сообщению</string>
+    <string name="enable_last_read_summary">Показать кнопку в чате</string>
     <string name="show_profile_in_additional_page">Показывать профиль в всплывающем меню</string>
     <string name="swipes_for_chats_mode">Свайпы в чатах</string>
     <string name="chat_users_count">%1$d участников</string>
@@ -1425,7 +1426,7 @@
     <string name="posts_analized">%1$d постов проверено</string>
     <string name="photo_rounded_view">Скругление краёв изображений</string>
     <string name="load_history_notif">Предпросмотр диалога в уведомлениях</string>
-    <string name="load_history_notif_summary">Отображать последние сообщения из чата. (Может стать причиной капчи)</string>
+    <string name="load_history_notif_summary">Отображать последние сообщения из чата (может стать причиной капчи)</string>
     <string name="mp3_friendly">Если не работает скачивание</string>
     <string name="search_stories">Искать истории</string>
     <string name="by_name">По имени</string>
@@ -1474,9 +1475,9 @@
     <string name="select_audio">Выбор аудио</string>
     <string name="stop_action">Стоп</string>
     <string name="important">Важные сообщения</string>
-    <string name="show_wall_cover">Обложка профиля</string>
+    <string name="show_wall_cover">Показывать обложку профиля</string>
     <string name="mention_user">Упомянуть</string>
-    <string name="update_news">Обновить новости?</string>
+    <string name="update_news">Доступны новые новости</string>
     <string name="to_html">В Html</string>
     <string name="to_json">В Json</string>
     <string name="select_type">Выберите формат:</string>
@@ -1506,7 +1507,7 @@
     <string name="search_playlists">Плейлисты</string>
     <string name="changes">Изменения:</string>
     <string name="do_update">Обновить</string>
-    <string name="do_donate">Донатнуть</string>
+    <string name="do_donate">Задонатить</string>
     <string name="copied_card">Номер карты скопирован в буфер</string>
     <string name="audio_save_mode_button">Скачивать несколько треков</string>
     <string name="hint_stickers">Подсказывать стикеры</string>
@@ -1515,8 +1516,9 @@
     <string name="work_manager">Fenrir Work</string>
     <string name="channel_keep_work_manager">WorkManager</string>
     <string name="action_create_list">Создать список</string>
-    <string name="blur_for_player">Blur для плеера</string>
-    <string name="show_mutual_count">Количество общих друзей</string>
+    <string name="blur_for_player">Размытие в плеере</string>
+    <string name="show_mutual_count">Показывать общих друзей</string>
+    <string name="show_mutual_count_summary">На странице пользователя</string>
     <string name="change_name">Название</string>
     <string name="change_photo">Фото</string>
     <string name="delete_photo">Удалить Фото</string>
@@ -1525,18 +1527,19 @@
     <string name="not_friend_show">Больше не друзья</string>
     <string name="not_friend_show_summary">Показывать, кто убрался из друзей</string>
     <string name="show_bot_keyboard">Клавиатура ботов</string>
-    <string name="do_zoom_photo">Зумировать фото как в инсте</string>
+    <string name="do_zoom_photo">Зумировать фото как в Instagram</string>
     <string name="do_auto_play_video">Автовыбор качества видео</string>
     <string name="video_not_have_link">У видео нет ссылки</string>
     <string name="change_upload_size">Настройки качества отправки фото</string>
     <string name="go_donate">Пожертвовать</string>
-    <string name="in_full_version">Доступно в полной версии!!!</string>
+    <string name="in_full_version">Доступно в полной версии!</string>
     <string name="import_from_kate">Импортировать аккаунты из Kate Mobile?</string>
     <string name="import_from_kate_summary">(ROOT) Требуется скопировать /data/data/com.perm.kate_new_6/shared_prefs/com.perm.kate_new_6_preferences.xml. В этих аккаунтах не будут отображаться некоторые аудио разделы, обложки аудио, статьи, ночные стикеры и т.д. Лучше не использовать</string>
-    <string name="wall_themed">Оформление стены"</string>
+    <string name="wall_themed">Оформление стены для язычников"</string>
     <string name="for_pagan">Для язычников"</string>
     <string name="runes_show">Показывать руны"</string>
     <string name="show_pagan_symbol">Показывать символ"</string>
     <string name="pagan_symbol">Языческий символ"</string>
     <string name="auto_update">Получать обновления</string>
+    <string name="photo_settings">Просмотр фото</string>
 </resources>

@@ -152,8 +152,7 @@
         <HorizontalScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:scrollbarSize="2dp">
+            android:layout_gravity="center">
 
             <LinearLayout
                 android:layout_width="wrap_content"

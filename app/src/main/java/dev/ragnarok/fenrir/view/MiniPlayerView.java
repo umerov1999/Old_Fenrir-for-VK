@@ -116,12 +116,12 @@ public class MiniPlayerView extends FrameLayout implements SeekBar.OnSeekBarChan
     }
 
     private Transformation TransformCover() {
-        return Settings.get().main().Ismini_player_audio_round_icon() ? new RoundTransformation() : new PolyTransformation();
+        return Settings.get().main().isAudio_round_icon() ? new RoundTransformation() : new PolyTransformation();
     }
 
     @DrawableRes
     private int getAudioCoverSimple() {
-        return Settings.get().main().Ismini_player_audio_round_icon() ? R.drawable.audio_button : R.drawable.audio_button_material;
+        return Settings.get().main().isAudio_round_icon() ? R.drawable.audio_button : R.drawable.audio_button_material;
     }
 
     private void updatePlaybackControls() {

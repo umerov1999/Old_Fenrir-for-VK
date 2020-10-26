@@ -831,8 +831,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                 }
             }
             if (mLastBackPressedTime < 0
-                    || mLastBackPressedTime + DOUBLE_BACK_PRESSED_TIMEOUT > System.currentTimeMillis()
-                    || !Settings.get().main().isNeedDoublePressToExit()) {
+                    || mLastBackPressedTime + DOUBLE_BACK_PRESSED_TIMEOUT > System.currentTimeMillis()) {
                 supportFinishAfterTransition();
                 return;
             }

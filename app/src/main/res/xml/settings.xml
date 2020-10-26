@@ -31,7 +31,8 @@
 
     <PreferenceCategory
         android:title="@string/behaviour_settings"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:initialExpandedChildrenCount="3">
 
         <ListPreference
             android:key="default_category"
@@ -39,6 +40,49 @@
             android:title="@string/default_category_title"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            android:defaultValue="2"
+            android:entries="@array/array_news_start_updates_names"
+            android:entryValues="@array/array_news_start_updates_items"
+            android:key="start_news"
+            android:title="@string/start_news"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="custom_tabs"
+            android:title="@string/open_links_in_app"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="load_history_notif"
+            android:summary="@string/load_history_notif_summary"
+            android:title="@string/load_history_notif"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="use_internal_downloader"
+            android:summary="@string/use_internal_downloader_summary"
+            android:title="@string/use_internal_downloader"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="do_auto_play_video"
+            android:title="@string/do_auto_play_video"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="photo_appearance"
+        android:title="@string/photo_settings"
+        app:iconSpaceReserved="false"
+        app:initialExpandedChildrenCount="3">
 
         <ListPreference
             android:defaultValue="0"
@@ -61,67 +105,8 @@
 
         <SwitchPreference
             android:defaultValue="false"
-            android:key="load_history_notif"
-            android:summary="@string/load_history_notif_summary"
-            android:title="@string/load_history_notif"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="custom_tabs"
-            android:title="@string/open_links_in_app"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="double_press_to_exit"
-            android:title="@string/double_press_to_exit"
-            app:iconSpaceReserved="false" />
-
-        <EditTextPreference
-            android:defaultValue="180"
-            android:key="photo_swipe_triggered_pos"
-            android:title="@string/photo_swipe_triggered_pos"
-            app:iconSpaceReserved="false"
-            app:useSimpleSummaryProvider="true" />
-
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="use_internal_downloader"
-            android:summary="@string/use_internal_downloader_summary"
-            android:title="@string/use_internal_downloader"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
-            android:defaultValue="true"
             android:key="download_photo_tap"
             android:title="@string/download_photo_tap"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="disable_sensored_voice"
-            android:summary="@string/disable_sensored_voice_summary"
-            android:title="@string/disable_sensored_voice"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="audio_save_mode_button"
-            android:title="@string/audio_save_mode_button"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="show_mutual_count"
-            android:title="@string/show_mutual_count"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="not_friend_show"
-            android:summary="@string/not_friend_show_summary"
-            android:title="@string/not_friend_show"
             app:iconSpaceReserved="false" />
 
         <SwitchPreference
@@ -136,36 +121,19 @@
             android:title="@string/change_upload_size"
             app:iconSpaceReserved="false" />
 
-        <ListPreference
-            android:defaultValue="2"
-            android:entries="@array/array_news_start_updates_names"
-            android:entryValues="@array/array_news_start_updates_items"
-            android:key="start_news"
-            android:title="@string/start_news"
+        <EditTextPreference
+            android:defaultValue="180"
+            android:key="photo_swipe_triggered_pos"
+            android:title="@string/photo_swipe_triggered_pos"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
-
-        <ListPreference
-            android:defaultValue="1"
-            android:entries="@array/array_swipes_chats_names"
-            android:entryValues="@array/array_swipes_chats_items"
-            android:key="swipes_for_chats"
-            android:title="@string/swipes_for_chats_mode"
-            app:iconSpaceReserved="false"
-            app:useSimpleSummaryProvider="true" />
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="do_auto_play_video"
-            android:title="@string/do_auto_play_video"
-            app:iconSpaceReserved="false" />
-
     </PreferenceCategory>
 
     <PreferenceCategory
         android:key="group_appearance"
         android:title="@string/appearance_settings"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:initialExpandedChildrenCount="3">
 
         <Preference
             android:defaultValue="ice"
@@ -202,17 +170,6 @@
             android:title="@string/disable_history"
             app:iconSpaceReserved="false" />
 
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="show_wall_cover"
-            android:title="@string/show_wall_cover"
-            app:iconSpaceReserved="false" />
-
-        <Preference
-            android:key="avatar_style"
-            android:title="@string/avatar_style_title"
-            app:iconSpaceReserved="false" />
-
         <ListPreference
             android:defaultValue="0"
             android:entries="@array/array_photo_rounded_names"
@@ -222,11 +179,23 @@
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
 
+        <Preference
+            android:key="avatar_style"
+            android:title="@string/avatar_style_title"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="show_wall_cover"
+            android:title="@string/show_wall_cover"
+            app:iconSpaceReserved="false" />
+
     </PreferenceCategory>
 
     <PreferenceCategory
         android:title="@string/input"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:initialExpandedChildrenCount="3">
 
         <SwitchPreference
             android:defaultValue="false"
@@ -236,8 +205,20 @@
 
         <SwitchPreference
             android:defaultValue="false"
-            android:key="emojis_full_screen"
-            android:title="@string/emojis_full_screen"
+            android:key="dont_write"
+            android:title="@string/dont_write"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="hint_stickers"
+            android:title="@string/hint_stickers"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="send_by_enter"
+            android:title="@string/send_on_enter_title"
             app:iconSpaceReserved="false" />
 
         <SwitchPreference
@@ -254,21 +235,9 @@
             app:iconSpaceReserved="false" />
 
         <SwitchPreference
-            android:defaultValue="true"
-            android:key="hint_stickers"
-            android:title="@string/hint_stickers"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
             android:defaultValue="false"
-            android:key="send_by_enter"
-            android:title="@string/send_on_enter_title"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="dont_write"
-            android:title="@string/dont_write"
+            android:key="emojis_full_screen"
+            android:title="@string/emojis_full_screen"
             app:iconSpaceReserved="false" />
 
         <SwitchPreference
@@ -281,7 +250,8 @@
 
     <PreferenceCategory
         android:title="@string/custom_chat"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:initialExpandedChildrenCount="3">
 
         <SwitchPreference
             android:defaultValue="false"
@@ -289,6 +259,15 @@
             android:summary="@string/smooth_chat_summary"
             android:title="@string/smooth_chat"
             app:iconSpaceReserved="false" />
+
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/array_swipes_chats_names"
+            android:entryValues="@array/array_swipes_chats_items"
+            android:key="swipes_for_chats"
+            android:title="@string/swipes_for_chats_mode"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
 
         <ListPreference
             android:defaultValue="0"
@@ -390,8 +369,10 @@
 
         <SwitchPreference
             android:defaultValue="false"
-            android:key="disable_encryption"
-            android:title="@string/disable_encryption"
+            android:key="disable_sensored_voice"
+            android:summary="@string/disable_sensored_voice_summary"
+            android:title="@string/disable_sensored_voice"
+            app:allowDividerAbove="true"
             app:iconSpaceReserved="false" />
 
         <SwitchPreference
@@ -404,7 +385,8 @@
 
     <PreferenceCategory
         android:title="@string/additional_settings"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:initialExpandedChildrenCount="3">
 
         <SwitchPreference
             android:defaultValue="false"
@@ -416,12 +398,7 @@
             android:defaultValue="true"
             android:key="enable_last_read"
             android:title="@string/enable_last_read"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="be_online"
-            android:title="@string/be_online"
+            android:summary="@string/enable_last_read_summary"
             app:iconSpaceReserved="false" />
 
         <SwitchPreference
@@ -430,22 +407,37 @@
             android:title="@string/info_reading"
             app:iconSpaceReserved="false" />
 
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="show_mutual_count"
+            android:summary="@string/show_mutual_count_summary"
+            android:title="@string/show_mutual_count"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="not_friend_show"
+            android:summary="@string/not_friend_show_summary"
+            android:title="@string/not_friend_show"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="be_online"
+            android:title="@string/be_online"
+            app:iconSpaceReserved="false" />
+
     </PreferenceCategory>
 
     <PreferenceCategory
         android:title="@string/music_settings"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:initialExpandedChildrenCount="3">
 
         <SwitchPreference
             android:defaultValue="true"
             android:key="audio_round_icon"
             android:title="@string/audio_round_icon"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="mini_player_audio_round_icon"
-            android:title="@string/mini_player_audio_round_icon"
             app:iconSpaceReserved="false" />
 
         <SwitchPreference
@@ -461,12 +453,6 @@
             app:iconSpaceReserved="false" />
 
         <SwitchPreference
-            android:defaultValue="true"
-            android:key="show_mini_player"
-            android:title="@string/show_mini_player"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
             android:defaultValue="false"
             android:key="broadcast"
             android:summary="@string/audio_in_status_summary"
@@ -475,10 +461,22 @@
 
         <SwitchPreference
             android:defaultValue="true"
+            android:key="audio_save_mode_button"
+            android:title="@string/audio_save_mode_button"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="true"
             android:key="click_next_track"
             android:summaryOff="@string/click_next_track_summary_off"
             android:summaryOn="@string/click_next_track_summary_on"
             android:title="@string/click_next_track"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="show_mini_player"
+            android:title="@string/show_mini_player"
             app:iconSpaceReserved="false" />
 
         <SwitchPreference
@@ -535,7 +533,8 @@
 
     <PreferenceCategory
         android:title="@string/download_directory"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:initialExpandedChildrenCount="2">
 
         <Preference
             android:key="music_dir"
@@ -568,9 +567,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:icon="@drawable/valknut_settings"
         android:key="wall_themed"
-        android:summary="@string/for_pagan"
         android:title="@string/wall_themed"
         app:iconSpaceReserved="false">
         <SwitchPreference
@@ -597,7 +594,8 @@
     <PreferenceCategory
         android:key="dev"
         android:title="@string/dev_settings"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:initialExpandedChildrenCount="3">
         <SwitchPreference
             android:defaultValue="false"
             android:key="developer_mode"
@@ -608,14 +606,12 @@
             android:dependency="developer_mode"
             android:key="request_executor"
             android:title="@string/request_executor_title"
-            app:icon="@drawable/developer_mode"
-            app:iconSpaceReserved="false" />
+            app:iconSpaceReserved="true" />
         <Preference
             android:dependency="developer_mode"
             android:key="show_logs"
             android:title="@string/settings_show_logs_title"
-            app:icon="@drawable/developer_mode"
-            app:iconSpaceReserved="false" />
+            app:iconSpaceReserved="true" />
 
         <EditTextPreference
             android:defaultValue="api.vk.com"
@@ -650,14 +646,17 @@
             android:title="@string/force_cache"
             app:iconSpaceReserved="false" />
 
-        <ListPreference
-            android:defaultValue="1"
-            android:entries="@array/crypt_version_names"
-            android:entryValues="@array/crypt_version_list"
-            android:key="crypt_version"
-            android:title="@string/crypt_version"
-            app:iconSpaceReserved="false"
-            app:useSimpleSummaryProvider="true" />
+        <SwitchPreference
+            android:key="settings_no_push"
+            android:title="@string/settings_no_push"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:icon="@drawable/low_battery"
+            android:key="keep_longpoll"
+            android:summary="@string/settings_keep_longpoll_summary"
+            android:title="@string/settings_keep_longpoll_title"
+            app:iconSpaceReserved="false" />
 
         <Preference
             android:key="account_cache_cleaner"
@@ -674,17 +673,6 @@
             android:title="@string/delete_cache_images"
             app:iconSpaceReserved="false" />
 
-        <SwitchPreference
-            android:key="settings_no_push"
-            android:title="@string/settings_no_push"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
-            android:icon="@drawable/low_battery"
-            android:key="keep_longpoll"
-            android:summary="@string/settings_keep_longpoll_summary"
-            android:title="@string/settings_keep_longpoll_title"
-            app:iconSpaceReserved="false" />
     </PreferenceCategory>
 
     <PreferenceCategory

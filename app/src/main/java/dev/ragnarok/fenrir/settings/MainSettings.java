@@ -16,7 +16,6 @@ class MainSettings implements ISettings.IMainSettings {
 
     private static final String KEY_IMAGE_SIZE = "image_size";
     private static final String KEY_RUN_COUNT = "run_count";
-    private static final String KEY_DOUBLE_PRESS_TO_EXIT = "double_press_to_exit";
     private static final String KEY_CUSTOM_TABS = "custom_tabs";
 
     private final Context app;
@@ -34,11 +33,6 @@ class MainSettings implements ISettings.IMainSettings {
     }
 
     @Override
-    public boolean isNeedDoublePressToExit() {
-        return getDefaultPreferences().getBoolean(KEY_DOUBLE_PRESS_TO_EXIT, true);
-    }
-
-    @Override
     public boolean isAmoledTheme() {
         return getDefaultPreferences().getBoolean("amoled_theme", false);
     }
@@ -46,11 +40,6 @@ class MainSettings implements ISettings.IMainSettings {
     @Override
     public boolean isAudio_round_icon() {
         return getDefaultPreferences().getBoolean("audio_round_icon", true);
-    }
-
-    @Override
-    public boolean Ismini_player_audio_round_icon() {
-        return getDefaultPreferences().getBoolean("mini_player_audio_round_icon", true);
     }
 
     @Override

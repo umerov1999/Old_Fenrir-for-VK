@@ -204,8 +204,6 @@ public interface ISettings {
 
         boolean isSendByEnter();
 
-        boolean isNeedDoublePressToExit();
-
         boolean isMy_message_no_color();
 
         boolean is_smooth_chat();
@@ -213,8 +211,6 @@ public interface ISettings {
         boolean isAmoledTheme();
 
         boolean isAudio_round_icon();
-
-        boolean Ismini_player_audio_round_icon();
 
         boolean isShow_bot_keyboard();
 

@@ -200,7 +200,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        SwitchPreference prefMiniplayerRoundIcon = findPreference("mini_player_audio_round_icon");
+        SwitchPreference prefMiniplayerRoundIcon = findPreference("audio_round_icon");
         prefMiniplayerRoundIcon.setOnPreferenceChangeListener((preference, newValue) -> {
             requireActivity().recreate();
             return true;

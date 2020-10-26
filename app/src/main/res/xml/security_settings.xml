@@ -82,4 +82,19 @@
         android:dependency="use_pin_for_security"
         android:visibility="gone"/>-->
 
+    <ListPreference
+        android:defaultValue="1"
+        android:entries="@array/crypt_version_names"
+        android:entryValues="@array/crypt_version_list"
+        android:key="crypt_version"
+        android:title="@string/crypt_version"
+        app:iconSpaceReserved="false"
+        app:useSimpleSummaryProvider="true" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="disable_encryption"
+        android:title="@string/disable_encryption"
+        app:iconSpaceReserved="false" />
+
 </PreferenceScreen>
