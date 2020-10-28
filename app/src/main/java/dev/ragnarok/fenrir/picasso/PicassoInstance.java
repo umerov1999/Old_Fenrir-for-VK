@@ -10,7 +10,8 @@ import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
 
-import com.squareup.picasso3.Picasso;
+import com.squareup.picasso.OkHttp3Downloader;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -152,7 +153,7 @@ public class PicassoInstance {
         ProxyUtil.applyProxyConfig(builder, proxySettings.getActiveProxy());
 
         return new Picasso.Builder(app)
-                .callFactory(builder.build())
+                .downloader(new OkHttp3Downloader(builder.build()))
                 .addRequestHandler(new LocalRequestHandler())
                 .build();
     }

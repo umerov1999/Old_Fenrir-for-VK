@@ -38,13 +38,13 @@ import io.reactivex.rxjava3.subjects.PublishSubject;
 
 public final class MusicUtils {
 
+    public static final HashMap<Integer, ArrayList<Audio>> Audios = new HashMap<>();
+    public static final Set<String> CachedAudios = new ArraySet<>();
+    public static final Set<String> RemoteAudios = new ArraySet<>();
     private static final WeakHashMap<Context, ServiceBinder> mConnectionMap;
     private static final PublishSubject<Integer> SERVICE_BIND_PUBLISHER = PublishSubject.create();
     private static final String TAG = MusicUtils.class.getSimpleName();
     public static IAudioPlayerService mService;
-    public static final HashMap<Integer, ArrayList<Audio>> Audios = new HashMap<>();
-    public static final Set<String> CachedAudios = new ArraySet<>();
-    public static final Set<String> RemoteAudios = new ArraySet<>();
     private static int sForegroundActivities;
 
     static {

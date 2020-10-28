@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.StringRes;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso3.Transformation;
+import com.squareup.picasso.Transformation;
 
 import org.jetbrains.annotations.NotNull;
 

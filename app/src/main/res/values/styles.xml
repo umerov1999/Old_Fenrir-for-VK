@@ -360,6 +360,7 @@
     <style name="Theme.FloatingActionButtonAudio" parent="Widget.MaterialComponents.FloatingActionButton">
         <item name="backgroundTint">@color/white</item>
         <item name="tint">?colorSurface</item>
+        <item name="rippleColor">?colorSurface</item>
     </style>
 
     <style name="ShapeAppearance.AppTheme.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
@@ -419,7 +420,10 @@
     <style name="ShapeAppearance.RoundedPlayList" parent="ShapeAppearance.MaterialComponents.MediumComponent">
         <item name="cornerFamilyBottomLeft">rounded</item>
         <item name="cornerFamilyBottomRight">rounded</item>
-        <item name="cornerSize">15dp</item>
+        <item name="cornerSizeBottomRight">15dp</item>
+        <item name="cornerSizeBottomLeft">15dp</item>
+        <item name="cornerSizeTopRight">0dp</item>
+        <item name="cornerSizeTopLeft">0dp</item>
     </style>
 
     <style name="Widget.MPM.Menu" parent="Widget.AppCompat.PopupMenu.Overflow">

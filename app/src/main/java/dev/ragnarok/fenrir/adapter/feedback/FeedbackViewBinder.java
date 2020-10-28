@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.squareup.picasso3.Transformation;
+import com.squareup.picasso.Transformation;
 
 import java.util.List;
 

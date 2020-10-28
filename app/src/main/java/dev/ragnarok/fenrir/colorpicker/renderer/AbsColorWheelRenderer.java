@@ -6,8 +6,8 @@ import java.util.List;
 import dev.ragnarok.fenrir.colorpicker.ColorCircle;
 
 public abstract class AbsColorWheelRenderer implements ColorWheelRenderer {
-    protected ColorWheelRenderOption colorWheelRenderOption;
     protected final List<ColorCircle> colorCircleList = new ArrayList<>();
+    protected ColorWheelRenderOption colorWheelRenderOption;
 
     public void initWith(ColorWheelRenderOption colorWheelRenderOption) {
         this.colorWheelRenderOption = colorWheelRenderOption;

@@ -10,12 +10,11 @@ public class CubicBezierInterpolator implements Interpolator {
     public static final CubicBezierInterpolator EASE_OUT_QUINT = new CubicBezierInterpolator(.23, 1, .32, 1);
     public static final CubicBezierInterpolator EASE_IN = new CubicBezierInterpolator(.42, 0, 1, 1);
     public static final CubicBezierInterpolator EASE_BOTH = new CubicBezierInterpolator(.42, 0, .58, 1);
-
-    protected PointF start;
-    protected PointF end;
     protected final PointF a = new PointF();
     protected final PointF b = new PointF();
     protected final PointF c = new PointF();
+    protected PointF start;
+    protected PointF end;
 
     public CubicBezierInterpolator(PointF start, PointF end) throws IllegalArgumentException {
         if (start.x < 0 || start.x > 1) {

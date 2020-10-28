@@ -20,7 +20,7 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.squareup.picasso3.Transformation;
+import com.squareup.picasso.Transformation;
 import com.umerov.rlottie.RLottieImageView;
 
 import java.lang.ref.WeakReference;

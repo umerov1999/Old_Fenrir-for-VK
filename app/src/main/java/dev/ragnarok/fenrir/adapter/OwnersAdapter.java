@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso3.Transformation;
+import com.squareup.picasso.Transformation;
 
 import java.util.List;
 

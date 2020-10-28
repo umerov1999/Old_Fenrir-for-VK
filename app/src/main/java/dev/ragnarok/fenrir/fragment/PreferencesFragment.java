@@ -495,6 +495,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     return true;
                 });
 
+        findPreference("test_crash")
+                .setOnPreferenceClickListener(preference -> {
+                    throw new RuntimeException("###TEST_CRASHED###");
+                });
+
         SwitchPreference keepLongpoll = findPreference("keep_longpoll");
         keepLongpoll.setOnPreferenceChangeListener((preference, newValue) -> {
             boolean keep = (boolean) newValue;

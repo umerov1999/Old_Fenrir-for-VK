@@ -9,11 +9,9 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso3.Callback;
+import com.squareup.picasso.Callback;
 import com.umerov.rlottie.RLottieDrawable;
 import com.umerov.rlottie.RLottieImageView;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
 
@@ -141,7 +139,7 @@ public class StickersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         @Override
-        public void onError(@NotNull Throwable e) {
+        public void onError(Exception e) {
             ImageView view = ref.get();
             try {
                 if (view != null) {

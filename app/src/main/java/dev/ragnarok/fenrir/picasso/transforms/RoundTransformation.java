@@ -1,7 +1,8 @@
 package dev.ragnarok.fenrir.picasso.transforms;
 
-import com.squareup.picasso3.RequestHandler;
-import com.squareup.picasso3.Transformation;
+import android.graphics.Bitmap;
+
+import com.squareup.picasso.Transformation;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -15,9 +16,11 @@ public class RoundTransformation implements Transformation {
         return TAG + "()";
     }
 
-    @NotNull
     @Override
-    public RequestHandler.Result.Bitmap transform(@NotNull RequestHandler.Result.Bitmap source) {
-        return new RequestHandler.Result.Bitmap(ImageHelper.getRoundedBitmap(source.getBitmap()), source.loadedFrom, source.exifRotation);
+    public Bitmap transform(Bitmap source) {
+        if (source == null) {
+            return null;
+        }
+        return ImageHelper.getRoundedBitmap(source);
     }
 }

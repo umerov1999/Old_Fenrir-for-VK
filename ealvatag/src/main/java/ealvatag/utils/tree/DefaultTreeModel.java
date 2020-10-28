@@ -37,13 +37,13 @@ import java.util.Vector;
  */
 public class DefaultTreeModel implements Serializable, TreeModel {
     /**
-     * Root of the tree.
-     */
-    protected TreeNode root;
-    /**
      * Listeners.
      */
     protected final EventListenerList listenerList = new EventListenerList();
+    /**
+     * Root of the tree.
+     */
+    protected TreeNode root;
     /**
      * Determines how the <code>isLeaf</code> method figures
      * out if a node is a leaf node. If true, a node is a leaf

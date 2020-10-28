@@ -8,8 +8,8 @@ import dev.ragnarok.fenrir.api.util.VKStringUtils;
 
 public class VkApiPrivacy {
 
-    public final String category;
-    public final ArrayList<Entry> entries;
+    public String category;
+    public ArrayList<Entry> entries;
 
     public VkApiPrivacy(String category) {
         this.category = category;
@@ -66,9 +66,9 @@ public class VkApiPrivacy {
         public static final int TYPE_OWNER = 1;
         public static final int TYPE_FRIENDS_LIST = 2;
 
-        public final int type;
-        public final int id;
-        public final boolean allowed;
+        public int type;
+        public int id;
+        public boolean allowed;
 
         public Entry(int type, int id, boolean allowed) {
             this.type = type;

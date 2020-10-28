@@ -364,13 +364,13 @@ public class VKApiCommunity extends VKApiOwner {
          */
         public static final int NO_COUNTER = -1;
 
-        public final int photos = NO_COUNTER;
+        public int photos = NO_COUNTER;
         public int albums = NO_COUNTER;
-        public final int audios = NO_COUNTER;
-        public final int videos = NO_COUNTER;
-        public final int topics = NO_COUNTER;
-        public final int docs = NO_COUNTER;
-        public final int articles = NO_COUNTER;
+        public int audios = NO_COUNTER;
+        public int videos = NO_COUNTER;
+        public int topics = NO_COUNTER;
+        public int docs = NO_COUNTER;
+        public int articles = NO_COUNTER;
 
         public int all_wall = NO_COUNTER;
         public int owner_wall = NO_COUNTER;

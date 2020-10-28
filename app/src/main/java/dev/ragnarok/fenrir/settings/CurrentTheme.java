@@ -13,7 +13,7 @@ import android.util.TypedValue;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
-import com.squareup.picasso3.Transformation;
+import com.squareup.picasso.Transformation;
 
 import java.io.File;
 

@@ -299,7 +299,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
                     } else if (selected.equals(addToShortcuts)) {
                         getPresenter().fireAddToLauncherShortcuts(dialog);
                     } else if (selected.equals(setHide)) {
-                        if(!CheckUpdate.isFullVersion(requireActivity())) {
+                        if (!CheckUpdate.isFullVersion(requireActivity())) {
                             return;
                         }
                         if (!Settings.get().security().isUsePinForSecurity()) {

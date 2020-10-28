@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso3.Transformation;
+import com.squareup.picasso.Transformation;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -60,7 +60,7 @@ public class DialogPreviewAdapter extends RecyclerView.Adapter<DialogPreviewAdap
                 name = name.substring(0, 2);
             name = name.trim();
             holder.EmptyAvatar.setText(name);
-            holder.mAvatar.setImageBitmap(mTransformation.transform(Utils.createGradientChatImage(200, 200, item.getId())).getBitmap());
+            holder.mAvatar.setImageBitmap(mTransformation.transform(Utils.createGradientChatImage(200, 200, item.getId())));
         }
 
         holder.itemView.setOnClickListener(v -> actionListener.onEntryClick(item));

@@ -49,8 +49,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.squareup.picasso3.Picasso;
-import com.squareup.picasso3.RequestHandler;
 import com.umerov.rlottie.RLottieDrawable;
 import com.umerov.rlottie.RLottieImageView;
 
@@ -993,7 +991,7 @@ public class Utils {
         visual.playAnimation();
     }
 
-    public static RequestHandler.Result.Bitmap createGradientChatImage(int width, int height, int owner_id) {
+    public static Bitmap createGradientChatImage(int width, int height, int owner_id) {
         int pp = owner_id % 10;
         String Color1 = "#D81B60";
         String Color2 = "#F48FB1";
@@ -1045,7 +1043,7 @@ public class Utils {
         Paint paint2 = new Paint();
         paint2.setShader(gradient);
         canvas.drawRect(0F, 0F, (float) width, (float) height, paint2);
-        return new RequestHandler.Result.Bitmap(bitmap, Picasso.LoadedFrom.MEMORY, 0);
+        return bitmap;
     }
 
     public static int getThemeColor(boolean isOfReadToast) {

@@ -28,8 +28,8 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.RawResourceDataSource
-import com.squareup.picasso3.BitmapTarget
-import com.squareup.picasso3.Picasso.LoadedFrom
+import com.squareup.picasso.Picasso.LoadedFrom
+import com.squareup.picasso.Target
 import dev.ragnarok.fenrir.*
 import dev.ragnarok.fenrir.domain.IAudioInteractor
 import dev.ragnarok.fenrir.domain.InteractorFactory
@@ -430,7 +430,7 @@ class MusicPlaybackService : Service() {
         }
         PicassoInstance.with()
                 .load(albumCover)
-                .into(object : BitmapTarget {
+                .into(object : Target {
                     override fun onBitmapLoaded(bitmap: Bitmap, from: LoadedFrom) {
                         CoverBitmap = bitmap
                         updateMetadata()

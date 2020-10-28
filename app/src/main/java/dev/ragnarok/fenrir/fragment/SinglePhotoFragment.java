@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.squareup.picasso3.Callback;
+import com.squareup.picasso.Callback;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -41,11 +41,7 @@ import dev.ragnarok.fenrir.view.TouchImageView;
 import dev.ragnarok.fenrir.view.pager.GoBackCallback;
 import dev.ragnarok.fenrir.view.pager.WeakGoBackAnimationAdapter;
 import dev.ragnarok.fenrir.view.pager.WeakPicassoLoadCallback;
-import dev.ragnarok.fenrir.view.verticalswipe.BelowFractionalClamp;
-import dev.ragnarok.fenrir.view.verticalswipe.PropertySideEffect;
-import dev.ragnarok.fenrir.view.verticalswipe.SensitivityClamp;
-import dev.ragnarok.fenrir.view.verticalswipe.SettleOnTopAction;
-import dev.ragnarok.fenrir.view.verticalswipe.VerticalSwipeBehavior;
+import dev.ragnarok.fenrir.view.swipehelper.VerticalSwipeBehavior;
 
 import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
@@ -95,10 +91,10 @@ public class SinglePhotoFragment extends BaseFragment
         ret.bindTo(url);
 
         VerticalSwipeBehavior<TouchImageView> ui = VerticalSwipeBehavior.Companion.from(ret.photo);
-        ui.setSettle(new SettleOnTopAction());
-        ui.setSideEffect(new PropertySideEffect(View.ALPHA, View.SCALE_X, View.SCALE_Y));
-        BelowFractionalClamp clampDelegate = new BelowFractionalClamp(3f, 3f);
-        ui.setClamp(new SensitivityClamp(0.5f, clampDelegate, 0.5f));
+        ui.setSettle(new VerticalSwipeBehavior.SettleOnTopAction());
+        ui.setSideEffect(new VerticalSwipeBehavior.PropertySideEffect(View.ALPHA, View.SCALE_X, View.SCALE_Y));
+        VerticalSwipeBehavior.BelowFractionalClamp clampDelegate = new VerticalSwipeBehavior.BelowFractionalClamp(3f, 3f);
+        ui.setClamp(new VerticalSwipeBehavior.SensitivityClamp(0.5f, clampDelegate, 0.5f));
         ui.setListener(new VerticalSwipeBehavior.SwipeListener() {
             @Override
             public void onReleased() {
@@ -220,14 +216,13 @@ public class SinglePhotoFragment extends BaseFragment
     }
 
     private class PhotoViewHolder implements Callback {
+        public final FloatingActionButton reload;
         private final WeakPicassoLoadCallback mPicassoLoadCallback;
         public TouchImageView photo;
         public ProgressBar progress;
-        public final FloatingActionButton reload;
         private boolean mLoadingNow;
 
         public PhotoViewHolder(View view) {
-            photo = view.findViewById(R.id.image_view);
             progress = view.findViewById(R.id.progress_bar);
             photo = view.findViewById(idOfImageView());
             photo.setMaxZoom(8f);
@@ -289,7 +284,7 @@ public class SinglePhotoFragment extends BaseFragment
         }
 
         @Override
-        public void onError(Throwable e) {
+        public void onError(Exception e) {
             mLoadingNow = false;
             resolveProgressVisibility();
             reload.setVisibility(View.VISIBLE);

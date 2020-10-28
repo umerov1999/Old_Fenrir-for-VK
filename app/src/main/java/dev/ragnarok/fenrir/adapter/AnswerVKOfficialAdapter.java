@@ -16,7 +16,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.imageview.ShapeableImageView;
-import com.squareup.picasso3.Transformation;
+import com.squareup.picasso.Transformation;
 
 import java.util.Objects;
 import java.util.regex.Matcher;

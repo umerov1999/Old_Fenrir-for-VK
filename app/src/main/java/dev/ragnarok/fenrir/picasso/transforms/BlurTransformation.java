@@ -24,8 +24,7 @@ import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 
-import com.squareup.picasso3.RequestHandler;
-import com.squareup.picasso3.Transformation;
+import com.squareup.picasso.Transformation;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -51,14 +50,11 @@ public class BlurTransformation implements Transformation {
     }
 
     public Bitmap blur(Bitmap image) {
-        if (null == image) return null;
-
         Bitmap outputBitmap = Bitmap.createBitmap(image);
         RenderScript renderScript = RenderScript.create(mContext);
         Allocation tmpIn = Allocation.createFromBitmap(renderScript, image);
         Allocation tmpOut = Allocation.createFromBitmap(renderScript, outputBitmap);
 
-        //Intrinsic Gausian blur filter
         ScriptIntrinsicBlur theIntrinsic = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript));
         theIntrinsic.setRadius(mRadius);
         theIntrinsic.setInput(tmpIn);
@@ -67,36 +63,20 @@ public class BlurTransformation implements Transformation {
         return outputBitmap;
     }
 
-    @NotNull
     @Override
-    public RequestHandler.Result.Bitmap transform(@NotNull RequestHandler.Result.Bitmap source_request) {
-        Bitmap source = source_request.getBitmap();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && source.getConfig() == Bitmap.Config.HARDWARE) {
-            source = source.copy(Bitmap.Config.ARGB_8888, true);
+    public Bitmap transform(Bitmap source) {
+        if (source == null) {
+            return null;
         }
-        /*
-        int scaledWidth = source.getWidth() / mSampling;
-        int scaledHeight = source.getHeight() / mSampling;
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && source.getConfig() == Bitmap.Config.HARDWARE) {
             source = source.copy(Bitmap.Config.ARGB_8888, true);
         }
 
-        Bitmap bitmap = Bitmap.createBitmap(scaledWidth, scaledHeight, Bitmap.Config.ARGB_8888);
-
-        Canvas canvas = new Canvas(bitmap);
-        canvas.scale(1 / (float) mSampling, 1 / (float) mSampling);
-        Paint paint = new Paint();
-        paint.setFlags(Paint.FILTER_BITMAP_FLAG);
-        canvas.drawBitmap(source, 0, 0, paint);
-        bitmap = FastBlur.blur(bitmap, mRadius, true);
-*/
         Bitmap bitmap = blur(source);
         if (source != bitmap) {
             source.recycle();
         }
 
-        assert bitmap != null;
-        return new RequestHandler.Result.Bitmap(bitmap, source_request.loadedFrom, source_request.exifRotation);
+        return bitmap;
     }
 }

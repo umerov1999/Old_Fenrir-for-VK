@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.squareup.picasso3.Transformation;
+import com.squareup.picasso.Transformation;
 import com.umerov.rlottie.RLottieImageView;
 
 import org.jetbrains.annotations.NotNull;
@@ -263,9 +263,9 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
         final View Track;
         final MaterialCardView selectionView;
         final Animator.AnimatorListener animationAdapter;
-        ObjectAnimator animator;
         final RLottieImageView visual;
         final TextView time;
+        ObjectAnimator animator;
 
         AudioHolder(View itemView) {
             super(itemView);

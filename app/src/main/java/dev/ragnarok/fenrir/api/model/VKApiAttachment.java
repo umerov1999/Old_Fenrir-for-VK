@@ -27,6 +27,7 @@ public interface VKApiAttachment {
     String TYPE_GIFT = "gift";
     String TYPE_GRAFFITY = "graffiti";
     String TYPE_AUDIO_PLAYLIST = "audio_playlist";
+    String[] IGNORE_ATTACHMENTS = {"market", "market_album", "mini_app", "photos_list"};
 
     /**
      * @return type of this attachment

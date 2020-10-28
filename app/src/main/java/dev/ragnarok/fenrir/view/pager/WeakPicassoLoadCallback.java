@@ -1,8 +1,6 @@
 package dev.ragnarok.fenrir.view.pager;
 
-import com.squareup.picasso3.Callback;
-
-import org.jetbrains.annotations.NotNull;
+import com.squareup.picasso.Callback;
 
 import java.lang.ref.WeakReference;
 
@@ -23,7 +21,7 @@ public class WeakPicassoLoadCallback implements Callback {
     }
 
     @Override
-    public void onError(@NotNull Throwable e) {
+    public void onError(Exception e) {
         Callback callback = mReference.get();
         if (callback != null) {
             callback.onError(e);

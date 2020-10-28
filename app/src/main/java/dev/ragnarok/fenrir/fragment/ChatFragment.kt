@@ -465,7 +465,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPrensenter, IChatView>(), IChat
             if (name.length > 2) name = name.substring(0, 2)
             name = name.trim { it <= ' ' }
             EmptyAvatar?.text = name
-            Avatar?.setImageBitmap(RoundTransformation().transform(Utils.createGradientChatImage(200, 200, peer.id)).bitmap)
+            Avatar?.setImageBitmap(RoundTransformation().transform(Utils.createGradientChatImage(200, 200, peer.id)))
         }
     }
 
@@ -700,7 +700,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPrensenter, IChatView>(), IChat
         if (AppPerms.hasCameraPermision(requireContext())) {
             presenter?.fireEditCameraClick()
         } else {
-            requestPermissions(arrayOf(Manifest.permission.CAMERA), REQUEST_PERMISSION_CAMERA_EDIT)
+            requestPermissions(arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_PERMISSION_CAMERA_EDIT)
         }
     }
 

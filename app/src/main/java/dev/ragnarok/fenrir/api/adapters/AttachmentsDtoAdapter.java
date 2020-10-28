@@ -32,6 +32,7 @@ import dev.ragnarok.fenrir.api.model.VkApiAttachments;
 import dev.ragnarok.fenrir.api.model.VkApiAudioMessage;
 import dev.ragnarok.fenrir.api.model.VkApiDoc;
 import dev.ragnarok.fenrir.util.Objects;
+import dev.ragnarok.fenrir.util.Utils;
 
 public class AttachmentsDtoAdapter extends AbsAdapter implements JsonDeserializer<VkApiAttachments> {
 
@@ -102,7 +103,10 @@ public class AttachmentsDtoAdapter extends AbsAdapter implements JsonDeserialize
             return context.deserialize(o, VKApiAudioPlaylist.class);
         } else if (VKApiAttachment.TYPE_WALL_REPLY.equals(type)) {
             return context.deserialize(o, VKApiWallReply.class);
+        } else if (!Utils.isValueAssigned(type, VKApiAttachment.IGNORE_ATTACHMENTS)) {
+            return new VKApiNotSupported(type, o.toString());
+        } else {
+            return null;
         }
-        return new VKApiNotSupported(type, o.toString());
     }
 }

@@ -27,8 +27,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.squareup.picasso3.Callback;
-import com.squareup.picasso3.Transformation;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Transformation;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -66,11 +66,7 @@ import dev.ragnarok.fenrir.view.pager.CloseOnFlingListener;
 import dev.ragnarok.fenrir.view.pager.GoBackCallback;
 import dev.ragnarok.fenrir.view.pager.WeakGoBackAnimationAdapter;
 import dev.ragnarok.fenrir.view.pager.WeakPicassoLoadCallback;
-import dev.ragnarok.fenrir.view.verticalswipe.BelowFractionalClamp;
-import dev.ragnarok.fenrir.view.verticalswipe.PropertySideEffect;
-import dev.ragnarok.fenrir.view.verticalswipe.SensitivityClamp;
-import dev.ragnarok.fenrir.view.verticalswipe.SettleOnTopAction;
-import dev.ragnarok.fenrir.view.verticalswipe.VerticalSwipeBehavior;
+import dev.ragnarok.fenrir.view.swipehelper.VerticalSwipeBehavior;
 
 import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
@@ -420,15 +416,14 @@ public class StoryPagerFragment extends BaseMvpFragment<StoryPagerPresenter, ISt
     }
 
     private class PhotoViewHolder extends MultiHolder implements Callback {
+        public final FloatingActionButton reload;
         private final WeakPicassoLoadCallback mPicassoLoadCallback;
         public TouchImageView photo;
         public ProgressBar progress;
-        public final FloatingActionButton reload;
         private boolean mLoadingNow;
 
         public PhotoViewHolder(View view) {
             super(view);
-            photo = view.findViewById(R.id.image_view);
             progress = view.findViewById(R.id.progress_bar);
             photo = view.findViewById(idOfImageView());
             photo.setMaxZoom(8f);
@@ -502,7 +497,7 @@ public class StoryPagerFragment extends BaseMvpFragment<StoryPagerPresenter, ISt
         }
 
         @Override
-        public void onError(@NotNull Throwable e) {
+        public void onError(Exception e) {
             mLoadingNow = false;
             resolveProgressVisibility();
             reload.setVisibility(View.VISIBLE);
@@ -530,10 +525,10 @@ public class StoryPagerFragment extends BaseMvpFragment<StoryPagerPresenter, ISt
 
 
             VerticalSwipeBehavior<TouchImageView> ui = VerticalSwipeBehavior.Companion.from(ret.photo);
-            ui.setSettle(new SettleOnTopAction());
-            ui.setSideEffect(new PropertySideEffect(View.ALPHA, View.SCALE_X, View.SCALE_Y));
-            BelowFractionalClamp clampDelegate = new BelowFractionalClamp(3f, 3f);
-            ui.setClamp(new SensitivityClamp(0.5f, clampDelegate, 0.5f));
+            ui.setSettle(new VerticalSwipeBehavior.SettleOnTopAction());
+            ui.setSideEffect(new VerticalSwipeBehavior.PropertySideEffect(View.ALPHA, View.SCALE_X, View.SCALE_Y));
+            VerticalSwipeBehavior.BelowFractionalClamp clampDelegate = new VerticalSwipeBehavior.BelowFractionalClamp(3f, 3f);
+            ui.setClamp(new VerticalSwipeBehavior.SensitivityClamp(0.5f, clampDelegate, 0.5f));
             ui.setListener(new VerticalSwipeBehavior.SwipeListener() {
                 @Override
                 public void onReleased() {

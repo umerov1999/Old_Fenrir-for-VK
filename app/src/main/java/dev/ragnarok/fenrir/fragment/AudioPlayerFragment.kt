@@ -1,30 +1,26 @@
 package dev.ragnarok.fenrir.fragment
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.*
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
 import android.os.*
-import android.view.*
+import android.view.HapticFeedbackConstants
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.Snackbar
-import com.squareup.picasso3.BitmapTarget
-import com.squareup.picasso3.Picasso
 import dev.ragnarok.fenrir.Extra
 import dev.ragnarok.fenrir.R
 import dev.ragnarok.fenrir.activity.SendAttachmentsActivity
@@ -36,7 +32,6 @@ import dev.ragnarok.fenrir.materialpopupmenu.MaterialPopupMenuBuilder
 import dev.ragnarok.fenrir.model.Audio
 import dev.ragnarok.fenrir.picasso.PicassoInstance
 import dev.ragnarok.fenrir.picasso.transforms.BlurTransformation
-import dev.ragnarok.fenrir.picasso.transforms.PolyTopTransformation
 import dev.ragnarok.fenrir.place.PlaceFactory
 import dev.ragnarok.fenrir.player.ui.PlayPauseButton
 import dev.ragnarok.fenrir.player.ui.RepeatButton
@@ -55,6 +50,7 @@ import dev.ragnarok.fenrir.util.RxUtils
 import dev.ragnarok.fenrir.util.Utils
 import dev.ragnarok.fenrir.util.Utils.isEmpty
 import dev.ragnarok.fenrir.view.CircleCounterButton
+import dev.ragnarok.fenrir.view.swipehelper.HorizontalSwipeBehavior
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import java.lang.ref.WeakReference
@@ -88,7 +84,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
     private var tvAlbum: TextView? = null
     private var tvSubtitle: TextView? = null
     private var ivCover: ShapeableImageView? = null
-    private var ivBackground: ConstraintLayout? = null
+    private var ivBackground: ImageView? = null
 
     // Handler used to update the current time
     private var mTimeHandler: TimeHandler? = null
@@ -158,39 +154,6 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private fun registerSwipes(view: View) {
-        view.setOnTouchListener(object : View.OnTouchListener {
-            var downX: Int = 0
-            var upX: Int = 0
-            val Delta: Int = Settings.get().ui().isPhoto_swipe_triggered_pos
-
-            override fun onTouch(v: View, event: MotionEvent): Boolean {
-                when (event.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        downX = event.x.toInt()
-                    }
-                    MotionEvent.ACTION_UP -> {
-                        upX = event.x.toInt()
-                        val deltaX = downX - upX.toFloat()
-                        if (abs(deltaX) > Delta) {
-                            return if (deltaX >= 0) {
-                                view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-                                MusicUtils.next()
-                                false
-                            } else {
-                                view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-                                MusicUtils.previous(requireActivity())
-                                false
-                            }
-                        }
-                    }
-                }
-                return true
-            }
-        })
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val layoutRes: Int = if (Utils.isLandscape(requireActivity()) && !Utils.is600dp(requireActivity())) {
             R.layout.fragment_player_land
@@ -255,7 +218,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         val mPreviousButton: RepeatingImageButton = root.findViewById(R.id.action_button_previous)
         val mNextButton: RepeatingImageButton = root.findViewById(R.id.action_button_next)
         ivCover = root.findViewById(R.id.cover)
-        ivBackground = root.findViewById(R.id.audio_player_constraint)
+        ivBackground = root.findViewById(R.id.cover_background)
         mCurrentTime = root.findViewById(R.id.audio_player_current_time)
         mTotalTime = root.findViewById(R.id.audio_player_total_time)
         tvTitle = root.findViewById(R.id.audio_player_title)
@@ -263,6 +226,27 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         tvSubtitle = root.findViewById(R.id.audio_player_subtitle)
         mGetLyrics = root.findViewById(R.id.audio_player_get_lyrics)
         mGetLyrics?.setOnClickListener { onLyrics() }
+
+        val ui = HorizontalSwipeBehavior.from(ivCover!!)
+        ui.settle = HorizontalSwipeBehavior.OriginSettleAction()
+        ui.sideEffect = HorizontalSwipeBehavior.PropertySideEffect(View.ALPHA, View.SCALE_X, View.SCALE_Y)
+        val clampDelegate = HorizontalSwipeBehavior.BelowFractionalClamp(3f, 3f)
+        ui.clamp = HorizontalSwipeBehavior.SensitivityClamp(0.5f, clampDelegate, 0.5f)
+        ui.listener = object : HorizontalSwipeBehavior.SwipeListener {
+            override fun onReleased() {}
+            override fun onCaptured() {}
+            override fun onPreSettled(diff: Int) {
+                if (abs(diff) > Settings.get().ui().isPhoto_swipe_triggered_pos - 40) {
+                    ivCover?.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                }
+            }
+
+            override fun onPostSettled(success: Boolean, left: Boolean) {
+                if (success) {
+                    if (left) MusicUtils.next() else MusicUtils.previous(requireActivity())
+                }
+            }
+        }
 
         if (Settings.get().other().isClick_next_track) {
             ivCover?.setOnClickListener {
@@ -272,8 +256,6 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                 MusicUtils.previous(requireActivity())
                 true
             }
-        } else {
-            registerSwipes(ivCover!!)
         }
 
         //to animate running text
@@ -537,28 +519,14 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
             ivCover!!.scaleType = ImageView.ScaleType.FIT_START
             PicassoInstance.with().load(coverUrl).into(ivCover!!)
             if (Settings.get().other().isBlur_for_player) {
-                PicassoInstance.with().load(coverUrl).transform(PolyTopTransformation()).transform(BlurTransformation(25, 1, requireActivity())).into(object : BitmapTarget {
-                    override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
-                        if (isAdded && ivBackground != null) {
-                            ivBackground?.background = BitmapDrawable(resources, bitmap)
-                        }
-                    }
-
-                    override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-                    }
-
-                    override fun onBitmapFailed(e: Exception, errorDrawable: Drawable?) {
-                        if (isAdded && ivBackground != null) {
-                            ivBackground?.setBackgroundResource(0)
-                        }
-                    }
-
-                })
+                PicassoInstance.with().load(coverUrl).transform(BlurTransformation(25, 1, requireActivity())).into(ivBackground!!)
             }
-
         } else {
-            ivBackground?.setBackgroundResource(0)
             PicassoInstance.with().cancelRequest(ivCover!!)
+            if (Settings.get().other().isBlur_for_player) {
+                PicassoInstance.with().cancelRequest(ivBackground!!)
+                ivBackground?.setImageDrawable(null)
+            }
             ivCover!!.scaleType = ImageView.ScaleType.CENTER
             ivCover!!.setImageResource(R.drawable.itunes)
             ivCover!!.drawable.setTint(CurrentTheme.getColorOnSurface(requireContext()))

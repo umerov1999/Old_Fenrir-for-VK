@@ -115,7 +115,7 @@ public class CheckUpdate {
     }
 
     public static boolean isFullVersion(Context context) {
-        if (!Utils.isValueAssigned(Settings.get().accounts().getCurrent(), Constants.DONATES_USERS) && Constants.IS_DONATE == 0) {
+        if (!Utils.isValueAssigned(Settings.get().accounts().getCurrent(), Constants.DONATES_USERS) && !Utils.isValueAssigned(Settings.get().accounts().getCurrent(), Utils.donate_users) && Constants.IS_DONATE == 0) {
             MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(context);
             dlgAlert.setMessage(R.string.in_full_version);
             dlgAlert.setTitle(R.string.info);

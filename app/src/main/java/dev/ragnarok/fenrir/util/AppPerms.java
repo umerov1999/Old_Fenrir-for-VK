@@ -37,8 +37,10 @@ public class AppPerms {
 
     public static boolean hasCameraPermision(Context context) {
         if (!Utils.hasMarshmallow()) return true;
-        int hasWritePermission = PermissionChecker.checkSelfPermission(context, Manifest.permission.CAMERA);
-        return hasWritePermission == PackageManager.PERMISSION_GRANTED;
+        int hasCameraPermission = PermissionChecker.checkSelfPermission(context, Manifest.permission.CAMERA);
+        int hasWritePermission = PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int hasReadPermission = PermissionChecker.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE);
+        return hasCameraPermission == PackageManager.PERMISSION_GRANTED && hasWritePermission == PackageManager.PERMISSION_GRANTED && hasReadPermission == PackageManager.PERMISSION_GRANTED;
     }
 
     public static void requestWriteStoragePermission(Activity activity) {

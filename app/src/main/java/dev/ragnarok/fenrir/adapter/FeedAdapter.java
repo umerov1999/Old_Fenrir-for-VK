@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso3.Transformation;
+import com.squareup.picasso.Transformation;
 
 import java.util.List;
 
@@ -227,7 +227,6 @@ public class FeedAdapter extends RecyclerBindableAdapter<News, FeedAdapter.PostH
 
     class PostHolder extends RecyclerView.ViewHolder implements IdentificableHolder {
 
-        private final View cardView;
         final View topDivider;
         final TextView tvOwnerName;
         final ImageView ivOwnerAvatar;
@@ -241,6 +240,7 @@ public class FeedAdapter extends RecyclerBindableAdapter<News, FeedAdapter.PostH
         final CircleCounterButton commentsButton;
         final AttachmentsHolder attachmentsHolder;
         final TextView viewsCounter;
+        private final View cardView;
 
         PostHolder(View root) {
             super(root);

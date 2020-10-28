@@ -15,7 +15,7 @@
             android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            app:layout_behavior="dev.ragnarok.fenrir.view.verticalswipe.VerticalSwipeBehavior" />
+            app:layout_behavior="dev.ragnarok.fenrir.view.swipehelper.VerticalSwipeBehavior" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <ProgressBar

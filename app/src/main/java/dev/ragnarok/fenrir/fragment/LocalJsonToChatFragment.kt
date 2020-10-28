@@ -171,7 +171,7 @@ class LocalJsonToChatFragment : PlaceSupportMvpFragment<LocalJsonToChatPresenter
             if (name.length > 2) name = name.substring(0, 2)
             name = name.trim { it <= ' ' }
             EmptyAvatar?.text = name
-            Avatar?.setImageBitmap(RoundTransformation().transform(Utils.createGradientChatImage(200, 200, peer.id)).bitmap)
+            Avatar?.setImageBitmap(RoundTransformation().transform(Utils.createGradientChatImage(200, 200, peer.id)))
         }
     }
 

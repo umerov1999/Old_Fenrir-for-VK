@@ -58,10 +58,10 @@ import static ealvatag.utils.Check.checkArgNotNullOrEmpty;
  * @since v0.01
  */
 public class AudioFileImpl implements AudioFile {
+    protected final String extension;         // we parsed it once to find the reader, so let's store it and not keep parsing
     protected File file;
     protected AudioHeader audioHeader;
     protected TagFieldContainer tag;
-    protected final String extension;         // we parsed it once to find the reader, so let's store it and not keep parsing
 
     /**
      * These constructors are used by the different readers, users should not use them.

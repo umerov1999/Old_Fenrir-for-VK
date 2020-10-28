@@ -23,7 +23,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.squareup.picasso3.Transformation;
+import com.squareup.picasso.Transformation;
 import com.umerov.rlottie.RLottieImageView;
 
 import java.util.ArrayList;
@@ -449,8 +449,8 @@ public class AudioContainer extends LinearLayout {
         final MaterialCardView selectionView;
         final MaterialCardView isSelectedView;
         final Animator.AnimatorListener animationAdapter;
-        ObjectAnimator animator;
         final RLottieImageView visual;
+        ObjectAnimator animator;
 
         AudioHolder(View root) {
             tvTitle = root.findViewById(R.id.dialog_title);

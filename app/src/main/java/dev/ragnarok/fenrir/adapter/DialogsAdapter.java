@@ -17,7 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso3.Transformation;
+import com.squareup.picasso.Transformation;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -290,7 +290,7 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.DialogVi
             PicassoInstance.with().cancelRequest(holder.ivAvatar);
             holder.EmptyAvatar.setVisibility(View.VISIBLE);
             holder.EmptyAvatar.setText("@");
-            holder.ivAvatar.setImageBitmap(mTransformation.transform(Utils.createGradientChatImage(200, 200, dialog.getId())).getBitmap());
+            holder.ivAvatar.setImageBitmap(mTransformation.transform(Utils.createGradientChatImage(200, 200, dialog.getId())));
         } else {
             if (dialog.getImageUrl() != null) {
                 holder.EmptyAvatar.setVisibility(View.INVISIBLE);
@@ -303,7 +303,7 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.DialogVi
                     name = name.substring(0, 2);
                 name = name.trim();
                 holder.EmptyAvatar.setText(name);
-                holder.ivAvatar.setImageBitmap(mTransformation.transform(Utils.createGradientChatImage(200, 200, dialog.getId())).getBitmap());
+                holder.ivAvatar.setImageBitmap(mTransformation.transform(Utils.createGradientChatImage(200, 200, dialog.getId())));
             }
         }
 

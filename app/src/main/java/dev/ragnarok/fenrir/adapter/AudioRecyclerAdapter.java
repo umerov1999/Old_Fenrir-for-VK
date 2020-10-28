@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.squareup.picasso3.Transformation;
+import com.squareup.picasso.Transformation;
 import com.umerov.rlottie.RLottieImageView;
 
 import org.jetbrains.annotations.NotNull;

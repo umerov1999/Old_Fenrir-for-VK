@@ -22,8 +22,6 @@ public class Constants {
     public static final String AUTH_VERSION = "5.122";
     public static final int DATABASE_VERSION = 1;
 
-    public static final int VERSION_APK = BuildConfig.VERSION_CODE;
-    public static final String APK_ID = BuildConfig.APPLICATION_ID;
     public static final @Account_Types
     int DEFAULT_ACCOUNT_TYPE = Account_Types.VK_ANDROID;
 
@@ -32,13 +30,15 @@ public class Constants {
     public static final String FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".fileprovider";
 
     //public static final String DEVICE_COUNTRY_CODE = Injection.provideApplicationContext().getResources().getConfiguration().locale.getCountry().toLowerCase();
+    public static final int VERSION_APK = BuildConfig.VERSION_CODE;
+    public static final String APK_ID = BuildConfig.APPLICATION_ID;
     public static final String DEVICE_COUNTRY_CODE = "ru";
 
-    public static final String VKANDROID_APP_VERSION_CODE = "6274";
+    public static final String VKANDROID_APP_VERSION_CODE = "6282";
     public static final String VKANDROID_APP_VERSION_NAME = "6.15";
 
-    public static final String KATE_APP_VERSION_CODE = "478";
-    public static final String KATE_APP_VERSION_NAME = "66 lite";
+    public static final String KATE_APP_VERSION_CODE = "480";
+    public static final String KATE_APP_VERSION_NAME = "66.2 lite";
 
     public static final String KATE_USER_AGENT = String.format(Locale.US, "KateMobileAndroid/%s-%s (Android %s; SDK %d; %s; %s; %s; %s)", KATE_APP_VERSION_NAME, KATE_APP_VERSION_CODE, Build.VERSION.RELEASE, Build.VERSION.SDK_INT, Build.SUPPORTED_ABIS[0], Utils.getDeviceName(), DEVICE_COUNTRY_CODE, SCREEN_RESOLUTION());
     public static final String KATE_USER_AGENT_FAKE = String.format(Locale.US, "KateMobileAndroid/%s-%s (Android %s; SDK %d; %s; %s; %s; %s)", KATE_APP_VERSION_NAME, KATE_APP_VERSION_CODE, Build.VERSION.RELEASE, Build.VERSION.SDK_INT, BuildConfig.FAKE_ABI, BuildConfig.FAKE_DEVICE, DEVICE_COUNTRY_CODE, SCREEN_RESOLUTION());

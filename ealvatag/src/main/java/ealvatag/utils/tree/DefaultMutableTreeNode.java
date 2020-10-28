@@ -1324,8 +1324,8 @@ public class DefaultMutableTreeNode implements Cloneable,
 
 
     static final class PostorderEnumeration implements Enumeration<TreeNode> {
-        protected TreeNode root;
         protected final Enumeration<TreeNode> children;
+        protected TreeNode root;
         protected Enumeration<TreeNode> subtree;
 
         public PostorderEnumeration(TreeNode rootNode) {

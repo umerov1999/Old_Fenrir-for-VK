@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.squareup.picasso3.Transformation;
+import com.squareup.picasso.Transformation;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -340,11 +340,15 @@ public class AdditionalNavigationFragment extends BaseFragment implements MenuLi
     }
 
     public void unblockSheet() {
-        requireView().setVisibility(View.VISIBLE);
+        if (getView() != null) {
+            getView().setVisibility(View.VISIBLE);
+        }
     }
 
     public void blockSheet() {
-        requireView().setVisibility(View.GONE);
+        if (getView() != null) {
+            getView().setVisibility(View.GONE);
+        }
     }
 
     private void selectItem(AbsMenuItem item, boolean longClick) {

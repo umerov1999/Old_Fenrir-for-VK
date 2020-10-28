@@ -265,7 +265,7 @@ public abstract class AbsAttachmentsEditFragment<P extends AbsAttachmentsEditPre
 
     @Override
     public void requestCameraPermission() {
-        requestPermissions(new String[]{Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
+        requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CAMERA);
     }
 
     @Override
