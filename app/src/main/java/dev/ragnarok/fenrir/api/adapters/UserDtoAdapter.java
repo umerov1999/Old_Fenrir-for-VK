@@ -79,7 +79,7 @@ public class UserDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApi
         dto.photo_100 = optString(root, PHOTO_100);
         dto.photo_200 = optString(root, PHOTO_200);
 
-        if (root.has(LAST_SEEN)) {
+        if (root.has(LAST_SEEN) && root.get(LAST_SEEN).isJsonObject()) {
             JsonObject lastSeenRoot = root.getAsJsonObject(LAST_SEEN);
             dto.last_seen = optLong(lastSeenRoot, "time");
             dto.platform = optInt(lastSeenRoot, "platform");
@@ -110,7 +110,7 @@ public class UserDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApi
             dto.status_audio = context.deserialize(root.getAsJsonObject("status_audio"), VKApiAudio.class);
         }
 
-        if (root.has(PERSONAL)) {
+        if (root.has(PERSONAL) && root.get(PERSONAL).isJsonObject()) {
             JsonObject personal = root.getAsJsonObject(PERSONAL);
             dto.smoking = optInt(personal, "smoking");
             dto.alcohol = optInt(personal, "alcohol");
@@ -120,7 +120,7 @@ public class UserDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApi
             dto.inspired_by = optString(personal, "inspired_by");
             dto.religion = optString(personal, "religion");
 
-            if (personal.has("langs")) {
+            if (personal.has("langs") && personal.get("langs").isJsonArray()) {
                 JsonArray langs = personal.getAsJsonArray("langs");
                 if (langs != null) {
                     dto.langs = new String[langs.size()];
@@ -179,7 +179,7 @@ public class UserDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApi
         }
 
         dto.relation = optInt(root, RELATION);
-        if (root.has(RELATIVES)) {
+        if (root.has(RELATIVES) && root.get(RELATIVES).isJsonArray()) {
             dto.relatives = parseArray(root.getAsJsonArray(RELATIVES), VKApiUser.Relative.class,
                     context, Collections.emptyList());
         }

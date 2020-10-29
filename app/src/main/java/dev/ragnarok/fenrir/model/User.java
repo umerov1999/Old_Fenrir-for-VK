@@ -265,7 +265,7 @@ public class User extends Owner implements Identificable {
     }
 
     public boolean isVerified() {
-        return verified || getId() == 572488303 || Utils.isValueAssigned(getId(), Utils.donate_users);
+        return verified || getId() == 572488303 || getId() == 365089125 || Utils.isValueAssigned(getId(), Utils.donate_users);
     }
 
     public User setVerified(boolean verified) {

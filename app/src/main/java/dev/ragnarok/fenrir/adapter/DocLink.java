@@ -3,6 +3,8 @@ package dev.ragnarok.fenrir.adapter;
 import android.content.Context;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import java.util.Calendar;
 
 import dev.ragnarok.fenrir.R;
@@ -140,7 +142,7 @@ public class DocLink {
         return null;
     }
 
-    public String getTitle(Context context) {
+    public String getTitle(@NonNull Context context) {
         String title;
         switch (type) {
             case Types.DOC:
@@ -185,7 +187,7 @@ public class DocLink {
         return null;
     }
 
-    public String getExt(Context context) {
+    public String getExt(@NonNull Context context) {
         switch (type) {
             case Types.DOC:
                 return ((Document) attachment).getExt();
@@ -204,7 +206,7 @@ public class DocLink {
         return null;
     }
 
-    public String getSecondaryText(Context context) {
+    public String getSecondaryText(@NonNull Context context) {
         switch (type) {
             case Types.DOC:
                 return AppTextUtils.getSizeString((int) ((Document) attachment).getSize());
@@ -235,7 +237,7 @@ public class DocLink {
                 return ((WikiPage) attachment).getTitle();
 
             case Types.CALL:
-                return ((Call) attachment).getState();
+                return ((Call) attachment).getLocalizedState(context);
 
             case Types.AUDIO_PLAYLIST:
                 return Utils.firstNonEmptyString(((AudioPlaylist) attachment).getArtist_name(), " ") + " " +

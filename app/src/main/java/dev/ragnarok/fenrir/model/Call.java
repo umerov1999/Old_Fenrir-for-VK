@@ -1,6 +1,11 @@
 package dev.ragnarok.fenrir.model;
 
+import android.content.Context;
 import android.os.Parcel;
+
+import androidx.annotation.NonNull;
+
+import dev.ragnarok.fenrir.R;
 
 public class Call extends AbsModel {
 
@@ -69,6 +74,18 @@ public class Call extends AbsModel {
     }
 
     public String getState() {
+        return state;
+    }
+
+    public String getLocalizedState(@NonNull Context context) {
+        switch (state) {
+            case "canceled_by_receiver":
+                return context.getString(R.string.canceled_by_receiver);
+            case "canceled_by_initiator":
+                return context.getString(R.string.canceled_by_initiator);
+            case "reached":
+                return context.getString(R.string.call_reached);
+        }
         return state;
     }
 

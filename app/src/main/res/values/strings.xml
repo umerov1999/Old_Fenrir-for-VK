@@ -1542,4 +1542,7 @@
     <string name="pagan_symbol">Языческий символ</string>
     <string name="auto_update">Получать обновления</string>
     <string name="photo_settings">Просмотр фото</string>
+    <string name="canceled_by_receiver">Отменён получателем</string>
+    <string name="canceled_by_initiator">Отменён инициатором</string>
+    <string name="call_reached">Завершён</string>
 </resources>
