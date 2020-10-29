@@ -16,7 +16,6 @@ import dev.ragnarok.fenrir.util.Utils;
 
 public class Constants {
     public static final int IS_DONATE = BuildConfig.IS_DONATE;
-    public static final Integer[] DONATES_USERS = {572488303, 264548156, 244271565, 40626229};
 
     public static final String API_VERSION = "5.124";
     public static final String AUTH_VERSION = "5.122";

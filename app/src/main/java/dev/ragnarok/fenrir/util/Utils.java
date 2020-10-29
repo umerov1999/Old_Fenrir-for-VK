@@ -1050,6 +1050,7 @@ public class Utils {
         switch (dev.ragnarok.fenrir.settings.Settings.get().ui().getMainThemeKey()) {
             case "fire":
             case "yellow_violet":
+            case "fire_gray":
                 return Color.parseColor("#FF9800");
             case "old_ice":
             case "blue_red":

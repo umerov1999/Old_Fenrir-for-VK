@@ -236,6 +236,16 @@
         <item name="icon_color_inactive">#AAFF0000</item>
     </style>
 
+    <style name="App.DayNight.FireGray" parent="App.DayNight">
+        <item name="colorPrimary">#FF9800</item>
+        <item name="colorControlNormal">#FF9800</item>
+        <item name="colorSecondary">#777777</item>
+        <item name="colorOnPrimary">#FFF</item>
+        <item name="colorOnSecondary">#FFF</item>
+        <item name="icon_color_active">#AAFF9800</item>
+        <item name="icon_color_inactive">#AAFF0000</item>
+    </style>
+
     <style name="App.DayNight.Ice.Amoled" parent="App.DayNight.Ice" />
 
     <style name="App.DayNight.IceGreen.Amoled" parent="App.DayNight.IceGreen" />
@@ -269,6 +279,8 @@
     <style name="App.DayNight.GreenViolet.Amoled" parent="App.DayNight.GreenViolet" />
 
     <style name="App.DayNight.Gray.Amoled" parent="App.DayNight.Gray" />
+
+    <style name="App.DayNight.FireGray.Amoled" parent="App.DayNight.FireGray" />
 
     <style name="Theme.MaterialCardView" parent="Widget.MaterialComponents.CardView">
         <item name="cardElevation">1dp</item>
