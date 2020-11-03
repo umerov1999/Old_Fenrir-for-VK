@@ -197,9 +197,7 @@ public class ID3v24Tag extends AbstractID3v2Tag {
 //   */
 //  public static final int MASK_V24_DATA_LENGTH_INDICATOR = FileConstants.BIT1;
     private static final int TAG_EXT_HEADER_CRC_DATA_LENGTH = 5;
-    @SuppressWarnings("FieldCanBeLocal")
     private static final int TAG_EXT_HEADER_RESTRICTION_DATA_LENGTH = 1;
-    @SuppressWarnings("FieldCanBeLocal")
     private static final int TAG_EXT_NUMBER_BYTES_DATA_LENGTH = 1;
     /**
      * Tag padding

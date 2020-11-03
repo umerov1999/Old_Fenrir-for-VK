@@ -48,7 +48,7 @@ public abstract class AbstractDataType {
      * Holds the key such as "Text" or "PictureType", the naming of keys are fairly arbitary but are intended
      * to make it easier to for the developer, the keys themseleves are not written to the tag.
      */
-    protected String identifier = "";
+    protected String identifier;
 
     /**
      * Holds the calling body, allows an datatype to query other objects in the

@@ -58,7 +58,7 @@ public class ITunesRating extends ID3Rating {
     }
 
     public int convertRatingToFiveStarScale(int value) {
-        int newValue = 0;
+        int newValue;
         if (value <= 0) {
             newValue = 0;
         } else if (value <= 20) {

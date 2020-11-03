@@ -232,7 +232,7 @@ public abstract class AudioFileWriter {
             return;
         }
 
-        RandomAccessFile raf = null;
+        RandomAccessFile raf;
         RandomAccessFile rafTemp = null;
         File newFile;
         File result;
