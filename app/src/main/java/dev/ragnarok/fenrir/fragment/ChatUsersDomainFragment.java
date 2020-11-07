@@ -55,7 +55,7 @@ public class ChatUsersDomainFragment extends BaseMvpBottomSheetDialogFragment<Ch
     public BottomSheetDialog onCreateDialog(Bundle savedInstanceState) {
         BottomSheetDialog dialog = new BottomSheetDialog(requireActivity(), getTheme());
         BottomSheetBehavior<FrameLayout> behavior = dialog.getBehavior();
-        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        behavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
         behavior.setSkipCollapsed(true);
         return dialog;
     }

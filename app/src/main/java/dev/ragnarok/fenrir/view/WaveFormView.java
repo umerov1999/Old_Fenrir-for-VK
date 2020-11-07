@@ -69,11 +69,8 @@ public class WaveFormView extends View {
 
     private static byte calculateMaxValue(byte[] values) {
         byte max = values.length > 0 ? values[0] : 0;
-        for (byte value : values) {
-            if (value > max) {
-                max = value;
-            }
-        }
+        for (byte value : values)
+            if (value > max) max = value;
 
         return max;
     }
@@ -129,7 +126,7 @@ public class WaveFormView extends View {
         ObjectAnimator animator = ObjectAnimator.ofFloat(this, PROGRESS_PROPERTY, progress);
         mAnimator = new WeakReference<>(animator);
 
-        animator.setDuration(500);
+        animator.setDuration(900);
         //animator.setInterpolator(new AccelerateInterpolator(1.75f));
         animator.start();
     }

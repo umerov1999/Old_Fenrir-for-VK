@@ -23,9 +23,7 @@
             app:elevation="0dp"
             app:itemIconTint="@color/selector_bottom_navigation"
             app:labelVisibilityMode="unlabeled"
-            app:menu="@menu/menu_main">
-
-        </com.google.android.material.bottomnavigation.BottomNavigationView>
+            app:menu="@menu/menu_main" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

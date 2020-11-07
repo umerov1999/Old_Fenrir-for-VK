@@ -40,52 +40,40 @@
                         tools:text="Video" />
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cover_cardview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="16dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         app:cardCornerRadius="4dp"
                         app:cardElevation="0dp">
 
-                        <FrameLayout
+                        <dev.ragnarok.fenrir.view.AspectRatioImageView
+                            android:id="@+id/fragment_video_preview_image"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:scaleType="centerCrop"
+                            app:aspectRatioEnabled="true"
+                            app:aspectRatioH="9"
+                            app:aspectRatioW="16"
+                            app:dominantMeasurement="width" />
 
-                            <dev.ragnarok.fenrir.view.AspectRatioImageView
-                                android:id="@+id/fragment_video_preview_image"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:scaleType="centerCrop"
-                                app:aspectRatioEnabled="true"
-                                app:aspectRatioH="9"
-                                app:aspectRatioW="16"
-                                app:dominantMeasurement="width" />
+                        <ImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/audio_button"
+                            android:contentDescription="@string/play"
+                            android:stateListAnimator="@animator/clicked" />
 
-                            <FrameLayout
-                                android:id="@+id/button_play"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:layout_gravity="center"
-                                android:background="?attr/selectableItemBackgroundBorderless"
-                                android:stateListAnimator="@animator/clicked">
-
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_gravity="center"
-                                    android:background="@drawable/audio_button"
-                                    android:contentDescription="@string/play" />
-
-                                <dev.ragnarok.fenrir.view.ColorFilterImageView
-                                    android:layout_width="40dp"
-                                    android:layout_height="40dp"
-                                    android:layout_gravity="center"
-                                    android:src="@drawable/video"
-                                    app:filter_color="@color/white" />
-
-                            </FrameLayout>
-
-                        </FrameLayout>
+                        <dev.ragnarok.fenrir.view.ColorFilterImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/video"
+                            android:stateListAnimator="@animator/clicked"
+                            app:filter_color="@color/white" />
 
                     </com.google.android.material.card.MaterialCardView>
 

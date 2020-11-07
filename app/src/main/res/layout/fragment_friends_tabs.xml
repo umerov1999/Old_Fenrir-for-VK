@@ -14,14 +14,6 @@
 
         <include layout="@layout/toolbar_no_card" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="?android:colorBackground"
-            app:cardCornerRadius="0dp"
-            app:cardElevation="0dp"
-            app:contentPadding="0dp">
-
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tablayout"
                 style="@style/Theme.Tablayout"
@@ -29,8 +21,6 @@
                 android:layout_height="40dp"
                 android:background="@android:color/transparent"
                 app:tabTextAppearance="@style/MineCustomTabText" />
-
-        </com.google.android.material.card.MaterialCardView>
 
     </com.google.android.material.appbar.AppBarLayout>
 

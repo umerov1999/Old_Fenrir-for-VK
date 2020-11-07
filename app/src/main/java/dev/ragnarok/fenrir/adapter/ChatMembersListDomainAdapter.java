@@ -92,13 +92,6 @@ public class ChatMembersListDomainAdapter extends RecyclerView.Adapter<ChatMembe
         }
 
         holder.tvName.setText(user.getFullName());
-        boolean isCreator = user.getOwnerId() == item.getInvitedBy();
-
-        if (isCreator) {
-            holder.tvSubline.setText(R.string.creator_of_conversation);
-        } else {
-            holder.tvSubline.setText(context.getString(R.string.invited_by, item.getInviter().getFullName()));
-        }
 
         if (nonEmpty(user.getDomain())) {
             holder.tvDomain.setText("@" + user.getDomain());
@@ -144,14 +137,12 @@ public class ChatMembersListDomainAdapter extends RecyclerView.Adapter<ChatMembe
         final ImageView ivAvatar;
         final TextView tvName;
         final TextView tvDomain;
-        final TextView tvSubline;
 
         ViewHolder(View root) {
             super(root);
             vOnline = root.findViewById(R.id.item_user_online);
             ivAvatar = root.findViewById(R.id.item_user_avatar);
             tvName = root.findViewById(R.id.item_user_name);
-            tvSubline = root.findViewById(R.id.item_user_invited_by);
             tvDomain = root.findViewById(R.id.item_user_domain);
         }
     }

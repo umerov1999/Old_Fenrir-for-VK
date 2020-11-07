@@ -19,8 +19,8 @@
 
         <ImageView
             android:id="@+id/item_audio_play_cover"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
             android:contentDescription="@string/play" />
 
         <com.umerov.rlottie.RLottieImageView
@@ -55,6 +55,8 @@
             style="@android:style/Widget.Material.SeekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
             android:max="1000" />
     </LinearLayout>
 
@@ -64,6 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:backgroundTint="?colorSurface"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/open_full_player"
         android:padding="8dp"
         android:scaleType="centerInside"
@@ -76,6 +79,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginEnd="4dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:backgroundTint="?colorSurface"
         android:contentDescription="@string/close"
         android:padding="8dp"

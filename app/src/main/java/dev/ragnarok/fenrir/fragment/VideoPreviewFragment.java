@@ -175,14 +175,14 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
         mSubtitleText = mRootView.findViewById(R.id.fragment_video_subtitle);
 
         if (Settings.get().other().isDo_auto_play_video()) {
-            mRootView.findViewById(R.id.button_play).setOnClickListener(v -> getPresenter().fireAutoPlayClick());
-            mRootView.findViewById(R.id.button_play).setOnLongClickListener(v -> {
+            mRootView.findViewById(R.id.cover_cardview).setOnClickListener(v -> getPresenter().fireAutoPlayClick());
+            mRootView.findViewById(R.id.cover_cardview).setOnLongClickListener(v -> {
                 getPresenter().firePlayClick();
                 return true;
             });
         } else {
-            mRootView.findViewById(R.id.button_play).setOnClickListener(v -> getPresenter().firePlayClick());
-            mRootView.findViewById(R.id.button_play).setOnLongClickListener(v -> {
+            mRootView.findViewById(R.id.cover_cardview).setOnClickListener(v -> getPresenter().firePlayClick());
+            mRootView.findViewById(R.id.cover_cardview).setOnLongClickListener(v -> {
                 getPresenter().fireAutoPlayClick();
                 return true;
             });
