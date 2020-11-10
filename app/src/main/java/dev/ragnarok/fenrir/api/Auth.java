@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Locale;
 
+import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.api.util.VKStringUtils;
@@ -32,7 +33,11 @@ public class Auth {
     public static String getScope() {
         //http://vk.com/dev/permission
         //return "notify,friends,photos,audio,video,stories,pages,status,notes,messages,wall,offline,docs,groups,notifications,stats,email,market";
-        return "all";
+        if (Constants.DEFAULT_ACCOUNT_TYPE == Account_Types.KATE) {
+            return "notify,friends,photos,audio,video,docs,status,notes,pages,wall,groups,messages,offline,notifications,stories";
+        } else {
+            return "all";
+        }
     }
 
     public static String[] parseRedirectUrl(String url) throws Exception {

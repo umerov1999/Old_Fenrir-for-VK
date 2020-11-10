@@ -1288,6 +1288,13 @@ public class Utils {
         return builder;
     }
 
+    public static <T> T BY_DEFAULT_ACCOUNT_TYPE(T vk_official, T kate) {
+        if (Constants.DEFAULT_ACCOUNT_TYPE == Account_Types.VK_ANDROID) {
+            return vk_official;
+        }
+        return kate;
+    }
+
     /**
      * Returns the bitmap position inside an imageView.
      *

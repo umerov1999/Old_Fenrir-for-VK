@@ -89,15 +89,20 @@ public class FirebaseInstallationServiceClient {
     private static final Charset UTF_8 = StandardCharsets.UTF_8;
     private static final String SDK_VERSION_PREFIX = "a:";
     private static final String FIS_TAG = "Firebase-Installations";
+    private final Context context;
     private final Provider<UserAgentPublisher> userAgentPublisher;
     private final Provider<HeartBeatInfo> heartbeatInfo;
+    private final RequestLimiter requestLimiter;
+    private boolean shouldServerErrorRetry;
 
     public FirebaseInstallationServiceClient(
             @NonNull Context context,
             @NonNull Provider<UserAgentPublisher> publisher,
             @NonNull Provider<HeartBeatInfo> heartbeatInfo) {
+        this.context = context;
         userAgentPublisher = publisher;
         this.heartbeatInfo = heartbeatInfo;
+        requestLimiter = new RequestLimiter();
     }
 
     /**
@@ -174,6 +179,10 @@ public class FirebaseInstallationServiceClient {
         }
     }
 
+    private static boolean isSuccessfulResponseCode(int responseCode) {
+        return responseCode >= 200 && responseCode < 300;
+    }
+
     private static void logBadConfigError() {
         Log.e(
                 FIS_TAG,
@@ -224,7 +233,8 @@ public class FirebaseInstallationServiceClient {
         if (errorStream == null) {
             return null;
         }
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream, UTF_8))) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream, UTF_8));
+        try {
             StringBuilder response = new StringBuilder();
             for (String input = reader.readLine(); input != null; input = reader.readLine()) {
                 response.append(input).append('\n');
@@ -234,6 +244,12 @@ public class FirebaseInstallationServiceClient {
                     conn.getResponseCode(), conn.getResponseMessage(), response);
         } catch (IOException ignored) {
             return null;
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException ignored) {
+
+            }
         }
     }
 
@@ -263,10 +279,16 @@ public class FirebaseInstallationServiceClient {
             @NonNull String appId,
             @Nullable String iidToken)
             throws FirebaseInstallationsException {
+        if (!requestLimiter.isRequestAllowed()) {
+            throw new FirebaseInstallationsException(
+                    "Firebase Installations Service is unavailable. Please try again later.",
+                    Status.UNAVAILABLE);
+        }
+
         String resourceName = String.format(CREATE_REQUEST_RESOURCE_NAME_FORMAT, projectID);
-        int retryCount = 0;
         URL url = getFullyQualifiedRequestUri(resourceName);
-        while (retryCount <= MAX_RETRIES) {
+        for (int retryCount = 0; retryCount <= MAX_RETRIES; retryCount++) {
+
             HttpURLConnection httpURLConnection = openHttpURLConnection(url, apiKey);
 
             try {
@@ -281,15 +303,22 @@ public class FirebaseInstallationServiceClient {
                 writeFIDCreateRequestBodyToOutputStream(httpURLConnection, fid, appId);
 
                 int httpResponseCode = httpURLConnection.getResponseCode();
+                requestLimiter.setNextRequestTime(httpResponseCode);
 
-                if (httpResponseCode == 200) {
+                if (isSuccessfulResponseCode(httpResponseCode)) {
                     return readCreateResponse(httpURLConnection);
                 }
 
                 logFisCommunicationError(httpURLConnection, appId, apiKey, projectID);
 
-                if (httpResponseCode == 429 || (httpResponseCode >= 500 && httpResponseCode < 600)) {
-                    retryCount++;
+                if (httpResponseCode == 429) {
+                    throw new FirebaseInstallationsException(
+                            "Firebase servers have received too many requests from this client in a short "
+                                    + "period of time. Please try again later.",
+                            Status.TOO_MANY_REQUESTS);
+                }
+
+                if (httpResponseCode >= 500 && httpResponseCode < 600) {
                     continue;
                 }
 
@@ -298,7 +327,7 @@ public class FirebaseInstallationServiceClient {
                 // Return empty installation response with BAD_CONFIG response code after max retries
                 return InstallationResponse.builder().setResponseCode(ResponseCode.BAD_CONFIG).build();
             } catch (AssertionError | IOException ignored) {
-                retryCount++;
+                continue;
             } finally {
                 httpURLConnection.disconnect();
             }
@@ -412,11 +441,17 @@ public class FirebaseInstallationServiceClient {
             @NonNull String projectID,
             @NonNull String refreshToken)
             throws FirebaseInstallationsException {
+        if (!requestLimiter.isRequestAllowed()) {
+            throw new FirebaseInstallationsException(
+                    "Firebase Installations Service is unavailable. Please try again later.",
+                    Status.UNAVAILABLE);
+        }
+
         String resourceName =
                 String.format(GENERATE_AUTH_TOKEN_REQUEST_RESOURCE_NAME_FORMAT, projectID, fid);
-        int retryCount = 0;
         URL url = getFullyQualifiedRequestUri(resourceName);
-        while (retryCount <= MAX_RETRIES) {
+        for (int retryCount = 0; retryCount <= MAX_RETRIES; retryCount++) {
+
             HttpURLConnection httpURLConnection = openHttpURLConnection(url, apiKey);
             try {
                 httpURLConnection.setRequestMethod("POST");
@@ -426,8 +461,9 @@ public class FirebaseInstallationServiceClient {
                 writeGenerateAuthTokenRequestBodyToOutputStream(httpURLConnection);
 
                 int httpResponseCode = httpURLConnection.getResponseCode();
+                requestLimiter.setNextRequestTime(httpResponseCode);
 
-                if (httpResponseCode == 200) {
+                if (isSuccessfulResponseCode(httpResponseCode)) {
                     return readGenerateAuthTokenResponse(httpURLConnection);
                 }
 
@@ -437,8 +473,14 @@ public class FirebaseInstallationServiceClient {
                     return TokenResult.builder().setResponseCode(TokenResult.ResponseCode.AUTH_ERROR).build();
                 }
 
-                if (httpResponseCode == 429 || (httpResponseCode >= 500 && httpResponseCode < 600)) {
-                    retryCount++;
+                if (httpResponseCode == 429) {
+                    throw new FirebaseInstallationsException(
+                            "Firebase servers have received too many requests from this client in a short "
+                                    + "period of time. Please try again later.",
+                            Status.TOO_MANY_REQUESTS);
+                }
+
+                if (httpResponseCode >= 500 && httpResponseCode < 600) {
                     continue;
                 }
 
@@ -447,7 +489,7 @@ public class FirebaseInstallationServiceClient {
                 return TokenResult.builder().setResponseCode(TokenResult.ResponseCode.BAD_CONFIG).build();
                 // TODO(b/166168291): Remove code duplication and clean up this class.
             } catch (AssertionError | IOException ignored) {
-                retryCount++;
+                continue;
             } finally {
                 httpURLConnection.disconnect();
             }
@@ -502,35 +544,29 @@ public class FirebaseInstallationServiceClient {
         reader.beginObject();
         while (reader.hasNext()) {
             String name = reader.nextName();
-            switch (name) {
-                case "name":
-                    builder.setUri(reader.nextString());
-                    break;
-                case "fid":
-                    builder.setFid(reader.nextString());
-                    break;
-                case "refreshToken":
-                    builder.setRefreshToken(reader.nextString());
-                    break;
-                case "authToken":
-                    reader.beginObject();
-                    while (reader.hasNext()) {
-                        String key = reader.nextName();
-                        if (key.equals("token")) {
-                            tokenResult.setToken(reader.nextString());
-                        } else if (key.equals("expiresIn")) {
-                            tokenResult.setTokenExpirationTimestamp(
-                                    parseTokenExpirationTimestamp(reader.nextString()));
-                        } else {
-                            reader.skipValue();
-                        }
+            if (name.equals("name")) {
+                builder.setUri(reader.nextString());
+            } else if (name.equals("fid")) {
+                builder.setFid(reader.nextString());
+            } else if (name.equals("refreshToken")) {
+                builder.setRefreshToken(reader.nextString());
+            } else if (name.equals("authToken")) {
+                reader.beginObject();
+                while (reader.hasNext()) {
+                    String key = reader.nextName();
+                    if (key.equals("token")) {
+                        tokenResult.setToken(reader.nextString());
+                    } else if (key.equals("expiresIn")) {
+                        tokenResult.setTokenExpirationTimestamp(
+                                parseTokenExpirationTimestamp(reader.nextString()));
+                    } else {
+                        reader.skipValue();
                     }
-                    builder.setAuthToken(tokenResult.build());
-                    reader.endObject();
-                    break;
-                default:
-                    reader.skipValue();
-                    break;
+                }
+                builder.setAuthToken(tokenResult.build());
+                reader.endObject();
+            } else {
+                reader.skipValue();
             }
         }
         reader.endObject();

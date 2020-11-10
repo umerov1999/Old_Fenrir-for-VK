@@ -32,7 +32,7 @@ import okio.Buffer;
  * Represents a bit flag within a byte
  */
 public class BooleanByte extends AbstractDataType {
-    private int bitPosition;
+    private final int bitPosition;
 
     public BooleanByte(String identifier, AbstractTagFrameBody frameBody, int bitPosition) {
         super(identifier, frameBody);

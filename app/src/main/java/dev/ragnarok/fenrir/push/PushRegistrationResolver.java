@@ -2,16 +2,14 @@ package dev.ragnarok.fenrir.push;
 
 import android.os.Build;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.Constants;
+import dev.ragnarok.fenrir.FCMToken;
 import dev.ragnarok.fenrir.api.ApiException;
 import dev.ragnarok.fenrir.api.interfaces.INetworker;
 import dev.ragnarok.fenrir.service.ApiErrorCodes;
@@ -38,21 +36,6 @@ public class PushRegistrationResolver implements IPushRegistrationResolver {
         this.devideIdProvider = devideIdProvider;
         this.settings = settings;
         this.networker = networker;
-    }
-
-    private static Single<String> getFcmToken() {
-        return Single.create(emitter -> {
-            OnCompleteListener<InstanceIdResult> listener = task -> {
-                if (task.isSuccessful()) {
-                    InstanceIdResult result = task.getResult();
-                    emitter.onSuccess(result.getToken());
-                } else {
-                    emitter.tryOnError(task.getException());
-                }
-            };
-
-            FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(listener);
-        });
     }
 
     @Override
@@ -177,11 +160,19 @@ public class PushRegistrationResolver implements IPushRegistrationResolver {
         String deviceModel = Utils.getDeviceName();
         //String osVersion = Utils.getAndroidVersion();
 
-        return networker.vkManual(registration.getUserId(), registration.getVkToken())
-                .account()
-                .registerDevice(registration.getGmcToken(), 1, Constants.VKANDROID_APP_VERSION_CODE, "fcm",
-                        "vk_client", 4, deviceModel, registration.getDeviceId(), Build.VERSION.RELEASE, null)
-                .ignoreElement();
+        if (Constants.DEFAULT_ACCOUNT_TYPE == Account_Types.KATE) {
+            return networker.vkManual(registration.getUserId(), registration.getVkToken())
+                    .account()
+                    .registerDevice(registration.getGmcToken(), null, null, "fcm",
+                            null, null, deviceModel, registration.getDeviceId(), Build.VERSION.RELEASE, "{\"msg\":\"on\",\"chat\":\"on\",\"friend\":\"on\",\"reply\":\"on\",\"comment\":\"on\",\"mention\":\"on\",\"like\":\"off\"}")
+                    .ignoreElement();
+        } else {
+            return networker.vkManual(registration.getUserId(), registration.getVkToken())
+                    .account()
+                    .registerDevice(registration.getGmcToken(), 1, Constants.VKANDROID_APP_VERSION_CODE, "fcm",
+                            "vk_client", 4, deviceModel, registration.getDeviceId(), Build.VERSION.RELEASE, null)
+                    .ignoreElement();
+        }
         //} catch (JSONException e) {
         //return Completable.error(e);
         //}
@@ -232,7 +223,7 @@ public class PushRegistrationResolver implements IPushRegistrationResolver {
     }
 
     private Single<Data> getInfo() {
-        return getFcmToken().flatMap(s -> {
+        return FCMToken.getFcmToken().flatMap(s -> {
             Data data = new Data(s, devideIdProvider.getDeviceId());
             return Single.just(data);
         });

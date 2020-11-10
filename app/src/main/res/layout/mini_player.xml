@@ -55,9 +55,9 @@
             style="@android:style/Widget.Material.SeekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:max="1000"
             android:paddingTop="2dp"
-            android:paddingBottom="2dp"
-            android:max="1000" />
+            android:paddingBottom="2dp" />
     </LinearLayout>
 
     <ImageButton
@@ -65,8 +65,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:backgroundTint="?colorSurface"
         android:background="?attr/selectableItemBackgroundBorderless"
+        android:backgroundTint="?colorSurface"
         android:contentDescription="@string/open_full_player"
         android:padding="8dp"
         android:scaleType="centerInside"

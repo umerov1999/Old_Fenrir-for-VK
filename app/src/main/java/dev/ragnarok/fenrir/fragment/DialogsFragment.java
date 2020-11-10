@@ -117,12 +117,9 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
     }
 
     private void ToggleFab(boolean isUp) {
-        if (isUp && isCreateChat) {
-            isCreateChat = false;
-            mFab.setImageResource(R.drawable.ic_outline_keyboard_arrow_up);
-        } else if (!isUp && !isCreateChat) {
-            isCreateChat = true;
-            mFab.setImageResource(R.drawable.pencil);
+        if (isCreateChat == isUp) {
+            isCreateChat = !isUp;
+            mFab.setImageResource(isCreateChat ? R.drawable.pencil : R.drawable.ic_outline_keyboard_arrow_up);
         }
     }
 

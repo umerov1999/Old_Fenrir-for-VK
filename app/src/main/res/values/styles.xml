@@ -348,14 +348,17 @@
     </style>
 
     <style name="MineCustomTabText" parent="TextAppearance.Design.Tab">
+        <item name="android:fontFamily">sans-serif</item>
         <item name="fontFamily">sans-serif</item>
     </style>
 
     <style name="ProfileText" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:fontFamily">sans-serif-light</item>
         <item name="fontFamily">sans-serif-light</item>
     </style>
 
     <style name="ProfileSubText" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="android:fontFamily">sans-serif-light</item>
         <item name="fontFamily">sans-serif-light</item>
     </style>
 

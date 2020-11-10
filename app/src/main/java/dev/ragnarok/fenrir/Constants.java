@@ -25,7 +25,6 @@ public class Constants {
     int DEFAULT_ACCOUNT_TYPE = Account_Types.VK_ANDROID;
 
     public static final boolean IS_HAS_LOGIN_WEB = false;
-
     public static final String FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".fileprovider";
 
     //public static final String DEVICE_COUNTRY_CODE = Injection.provideApplicationContext().getResources().getConfiguration().locale.getCountry().toLowerCase();
@@ -33,8 +32,8 @@ public class Constants {
     public static final String APK_ID = BuildConfig.APPLICATION_ID;
     public static final String DEVICE_COUNTRY_CODE = "ru";
 
-    public static final String VKANDROID_APP_VERSION_CODE = "6282";
-    public static final String VKANDROID_APP_VERSION_NAME = "6.15";
+    public static final String VKANDROID_APP_VERSION_CODE = "6356";
+    public static final String VKANDROID_APP_VERSION_NAME = "6.16";
 
     public static final String KATE_APP_VERSION_CODE = "480";
     public static final String KATE_APP_VERSION_NAME = "66.2 lite";
@@ -73,7 +72,7 @@ public class Constants {
             case Account_Types.KATE_HIDDEN:
                 return KATE_USER_AGENT_FAKE;
         }
-        return VKANDROID_USER_AGENT;
+        return Utils.BY_DEFAULT_ACCOUNT_TYPE(VKANDROID_USER_AGENT, KATE_USER_AGENT);
     }
 
     @NotNull
@@ -83,7 +82,7 @@ public class Constants {
         }
         int account_id = Settings.get().accounts().getCurrent();
         if (account_id == ISettings.IAccountsSettings.INVALID_ID) {
-            return VKANDROID_USER_AGENT;
+            return Utils.BY_DEFAULT_ACCOUNT_TYPE(VKANDROID_USER_AGENT, KATE_USER_AGENT);
         }
         return getTypedUserAgent(Settings.get().accounts().getType(account_id));
     }

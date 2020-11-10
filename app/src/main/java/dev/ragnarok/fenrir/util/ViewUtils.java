@@ -68,11 +68,11 @@ public class ViewUtils {
             return null;
         }
 
-        if (app == 5961172) {
-            return R.drawable.ic_olivka;
-        }
-
-        if (app == 2685278) {
+        if (app == 6079611) {
+            return R.drawable.ic_xvii;
+        } else if (app == 4705861) {
+            return R.drawable.ic_boom;
+        } else if (app == 2685278) {
             return R.drawable.ic_kate_mobile;
         }
 

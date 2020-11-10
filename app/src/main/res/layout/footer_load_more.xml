@@ -23,13 +23,10 @@
         android:layout_height="36dp"
         android:layout_gravity="center" />
 
-    <TextView
+    <com.umerov.rlottie.RLottieImageView
         android:id="@+id/footer_load_more_end_of_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/end_of_list"
-        android:textSize="@dimen/font_size_subtitle"
-        android:visibility="gone" />
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center" />
 
 </FrameLayout>

@@ -95,7 +95,6 @@ public class FeedbackFragment extends PlaceSupportMvpFragment<FeedbackPresenter,
         View footerView = inflater.inflate(R.layout.footer_load_more, recyclerView, false);
         mLoadMoreHelper = LoadMoreFooterHelper.createFrom(footerView, getPresenter()::fireLoadMoreClick);
         mLoadMoreHelper.switchToState(LoadMoreState.INVISIBLE);
-        mLoadMoreHelper.setEndOfListText("• • • • • • • •");
 
         mAdapter = new FeedbackAdapter(requireActivity(), Collections.emptyList(), this);
         mAdapter.addFooter(footerView);

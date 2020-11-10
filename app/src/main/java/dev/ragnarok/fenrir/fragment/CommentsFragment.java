@@ -57,7 +57,7 @@ import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.spots.SpotsDialog;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.CommentsInputViewController;
-import dev.ragnarok.fenrir.view.LoadMoreFooterHelper;
+import dev.ragnarok.fenrir.view.LoadMoreFooterHelperComment;
 import dev.ragnarok.fenrir.view.emoji.EmojiconTextView;
 import dev.ragnarok.fenrir.view.emoji.EmojiconsPopup;
 import dev.ragnarok.fenrir.view.emoji.StickersKeyWordsAdapter;
@@ -81,8 +81,8 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
     private LinearLayoutManager mLinearLayoutManager;
     private ViewGroup mReplyView;
     private TextView mReplyText;
-    private LoadMoreFooterHelper upHelper;
-    private LoadMoreFooterHelper downhelper;
+    private LoadMoreFooterHelperComment upHelper;
+    private LoadMoreFooterHelperComment downhelper;
     private CommentsAdapter mAdapter;
     private ProgressBar mCenterProgressBar;
     private View mEmptyView;
@@ -152,14 +152,12 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
 
         root.findViewById(R.id.fragment_comments_delete_reply).setOnClickListener(v -> getPresenter().fireReplyCancelClick());
 
-        View loadUpView = inflater.inflate(R.layout.footer_load_more_test, mRecyclerView, false);
-        upHelper = LoadMoreFooterHelper.createFrom(loadUpView, () -> getPresenter().fireUpLoadMoreClick());
-        //upHelper.setEndOfListText("•••••••••");
+        View loadUpView = inflater.inflate(R.layout.footer_load_more_comment, mRecyclerView, false);
+        upHelper = LoadMoreFooterHelperComment.createFrom(loadUpView, () -> getPresenter().fireUpLoadMoreClick());
         upHelper.setEndOfListText(" ");
 
-        View loadDownView = inflater.inflate(R.layout.footer_load_more_test, mRecyclerView, false);
-        downhelper = LoadMoreFooterHelper.createFrom(loadDownView, () -> getPresenter().fireDownLoadMoreClick());
-        //downhelper.setEndOfListText("•••••••••");
+        View loadDownView = inflater.inflate(R.layout.footer_load_more_comment, mRecyclerView, false);
+        downhelper = LoadMoreFooterHelperComment.createFrom(loadDownView, () -> getPresenter().fireDownLoadMoreClick());
         downhelper.setEndOfListTextRes(R.string.place_for_your_comment);
 
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {

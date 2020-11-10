@@ -147,7 +147,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
                 appendDisposable(InteractorFactory.createStickersInteractor()
                         .getAndStore(getAccountId())
                         .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                        .subscribe(dummy(), ignore()));
+                        .subscribe(dummy(), this::onDebugError));
             } catch (Exception ignored) {
                 /*ignore*/
             }
@@ -156,6 +156,12 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
         if (offset > 0) {
             safeScroll(offset);
             offset = 0;
+        }
+    }
+
+    private void onDebugError(Throwable throwable) {
+        if (Settings.get().other().isDeveloper_mode()) {
+            showError(getView(), throwable);
         }
     }
 

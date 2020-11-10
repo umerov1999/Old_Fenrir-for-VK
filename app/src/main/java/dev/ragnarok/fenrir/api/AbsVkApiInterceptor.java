@@ -1,6 +1,10 @@
 package dev.ragnarok.fenrir.api;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -13,6 +17,7 @@ import java.util.Random;
 import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Injection;
+import dev.ragnarok.fenrir.activity.ValidateActivity;
 import dev.ragnarok.fenrir.api.model.Captcha;
 import dev.ragnarok.fenrir.api.model.Error;
 import dev.ragnarok.fenrir.api.model.response.VkReponse;
@@ -21,6 +26,7 @@ import dev.ragnarok.fenrir.service.ApiErrorCodes;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.PersistentLogger;
 import dev.ragnarok.fenrir.util.Utils;
+import io.reactivex.rxjava3.core.Completable;
 import okhttp3.FormBody;
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -44,12 +50,56 @@ abstract class AbsVkApiInterceptor implements Interceptor {
         this.gson = gson;
     }
 
+    private static String getIdToken() {
+        return "d4gdb0joSiM:APA91bFAM-gVwLCkCABy5DJPPRH5TNDHW9xcGu_OLhmdUSA8zuUsBiU_DexHrTLLZWtzWHZTT5QUaVkBk_GJVQyCE_yQj9UId3pU3vxvizffCPQISmh2k93Fs7XH1qPbDvezEiMyeuLDXb5ebOVGehtbdk_9u5pwUw";
+    }
+
     protected abstract String getToken();
 
     protected abstract @Account_Types
     int getType();
 
     protected abstract int getAccountId();
+
+    /*
+    private String getInstanceIdToken() {
+        try {
+            GoogleApiAvailability instance = GoogleApiAvailability.getInstance();
+            int isGooglePlayServicesAvailable = instance.isGooglePlayServicesAvailable(Injection.provideApplicationContext());
+            if (isGooglePlayServicesAvailable != 0) {
+                return null;
+            }
+            return FirebaseInstanceId.getInstance().getToken("54740537194", "id" + getAccountId());
+        } catch (Throwable th) {
+            th.printStackTrace();
+            return null;
+        }
+    }
+     */
+
+    private boolean upgradeToken() {
+        String fcm = getIdToken();
+        String oldToken = getToken();
+        String token = Injection.provideNetworkInterfaces().vkDefault(getAccountId()).account().refreshToken(fcm).blockingGet().token;
+        Log.w("refresh", oldToken + " " + token + " " + fcm);
+        if (oldToken.equals(token) || isEmpty(token)) {
+            return false;
+        }
+        Settings.get().accounts().storeAccessToken(getAccountId(), token);
+        return true;
+    }
+
+    @SuppressLint("CheckResult")
+    private void startValidateActivity(Context context, String url) {
+        Completable.complete()
+                .observeOn(Injection.provideMainThreadScheduler())
+                .subscribe(() -> {
+                    Intent intent = ValidateActivity.createIntent(context, url);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                });
+    }
+
 
     @NotNull
     @Override
@@ -134,6 +184,23 @@ abstract class AbsVkApiInterceptor implements Interceptor {
                     }
 
                     continue;
+                }
+
+                if (Constants.DEFAULT_ACCOUNT_TYPE == Account_Types.KATE) {
+                    if (error.errorCode == ApiErrorCodes.REFRESH_TOKEN) {
+                        if (upgradeToken()) {
+                            token = getToken();
+                            formBuiler.add("access_token", token);
+
+                            request = original.newBuilder()
+                                    .method("POST", formBuiler.build())
+                                    .build();
+                            continue;
+                        }
+                    }
+                    if (error.errorCode == ApiErrorCodes.VALIDATE_NEED) {
+                        startValidateActivity(Injection.provideApplicationContext(), error.redirectUri);
+                    }
                 }
 
                 if (error.errorCode == ApiErrorCodes.CAPTCHA_NEED) {

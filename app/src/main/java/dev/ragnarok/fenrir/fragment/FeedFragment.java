@@ -167,7 +167,6 @@ public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedVi
         ViewGroup footerView = (ViewGroup) inflater.inflate(R.layout.footer_load_more, mRecycleView, false);
 
         mLoadMoreFooterHelper = LoadMoreFooterHelper.createFrom(footerView, () -> getPresenter().fireLoadMoreClick());
-        mLoadMoreFooterHelper.setEndOfListText("");
 
         //ViewGroup headerView = (ViewGroup) inflater.inflate(R.layout.header_feed, mRecycleView, false);
         RecyclerView headerRecyclerView = root.findViewById(R.id.header_list);

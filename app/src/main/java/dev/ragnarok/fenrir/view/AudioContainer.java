@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.SendAttachmentsActivity;
@@ -184,14 +185,16 @@ public class AudioContainer extends LinearLayout {
                 holder.tvTitle.setText(audio.getArtist());
                 holder.tvSubtitle.setText(audio.getTitle());
 
-                if (!audio.isHLS()) {
+                if (Constants.DEFAULT_ACCOUNT_TYPE == Account_Types.VK_ANDROID && !audio.isHLS()) {
                     holder.quality.setVisibility(View.VISIBLE);
-                    if (audio.getIsHq())
+                    if (audio.getIsHq()) {
                         holder.quality.setImageResource(R.drawable.high_quality);
-                    else
+                    } else {
                         holder.quality.setImageResource(R.drawable.low_quality);
-                } else
+                    }
+                } else {
                     holder.quality.setVisibility(View.GONE);
+                }
 
                 updateAudioStatus(holder, audio);
                 int finalG = g;

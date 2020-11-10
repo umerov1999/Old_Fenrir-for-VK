@@ -77,6 +77,11 @@ public class Call extends AbsModel {
         return state;
     }
 
+    public Call setState(String state) {
+        this.state = state;
+        return this;
+    }
+
     public String getLocalizedState(@NonNull Context context) {
         switch (state) {
             case "canceled_by_receiver":
@@ -87,11 +92,6 @@ public class Call extends AbsModel {
                 return context.getString(R.string.call_reached);
         }
         return state;
-    }
-
-    public Call setState(String state) {
-        this.state = state;
-        return this;
     }
 
     @Override

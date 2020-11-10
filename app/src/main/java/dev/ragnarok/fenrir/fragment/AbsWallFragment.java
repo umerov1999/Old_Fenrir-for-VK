@@ -137,12 +137,9 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
     }
 
     private void ToggleFab(boolean isUp) {
-        if (isUp && isCreatePost) {
-            isCreatePost = false;
-            fabCreate.setImageResource(R.drawable.ic_outline_keyboard_arrow_up);
-        } else if (!isUp && !isCreatePost) {
-            isCreatePost = true;
-            fabCreate.setImageResource(R.drawable.pencil);
+        if (isCreatePost == isUp) {
+            isCreatePost = !isUp;
+            fabCreate.setImageResource(isCreatePost ? R.drawable.pencil : R.drawable.ic_outline_keyboard_arrow_up);
         }
     }
 
@@ -187,7 +184,6 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
 
         View footerView = inflater.inflate(R.layout.footer_load_more, recyclerView, false);
         mLoadMoreFooterHelper = LoadMoreFooterHelper.createFrom(footerView, () -> getPresenter().fireLoadMoreClick());
-        mLoadMoreFooterHelper.setEndOfListText("• • • • • • • •");
 
         fabCreate = root.findViewById(R.id.fragment_user_profile_fab);
         fabCreate.setOnClickListener(v -> {

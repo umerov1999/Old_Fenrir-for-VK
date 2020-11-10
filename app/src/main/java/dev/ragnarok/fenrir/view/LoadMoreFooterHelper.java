@@ -2,12 +2,13 @@ package dev.ragnarok.fenrir.view;
 
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import androidx.annotation.StringRes;
+import com.umerov.rlottie.RLottieImageView;
 
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.LoadMoreState;
+import dev.ragnarok.fenrir.settings.CurrentTheme;
+import dev.ragnarok.fenrir.util.Utils;
 
 public class LoadMoreFooterHelper {
 
@@ -27,30 +28,27 @@ public class LoadMoreFooterHelper {
         return helper;
     }
 
-    public void setEndOfListTextRes(@StringRes int res) {
-        holder.tvEndOfList.setText(res);
-    }
-
-    public void setEndOfListText(String text) {
-        holder.tvEndOfList.setText(text);
-    }
-
     public void switchToState(@LoadMoreState int state) {
         this.state = state;
         holder.container.setVisibility(state == LoadMoreState.INVISIBLE ? View.GONE : View.VISIBLE);
 
         switch (state) {
             case LoadMoreState.LOADING:
+                holder.tvEndOfList.setImageDrawable(null);
                 holder.tvEndOfList.setVisibility(View.INVISIBLE);
                 holder.bLoadMore.setVisibility(View.INVISIBLE);
                 holder.progress.setVisibility(View.VISIBLE);
                 break;
             case LoadMoreState.END_OF_LIST:
                 holder.tvEndOfList.setVisibility(View.VISIBLE);
+                holder.tvEndOfList.setAutoRepeat(false);
+                holder.tvEndOfList.setAnimation(R.raw.loaded, Utils.dp(40), Utils.dp(40), new int[]{0xffffff, CurrentTheme.getColorControlNormal(holder.bLoadMore.getContext())});
+                holder.tvEndOfList.playAnimation();
                 holder.bLoadMore.setVisibility(View.INVISIBLE);
                 holder.progress.setVisibility(View.INVISIBLE);
                 break;
             case LoadMoreState.CAN_LOAD_MORE:
+                holder.tvEndOfList.setImageDrawable(null);
                 holder.tvEndOfList.setVisibility(View.INVISIBLE);
                 holder.bLoadMore.setVisibility(View.VISIBLE);
                 holder.progress.setVisibility(View.INVISIBLE);
@@ -68,7 +66,7 @@ public class LoadMoreFooterHelper {
         public final View container;
         public final ProgressBar progress;
         public final View bLoadMore;
-        public final TextView tvEndOfList;
+        public final RLottieImageView tvEndOfList;
 
         public Holder(View root) {
             container = root.findViewById(R.id.footer_load_more_root);

@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
+import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.api.Auth;
@@ -71,7 +72,7 @@ public class DirectAuthPresenter extends RxSupportPresenter<IDirectAuthView> {
         setLoginNow(true);
         appendDisposable(networker.vkDirectAuth()
                 .directLogin("password", Constants.API_ID, Constants.SECRET,
-                        trimmedUsername, trimmedPass, Constants.AUTH_VERSION, true,
+                        trimmedUsername, trimmedPass, Constants.AUTH_VERSION, Constants.DEFAULT_ACCOUNT_TYPE == Account_Types.VK_ANDROID,
                         Auth.getScope(), code, captchaSid, captchaCode, forceSms)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(this::onLoginResponse, t -> onLoginError(getCauseIfRuntime(t))));
@@ -89,28 +90,28 @@ public class DirectAuthPresenter extends RxSupportPresenter<IDirectAuthView> {
             String img = ((CaptchaNeedException) t).getImg();
             requieredCaptcha = new Captcha(sid, img);
         } else if (t instanceof NeedValidationException) {
-            /*
-            RedirectUrl = ((NeedValidationException) t).getValidationURL();
-            if (!isEmpty(RedirectUrl)) {
-                onValidate();
-            }
-
-             */
-            String type = ((NeedValidationException) t).getValidationType();
-            String sid = ((NeedValidationException) t).getSid();
-
-            if ("2fa_sms".equalsIgnoreCase(type) || "2fa_libverify".equalsIgnoreCase(type)) {
-                requireSmsCode = true;
+            if (Constants.DEFAULT_ACCOUNT_TYPE == Account_Types.KATE) {
                 RedirectUrl = ((NeedValidationException) t).getValidationURL();
-            } else if ("2fa_app".equalsIgnoreCase(type)) {
-                requireAppCode = true;
-            }
-            if (!isEmpty(sid)) {
-                appendDisposable(networker.vkAuth()
-                        .validatePhone(Constants.API_ID, Constants.API_ID, Constants.SECRET, sid, Constants.AUTH_VERSION)
-                        .compose(RxUtils.applySingleIOToMainSchedulers())
-                        .subscribe(result -> {
-                        }, ex -> showError(getView(), getCauseIfRuntime(t))));
+                if (!isEmpty(RedirectUrl)) {
+                    onValidate();
+                }
+            } else {
+                String type = ((NeedValidationException) t).getValidationType();
+                String sid = ((NeedValidationException) t).getSid();
+
+                if ("2fa_sms".equalsIgnoreCase(type) || "2fa_libverify".equalsIgnoreCase(type)) {
+                    requireSmsCode = true;
+                    RedirectUrl = ((NeedValidationException) t).getValidationURL();
+                } else if ("2fa_app".equalsIgnoreCase(type)) {
+                    requireAppCode = true;
+                }
+                if (!isEmpty(sid)) {
+                    appendDisposable(networker.vkAuth()
+                            .validatePhone(Constants.API_ID, Constants.API_ID, Constants.SECRET, sid, Constants.AUTH_VERSION)
+                            .compose(RxUtils.applySingleIOToMainSchedulers())
+                            .subscribe(result -> {
+                            }, ex -> showError(getView(), getCauseIfRuntime(t))));
+                }
             }
         } else {
             t.printStackTrace();

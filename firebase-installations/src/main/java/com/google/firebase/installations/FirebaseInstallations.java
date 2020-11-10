@@ -36,7 +36,6 @@ import com.google.firebase.installations.local.PersistedInstallationEntry;
 import com.google.firebase.installations.remote.FirebaseInstallationServiceClient;
 import com.google.firebase.installations.remote.InstallationResponse;
 import com.google.firebase.installations.remote.TokenResult;
-import com.google.firebase.installations.time.SystemClock;
 import com.google.firebase.platforminfo.UserAgentPublisher;
 
 import java.io.IOException;
@@ -131,7 +130,7 @@ public class FirebaseInstallations implements FirebaseInstallationsApi {
                 new FirebaseInstallationServiceClient(
                         firebaseApp.getApplicationContext(), publisher, heartbeatInfo),
                 new PersistedInstallation(firebaseApp),
-                new Utils(SystemClock.getInstance()),
+                Utils.getInstance(),
                 new IidStore(firebaseApp),
                 new RandomFidGenerator());
     }
@@ -312,12 +311,12 @@ public class FirebaseInstallations implements FirebaseInstallationsApi {
         }
     }
 
-    private void triggerOnException(PersistedInstallationEntry prefs, Exception exception) {
+    private void triggerOnException(Exception exception) {
         synchronized (lock) {
             Iterator<StateListener> it = listeners.iterator();
             while (it.hasNext()) {
                 StateListener l = it.next();
-                boolean doneListening = l.onException(prefs, exception);
+                boolean doneListening = l.onException(exception);
                 if (doneListening) {
                     it.remove();
                 }
@@ -342,7 +341,7 @@ public class FirebaseInstallations implements FirebaseInstallationsApi {
      * @param forceRefresh true if this is for a getAuthToken call and if the caller wants to fetch a
      *                     new auth token from the server even if an unexpired auth token exists on the client.
      */
-    private void doRegistrationOrRefresh(boolean forceRefresh) {
+    private final void doRegistrationOrRefresh(boolean forceRefresh) {
 
         PersistedInstallationEntry prefs = getPrefsWithGeneratedIdMultiProcessSafe();
 
@@ -373,7 +372,7 @@ public class FirebaseInstallations implements FirebaseInstallationsApi {
                 return;
             }
         } catch (FirebaseInstallationsException e) {
-            triggerOnException(prefs, e);
+            triggerOnException(e);
             return;
         }
 
@@ -387,11 +386,11 @@ public class FirebaseInstallations implements FirebaseInstallationsApi {
 
         // Let the caller know about the result.
         if (prefs.isErrored()) {
-            triggerOnException(prefs, new FirebaseInstallationsException(Status.BAD_CONFIG));
+            triggerOnException(new FirebaseInstallationsException(Status.BAD_CONFIG));
         } else if (prefs.isNotGenerated()) {
             // If there is no fid it means the call failed with an auth error. Simulate an
             // IOException so that the caller knows to try again.
-            triggerOnException(prefs, new IOException(AUTH_ERROR_MSG));
+            triggerOnException(new IOException(AUTH_ERROR_MSG));
         } else {
             triggerOnStateReached(prefs);
         }

@@ -113,6 +113,10 @@ public class CurrentTheme {
         return getColorFromAttrs(androidx.appcompat.R.attr.colorPrimary, context, "#000000");
     }
 
+    public static int getColorControlNormal(Context context) {
+        return getColorFromAttrs(androidx.appcompat.R.attr.colorControlNormal, context, "#000000");
+    }
+
     public static int getColorToast(Context context) {
         return getColorFromAttrs(R.attr.toast_background, context, "#FFFFFF");
     }

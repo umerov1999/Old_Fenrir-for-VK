@@ -174,7 +174,6 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPrensenter, IChatView>(), IChat
         loadMoreFooterHelper = LoadMoreFooterHelper.createFrom(headerView) {
             presenter?.fireLoadUpButtonClick()
         }
-        loadMoreFooterHelper?.setEndOfListText("• • • • • • • •")
 
         inputViewController = InputViewController(requireActivity(), root, this)
                 .also {
