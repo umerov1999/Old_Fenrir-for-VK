@@ -8,16 +8,32 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_optimizationLevel="standard|barrier|dimensions">
 
         <ImageView
             android:id="@+id/cover_background"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:adjustViewBounds="true"
+            android:alpha="0.75"
             android:contentDescription="@string/album_cover"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/cover_gradient_top"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/album_cover"
+            android:rotation="180"
+            android:scaleType="centerCrop"
+            android:src="@drawable/player_semitransperent"
+            app:layout_constraintBottom_toTopOf="@id/audio_player_total_time"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -46,7 +62,7 @@
             android:stateListAnimator="@animator/clicked"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="?attr/colorSecondary" />
+            app:tint="?colorOnSurface" />
 
         <ImageView
             android:id="@+id/player_handler"
@@ -69,7 +85,7 @@
             android:stateListAnimator="@animator/clicked"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="?colorSecondary" />
+            app:tint="?colorOnSurface" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/goto_button_header"
@@ -106,67 +122,71 @@
 
         <TextView
             android:id="@+id/audio_player_current_time"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:gravity="center"
+            android:layout_marginStart="24dp"
+            android:gravity="start"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             android:textSize="11sp"
             app:layout_constraintBottom_toTopOf="@android:id/progress"
-            app:layout_constraintStart_toStartOf="@android:id/progress"
+            app:layout_constraintEnd_toStartOf="@id/audio_player_total_time"
+            app:layout_constraintStart_toStartOf="parent"
             tools:ignore="SmallSp" />
 
         <TextView
             android:id="@+id/audio_player_total_time"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="16dp"
-            android:gravity="center"
+            android:layout_marginEnd="24dp"
+            android:gravity="end"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             android:textSize="11sp"
             app:layout_constraintBottom_toTopOf="@android:id/progress"
-            app:layout_constraintEnd_toEndOf="@android:id/progress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/audio_player_current_time"
             tools:ignore="SmallSp" />
 
         <SeekBar
             android:id="@android:id/progress"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/audio_player_current_time"
-            android:layout_marginStart="6dp"
-            android:layout_marginEnd="6dp"
             android:layout_marginBottom="6dp"
             android:max="1000"
+            android:progress="125"
+            android:progressBackgroundTint="@color/neutral"
+            android:progressTint="?colorOnSurface"
+            android:secondaryProgressTint="@color/neutral"
+            android:thumbTint="?colorOnSurface"
             app:layout_constraintBottom_toTopOf="@id/audio_save"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintEnd_toEndOf="@+id/audio_share"
+            app:layout_constraintStart_toStartOf="@+id/audio_add" />
 
 
-        <dev.ragnarok.fenrir.view.CircleCounterButton
+        <ImageView
             android:id="@+id/audio_add"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="12dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:gravity="top"
-            app:active="true"
-            app:active_background_color="?attr/icon_color_active"
-            app:button_icon="@drawable/plus"
+            android:padding="14dp"
+            android:src="@drawable/plus"
             app:layout_constraintEnd_toStartOf="@id/audio_save"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/audio_save"
-            app:noactive_icon_color="?colorOnSurface" />
+            app:tint="?colorOnSurface" />
 
         <dev.ragnarok.fenrir.player.ui.RepeatingImageButton
             android:id="@+id/audio_save"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:background="?selectableItemBackgroundBorderless"
             android:src="@drawable/save"
             android:stateListAnimator="@animator/clicked"
-            android:tint="?attr/colorPrimary"
+            android:tint="?colorOnSurface"
             app:layout_constraintEnd_toStartOf="@+id/audio_share"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toEndOf="@+id/audio_add" />
@@ -182,7 +202,7 @@
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
             android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
             android:textSize="12sp"
             app:layout_constraintEnd_toStartOf="@+id/audio_share"
             app:layout_constraintStart_toEndOf="@+id/audio_add"
@@ -202,9 +222,8 @@
             android:scrollHorizontally="true"
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-            android:textColor="?attr/colorSecondary"
-            app:layout_constraintEnd_toStartOf="@+id/audio_share"
-            app:layout_constraintStart_toEndOf="@+id/audio_add"
+            app:layout_constraintEnd_toEndOf="@+id/audio_share"
+            app:layout_constraintStart_toStartOf="@+id/audio_add"
             app:layout_constraintTop_toBottomOf="@id/audio_player_album"
             tools:text="Jara" />
 
@@ -219,41 +238,28 @@
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
             android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:textColor="?android:textColorSecondary"
             android:textSize="12sp"
-            app:layout_constraintEnd_toStartOf="@+id/audio_share"
-            app:layout_constraintStart_toEndOf="@+id/audio_add"
+            app:layout_constraintEnd_toEndOf="@+id/audio_share"
+            app:layout_constraintStart_toStartOf="@+id/audio_add"
             app:layout_constraintTop_toBottomOf="@id/audio_player_subtitle"
             tools:text="Warduna" />
 
-        <dev.ragnarok.fenrir.view.CircleCounterButton
+        <ImageView
             android:id="@+id/audio_share"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginEnd="12dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:gravity="top"
-            app:active="true"
-            app:active_background_color="?attr/icon_color_active"
-            app:button_icon="@drawable/ic_outline_share"
+            android:padding="14dp"
+            android:src="@drawable/ic_outline_share"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toEndOf="@id/audio_save"
             app:layout_constraintTop_toTopOf="@id/audio_save"
-            app:noactive_icon_color="?colorOnSurface" />
+            app:tint="?colorOnSurface" />
 
-        <androidx.constraintlayout.helper.widget.Flow
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            app:constraint_referenced_ids="action_button_shuffle,action_button_previous,
-            action_button_play,action_button_next,action_button_repeat"
-            app:flow_wrapMode="none"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/audio_player_title" />
 
         <dev.ragnarok.fenrir.player.ui.ShuffleButton
             android:id="@+id/action_button_shuffle"
@@ -261,9 +267,14 @@
             android:layout_width="@dimen/audio_player_controls_end_button_width"
             android:layout_height="@dimen/audio_player_controls_end_button_height"
             android:layout_gravity="center"
+            android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/shuffle_disabled"
-            android:tint="?colorOnSurface" />
+            android:tint="?colorOnSurface"
+            app:layout_constraintBottom_toBottomOf="@+id/action_button_play"
+            app:layout_constraintEnd_toStartOf="@+id/action_button_previous"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/action_button_play" />
 
         <dev.ragnarok.fenrir.player.ui.RepeatingImageButton
             android:id="@+id/action_button_previous"
@@ -271,20 +282,30 @@
             android:layout_width="@dimen/audio_player_controls_main_button_width"
             android:layout_height="@dimen/audio_player_controls_main_button_height"
             android:layout_gravity="center"
+            android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/page_first"
             android:tint="?colorOnSurface"
-            app:layout_constraintDimensionRatio="1:1" />
+            app:layout_constraintBottom_toBottomOf="@+id/action_button_play"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/action_button_play"
+            app:layout_constraintStart_toEndOf="@id/action_button_shuffle" />
 
         <dev.ragnarok.fenrir.player.ui.PlayPauseButton
             android:id="@+id/action_button_play"
             style="?attr/fab_player"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/audio_player_controls_main_button_width"
+            android:layout_height="@dimen/audio_player_controls_main_button_height"
             android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             app:elevation="3dp"
             app:fabSize="auto"
-            app:layout_constraintDimensionRatio="1:1" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/action_button_next"
+            app:layout_constraintStart_toEndOf="@id/action_button_previous"
+            app:layout_constraintTop_toBottomOf="@id/audio_player_title" />
 
         <dev.ragnarok.fenrir.player.ui.RepeatingImageButton
             android:id="@+id/action_button_next"
@@ -292,10 +313,14 @@
             android:layout_width="@dimen/audio_player_controls_main_button_width"
             android:layout_height="@dimen/audio_player_controls_main_button_height"
             android:layout_gravity="center"
+            android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/page_last"
             android:tint="?colorOnSurface"
-            app:layout_constraintDimensionRatio="1:1" />
+            app:layout_constraintBottom_toBottomOf="@+id/action_button_play"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/action_button_repeat"
+            app:layout_constraintStart_toEndOf="@id/action_button_play" />
 
         <dev.ragnarok.fenrir.player.ui.RepeatButton
             android:id="@+id/action_button_repeat"
@@ -303,11 +328,16 @@
             android:layout_width="@dimen/audio_player_controls_end_button_width"
             android:layout_height="@dimen/audio_player_controls_end_button_height"
             android:layout_gravity="center"
+            android:background="?selectableItemBackgroundBorderless"
             android:focusable="true"
             android:scaleType="centerInside"
             android:src="@drawable/repeat_off"
             android:tint="?colorOnSurface"
-            app:layout_constraintDimensionRatio="1:1" />
+            app:layout_constraintBottom_toBottomOf="@+id/action_button_play"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/action_button_next"
+            app:layout_constraintTop_toTopOf="@+id/action_button_play" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

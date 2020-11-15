@@ -35,12 +35,9 @@ public class ThemePresenter extends AbsPresenter<IThemeView> {
         categories.add(new ThemeValue("#448AFF", "#FFA726", "blue_yellow", "Ice Fire"));
         categories.add(new ThemeValue("#FF9800", "#8500ff", "yellow_violet", "Fire Violet"));
         categories.add(new ThemeValue("#8500ff", "#FF9800", "violet_yellow", "Violet Fire"));
-        categories.add(new ThemeValue("#8500ff", "#268000", "violet_green", "Violet Green"));
-        categories.add(new ThemeValue("#268000", "#8500ff", "green_violet", "Green Violet"));
         categories.add(new ThemeValue("#9800ff", "#F44336", "violet_red", "Violet Red"));
         categories.add(new ThemeValue("#F44336", "#9800ff", "red_violet", "Red Violet"));
         categories.add(new ThemeValue("#F8DF00", "#F44336", "yellow_red", "Fire Red"));
-        categories.add(new ThemeValue("#448AFF", "#4CAF50", "ice_green", "Ice Green"));
         categories.add(new ThemeValue("#FF9800", "#777777", "fire_gray", "Fire Gray"));
         return categories;
     }

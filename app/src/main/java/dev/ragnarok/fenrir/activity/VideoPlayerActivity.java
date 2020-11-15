@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
@@ -116,9 +117,10 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
         mControllerView = new VideoControllerView(this);
         mControllerView.updateComment(video.isCanComment());
 
+        ViewGroup surfaceContainer = findViewById(R.id.videoSurfaceContainer);
         SurfaceView mSurfaceView = findViewById(R.id.videoSurface);
         Frame = findViewById(R.id.aspect_ratio_layout);
-        mSurfaceView.setOnClickListener(v -> resolveControlsVisibility());
+        surfaceContainer.setOnClickListener(v -> resolveControlsVisibility());
 
         SurfaceHolder videoHolder = mSurfaceView.getHolder();
         videoHolder.addCallback(this);
@@ -130,7 +132,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
         mPlayer.play();
 
         mControllerView.setMediaPlayer(this);
-        mControllerView.setAnchorView(findViewById(R.id.videoSurfaceContainer));
+        mControllerView.setAnchorView((ViewGroup) mDecorView);
     }
 
     private IVideoPlayer createPlayer() {

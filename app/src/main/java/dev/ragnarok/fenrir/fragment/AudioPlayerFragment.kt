@@ -10,11 +10,8 @@ import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.SeekBar
+import android.widget.*
 import android.widget.SeekBar.OnSeekBarChangeListener
-import android.widget.TextView
-import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -49,7 +46,6 @@ import dev.ragnarok.fenrir.util.Objects
 import dev.ragnarok.fenrir.util.RxUtils
 import dev.ragnarok.fenrir.util.Utils
 import dev.ragnarok.fenrir.util.Utils.isEmpty
-import dev.ragnarok.fenrir.view.CircleCounterButton
 import dev.ragnarok.fenrir.view.swipehelper.HorizontalSwipeBehavior
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
@@ -78,7 +74,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
     private var mProgress: SeekBar? = null
 
     // VK Additional action
-    private var ivAdd: CircleCounterButton? = null
+    private var ivAdd: ImageView? = null
     private var ivSave: RepeatingImageButton? = null
     private var tvTitle: TextView? = null
     private var tvAlbum: TextView? = null
@@ -269,24 +265,24 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         ivSave?.setOnClickListener { onSaveButtonClick(it) }
         ivAdd = root.findViewById(R.id.audio_add)
         if (Settings.get().main().isPlayer_support_volume) {
-            ivAdd?.setIcon(R.drawable.volume_minus)
+            ivAdd?.setImageResource(R.drawable.volume_minus)
             ivAdd?.setOnClickListener {
                 val audio = requireActivity().getSystemService(Context.AUDIO_SERVICE) as AudioManager
                 audio.setStreamVolume(AudioManager.STREAM_MUSIC, audio.getStreamVolume(AudioManager.STREAM_MUSIC) - 1, 0)
             }
         } else {
-            ivAdd?.setIcon(R.drawable.plus)
+            ivAdd?.setImageResource(R.drawable.plus)
             ivAdd?.setOnClickListener { onAddButtonClick() }
         }
-        val ivShare: CircleCounterButton = root.findViewById(R.id.audio_share)
+        val ivShare: ImageView = root.findViewById(R.id.audio_share)
         if (Settings.get().main().isPlayer_support_volume) {
-            ivShare.setIcon(R.drawable.volume_plus)
+            ivShare.setImageResource(R.drawable.volume_plus)
             ivShare.setOnClickListener {
                 val audio = requireActivity().getSystemService(Context.AUDIO_SERVICE) as AudioManager
                 audio.setStreamVolume(AudioManager.STREAM_MUSIC, audio.getStreamVolume(AudioManager.STREAM_MUSIC) + 1, 0)
             }
         } else {
-            ivShare.setIcon(R.drawable.ic_outline_share)
+            ivShare.setImageResource(R.drawable.ic_outline_share)
             ivShare.setOnClickListener { shareAudio() }
         }
 
@@ -627,7 +623,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         //ivAdd.setVisibility(currentAudio == null ? View.INVISIBLE : View.VISIBLE);
         val myAudio = currentAudio.ownerId == mAccountId
         val icon = if (myAudio && !currentAudio.isDeleted) R.drawable.ic_outline_delete else R.drawable.plus
-        ivAdd!!.setIcon(icon)
+        ivAdd!!.setImageResource(icon)
     }
 
     private fun broadcastAudio() {

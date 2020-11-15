@@ -4,6 +4,7 @@
     <color name="white">#ffffff</color>
     <color name="night">#131313</color>
     <color name="transparent">#00000000</color>
+    <color name="neutral">#BEBEBE</color>
     <color name="default_message_status">#36638D</color>
     <color name="ic_launcher_background">#202020</color>
 

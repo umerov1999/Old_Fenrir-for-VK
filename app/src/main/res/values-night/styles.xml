@@ -370,7 +370,7 @@
     </style>
 
     <style name="Theme.FloatingActionButtonSecondaryAmoled" parent="Widget.MaterialComponents.FloatingActionButton">
-        <item name="backgroundTint">?colorSecondary</item>
+        <item name="backgroundTint">?colorOnSurface</item>
         <item name="tint">?colorSurface</item>
     </style>
 

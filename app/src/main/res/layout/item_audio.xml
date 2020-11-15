@@ -46,7 +46,6 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-            android:textColor="?attr/colorSecondary"
             android:textSize="15sp"
             tools:text="Name" />
 
