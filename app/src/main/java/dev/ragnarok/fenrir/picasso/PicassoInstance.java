@@ -16,6 +16,11 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.IOException;
 
+import coil.Coil;
+import coil.ComponentRegistry;
+import coil.ImageLoader;
+import coil.decode.GifDecoder;
+import coil.decode.ImageDecoderDecoder;
 import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.api.ProxyUtil;
@@ -85,6 +90,7 @@ public class PicassoInstance {
     public static void clear_cache() throws IOException {
         instance.getCache_data();
         instance.cache_data.evictAll();
+        buildCoilCache(instance.app).evictAll();
     }
 
     // from picasso sources
@@ -104,6 +110,36 @@ public class PicassoInstance {
         return Math.max(Math.min(size, 52428800L), 5242880L);
     }
 
+    private static Cache buildCoilCache(Context context) {
+        File cache = new File(context.getCacheDir(), "coil-cache");
+        if (!cache.exists()) {
+            cache.mkdirs();
+        }
+        return new Cache(cache, calculateDiskCacheSize(cache));
+    }
+
+    public static ImageLoader createCoilImageLoader(Context context, IProxySettings proxySettings) {
+        File cache = new File(context.getCacheDir(), "coil-cache");
+        if (!cache.exists()) {
+            cache.mkdirs();
+        }
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .cache(buildCoilCache(context))
+                //.addNetworkInterceptor(chain -> chain.proceed(chain.request()).newBuilder().header("Cache-Control", "max-age=31536000,public").build())
+                .addInterceptor(chain -> {
+                    Request request = chain.request().newBuilder().addHeader("User-Agent", Constants.USER_AGENT(Account_Types.BY_TYPE)).build();
+                    return chain.proceed(request);
+                });
+        ProxyUtil.applyProxyConfig(builder, proxySettings.getActiveProxy());
+        return new ImageLoader.Builder(context)
+                .availableMemoryPercentage(0.25)
+                .crossfade(true).componentRegistry(new ComponentRegistry().newBuilder()
+                        .add(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ? new ImageDecoderDecoder() : new GifDecoder())
+                        .build())
+                .okHttpClient(builder.build())
+                .build();
+    }
+
     private void onProxyChanged() {
         synchronized (this) {
             if (Objects.nonNull(singleton)) {
@@ -113,6 +149,7 @@ public class PicassoInstance {
 
             Logger.d(TAG, "Picasso singleton shutdown");
         }
+        Coil.setImageLoader(createCoilImageLoader(app, proxySettings));
     }
 
     private Picasso getSingleton() {

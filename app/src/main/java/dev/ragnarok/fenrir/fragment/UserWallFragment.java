@@ -22,6 +22,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.umerov.rlottie.RLottieImageView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -98,6 +99,15 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
                         .transform(new BlurTransformation(6, 1, requireActivity()))
                         .into(mHeaderHolder.vgCover);
             }
+        }
+        if (user.isDonated()) {
+            mHeaderHolder.bDonate.setVisibility(View.VISIBLE);
+            mHeaderHolder.bDonate.setAutoRepeat(true);
+            mHeaderHolder.bDonate.setAnimation(R.raw.donater, Utils.dp(100), Utils.dp(100));
+            mHeaderHolder.bDonate.playAnimation();
+        } else {
+            mHeaderHolder.bDonate.setImageDrawable(null);
+            mHeaderHolder.bDonate.setVisibility(View.GONE);
         }
 
         Integer onlineIcon = ViewUtils.getOnlineIcon(true, user.isOnlineMobile(), user.getPlatform(), user.getOnlineApp());
@@ -419,6 +429,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
         final FloatingActionButton fabMessage;
         final FloatingActionButton fabMoreInfo;
         final MaterialButton bPrimaryAction;
+        final RLottieImageView bDonate;
 
         final ImageView Valknut;
         final View Runes;
@@ -447,6 +458,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             Valknut = root.findViewById(R.id.valknut_icon);
             Runes = root.findViewById(R.id.runes_icon);
             ivVerified = root.findViewById(R.id.item_verified);
+            bDonate = root.findViewById(R.id.donated_anim);
 
             RecyclerView filtersList = root.findViewById(R.id.post_filter_recyclerview);
             filtersList.setLayoutManager(new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false));

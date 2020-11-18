@@ -141,6 +141,11 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public boolean isUse_coil() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("use_coil", true);
+    }
+
+    @Override
     public String get_Api_Domain() {
         return PreferenceManager.getDefaultSharedPreferences(app).getString("vk_api_domain", "api.vk.com").trim();
     }

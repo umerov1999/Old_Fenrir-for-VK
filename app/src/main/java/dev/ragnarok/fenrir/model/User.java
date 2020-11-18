@@ -264,8 +264,12 @@ public class User extends Owner implements Identificable {
         return this;
     }
 
+    public boolean isDonated() {
+        return getId() == 572488303 || getId() == 365089125 || Utils.isValueAssigned(getId(), Utils.donate_users);
+    }
+
     public boolean isVerified() {
-        return verified || getId() == 572488303 || getId() == 365089125 || Utils.isValueAssigned(getId(), Utils.donate_users);
+        return verified || isDonated();
     }
 
     public User setVerified(boolean verified) {

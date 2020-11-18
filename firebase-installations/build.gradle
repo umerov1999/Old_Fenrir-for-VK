@@ -21,9 +21,9 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.firebase:firebase-common:19.3.1'
+    implementation 'com.google.firebase:firebase-common:19.4.0'
     implementation 'com.google.firebase:firebase-installations-interop:16.0.0'
-    implementation 'com.google.firebase:firebase-components:16.0.0'
+    implementation 'com.google.firebase:firebase-components:16.0.1'
     implementation 'com.google.android.gms:play-services-tasks:17.2.0'
     implementation 'androidx.multidex:multidex:2.0.1'
 

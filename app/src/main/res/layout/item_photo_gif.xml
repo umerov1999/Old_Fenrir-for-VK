@@ -21,7 +21,8 @@
         android:background="@drawable/circle_back_white"
         android:padding="6dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/gif" />
+        android:src="@drawable/gif"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/item_video_title"

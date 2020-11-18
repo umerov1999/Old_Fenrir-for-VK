@@ -104,7 +104,7 @@
             app:useSimpleSummaryProvider="true" />
 
         <SwitchPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="download_photo_tap"
             android:title="@string/download_photo_tap"
             app:iconSpaceReserved="false" />
@@ -643,6 +643,12 @@
             android:key="show_audio_cover"
             android:title="@string/show_audio_cover"
             app:allowDividerAbove="true"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="use_coil"
+            android:title="@string/use_coil"
             app:iconSpaceReserved="false" />
 
         <SwitchPreference

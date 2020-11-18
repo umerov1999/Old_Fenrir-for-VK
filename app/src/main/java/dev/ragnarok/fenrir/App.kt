@@ -3,6 +3,8 @@ package dev.ragnarok.fenrir
 import android.annotation.SuppressLint
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import coil.ImageLoader
+import coil.ImageLoaderFactory
 import com.developer.crashx.config.CrashConfig
 import com.umerov.rlottie.RLottieDrawable
 import dev.ragnarok.fenrir.domain.Repository.messages
@@ -23,8 +25,12 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import org.conscrypt.Conscrypt
 import java.security.Security
 
-class App : Application() {
+class App : Application(), ImageLoaderFactory {
     private val compositeDisposable = CompositeDisposable()
+
+    override fun newImageLoader(): ImageLoader {
+        return PicassoInstance.createCoilImageLoader(this, Injection.provideProxySettings())
+    }
 
     @SuppressLint("UnsafeExperimentalUsageWarning")
     override fun onCreate() {

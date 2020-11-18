@@ -59,6 +59,8 @@ public interface ISettings {
 
         boolean isShow_audio_cover();
 
+        boolean isUse_coil();
+
         String get_Api_Domain();
 
         String get_Auth_Domain();

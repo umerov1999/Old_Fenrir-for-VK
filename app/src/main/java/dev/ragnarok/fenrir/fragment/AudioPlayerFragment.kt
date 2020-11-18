@@ -10,8 +10,13 @@ import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
+import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import android.widget.TextView
+import android.widget.Toast
+import coil.clear
+import coil.load
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -27,8 +32,6 @@ import dev.ragnarok.fenrir.fragment.search.SearchContentType
 import dev.ragnarok.fenrir.fragment.search.criteria.AudioSearchCriteria
 import dev.ragnarok.fenrir.materialpopupmenu.MaterialPopupMenuBuilder
 import dev.ragnarok.fenrir.model.Audio
-import dev.ragnarok.fenrir.picasso.PicassoInstance
-import dev.ragnarok.fenrir.picasso.transforms.BlurTransformation
 import dev.ragnarok.fenrir.place.PlaceFactory
 import dev.ragnarok.fenrir.player.ui.PlayPauseButton
 import dev.ragnarok.fenrir.player.ui.RepeatButton
@@ -513,14 +516,19 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         }
         if (coverUrl != null) {
             ivCover!!.scaleType = ImageView.ScaleType.FIT_START
-            PicassoInstance.with().load(coverUrl).into(ivCover!!)
+            ivCover!!.load(coverUrl) {
+                crossfade(true)
+            }
             if (Settings.get().other().isBlur_for_player) {
-                PicassoInstance.with().load(coverUrl).transform(BlurTransformation(25, 1, requireActivity())).into(ivBackground!!)
+                ivBackground!!.load(coverUrl) {
+                    crossfade(true)
+                    transformations(coil.transform.BlurTransformation(requireActivity(), 25f, 1f))
+                }
             }
         } else {
-            PicassoInstance.with().cancelRequest(ivCover!!)
+            ivCover!!.clear()
             if (Settings.get().other().isBlur_for_player) {
-                PicassoInstance.with().cancelRequest(ivBackground!!)
+                ivBackground!!.clear()
                 ivBackground?.setImageDrawable(null)
             }
             ivCover!!.scaleType = ImageView.ScaleType.CENTER

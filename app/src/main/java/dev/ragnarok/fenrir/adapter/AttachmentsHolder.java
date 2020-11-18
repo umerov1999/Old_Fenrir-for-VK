@@ -4,7 +4,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import dev.ragnarok.fenrir.R;
-import dev.ragnarok.fenrir.view.AudioContainer;
 
 public class AttachmentsHolder {
 
