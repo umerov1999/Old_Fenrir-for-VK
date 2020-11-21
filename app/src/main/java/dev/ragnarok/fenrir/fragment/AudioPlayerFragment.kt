@@ -154,12 +154,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val layoutRes: Int = if (Utils.isLandscape(requireActivity()) && !Utils.is600dp(requireActivity())) {
-            R.layout.fragment_player_land
-        } else {
-            R.layout.fragment_player_port_new
-        }
-        val root = inflater.inflate(layoutRes, container, false)
+        val root = inflater.inflate(R.layout.fragment_audio_player, container, false)
         mProgress = root.findViewById(android.R.id.progress)
         mPlayPauseButton = root.findViewById(R.id.action_button_play)
         mShuffleButton = root.findViewById(R.id.action_button_shuffle)
