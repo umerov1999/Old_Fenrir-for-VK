@@ -412,10 +412,14 @@ class MusicPlaybackService : Service() {
                 val playState = if (isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
                 val pmc = PlaybackStateCompat.Builder()
                         .setState(playState, position(), 1.0f)
-                        .setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE or
-                                PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-                                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-                                PlaybackStateCompat.ACTION_SEEK_TO)
+                        .setActions(
+                                PlaybackStateCompat.ACTION_SEEK_TO or
+                                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                                        PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                                        PlaybackStateCompat.ACTION_PLAY or
+                                        PlaybackStateCompat.ACTION_PAUSE or
+                                        PlaybackStateCompat.ACTION_STOP
+                        )
                         .build()
                 mMediaSession!!.setPlaybackState(pmc)
             }
