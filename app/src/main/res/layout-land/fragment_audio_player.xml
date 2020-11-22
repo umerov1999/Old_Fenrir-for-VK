@@ -16,7 +16,22 @@
             android:adjustViewBounds="true"
             android:contentDescription="@string/album_cover"
             android:scaleType="centerCrop"
+            android:alpha="0.75"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/cover_gradient_top"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/album_cover"
+            android:rotation="180"
+            android:scaleType="centerCrop"
+            android:src="@drawable/player_semitransperent"
+            app:layout_constraintBottom_toBottomOf="@id/seekbar_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -45,7 +60,7 @@
             android:stateListAnimator="@animator/clicked"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="?attr/colorSecondary" />
+            app:tint="?attr/colorOnSurface" />
 
         <ImageView
             android:id="@+id/player_handler"
@@ -68,7 +83,7 @@
             android:stateListAnimator="@animator/clicked"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="?colorSecondary" />
+            app:tint="?colorOnSurface" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/goto_button_header"
@@ -153,6 +168,10 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/audio_player_current_time"
                 android:layout_marginTop="2dp"
+                android:progressBackgroundTint="@color/neutral"
+                android:progressTint="?colorOnSurface"
+                android:secondaryProgressTint="@color/neutral"
+                android:thumbTint="?colorOnSurface"
                 android:max="1000" />
 
         </RelativeLayout>
@@ -196,7 +215,7 @@
                     android:marqueeRepeatLimit="marquee_forever"
                     android:scrollHorizontally="true"
                     android:singleLine="true"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
                     android:textSize="12sp"
                     tools:text="Album" />
 
@@ -212,7 +231,6 @@
                     android:scrollHorizontally="true"
                     android:singleLine="true"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                    android:textColor="?attr/colorSecondary"
                     tools:text="Jara" />
 
                 <TextView
@@ -226,7 +244,7 @@
                     android:paddingBottom="4dp"
                     android:scrollHorizontally="true"
                     android:singleLine="true"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                     android:textSize="12sp"
                     tools:text="Warduna" />
 
@@ -238,7 +256,7 @@
                     android:layout_marginStart="0dp"
                     android:src="@drawable/save"
                     android:stateListAnimator="@animator/clicked"
-                    android:tint="?attr/colorPrimary" />
+                    android:tint="?attr/colorOnSurface" />
 
             </LinearLayout>
 
@@ -271,6 +289,7 @@
             android:id="@+id/action_button_shuffle"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="@dimen/audio_player_controls_end_button_width"
+            android:background="?selectableItemBackgroundBorderless"
             android:layout_height="@dimen/audio_player_controls_end_button_height"
             android:scaleType="centerInside"
             android:src="@drawable/shuffle_disabled"
@@ -280,6 +299,7 @@
             android:id="@+id/action_button_previous"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="@dimen/audio_player_controls_main_button_width"
+            android:background="?selectableItemBackgroundBorderless"
             android:layout_height="@dimen/audio_player_controls_main_button_height"
             android:scaleType="centerInside"
             android:src="@drawable/page_first"
@@ -288,6 +308,7 @@
         <dev.ragnarok.fenrir.player.ui.PlayPauseButton
             android:id="@+id/action_button_play"
             style="?attr/fab_player"
+            android:background="?selectableItemBackgroundBorderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:elevation="3dp"
@@ -298,6 +319,7 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="@dimen/audio_player_controls_main_button_width"
             android:layout_height="@dimen/audio_player_controls_main_button_height"
+            android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/page_last"
             android:tint="?colorOnSurface" />
@@ -307,6 +329,7 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="@dimen/audio_player_controls_end_button_width"
             android:layout_height="@dimen/audio_player_controls_end_button_height"
+            android:background="?selectableItemBackgroundBorderless"
             android:focusable="true"
             android:scaleType="centerInside"
             android:src="@drawable/repeat_off"
