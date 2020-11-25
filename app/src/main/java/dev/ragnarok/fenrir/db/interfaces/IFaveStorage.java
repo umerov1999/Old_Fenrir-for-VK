@@ -8,6 +8,7 @@ import java.util.List;
 import dev.ragnarok.fenrir.db.model.entity.ArticleEntity;
 import dev.ragnarok.fenrir.db.model.entity.FaveLinkEntity;
 import dev.ragnarok.fenrir.db.model.entity.FavePageEntity;
+import dev.ragnarok.fenrir.db.model.entity.MarketEntity;
 import dev.ragnarok.fenrir.db.model.entity.OwnerEntities;
 import dev.ragnarok.fenrir.db.model.entity.PhotoEntity;
 import dev.ragnarok.fenrir.db.model.entity.PostEntity;
@@ -15,6 +16,7 @@ import dev.ragnarok.fenrir.db.model.entity.VideoEntity;
 import dev.ragnarok.fenrir.model.criteria.FaveArticlesCriteria;
 import dev.ragnarok.fenrir.model.criteria.FavePhotosCriteria;
 import dev.ragnarok.fenrir.model.criteria.FavePostsCriteria;
+import dev.ragnarok.fenrir.model.criteria.FaveProductsCriteria;
 import dev.ragnarok.fenrir.model.criteria.FaveVideosCriteria;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
@@ -54,10 +56,16 @@ public interface IFaveStorage extends IStorage {
     Single<List<ArticleEntity>> getArticles(FaveArticlesCriteria criteria);
 
     @CheckResult
+    Single<List<MarketEntity>> getProducts(FaveProductsCriteria criteria);
+
+    @CheckResult
     Single<int[]> storeVideos(int accountId, List<VideoEntity> videos, boolean clearBeforeStore);
 
     @CheckResult
     Single<int[]> storeArticles(int accountId, List<ArticleEntity> articles, boolean clearBeforeStore);
+
+    @CheckResult
+    Single<int[]> storeProducts(int accountId, List<MarketEntity> products, boolean clearBeforeStore);
 
     Single<List<FavePageEntity>> getFaveGroups(int accountId);
 

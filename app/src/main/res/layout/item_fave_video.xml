@@ -49,7 +49,7 @@
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="4dp"
                 android:scaleType="fitStart"
-                tools:src="@drawable/logo_youtube_trans" />
+                tools:src="@drawable/ic_youtube" />
 
         </FrameLayout>
 

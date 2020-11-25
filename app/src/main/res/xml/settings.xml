@@ -395,6 +395,12 @@
             app:iconSpaceReserved="false" />
 
         <SwitchPreference
+            android:defaultValue="false"
+            android:key="not_update_dialogs"
+            android:title="@string/not_update_dialogs"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
             android:defaultValue="true"
             android:key="enable_last_read"
             android:summary="@string/enable_last_read_summary"

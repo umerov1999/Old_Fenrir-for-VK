@@ -43,7 +43,10 @@ import dev.ragnarok.fenrir.api.model.VkApiConversation;
 import dev.ragnarok.fenrir.api.model.VkApiCover;
 import dev.ragnarok.fenrir.api.model.VkApiDialog;
 import dev.ragnarok.fenrir.api.model.VkApiDoc;
+import dev.ragnarok.fenrir.api.model.VkApiEvent;
 import dev.ragnarok.fenrir.api.model.VkApiFriendList;
+import dev.ragnarok.fenrir.api.model.VkApiMarket;
+import dev.ragnarok.fenrir.api.model.VkApiMarketAlbum;
 import dev.ragnarok.fenrir.api.model.VkApiPrivacy;
 import dev.ragnarok.fenrir.api.model.feedback.Copies;
 import dev.ragnarok.fenrir.api.model.feedback.UserArray;
@@ -69,6 +72,7 @@ import dev.ragnarok.fenrir.model.Conversation;
 import dev.ragnarok.fenrir.model.CryptStatus;
 import dev.ragnarok.fenrir.model.Dialog;
 import dev.ragnarok.fenrir.model.Document;
+import dev.ragnarok.fenrir.model.Event;
 import dev.ragnarok.fenrir.model.FaveLink;
 import dev.ragnarok.fenrir.model.FavePage;
 import dev.ragnarok.fenrir.model.FavePageType;
@@ -76,6 +80,8 @@ import dev.ragnarok.fenrir.model.FriendList;
 import dev.ragnarok.fenrir.model.Graffiti;
 import dev.ragnarok.fenrir.model.IOwnersBundle;
 import dev.ragnarok.fenrir.model.Link;
+import dev.ragnarok.fenrir.model.Market;
+import dev.ragnarok.fenrir.model.MarketAlbum;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.MessageStatus;
 import dev.ragnarok.fenrir.model.News;
@@ -227,6 +233,7 @@ public class Dto2Model {
                     .setPhotosCount(dto.counters.photos)
                     .setAudiosCount(dto.counters.audios)
                     .setVideosCount(dto.counters.videos)
+                    .setProductsCount(dto.counters.market)
                     .setArticlesCount(dto.counters.articles);
         }
 
@@ -268,6 +275,13 @@ public class Dto2Model {
         return mapAll(dtos, Dto2Model::transformCommunity);
     }
 
+    public static List<MarketAlbum> transformMarketAlbums(List<VkApiMarketAlbum> dtos) {
+        return mapAll(dtos, Dto2Model::transform);
+    }
+
+    public static List<Market> transformMarket(List<VkApiMarket> dtos) {
+        return mapAll(dtos, Dto2Model::transform);
+    }
 
     public static List<User> transformUsers(List<VKApiUser> dtos) {
         return mapAll(dtos, Dto2Model::transformUser);
@@ -762,6 +776,35 @@ public class Dto2Model {
         return new NotSupported().setType(dto.type).setBody(dto.body);
     }
 
+    public static Event transformEvent(VkApiEvent dto, @NonNull IOwnersBundle owners) {
+        return new Event(dto.id).setButton_text(dto.button_text).setText(dto.text)
+                .setSubject(owners.getById(dto.id >= 0 ? -dto.id : dto.id));
+    }
+
+    public static Market transform(@NonNull VkApiMarket dto) {
+        return new Market(dto.id, dto.owner_id)
+                .setAccess_key(dto.access_key)
+                .setIs_favorite(dto.is_favorite)
+                .setAvailability(dto.availability)
+                .setDate(dto.date)
+                .setDescription(dto.description)
+                .setDimensions(dto.dimensions)
+                .setPrice(dto.price)
+                .setSku(dto.sku)
+                .setTitle(dto.title)
+                .setWeight(dto.weight)
+                .setThumb_photo(dto.thumb_photo);
+    }
+
+    public static MarketAlbum transform(@NonNull VkApiMarketAlbum dto) {
+        return new MarketAlbum(dto.id, dto.owner_id)
+                .setAccess_key(dto.access_key)
+                .setCount(dto.count)
+                .setTitle(dto.title)
+                .setUpdated_time(dto.updated_time)
+                .setPhoto(dto.photo != null ? transform(dto.photo) : null);
+    }
+
     public static Graffiti transform(@NonNull VKApiGraffiti dto) {
         return new Graffiti().setId(dto.id)
                 .setOwner_id(dto.owner_id)
@@ -1107,6 +1150,15 @@ public class Dto2Model {
                     break;
                 case VKApiAttachment.TYPE_NOT_SUPPORT:
                     attachments.prepareNotSupporteds().add(transform((VKApiNotSupported) attachment));
+                    break;
+                case VKApiAttachment.TYPE_EVENT:
+                    attachments.prepareEvents().add(transformEvent((VkApiEvent) attachment, owners));
+                    break;
+                case VKApiAttachment.TYPE_MARKET:
+                    attachments.prepareMarkets().add(transform((VkApiMarket) attachment));
+                    break;
+                case VKApiAttachment.TYPE_MARKET_ALBUM:
+                    attachments.prepareMarketAlbums().add(transform((VkApiMarketAlbum) attachment));
                     break;
                 case VKApiAttachment.TYPE_AUDIO_PLAYLIST:
                     attachments.prepareAudioPlaylists().add(transform((VKApiAudioPlaylist) attachment));

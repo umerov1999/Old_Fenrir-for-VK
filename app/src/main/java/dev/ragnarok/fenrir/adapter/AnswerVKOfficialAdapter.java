@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -59,25 +60,16 @@ public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOffici
     }
 
     private void LoadIcon(@NonNull Holder holder, AnswerVKOfficial Page, boolean isSmall) {
-        if (!isSmall)
+        if (!isSmall) {
             holder.avatar.setOnClickListener(v -> {
             });
-        if (Page.iconURL != null) {
-            if (isSmall) {
-                holder.small.setVisibility(View.VISIBLE);
-                ViewUtils.displayAvatar(holder.small, transformation, Page.iconURL, Constants.PICASSO_TAG);
-            } else {
-                holder.small.setVisibility(View.INVISIBLE);
-                ViewUtils.displayAvatar(holder.avatar, transformation, Page.iconURL, Constants.PICASSO_TAG);
-            }
-        } else {
-            int IconRes = GetIconResByType(Page.iconType);
+        }
+        Integer IconRes = GetIconResByType(Page.iconType);
 
-            Drawable tr = AppCompatResources.getDrawable(context, IconRes);
-            if (IconRes == R.drawable.client_round) {
-                assert tr != null;
-                Utils.setColorFilter(tr, CurrentTheme.getColorPrimary(context));
-            }
+        if (IconRes == null && Page.iconURL == null) {
+            Drawable tr = AppCompatResources.getDrawable(context, R.drawable.client_round);
+            assert tr != null;
+            Utils.setColorFilter(tr, CurrentTheme.getColorPrimary(context));
             if (isSmall) {
                 holder.small.setVisibility(View.VISIBLE);
                 holder.small.setImageDrawable(tr);
@@ -85,6 +77,24 @@ public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOffici
                 holder.small.setVisibility(View.INVISIBLE);
                 holder.avatar.setImageDrawable(tr);
             }
+            return;
+        }
+        if (IconRes == null) {
+            if (isSmall) {
+                holder.small.setVisibility(View.VISIBLE);
+                ViewUtils.displayAvatar(holder.small, transformation, Page.iconURL, Constants.PICASSO_TAG);
+            } else {
+                holder.small.setVisibility(View.INVISIBLE);
+                ViewUtils.displayAvatar(holder.avatar, transformation, Page.iconURL, Constants.PICASSO_TAG);
+            }
+            return;
+        }
+        if (isSmall) {
+            holder.small.setVisibility(View.VISIBLE);
+            holder.small.setImageResource(IconRes);
+        } else {
+            holder.small.setVisibility(View.INVISIBLE);
+            holder.avatar.setImageResource(IconRes);
         }
     }
 
@@ -217,9 +227,10 @@ public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOffici
         }
     }
 
-    private int GetIconResByType(String IconType) {
+    private @Nullable
+    Integer GetIconResByType(String IconType) {
         if (IconType == null)
-            return R.drawable.client_round;
+            return null;
         if (IconType.equals("suggested_post_published")) {
             return R.drawable.ic_feedback_suggested_post_published;
         }
@@ -245,7 +256,7 @@ public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOffici
             return R.drawable.ic_feedback_photo_tag;
         }
         if (IconType.equals("invite_group_accepted")) {
-            return R.drawable.ic_feedback_invite_group_accepted;
+            return R.drawable.ic_feedback_friend_accepted;
         }
         if (IconType.equals("ads")) {
             return R.drawable.ic_feedback_ads;
@@ -313,7 +324,7 @@ public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOffici
         if (IconType.equals("transfer_votes")) {
             return R.drawable.ic_feedback_transfer_votes;
         }
-        return R.drawable.client_round;
+        return null;
     }
 
     @Override

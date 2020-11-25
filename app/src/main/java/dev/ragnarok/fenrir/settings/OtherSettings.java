@@ -221,6 +221,11 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public boolean isNot_update_dialogs() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("not_update_dialogs", false);
+    }
+
+    @Override
     public boolean isBe_online() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("be_online", false);
     }

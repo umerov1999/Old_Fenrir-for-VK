@@ -48,6 +48,9 @@ import dev.ragnarok.fenrir.api.model.VkApiConversation;
 import dev.ragnarok.fenrir.api.model.VkApiCover;
 import dev.ragnarok.fenrir.api.model.VkApiDialog;
 import dev.ragnarok.fenrir.api.model.VkApiDoc;
+import dev.ragnarok.fenrir.api.model.VkApiEvent;
+import dev.ragnarok.fenrir.api.model.VkApiMarket;
+import dev.ragnarok.fenrir.api.model.VkApiMarketAlbum;
 import dev.ragnarok.fenrir.api.model.VkApiPostSource;
 import dev.ragnarok.fenrir.api.model.VkApiPrivacy;
 import dev.ragnarok.fenrir.api.model.feedback.Copies;
@@ -80,12 +83,15 @@ import dev.ragnarok.fenrir.db.model.entity.CountryEntity;
 import dev.ragnarok.fenrir.db.model.entity.DialogEntity;
 import dev.ragnarok.fenrir.db.model.entity.DocumentEntity;
 import dev.ragnarok.fenrir.db.model.entity.Entity;
+import dev.ragnarok.fenrir.db.model.entity.EventEntity;
 import dev.ragnarok.fenrir.db.model.entity.FavePageEntity;
 import dev.ragnarok.fenrir.db.model.entity.GiftEntity;
 import dev.ragnarok.fenrir.db.model.entity.GiftItemEntity;
 import dev.ragnarok.fenrir.db.model.entity.GraffitiEntity;
 import dev.ragnarok.fenrir.db.model.entity.KeyboardEntity;
 import dev.ragnarok.fenrir.db.model.entity.LinkEntity;
+import dev.ragnarok.fenrir.db.model.entity.MarketAlbumEntity;
+import dev.ragnarok.fenrir.db.model.entity.MarketEntity;
 import dev.ragnarok.fenrir.db.model.entity.MessageEntity;
 import dev.ragnarok.fenrir.db.model.entity.MilitaryEntity;
 import dev.ragnarok.fenrir.db.model.entity.NewsEntity;
@@ -458,6 +464,7 @@ public class Dto2Entity {
                     .setPhotosCount(dto.counters.photos)
                     .setAudiosCount(dto.counters.audios)
                     .setVideosCount(dto.counters.videos)
+                    .setProductsCount(dto.counters.market)
                     .setArticlesCount(dto.counters.articles);
         }
 
@@ -848,6 +855,18 @@ public class Dto2Entity {
             return mapNotSupported((VKApiNotSupported) dto);
         }
 
+        if (dto instanceof VkApiEvent) {
+            return mapEvent((VkApiEvent) dto);
+        }
+
+        if (dto instanceof VkApiMarket) {
+            return mapMarket((VkApiMarket) dto);
+        }
+
+        if (dto instanceof VkApiMarketAlbum) {
+            return mapMarketAlbum((VkApiMarketAlbum) dto);
+        }
+
         if (dto instanceof VKApiWikiPage) {
             return mapWikiPage((VKApiWikiPage) dto);
         }
@@ -1093,6 +1112,34 @@ public class Dto2Entity {
 
     public static NotSupportedEntity mapNotSupported(VKApiNotSupported dto) {
         return new NotSupportedEntity().setType(dto.type).setBody(dto.body);
+    }
+
+    public static EventEntity mapEvent(VkApiEvent dto) {
+        return new EventEntity(dto.id).setButton_text(dto.button_text).setText(dto.text);
+    }
+
+    public static MarketEntity mapMarket(VkApiMarket dto) {
+        return new MarketEntity(dto.id, dto.owner_id)
+                .setAccess_key(dto.access_key)
+                .setIs_favorite(dto.is_favorite)
+                .setAvailability(dto.availability)
+                .setDate(dto.date)
+                .setDescription(dto.description)
+                .setDimensions(dto.dimensions)
+                .setPrice(dto.price)
+                .setSku(dto.sku)
+                .setTitle(dto.title)
+                .setWeight(dto.weight)
+                .setThumb_photo(dto.thumb_photo);
+    }
+
+    public static MarketAlbumEntity mapMarketAlbum(VkApiMarketAlbum dto) {
+        return new MarketAlbumEntity(dto.id, dto.owner_id)
+                .setAccess_key(dto.access_key)
+                .setCount(dto.count)
+                .setTitle(dto.title)
+                .setUpdated_time(dto.updated_time)
+                .setPhoto(dto.photo != null ? mapPhoto(dto.photo) : null);
     }
 
     public static AudioMessageEntity mapAudioMessage(VkApiAudioMessage dto) {

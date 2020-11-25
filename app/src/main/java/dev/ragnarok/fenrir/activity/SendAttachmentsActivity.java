@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.model.AbsModel;
 import dev.ragnarok.fenrir.model.ModelsBundle;
+import dev.ragnarok.fenrir.model.Peer;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.util.MainActivityTransforms;
 import dev.ragnarok.fenrir.util.ViewUtils;
@@ -28,6 +29,14 @@ public class SendAttachmentsActivity extends MainActivity {
         context.startActivity(intent);
     }
 
+    public static void startForSendAttachmentsFor(Context context, int accountId, Peer peer, ModelsBundle bundle) {
+        Intent intent = new Intent(context, ChatActivity.class);
+        intent.setAction(ChatActivity.ACTION_OPEN_PLACE);
+        intent.putExtra(EXTRA_INPUT_ATTACHMENTS, bundle);
+        intent.putExtra(Extra.PLACE, PlaceFactory.getChatPlace(accountId, accountId, peer, 0));
+        context.startActivity(intent);
+    }
+
     public static void startForSendLink(Context context, String link) {
         Intent intent = new Intent(context, SendAttachmentsActivity.class);
         intent.setAction(Intent.ACTION_SEND);
@@ -37,6 +46,10 @@ public class SendAttachmentsActivity extends MainActivity {
 
     public static void startForSendAttachments(@NonNull Context context, int accountId, AbsModel model) {
         startForSendAttachments(context, accountId, new ModelsBundle(1).append(model));
+    }
+
+    public static void startForSendAttachmentsFor(@NonNull Context context, int accountId, Peer peer, AbsModel model) {
+        startForSendAttachmentsFor(context, accountId, peer, new ModelsBundle(1).append(model));
     }
 
     @Override

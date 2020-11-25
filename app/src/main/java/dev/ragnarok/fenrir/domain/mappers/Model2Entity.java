@@ -14,9 +14,12 @@ import dev.ragnarok.fenrir.db.model.entity.AudioPlaylistEntity;
 import dev.ragnarok.fenrir.db.model.entity.CallEntity;
 import dev.ragnarok.fenrir.db.model.entity.DocumentEntity;
 import dev.ragnarok.fenrir.db.model.entity.Entity;
+import dev.ragnarok.fenrir.db.model.entity.EventEntity;
 import dev.ragnarok.fenrir.db.model.entity.GiftItemEntity;
 import dev.ragnarok.fenrir.db.model.entity.GraffitiEntity;
 import dev.ragnarok.fenrir.db.model.entity.LinkEntity;
+import dev.ragnarok.fenrir.db.model.entity.MarketAlbumEntity;
+import dev.ragnarok.fenrir.db.model.entity.MarketEntity;
 import dev.ragnarok.fenrir.db.model.entity.MessageEntity;
 import dev.ragnarok.fenrir.db.model.entity.NotSupportedEntity;
 import dev.ragnarok.fenrir.db.model.entity.PageEntity;
@@ -38,9 +41,12 @@ import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.Call;
 import dev.ragnarok.fenrir.model.CryptStatus;
 import dev.ragnarok.fenrir.model.Document;
+import dev.ragnarok.fenrir.model.Event;
 import dev.ragnarok.fenrir.model.GiftItem;
 import dev.ragnarok.fenrir.model.Graffiti;
 import dev.ragnarok.fenrir.model.Link;
+import dev.ragnarok.fenrir.model.Market;
+import dev.ragnarok.fenrir.model.MarketAlbum;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.NotSupported;
 import dev.ragnarok.fenrir.model.Photo;
@@ -108,6 +114,9 @@ public class Model2Entity {
         mapAndAdd(attachments.getCalls(), Model2Entity::buildCallDbo, entities);
         mapAndAdd(attachments.getWallReplies(), Model2Entity::buildWallReplyDbo, entities);
         mapAndAdd(attachments.getNotSupported(), Model2Entity::buildNotSupportedDbo, entities);
+        mapAndAdd(attachments.getEvents(), Model2Entity::buildEventDbo, entities);
+        mapAndAdd(attachments.getMarkets(), Model2Entity::buildMarketDbo, entities);
+        mapAndAdd(attachments.getMarketAlbums(), Model2Entity::buildMarketAlbumDbo, entities);
         mapAndAdd(attachments.getGraffity(), Model2Entity::buildGraffityDbo, entities);
         mapAndAdd(attachments.getAudioPlaylists(), Model2Entity::buildAudioPlaylistEntity, entities);
         mapAndAdd(attachments.getPolls(), Model2Entity::buildPollDbo, entities);
@@ -147,6 +156,12 @@ public class Model2Entity {
                 entities.add(buildCallDbo((Call) model));
             } else if (model instanceof NotSupported) {
                 entities.add(buildNotSupportedDbo((NotSupported) model));
+            } else if (model instanceof Event) {
+                entities.add(buildEventDbo((Event) model));
+            } else if (model instanceof Market) {
+                entities.add(buildMarketDbo((Market) model));
+            } else if (model instanceof MarketAlbum) {
+                entities.add(buildMarketAlbumDbo((MarketAlbum) model));
             } else if (model instanceof WallReply) {
                 entities.add(buildWallReplyDbo((WallReply) model));
             } else if (model instanceof Graffiti) {
@@ -264,6 +279,34 @@ public class Model2Entity {
 
     public static NotSupportedEntity buildNotSupportedDbo(NotSupported dbo) {
         return new NotSupportedEntity().setType(dbo.getType()).setBody(dbo.getBody());
+    }
+
+    public static EventEntity buildEventDbo(Event dbo) {
+        return new EventEntity(dbo.getId()).setButton_text(dbo.getButton_text()).setText(dbo.getText());
+    }
+
+    public static MarketEntity buildMarketDbo(@NonNull Market dbo) {
+        return new MarketEntity(dbo.getId(), dbo.getOwner_id())
+                .setAccess_key(dbo.getAccess_key())
+                .setIs_favorite(dbo.isIs_favorite())
+                .setAvailability(dbo.getAvailability())
+                .setDate(dbo.getDate())
+                .setDescription(dbo.getDescription())
+                .setDimensions(dbo.getDimensions())
+                .setPrice(dbo.getPrice())
+                .setSku(dbo.getSku())
+                .setTitle(dbo.getTitle())
+                .setWeight(dbo.getWeight())
+                .setThumb_photo(dbo.getThumb_photo());
+    }
+
+    public static MarketAlbumEntity buildMarketAlbumDbo(@NonNull MarketAlbum dbo) {
+        return new MarketAlbumEntity(dbo.getId(), dbo.getOwner_id())
+                .setAccess_key(dbo.getAccess_key())
+                .setCount(dbo.getCount())
+                .setTitle(dbo.getTitle())
+                .setUpdated_time(dbo.getUpdated_time())
+                .setPhoto(dbo.getPhoto() != null ? buildPhotoEntity(dbo.getPhoto()) : null);
     }
 
     public static GraffitiEntity buildGraffityDbo(Graffiti dbo) {

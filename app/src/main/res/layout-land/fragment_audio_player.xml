@@ -14,9 +14,9 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:adjustViewBounds="true"
+            android:alpha="0.75"
             android:contentDescription="@string/album_cover"
             android:scaleType="centerCrop"
-            android:alpha="0.75"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -168,11 +168,11 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/audio_player_current_time"
                 android:layout_marginTop="2dp"
+                android:max="1000"
                 android:progressBackgroundTint="@color/neutral"
                 android:progressTint="?colorOnSurface"
                 android:secondaryProgressTint="@color/neutral"
-                android:thumbTint="?colorOnSurface"
-                android:max="1000" />
+                android:thumbTint="?colorOnSurface" />
 
         </RelativeLayout>
 
@@ -190,12 +190,12 @@
                 android:id="@+id/audio_add"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:layout_marginStart="12dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:gravity="start"
-                android:layout_marginStart="12dp"
                 android:padding="14dp"
                 android:src="@drawable/plus"
-                app:tint="?colorOnSurface"/>
+                app:tint="?colorOnSurface" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -266,11 +266,11 @@
                 android:layout_height="48dp"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="12dp"
-                android:padding="14dp"
-                android:src="@drawable/ic_outline_share"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:gravity="end"
-                app:tint="?colorOnSurface"/>
+                android:padding="14dp"
+                android:src="@drawable/ic_outline_share"
+                app:tint="?colorOnSurface" />
 
         </RelativeLayout>
 
@@ -289,8 +289,8 @@
             android:id="@+id/action_button_shuffle"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="@dimen/audio_player_controls_end_button_width"
-            android:background="?selectableItemBackgroundBorderless"
             android:layout_height="@dimen/audio_player_controls_end_button_height"
+            android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/shuffle_disabled"
             android:tint="?colorOnSurface" />
@@ -299,8 +299,8 @@
             android:id="@+id/action_button_previous"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="@dimen/audio_player_controls_main_button_width"
-            android:background="?selectableItemBackgroundBorderless"
             android:layout_height="@dimen/audio_player_controls_main_button_height"
+            android:background="?selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/page_first"
             android:tint="?colorOnSurface" />
@@ -308,9 +308,9 @@
         <dev.ragnarok.fenrir.player.ui.PlayPauseButton
             android:id="@+id/action_button_play"
             style="?attr/fab_player"
-            android:background="?selectableItemBackgroundBorderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="?selectableItemBackgroundBorderless"
             app:elevation="3dp"
             app:fabSize="auto" />
 

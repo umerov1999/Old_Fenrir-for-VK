@@ -28,6 +28,9 @@ import dev.ragnarok.fenrir.api.model.VKApiWallReply;
 import dev.ragnarok.fenrir.api.model.VKApiWikiPage;
 import dev.ragnarok.fenrir.api.model.VkApiAttachments;
 import dev.ragnarok.fenrir.api.model.VkApiDoc;
+import dev.ragnarok.fenrir.api.model.VkApiEvent;
+import dev.ragnarok.fenrir.api.model.VkApiMarket;
+import dev.ragnarok.fenrir.api.model.VkApiMarketAlbum;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
 
@@ -93,6 +96,12 @@ public class AttachmentsEntryDtoAdapter extends AbsAdapter implements JsonDeseri
             return context.deserialize(o, VKApiAudioPlaylist.class);
         } else if (VKApiAttachment.TYPE_WALL_REPLY.equals(type)) {
             return context.deserialize(o, VKApiWallReply.class);
+        } else if (VKApiAttachment.TYPE_EVENT.equals(type)) {
+            return context.deserialize(o, VkApiEvent.class);
+        } else if (VKApiAttachment.TYPE_MARKET_ALBUM.equals(type)) {
+            return context.deserialize(o, VkApiMarketAlbum.class);
+        } else if (VKApiAttachment.TYPE_MARKET.equals(type) || VKApiAttachment.TYPE_PRODUCT.equals(type)) {
+            return context.deserialize(o, VkApiMarket.class);
         } else if (!Utils.isValueAssigned(type, VKApiAttachment.IGNORE_ATTACHMENTS)) {
             return new VKApiNotSupported(type, o.toString());
         } else {

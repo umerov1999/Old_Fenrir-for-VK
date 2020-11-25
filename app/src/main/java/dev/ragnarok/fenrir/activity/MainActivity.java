@@ -87,6 +87,7 @@ import dev.ragnarok.fenrir.fragment.ImportantMessagesFragment;
 import dev.ragnarok.fenrir.fragment.LikesFragment;
 import dev.ragnarok.fenrir.fragment.LinksInCatalogFragment;
 import dev.ragnarok.fenrir.fragment.LogsFragement;
+import dev.ragnarok.fenrir.fragment.MarketViewFragment;
 import dev.ragnarok.fenrir.fragment.MessagesLookFragment;
 import dev.ragnarok.fenrir.fragment.NewsfeedCommentsFragment;
 import dev.ragnarok.fenrir.fragment.NewsfeedMentionsFragment;
@@ -96,6 +97,8 @@ import dev.ragnarok.fenrir.fragment.PhotoPagerFragment;
 import dev.ragnarok.fenrir.fragment.PlaylistsInCatalogFragment;
 import dev.ragnarok.fenrir.fragment.PollFragment;
 import dev.ragnarok.fenrir.fragment.PreferencesFragment;
+import dev.ragnarok.fenrir.fragment.ProductAlbumsFragment;
+import dev.ragnarok.fenrir.fragment.ProductsFragment;
 import dev.ragnarok.fenrir.fragment.RequestExecuteFragment;
 import dev.ragnarok.fenrir.fragment.SecurityPreferencesFragment;
 import dev.ragnarok.fenrir.fragment.ShortedLinksFragment;
@@ -1385,6 +1388,24 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                     throw new IllegalArgumentException("wall_attachments cant bee null");
                 }
                 attachToFront(wall_attachments);
+                break;
+
+            case Place.MARKET_ALBUMS:
+                attachToFront(ProductAlbumsFragment.newInstance(
+                        args.getInt(Extra.ACCOUNT_ID),
+                        args.getInt(Extra.OWNER_ID)
+                ));
+                break;
+            case Place.MARKETS:
+                attachToFront(ProductsFragment.newInstance(
+                        args.getInt(Extra.ACCOUNT_ID),
+                        args.getInt(Extra.OWNER_ID),
+                        args.getInt(Extra.ALBUM_ID)
+                ));
+                break;
+
+            case Place.MARKET_VIEW:
+                attachToFront(MarketViewFragment.newInstance(args));
                 break;
             default:
                 throw new IllegalArgumentException("Main activity can't open this place, type: " + place.type);

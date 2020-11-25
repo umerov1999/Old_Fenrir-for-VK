@@ -7,6 +7,8 @@ import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiCommunity;
 import dev.ragnarok.fenrir.api.model.VKApiUser;
 import dev.ragnarok.fenrir.api.model.VkApiBanned;
+import dev.ragnarok.fenrir.api.model.VkApiMarket;
+import dev.ragnarok.fenrir.api.model.VkApiMarketAlbum;
 import dev.ragnarok.fenrir.api.model.response.BaseResponse;
 import dev.ragnarok.fenrir.api.model.response.GroupLongpollServer;
 import dev.ragnarok.fenrir.api.model.response.GroupWallInfoResponse;
@@ -31,6 +33,25 @@ public interface IGroupsService {
     @POST("groups.unban")
     Single<BaseResponse<Integer>> unban(@Field("group_id") int groupId,
                                         @Field("owner_id") int ownerId);
+
+    @FormUrlEncoded
+    @POST("market.getAlbums")
+    Single<BaseResponse<Items<VkApiMarketAlbum>>> getMarketAlbums(@Field("owner_id") int owner_id,
+                                                                  @Field("offset") int offset,
+                                                                  @Field("count") int count);
+
+    @FormUrlEncoded
+    @POST("market.get")
+    Single<BaseResponse<Items<VkApiMarket>>> getMarket(@Field("owner_id") int owner_id,
+                                                       @Field("album_id") int album_id,
+                                                       @Field("offset") int offset,
+                                                       @Field("count") int count,
+                                                       @Field("extended") Integer extended);
+
+    @FormUrlEncoded
+    @POST("market.getById")
+    Single<BaseResponse<Items<VkApiMarket>>> getMarketById(@Field("item_ids") String item_ids,
+                                                           @Field("extended") Integer extended);
 
     @POST("groups.ban")
     @FormUrlEncoded

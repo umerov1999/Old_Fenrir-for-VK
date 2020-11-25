@@ -23,9 +23,12 @@ import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.Call;
 import dev.ragnarok.fenrir.model.Document;
+import dev.ragnarok.fenrir.model.Event;
 import dev.ragnarok.fenrir.model.FwdMessages;
 import dev.ragnarok.fenrir.model.Graffiti;
 import dev.ragnarok.fenrir.model.Link;
+import dev.ragnarok.fenrir.model.Market;
+import dev.ragnarok.fenrir.model.MarketAlbum;
 import dev.ragnarok.fenrir.model.NotSupported;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.PhotoAlbum;
@@ -256,6 +259,37 @@ public class AttchmentsEditorAdapter extends RecyclerBindableAdapter<AttachmenEn
         holder.photoImageView.setImageResource(R.drawable.phone_call_color);
     }
 
+    private void bindEvent(ViewHolder holder, Event event) {
+        holder.tvTitle.setText(event.getButton_text());
+        PicassoInstance.with().cancelRequest(holder.photoImageView);
+    }
+
+    private void bindMarket(ViewHolder holder, Market market) {
+        holder.tvTitle.setText(market.getTitle());
+        if (isEmpty(market.getThumb_photo())) {
+            PicassoInstance.with().cancelRequest(holder.photoImageView);
+
+        } else {
+            PicassoInstance.with()
+                    .load(market.getThumb_photo())
+                    .placeholder(R.drawable.background_gray)
+                    .into(holder.photoImageView);
+        }
+    }
+
+    private void bindMarketAlbum(ViewHolder holder, MarketAlbum market_album) {
+        holder.tvTitle.setText(market_album.getTitle());
+        if (market_album.getPhoto() == null) {
+            PicassoInstance.with().cancelRequest(holder.photoImageView);
+
+        } else {
+            PicassoInstance.with()
+                    .load(market_album.getPhoto().getUrlForSize(PhotoSize.X, false))
+                    .placeholder(R.drawable.background_gray)
+                    .into(holder.photoImageView);
+        }
+    }
+
     private void bindNotSupported(ViewHolder holder) {
         holder.tvTitle.setText(R.string.not_supported);
         PicassoInstance.with().cancelRequest(holder.photoImageView);
@@ -392,6 +426,12 @@ public class AttchmentsEditorAdapter extends RecyclerBindableAdapter<AttachmenEn
             bindCall(holder);
         } else if (model instanceof NotSupported) {
             bindNotSupported(holder);
+        } else if (model instanceof Event) {
+            bindEvent(holder, (Event) model);
+        } else if (model instanceof Market) {
+            bindMarket(holder, (Market) model);
+        } else if (model instanceof MarketAlbum) {
+            bindMarketAlbum(holder, (MarketAlbum) model);
         } else if (model instanceof AudioPlaylist) {
             bindAudioPlaylist(holder, (AudioPlaylist) model);
         } else if (model instanceof Graffiti) {

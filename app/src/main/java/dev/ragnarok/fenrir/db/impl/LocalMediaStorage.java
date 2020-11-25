@@ -15,10 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 import dev.ragnarok.fenrir.db.interfaces.ILocalMediaStorage;
 import dev.ragnarok.fenrir.model.Audio;
@@ -217,7 +218,8 @@ class LocalMediaStorage extends AbsStorage implements ILocalMediaStorage {
     }
 
     @Override
-    public Bitmap getOldThumbnail(@Content_Local int type, long content_Id) {
+    public @Nullable
+    Bitmap getOldThumbnail(@Content_Local int type, long content_Id) {
         if (type == Content_Local.PHOTO) {
             return MediaStore.Images.Thumbnails.getThumbnail(getContext().getContentResolver(),
                     content_Id, MediaStore.Images.Thumbnails.MINI_KIND, null);
@@ -241,7 +243,13 @@ class LocalMediaStorage extends AbsStorage implements ILocalMediaStorage {
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
-    public Bitmap getThumbnail(Uri uri, int x, int y) throws IOException {
-        return getContext().getContentResolver().loadThumbnail(uri, new Size(x, y), null);
+    public @Nullable
+    Bitmap getThumbnail(Uri uri, int x, int y) {
+        try {
+            return getContext().getContentResolver().loadThumbnail(uri, new Size(x, y), null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

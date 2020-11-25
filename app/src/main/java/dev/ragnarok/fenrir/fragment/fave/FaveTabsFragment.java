@@ -37,8 +37,9 @@ public class FaveTabsFragment extends BaseFragment {
     public static final int TAB_POSTS = 2;
     public static final int TAB_LINKS = 3;
     public static final int TAB_ARTICLES = 4;
-    public static final int TAB_PHOTOS = 5;
-    public static final int TAB_VIDEOS = 6;
+    public static final int TAB_PRODUCTS = 5;
+    public static final int TAB_PHOTOS = 6;
+    public static final int TAB_VIDEOS = 7;
     private int mAccountId;
 
     public static Bundle buildArgs(int accountId, int tab) {
@@ -76,6 +77,8 @@ public class FaveTabsFragment extends BaseFragment {
                 return TAB_LINKS;
             case FaveLink.SECTION_ARTICLES:
                 return TAB_ARTICLES;
+            case FaveLink.SECTION_PRODUCTS:
+                return TAB_PRODUCTS;
             default:
                 return TAB_UNKNOWN;
         }
@@ -142,6 +145,7 @@ public class FaveTabsFragment extends BaseFragment {
         tabs.add(new Tab(() -> FavePostsFragment.newInstance(getAccountId()), getString(R.string.posts)));
         tabs.add(new Tab(() -> FaveLinksFragment.newInstance(getAccountId()), getString(R.string.links)));
         tabs.add(new Tab(() -> FaveArticlesFragment.newInstance(getAccountId()), getString(R.string.articles)));
+        tabs.add(new Tab(() -> FaveProductsFragment.newInstance(getAccountId()), getString(R.string.products)));
         tabs.add(new Tab(() -> FavePhotosFragment.newInstance(getAccountId()), getString(R.string.photos)));
         tabs.add(new Tab(() -> FaveVideosFragment.newInstance(getAccountId()), getString(R.string.videos)));
         Adapter adapter = new Adapter(tabs, this);

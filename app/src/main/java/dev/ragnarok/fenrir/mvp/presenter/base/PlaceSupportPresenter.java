@@ -19,6 +19,8 @@ import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.Commented;
 import dev.ragnarok.fenrir.model.Document;
 import dev.ragnarok.fenrir.model.Link;
+import dev.ragnarok.fenrir.model.Market;
+import dev.ragnarok.fenrir.model.MarketAlbum;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.PhotoAlbum;
@@ -114,6 +116,14 @@ public abstract class PlaceSupportPresenter<V extends IMvpView & IAttachmentsPla
 
     public void firePhotoAlbumClick(@NotNull PhotoAlbum album) {
         getView().openPhotoAlbum(getAccountId(), album);
+    }
+
+    public void fireMarketAlbumClick(@NonNull MarketAlbum market_album) {
+        getView().toMarketAlbumOpen(getAccountId(), market_album);
+    }
+
+    public void fireMarketClick(@NonNull Market market) {
+        getView().toMarketOpen(getAccountId(), market);
     }
 
     public void fireFaveArticleClick(@NotNull Article article) {

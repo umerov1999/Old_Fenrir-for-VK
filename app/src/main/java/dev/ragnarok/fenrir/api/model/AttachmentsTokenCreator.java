@@ -59,6 +59,18 @@ public class AttachmentsTokenCreator {
         return new AttachmentToken("error", type.hashCode(), data.hashCode());
     }
 
+    public static IAttachmentToken ofEvent(int id, String button_text) {
+        return new AttachmentToken("event", id, button_text.hashCode());
+    }
+
+    public static IAttachmentToken ofMarket(int id, int ownerId, String accessKey) {
+        return new AttachmentToken("market", id, ownerId, accessKey);
+    }
+
+    public static IAttachmentToken ofMarketAlbum(int id, int ownerId, String accessKey) {
+        return new AttachmentToken("market_album", id, ownerId, accessKey);
+    }
+
     public static IAttachmentToken ofVideo(int id, int ownerId, String accessKey) {
         return new AttachmentToken("video", id, ownerId, accessKey);
     }

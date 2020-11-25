@@ -371,6 +371,7 @@ public class VKApiCommunity extends VKApiOwner {
         public int topics = NO_COUNTER;
         public int docs = NO_COUNTER;
         public int articles = NO_COUNTER;
+        public int market = NO_COUNTER;
 
         public int all_wall = NO_COUNTER;
         public int owner_wall = NO_COUNTER;

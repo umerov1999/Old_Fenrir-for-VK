@@ -29,6 +29,8 @@ public class CommunityDetails {
 
     private int articlesCount;
 
+    private int productsCount;
+
     private String status;
 
     private Audio statusAudio;
@@ -149,6 +151,15 @@ public class CommunityDetails {
 
     public CommunityDetails setArticlesCount(int articlesCount) {
         this.articlesCount = articlesCount;
+        return this;
+    }
+
+    public int getProductsCount() {
+        return productsCount;
+    }
+
+    public CommunityDetails setProductsCount(int productsCount) {
+        this.productsCount = productsCount;
         return this;
     }
 

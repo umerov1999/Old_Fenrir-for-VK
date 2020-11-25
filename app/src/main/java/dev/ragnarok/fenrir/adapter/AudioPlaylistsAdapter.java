@@ -25,6 +25,7 @@ import dev.ragnarok.fenrir.util.ViewUtils;
 public class AudioPlaylistsAdapter extends RecyclerView.Adapter<AudioPlaylistsAdapter.Holder> {
 
     private final Context context;
+    private final boolean isDark;
     private List<AudioPlaylist> data;
     private RecyclerView recyclerView;
     private ClickListener clickListener;
@@ -32,6 +33,7 @@ public class AudioPlaylistsAdapter extends RecyclerView.Adapter<AudioPlaylistsAd
     public AudioPlaylistsAdapter(List<AudioPlaylist> data, Context context) {
         this.data = data;
         this.context = context;
+        isDark = Settings.get().ui().isDarkModeEnabled(context);
     }
 
     @NonNull
@@ -47,7 +49,7 @@ public class AudioPlaylistsAdapter extends RecyclerView.Adapter<AudioPlaylistsAd
         if (!Utils.isEmpty(playlist.getThumb_image()))
             ViewUtils.displayAvatar(holder.thumb, null, playlist.getThumb_image(), Constants.PICASSO_TAG);
         else
-            holder.thumb.setImageResource(Settings.get().ui().isDarkModeEnabled(context) ? R.drawable.generic_audio_nowplaying_dark : R.drawable.generic_audio_nowplaying_light);
+            holder.thumb.setImageResource(isDark ? R.drawable.generic_audio_nowplaying_dark : R.drawable.generic_audio_nowplaying_light);
         holder.count.setText(playlist.getCount() + " " + context.getString(R.string.audios_pattern_count));
         holder.name.setText(playlist.getTitle());
         if (Utils.isEmpty(playlist.getDescription()))

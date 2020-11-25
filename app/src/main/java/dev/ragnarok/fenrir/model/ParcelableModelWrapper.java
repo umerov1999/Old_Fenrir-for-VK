@@ -41,6 +41,9 @@ public final class ParcelableModelWrapper implements Parcelable {
         TYPES.add(AudioPlaylist.class);
         TYPES.add(Graffiti.class);
         TYPES.add(Comment.class);
+        TYPES.add(Event.class);
+        TYPES.add(Market.class);
+        TYPES.add(MarketAlbum.class);
     }
 
     private final AbsModel model;

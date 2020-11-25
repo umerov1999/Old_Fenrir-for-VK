@@ -20,6 +20,7 @@ public interface VKApiAttachment {
     String TYPE_NOTE = "note";
     String TYPE_APP = "app";
     String TYPE_POLL = "poll";
+    String TYPE_EVENT = "event";
     String TYPE_WIKI_PAGE = "page";
     String TYPE_ALBUM = "album";
     String TYPE_STICKER = "sticker";
@@ -27,7 +28,10 @@ public interface VKApiAttachment {
     String TYPE_GIFT = "gift";
     String TYPE_GRAFFITY = "graffiti";
     String TYPE_AUDIO_PLAYLIST = "audio_playlist";
-    String[] IGNORE_ATTACHMENTS = {"market", "market_album", "mini_app", "photos_list"};
+    String TYPE_MARKET = "market";
+    String TYPE_PRODUCT = "product";
+    String TYPE_MARKET_ALBUM = "market_album";
+    String[] IGNORE_ATTACHMENTS = {"mini_app", "photos_list"};
 
     /**
      * @return type of this attachment

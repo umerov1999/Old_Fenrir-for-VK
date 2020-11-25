@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import dev.ragnarok.fenrir.CheckUpdate;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
@@ -273,9 +274,8 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
     }
 
     @Override
-    public void displayCounters(int members, int topics, int docs, int photos, int audio, int video, int articles) {
+    public void displayCounters(int members, int topics, int docs, int photos, int audio, int video, int articles, int products) {
         if (isNull(mHeaderHolder)) return;
-
         setupCounter(mHeaderHolder.bTopics, topics);
         setupCounter(mHeaderHolder.bMembers, members);
         setupCounter(mHeaderHolder.bDocuments, docs);
@@ -283,6 +283,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
         setupCounter(mHeaderHolder.bAudios, audio);
         setupCounter(mHeaderHolder.bVideos, video);
         setupCounter(mHeaderHolder.bArticles, articles);
+        setupCounter(mHeaderHolder.bProducts, products);
     }
 
     @Override
@@ -302,6 +303,11 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
             ArrayList<Token> tokens = LoginActivity.extractGroupTokens(data);
             getPresenter().fireGroupTokensReceived(tokens);
         }
+    }
+
+    @Override
+    public void openProducts(int accountId, int ownerId, @Nullable Owner owner) {
+        PlaceFactory.getMarketAlbumPlace(accountId, ownerId).tryOpenWith(requireActivity());
     }
 
     private static final class OptionMenuView implements IOptionMenuView {
@@ -324,6 +330,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
 
         final TextView bTopics;
         final TextView bArticles;
+        final TextView bProducts;
         final TextView bMembers;
         final TextView bDocuments;
         final TextView bPhotos;
@@ -349,6 +356,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
             bAudios = root.findViewById(R.id.header_group_baudios);
             bVideos = root.findViewById(R.id.header_group_bvideos);
             bArticles = root.findViewById(R.id.header_group_barticles);
+            bProducts = root.findViewById(R.id.header_group_bproducts);
             primaryActionButton = root.findViewById(R.id.header_group_primary_button);
             secondaryActionButton = root.findViewById(R.id.header_group_secondary_button);
             fabMessage = root.findViewById(R.id.header_group_fab_message);
@@ -379,6 +387,12 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
                     .setOnClickListener(v -> getPresenter().fireHeaderAudiosClick());
             root.findViewById(R.id.header_group_articles_container)
                     .setOnClickListener(v -> getPresenter().fireHeaderArticlesClick());
+            root.findViewById(R.id.header_group_products_container)
+                    .setOnClickListener(v -> {
+                        if (CheckUpdate.isFullVersionPropriety(requireActivity())) {
+                            getPresenter().fireHeaderProductsClick();
+                        }
+                    });
             root.findViewById(R.id.header_group_contacts_container)
                     .setOnClickListener(v -> getPresenter().fireShowComunityInfoClick());
             root.findViewById(R.id.header_group_links_container)

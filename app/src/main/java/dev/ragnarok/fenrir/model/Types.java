@@ -51,4 +51,10 @@ public class Types {
     public static final int NOT_SUPPORTED = 8388608;
 
     public static final int WALL_REPLY = 16777216;
+
+    public static final int EVENT = 33554432;
+
+    public static final int MARKET = 67108864;
+
+    public static final int MARKET_ALBUM = 134217728;
 }

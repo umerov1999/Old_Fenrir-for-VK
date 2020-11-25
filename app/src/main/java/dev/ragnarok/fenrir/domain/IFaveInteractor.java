@@ -6,6 +6,7 @@ import dev.ragnarok.fenrir.model.Article;
 import dev.ragnarok.fenrir.model.EndlessData;
 import dev.ragnarok.fenrir.model.FaveLink;
 import dev.ragnarok.fenrir.model.FavePage;
+import dev.ragnarok.fenrir.model.Market;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.Post;
 import dev.ragnarok.fenrir.model.Video;
@@ -24,6 +25,10 @@ public interface IFaveInteractor {
     Single<List<Video>> getCachedVideos(int accountId);
 
     Single<List<Article>> getCachedArticles(int accountId);
+
+    Single<List<Market>> getCachedProducts(int accountId);
+
+    Single<List<Market>> getProducts(int accountId, int count, int offset);
 
     Single<List<Video>> getVideos(int accountId, int count, int offset);
 
@@ -44,6 +49,10 @@ public interface IFaveInteractor {
     Completable removeLink(int accountId, String id);
 
     Single<Boolean> removeArticle(int accountId, Integer owner_id, Integer article_id);
+
+    Single<Boolean> removeProduct(int accountId, Integer id, Integer owner_id);
+
+    Completable addProduct(int accountId, int id, int owner_id, String access_key);
 
     Single<Boolean> removePost(int accountId, Integer owner_id, Integer id);
 

@@ -12,8 +12,11 @@ import dev.ragnarok.fenrir.db.model.entity.AudioPlaylistEntity;
 import dev.ragnarok.fenrir.db.model.entity.CallEntity;
 import dev.ragnarok.fenrir.db.model.entity.DocumentEntity;
 import dev.ragnarok.fenrir.db.model.entity.Entity;
+import dev.ragnarok.fenrir.db.model.entity.EventEntity;
 import dev.ragnarok.fenrir.db.model.entity.GraffitiEntity;
 import dev.ragnarok.fenrir.db.model.entity.LinkEntity;
+import dev.ragnarok.fenrir.db.model.entity.MarketAlbumEntity;
+import dev.ragnarok.fenrir.db.model.entity.MarketEntity;
 import dev.ragnarok.fenrir.db.model.entity.NotSupportedEntity;
 import dev.ragnarok.fenrir.db.model.entity.PhotoAlbumEntity;
 import dev.ragnarok.fenrir.db.model.entity.PhotoEntity;
@@ -90,6 +93,21 @@ public class Entity2Dto {
         if (entity instanceof NotSupportedEntity) {
             NotSupportedEntity error = (NotSupportedEntity) entity;
             return AttachmentsTokenCreator.ofError(error.getType(), error.getBody());
+        }
+
+        if (entity instanceof EventEntity) {
+            EventEntity event = (EventEntity) entity;
+            return AttachmentsTokenCreator.ofEvent(event.getId(), event.getButton_text());
+        }
+
+        if (entity instanceof MarketEntity) {
+            MarketEntity market = (MarketEntity) entity;
+            return AttachmentsTokenCreator.ofMarket(market.getId(), market.getOwner_id(), market.getAccess_key());
+        }
+
+        if (entity instanceof MarketAlbumEntity) {
+            MarketAlbumEntity market_album = (MarketAlbumEntity) entity;
+            return AttachmentsTokenCreator.ofMarketAlbum(market_album.getId(), market_album.getOwner_id(), market_album.getAccess_key());
         }
 
         if (entity instanceof AudioPlaylistEntity) {

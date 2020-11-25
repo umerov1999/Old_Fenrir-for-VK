@@ -11,8 +11,11 @@ import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.Call;
 import dev.ragnarok.fenrir.model.Document;
+import dev.ragnarok.fenrir.model.Event;
 import dev.ragnarok.fenrir.model.Graffiti;
 import dev.ragnarok.fenrir.model.Link;
+import dev.ragnarok.fenrir.model.Market;
+import dev.ragnarok.fenrir.model.MarketAlbum;
 import dev.ragnarok.fenrir.model.NotSupported;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.PhotoAlbum;
@@ -115,6 +118,21 @@ public class Model2Dto {
         if (model instanceof NotSupported) {
             NotSupported error = (NotSupported) model;
             return AttachmentsTokenCreator.ofError(error.getType(), error.getBody());
+        }
+
+        if (model instanceof Event) {
+            Event event = (Event) model;
+            return AttachmentsTokenCreator.ofEvent(event.getId(), event.getButton_text());
+        }
+
+        if (model instanceof Market) {
+            Market market = (Market) model;
+            return AttachmentsTokenCreator.ofMarket(market.getId(), market.getOwner_id(), market.getAccess_key());
+        }
+
+        if (model instanceof MarketAlbum) {
+            MarketAlbum market_album = (MarketAlbum) model;
+            return AttachmentsTokenCreator.ofMarketAlbum(market_album.getId(), market_album.getOwner_id(), market_album.getAccess_key());
         }
 
         if (model instanceof AudioPlaylist) {

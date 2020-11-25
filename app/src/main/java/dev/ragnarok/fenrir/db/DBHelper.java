@@ -27,6 +27,7 @@ import dev.ragnarok.fenrir.db.column.FaveLinksColumns;
 import dev.ragnarok.fenrir.db.column.FavePageColumns;
 import dev.ragnarok.fenrir.db.column.FavePhotosColumns;
 import dev.ragnarok.fenrir.db.column.FavePostsColumns;
+import dev.ragnarok.fenrir.db.column.FaveProductColumns;
 import dev.ragnarok.fenrir.db.column.FaveVideosColumns;
 import dev.ragnarok.fenrir.db.column.FeedListsColumns;
 import dev.ragnarok.fenrir.db.column.FriendListsColumns;
@@ -187,6 +188,7 @@ public class DBHelper extends SQLiteOpenHelper {
         createFavePhotosTable(db);
         createFaveVideosTable(db);
         createFaveArticlesTable(db);
+        createFaveProductTable(db);
         createFavePageTable(db);
         createFaveGroupsTable(db);
         createFaveLinksTable(db);
@@ -269,6 +271,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + StickersKeywordsColumns.TABLENAME);
         db.execSQL("DROP TABLE IF EXISTS " + FavePhotosColumns.TABLENAME);
         db.execSQL("DROP TABLE IF EXISTS " + FaveArticlesColumns.TABLENAME);
+        db.execSQL("DROP TABLE IF EXISTS " + FaveProductColumns.TABLENAME);
         db.execSQL("DROP TABLE IF EXISTS " + FaveVideosColumns.TABLENAME);
         db.execSQL("DROP TABLE IF EXISTS " + FavePageColumns.TABLENAME);
         db.execSQL("DROP TABLE IF EXISTS " + FavePageColumns.GROUPSTABLENAME);
@@ -435,6 +438,18 @@ public class DBHelper extends SQLiteOpenHelper {
         String create = "CREATE TABLE [" + FaveArticlesColumns.TABLENAME + "] (" +
                 " [" + BaseColumns._ID + "] INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 " [" + FaveArticlesColumns.ARTICLE + "] BLOB);";
+        db.execSQL(create);
+    }
+
+    /**
+     * Создание таблицы закладок товаров
+     *
+     * @param db БД
+     */
+    private void createFaveProductTable(SQLiteDatabase db) {
+        String create = "CREATE TABLE [" + FaveProductColumns.TABLENAME + "] (" +
+                " [" + BaseColumns._ID + "] INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                " [" + FaveProductColumns.PRODUCT + "] BLOB);";
         db.execSQL(create);
     }
 

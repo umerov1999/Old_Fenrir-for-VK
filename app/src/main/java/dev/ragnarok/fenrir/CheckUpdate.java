@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.umerov.rlottie.RLottieImageView;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -114,14 +116,43 @@ public class CheckUpdate {
         });
     }
 
-    public static boolean isFullVersion(Context context) {
-        if (Settings.get().accounts().getCurrent() != 572488303 && !Utils.isValueAssigned(Settings.get().accounts().getCurrent(), Utils.donate_users) && Constants.IS_DONATE == 0) {
+    private static boolean isFullVersionTelegram(Context context) {
+        if (Settings.get().accounts().getCurrent() != 572488303 && !Utils.isValueAssigned(Settings.get().accounts().getCurrent(), Utils.donate_users)) {
             MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(context);
-            dlgAlert.setMessage(R.string.in_full_version);
+
+            View view = LayoutInflater.from(context).inflate(R.layout.donate_alert_telegram, null);
             dlgAlert.setTitle(R.string.info);
             dlgAlert.setIcon(R.drawable.client_round);
             dlgAlert.setCancelable(true);
-            dlgAlert.setPositiveButton(R.string.go_donate, (dialog, which) -> LinkHelper.openLinkInBrowser(context, "https://play.google.com/store/apps/details?id=dev.ragnarok.fenrir_full"));
+            dlgAlert.setView(view);
+            dlgAlert.show();
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isFullVersionPropriety(Context context) {
+        if (Constants.IS_DONATE == 2) {
+            return isFullVersionTelegram(context);
+        }
+        return isFullVersion(context);
+    }
+
+    public static boolean isFullVersion(Context context) {
+        if (Settings.get().accounts().getCurrent() != 572488303 && !Utils.isValueAssigned(Settings.get().accounts().getCurrent(), Utils.donate_users) && Constants.IS_DONATE == 0) {
+            MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(context);
+
+            View view = LayoutInflater.from(context).inflate(R.layout.donate_alert, null);
+            view.findViewById(R.id.item_donate).setOnClickListener(v -> LinkHelper.openLinkInBrowser(context, "https://play.google.com/store/apps/details?id=dev.ragnarok.fenrir_full"));
+            RLottieImageView anim = view.findViewById(R.id.lottie_animation);
+            anim.setAutoRepeat(true);
+            anim.setAnimation(R.raw.google_store, Utils.dp(200), Utils.dp(200));
+            anim.playAnimation();
+
+            dlgAlert.setTitle(R.string.info);
+            dlgAlert.setIcon(R.drawable.client_round);
+            dlgAlert.setCancelable(true);
+            dlgAlert.setView(view);
             dlgAlert.show();
             return false;
         }

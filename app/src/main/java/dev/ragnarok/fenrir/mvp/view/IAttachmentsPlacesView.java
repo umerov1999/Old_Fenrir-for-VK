@@ -14,6 +14,8 @@ import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.Commented;
 import dev.ragnarok.fenrir.model.Document;
 import dev.ragnarok.fenrir.model.Link;
+import dev.ragnarok.fenrir.model.Market;
+import dev.ragnarok.fenrir.model.MarketAlbum;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.Peer;
 import dev.ragnarok.fenrir.model.Photo;
@@ -73,4 +75,8 @@ public interface IAttachmentsPlacesView {
     void openAudioPlaylist(int accountId, @NotNull AudioPlaylist playlist);
 
     void openPhotoAlbum(int accountId, @NotNull PhotoAlbum album);
+
+    void toMarketAlbumOpen(int accountId, @NonNull MarketAlbum market_album);
+
+    void toMarketOpen(int accountId, @NonNull Market market);
 }

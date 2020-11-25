@@ -64,6 +64,14 @@ public interface IFaveService {
                                                       @Field("fields") String fields);
 
     @FormUrlEncoded
+    @POST("fave.get")
+    Single<BaseResponse<Items<VkApiAttachments.Entry>>> getProducts(@Field("offset") Integer offset,
+                                                                    @Field("count") Integer count,
+                                                                    @Field("item_type") String item_type,
+                                                                    @Field("extended") Integer extended,
+                                                                    @Field("fields") String fields);
+
+    @FormUrlEncoded
     @POST("fave.getPhotos")
     Single<BaseResponse<Items<VKApiPhoto>>> getPhotos(@Field("offset") Integer offset,
                                                       @Field("count") Integer count);
@@ -88,6 +96,12 @@ public interface IFaveService {
     Single<BaseResponse<Integer>> addArticle(@Field("url") String url);
 
     @FormUrlEncoded
+    @POST("fave.addProduct")
+    Single<BaseResponse<Integer>> addProduct(@Field("id") int id,
+                                             @Field("owner_id") int owner_id,
+                                             @Field("access_key") String access_key);
+
+    @FormUrlEncoded
     @POST("fave.addPost")
     Single<BaseResponse<Integer>> addPost(@Field("owner_id") Integer owner_id,
                                           @Field("id") Integer id,
@@ -107,6 +121,11 @@ public interface IFaveService {
     @POST("fave.removeArticle")
     Single<BaseResponse<Integer>> removeArticle(@Field("owner_id") Integer owner_id,
                                                 @Field("article_id") Integer article_id);
+
+    @FormUrlEncoded
+    @POST("fave.removeProduct")
+    Single<BaseResponse<Integer>> removeProduct(@Field("id") Integer id,
+                                                @Field("owner_id") Integer owner_id);
 
     @FormUrlEncoded
     @POST("fave.removePost")

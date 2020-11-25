@@ -27,6 +27,8 @@ import dev.ragnarok.fenrir.model.Commented;
 import dev.ragnarok.fenrir.model.CommentedType;
 import dev.ragnarok.fenrir.model.Document;
 import dev.ragnarok.fenrir.model.Link;
+import dev.ragnarok.fenrir.model.Market;
+import dev.ragnarok.fenrir.model.MarketAlbum;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.Peer;
 import dev.ragnarok.fenrir.model.Photo;
@@ -180,6 +182,16 @@ public abstract class PlaceSupportMvpFragment<P extends PlaceSupportPresenter<V>
     }
 
     @Override
+    public void onMarketAlbumOpen(@NonNull MarketAlbum market_album) {
+        getPresenter().fireMarketAlbumClick(market_album);
+    }
+
+    @Override
+    public void onMarketOpen(@NonNull Market market) {
+        getPresenter().fireMarketClick(market);
+    }
+
+    @Override
     public void openLink(int accountId, @NonNull Link link) {
         LinkHelper.openLinkInBrowser(requireActivity(), link.getUrl());
     }
@@ -198,6 +210,16 @@ public abstract class PlaceSupportMvpFragment<P extends PlaceSupportPresenter<V>
     @Override
     public void onStickerOpen(@NonNull Sticker sticker) {
 
+    }
+
+    @Override
+    public void toMarketAlbumOpen(int accountId, @NonNull MarketAlbum market_album) {
+        PlaceFactory.getMarketPlace(accountId, market_album.getOwner_id(), market_album.getId()).tryOpenWith(requireActivity());
+    }
+
+    @Override
+    public void toMarketOpen(int accountId, @NonNull Market market) {
+        PlaceFactory.getMarketViewPlace(accountId, market).tryOpenWith(requireActivity());
     }
 
     @Override

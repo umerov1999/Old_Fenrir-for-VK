@@ -3,8 +3,9 @@ package dev.ragnarok.fenrir.db.interfaces;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
-import java.io.IOException;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.model.LocalImageAlbum;
@@ -26,7 +27,9 @@ public interface ILocalMediaStorage extends IStorage {
 
     Single<List<Audio>> getAudios(int accountId);
 
+    @Nullable
     Bitmap getOldThumbnail(@Content_Local int type, long content_Id);
 
-    Bitmap getThumbnail(Uri uri, int x, int y) throws IOException;
+    @Nullable
+    Bitmap getThumbnail(Uri uri, int x, int y);
 }

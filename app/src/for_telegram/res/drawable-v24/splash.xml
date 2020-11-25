@@ -10,19 +10,19 @@
         tools:ignore="VectorPath">
         <aapt:attr name="android:fillColor">
             <gradient
-                android:centerX="70"
-                android:centerY="110"
+                android:centerX="30"
+                android:centerY="90"
                 android:gradientRadius="90"
                 android:type="radial">
                 <item
-                    android:color="#FFEB3B"
-                    android:offset="0.2" />
+                    android:color="#2196F3"
+                    android:offset="0.1" />
                 <item
-                    android:color="#FFC107"
-                    android:offset="0.7" />
+                    android:color="#03A9F4"
+                    android:offset="0.4" />
                 <item
-                    android:color="#F39521"
-                    android:offset="1" />
+                    android:color="#00BCD4"
+                    android:offset="1.0" />
             </gradient>
         </aapt:attr>
     </path>

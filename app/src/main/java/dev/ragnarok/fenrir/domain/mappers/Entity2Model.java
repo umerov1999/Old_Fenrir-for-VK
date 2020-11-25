@@ -21,11 +21,14 @@ import dev.ragnarok.fenrir.db.model.entity.CountryEntity;
 import dev.ragnarok.fenrir.db.model.entity.DialogEntity;
 import dev.ragnarok.fenrir.db.model.entity.DocumentEntity;
 import dev.ragnarok.fenrir.db.model.entity.Entity;
+import dev.ragnarok.fenrir.db.model.entity.EventEntity;
 import dev.ragnarok.fenrir.db.model.entity.FavePageEntity;
 import dev.ragnarok.fenrir.db.model.entity.GiftEntity;
 import dev.ragnarok.fenrir.db.model.entity.GiftItemEntity;
 import dev.ragnarok.fenrir.db.model.entity.GraffitiEntity;
 import dev.ragnarok.fenrir.db.model.entity.LinkEntity;
+import dev.ragnarok.fenrir.db.model.entity.MarketAlbumEntity;
+import dev.ragnarok.fenrir.db.model.entity.MarketEntity;
 import dev.ragnarok.fenrir.db.model.entity.MessageEntity;
 import dev.ragnarok.fenrir.db.model.entity.MilitaryEntity;
 import dev.ragnarok.fenrir.db.model.entity.NewsEntity;
@@ -64,6 +67,7 @@ import dev.ragnarok.fenrir.model.CommunityDetails;
 import dev.ragnarok.fenrir.model.CryptStatus;
 import dev.ragnarok.fenrir.model.Dialog;
 import dev.ragnarok.fenrir.model.Document;
+import dev.ragnarok.fenrir.model.Event;
 import dev.ragnarok.fenrir.model.FavePage;
 import dev.ragnarok.fenrir.model.Gift;
 import dev.ragnarok.fenrir.model.GiftItem;
@@ -71,6 +75,8 @@ import dev.ragnarok.fenrir.model.Graffiti;
 import dev.ragnarok.fenrir.model.IOwnersBundle;
 import dev.ragnarok.fenrir.model.IdPair;
 import dev.ragnarok.fenrir.model.Link;
+import dev.ragnarok.fenrir.model.Market;
+import dev.ragnarok.fenrir.model.MarketAlbum;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.Military;
 import dev.ragnarok.fenrir.model.News;
@@ -184,6 +190,7 @@ public class Entity2Model {
                 .setPhotosCount(dbo.getPhotosCount())
                 .setAudiosCount(dbo.getAudiosCount())
                 .setVideosCount(dbo.getVideosCount())
+                .setProductsCount(dbo.getProductsCount())
                 .setArticlesCount(dbo.getArticlesCount());
 
         if (nonNull(dbo.getCover())) {
@@ -584,6 +591,18 @@ public class Entity2Model {
             return buildNotSupportedFromDbo((NotSupportedEntity) entity);
         }
 
+        if (entity instanceof EventEntity) {
+            return buildEventFromDbo((EventEntity) entity, owners);
+        }
+
+        if (entity instanceof MarketEntity) {
+            return buildMarketFromDbo((MarketEntity) entity);
+        }
+
+        if (entity instanceof MarketAlbumEntity) {
+            return buildMarketAlbumFromDbo((MarketAlbumEntity) entity);
+        }
+
         if (entity instanceof PollEntity) {
             return buildPollFromDbo((PollEntity) entity);
         }
@@ -831,6 +850,34 @@ public class Entity2Model {
         return new NotSupported().setType(dbo.getType()).setBody(dbo.getBody());
     }
 
+    public static Event buildEventFromDbo(EventEntity dbo, IOwnersBundle owners) {
+        return new Event(dbo.getId()).setButton_text(dbo.getButton_text()).setText(dbo.getText()).setSubject(owners.getById(dbo.getId() >= 0 ? -dbo.getId() : dbo.getId()));
+    }
+
+    public static Market buildMarketFromDbo(@NonNull MarketEntity dbo) {
+        return new Market(dbo.getId(), dbo.getOwner_id())
+                .setAccess_key(dbo.getAccess_key())
+                .setIs_favorite(dbo.isIs_favorite())
+                .setAvailability(dbo.getAvailability())
+                .setDate(dbo.getDate())
+                .setDescription(dbo.getDescription())
+                .setDimensions(dbo.getDimensions())
+                .setPrice(dbo.getPrice())
+                .setSku(dbo.getSku())
+                .setTitle(dbo.getTitle())
+                .setWeight(dbo.getWeight())
+                .setThumb_photo(dbo.getThumb_photo());
+    }
+
+    public static MarketAlbum buildMarketAlbumFromDbo(@NonNull MarketAlbumEntity dbo) {
+        return new MarketAlbum(dbo.getId(), dbo.getOwner_id())
+                .setAccess_key(dbo.getAccess_key())
+                .setCount(dbo.getCount())
+                .setTitle(dbo.getTitle())
+                .setUpdated_time(dbo.getUpdated_time())
+                .setPhoto(dbo.getPhoto() != null ? map(dbo.getPhoto()) : null);
+    }
+
     public static Story buildStoryFromDbo(StoryEntity dbo, IOwnersBundle owners) {
         return new Story().setId(dbo.getId())
                 .setOwnerId(dbo.getOwnerId())
@@ -1072,6 +1119,8 @@ public class Entity2Model {
             fillStoryOwnerIds(ids, (StoryEntity) entity);
         } else if (entity instanceof WallReplyEntity) {
             fillWallReplyOwnerIds(ids, (WallReplyEntity) entity);
+        } else if (entity instanceof EventEntity) {
+            fillEventIds(ids, (EventEntity) entity);
         }
     }
 
@@ -1082,6 +1131,12 @@ public class Entity2Model {
             if (nonNull(dbo.getAttachments())) {
                 fillOwnerIds(ids, dbo.getAttachments());
             }
+        }
+    }
+
+    public static void fillEventIds(@NonNull VKOwnIds ids, @Nullable EventEntity dbo) {
+        if (nonNull(dbo)) {
+            ids.append(dbo.getId() >= 0 ? -dbo.getId() : dbo.getId());
         }
     }
 

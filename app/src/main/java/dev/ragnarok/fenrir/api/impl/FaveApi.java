@@ -11,6 +11,7 @@ import dev.ragnarok.fenrir.api.model.VKApiArticle;
 import dev.ragnarok.fenrir.api.model.VKApiPhoto;
 import dev.ragnarok.fenrir.api.model.VKApiVideo;
 import dev.ragnarok.fenrir.api.model.VkApiAttachments;
+import dev.ragnarok.fenrir.api.model.VkApiMarket;
 import dev.ragnarok.fenrir.api.model.response.FavePageResponse;
 import dev.ragnarok.fenrir.api.model.response.FavePostsResponse;
 import dev.ragnarok.fenrir.api.services.IFaveService;
@@ -94,6 +95,22 @@ class FaveApi extends AbsApi implements IFaveApi {
     }
 
     @Override
+    public Single<List<VkApiMarket>> getProducts(Integer offset, Integer count) {
+        return provideService(IFaveService.class)
+                .flatMap(service -> service.getProducts(offset, count, "product", 1, UserColumns.API_FIELDS)
+                        .map(extractResponseWithErrorHandling()).flatMap(t -> {
+                                    List<VkApiAttachments.Entry> temp = listEmptyIfNull(t.items);
+                                    List<VkApiMarket> markets = new ArrayList<>();
+                                    for (VkApiAttachments.Entry i : temp) {
+                                        if (i.attachment instanceof VkApiMarket)
+                                            markets.add((VkApiMarket) i.attachment);
+                                    }
+                                    return Single.just(markets);
+                                }
+                        ));
+    }
+
+    @Override
     public Single<Boolean> addPage(Integer userId, Integer groupId) {
         return provideService(IFaveService.class)
                 .flatMap(service -> service.addPage(userId, groupId)
@@ -126,6 +143,14 @@ class FaveApi extends AbsApi implements IFaveApi {
     }
 
     @Override
+    public Single<Boolean> addProduct(int id, int owner_id, String access_key) {
+        return provideService(IFaveService.class)
+                .flatMap(service -> service.addProduct(id, owner_id, access_key)
+                        .map(extractResponseWithErrorHandling())
+                        .map(response -> response == 1));
+    }
+
+    @Override
     public Single<Boolean> addPost(Integer owner_id, Integer id, String access_key) {
         return provideService(IFaveService.class)
                 .flatMap(service -> service.addPost(owner_id, id, access_key)
@@ -153,6 +178,14 @@ class FaveApi extends AbsApi implements IFaveApi {
     public Single<Boolean> removeArticle(Integer owner_id, Integer article_id) {
         return provideService(IFaveService.class)
                 .flatMap(service -> service.removeArticle(owner_id, article_id)
+                        .map(extractResponseWithErrorHandling())
+                        .map(response -> response == 1));
+    }
+
+    @Override
+    public Single<Boolean> removeProduct(Integer id, Integer owner_id) {
+        return provideService(IFaveService.class)
+                .flatMap(service -> service.removeProduct(id, owner_id)
                         .map(extractResponseWithErrorHandling())
                         .map(response -> response == 1));
     }

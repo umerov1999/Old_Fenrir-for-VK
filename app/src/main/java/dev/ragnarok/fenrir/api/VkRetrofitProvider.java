@@ -30,6 +30,7 @@ import dev.ragnarok.fenrir.api.adapters.GroupSettingsAdapter;
 import dev.ragnarok.fenrir.api.adapters.JsonStringDtoAdapter;
 import dev.ragnarok.fenrir.api.adapters.LikesListAdapter;
 import dev.ragnarok.fenrir.api.adapters.LongpollUpdateAdapter;
+import dev.ragnarok.fenrir.api.adapters.MarketDtoAdapter;
 import dev.ragnarok.fenrir.api.adapters.MessageDtoAdapter;
 import dev.ragnarok.fenrir.api.adapters.NewsAdapter;
 import dev.ragnarok.fenrir.api.adapters.NewsfeedCommentDtoAdapter;
@@ -70,6 +71,7 @@ import dev.ragnarok.fenrir.api.model.VKApiVideoAlbum;
 import dev.ragnarok.fenrir.api.model.VkApiAttachments;
 import dev.ragnarok.fenrir.api.model.VkApiDoc;
 import dev.ragnarok.fenrir.api.model.VkApiJsonString;
+import dev.ragnarok.fenrir.api.model.VkApiMarket;
 import dev.ragnarok.fenrir.api.model.VkApiPostSource;
 import dev.ragnarok.fenrir.api.model.VkApiPrivacy;
 import dev.ragnarok.fenrir.api.model.VkApiProfileInfoResponce;
@@ -135,6 +137,7 @@ public class VkRetrofitProvider implements IVkRetrofitProvider {
             .registerTypeAdapter(ChatJsonResponse.class, new ChatJsonResponseDtoAdapter())
             .registerTypeAdapter(VkApiJsonString.class, new JsonStringDtoAdapter())
             .registerTypeAdapter(VkApiProfileInfoResponce.class, new ProfileInfoResponceDtoAdapter())
+            .registerTypeAdapter(VkApiMarket.class, new MarketDtoAdapter())
             .create();
 
     private static final GsonConverterFactory GSON_CONVERTER_FACTORY = GsonConverterFactory.create(VKGSON);

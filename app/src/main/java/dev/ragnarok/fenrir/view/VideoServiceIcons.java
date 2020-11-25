@@ -17,13 +17,13 @@ public class VideoServiceIcons {
             default:
                 return null;
             case VideoPlatform.COUB:
-                return R.drawable.logo_coub;
+                return R.drawable.ic_coub;
             case VideoPlatform.VIMEO:
-                return R.drawable.logo_vimeo;
+                return R.drawable.ic_vimeo;
             case VideoPlatform.YOUTUBE:
-                return R.drawable.logo_youtube_trans;
+                return R.drawable.ic_youtube;
             case VideoPlatform.RUTUBE:
-                return R.drawable.logo_rutube;
+                return R.drawable.ic_rutube;
         }
     }
 }

@@ -120,7 +120,7 @@
                 android:layout_height="40dp"
                 android:layout_margin="16dp"
                 android:scaleType="fitStart"
-                android:src="@drawable/logo_youtube_trans" />
+                android:src="@drawable/ic_youtube" />
 
         </RelativeLayout>
 

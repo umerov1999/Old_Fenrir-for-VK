@@ -26,6 +26,8 @@ public interface IGroupWallView extends IWallView {
 
     void openDocuments(int accoundId, int ownerId, @Nullable Owner owner);
 
+    void openProducts(int accountId, int ownerId, @Nullable Owner owner);
+
     void displayWallFilters(List<PostFilter> filters);
 
     void notifyWallFiltersChanged();
@@ -40,7 +42,7 @@ public interface IGroupWallView extends IWallView {
 
     void openCommunityDialogs(int accountId, int groupId, String subtitle);
 
-    void displayCounters(int members, int topics, int docs, int photos, int audio, int video, int articles);
+    void displayCounters(int members, int topics, int docs, int photos, int audio, int video, int articles, int products);
 
     interface IOptionMenuView {
         void setControlVisible(boolean visible);

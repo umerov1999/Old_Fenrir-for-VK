@@ -20,12 +20,14 @@ import dev.ragnarok.fenrir.db.column.FaveLinksColumns;
 import dev.ragnarok.fenrir.db.column.FavePageColumns;
 import dev.ragnarok.fenrir.db.column.FavePhotosColumns;
 import dev.ragnarok.fenrir.db.column.FavePostsColumns;
+import dev.ragnarok.fenrir.db.column.FaveProductColumns;
 import dev.ragnarok.fenrir.db.column.FaveVideosColumns;
 import dev.ragnarok.fenrir.db.interfaces.IFaveStorage;
 import dev.ragnarok.fenrir.db.model.entity.ArticleEntity;
 import dev.ragnarok.fenrir.db.model.entity.CommunityEntity;
 import dev.ragnarok.fenrir.db.model.entity.FaveLinkEntity;
 import dev.ragnarok.fenrir.db.model.entity.FavePageEntity;
+import dev.ragnarok.fenrir.db.model.entity.MarketEntity;
 import dev.ragnarok.fenrir.db.model.entity.OwnerEntities;
 import dev.ragnarok.fenrir.db.model.entity.PhotoEntity;
 import dev.ragnarok.fenrir.db.model.entity.PostEntity;
@@ -34,6 +36,7 @@ import dev.ragnarok.fenrir.db.model.entity.VideoEntity;
 import dev.ragnarok.fenrir.model.criteria.FaveArticlesCriteria;
 import dev.ragnarok.fenrir.model.criteria.FavePhotosCriteria;
 import dev.ragnarok.fenrir.model.criteria.FavePostsCriteria;
+import dev.ragnarok.fenrir.model.criteria.FaveProductsCriteria;
 import dev.ragnarok.fenrir.model.criteria.FaveVideosCriteria;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
@@ -430,9 +433,50 @@ class FaveStorage extends AbsStorage implements IFaveStorage {
         });
     }
 
+    @Override
+    public Single<List<MarketEntity>> getProducts(FaveProductsCriteria criteria) {
+        return Single.create(e -> {
+            Uri uri = MessengerContentProvider.getFaveProductsContentUriFor(criteria.getAccountId());
+
+            String where;
+            String[] args;
+
+            DatabaseIdRange range = criteria.getRange();
+            if (nonNull(range)) {
+                where = BaseColumns._ID + " >= ? AND " + BaseColumns._ID + " <= ?";
+                args = new String[]{String.valueOf(range.getFirst()), String.valueOf(range.getLast())};
+            } else {
+                where = null;
+                args = null;
+            }
+
+            Cursor cursor = getContentResolver().query(uri, null, where, args, null);
+
+            List<MarketEntity> dbos = new ArrayList<>(safeCountOf(cursor));
+            if (nonNull(cursor)) {
+                while (cursor.moveToNext()) {
+                    if (e.isDisposed()) {
+                        break;
+                    }
+
+                    dbos.add(mapProduct(cursor));
+                }
+
+                cursor.close();
+            }
+
+            e.onSuccess(dbos);
+        });
+    }
+
     private ArticleEntity mapArticle(Cursor cursor) {
         String json = cursor.getString(cursor.getColumnIndex(FaveArticlesColumns.ARTICLE));
         return GSON.fromJson(json, ArticleEntity.class);
+    }
+
+    private MarketEntity mapProduct(Cursor cursor) {
+        String json = cursor.getString(cursor.getColumnIndex(FaveProductColumns.PRODUCT));
+        return GSON.fromJson(json, MarketEntity.class);
     }
 
     @Override
@@ -494,6 +538,47 @@ class FaveStorage extends AbsStorage implements IFaveStorage {
                 ArticleEntity dbo = articles.get(i);
                 ContentValues cv = new ContentValues();
                 cv.put(FaveArticlesColumns.ARTICLE, GSON.toJson(dbo));
+
+                int index = addToListAndReturnIndex(operations, ContentProviderOperation
+                        .newInsert(uri)
+                        .withValues(cv)
+                        .build());
+                indexes[i] = index;
+            }
+
+            ContentProviderResult[] results = getContentResolver().applyBatch(MessengerContentProvider.AUTHORITY, operations);
+
+            int[] ids = new int[results.length];
+
+            for (int i = 0; i < indexes.length; i++) {
+                int index = indexes[i];
+
+                ContentProviderResult result = results[index];
+                ids[i] = extractId(result);
+            }
+
+            e.onSuccess(ids);
+        });
+    }
+
+    @Override
+    public Single<int[]> storeProducts(int accountId, List<MarketEntity> products, boolean clearBeforeStore) {
+        return Single.create(e -> {
+            Uri uri = MessengerContentProvider.getFaveProductsContentUriFor(accountId);
+            ArrayList<ContentProviderOperation> operations = new ArrayList<>();
+
+            if (clearBeforeStore) {
+                operations.add(ContentProviderOperation
+                        .newDelete(uri)
+                        .build());
+            }
+
+            int[] indexes = new int[products.size()];
+
+            for (int i = 0; i < products.size(); i++) {
+                MarketEntity dbo = products.get(i);
+                ContentValues cv = new ContentValues();
+                cv.put(FaveProductColumns.PRODUCT, GSON.toJson(dbo));
 
                 int index = addToListAndReturnIndex(operations, ContentProviderOperation
                         .newInsert(uri)

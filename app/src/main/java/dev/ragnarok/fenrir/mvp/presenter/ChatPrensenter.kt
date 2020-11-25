@@ -1485,7 +1485,7 @@ class ChatPrensenter(accountId: Int, private val messagesOwnerId: Int,
     }
 
     fun fireChatDownloadClick(context: Context, action: String) {
-        if (!CheckUpdate.isFullVersion(context)) {
+        if (!CheckUpdate.isFullVersionPropriety(context)) {
             return
         }
         val downloadWork = OneTimeWorkRequest.Builder(ChatDownloadWorker::class.java)

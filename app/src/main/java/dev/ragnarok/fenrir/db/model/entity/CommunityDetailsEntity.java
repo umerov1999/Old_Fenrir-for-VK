@@ -29,6 +29,8 @@ public class CommunityDetailsEntity {
 
     private int articlesCount;
 
+    private int productsCount;
+
     private String status;
 
     private AudioEntity statusAudio;
@@ -140,6 +142,15 @@ public class CommunityDetailsEntity {
 
     public CommunityDetailsEntity setArticlesCount(int articlesCount) {
         this.articlesCount = articlesCount;
+        return this;
+    }
+
+    public int getProductsCount() {
+        return productsCount;
+    }
+
+    public CommunityDetailsEntity setProductsCount(int productsCount) {
+        this.productsCount = productsCount;
         return this;
     }
 

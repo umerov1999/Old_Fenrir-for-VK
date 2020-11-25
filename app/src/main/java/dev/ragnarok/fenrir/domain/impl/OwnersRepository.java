@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import dev.ragnarok.fenrir.api.interfaces.INetworker;
+import dev.ragnarok.fenrir.api.model.AccessIdPair;
 import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiStory;
 import dev.ragnarok.fenrir.api.model.VKApiUser;
@@ -38,6 +39,8 @@ import dev.ragnarok.fenrir.fragment.search.options.SpinnerOption;
 import dev.ragnarok.fenrir.model.Community;
 import dev.ragnarok.fenrir.model.CommunityDetails;
 import dev.ragnarok.fenrir.model.IOwnersBundle;
+import dev.ragnarok.fenrir.model.Market;
+import dev.ragnarok.fenrir.model.MarketAlbum;
 import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.SparseArrayOwnersBundle;
 import dev.ragnarok.fenrir.model.Story;
@@ -275,20 +278,59 @@ public class OwnersRepository implements IOwnersRepository {
     }
 
     @Override
-    public Single<Pair<Community, CommunityDetails>> getFullCommunityInfo(int accountId, int comminityId, int mode) {
+    public Single<List<MarketAlbum>> getMarketAlbums(int accountId, int owner_id, int offset, int count) {
+        return networker.vkDefault(accountId)
+                .groups()
+                .getMarketAlbums(owner_id, offset, count)
+                .map(Items::getItems)
+                .map(albums -> {
+                    List<MarketAlbum> market_albums = new ArrayList<>(albums.size());
+                    market_albums.addAll(Dto2Model.transformMarketAlbums(albums));
+                    return market_albums;
+                });
+    }
+
+    @Override
+    public Single<List<Market>> getMarket(int accountId, int owner_id, int album_id, int offset, int count) {
+        return networker.vkDefault(accountId)
+                .groups()
+                .getMarket(owner_id, album_id, offset, count, 1)
+                .map(Items::getItems)
+                .map(products -> {
+                    List<Market> market = new ArrayList<>(products.size());
+                    market.addAll(Dto2Model.transformMarket(products));
+                    return market;
+                });
+    }
+
+    @Override
+    public Single<List<Market>> getMarketById(int accountId, Collection<AccessIdPair> ids) {
+        return networker.vkDefault(accountId)
+                .groups()
+                .getMarketById(ids)
+                .map(Items::getItems)
+                .map(products -> {
+                    List<Market> market = new ArrayList<>(products.size());
+                    market.addAll(Dto2Model.transformMarket(products));
+                    return market;
+                });
+    }
+
+    @Override
+    public Single<Pair<Community, CommunityDetails>> getFullCommunityInfo(int accountId, int communityId, int mode) {
         switch (mode) {
             case MODE_CACHE:
-                return getCachedGroupsFullData(accountId, comminityId);
+                return getCachedGroupsFullData(accountId, communityId);
             case MODE_NET:
                 return networker.vkDefault(accountId)
                         .groups()
-                        .getWallInfo(String.valueOf(comminityId), FIELDS_GROUPS_ALL)
+                        .getWallInfo(String.valueOf(communityId), FIELDS_GROUPS_ALL)
                         .flatMap(dto -> {
                             CommunityEntity community = Dto2Entity.mapCommunity(dto);
                             CommunityDetailsEntity details = Dto2Entity.mapCommunityDetails(dto);
                             return cache.storeCommunityDbos(accountId, singletonList(community))
-                                    .andThen(cache.storeGroupsDetails(accountId, comminityId, details))
-                                    .andThen(getCachedGroupsFullData(accountId, comminityId));
+                                    .andThen(cache.storeGroupsDetails(accountId, communityId, details))
+                                    .andThen(getCachedGroupsFullData(accountId, communityId));
                         });
         }
 

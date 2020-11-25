@@ -12,8 +12,11 @@ import dev.ragnarok.fenrir.model.AbsModel;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.Call;
 import dev.ragnarok.fenrir.model.Document;
+import dev.ragnarok.fenrir.model.Event;
 import dev.ragnarok.fenrir.model.Graffiti;
 import dev.ragnarok.fenrir.model.Link;
+import dev.ragnarok.fenrir.model.Market;
+import dev.ragnarok.fenrir.model.MarketAlbum;
 import dev.ragnarok.fenrir.model.NotSupported;
 import dev.ragnarok.fenrir.model.PhotoAlbum;
 import dev.ragnarok.fenrir.model.PhotoSizes;
@@ -89,6 +92,18 @@ public class DocLink {
             return Types.NOT_SUPPORTED;
         }
 
+        if (model instanceof Event) {
+            return Types.EVENT;
+        }
+
+        if (model instanceof Market) {
+            return Types.MARKET;
+        }
+
+        if (model instanceof MarketAlbum) {
+            return Types.MARKET_ALBUM;
+        }
+
         throw new IllegalArgumentException();
     }
 
@@ -104,6 +119,9 @@ public class DocLink {
 
             case Types.POST:
                 return ((Post) attachment).getAuthorPhoto();
+
+            case Types.EVENT:
+                return ((Event) attachment).getSubjectPhoto();
 
             case Types.WALL_REPLY:
                 return ((WallReply) attachment).getAuthorPhoto();
@@ -121,6 +139,17 @@ public class DocLink {
                     return sizes.getUrlForSize(Settings.get().main().getPrefPreviewImageSize(), true);
                 }
                 return null;
+
+            case Types.MARKET_ALBUM:
+                MarketAlbum market_album = (MarketAlbum) attachment;
+                if (Objects.nonNull(market_album.getPhoto()) && Objects.nonNull(market_album.getPhoto().getSizes())) {
+                    PhotoSizes sizes = market_album.getPhoto().getSizes();
+                    return sizes.getUrlForSize(Settings.get().main().getPrefPreviewImageSize(), true);
+                }
+                return null;
+
+            case Types.MARKET:
+                return ((Market) attachment).getThumb_photo();
 
             case Types.AUDIO_PLAYLIST:
                 return ((AudioPlaylist) attachment).getThumb_image();
@@ -151,6 +180,9 @@ public class DocLink {
             case Types.POST:
                 return ((Post) attachment).getAuthorName();
 
+            case Types.EVENT:
+                return ((Event) attachment).getSubjectName();
+
             case Types.WALL_REPLY:
                 return ((WallReply) attachment).getAuthorName();
 
@@ -159,6 +191,12 @@ public class DocLink {
 
             case Types.ALBUM:
                 return ((PhotoAlbum) attachment).getTitle();
+
+            case Types.MARKET:
+                return ((Market) attachment).getTitle();
+
+            case Types.MARKET_ALBUM:
+                return ((MarketAlbum) attachment).getTitle();
 
             case Types.LINK:
                 title = ((Link) attachment).getTitle();
@@ -219,6 +257,10 @@ public class DocLink {
                 Post post = (Post) attachment;
                 return post.hasText() ? post.getText() : (post.hasAttachments() ? "" : context.getString(R.string.wall_post_view));
 
+            case Types.EVENT:
+                Event event = (Event) attachment;
+                return Utils.firstNonEmptyString(event.getButton_text(), " ") + ", " + Utils.firstNonEmptyString(event.getText());
+
             case Types.WALL_REPLY:
                 WallReply comment = (WallReply) attachment;
                 return comment.getText();
@@ -238,6 +280,12 @@ public class DocLink {
 
             case Types.CALL:
                 return ((Call) attachment).getLocalizedState(context);
+
+            case Types.MARKET:
+                return ((Market) attachment).getPrice() + ", " + AppTextUtils.reduceStringForPost(Utils.firstNonEmptyString(((Market) attachment).getDescription(), " "));
+
+            case Types.MARKET_ALBUM:
+                return context.getString(R.string.markets_count, ((MarketAlbum) attachment).getCount());
 
             case Types.AUDIO_PLAYLIST:
                 return Utils.firstNonEmptyString(((AudioPlaylist) attachment).getArtist_name(), " ") + " " +

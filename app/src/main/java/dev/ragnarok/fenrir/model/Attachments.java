@@ -49,6 +49,9 @@ public class Attachments implements Parcelable, Cloneable {
     private ArrayList<Graffiti> graffity;
     private ArrayList<PhotoAlbum> photo_albums;
     private ArrayList<NotSupported> not_supported;
+    private ArrayList<Event> events;
+    private ArrayList<Market> markets;
+    private ArrayList<MarketAlbum> market_albums;
     private ArrayList<WallReply> wall_replies;
 
     public Attachments() {
@@ -73,6 +76,9 @@ public class Attachments implements Parcelable, Cloneable {
         graffity = in.createTypedArrayList(Graffiti.CREATOR);
         photo_albums = in.createTypedArrayList(PhotoAlbum.CREATOR);
         not_supported = in.createTypedArrayList(NotSupported.CREATOR);
+        events = in.createTypedArrayList(Event.CREATOR);
+        markets = in.createTypedArrayList(Market.CREATOR);
+        market_albums = in.createTypedArrayList(MarketAlbum.CREATOR);
         wall_replies = in.createTypedArrayList(WallReply.CREATOR);
     }
 
@@ -100,6 +106,9 @@ public class Attachments implements Parcelable, Cloneable {
         dest.writeTypedList(graffity);
         dest.writeTypedList(photo_albums);
         dest.writeTypedList(not_supported);
+        dest.writeTypedList(events);
+        dest.writeTypedList(markets);
+        dest.writeTypedList(market_albums);
         dest.writeTypedList(wall_replies);
     }
 
@@ -166,6 +175,21 @@ public class Attachments implements Parcelable, Cloneable {
 
         if (model instanceof NotSupported) {
             prepareNotSupporteds().add((NotSupported) model);
+            return;
+        }
+
+        if (model instanceof Event) {
+            prepareEvents().add((Event) model);
+            return;
+        }
+
+        if (model instanceof Market) {
+            prepareMarkets().add((Market) model);
+            return;
+        }
+
+        if (model instanceof MarketAlbum) {
+            prepareMarketAlbums().add((MarketAlbum) model);
             return;
         }
 
@@ -254,6 +278,18 @@ public class Attachments implements Parcelable, Cloneable {
 
         if (nonEmpty(not_supported)) {
             result.addAll(not_supported);
+        }
+
+        if (nonEmpty(events)) {
+            result.addAll(events);
+        }
+
+        if (nonEmpty(markets)) {
+            result.addAll(markets);
+        }
+
+        if (nonEmpty(market_albums)) {
+            result.addAll(market_albums);
         }
 
         if (nonEmpty(wall_replies)) {
@@ -359,6 +395,30 @@ public class Attachments implements Parcelable, Cloneable {
         return not_supported;
     }
 
+    public ArrayList<Event> prepareEvents() {
+        if (events == null) {
+            events = new ArrayList<>(1);
+        }
+
+        return events;
+    }
+
+    public ArrayList<Market> prepareMarkets() {
+        if (markets == null) {
+            markets = new ArrayList<>(1);
+        }
+
+        return markets;
+    }
+
+    public ArrayList<MarketAlbum> prepareMarketAlbums() {
+        if (market_albums == null) {
+            market_albums = new ArrayList<>(1);
+        }
+
+        return market_albums;
+    }
+
     public ArrayList<AudioPlaylist> prepareAudioPlaylists() {
         if (audio_playlists == null) {
             audio_playlists = new ArrayList<>(1);
@@ -451,6 +511,9 @@ public class Attachments implements Parcelable, Cloneable {
                 voiceMessages,
                 gifts,
                 not_supported,
+                events,
+                markets,
+                market_albums,
                 wall_replies
         );
     }
@@ -474,6 +537,9 @@ public class Attachments implements Parcelable, Cloneable {
                 voiceMessages,
                 gifts,
                 not_supported,
+                events,
+                markets,
+                market_albums,
                 wall_replies
         );
     }
@@ -513,6 +579,9 @@ public class Attachments implements Parcelable, Cloneable {
                 safeIsEmpty(polls) &&
                 safeIsEmpty(voiceMessages) &&
                 safeIsEmpty(not_supported) &&
+                safeIsEmpty(events) &&
+                safeIsEmpty(markets) &&
+                safeIsEmpty(market_albums) &&
                 safeIsEmpty(wall_replies) &&
                 safeIsEmpty(gifts);
     }
@@ -625,6 +694,24 @@ public class Attachments implements Parcelable, Cloneable {
             }
         }
 
+        if (events != null) {
+            for (Event event : events) {
+                result.add(new DocLink(event));
+            }
+        }
+
+        if (markets != null) {
+            for (Market market : markets) {
+                result.add(new DocLink(market));
+            }
+        }
+
+        if (market_albums != null) {
+            for (MarketAlbum market_album : market_albums) {
+                result.add(new DocLink(market_album));
+            }
+        }
+
         if (wall_replies != null) {
             for (WallReply ns : wall_replies) {
                 result.add(new DocLink(ns));
@@ -655,6 +742,9 @@ public class Attachments implements Parcelable, Cloneable {
         clone.pages = cloneListAsArrayList(pages);
         clone.voiceMessages = cloneListAsArrayList(voiceMessages);
         clone.not_supported = cloneListAsArrayList(not_supported);
+        clone.events = cloneListAsArrayList(events);
+        clone.markets = cloneListAsArrayList(markets);
+        clone.market_albums = cloneListAsArrayList(market_albums);
         clone.wall_replies = cloneListAsArrayList(wall_replies);
         return clone;
     }
@@ -735,6 +825,18 @@ public class Attachments implements Parcelable, Cloneable {
             line = line + " not_supported=" + safeCountOf(not_supported);
         }
 
+        if (nonNull(events)) {
+            line = line + " events=" + safeCountOf(events);
+        }
+
+        if (nonNull(markets)) {
+            line = line + " markets=" + safeCountOf(markets);
+        }
+
+        if (nonNull(market_albums)) {
+            line = line + " market_albums=" + safeCountOf(market_albums);
+        }
+
         if (nonNull(wall_replies)) {
             line = line + " wall_replies=" + safeCountOf(wall_replies);
         }
@@ -760,6 +862,18 @@ public class Attachments implements Parcelable, Cloneable {
 
     public ArrayList<NotSupported> getNotSupported() {
         return not_supported;
+    }
+
+    public ArrayList<Event> getEvents() {
+        return events;
+    }
+
+    public ArrayList<Market> getMarkets() {
+        return markets;
+    }
+
+    public ArrayList<MarketAlbum> getMarketAlbums() {
+        return market_albums;
     }
 
     public ArrayList<WallReply> getWallReplies() {

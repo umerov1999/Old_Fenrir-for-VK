@@ -27,6 +27,7 @@ import dev.ragnarok.fenrir.util.ViewUtils;
 public class AudioPlaylistsCatalogAdapter extends RecyclerView.Adapter<AudioPlaylistsCatalogAdapter.Holder> {
 
     private final Context context;
+    private final boolean isDark;
     private List<AudioPlaylist> data;
     private RecyclerView recyclerView;
     private ClickListener clickListener;
@@ -34,6 +35,7 @@ public class AudioPlaylistsCatalogAdapter extends RecyclerView.Adapter<AudioPlay
     public AudioPlaylistsCatalogAdapter(List<AudioPlaylist> data, Context context) {
         this.data = data;
         this.context = context;
+        isDark = Settings.get().ui().isDarkModeEnabled(context);
     }
 
     @NonNull
@@ -49,7 +51,7 @@ public class AudioPlaylistsCatalogAdapter extends RecyclerView.Adapter<AudioPlay
         if (!Utils.isEmpty(playlist.getThumb_image()))
             ViewUtils.displayAvatar(holder.thumb, new PolyTransformation(), playlist.getThumb_image(), Constants.PICASSO_TAG);
         else
-            holder.thumb.setImageBitmap(ImageHelper.getElpsedBitmap(BitmapFactory.decodeResource(context.getResources(), Settings.get().ui().isDarkModeEnabled(context) ? R.drawable.generic_audio_nowplaying_dark : R.drawable.generic_audio_nowplaying_light), 20, 20));
+            holder.thumb.setImageBitmap(ImageHelper.getElpsedBitmap(BitmapFactory.decodeResource(context.getResources(), isDark ? R.drawable.generic_audio_nowplaying_dark : R.drawable.generic_audio_nowplaying_light), 20, 20));
         holder.name.setText(playlist.getTitle());
         if (Utils.isEmpty(playlist.getArtist_name()))
             holder.artist.setVisibility(View.GONE);

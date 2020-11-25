@@ -7,9 +7,12 @@ import dev.ragnarok.fenrir.db.model.entity.AudioPlaylistEntity;
 import dev.ragnarok.fenrir.db.model.entity.CallEntity;
 import dev.ragnarok.fenrir.db.model.entity.DocumentEntity;
 import dev.ragnarok.fenrir.db.model.entity.Entity;
+import dev.ragnarok.fenrir.db.model.entity.EventEntity;
 import dev.ragnarok.fenrir.db.model.entity.GiftItemEntity;
 import dev.ragnarok.fenrir.db.model.entity.GraffitiEntity;
 import dev.ragnarok.fenrir.db.model.entity.LinkEntity;
+import dev.ragnarok.fenrir.db.model.entity.MarketAlbumEntity;
+import dev.ragnarok.fenrir.db.model.entity.MarketEntity;
 import dev.ragnarok.fenrir.db.model.entity.NotSupportedEntity;
 import dev.ragnarok.fenrir.db.model.entity.PageEntity;
 import dev.ragnarok.fenrir.db.model.entity.PhotoAlbumEntity;
@@ -44,6 +47,9 @@ public final class AttachmentsTypes {
     public static final int ALBUM = 131072;
     public static final int NOT_SUPPORTED = 262144;
     public static final int WALL_REPLY = 524288;
+    public static final int EVENT = 1048576;
+    public static final int MARKET = 2097152;
+    public static final int MARKET_ALBUM = 4194304;
 
     private AttachmentsTypes() {
     }
@@ -89,6 +95,12 @@ public final class AttachmentsTypes {
             return NOT_SUPPORTED;
         } else if (entity instanceof WallReplyEntity) {
             return WALL_REPLY;
+        } else if (entity instanceof EventEntity) {
+            return EVENT;
+        } else if (entity instanceof MarketEntity) {
+            return MARKET;
+        } else if (entity instanceof MarketAlbumEntity) {
+            return MARKET_ALBUM;
         }
 
         throw new UnsupportedOperationException("Unsupported type: " + entity.getClass());
@@ -136,6 +148,12 @@ public final class AttachmentsTypes {
                 return NotSupportedEntity.class;
             case WALL_REPLY:
                 return WallReplyEntity.class;
+            case EVENT:
+                return EventEntity.class;
+            case MARKET:
+                return MarketEntity.class;
+            case MARKET_ALBUM:
+                return MarketAlbumEntity.class;
             default:
                 throw new UnsupportedOperationException("Unsupported type: " + type);
         }

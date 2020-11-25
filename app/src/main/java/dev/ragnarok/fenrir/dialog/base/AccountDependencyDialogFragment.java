@@ -20,6 +20,8 @@ import dev.ragnarok.fenrir.model.Commented;
 import dev.ragnarok.fenrir.model.CommentedType;
 import dev.ragnarok.fenrir.model.Document;
 import dev.ragnarok.fenrir.model.Link;
+import dev.ragnarok.fenrir.model.Market;
+import dev.ragnarok.fenrir.model.MarketAlbum;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.PhotoAlbum;
@@ -194,6 +196,16 @@ public abstract class AccountDependencyDialogFragment extends BaseDialogFragment
     @Override
     public void onPhotoAlbumOpen(@NotNull PhotoAlbum album) {
         PlaceFactory.getVKPhotosAlbumPlace(accountId, album.getOwnerId(), album.getId(), null).tryOpenWith(requireActivity());
+    }
+
+    @Override
+    public void onMarketAlbumOpen(@NonNull MarketAlbum market_album) {
+        PlaceFactory.getMarketPlace(accountId, market_album.getOwner_id(), market_album.getId()).tryOpenWith(requireActivity());
+    }
+
+    @Override
+    public void onMarketOpen(@NonNull Market market) {
+        PlaceFactory.getMarketViewPlace(accountId, market).tryOpenWith(requireActivity());
     }
 
     @Override

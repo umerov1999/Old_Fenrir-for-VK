@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 
+import dev.ragnarok.fenrir.api.model.AccessIdPair;
 import dev.ragnarok.fenrir.api.model.longpoll.UserIsOfflineUpdate;
 import dev.ragnarok.fenrir.api.model.longpoll.UserIsOnlineUpdate;
 import dev.ragnarok.fenrir.db.model.entity.OwnerEntities;
@@ -13,6 +14,8 @@ import dev.ragnarok.fenrir.fragment.search.criteria.PeopleSearchCriteria;
 import dev.ragnarok.fenrir.model.Community;
 import dev.ragnarok.fenrir.model.CommunityDetails;
 import dev.ragnarok.fenrir.model.IOwnersBundle;
+import dev.ragnarok.fenrir.model.Market;
+import dev.ragnarok.fenrir.model.MarketAlbum;
 import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.Story;
 import dev.ragnarok.fenrir.model.User;
@@ -42,7 +45,13 @@ public interface IOwnersRepository {
 
     Single<Pair<User, UserDetails>> getFullUserInfo(int accountId, int userId, int mode);
 
-    Single<Pair<Community, CommunityDetails>> getFullCommunityInfo(int accountId, int comminityId, int mode);
+    Single<List<MarketAlbum>> getMarketAlbums(int accountId, int owner_id, int offset, int count);
+
+    Single<List<Market>> getMarket(int accountId, int owner_id, int album_id, int offset, int count);
+
+    Single<List<Market>> getMarketById(int accountId, Collection<AccessIdPair> ids);
+
+    Single<Pair<Community, CommunityDetails>> getFullCommunityInfo(int accountId, int communityId, int mode);
 
     Completable cacheActualOwnersData(int accountId, Collection<Integer> ids);
 

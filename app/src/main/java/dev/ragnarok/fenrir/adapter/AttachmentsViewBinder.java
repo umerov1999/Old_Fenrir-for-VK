@@ -3,6 +3,7 @@ package dev.ragnarok.fenrir.adapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.util.SparseArray;
@@ -42,7 +43,10 @@ import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.CryptStatus;
 import dev.ragnarok.fenrir.model.Document;
+import dev.ragnarok.fenrir.model.Event;
 import dev.ragnarok.fenrir.model.Link;
+import dev.ragnarok.fenrir.model.Market;
+import dev.ragnarok.fenrir.model.MarketAlbum;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.PhotoAlbum;
@@ -577,6 +581,16 @@ public class AttachmentsViewBinder {
                             mAttachmentsActionCallback.onOpenOwner(ownerId);
                         }
                     }));
+                } else if (doc.getType() == Types.EVENT) {
+                    tvShowMore.setVisibility(View.GONE);
+                    tvDetails.setVisibility(View.GONE);
+                    tvPostText.setVisibility(View.VISIBLE);
+                    tvPostText.setText(OwnerLinkSpanFactory.withSpans(AppTextUtils.reduceStringForPost(subtitle), true, false, new LinkActionAdapter() {
+                        @Override
+                        public void onOwnerClick(int ownerId) {
+                            mAttachmentsActionCallback.onOpenOwner(ownerId);
+                        }
+                    }));
                 } else if (doc.getType() == Types.NOT_SUPPORTED) {
                     tvShowMore.setVisibility(View.GONE);
                     tvDetails.setVisibility(View.GONE);
@@ -657,6 +671,32 @@ public class AttachmentsViewBinder {
                             ivPhotoT.setVisibility(View.GONE);
                         }
                         break;
+                    case Types.MARKET_ALBUM:
+                        if (imageUrl != null) {
+                            ivType.setVisibility(View.VISIBLE);
+                            ivPhotoT.setVisibility(View.VISIBLE);
+                            ViewUtils.displayAvatar(ivPhotoT, null, imageUrl, Constants.PICASSO_TAG);
+                            Utils.setColorFilter(ivType.getBackground(), CurrentTheme.getColorPrimary(mContext));
+                            ivType.setImageResource(R.drawable.ic_market_stack);
+                        } else {
+                            ivPhotoT.setVisibility(View.GONE);
+                        }
+                        break;
+                    case Types.MARKET:
+                        if (imageUrl != null) {
+                            ivType.setVisibility(View.VISIBLE);
+                            ivPhotoT.setVisibility(View.VISIBLE);
+                            ViewUtils.displayAvatar(ivPhotoT, null, imageUrl, Constants.PICASSO_TAG);
+                            if (((Market) doc.attachment).getAvailability() == 0) {
+                                Utils.setColorFilter(ivType.getBackground(), CurrentTheme.getColorPrimary(mContext));
+                            } else {
+                                Utils.setColorFilter(ivType.getBackground(), Color.parseColor("#ff0000"));
+                            }
+                            ivType.setImageResource(R.drawable.ic_market_outline);
+                        } else {
+                            ivPhotoT.setVisibility(View.GONE);
+                        }
+                        break;
                     case Types.STORY:
                         ivPhotoT.setVisibility(View.GONE);
                         ivType.setVisibility(View.GONE);
@@ -706,6 +746,18 @@ public class AttachmentsViewBinder {
                         attachmentsRoot.setVisibility(hasCommentAttachments ? View.VISIBLE : View.GONE);
                         if (hasCommentAttachments)
                             displayAttachments(comment.getAttachments(), attachmentsHolder, false, null);
+                        break;
+                    case Types.EVENT:
+                        ivPhotoT.setVisibility(View.GONE);
+                        ivType.setVisibility(View.VISIBLE);
+                        ivType.setImageResource(R.drawable.feed);
+                        Utils.setColorFilter(ivType.getBackground(), CurrentTheme.getColorPrimary(mContext));
+                        if (imageUrl != null) {
+                            ivPhoto_Post.setVisibility(View.VISIBLE);
+                            ViewUtils.displayAvatar(ivPhoto_Post, mAvatarTransformation, imageUrl, Constants.PICASSO_TAG);
+                        } else {
+                            ivPhoto_Post.setVisibility(View.GONE);
+                        }
                         break;
                     case Types.LINK:
                     case Types.WIKI_PAGE:
@@ -861,8 +913,17 @@ public class AttachmentsViewBinder {
             case Types.WALL_REPLY:
                 mAttachmentsActionCallback.onWallReplyOpen((WallReply) link.attachment);
                 break;
+            case Types.EVENT:
+                mAttachmentsActionCallback.onOpenOwner(-1 * Math.abs(((Event) link.attachment).getId()));
+                break;
             case Types.ALBUM:
                 mAttachmentsActionCallback.onPhotoAlbumOpen((PhotoAlbum) link.attachment);
+                break;
+            case Types.MARKET_ALBUM:
+                mAttachmentsActionCallback.onMarketAlbumOpen((MarketAlbum) link.attachment);
+                break;
+            case Types.MARKET:
+                mAttachmentsActionCallback.onMarketOpen((Market) link.attachment);
                 break;
         }
     }
@@ -913,6 +974,10 @@ public class AttachmentsViewBinder {
         void onAudioPlaylistOpen(@NonNull AudioPlaylist playlist);
 
         void onPhotoAlbumOpen(@NonNull PhotoAlbum album);
+
+        void onMarketAlbumOpen(@NonNull MarketAlbum market_album);
+
+        void onMarketOpen(@NonNull Market market);
     }
 
     private static final class CopyHolder {

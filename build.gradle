@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.4.20-RC'
+    ext.kotlin_version = '1.4.20'
     ext.retrofitLibraryVersion = '2.9.0'
     ext.okhttpLibraryVersion = '4.10.0-RC1'
     repositories {
@@ -23,6 +23,7 @@ allprojects {
         jcenter()
         google()
         maven { url "https://jitpack.io" }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
     /*
     gradle.projectsEvaluated {

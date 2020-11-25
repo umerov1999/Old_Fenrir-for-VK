@@ -8,11 +8,14 @@ import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.api.IServiceProvider;
 import dev.ragnarok.fenrir.api.TokenType;
 import dev.ragnarok.fenrir.api.interfaces.IGroupsApi;
+import dev.ragnarok.fenrir.api.model.AccessIdPair;
 import dev.ragnarok.fenrir.api.model.GroupSettingsDto;
 import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiCommunity;
 import dev.ragnarok.fenrir.api.model.VKApiUser;
 import dev.ragnarok.fenrir.api.model.VkApiBanned;
+import dev.ragnarok.fenrir.api.model.VkApiMarket;
+import dev.ragnarok.fenrir.api.model.VkApiMarketAlbum;
 import dev.ragnarok.fenrir.api.model.response.GroupLongpollServer;
 import dev.ragnarok.fenrir.api.model.response.GroupWallInfoResponse;
 import dev.ragnarok.fenrir.api.services.IGroupsService;
@@ -89,6 +92,28 @@ class GroupsApi extends AbsApi implements IGroupsApi {
         return provideService(IGroupsService.class, TokenType.USER)
                 .flatMap(service -> service
                         .getSettings(groupId)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<Items<VkApiMarketAlbum>> getMarketAlbums(int owner_id, int offset, int count) {
+        return provideService(IGroupsService.class, TokenType.USER)
+                .flatMap(service -> service.getMarketAlbums(owner_id, offset, count)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<Items<VkApiMarket>> getMarket(int owner_id, int album_id, int offset, int count, Integer extended) {
+        return provideService(IGroupsService.class, TokenType.USER)
+                .flatMap(service -> service.getMarket(owner_id, album_id, offset, count, extended)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<Items<VkApiMarket>> getMarketById(Collection<AccessIdPair> ids) {
+        String markets = join(ids, ",", AccessIdPair::format);
+        return provideService(IGroupsService.class, TokenType.USER)
+                .flatMap(service -> service.getMarketById(markets, 1)
                         .map(extractResponseWithErrorHandling()));
     }
 

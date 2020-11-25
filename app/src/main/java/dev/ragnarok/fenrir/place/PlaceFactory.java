@@ -26,6 +26,7 @@ import dev.ragnarok.fenrir.fragment.FeedbackFragment;
 import dev.ragnarok.fenrir.fragment.FwdsFragment;
 import dev.ragnarok.fenrir.fragment.GifPagerFragment;
 import dev.ragnarok.fenrir.fragment.LikesFragment;
+import dev.ragnarok.fenrir.fragment.MarketViewFragment;
 import dev.ragnarok.fenrir.fragment.MessagesLookFragment;
 import dev.ragnarok.fenrir.fragment.PhotoPagerFragment;
 import dev.ragnarok.fenrir.fragment.PollFragment;
@@ -58,6 +59,7 @@ import dev.ragnarok.fenrir.model.FriendsCounters;
 import dev.ragnarok.fenrir.model.GroupSettings;
 import dev.ragnarok.fenrir.model.LocalImageAlbum;
 import dev.ragnarok.fenrir.model.Manager;
+import dev.ragnarok.fenrir.model.Market;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.ModelsBundle;
 import dev.ragnarok.fenrir.model.Owner;
@@ -245,6 +247,23 @@ public class PlaceFactory {
     public static Place getCreatePhotoAlbumPlace(int aid, int ownerId) {
         return new Place(Place.CREATE_PHOTO_ALBUM)
                 .setArguments(CreatePhotoAlbumFragment.buildArgsForCreate(aid, ownerId));
+    }
+
+    public static Place getMarketAlbumPlace(int accountId, int ownerId) {
+        return new Place(Place.MARKET_ALBUMS)
+                .withIntExtra(Extra.ACCOUNT_ID, accountId)
+                .withIntExtra(Extra.OWNER_ID, ownerId);
+    }
+
+    public static Place getMarketPlace(int accountId, int ownerId, int albumId) {
+        return new Place(Place.MARKETS)
+                .withIntExtra(Extra.ACCOUNT_ID, accountId)
+                .withIntExtra(Extra.OWNER_ID, ownerId)
+                .withIntExtra(Extra.ALBUM_ID, albumId);
+    }
+
+    public static Place getMarketViewPlace(int accountId, @NonNull Market market) {
+        return new Place(Place.MARKET_VIEW).setArguments(MarketViewFragment.buildArgs(accountId, market));
     }
 
     public static Place getNotificationSettingsPlace() {

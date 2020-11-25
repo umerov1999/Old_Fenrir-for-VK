@@ -300,7 +300,25 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
         safeNotifyDataSetChanged();
         resolveRefreshingView();
 
-        requestAtLast();
+        if (Settings.get().other().isNot_update_dialogs()) {
+            if (Utils.needReloadStickers(getAccountId())) {
+                try {
+                    appendDisposable(InteractorFactory.createStickersInteractor()
+                            .getAndStore(getAccountId())
+                            .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                            .subscribe(dummy(), this::onDebugError));
+                } catch (Exception ignored) {
+                    /*ignore*/
+                }
+            }
+
+            if (offset > 0) {
+                safeScroll(offset);
+                offset = 0;
+            }
+        } else {
+            requestAtLast();
+        }
     }
 
     private void onPeerUpdate(List<PeerUpdate> updates) {

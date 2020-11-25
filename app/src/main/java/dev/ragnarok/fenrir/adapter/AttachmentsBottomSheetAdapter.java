@@ -25,8 +25,11 @@ import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.Call;
 import dev.ragnarok.fenrir.model.Document;
+import dev.ragnarok.fenrir.model.Event;
 import dev.ragnarok.fenrir.model.FwdMessages;
 import dev.ragnarok.fenrir.model.Graffiti;
+import dev.ragnarok.fenrir.model.Market;
+import dev.ragnarok.fenrir.model.MarketAlbum;
 import dev.ragnarok.fenrir.model.NotSupported;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.PhotoAlbum;
@@ -118,6 +121,12 @@ public class AttachmentsBottomSheetAdapter extends RecyclerView.Adapter<Recycler
             bindCall(holder);
         } else if (model instanceof NotSupported) {
             bindNotSupported(holder);
+        } else if (model instanceof Event) {
+            bindEvent(holder, (Event) model);
+        } else if (model instanceof Market) {
+            bindMarket(holder, (Market) model);
+        } else if (model instanceof MarketAlbum) {
+            bindMarketAlbum(holder, (MarketAlbum) model);
         } else if (model instanceof AudioPlaylist) {
             bindAudioPlaylist(holder, (AudioPlaylist) model);
         } else if (model instanceof Graffiti) {
@@ -186,12 +195,29 @@ public class AttachmentsBottomSheetAdapter extends RecyclerView.Adapter<Recycler
         bindImageView(holder, photoLink);
     }
 
-    private void bindArticle(EntryHolder holder, Article link) {
+    private void bindArticle(EntryHolder holder, Article article) {
         holder.title.setText(R.string.article);
         holder.progress.setVisibility(View.INVISIBLE);
         holder.Retry.setVisibility(View.GONE);
         holder.tintView.setVisibility(View.GONE);
-        String photoLink = nonNull(link.getPhoto()) ? link.getPhoto().getUrlForSize(PhotoSize.X, false) : null;
+        String photoLink = nonNull(article.getPhoto()) ? article.getPhoto().getUrlForSize(PhotoSize.X, false) : null;
+        bindImageView(holder, photoLink);
+    }
+
+    private void bindMarket(EntryHolder holder, Market market) {
+        holder.title.setText(market.getTitle());
+        holder.progress.setVisibility(View.INVISIBLE);
+        holder.Retry.setVisibility(View.GONE);
+        holder.tintView.setVisibility(View.GONE);
+        bindImageView(holder, market.getThumb_photo());
+    }
+
+    private void bindMarketAlbum(EntryHolder holder, MarketAlbum market_album) {
+        holder.title.setText(market_album.getTitle());
+        holder.progress.setVisibility(View.INVISIBLE);
+        holder.Retry.setVisibility(View.GONE);
+        holder.tintView.setVisibility(View.GONE);
+        String photoLink = nonNull(market_album.getPhoto()) ? market_album.getPhoto().getUrlForSize(PhotoSize.X, false) : null;
         bindImageView(holder, photoLink);
     }
 
@@ -229,6 +255,14 @@ public class AttachmentsBottomSheetAdapter extends RecyclerView.Adapter<Recycler
         holder.tintView.setVisibility(View.GONE);
         PicassoInstance.with().cancelRequest(holder.image);
         holder.image.setImageResource(R.drawable.not_supported);
+    }
+
+    private void bindEvent(EntryHolder holder, Event event) {
+        holder.title.setText(event.getButton_text());
+        holder.progress.setVisibility(View.INVISIBLE);
+        holder.Retry.setVisibility(View.GONE);
+        holder.tintView.setVisibility(View.GONE);
+        PicassoInstance.with().cancelRequest(holder.image);
     }
 
     private void bindAudio(EntryHolder holder, Audio audio) {

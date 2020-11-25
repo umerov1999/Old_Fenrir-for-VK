@@ -10,6 +10,7 @@ import dev.ragnarok.fenrir.api.model.VKApiPhoto;
 import dev.ragnarok.fenrir.api.model.VKApiPost;
 import dev.ragnarok.fenrir.api.model.VKApiVideo;
 import dev.ragnarok.fenrir.api.model.VkApiAttachments;
+import dev.ragnarok.fenrir.api.model.VkApiMarket;
 import dev.ragnarok.fenrir.api.model.response.FavePageResponse;
 import dev.ragnarok.fenrir.db.column.UserColumns;
 import dev.ragnarok.fenrir.db.interfaces.IStorages;
@@ -17,6 +18,7 @@ import dev.ragnarok.fenrir.db.model.entity.ArticleEntity;
 import dev.ragnarok.fenrir.db.model.entity.CommunityEntity;
 import dev.ragnarok.fenrir.db.model.entity.FaveLinkEntity;
 import dev.ragnarok.fenrir.db.model.entity.FavePageEntity;
+import dev.ragnarok.fenrir.db.model.entity.MarketEntity;
 import dev.ragnarok.fenrir.db.model.entity.OwnerEntities;
 import dev.ragnarok.fenrir.db.model.entity.PhotoEntity;
 import dev.ragnarok.fenrir.db.model.entity.PostEntity;
@@ -32,6 +34,7 @@ import dev.ragnarok.fenrir.model.EndlessData;
 import dev.ragnarok.fenrir.model.FaveLink;
 import dev.ragnarok.fenrir.model.FavePage;
 import dev.ragnarok.fenrir.model.FavePageType;
+import dev.ragnarok.fenrir.model.Market;
 import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.Post;
@@ -39,6 +42,7 @@ import dev.ragnarok.fenrir.model.Video;
 import dev.ragnarok.fenrir.model.criteria.FaveArticlesCriteria;
 import dev.ragnarok.fenrir.model.criteria.FavePhotosCriteria;
 import dev.ragnarok.fenrir.model.criteria.FavePostsCriteria;
+import dev.ragnarok.fenrir.model.criteria.FaveProductsCriteria;
 import dev.ragnarok.fenrir.model.criteria.FaveVideosCriteria;
 import dev.ragnarok.fenrir.util.VKOwnIds;
 import io.reactivex.rxjava3.core.Completable;
@@ -196,6 +200,21 @@ public class FaveInteractor implements IFaveInteractor {
     }
 
     @Override
+    public Single<List<Market>> getCachedProducts(int accountId) {
+        FaveProductsCriteria criteria = new FaveProductsCriteria(accountId);
+
+        return cache.fave()
+                .getProducts(criteria)
+                .map(productDbos -> {
+                    List<Market> markets = new ArrayList<>(productDbos.size());
+                    for (MarketEntity dbo : productDbos) {
+                        markets.add(Entity2Model.buildMarketFromDbo(dbo));
+                    }
+                    return markets;
+                });
+    }
+
+    @Override
     public Single<List<Video>> getVideos(int accountId, int count, int offset) {
         return networker.vkDefault(accountId)
                 .fave()
@@ -234,6 +253,27 @@ public class FaveInteractor implements IFaveInteractor {
 
                     return cache.fave().storeArticles(accountId, dbos, offset == 0)
                             .map(ints -> articles);
+                });
+    }
+
+    @Override
+    public Single<List<Market>> getProducts(int accountId, int count, int offset) {
+        return networker.vkDefault(accountId)
+                .fave()
+                .getProducts(offset, count)
+                .flatMap(items -> {
+                    List<VkApiMarket> dtos = listEmptyIfNull(items);
+
+                    List<MarketEntity> dbos = new ArrayList<>(dtos.size());
+                    List<Market> markets = new ArrayList<>(dtos.size());
+
+                    for (VkApiMarket dto : dtos) {
+                        dbos.add(Dto2Entity.mapMarket(dto));
+                        markets.add(Dto2Model.transform(dto));
+                    }
+
+                    return cache.fave().storeProducts(accountId, dbos, offset == 0)
+                            .map(ints -> markets);
                 });
     }
 
@@ -363,6 +403,13 @@ public class FaveInteractor implements IFaveInteractor {
     }
 
     @Override
+    public Single<Boolean> removeProduct(int accountId, Integer id, Integer owner_id) {
+        return networker.vkDefault(accountId)
+                .fave()
+                .removeProduct(id, owner_id);
+    }
+
+    @Override
     public Single<Boolean> removePost(int accountId, Integer owner_id, Integer id) {
         return networker.vkDefault(accountId)
                 .fave()
@@ -405,6 +452,14 @@ public class FaveInteractor implements IFaveInteractor {
         return networker.vkDefault(accountId)
                 .fave()
                 .addArticle(url)
+                .ignoreElement();
+    }
+
+    @Override
+    public Completable addProduct(int accountId, int id, int owner_id, String access_key) {
+        return networker.vkDefault(accountId)
+                .fave()
+                .addProduct(id, owner_id, access_key)
                 .ignoreElement();
     }
 

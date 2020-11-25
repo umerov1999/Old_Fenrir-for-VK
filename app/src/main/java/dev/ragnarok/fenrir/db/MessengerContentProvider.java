@@ -33,6 +33,7 @@ import dev.ragnarok.fenrir.db.column.FaveLinksColumns;
 import dev.ragnarok.fenrir.db.column.FavePageColumns;
 import dev.ragnarok.fenrir.db.column.FavePhotosColumns;
 import dev.ragnarok.fenrir.db.column.FavePostsColumns;
+import dev.ragnarok.fenrir.db.column.FaveProductColumns;
 import dev.ragnarok.fenrir.db.column.FaveVideosColumns;
 import dev.ragnarok.fenrir.db.column.FeedListsColumns;
 import dev.ragnarok.fenrir.db.column.FriendListsColumns;
@@ -100,11 +101,12 @@ public class MessengerContentProvider extends ContentProvider {
     static final int URI_FAVE_LINKS = 38;
     static final int URI_FAVE_POSTS = 39;
     static final int URI_FAVE_ARTICLES = 40;
-    static final int URI_COUNTRIES = 41;
-    static final int URI_FEED_LISTS = 42;
-    static final int URI_FRIEND_LISTS = 43;
-    static final int URI_KEYS = 44;
-    static final int URI_PEERS = 45;
+    static final int URI_FAVE_PRODUCTS = 41;
+    static final int URI_COUNTRIES = 42;
+    static final int URI_FEED_LISTS = 43;
+    static final int URI_FRIEND_LISTS = 44;
+    static final int URI_KEYS = 45;
+    static final int URI_PEERS = 46;
     // path
     static final String USER_PATH = "users";
     static final String MESSAGES_PATH = "messages";
@@ -132,6 +134,7 @@ public class MessengerContentProvider extends ContentProvider {
     static final String FAVE_PAGES_PATH = "fave_pages";
     static final String FAVE_GROUPS_PATH = "fave_groups";
     static final String FAVE_ARTICLES_PATH = "fave_articles";
+    static final String FAVE_PRODUCTS_PATH = "fave_products";
     static final String FAVE_LINKS_PATH = "fave_links";
     static final String FAVE_POSTS_PATH = "fave_posts";
     static final String COUNTRIES_PATH = "countries";
@@ -176,6 +179,7 @@ public class MessengerContentProvider extends ContentProvider {
     static final String FAVE_PHOTOS_CONTENT_TYPE = "vnd.android.cursor.dir/vnd." + AUTHORITY + "." + FAVE_PHOTOS_PATH;
     static final String FAVE_VIDEOS_CONTENT_TYPE = "vnd.android.cursor.dir/vnd." + AUTHORITY + "." + FAVE_VIDEOS_PATH;
     static final String FAVE_ARTICLES_CONTENT_TYPE = "vnd.android.cursor.dir/vnd." + AUTHORITY + "." + FAVE_ARTICLES_PATH;
+    static final String FAVE_PRODUCTS_CONTENT_TYPE = "vnd.android.cursor.dir/vnd." + AUTHORITY + "." + FAVE_PRODUCTS_PATH;
     static final String FAVE_PAGES_CONTENT_TYPE = "vnd.android.cursor.dir/vnd." + AUTHORITY + "." + FAVE_PAGES_PATH;
     static final String FAVE_GROUPS_CONTENT_TYPE = "vnd.android.cursor.dir/vnd." + AUTHORITY + "." + FAVE_GROUPS_PATH;
     static final String FAVE_LINKS_CONTENT_TYPE = "vnd.android.cursor.dir/vnd." + AUTHORITY + "." + FAVE_LINKS_PATH;
@@ -213,6 +217,7 @@ public class MessengerContentProvider extends ContentProvider {
     private static final Uri FAVE_PAGES_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + FAVE_PAGES_PATH);
     private static final Uri FAVE_GROUPS_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + FAVE_GROUPS_PATH);
     private static final Uri FAVE_ARTICLES_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + FAVE_ARTICLES_PATH);
+    private static final Uri FAVE_PRODUCTS_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + FAVE_PRODUCTS_PATH);
     private static final Uri FAVE_LINKS_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + FAVE_LINKS_PATH);
     private static final Uri FAVE_POSTS_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + FAVE_POSTS_PATH);
     private static final Uri COUNTRIES_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + COUNTRIES_PATH);
@@ -248,6 +253,7 @@ public class MessengerContentProvider extends ContentProvider {
     private static final Map<String, String> sFaveLinksProjectionMap;
     private static final Map<String, String> sFavePostsProjectionMap;
     private static final Map<String, String> sFaveArticlesProjectionMap;
+    private static final Map<String, String> sFaveProductsProjectionMap;
     private static final Map<String, String> sCountriesProjectionMap;
     private static final Map<String, String> sFeedListsProjectionMap;
     private static final Map<String, String> sFriendListsProjectionMap;
@@ -295,6 +301,7 @@ public class MessengerContentProvider extends ContentProvider {
         sUriMatcher.addURI(AUTHORITY, FAVE_GROUPS_PATH, URI_FAVE_GROUPS);
         sUriMatcher.addURI(AUTHORITY, FAVE_LINKS_PATH, URI_FAVE_LINKS);
         sUriMatcher.addURI(AUTHORITY, FAVE_ARTICLES_PATH, URI_FAVE_ARTICLES);
+        sUriMatcher.addURI(AUTHORITY, FAVE_PRODUCTS_PATH, URI_FAVE_PRODUCTS);
         sUriMatcher.addURI(AUTHORITY, FAVE_POSTS_PATH, URI_FAVE_POSTS);
         sUriMatcher.addURI(AUTHORITY, COUNTRIES_PATH, URI_COUNTRIES);
         sUriMatcher.addURI(AUTHORITY, FEED_LISTS_PATH, URI_FEED_LISTS);
@@ -701,6 +708,10 @@ public class MessengerContentProvider extends ContentProvider {
         sFaveArticlesProjectionMap.put(BaseColumns._ID, FaveArticlesColumns.FULL_ID);
         sFaveArticlesProjectionMap.put(FaveArticlesColumns.ARTICLE, FaveArticlesColumns.FULL_ARTICLE);
 
+        sFaveProductsProjectionMap = new HashMap<>();
+        sFaveProductsProjectionMap.put(BaseColumns._ID, FaveProductColumns.FULL_ID);
+        sFaveProductsProjectionMap.put(FaveProductColumns.PRODUCT, FaveProductColumns.FULL_PRODUCT);
+
         sFaveUsersProjectionMap = new HashMap<>();
         sFaveUsersProjectionMap.put(BaseColumns._ID, FavePageColumns.FULL_ID);
         sFaveUsersProjectionMap.put(FavePageColumns.UPDATED_TIME, FavePageColumns.UPDATED_TIME);
@@ -787,6 +798,10 @@ public class MessengerContentProvider extends ContentProvider {
 
     public static Uri getFaveArticlesContentUriFor(int aid) {
         return appendAccountId(FAVE_ARTICLES_CONTENT_URI, aid);
+    }
+
+    public static Uri getFaveProductsContentUriFor(int aid) {
+        return appendAccountId(FAVE_PRODUCTS_CONTENT_URI, aid);
     }
 
     public static Uri getTopicsContentUriFor(int aid) {
@@ -1090,6 +1105,10 @@ public class MessengerContentProvider extends ContentProvider {
             case URI_FAVE_ARTICLES:
                 rowId = db.replace(FaveArticlesColumns.TABLENAME, null, values);
                 resultUri = ContentUris.withAppendedId(FAVE_ARTICLES_CONTENT_URI, rowId);
+                break;
+            case URI_FAVE_PRODUCTS:
+                rowId = db.replace(FaveProductColumns.TABLENAME, null, values);
+                resultUri = ContentUris.withAppendedId(FAVE_PRODUCTS_CONTENT_URI, rowId);
                 break;
             case URI_FAVE_POSTS:
                 rowId = db.replace(FavePostsColumns.TABLENAME, null, values);
@@ -1414,6 +1433,11 @@ public class MessengerContentProvider extends ContentProvider {
                 _QB.setProjectionMap(sFaveArticlesProjectionMap);
                 _TableType = URI_FAVE_ARTICLES;
                 break;
+            case URI_FAVE_PRODUCTS:
+                _QB.setTables(FaveProductColumns.TABLENAME);
+                _QB.setProjectionMap(sFaveProductsProjectionMap);
+                _TableType = URI_FAVE_PRODUCTS;
+                break;
             case URI_FAVE_PAGES:
                 _QB.setTables(FavePageColumns.TABLENAME +
                         " LEFT OUTER JOIN " + UserColumns.TABLENAME +
@@ -1564,6 +1588,9 @@ public class MessengerContentProvider extends ContentProvider {
                 case URI_FAVE_ARTICLES:
                     _OrderBy = FaveArticlesColumns.FULL_ID + " ASC";
                     break;
+                case URI_FAVE_PRODUCTS:
+                    _OrderBy = FaveProductColumns.FULL_ID + " ASC";
+                    break;
                 case URI_FAVE_PAGES:
                     _OrderBy = FavePageColumns.UPDATED_TIME + " DESC";
                     break;
@@ -1693,6 +1720,8 @@ public class MessengerContentProvider extends ContentProvider {
                 return FAVE_VIDEOS_CONTENT_TYPE;
             case URI_FAVE_ARTICLES:
                 return FAVE_ARTICLES_CONTENT_TYPE;
+            case URI_FAVE_PRODUCTS:
+                return FAVE_PRODUCTS_CONTENT_TYPE;
             case URI_FAVE_PAGES:
                 return FAVE_PAGES_CONTENT_TYPE;
             case URI_FAVE_GROUPS:
@@ -1831,6 +1860,9 @@ public class MessengerContentProvider extends ContentProvider {
                 break;
             case URI_FAVE_ARTICLES:
                 tbName = FaveArticlesColumns.TABLENAME;
+                break;
+            case URI_FAVE_PRODUCTS:
+                tbName = FaveProductColumns.TABLENAME;
                 break;
             case URI_FAVE_PAGES:
                 tbName = FavePageColumns.TABLENAME;
@@ -2019,6 +2051,9 @@ public class MessengerContentProvider extends ContentProvider {
                 break;
             case URI_FAVE_ARTICLES:
                 tbName = FaveArticlesColumns.TABLENAME;
+                break;
+            case URI_FAVE_PRODUCTS:
+                tbName = FaveProductColumns.TABLENAME;
                 break;
             case URI_FAVE_PAGES:
                 tbName = FavePageColumns.TABLENAME;

@@ -512,6 +512,13 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         if (coverUrl != null) {
             ivCover!!.scaleType = ImageView.ScaleType.FIT_START
             ivCover!!.load(coverUrl) {
+                listener(onError = { _, _ ->
+                    run {
+                        ivCover!!.scaleType = ImageView.ScaleType.CENTER
+                        ivCover!!.setImageResource(R.drawable.itunes)
+                        ivCover!!.drawable.setTint(CurrentTheme.getColorOnSurface(requireContext()))
+                    }
+                })
                 crossfade(true)
             }
             if (Settings.get().other().isBlur_for_player) {

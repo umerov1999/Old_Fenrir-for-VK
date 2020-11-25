@@ -9,10 +9,6 @@ public class VKApiNotSupported implements VKApiAttachment {
     @SerializedName("body")
     public String body;
 
-    public VKApiNotSupported() {
-
-    }
-
     public VKApiNotSupported(String type, String body) {
         this.type = type;
         this.body = body;
