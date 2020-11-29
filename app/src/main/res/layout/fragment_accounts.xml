@@ -8,7 +8,7 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/tools"
+        android:layout_above="@id/fab"
         android:orientation="vertical">
 
         <include layout="@layout/toolbar" />
@@ -44,39 +44,19 @@
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/tools"
-        android:layout_width="match_parent"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginStart="@dimen/fab_margin"
-            android:layout_marginTop="@dimen/fab_margin"
-            android:layout_marginEnd="@dimen/fab_margin"
-            android:layout_marginBottom="@dimen/fab_margin"
-            android:src="@drawable/client"
-            app:elevation="3dp"
-            app:fabSize="normal"
-            app:maxImageSize="36dp" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/kate_acc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/fab"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/ic_kate_mobile"
-            app:elevation="2dp"
-            app:fabSize="mini"
-            app:maxImageSize="20dp" />
-
-    </RelativeLayout>
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="@dimen/fab_margin"
+        android:layout_marginTop="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:src="@drawable/client"
+        app:elevation="3dp"
+        app:fabSize="normal"
+        app:maxImageSize="36dp" />
 
 </RelativeLayout>

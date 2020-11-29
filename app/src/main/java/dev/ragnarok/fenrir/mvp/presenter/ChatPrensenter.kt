@@ -420,6 +420,14 @@ class ChatPrensenter(accountId: Int, private val messagesOwnerId: Int,
         uploadManager.enqueue(listOf(intent))
     }
 
+    fun fireNewChatPhotoSelected(file: String) {
+        val intent = UploadIntent(accountId, UploadDestination.forChatPhoto(Peer.toChatId(peerId)))
+                .setAutoCommit(true)
+                .setFileUri(Uri.parse(file))
+                .setSize(Upload.IMAGE_SIZE_FULL)
+        uploadManager.enqueue(listOf(intent))
+    }
+
     private fun onUploadResult(pair: Pair<Upload, UploadResult<*>>) {
         val destination = pair.first.destination
         if (destination.method == Method.PHOTO_TO_CHAT && Peer.toChatId(peerId) == destination.ownerId) {

@@ -3,6 +3,7 @@ package dev.ragnarok.fenrir.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Menu;
@@ -23,9 +24,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.umerov.rlottie.RLottieImageView;
+import com.yalantis.ucrop.UCrop;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +42,7 @@ import dev.ragnarok.fenrir.activity.PhotosActivity;
 import dev.ragnarok.fenrir.adapter.horizontal.HorizontalOptionsAdapter;
 import dev.ragnarok.fenrir.model.FriendsCounters;
 import dev.ragnarok.fenrir.model.LocalPhoto;
+import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.ParcelableOwnerWrapper;
 import dev.ragnarok.fenrir.model.Post;
 import dev.ragnarok.fenrir.model.PostFilter;
@@ -141,7 +145,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
     }
 
     @Override
-    public void displayCounters(int friends, int mutual, int followers, int groups, int photos, int audios, int videos, int articles) {
+    public void displayCounters(int friends, int mutual, int followers, int groups, int photos, int audios, int videos, int articles, int products, int gifts) {
         if (nonNull(mHeaderHolder)) {
             if (Settings.get().other().isShow_mutual_count()) {
                 setupCounterWith(mHeaderHolder.bFriends, friends, mutual);
@@ -153,6 +157,8 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             setupCounter(mHeaderHolder.bAudios, audios);
             setupCounter(mHeaderHolder.bVideos, videos);
             setupCounter(mHeaderHolder.bArticles, articles);
+            setupCounter(mHeaderHolder.bProducts, products);
+            setupCounter(mHeaderHolder.bGifts, gifts);
         }
     }
 
@@ -283,6 +289,16 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
     }
 
     @Override
+    public void openProducts(int accountId, int ownerId, @Nullable Owner owner) {
+        PlaceFactory.getMarketPlace(accountId, ownerId, 0).tryOpenWith(requireActivity());
+    }
+
+    @Override
+    public void openGifts(int accountId, int ownerId, @Nullable Owner owner) {
+        PlaceFactory.getGiftsPlace(accountId, ownerId).tryOpenWith(requireActivity());
+    }
+
+    @Override
     public void showEditStatusDialog(String initialValue) {
         new InputTextDialog.Builder(requireActivity())
                 .setInputType(InputType.TYPE_CLASS_TEXT)
@@ -353,10 +369,21 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
+            getPresenter().fireNewAvatarPhotoSelected(UCrop.getOutput(data).getPath());
+        } else if (resultCode == UCrop.RESULT_ERROR) {
+            showThrowable(UCrop.getError(data));
+        }
         if (requestCode == REQUEST_UPLOAD_AVATAR && resultCode == Activity.RESULT_OK) {
             ArrayList<LocalPhoto> photos = data.getParcelableArrayListExtra(Extra.PHOTOS);
             if (nonEmpty(photos)) {
-                getPresenter().fireNewAvatarPhotoSelected(photos.get(0));
+                Uri to_up = photos.get(0).getFullImageUri();
+                if (new File(to_up.getPath()).isFile()) {
+                    to_up = Uri.fromFile(new File(to_up.getPath()));
+                }
+                UCrop.of(to_up, Uri.fromFile(new File(requireActivity().getExternalCacheDir() + File.separator + "scale.jpg")))
+                        .withAspectRatio(1, 1)
+                        .start(requireActivity(), this);
             }
         }
     }
@@ -382,10 +409,6 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             getPresenter().fireShowQR(requireActivity());
             return true;
         });
-        menu.add(R.string.add_to_bookmarks).setOnMenuItemClickListener(item -> {
-            getPresenter().fireAddToBookmarks();
-            return true;
-        });
         menu.add(R.string.mentions).setOnMenuItemClickListener(item -> {
             if (!CheckUpdate.isFullVersion(requireActivity())) {
                 return true;
@@ -401,6 +424,28 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             if (!view.isBlacklistedByMe) {
                 menu.add(R.string.add_to_blacklist).setOnMenuItemClickListener(item -> {
                     getPresenter().fireAddToBlacklistClick();
+                    return true;
+                });
+            }
+            if (!view.isFavorite) {
+                menu.add(R.string.add_to_bookmarks).setOnMenuItemClickListener(item -> {
+                    getPresenter().fireAddToBookmarks();
+                    return true;
+                });
+            } else {
+                menu.add(R.string.remove_from_bookmarks).setOnMenuItemClickListener(item -> {
+                    getPresenter().fireRemoveFromBookmarks();
+                    return true;
+                });
+            }
+            if (!view.isSubscribed) {
+                menu.add(R.string.notify_wall_added).setOnMenuItemClickListener(item -> {
+                    getPresenter().fireSubscribe();
+                    return true;
+                });
+            } else {
+                menu.add(R.string.unnotify_wall_added).setOnMenuItemClickListener(item -> {
+                    getPresenter().fireUnSubscribe();
                     return true;
                 });
             }
@@ -425,6 +470,8 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
         final TextView bVideos;
         final TextView bAudios;
         final TextView bArticles;
+        final TextView bProducts;
+        final TextView bGifts;
 
         final FloatingActionButton fabMessage;
         final FloatingActionButton fabMoreInfo;
@@ -452,6 +499,8 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             bVideos = root.findViewById(R.id.fragment_user_profile_bvideos);
             bAudios = root.findViewById(R.id.fragment_user_profile_baudios);
             bArticles = root.findViewById(R.id.fragment_user_profile_barticles);
+            bProducts = root.findViewById(R.id.fragment_user_profile_bproducts);
+            bGifts = root.findViewById(R.id.fragment_user_profile_bgifts);
             fabMessage = root.findViewById(R.id.header_user_profile_fab_message);
             fabMoreInfo = root.findViewById(R.id.info_btn);
             bPrimaryAction = root.findViewById(R.id.subscribe_btn);
@@ -477,8 +526,14 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             root.findViewById(R.id.header_user_profile_friends_container).setOnClickListener(v -> getPresenter().fireHeaderFriendsClick());
             root.findViewById(R.id.header_user_profile_audios_container).setOnClickListener(v -> getPresenter().fireHeaderAudiosClick());
             root.findViewById(R.id.header_user_profile_articles_container).setOnClickListener(v -> getPresenter().fireHeaderArticlesClick());
+            root.findViewById(R.id.header_user_profile_products_container).setOnClickListener(v -> {
+                if (CheckUpdate.isFullVersionPropriety(requireActivity())) {
+                    getPresenter().fireHeaderProductsClick();
+                }
+            });
             root.findViewById(R.id.header_user_profile_groups_container).setOnClickListener(v -> getPresenter().fireHeaderGroupsClick());
             root.findViewById(R.id.header_user_profile_videos_container).setOnClickListener(v -> getPresenter().fireHeaderVideosClick());
+            root.findViewById(R.id.header_user_profile_gifts_container).setOnClickListener(v -> getPresenter().fireHeaderGiftsClick());
         }
     }
 }

@@ -3,6 +3,7 @@ package dev.ragnarok.fenrir.api.services;
 import java.util.List;
 
 import dev.ragnarok.fenrir.api.model.Items;
+import dev.ragnarok.fenrir.api.model.VKApiGift;
 import dev.ragnarok.fenrir.api.model.VKApiUser;
 import dev.ragnarok.fenrir.api.model.response.BaseResponse;
 import dev.ragnarok.fenrir.api.model.response.StoryResponse;
@@ -110,6 +111,12 @@ public interface IUsersService {
     Single<BaseResponse<StoryResponse>> getStory(@Field("owner_id") Integer owner_id,
                                                  @Field("extended") Integer extended,
                                                  @Field("fields") String fields);
+
+    @POST("gifts.get")
+    @FormUrlEncoded
+    Single<BaseResponse<Items<VKApiGift>>> getGifts(@Field("user_id") Integer user_id,
+                                                    @Field("count") Integer count,
+                                                    @Field("offset") Integer offset);
 
     @POST("stories.search")
     @FormUrlEncoded

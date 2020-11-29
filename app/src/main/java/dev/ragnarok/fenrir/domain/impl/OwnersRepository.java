@@ -38,6 +38,7 @@ import dev.ragnarok.fenrir.fragment.search.criteria.PeopleSearchCriteria;
 import dev.ragnarok.fenrir.fragment.search.options.SpinnerOption;
 import dev.ragnarok.fenrir.model.Community;
 import dev.ragnarok.fenrir.model.CommunityDetails;
+import dev.ragnarok.fenrir.model.Gift;
 import dev.ragnarok.fenrir.model.IOwnersBundle;
 import dev.ragnarok.fenrir.model.Market;
 import dev.ragnarok.fenrir.model.MarketAlbum;
@@ -74,6 +75,7 @@ import static dev.ragnarok.fenrir.api.model.VKApiCommunity.DESCRIPTION;
 import static dev.ragnarok.fenrir.api.model.VKApiCommunity.FINISH_DATE;
 import static dev.ragnarok.fenrir.api.model.VKApiCommunity.FIXED_POST;
 import static dev.ragnarok.fenrir.api.model.VKApiCommunity.IS_FAVORITE;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.IS_SUBSCRIBED;
 import static dev.ragnarok.fenrir.api.model.VKApiCommunity.LINKS;
 import static dev.ragnarok.fenrir.api.model.VKApiCommunity.MAIN_ALBUM_ID;
 import static dev.ragnarok.fenrir.api.model.VKApiCommunity.MEMBERS_COUNT;
@@ -92,7 +94,7 @@ import static java.util.Collections.singletonList;
 
 public class OwnersRepository implements IOwnersRepository {
 
-    private static final String FIELDS_GROUPS_ALL = stringJoin(",", IS_FAVORITE,
+    private static final String FIELDS_GROUPS_ALL = stringJoin(",", IS_FAVORITE, IS_SUBSCRIBED,
             MAIN_ALBUM_ID, CAN_UPLOAD_DOC, CAN_CTARE_TOPIC, CAN_UPLOAD_VIDEO, BAN_INFO,
             CITY, COUNTRY, PLACE, DESCRIPTION, WIKI_PAGE, MEMBERS_COUNT, COUNTERS, START_DATE,
             FINISH_DATE, CAN_POST, CAN_SEE_ALL_POSTS, STATUS, CONTACTS, LINKS, FIXED_POST,
@@ -515,6 +517,17 @@ public class OwnersRepository implements IOwnersRepository {
                 .map(items -> {
                     List<VKApiUser> dtos = listEmptyIfNull(items.getItems());
                     return Dto2Model.transformUsers(dtos);
+                });
+    }
+
+    @Override
+    public Single<List<Gift>> getGifts(int accountId, int user_id, int count, int offset) {
+        return networker.vkDefault(accountId)
+                .users()
+                .getGifts(user_id, count, offset)
+                .flatMap(dtos -> {
+                    List<Gift> gifts = Dto2Model.transformGifts(dtos.items);
+                    return Single.just(gifts);
                 });
     }
 

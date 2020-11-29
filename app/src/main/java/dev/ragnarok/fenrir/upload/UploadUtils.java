@@ -33,7 +33,7 @@ public final class UploadUtils {
             originalStream = context.getContentResolver().openInputStream(uri);
         }
 
-        if (size == Upload.IMAGE_SIZE_FULL) {
+        if (size == Upload.IMAGE_SIZE_FULL || size == Upload.IMAGE_SIZE_CROPPING) {
             return originalStream;
         }
 

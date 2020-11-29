@@ -23,5 +23,9 @@ public interface IFeedInteractor {
 
     Single<Integer> saveList(int accountId, String title, Collection<Integer> listIds);
 
+    Single<Integer> addBan(int accountId, Collection<Integer> listIds);
+
     Single<Integer> deleteList(int accountId, Integer list_id);
+
+    Single<Integer> ignoreItem(int accountId, String type, Integer owner_id, Integer item_id);
 }

@@ -73,6 +73,8 @@ class MainSettings implements ISettings.IMainSettings {
                 return Upload.IMAGE_SIZE_1200;
             case "3":
                 return Upload.IMAGE_SIZE_FULL;
+            case "4":
+                return Upload.IMAGE_SIZE_CROPPING;
             default:
                 return null;
         }

@@ -38,12 +38,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -52,10 +46,6 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.Constants;
@@ -150,7 +140,6 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
         new ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(mRecyclerView);
 
         root.findViewById(R.id.fab).setOnClickListener(this);
-        root.findViewById(R.id.kate_acc).setOnClickListener(this);
         return root;
     }
 
@@ -355,75 +344,9 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.fab:
-                startDirectLogin();
-                break;
-            case R.id.kate_acc:
-                onKate();
-                break;
+        if (v.getId() == R.id.fab) {
+            startDirectLogin();
         }
-    }
-
-    private void onKate() {
-        new MaterialAlertDialogBuilder(requireActivity())
-                .setTitle(R.string.import_from_kate)
-                .setMessage(R.string.import_from_kate_summary)
-                .setPositiveButton(R.string.button_yes, (dialogInterface, i) -> doImportKateAccounts())
-                .setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss())
-                .show();
-    }
-
-    private void doImportKateAccounts() {
-        if (!AppPerms.hasReadStoragePermision(getActivity())) {
-            AppPerms.requestReadExternalStoragePermission(getActivity());
-            return;
-        }
-        DialogProperties properties = new DialogProperties();
-        properties.selection_mode = DialogConfigs.SINGLE_MODE;
-        properties.selection_type = DialogConfigs.FILE_SELECT;
-        properties.root = Environment.getExternalStorageDirectory();
-        properties.error_dir = Environment.getExternalStorageDirectory();
-        properties.offset = Environment.getExternalStorageDirectory();
-        properties.extensions = new String[]{"xml"};
-        properties.show_hidden_files = true;
-        FilePickerDialog dialog = new FilePickerDialog(requireActivity(), properties, Settings.get().ui().getMainTheme());
-        dialog.setTitle(R.string.import_accounts);
-        dialog.setDialogSelectionListener(files -> {
-            try {
-                FileInputStream dataFromServerStream = new FileInputStream(files[0]);
-                DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance()
-                        .newDocumentBuilder();
-                Document doc = dBuilder.parse(new InputSource(new InputStreamReader(dataFromServerStream, StandardCharsets.UTF_8)));
-                NodeList elements = doc.getElementsByTagName("map").item(0).getChildNodes();
-                int count = 0;
-                for (int i = 0; i < elements.getLength(); i++) {
-                    NamedNodeMap attributes = elements.item(i).getAttributes();
-                    if (attributes == null || attributes.getNamedItem("name") == null)
-                        continue;
-                    String name = attributes.getNamedItem("name").getNodeValue();
-                    if (name.equals("accounts")) {
-                        JSONArray jsonRoot = new JSONArray(elements.item(i).getTextContent());
-                        List<Integer> accounts = Settings.get().accounts().getRegistered();
-                        for (int s = 0; s < jsonRoot.length(); s++) {
-                            JSONObject mJsonObject = jsonRoot.getJSONObject(s);
-                            count++;
-                            if (accounts != null && accounts.size() > 0) {
-                                if (accounts.contains(mJsonObject.getInt("mid")))
-                                    continue;
-                            }
-                            processNewAccount(mJsonObject.getInt("mid"), mJsonObject.getString("access_token"), Account_Types.KATE, "", "", "kate_app", true, false);
-                        }
-                        break;
-                    }
-
-                }
-                CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.kate_worked, count);
-            } catch (Exception e) {
-                CustomToast.CreateCustomToast(requireActivity()).showToastError("Import Error [" + e.getClass().getName() + "] : " + e.getMessage());
-            }
-        });
-        dialog.show();
     }
 
     private void delete(Account account) {

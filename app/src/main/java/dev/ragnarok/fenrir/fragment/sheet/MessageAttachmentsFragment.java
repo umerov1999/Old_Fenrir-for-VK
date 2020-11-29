@@ -19,9 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.yalantis.ucrop.UCrop;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,7 +114,11 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Bundle extras = nonNull(data) ? data.getExtras() : null;
+        if (resultCode == Activity.RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
+            getPresenter().doUploadFile(UCrop.getOutput(data).getPath(), Upload.IMAGE_SIZE_FULL, false);
+        } else if (resultCode == UCrop.RESULT_ERROR) {
+            showThrowable(UCrop.getError(data));
+        }
 
         if (requestCode == REQUEST_ADD_VKPHOTO && resultCode == Activity.RESULT_OK) {
             ArrayList<Photo> vkphotos = data.getParcelableArrayListExtra(Extra.ATTACHMENTS);
@@ -181,7 +187,7 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
 
     @Override
     public void displaySelectUploadPhotoSizeDialog(List<LocalPhoto> photos) {
-        int[] values = {Upload.IMAGE_SIZE_800, Upload.IMAGE_SIZE_1200, Upload.IMAGE_SIZE_FULL};
+        int[] values = {Upload.IMAGE_SIZE_800, Upload.IMAGE_SIZE_1200, Upload.IMAGE_SIZE_FULL, Upload.IMAGE_SIZE_CROPPING};
         new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(R.string.select_image_size_title)
                 .setItems(R.array.array_image_sizes_names, (dialogInterface, j)
@@ -191,8 +197,14 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
     }
 
     @Override
+    public void displayCropPhotoDialog(Uri uri) {
+        UCrop.of(uri, Uri.fromFile(new File(requireActivity().getExternalCacheDir() + File.separator + "scale.jpg")))
+                .start(requireActivity(), this);
+    }
+
+    @Override
     public void displaySelectUploadFileSizeDialog(String file) {
-        int[] values = {Upload.IMAGE_SIZE_800, Upload.IMAGE_SIZE_1200, Upload.IMAGE_SIZE_FULL};
+        int[] values = {Upload.IMAGE_SIZE_800, Upload.IMAGE_SIZE_1200, Upload.IMAGE_SIZE_FULL, Upload.IMAGE_SIZE_CROPPING};
         new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(R.string.select_image_size_title)
                 .setItems(R.array.array_image_sizes_names, (dialogInterface, j)

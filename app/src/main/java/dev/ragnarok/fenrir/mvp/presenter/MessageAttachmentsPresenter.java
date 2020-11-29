@@ -290,6 +290,8 @@ public class MessageAttachmentsPresenter extends RxSupportPresenter<IMessageAtta
 
                     if (isNull(size)) {
                         getView().displaySelectUploadFileSizeDialog(file);
+                    } else if (size == Upload.IMAGE_SIZE_CROPPING) {
+                        getView().displayCropPhotoDialog(Uri.fromFile(new File(file)));
                     } else {
                         doUploadFile(file, size, false);
                     }
@@ -304,12 +306,18 @@ public class MessageAttachmentsPresenter extends RxSupportPresenter<IMessageAtta
 
         if (isNull(size)) {
             getView().displaySelectUploadPhotoSizeDialog(photos);
+        } else if (size == Upload.IMAGE_SIZE_CROPPING && photos.size() == 1) {
+            Uri to_up = photos.get(0).getFullImageUri();
+            if (new File(to_up.getPath()).isFile()) {
+                to_up = Uri.fromFile(new File(to_up.getPath()));
+            }
+            getView().displayCropPhotoDialog(to_up);
         } else {
             doUploadPhotos(photos, size);
         }
     }
 
-    private void doUploadFile(String file, int size, boolean isVideo) {
+    public void doUploadFile(String file, int size, boolean isVideo) {
         List<UploadIntent> intents;
         if (isVideo) {
             intents = UploadUtils.createIntents(messageOwnerId, UploadDestination.forMessage(messageId, MessageMethod.VIDEO), file, size, true);
@@ -367,11 +375,23 @@ public class MessageAttachmentsPresenter extends RxSupportPresenter<IMessageAtta
     }
 
     public void fireUploadPhotoSizeSelected(List<LocalPhoto> photos, int imageSize) {
-        doUploadPhotos(photos, imageSize);
+        if (imageSize == Upload.IMAGE_SIZE_CROPPING && photos.size() == 1) {
+            Uri to_up = photos.get(0).getFullImageUri();
+            if (new File(to_up.getPath()).isFile()) {
+                to_up = Uri.fromFile(new File(to_up.getPath()));
+            }
+            getView().displayCropPhotoDialog(to_up);
+        } else {
+            doUploadPhotos(photos, imageSize);
+        }
     }
 
     public void fireUploadFileSizeSelected(String file, int imageSize) {
-        doUploadFile(file, imageSize, false);
+        if (imageSize == Upload.IMAGE_SIZE_CROPPING) {
+            getView().displayCropPhotoDialog(Uri.fromFile(new File(file)));
+        } else {
+            doUploadFile(file, imageSize, false);
+        }
     }
 
     public void fireCameraPermissionResolved() {
@@ -391,7 +411,7 @@ public class MessageAttachmentsPresenter extends RxSupportPresenter<IMessageAtta
     public void fireCompressSettings(Context context) {
         new MaterialAlertDialogBuilder(context)
                 .setTitle(context.getString(R.string.select_image_size_title))
-                .setSingleChoiceItems(R.array.array_image_sizes_settings_names_tool, Settings.get().main().getUploadImageSizePref(), (dialogInterface, j) -> {
+                .setSingleChoiceItems(R.array.array_image_sizes_settings_names, Settings.get().main().getUploadImageSizePref(), (dialogInterface, j) -> {
                     Settings.get().main().setUploadImageSize(j);
                     dialogInterface.dismiss();
                 })

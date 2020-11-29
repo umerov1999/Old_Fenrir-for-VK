@@ -312,6 +312,20 @@ public class WallsRepository implements IWallsRepository {
     }
 
     @Override
+    public Single<Integer> subscribe(int accountId, int owner_id) {
+        return networker.vkDefault(accountId)
+                .wall()
+                .subscribe(owner_id);
+    }
+
+    @Override
+    public Single<Integer> unsubscribe(int accountId, int owner_id) {
+        return networker.vkDefault(accountId)
+                .wall()
+                .unsubscribe(owner_id);
+    }
+
+    @Override
     public Single<Post> getById(int accountId, int ownerId, int postId) {
         IdPair id = new IdPair(postId, ownerId);
 

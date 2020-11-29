@@ -17,6 +17,7 @@ public class Upload extends AbsModel implements Identificable {
     public static final int IMAGE_SIZE_800 = 800;
     public static final int IMAGE_SIZE_1200 = 1200;
     public static final int IMAGE_SIZE_FULL = -1;
+    public static final int IMAGE_SIZE_CROPPING = -2;
 
     public static final int STATUS_QUEUE = 1;
     public static final int STATUS_UPLOADING = 2;

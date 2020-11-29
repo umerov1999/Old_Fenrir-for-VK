@@ -13,6 +13,7 @@ import dev.ragnarok.fenrir.db.model.entity.OwnerEntities;
 import dev.ragnarok.fenrir.fragment.search.criteria.PeopleSearchCriteria;
 import dev.ragnarok.fenrir.model.Community;
 import dev.ragnarok.fenrir.model.CommunityDetails;
+import dev.ragnarok.fenrir.model.Gift;
 import dev.ragnarok.fenrir.model.IOwnersBundle;
 import dev.ragnarok.fenrir.model.Market;
 import dev.ragnarok.fenrir.model.MarketAlbum;
@@ -48,6 +49,8 @@ public interface IOwnersRepository {
     Single<List<MarketAlbum>> getMarketAlbums(int accountId, int owner_id, int offset, int count);
 
     Single<List<Market>> getMarket(int accountId, int owner_id, int album_id, int offset, int count);
+
+    Single<List<Gift>> getGifts(int accountId, int user_id, int count, int offset);
 
     Single<List<Market>> getMarketById(int accountId, Collection<AccessIdPair> ids);
 

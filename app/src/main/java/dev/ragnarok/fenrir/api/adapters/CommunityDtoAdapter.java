@@ -32,6 +32,7 @@ import static dev.ragnarok.fenrir.api.model.VKApiCommunity.DESCRIPTION;
 import static dev.ragnarok.fenrir.api.model.VKApiCommunity.FINISH_DATE;
 import static dev.ragnarok.fenrir.api.model.VKApiCommunity.FIXED_POST;
 import static dev.ragnarok.fenrir.api.model.VKApiCommunity.IS_FAVORITE;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.IS_SUBSCRIBED;
 import static dev.ragnarok.fenrir.api.model.VKApiCommunity.LINKS;
 import static dev.ragnarok.fenrir.api.model.VKApiCommunity.MAIN_ALBUM_ID;
 import static dev.ragnarok.fenrir.api.model.VKApiCommunity.MEMBERS_COUNT;
@@ -118,6 +119,7 @@ public class CommunityDtoAdapter extends AbsAdapter implements JsonDeserializer<
         dto.can_upload_video = optIntAsBoolean(root, CAN_UPLOAD_VIDEO);
         dto.can_create_topic = optIntAsBoolean(root, CAN_CTARE_TOPIC);
         dto.is_favorite = optIntAsBoolean(root, IS_FAVORITE);
+        dto.is_subscribed = optIntAsBoolean(root, IS_SUBSCRIBED);
         dto.status = VKStringUtils.unescape(optString(root, STATUS));
 
         if (root.has("status_audio")) {

@@ -215,6 +215,7 @@
     <string name="counter_photos">фото</string>
     <string name="counter_audios">аудио</string>
     <string name="counter_videos">видео</string>
+    <string name="counter_gifts">подарки</string>
 
     <string name="refresh">Обновить</string>
 
@@ -243,32 +244,28 @@
         <item>Маленький (800 px)</item>
         <item>Средний (1200 px)</item>
         <item>Оригинал</item>
+        <item>Обрезать</item>
     </string-array>
 
     <string-array name="array_image_sizes_settings_names">
-        <item>Маленький (800 px)</item>
-        <item>Средний (1200 px)</item>
-        <item>Оригинал</item>
-        <item>Спрашивать каждый раз</item>
-    </string-array>
-
-    <string-array name="array_image_sizes_settings_names_tool">
         <item>Спрашивать каждый раз</item>
         <item>Маленький (800 px)</item>
         <item>Средний (1200 px)</item>
         <item>Оригинал</item>
+        <item>Обрезать</item>
     </string-array>
 
     <string-array name="array_image_sizes_settings_values" translatable="false">
+        <item>0</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>
-        <item>0</item>
+        <item>4</item>
     </string-array>
 
     <string-array name="crypt_version_names">
-        <item>1 (RSA-128, AES-256)</item>
-        <item>2 (RSA-512, AES-2048) Dev</item>
+        <item>1 (RSA-512, AES-128)</item>
+        <item>2 (RSA-2048, AES-256)</item>
     </string-array>
 
     <string-array name="crypt_version_list" translatable="false">
@@ -704,6 +701,7 @@
     <string name="in_full_version_new">Донат от 50₽</string>
     <string name="qiwi_sber">Qiwi, Сбер: 89859844541</string>
     <string name="web_money">Web Money WMZ: Z990444118809</string>
+    <string name="is_donated">Проверка доната</string>
     <string name="donate_info">Далее требуется отправить скрин и ид от страницы @fenrir8814 и ждать подтверждения. Далее перезапустить клиент</string>
     <string name="comment">Комментарий</string>
     <string name="search">Поиск</string>
@@ -722,6 +720,9 @@
     <string name="permission_granted_text">Разрешение %1$s успешно получено. Повторите действие еще раз.</string>
     <string name="permission_is_not_granted_text">Разрешение %1$s не получено. Действие не может быть выполнено.</string>
     <string name="add_to_bookmarks">Добавить в закладки</string>
+    <string name="remove_from_bookmarks">Убрать из закладок</string>
+    <string name="notify_wall_added">Уведомлять о записях</string>
+    <string name="unnotify_wall_added">Неуведомлять о записях</string>
     <string name="loading">Загрузка</string>
     <string name="all_friends">Все друзья</string>
     <string name="share_link">Поделиться ссылкой</string>
@@ -1190,6 +1191,7 @@
     <string name="edit_manager_title">Руководитель</string>
     <string name="api_error_701">Пользователь должен быть участником сообщества</string>
     <string name="ban_author">Заблокировать автора</string>
+    <string name="not_interested">Неинтересно</string>
     <string name="community_creator_desc">Невозможно изменить уровень полномочий создателя</string>
     <string name="community_creator">Создатель</string>
     <string name="saved_to_param_file_name">Сохранено в %1$s</string>
@@ -1351,9 +1353,9 @@
     <string name="trance">Транс</string>
     <string name="top">Популярные</string>
     <string name="gift">Подарок</string>
+    <string name="gifts">Подарки</string>
     <string name="chat">Чат</string>
     <string name="chat_json">Чат из Json</string>
-    <string name="kate_worked">Обработано %1$d аккаунтов</string>
     <string name="open_clipboard_url">Открыть ссылку из буфера</string>
     <string name="set_offline">Стать Offline</string>
     <string name="empty_clipboard_url">Буфер обмена не содержит ссылку</string>
@@ -1550,8 +1552,6 @@
     <string name="change_upload_size">Настройки качества отправки фото</string>
     <string name="go_donate">Пожертвовать</string>
     <string name="in_full_version">Доступно в полной версии!</string>
-    <string name="import_from_kate">Импортировать аккаунты из Kate Mobile?</string>
-    <string name="import_from_kate_summary">(ROOT) Требуется скопировать /data/data/com.perm.kate_new_6/shared_prefs/com.perm.kate_new_6_preferences.xml. В этих аккаунтах не будут отображаться некоторые аудио разделы, обложки аудио, статьи, ночные стикеры и т.д. Лучше не использовать</string>
     <string name="wall_themed">Оформление стены для язычников</string>
     <string name="runes_show">Показывать руны</string>
     <string name="show_pagan_symbol">Показывать символ</string>
@@ -1563,5 +1563,10 @@
     <string name="call_reached">Завершён</string>
     <string name="marketer">Написать продавцу</string>
     <string name="not_update_dialogs">Обновлять диалоги вручную</string>
-    <string name="use_coil">Coil photo work library</string>
+    <string name="use_coil_library">Автовоспроизведение GIF</string>
+    <string name="select_icon">Выберите иконку:</string>
+    <string name="default_icon">Стандартная</string>
+    <string name="custom_icon">Кастомные</string>
+    <string name="select_custom_icon">Сменить иконку</string>
+    <string name="use_coil_library_summary">Coil library, нестабильно</string>
 </resources>

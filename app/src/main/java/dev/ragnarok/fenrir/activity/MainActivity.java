@@ -83,6 +83,7 @@ import dev.ragnarok.fenrir.fragment.FeedFragment;
 import dev.ragnarok.fenrir.fragment.FeedbackFragment;
 import dev.ragnarok.fenrir.fragment.FwdsFragment;
 import dev.ragnarok.fenrir.fragment.GifPagerFragment;
+import dev.ragnarok.fenrir.fragment.GiftsFragment;
 import dev.ragnarok.fenrir.fragment.ImportantMessagesFragment;
 import dev.ragnarok.fenrir.fragment.LikesFragment;
 import dev.ragnarok.fenrir.fragment.LinksInCatalogFragment;
@@ -1401,6 +1402,13 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                         args.getInt(Extra.ACCOUNT_ID),
                         args.getInt(Extra.OWNER_ID),
                         args.getInt(Extra.ALBUM_ID)
+                ));
+                break;
+
+            case Place.GIFTS:
+                attachToFront(GiftsFragment.newInstance(
+                        args.getInt(Extra.ACCOUNT_ID),
+                        args.getInt(Extra.OWNER_ID)
                 ));
                 break;
 

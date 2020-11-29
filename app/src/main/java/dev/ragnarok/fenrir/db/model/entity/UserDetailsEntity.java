@@ -11,6 +11,10 @@ public class UserDetailsEntity {
 
     private AudioEntity statusAudio;
 
+    private boolean isFavorite;
+
+    private boolean isSubscribed;
+
     private int friendsCount;
 
     private int onlineFriendsCount;
@@ -27,6 +31,8 @@ public class UserDetailsEntity {
 
     private int articlesCount;
 
+    private int productsCount;
+
     private int videosCount;
 
     private int allWallCount;
@@ -34,6 +40,8 @@ public class UserDetailsEntity {
     private int ownWallCount;
 
     private int postponedWallCount;
+
+    private int GiftCount;
 
     private String bdate;
 
@@ -129,6 +137,24 @@ public class UserDetailsEntity {
 
     public UserDetailsEntity setActivities(String activities) {
         this.activities = activities;
+        return this;
+    }
+
+    public boolean isSetFavorite() {
+        return isFavorite;
+    }
+
+    public UserDetailsEntity setFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
+        return this;
+    }
+
+    public boolean isSetSubscribed() {
+        return isSubscribed;
+    }
+
+    public UserDetailsEntity setSubscribed(boolean isSubscribed) {
+        this.isSubscribed = isSubscribed;
         return this;
     }
 
@@ -510,6 +536,15 @@ public class UserDetailsEntity {
         return this;
     }
 
+    public int getProductsCount() {
+        return productsCount;
+    }
+
+    public UserDetailsEntity setProductsCount(int productsCount) {
+        this.productsCount = productsCount;
+        return this;
+    }
+
     public int getVideosCount() {
         return videosCount;
     }
@@ -543,6 +578,15 @@ public class UserDetailsEntity {
 
     public UserDetailsEntity setPostponedWallCount(int postponedWallCount) {
         this.postponedWallCount = postponedWallCount;
+        return this;
+    }
+
+    public int getGiftCount() {
+        return GiftCount;
+    }
+
+    public UserDetailsEntity setGiftCount(int GiftCount) {
+        this.GiftCount = GiftCount;
         return this;
     }
 

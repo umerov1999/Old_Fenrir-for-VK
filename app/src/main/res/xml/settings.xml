@@ -52,6 +52,13 @@
 
         <SwitchPreference
             android:defaultValue="false"
+            android:key="use_coil_library"
+            android:summary="@string/use_coil_library_summary"
+            android:title="@string/use_coil_library"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="false"
             android:key="custom_tabs"
             android:title="@string/open_links_in_app"
             app:iconSpaceReserved="false" />
@@ -652,12 +659,6 @@
             app:iconSpaceReserved="false" />
 
         <SwitchPreference
-            android:defaultValue="true"
-            android:key="use_coil"
-            android:title="@string/use_coil"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
             android:key="use_old_vk_api"
             android:summary="@string/mp3_friendly"
             android:title="@string/use_old_vk_api"
@@ -707,9 +708,19 @@
             app:iconSpaceReserved="false" />
 
         <Preference
+            android:key="is_donated"
+            android:title="@string/is_donated"
+            app:iconSpaceReserved="false" />
+
+        <Preference
             android:dependency="developer_mode"
             android:key="additional_debug"
             android:title="@string/additional_info"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="select_custom_icon"
+            android:title="@string/select_custom_icon"
             app:iconSpaceReserved="false" />
 
         <Preference

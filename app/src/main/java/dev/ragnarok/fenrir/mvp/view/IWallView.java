@@ -57,5 +57,9 @@ public interface IWallView extends IAttachmentsPlacesView,
         void setIsMy(boolean my);
 
         void setIsBlacklistedByMe(boolean blocked);
+
+        void setIsFavorite(boolean favorite);
+
+        void setIsSubscribed(boolean subscribed);
     }
 }

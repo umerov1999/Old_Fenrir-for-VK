@@ -23,7 +23,7 @@ public class VKApiUser extends VKApiOwner {
             "has_mobile,contacts,connections,site,education,universities,schools,can_post,can_see_all_posts," +
             "can_see_audio,can_write_private_message,status,last_seen,common_count,relation,relatives," +
             "counters,screen_name,maiden_name,timezone,occupation,activities,interests,music,movies,tv," +
-            "books,games,about,quotes,personal,friend_status,military,career,is_friend,blacklisted_by_me,blacklisted,can_access_closed,verified";
+            "books,games,about,quotes,personal,friend_status,military,career,is_friend,blacklisted_by_me,blacklisted,can_access_closed,verified,is_favorite,is_subscribed";
     /**
      * First name of user.
      */
@@ -360,6 +360,8 @@ public class VKApiUser extends VKApiOwner {
      * возвращается 1, если пользователь находится в закладках у текущего пользователя.
      */
     public boolean is_favorite;
+
+    public boolean is_subscribed;
     /**
      * временная зона пользователя. Возвращается только при запросе информации о текущем пользователе.
      */
@@ -683,6 +685,8 @@ public class VKApiUser extends VKApiOwner {
         public int owner_wall = NO_COUNTER;
         public int postponed_wall = NO_COUNTER;
         public int articles = NO_COUNTER;
+        public int market = NO_COUNTER;
+        public int gifts = NO_COUNTER;
 
         public Counters() {
 

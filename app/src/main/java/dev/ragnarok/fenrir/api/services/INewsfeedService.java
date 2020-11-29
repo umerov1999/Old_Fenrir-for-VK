@@ -50,6 +50,19 @@ public interface INewsfeedService {
     Single<BaseResponse<Integer>> saveList(@Field("title") String title,
                                            @Field("source_ids") String source_ids);
 
+    //https://vk.com/dev/newsfeed.addBan
+    @FormUrlEncoded
+    @POST("newsfeed.addBan")
+    Single<BaseResponse<Integer>> addBan(@Field("user_ids") String user_ids,
+                                         @Field("group_ids") String group_ids);
+
+    //https://vk.com/dev/newsfeed.ignoreItem
+    @FormUrlEncoded
+    @POST("newsfeed.ignoreItem")
+    Single<BaseResponse<Integer>> ignoreItem(@Field("type") String type,
+                                             @Field("owner_id") Integer owner_id,
+                                             @Field("item_id") Integer item_id);
+
     //https://vk.com/dev/newsfeed.deleteList
     @FormUrlEncoded
     @POST("newsfeed.deleteList")

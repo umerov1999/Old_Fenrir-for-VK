@@ -2,11 +2,13 @@ package dev.ragnarok.fenrir.adapter;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.view.ContextMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Transformation;
@@ -36,6 +38,7 @@ public class FeedAdapter extends RecyclerBindableAdapter<News, FeedAdapter.PostH
     private final Transformation transformation;
     private ClickListener clickListener;
     private int nextHolderId;
+    private RecyclerView recyclerView;
 
     public FeedAdapter(Context context, List<News> data, AttachmentsViewBinder.OnAttachmentsActionCallback attachmentsActionCallback) {
         super(data);
@@ -205,6 +208,18 @@ public class FeedAdapter extends RecyclerBindableAdapter<News, FeedAdapter.PostH
         holder.shareButton.setOnLongClickListener(v -> clickListener != null && clickListener.onShareLongClick(news));
     }
 
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        this.recyclerView = recyclerView;
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        this.recyclerView = null;
+    }
+
     public void setClickListener(ClickListener clickListener) {
         this.clickListener = clickListener;
     }
@@ -216,6 +231,10 @@ public class FeedAdapter extends RecyclerBindableAdapter<News, FeedAdapter.PostH
 
         void onPostClick(News news);
 
+        void onBanClick(News news);
+
+        void onIgnoreClick(News news);
+
         void onCommentButtonClick(News news);
 
         void onLikeClick(News news, boolean add);
@@ -225,7 +244,7 @@ public class FeedAdapter extends RecyclerBindableAdapter<News, FeedAdapter.PostH
         boolean onShareLongClick(News news);
     }
 
-    class PostHolder extends RecyclerView.ViewHolder implements IdentificableHolder {
+    class PostHolder extends RecyclerView.ViewHolder implements IdentificableHolder, View.OnCreateContextMenuListener {
 
         final View topDivider;
         final TextView tvOwnerName;
@@ -244,6 +263,7 @@ public class FeedAdapter extends RecyclerBindableAdapter<News, FeedAdapter.PostH
 
         PostHolder(View root) {
             super(root);
+            itemView.setOnCreateContextMenuListener(this);
             cardView = root.findViewById(R.id.card_view);
             cardView.setTag(genereateHolderId());
 
@@ -266,6 +286,25 @@ public class FeedAdapter extends RecyclerBindableAdapter<News, FeedAdapter.PostH
         @Override
         public int getHolderId() {
             return (int) cardView.getTag();
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            int position = getItemRawPosition(recyclerView.getChildAdapterPosition(v));
+            News feed = getItems().get(position);
+            menu.add(0, v.getId(), 0, R.string.ban_author).setOnMenuItemClickListener(item -> {
+                if (clickListener != null) {
+                    clickListener.onBanClick(feed);
+                }
+                return true;
+            });
+            menu.add(0, v.getId(), 0, R.string.not_interested).setOnMenuItemClickListener(item -> {
+                if (clickListener != null) {
+                    clickListener.onIgnoreClick(feed);
+                }
+                return true;
+            });
+
         }
     }
 }

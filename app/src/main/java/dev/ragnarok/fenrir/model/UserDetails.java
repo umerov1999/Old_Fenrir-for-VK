@@ -22,6 +22,8 @@ public final class UserDetails implements Parcelable {
     };
     private IdPair photoId;
     private Audio statusAudio;
+    private boolean isFavorite;
+    private boolean isSubscribed;
     private int friendsCount;
     private int onlineFriendsCount;
     private int mutualFriendsCount;
@@ -30,10 +32,12 @@ public final class UserDetails implements Parcelable {
     private int photosCount;
     private int audiosCount;
     private int articlesCount;
+    private int productsCount;
     private int videosCount;
     private int allWallCount;
     private int ownWallCount;
     private int postponedWallCount;
+    private int GiftCount;
     private String bdate;
     private City city;
     private Country country;
@@ -86,10 +90,14 @@ public final class UserDetails implements Parcelable {
         audiosCount = in.readInt();
         videosCount = in.readInt();
         articlesCount = in.readInt();
+        productsCount = in.readInt();
         allWallCount = in.readInt();
         ownWallCount = in.readInt();
         postponedWallCount = in.readInt();
+        GiftCount = in.readInt();
         bdate = in.readString();
+        isFavorite = in.readByte() == 1;
+        isSubscribed = in.readByte() == 1;
     }
 
     public String getInterests() {
@@ -107,6 +115,24 @@ public final class UserDetails implements Parcelable {
 
     public UserDetails setMusic(String music) {
         this.music = music;
+        return this;
+    }
+
+    public boolean isSetFavorite() {
+        return isFavorite;
+    }
+
+    public UserDetails setFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
+        return this;
+    }
+
+    public boolean isSetSubscribed() {
+        return isSubscribed;
+    }
+
+    public UserDetails setSubscribed(boolean isSubscribed) {
+        this.isSubscribed = isSubscribed;
         return this;
     }
 
@@ -416,10 +442,14 @@ public final class UserDetails implements Parcelable {
         parcel.writeInt(audiosCount);
         parcel.writeInt(videosCount);
         parcel.writeInt(articlesCount);
+        parcel.writeInt(productsCount);
         parcel.writeInt(allWallCount);
         parcel.writeInt(ownWallCount);
         parcel.writeInt(postponedWallCount);
+        parcel.writeInt(GiftCount);
         parcel.writeString(bdate);
+        parcel.writeByte(isFavorite ? (byte) 1 : (byte) 0);
+        parcel.writeByte(isSubscribed ? (byte) 1 : (byte) 0);
     }
 
     public String getBdate() {
@@ -521,6 +551,15 @@ public final class UserDetails implements Parcelable {
         return this;
     }
 
+    public int getProductsCount() {
+        return productsCount;
+    }
+
+    public UserDetails setProductsCount(int productsCount) {
+        this.productsCount = productsCount;
+        return this;
+    }
+
     public int getVideosCount() {
         return videosCount;
     }
@@ -554,6 +593,15 @@ public final class UserDetails implements Parcelable {
 
     public UserDetails setPostponedWallCount(int postponedWallCount) {
         this.postponedWallCount = postponedWallCount;
+        return this;
+    }
+
+    public int getGiftCount() {
+        return GiftCount;
+    }
+
+    public UserDetails setGiftCount(int GiftCount) {
+        this.GiftCount = GiftCount;
         return this;
     }
 

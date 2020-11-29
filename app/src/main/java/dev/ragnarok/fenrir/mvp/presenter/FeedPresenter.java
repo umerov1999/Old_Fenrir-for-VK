@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import dev.ragnarok.fenrir.Injection;
@@ -431,6 +432,19 @@ public class FeedPresenter extends PlaceSupportPresenter<IFeedView> {
         if ("post".equalsIgnoreCase(news.getType())) {
             getView().goToPostComments(getAccountId(), news.getPostId(), news.getSourceId());
         }
+    }
+
+    public void fireBanClick(News news) {
+        appendDisposable(feedInteractor.addBan(getAccountId(), Collections.singleton(news.getSourceId()))
+                .compose(applySingleIOToMainSchedulers())
+                .subscribe(u -> fireRefresh(), this::onActualFeedGetError));
+    }
+
+    public void fireIgnoreClick(News news) {
+        String type = "post".equals(news.getType()) ? "wall" : news.getType();
+        appendDisposable(feedInteractor.ignoreItem(getAccountId(), type, news.getSourceId(), news.getPostId())
+                .compose(applySingleIOToMainSchedulers())
+                .subscribe(u -> fireRefresh(), this::onActualFeedGetError));
     }
 
     public void fireNewsBodyClick(News news) {

@@ -44,6 +44,10 @@ public interface IWallsRepository {
 
     Single<Integer> reportPost(int accountId, int owner_id, int post_id, int reason);
 
+    Single<Integer> subscribe(int accountId, int owner_id);
+
+    Single<Integer> unsubscribe(int accountId, int owner_id);
+
     Single<Post> getById(int accountId, int ownerId, int postId);
 
     Completable pinUnpin(int accountId, int ownerId, int postId, boolean pin);

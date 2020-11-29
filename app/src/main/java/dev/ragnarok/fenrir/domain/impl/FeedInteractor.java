@@ -195,9 +195,21 @@ public class FeedInteractor implements IFeedInteractor {
     }
 
     @Override
+    public Single<Integer> addBan(int accountId, Collection<Integer> listIds) {
+        return networker.vkDefault(accountId)
+                .newsfeed().addBan(listIds).map(response -> response);
+    }
+
+    @Override
     public Single<Integer> deleteList(int accountId, Integer list_id) {
         return networker.vkDefault(accountId)
                 .newsfeed().deleteList(list_id).map(response -> response);
+    }
+
+    @Override
+    public Single<Integer> ignoreItem(int accountId, String type, Integer owner_id, Integer item_id) {
+        return networker.vkDefault(accountId)
+                .newsfeed().ignoreItem(type, owner_id, item_id).map(response -> response);
     }
 
     @Override

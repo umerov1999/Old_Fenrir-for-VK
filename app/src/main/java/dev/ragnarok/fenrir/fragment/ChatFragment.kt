@@ -3,7 +3,7 @@ package dev.ragnarok.fenrir.fragment
 import android.Manifest
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import com.yalantis.ucrop.UCrop
 import dev.ragnarok.fenrir.*
 import dev.ragnarok.fenrir.activity.*
 import dev.ragnarok.fenrir.adapter.AttachmentsBottomSheetAdapter
@@ -58,6 +59,7 @@ import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation
 import dev.ragnarok.fenrir.place.PlaceFactory
 import dev.ragnarok.fenrir.settings.CurrentTheme
 import dev.ragnarok.fenrir.settings.Settings
+import dev.ragnarok.fenrir.upload.Upload
 import dev.ragnarok.fenrir.upload.UploadDestination
 import dev.ragnarok.fenrir.util.*
 import dev.ragnarok.fenrir.util.Objects
@@ -68,6 +70,7 @@ import dev.ragnarok.fenrir.view.WeakViewAnimatorAdapter
 import dev.ragnarok.fenrir.view.emoji.EmojiconTextView
 import dev.ragnarok.fenrir.view.emoji.EmojiconsPopup
 import dev.ragnarok.fenrir.view.emoji.StickersKeyWordsAdapter
+import java.io.File
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -575,6 +578,19 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPrensenter, IChatView>(), IChat
                         .setOnSelectedCallback { size -> presenter?.fireEditLocalPhotosSelected(photos, size) }
                         .show()
             }
+            Upload.IMAGE_SIZE_CROPPING -> {
+                if (photos.size == 1) {
+                    var to_up = photos[0].fullImageUri
+                    if (File(to_up.path!!).isFile) {
+                        to_up = Uri.fromFile(File(to_up.path!!))
+                    }
+
+                    UCrop.of(to_up, Uri.fromFile(File(requireActivity().externalCacheDir.toString() + File.separator + "scale.jpg")))
+                            .start(requireActivity(), this)
+                } else {
+                    presenter?.fireEditLocalPhotosSelected(photos, Upload.IMAGE_SIZE_FULL)
+                }
+            }
             else -> presenter?.fireEditLocalPhotosSelected(photos, defaultSize)
         }
     }
@@ -599,6 +615,10 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPrensenter, IChatView>(), IChat
                                         .setOnSelectedCallback { size -> presenter?.fireFilePhotoForUploadSelected(file, size) }
                                         .show()
                             }
+                            Upload.IMAGE_SIZE_CROPPING -> {
+                                UCrop.of(Uri.fromFile(File(file)), Uri.fromFile(File(requireActivity().externalCacheDir.toString() + File.separator + "scale.jpg")))
+                                        .start(requireActivity(), this)
+                            }
                             else -> presenter?.fireFilePhotoForUploadSelected(file, defaultSize)
                         }
                     }
@@ -609,6 +629,14 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPrensenter, IChatView>(), IChat
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+        if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
+            data?.let { presenter?.fireFilePhotoForUploadSelected(UCrop.getOutput(it)!!.path, Upload.IMAGE_SIZE_FULL) }
+        } else if (resultCode == UCrop.RESULT_ERROR) {
+            data?.let { showThrowable(UCrop.getError(it)) }
+        } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP_SECOND) {
+            data?.let { presenter?.fireNewChatPhotoSelected(UCrop.getOutput(it)!!.path!!) }
+        }
+
         if (requestCode == REQUEST_EDIT_MESSAGE) {
             if (data != null && data.hasExtra(Extra.BUNDLE)) {
                 val bundle = data.getParcelableExtra<ModelsBundle>(Extra.BUNDLE)
@@ -616,10 +644,10 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPrensenter, IChatView>(), IChat
                     presenter?.fireEditMessageResult(bundle)
             }
 
-            if (resultCode == Activity.RESULT_OK) {
+            if (resultCode == RESULT_OK) {
                 presenter?.fireSendClickFromAttachmens()
             }
-        } else if (requestCode == REQUEST_ADD_VKPHOTO && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == REQUEST_ADD_VKPHOTO && resultCode == RESULT_OK) {
             val vkphotos: List<Photo> = data?.getParcelableArrayListExtra(Extra.ATTACHMENTS)
                     ?: Collections.emptyList()
             val localPhotos: List<LocalPhoto> = data?.getParcelableArrayListExtra(Extra.PHOTOS)
@@ -638,11 +666,11 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPrensenter, IChatView>(), IChat
             } else if (vid != null) {
                 onEditLocalVideoSelected(vid)
             }
-        } else if (requestCode == REQUEST_ADD_ATTACHMENT && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == REQUEST_ADD_ATTACHMENT && resultCode == RESULT_OK) {
             val attachments: List<AbsModel> = data?.getParcelableArrayListExtra(Extra.ATTACHMENTS)
                     ?: Collections.emptyList()
             presenter?.fireEditAttachmentsSelected(attachments)
-        } else if (requestCode == REQUEST_PHOTO_FROM_CAMERA && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == REQUEST_PHOTO_FROM_CAMERA && resultCode == RESULT_OK) {
             when (val defaultSize = Settings.get().main().uploadImageSize) {
                 null -> {
                     ImageSizeAlertDialog.Builder(activity)
@@ -651,10 +679,16 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPrensenter, IChatView>(), IChat
                 }
                 else -> presenter?.fireEditPhotoMaked(defaultSize)
             }
-        } else if (requestCode == REQUEST_UPLOAD_CHAT_AVATAR && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == REQUEST_UPLOAD_CHAT_AVATAR && resultCode == RESULT_OK) {
             val photos: ArrayList<LocalPhoto>? = data?.getParcelableArrayListExtra(Extra.PHOTOS)
             if (nonEmpty(photos)) {
-                presenter?.fireNewChatPhotoSelected(photos!![0])
+                var to_up = photos!![0].fullImageUri
+                if (File(to_up.path!!).isFile) {
+                    to_up = Uri.fromFile(File(to_up.path!!))
+                }
+                UCrop.of(to_up, Uri.fromFile(File(requireActivity().externalCacheDir.toString() + File.separator + "scale.jpg")))
+                        .withAspectRatio(1f, 1f)
+                        .start(requireActivity(), this, UCrop.REQUEST_CROP_SECOND)
             }
         }
     }
@@ -889,7 +923,21 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPrensenter, IChatView>(), IChat
 
     override fun showImageSizeSelectDialog(streams: List<Uri>) {
         ImageSizeAlertDialog.Builder(activity)
-                .setOnSelectedCallback { size -> presenter?.fireImageUploadSizeSelected(streams, size) }
+                .setOnSelectedCallback { size ->
+                    run {
+                        if (size == Upload.IMAGE_SIZE_CROPPING && streams.size == 1) {
+                            var to_up = streams[0]
+                            if (File(to_up.path!!).isFile) {
+                                to_up = Uri.fromFile(File(to_up.path!!))
+                            }
+
+                            UCrop.of(to_up, Uri.fromFile(File(requireActivity().externalCacheDir.toString() + File.separator + "scale.jpg")))
+                                    .start(requireActivity(), this)
+                        } else {
+                            presenter?.fireImageUploadSizeSelected(streams, size)
+                        }
+                    }
+                }
                 .setOnCancelCallback { presenter?.fireUploadCancelClick() }
                 .show()
     }

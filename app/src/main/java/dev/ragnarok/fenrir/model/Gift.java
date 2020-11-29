@@ -53,6 +53,13 @@ public class Gift extends AbsModel {
         return this;
     }
 
+    public String getThumb() {
+        if (giftItem != null) {
+            return giftItem.getThumb();
+        }
+        return null;
+    }
+
     public String getMessage() {
         return message;
     }

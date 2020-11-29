@@ -15,6 +15,10 @@ public class CommunityDetailsEntity {
 
     private boolean canMessage;
 
+    private boolean isFavorite;
+
+    private boolean isSubscribed;
+
     private int membersCount;
 
     private int topicsCount;
@@ -88,6 +92,24 @@ public class CommunityDetailsEntity {
 
     public CommunityDetailsEntity setCanMessage(boolean canMessage) {
         this.canMessage = canMessage;
+        return this;
+    }
+
+    public boolean isSetFavorite() {
+        return isFavorite;
+    }
+
+    public CommunityDetailsEntity setFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
+        return this;
+    }
+
+    public boolean isSetSubscribed() {
+        return isSubscribed;
+    }
+
+    public CommunityDetailsEntity setSubscribed(boolean isSubscribed) {
+        this.isSubscribed = isSubscribed;
         return this;
     }
 

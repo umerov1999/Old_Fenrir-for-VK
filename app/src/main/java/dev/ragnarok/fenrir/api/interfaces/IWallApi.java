@@ -80,4 +80,9 @@ public interface IWallApi {
     @CheckResult
     Single<Integer> reportComment(Integer owner_id, Integer post_id, Integer reason);
 
+    @CheckResult
+    Single<Integer> subscribe(Integer owner_id);
+
+    @CheckResult
+    Single<Integer> unsubscribe(Integer owner_id);
 }

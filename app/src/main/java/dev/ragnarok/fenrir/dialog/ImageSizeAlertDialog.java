@@ -44,6 +44,9 @@ public class ImageSizeAlertDialog {
                             case 2:
                                 selectedSize = Upload.IMAGE_SIZE_FULL;
                                 break;
+                            case 3:
+                                selectedSize = Upload.IMAGE_SIZE_CROPPING;
+                                break;
                         }
 
                         callback.onSizeSelected(selectedSize);
@@ -68,6 +71,9 @@ public class ImageSizeAlertDialog {
                             break;
                         case 2:
                             selectedSize = Upload.IMAGE_SIZE_FULL;
+                            break;
+                        case 3:
+                            selectedSize = Upload.IMAGE_SIZE_CROPPING;
                             break;
                     }
 

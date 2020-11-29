@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 import dev.ragnarok.fenrir.api.model.Items;
+import dev.ragnarok.fenrir.api.model.VKApiGift;
 import dev.ragnarok.fenrir.api.model.VKApiUser;
 import dev.ragnarok.fenrir.api.model.response.StoryResponse;
 import io.reactivex.rxjava3.core.Single;
@@ -41,6 +42,9 @@ public interface IUsersApi {
 
     @CheckResult
     Single<StoryResponse> getStory(Integer owner_id, Integer extended, String fields);
+
+    @CheckResult
+    Single<Items<VKApiGift>> getGifts(Integer user_id, Integer count, Integer offset);
 
     @CheckResult
     Single<StoryResponse> searchStory(String q, Integer mentioned_id, Integer count, Integer extended, String fields);

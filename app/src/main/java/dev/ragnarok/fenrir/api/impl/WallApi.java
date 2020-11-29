@@ -161,6 +161,22 @@ class WallApi extends AbsApi implements IWallApi {
     }
 
     @Override
+    public Single<Integer> subscribe(Integer owner_id) {
+        return provideService(IWallService.class, TokenType.USER)
+                .flatMap(service -> service
+                        .subscribe(owner_id)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<Integer> unsubscribe(Integer owner_id) {
+        return provideService(IWallService.class, TokenType.USER)
+                .flatMap(service -> service
+                        .unsubscribe(owner_id)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
     public Single<Integer> reportComment(Integer owner_id, Integer post_id, Integer reason) {
         return provideService(IWallService.class, TokenType.USER)
                 .flatMap(service -> service

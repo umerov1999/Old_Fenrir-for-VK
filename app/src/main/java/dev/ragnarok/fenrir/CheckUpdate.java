@@ -37,6 +37,54 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class CheckUpdate {
+    public static void isDonated(Activity context, int account_id) {
+        Utils.donate_users.clear();
+        Utils.donate_users.addAll(Settings.get().other().getDonates());
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .readTimeout(30, TimeUnit.SECONDS)
+                .addInterceptor(chain -> {
+                    Request request = chain.request().newBuilder().addHeader("User-Agent", Constants.USER_AGENT(Account_Types.BY_TYPE)).build();
+                    return chain.proceed(request);
+                });
+        ProxyUtil.applyProxyConfig(builder, Injection.provideProxySettings().getActiveProxy());
+        Request request = new Request.Builder()
+                .url("https://raw.githubusercontent.com/umerov1999/Fenrir-for-VK/main/current_version.json").build();
+        builder.build().newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call th, @NotNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call th, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    try {
+                        JSONObject obj = new JSONObject(Objects.requireNonNull(response.body()).string());
+                        if (obj.has("donates")) {
+                            Utils.donate_users.clear();
+                            JSONArray arr = obj.getJSONArray("donates");
+                            for (int i = 0; i < arr.length(); i++) {
+                                Utils.donate_users.add(arr.getInt(i));
+                            }
+                            Settings.get().other().registerDonatesId(Utils.donate_users);
+                        }
+                        new Handler(context.getMainLooper()).post(() -> {
+                            MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(context);
+                            dlgAlert.setTitle(R.string.info);
+                            dlgAlert.setIcon(R.drawable.client_round);
+                            dlgAlert.setCancelable(true);
+                            dlgAlert.setMessage((Utils.isValueAssigned(account_id, Utils.donate_users) || account_id == 572488303) ? R.string.button_yes : R.string.button_no);
+                            dlgAlert.show();
+                        });
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
     public static void Do(Activity context, int account_id) {
         Utils.donate_users.clear();
         Utils.donate_users.addAll(Settings.get().other().getDonates());

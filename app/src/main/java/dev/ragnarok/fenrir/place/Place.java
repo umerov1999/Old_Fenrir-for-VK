@@ -97,6 +97,7 @@ public class Place implements Parcelable {
     public static final int MARKET_ALBUMS = 86;
     public static final int MARKETS = 87;
     public static final int MARKET_VIEW = 88;
+    public static final int GIFTS = 89;
     public static final Creator<Place> CREATOR = new Creator<Place>() {
         @Override
         public Place createFromParcel(Parcel in) {

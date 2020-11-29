@@ -2,6 +2,8 @@ package dev.ragnarok.fenrir.model;
 
 import android.os.Parcel;
 
+import dev.ragnarok.fenrir.util.Utils;
+
 public class GiftItem extends AbsModel {
     public static final Creator<GiftItem> CREATOR = new Creator<GiftItem>() {
         @Override
@@ -32,6 +34,10 @@ public class GiftItem extends AbsModel {
 
     public int getId() {
         return id;
+    }
+
+    public String getThumb() {
+        return Utils.firstNonEmptyString(thumb256, thumb96, thumb48);
     }
 
     public String getThumb256() {

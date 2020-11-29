@@ -1,1 +1,1 @@
-include ':app', ':ealvatag', ':crashx', ':firebase-installations', ':Slidr'
+include ':app', ':ealvatag', ':crashx', ':firebase-installations', ':slidr', ':ucrop'

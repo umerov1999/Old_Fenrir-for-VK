@@ -5,7 +5,7 @@ public class VKApiGift {
     public int from_id;
     public String message;
     public long date;
-    public VKApiGiftItem giftItem;
+    public VKApiGiftItem gift;
     public int privacy;
 
     public VKApiGift() {

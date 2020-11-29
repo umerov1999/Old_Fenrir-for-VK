@@ -537,4 +537,10 @@ public class PlaceFactory {
         return new Place(Place.ARTIST)
                 .setArguments(AudioCatalogFragment.buildArgs(accountId, id, isHideToolbar));
     }
+
+    public static Place getGiftsPlace(int accountId, int ownerId) {
+        return new Place(Place.GIFTS)
+                .withIntExtra(Extra.ACCOUNT_ID, accountId)
+                .withIntExtra(Extra.OWNER_ID, ownerId);
+    }
 }

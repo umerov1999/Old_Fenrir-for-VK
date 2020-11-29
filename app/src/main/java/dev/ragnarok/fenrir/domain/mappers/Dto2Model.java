@@ -19,6 +19,8 @@ import dev.ragnarok.fenrir.api.model.VKApiCatalogLink;
 import dev.ragnarok.fenrir.api.model.VKApiChat;
 import dev.ragnarok.fenrir.api.model.VKApiComment;
 import dev.ragnarok.fenrir.api.model.VKApiCommunity;
+import dev.ragnarok.fenrir.api.model.VKApiGift;
+import dev.ragnarok.fenrir.api.model.VKApiGiftItem;
 import dev.ragnarok.fenrir.api.model.VKApiGraffiti;
 import dev.ragnarok.fenrir.api.model.VKApiLink;
 import dev.ragnarok.fenrir.api.model.VKApiMessage;
@@ -77,6 +79,8 @@ import dev.ragnarok.fenrir.model.FaveLink;
 import dev.ragnarok.fenrir.model.FavePage;
 import dev.ragnarok.fenrir.model.FavePageType;
 import dev.ragnarok.fenrir.model.FriendList;
+import dev.ragnarok.fenrir.model.Gift;
+import dev.ragnarok.fenrir.model.GiftItem;
 import dev.ragnarok.fenrir.model.Graffiti;
 import dev.ragnarok.fenrir.model.IOwnersBundle;
 import dev.ragnarok.fenrir.model.Link;
@@ -220,7 +224,9 @@ public class Dto2Model {
         CommunityDetails details = new CommunityDetails()
                 .setCanMessage(dto.can_message)
                 .setStatus(dto.status)
-                .setStatusAudio(nonNull(dto.status_audio) ? transform(dto.status_audio) : null);
+                .setStatusAudio(nonNull(dto.status_audio) ? transform(dto.status_audio) : null)
+                .setFavorite(dto.is_favorite)
+                .setSubscribed(dto.is_subscribed);
 
         if (nonNull(dto.counters)) {
             details.setAllWallCount(dto.counters.all_wall)
@@ -271,8 +277,28 @@ public class Dto2Model {
                 .setPhoto200(community.photo_200);
     }
 
+    public static GiftItem transform(VKApiGiftItem dto) {
+        return new GiftItem(dto.id)
+                .setThumb48(dto.thumb_48)
+                .setThumb96(dto.thumb_96)
+                .setThumb256(dto.thumb_256);
+    }
+
+    public static Gift transform(VKApiGift dto) {
+        return new Gift(dto.id)
+                .setFromId(dto.from_id)
+                .setMessage(dto.message)
+                .setDate(dto.date)
+                .setGiftItem(nonNull(dto.gift) ? transform(dto.gift) : null)
+                .setPrivacy(dto.privacy);
+    }
+
     public static List<Community> transformCommunities(List<VKApiCommunity> dtos) {
         return mapAll(dtos, Dto2Model::transformCommunity);
+    }
+
+    public static List<Gift> transformGifts(List<VKApiGift> dtos) {
+        return mapAll(dtos, Dto2Model::transform);
     }
 
     public static List<MarketAlbum> transformMarketAlbums(List<VkApiMarketAlbum> dtos) {

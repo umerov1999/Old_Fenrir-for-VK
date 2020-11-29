@@ -40,6 +40,8 @@ public final class ParcelableModelWrapper implements Parcelable {
         TYPES.add(PhotoAlbum.class);
         TYPES.add(AudioPlaylist.class);
         TYPES.add(Graffiti.class);
+        TYPES.add(Gift.class);
+        TYPES.add(GiftItem.class);
         TYPES.add(Comment.class);
         TYPES.add(Event.class);
         TYPES.add(Market.class);

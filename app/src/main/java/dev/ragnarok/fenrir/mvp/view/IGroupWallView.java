@@ -44,7 +44,13 @@ public interface IGroupWallView extends IWallView {
 
     void displayCounters(int members, int topics, int docs, int photos, int audio, int video, int articles, int products);
 
+    void InvalidateOptionsMenu();
+
     interface IOptionMenuView {
         void setControlVisible(boolean visible);
+
+        void setIsSubscribed(boolean subscribed);
+
+        void setIsFavorite(boolean favorite);
     }
 }

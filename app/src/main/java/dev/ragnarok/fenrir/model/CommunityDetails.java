@@ -15,6 +15,10 @@ public class CommunityDetails {
 
     private boolean canMessage;
 
+    private boolean isFavorite;
+
+    private boolean isSubscribed;
+
     private int membersCount;
 
     private int topicsCount;
@@ -43,6 +47,24 @@ public class CommunityDetails {
 
     public CommunityDetails setCover(Cover cover) {
         this.cover = cover;
+        return this;
+    }
+
+    public boolean isSetFavorite() {
+        return isFavorite;
+    }
+
+    public CommunityDetails setFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
+        return this;
+    }
+
+    public boolean isSetSubscribed() {
+        return isSubscribed;
+    }
+
+    public CommunityDetails setSubscribed(boolean isSubscribed) {
+        this.isSubscribed = isSubscribed;
         return this;
     }
 

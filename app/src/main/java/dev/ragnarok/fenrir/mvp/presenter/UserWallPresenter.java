@@ -2,6 +2,7 @@ package dev.ragnarok.fenrir.mvp.presenter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ import dev.ragnarok.fenrir.domain.IFaveInteractor;
 import dev.ragnarok.fenrir.domain.IOwnersRepository;
 import dev.ragnarok.fenrir.domain.IPhotosInteractor;
 import dev.ragnarok.fenrir.domain.IRelationshipInteractor;
+import dev.ragnarok.fenrir.domain.IWallsRepository;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
 import dev.ragnarok.fenrir.domain.Repository;
 import dev.ragnarok.fenrir.fragment.friends.FriendsTabsFragment;
@@ -59,6 +61,7 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
     private final IAccountsInteractor accountInteractor;
     private final IPhotosInteractor photosInteractor;
     private final IFaveInteractor faveInteractor;
+    private final IWallsRepository wallsRepository;
     private final IUploadManager uploadManager;
     private final Context context;
     private User user;
@@ -74,6 +77,7 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
         accountInteractor = InteractorFactory.createAccountInteractor();
         photosInteractor = InteractorFactory.createPhotosInteractor();
         faveInteractor = InteractorFactory.createFaveInteractor();
+        wallsRepository = Repository.INSTANCE.getWalls();
         uploadManager = Injection.provideUploadManager();
 
         filters = new ArrayList<>();
@@ -123,7 +127,9 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
                     details.getPhotosCount(),
                     details.getAudiosCount(),
                     details.getVideosCount(),
-                    details.getArticlesCount());
+                    details.getArticlesCount(),
+                    details.getProductsCount(),
+                    details.getGiftCount());
         }
     }
 
@@ -250,6 +256,14 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
 
     public void fireHeaderArticlesClick() {
         getView().openArticles(getAccountId(), ownerId, user);
+    }
+
+    public void fireHeaderProductsClick() {
+        getView().openProducts(getAccountId(), ownerId, user);
+    }
+
+    public void fireHeaderGiftsClick() {
+        getView().openGifts(getAccountId(), ownerId, user);
     }
 
     public void fireHeaderFriendsClick() {
@@ -440,11 +454,28 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
         int accountId = getAccountId();
         appendDisposable(faveInteractor.addPage(accountId, ownerId)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(this::onUserAddedToBookmarks, t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(this::onExecuteComplete, this::onExecuteError));
     }
 
-    private void onUserAddedToBookmarks() {
-        safeShowToast(getView(), R.string.success, false);
+    public void fireRemoveFromBookmarks() {
+        int accountId = getAccountId();
+        appendDisposable(faveInteractor.removePage(accountId, ownerId, true)
+                .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                .subscribe(this::onExecuteComplete, this::onExecuteError));
+    }
+
+    public void fireSubscribe() {
+        int accountId = getAccountId();
+        appendDisposable(wallsRepository.subscribe(accountId, ownerId)
+                .compose(RxUtils.applySingleIOToMainSchedulers())
+                .subscribe(t -> onExecuteComplete(), this::onExecuteError));
+    }
+
+    public void fireUnSubscribe() {
+        int accountId = getAccountId();
+        appendDisposable(wallsRepository.unsubscribe(accountId, ownerId)
+                .compose(RxUtils.applySingleIOToMainSchedulers())
+                .subscribe(t -> onExecuteComplete(), this::onExecuteError));
     }
 
     private void executeAddToFriendsRequest(String text, boolean follow) {
@@ -547,7 +578,7 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
         appendDisposable(InteractorFactory.createAccountInteractor()
                 .banUsers(accountId, Collections.singletonList(user))
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(this::onBanComplete, this::onBanError));
+                .subscribe(this::onExecuteComplete, this::onExecuteError));
     }
 
     public void fireMentions() {
@@ -558,6 +589,8 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
     public void fireOptionViewCreated(IWallView.IOptionView view) {
         super.fireOptionViewCreated(view);
         view.setIsBlacklistedByMe(user.getBlacklisted_by_me());
+        view.setIsFavorite(details.isSetFavorite());
+        view.setIsSubscribed(details.isSetSubscribed());
     }
 
     public void fireReport() {
@@ -586,14 +619,14 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
         appendDisposable(InteractorFactory.createAccountInteractor()
                 .unbanUser(accountId, user.getId())
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(this::onBanComplete, this::onBanError));
+                .subscribe(this::onExecuteComplete, this::onExecuteError));
     }
 
-    private void onBanError(Throwable t) {
+    private void onExecuteError(Throwable t) {
         showError(getView(), getCauseIfRuntime(t));
     }
 
-    private void onBanComplete() {
+    private void onExecuteComplete() {
         onRefresh();
         getView().getCustomToast().showToast(R.string.success);
     }
@@ -612,6 +645,15 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
                 .setAutoCommit(true)
                 .setFileId(photo.getImageId())
                 .setFileUri(photo.getFullImageUri())
+                .setSize(Upload.IMAGE_SIZE_FULL);
+
+        uploadManager.enqueue(Collections.singletonList(intent));
+    }
+
+    public void fireNewAvatarPhotoSelected(String file) {
+        UploadIntent intent = new UploadIntent(getAccountId(), UploadDestination.forProfilePhoto(ownerId))
+                .setAutoCommit(true)
+                .setFileUri(Uri.parse(file))
                 .setSize(Upload.IMAGE_SIZE_FULL);
 
         uploadManager.enqueue(Collections.singletonList(intent));

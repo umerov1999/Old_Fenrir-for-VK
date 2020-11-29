@@ -16,6 +16,7 @@ import dev.ragnarok.fenrir.api.model.VKApiCommunity;
 import dev.ragnarok.fenrir.domain.ICommunitiesInteractor;
 import dev.ragnarok.fenrir.domain.IFaveInteractor;
 import dev.ragnarok.fenrir.domain.IOwnersRepository;
+import dev.ragnarok.fenrir.domain.IWallsRepository;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
 import dev.ragnarok.fenrir.domain.Repository;
 import dev.ragnarok.fenrir.model.Community;
@@ -40,6 +41,7 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
     private final IFaveInteractor faveInteractor;
     private final IOwnersRepository ownersRepository;
     private final ICommunitiesInteractor communitiesInteractor;
+    private final IWallsRepository wallsRepository;
     private final List<PostFilter> filters;
     private Community community;
     private CommunityDetails details;
@@ -57,6 +59,7 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
         faveInteractor = InteractorFactory.createFaveInteractor();
         communitiesInteractor = InteractorFactory.createCommunitiesInteractor();
         settings = Injection.provideSettings().accounts();
+        wallsRepository = Repository.INSTANCE.getWalls();
 
         filters = new ArrayList<>();
         filters.addAll(createPostFilters());
@@ -75,6 +78,13 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
     private void resolveBaseCommunityViews() {
         if (isGuiReady()) {
             getView().displayBaseCommunityData(community, details);
+        }
+    }
+
+    @OnGuiCreated
+    private void resolveMenu() {
+        if (isGuiReady()) {
+            getView().InvalidateOptionsMenu();
         }
     }
 
@@ -124,6 +134,7 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
         resolveActionButtons();
         resolveCounters();
         resolveBaseCommunityViews();
+        resolveMenu();
     }
 
     private void onDetailsGetError(Throwable t) {
@@ -481,20 +492,53 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
         }
     }
 
+    public void fireSubscribe() {
+        int accountId = getAccountId();
+        appendDisposable(wallsRepository.subscribe(accountId, ownerId)
+                .compose(RxUtils.applySingleIOToMainSchedulers())
+                .subscribe(t -> onExecuteComplete(), this::onExecuteError));
+    }
+
+    public void fireUnSubscribe() {
+        int accountId = getAccountId();
+        appendDisposable(wallsRepository.unsubscribe(accountId, ownerId)
+                .compose(RxUtils.applySingleIOToMainSchedulers())
+                .subscribe(t -> onExecuteComplete(), this::onExecuteError));
+    }
+
     public void fireAddToBookmarksClick() {
         int accountId = getAccountId();
 
         appendDisposable(faveInteractor.addPage(accountId, ownerId)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(this::onGroupAddedToBookmarks, t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(this::onExecuteComplete, this::onExecuteError));
     }
 
-    private void onGroupAddedToBookmarks() {
-        safeShowToast(getView(), R.string.success, false);
+    public void fireRemoveFromBookmarks() {
+        int accountId = getAccountId();
+        appendDisposable(faveInteractor.removePage(accountId, ownerId, false)
+                .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                .subscribe(this::onExecuteComplete, this::onExecuteError));
+    }
+
+    private void onExecuteError(Throwable t) {
+        showError(getView(), getCauseIfRuntime(t));
+    }
+
+    private void onExecuteComplete() {
+        onRefresh();
+        getView().getCustomToast().showToast(R.string.success);
+    }
+
+    @Override
+    protected void onRefresh() {
+        requestActualFullInfo();
     }
 
     public void fireOptionMenuViewCreated(IGroupWallView.IOptionMenuView view) {
         view.setControlVisible(isAdmin());
+        view.setIsFavorite(details.isSetFavorite());
+        view.setIsSubscribed(details.isSetSubscribed());
     }
 
     public void fireChatClick() {

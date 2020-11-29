@@ -46,4 +46,10 @@ public interface INewsfeedApi {
     @CheckResult
     Single<NewsfeedResponse> getFeedLikes(Integer maxPhotoCount, String startFrom, Integer count, String fields);
 
+    @CheckResult
+    Single<Integer> addBan(Collection<Integer> listIds);
+
+    @CheckResult
+    Single<Integer> ignoreItem(String type, Integer owner_id, Integer item_id);
+
 }

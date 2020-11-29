@@ -125,6 +125,11 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
         }
     }
 
+    @Override
+    public void InvalidateOptionsMenu() {
+        requireActivity().invalidateOptionsMenu();
+    }
+
     @NotNull
     @Override
     public IPresenterFactory<GroupWallPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
@@ -206,6 +211,31 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
     public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_community_wall, menu);
+        OptionMenuView optionMenuView = new OptionMenuView();
+        getPresenter().fireOptionMenuViewCreated(optionMenuView);
+
+        if (!optionMenuView.isFavorite) {
+            menu.add(R.string.add_to_bookmarks).setOnMenuItemClickListener(item -> {
+                getPresenter().fireAddToBookmarksClick();
+                return true;
+            });
+        } else {
+            menu.add(R.string.remove_from_bookmarks).setOnMenuItemClickListener(item -> {
+                getPresenter().fireRemoveFromBookmarks();
+                return true;
+            });
+        }
+        if (!optionMenuView.isSubscribed) {
+            menu.add(R.string.notify_wall_added).setOnMenuItemClickListener(item -> {
+                getPresenter().fireSubscribe();
+                return true;
+            });
+        } else {
+            menu.add(R.string.unnotify_wall_added).setOnMenuItemClickListener(item -> {
+                getPresenter().fireUnSubscribe();
+                return true;
+            });
+        }
     }
 
     @Override
@@ -217,11 +247,6 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
 
         if (item.getItemId() == R.id.action_community_messages) {
             getPresenter().fireCommunityMessagesClick();
-            return true;
-        }
-
-        if (item.getItemId() == R.id.action_add_to_bookmarks) {
-            getPresenter().fireAddToBookmarksClick();
             return true;
         }
 
@@ -314,9 +339,23 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
 
         boolean controlVisible;
 
+        boolean isFavorite;
+
+        boolean isSubscribed;
+
         @Override
         public void setControlVisible(boolean visible) {
             controlVisible = visible;
+        }
+
+        @Override
+        public void setIsFavorite(boolean favorite) {
+            isFavorite = favorite;
+        }
+
+        @Override
+        public void setIsSubscribed(boolean subscribed) {
+            isSubscribed = subscribed;
         }
     }
 

@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.api.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import dev.ragnarok.fenrir.api.IServiceProvider;
@@ -11,6 +12,7 @@ import dev.ragnarok.fenrir.api.model.response.NewsfeedCommentsResponse;
 import dev.ragnarok.fenrir.api.model.response.NewsfeedResponse;
 import dev.ragnarok.fenrir.api.model.response.NewsfeedSearchResponse;
 import dev.ragnarok.fenrir.api.services.INewsfeedService;
+import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
 
 
@@ -35,9 +37,40 @@ class NewsfeedApi extends AbsApi implements INewsfeedApi {
     }
 
     @Override
+    public Single<Integer> addBan(Collection<Integer> listIds) {
+        ArrayList<Integer> users = new ArrayList<>();
+        ArrayList<Integer> groups = new ArrayList<>();
+        for (Integer i : listIds) {
+            if (i < 0) {
+                groups.add(Math.abs(i));
+            } else {
+                users.add(i);
+            }
+        }
+        if (Utils.isEmpty(users)) {
+            users = null;
+        }
+        if (Utils.isEmpty(groups)) {
+            groups = null;
+        }
+        ArrayList<Integer> finalUsers = users;
+        ArrayList<Integer> finalGroups = groups;
+        return provideService(INewsfeedService.class, TokenType.USER)
+                .flatMap(service -> service.addBan(join(finalUsers, ","), join(finalGroups, ","))
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
     public Single<Integer> deleteList(Integer list_id) {
         return provideService(INewsfeedService.class, TokenType.USER)
                 .flatMap(service -> service.deleteList(list_id)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<Integer> ignoreItem(String type, Integer owner_id, Integer item_id) {
+        return provideService(INewsfeedService.class, TokenType.USER)
+                .flatMap(service -> service.ignoreItem(type, owner_id, item_id)
                         .map(extractResponseWithErrorHandling()));
     }
 

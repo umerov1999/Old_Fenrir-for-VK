@@ -275,6 +275,16 @@ public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedVi
     }
 
     @Override
+    public void onBanClick(News news) {
+        getPresenter().fireBanClick(news);
+    }
+
+    @Override
+    public void onIgnoreClick(News news) {
+        getPresenter().fireIgnoreClick(news);
+    }
+
+    @Override
     public void onCommentButtonClick(News news) {
         getPresenter().fireNewsCommentClick(news);
     }

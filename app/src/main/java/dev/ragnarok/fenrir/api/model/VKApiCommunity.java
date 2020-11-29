@@ -18,6 +18,7 @@ public class VKApiCommunity extends VKApiOwner {
     public static final String PHOTO_50 = "http://vk.com/images/community_50.gif";
     public static final String PHOTO_100 = "http://vk.com/images/community_100.gif";
     public static final String IS_FAVORITE = "is_favorite";
+    public static final String IS_SUBSCRIBED = "is_subscribed";
     public static final String MAIN_ALBUM_ID = "main_album_id";
     public static final String CAN_UPLOAD_DOC = "can_upload_doc";
     public static final String CAN_CTARE_TOPIC = "can_upload_video";
@@ -233,6 +234,8 @@ public class VKApiCommunity extends VKApiOwner {
      * возвращается 1, если сообщество находится в закладках у текущего пользователя.
      */
     public boolean is_favorite;
+
+    public boolean is_subscribed;
     /**
      * URL of community site
      */
@@ -249,6 +252,7 @@ public class VKApiCommunity extends VKApiOwner {
      * информация о том, может ли текущий пользователь написать сообщение сообществу. Возможные значения:
      */
     public boolean can_message;
+
     public VkApiCover cover;
     /**
      * Community type

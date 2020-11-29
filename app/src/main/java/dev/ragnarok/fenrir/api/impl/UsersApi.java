@@ -9,6 +9,7 @@ import dev.ragnarok.fenrir.api.IServiceProvider;
 import dev.ragnarok.fenrir.api.TokenType;
 import dev.ragnarok.fenrir.api.interfaces.IUsersApi;
 import dev.ragnarok.fenrir.api.model.Items;
+import dev.ragnarok.fenrir.api.model.VKApiGift;
 import dev.ragnarok.fenrir.api.model.VKApiUser;
 import dev.ragnarok.fenrir.api.model.response.StoryResponse;
 import dev.ragnarok.fenrir.api.model.response.UserWallInfoResponse;
@@ -122,6 +123,13 @@ class UsersApi extends AbsApi implements IUsersApi {
     public Single<StoryResponse> getStory(Integer owner_id, Integer extended, String fields) {
         return provideService(IUsersService.class, TokenType.USER)
                 .flatMap(service -> service.getStory(owner_id, extended, fields)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<Items<VKApiGift>> getGifts(Integer user_id, Integer count, Integer offset) {
+        return provideService(IUsersService.class, TokenType.USER)
+                .flatMap(service -> service.getGifts(user_id, count, offset)
                         .map(extractResponseWithErrorHandling()));
     }
 

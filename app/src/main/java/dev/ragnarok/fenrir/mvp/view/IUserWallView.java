@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import java.util.List;
 
 import dev.ragnarok.fenrir.model.FriendsCounters;
+import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.Post;
 import dev.ragnarok.fenrir.model.PostFilter;
 import dev.ragnarok.fenrir.model.User;
@@ -24,6 +25,10 @@ public interface IUserWallView extends IWallView, IProgressView {
 
     void openGroups(int accountId, int userId, @Nullable User user);
 
+    void openProducts(int accountId, int ownerId, @Nullable Owner owner);
+
+    void openGifts(int accountId, int ownerId, @Nullable Owner owner);
+
     void showEditStatusDialog(String initialValue);
 
     void showAddToFriendsMessageDialog();
@@ -34,7 +39,7 @@ public interface IUserWallView extends IWallView, IProgressView {
 
     void showAvatarContextMenu(boolean canUploadAvatar);
 
-    void displayCounters(int friends, int mutual, int followers, int groups, int photos, int audios, int videos, int articles);
+    void displayCounters(int friends, int mutual, int followers, int groups, int photos, int audios, int videos, int articles, int products, int gifts);
 
     void displayUserStatus(String statusText, boolean swAudioIcon);
 

@@ -19,7 +19,6 @@ import dev.ragnarok.fenrir.api.model.VKApiCity;
 import dev.ragnarok.fenrir.api.model.VKApiComment;
 import dev.ragnarok.fenrir.api.model.VKApiCommunity;
 import dev.ragnarok.fenrir.api.model.VKApiCountry;
-import dev.ragnarok.fenrir.api.model.VKApiGift;
 import dev.ragnarok.fenrir.api.model.VKApiGiftItem;
 import dev.ragnarok.fenrir.api.model.VKApiGraffiti;
 import dev.ragnarok.fenrir.api.model.VKApiLink;
@@ -85,7 +84,6 @@ import dev.ragnarok.fenrir.db.model.entity.DocumentEntity;
 import dev.ragnarok.fenrir.db.model.entity.Entity;
 import dev.ragnarok.fenrir.db.model.entity.EventEntity;
 import dev.ragnarok.fenrir.db.model.entity.FavePageEntity;
-import dev.ragnarok.fenrir.db.model.entity.GiftEntity;
 import dev.ragnarok.fenrir.db.model.entity.GiftItemEntity;
 import dev.ragnarok.fenrir.db.model.entity.GraffitiEntity;
 import dev.ragnarok.fenrir.db.model.entity.KeyboardEntity;
@@ -451,7 +449,9 @@ public class Dto2Entity {
         CommunityDetailsEntity details = new CommunityDetailsEntity()
                 .setCanMessage(dto.can_message)
                 .setStatus(dto.status)
-                .setStatusAudio(nonNull(dto.status_audio) ? mapAudio(dto.status_audio) : null);
+                .setStatusAudio(nonNull(dto.status_audio) ? mapAudio(dto.status_audio) : null)
+                .setFavorite(dto.is_favorite)
+                .setSubscribed(dto.is_subscribed);
 
         if (nonNull(dto.counters)) {
             details.setAllWallCount(dto.counters.all_wall)
@@ -526,6 +526,8 @@ public class Dto2Entity {
                     .setAudiosCount(counters.audios)
                     .setVideosCount(counters.videos)
                     .setArticlesCount(counters.articles)
+                    .setProductsCount(counters.market)
+                    .setGiftCount(counters.gifts)
                     .setAllWallCount(counters.all_wall)
                     .setOwnWallCount(counters.owner_wall)
                     .setPostponedWallCount(counters.postponed_wall);
@@ -558,6 +560,8 @@ public class Dto2Entity {
         dbo.setQuotes(user.quotes);
         dbo.setAbout(user.about);
         dbo.setBooks(user.books);
+        dbo.setFavorite(user.is_favorite);
+        dbo.setSubscribed(user.is_subscribed);
         return dbo;
     }
 
@@ -1275,15 +1279,6 @@ public class Dto2Entity {
 
     public static PrivacyEntity mapPrivacy(VkApiPrivacy dto) {
         return new PrivacyEntity(dto.category, mapAll(dto.entries, orig -> new PrivacyEntity.Entry(orig.type, orig.id, orig.allowed)));
-    }
-
-    public static GiftEntity mapGift(VKApiGift dto) {
-        return new GiftEntity(dto.id)
-                .setFromId(dto.from_id)
-                .setMessage(dto.message)
-                .setDate(dto.date)
-                .setGiftItem(mapGiftItem(dto.giftItem))
-                .setPrivacy(dto.privacy);
     }
 
     public static AudioPlaylistEntity mapAudioPlaylist(@NonNull VKApiAudioPlaylist dto) {

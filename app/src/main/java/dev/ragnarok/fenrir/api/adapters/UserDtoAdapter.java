@@ -205,6 +205,7 @@ public class UserDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApi
         dto.can_see_audio = optInt(root, "can_see_audio") == 1;
         dto.can_send_friend_request = optInt(root, "can_send_friend_request") == 1;
         dto.is_favorite = optInt(root, "is_favorite") == 1;
+        dto.is_subscribed = optInt(root, "is_subscribed") == 1;
         dto.timezone = optInt(root, "timezone");
         dto.maiden_name = optString(root, "maiden_name");
         dto.is_friend = optInt(root, "is_friend") == 1;

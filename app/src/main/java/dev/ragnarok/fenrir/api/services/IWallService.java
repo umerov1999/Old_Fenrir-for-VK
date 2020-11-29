@@ -216,4 +216,12 @@ public interface IWallService {
     Single<BaseResponse<Integer>> reportPost(@Field("owner_id") Integer owner_id,
                                              @Field("post_id") Integer post_id,
                                              @Field("reason") Integer reason);
+
+    @POST("wall.subscribe")
+    @FormUrlEncoded
+    Single<BaseResponse<Integer>> subscribe(@Field("owner_id") Integer owner_id);
+
+    @POST("wall.unsubscribe")
+    @FormUrlEncoded
+    Single<BaseResponse<Integer>> unsubscribe(@Field("owner_id") Integer owner_id);
 }

@@ -42,6 +42,7 @@ import dev.ragnarok.fenrir.fragment.search.criteria.AudioSearchCriteria;
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.ModalBottomSheetDialogFragment;
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.OptionRequest;
 import dev.ragnarok.fenrir.model.Audio;
+import dev.ragnarok.fenrir.model.IdPair;
 import dev.ragnarok.fenrir.model.menu.AudioItem;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.picasso.transforms.PolyTransformation;
@@ -131,6 +132,26 @@ public class AudioContainer extends LinearLayout {
         audioListDisposable.add(mAudioInteractor.add(accountId, audio, null, null).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() -> {
         }, ignore -> {
         }));
+    }
+
+    private void getMp3AndBitrate(int accountId, Audio audio) {
+        if (isEmpty(audio.getUrl()) || audio.isHLS()) {
+            audioListDisposable.add(mAudioInteractor.getByIdOld(accountId, Collections.singletonList(new IdPair(audio.getId(), audio.getOwnerId()))).compose(RxUtils.applySingleIOToMainSchedulers())
+                    .subscribe(t -> getBitrate(t.get(0).getUrl()), e -> getBitrate(audio.getUrl())));
+        } else {
+            getBitrate(audio.getUrl());
+        }
+    }
+
+    private void getBitrate(String url) {
+        try {
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            retriever.setDataSource(Audio.getMp3FromM3u8(url), new HashMap<>());
+            String bitrate = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
+            CustomToast.CreateCustomToast(mContext).showToast(mContext.getResources().getString(R.string.bitrate) + " " + (Long.parseLong(bitrate) / 1000) + " bit");
+        } catch (IllegalArgumentException ignored) {
+
+        }
     }
 
     private void get_lyrics(Audio audio) {
@@ -301,9 +322,8 @@ public class AudioContainer extends LinearLayout {
 
                     if (audio.getLyricsId() != 0)
                         menus.add(new OptionRequest(AudioItem.get_lyrics_menu, mContext.getString(R.string.get_lyrics_menu), R.drawable.lyric));
-                    if (!audio.isHLS()) {
-                        menus.add(new OptionRequest(AudioItem.bitrate_item_audio, mContext.getString(R.string.get_bitrate), R.drawable.high_quality));
-                    }
+
+                    menus.add(new OptionRequest(AudioItem.bitrate_item_audio, mContext.getString(R.string.get_bitrate), R.drawable.high_quality));
                     menus.add(new OptionRequest(AudioItem.search_by_artist, mContext.getString(R.string.search_by_artist), R.drawable.magnify));
                     menus.add(new OptionRequest(AudioItem.copy_url, mContext.getString(R.string.copy_url), R.drawable.content_copy));
 
@@ -369,10 +389,7 @@ public class AudioContainer extends LinearLayout {
                                 }
                                 break;
                             case AudioItem.bitrate_item_audio:
-                                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-                                retriever.setDataSource(Audio.getMp3FromM3u8(audio.getUrl()), new HashMap<>());
-                                String bitrate = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
-                                CustomToast.CreateCustomToast(mContext).showToast(mContext.getResources().getString(R.string.bitrate) + " " + (Long.parseLong(bitrate) / 1000) + " bit");
+                                getMp3AndBitrate(Settings.get().accounts().getCurrent(), audio);
                                 break;
 
                             case AudioItem.goto_artist:

@@ -178,6 +178,8 @@ public class Entity2Model {
     public static CommunityDetails buildCommunityDetailsFromDbo(CommunityDetailsEntity dbo) {
         CommunityDetails details = new CommunityDetails()
                 .setCanMessage(dbo.isCanMessage())
+                .setFavorite(dbo.isSetFavorite())
+                .setSubscribed(dbo.isSetSubscribed())
                 .setStatus(dbo.getStatus())
                 .setStatusAudio(nonNull(dbo.getStatusAudio()) ? buildAudioFromDbo(dbo.getStatusAudio()) : null)
                 .setAllWallCount(dbo.getAllWallCount())
@@ -257,6 +259,8 @@ public class Entity2Model {
                 .setAudiosCount(dbo.getAudiosCount())
                 .setVideosCount(dbo.getVideosCount())
                 .setArticlesCount(dbo.getArticlesCount())
+                .setProductsCount(dbo.getProductsCount())
+                .setGiftCount(dbo.getGiftCount())
                 .setAllWallCount(dbo.getAllWallCount())
                 .setOwnWallCount(dbo.getOwnWallCount())
                 .setPostponedWallCount(dbo.getPostponedWallCount())
@@ -298,6 +302,8 @@ public class Entity2Model {
         details.setQuotes(dbo.getQuotes());
         details.setAbout(dbo.getAbout());
         details.setBooks(dbo.getBooks());
+        details.setFavorite(dbo.isSetFavorite());
+        details.setSubscribed(dbo.isSetSubscribed());
         return details;
     }
 

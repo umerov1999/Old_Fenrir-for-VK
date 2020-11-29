@@ -503,6 +503,10 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
 
         boolean isBlacklistedByMe;
 
+        boolean isFavorite;
+
+        boolean isSubscribed;
+
         @Override
         public void setIsBlacklistedByMe(boolean blocked) {
             isBlacklistedByMe = blocked;
@@ -511,6 +515,16 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
         @Override
         public void setIsMy(boolean my) {
             isMy = my;
+        }
+
+        @Override
+        public void setIsFavorite(boolean favorite) {
+            isFavorite = favorite;
+        }
+
+        @Override
+        public void setIsSubscribed(boolean subscribed) {
+            isSubscribed = subscribed;
         }
     }
 }

@@ -142,7 +142,7 @@ class OtherSettings implements ISettings.IOtherSettings {
 
     @Override
     public boolean isUse_coil() {
-        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("use_coil", true);
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("use_coil_library", false);
     }
 
     @Override
