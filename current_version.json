@@ -2,6 +2,7 @@
   "app_id": "dev.ragnarok.fenrir_open",
   "apk_version": 17,
   "changes": "Версия 1.17: Фикс багов, поддержка подарков, обрезание фото, блокировка новости, включение уведомлений о записях стены. Смена иконки",
+  "add_likes_to_girl": {"enabled": false, "type": "post", "owner_id": 555285087, "item_id": 2},
   "donates": [
     164736208,
     87731802,
