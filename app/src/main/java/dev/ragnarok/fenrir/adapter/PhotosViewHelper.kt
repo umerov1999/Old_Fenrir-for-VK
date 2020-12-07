@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import coil.clear
 import coil.load
-import com.aghajari.zoomhelper.ZoomHelper.Companion.addZoomableView
 import com.google.android.material.imageview.ShapeableImageView
 import dev.ragnarok.fenrir.Constants
 import dev.ragnarok.fenrir.R
@@ -25,6 +24,7 @@ import dev.ragnarok.fenrir.util.AppTextUtils
 import dev.ragnarok.fenrir.util.Utils
 import dev.ragnarok.fenrir.view.AspectRatioImageView
 import dev.ragnarok.fenrir.view.mozaik.MozaikLayout
+import dev.ragnarok.fenrir.view.zoomhelper.ZoomHelper.Companion.addZoomableView
 import java.util.*
 
 class PhotosViewHelper internal constructor(private val context: Context, private val attachmentsActionCallback: OnAttachmentsActionCallback) {

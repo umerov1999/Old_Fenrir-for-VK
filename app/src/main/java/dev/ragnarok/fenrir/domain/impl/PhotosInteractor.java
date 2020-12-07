@@ -205,6 +205,19 @@ public class PhotosInteractor implements IPhotosInteractor {
     }
 
     @Override
+    public Single<Boolean> isLiked(int accountId, int ownerId, int photoId) {
+        return networker.vkDefault(accountId)
+                .likes()
+                .isLiked("photo", ownerId, photoId);
+    }
+
+    @Override
+    public Single<Integer> checkAndAddLike(int accountId, int ownerId, int photoId, String accessKey) {
+        return networker.vkDefault(accountId)
+                .likes().checkAndAddLike("photo", ownerId, photoId, accessKey);
+    }
+
+    @Override
     public Single<Integer> like(int accountId, int ownerId, int photoId, boolean add, String accessKey) {
         Single<Integer> single;
 
@@ -215,7 +228,7 @@ public class PhotosInteractor implements IPhotosInteractor {
         } else {
             single = networker.vkDefault(accountId)
                     .likes()
-                    .delete("photo", ownerId, photoId);
+                    .delete("photo", ownerId, photoId, accessKey);
         }
 
         return single.flatMap(count -> {

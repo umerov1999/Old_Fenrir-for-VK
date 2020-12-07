@@ -302,14 +302,14 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
         }
     }
 
-    override fun setToolbarTitle(title: String) {
+    override fun setToolbarTitle(title: String?) {
         val actionBar = ActivityUtils.supportToolbarFor(this)
         if (Objects.nonNull(actionBar)) {
             actionBar!!.title = title
         }
     }
 
-    override fun setToolbarSubtitle(subtitle: String) {
+    override fun setToolbarSubtitle(subtitle: String?) {
         val actionBar = ActivityUtils.supportToolbarFor(this)
         if (Objects.nonNull(actionBar)) {
             actionBar!!.subtitle = subtitle

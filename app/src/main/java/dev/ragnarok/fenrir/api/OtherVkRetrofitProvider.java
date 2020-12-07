@@ -31,10 +31,10 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
     private final IProxySettings proxySettings;
     private final Object longpollRetrofitLock = new Object();
     private final Object amazonaudiocoverRetrofitLock = new Object();
-    private final Object cliperRetrofitLock = new Object();
+    private final Object updateToolRetrofitLock = new Object();
     private RetrofitWrapper longpollRetrofitInstance;
     private RetrofitWrapper amazonaudiocoverRetrofitInstance;
-    private RetrofitWrapper cliperRetrofitInstance;
+    private RetrofitWrapper updateToolRetrofitInstance;
 
     @SuppressLint("CheckResult")
     public OtherVkRetrofitProvider(IProxySettings proxySettings) {
@@ -50,10 +50,10 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
                 longpollRetrofitInstance = null;
             }
         }
-        synchronized (cliperRetrofitLock) {
-            if (nonNull(cliperRetrofitInstance)) {
-                cliperRetrofitInstance.cleanup();
-                cliperRetrofitInstance = null;
+        synchronized (updateToolRetrofitLock) {
+            if (nonNull(updateToolRetrofitInstance)) {
+                updateToolRetrofitInstance.cleanup();
+                updateToolRetrofitInstance = null;
             }
         }
         synchronized (amazonaudiocoverRetrofitLock) {
@@ -132,7 +132,7 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
                 .build();
     }
 
-    private Retrofit createCliperRetrofit() {
+    private Retrofit createUpdateToolRetrofit() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .readTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor(HttpLogger.DEFAULT_LOGGING_INTERCEPTOR).addInterceptor(chain -> {
@@ -143,7 +143,7 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
         ProxyUtil.applyProxyConfig(builder, proxySettings.getActiveProxy());
 
         return new Retrofit.Builder()
-                .baseUrl("debug")
+                .baseUrl("https://raw.githubusercontent.com/umerov1999/Fenrir-for-VK/main/")
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .client(builder.build())
@@ -190,18 +190,18 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
     }
 
     @Override
-    public Single<RetrofitWrapper> provideCliperRetrofit() {
+    public Single<RetrofitWrapper> provideUpdateToolRetrofit() {
         return Single.fromCallable(() -> {
 
-            if (Objects.isNull(cliperRetrofitInstance)) {
-                synchronized (cliperRetrofitLock) {
-                    if (Objects.isNull(cliperRetrofitInstance)) {
-                        cliperRetrofitInstance = RetrofitWrapper.wrap(createCliperRetrofit());
+            if (Objects.isNull(updateToolRetrofitInstance)) {
+                synchronized (updateToolRetrofitLock) {
+                    if (Objects.isNull(updateToolRetrofitInstance)) {
+                        updateToolRetrofitInstance = RetrofitWrapper.wrap(createUpdateToolRetrofit());
                     }
                 }
             }
 
-            return cliperRetrofitInstance;
+            return updateToolRetrofitInstance;
         });
     }
 

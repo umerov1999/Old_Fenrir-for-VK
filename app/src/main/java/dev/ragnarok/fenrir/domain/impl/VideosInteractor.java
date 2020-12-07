@@ -185,6 +185,19 @@ public class VideosInteractor implements IVideosInteractor {
     }
 
     @Override
+    public Single<Integer> checkAndAddLike(int accountId, int ownerId, int videoId, String accessKey) {
+        return networker.vkDefault(accountId)
+                .likes().checkAndAddLike("video", ownerId, videoId, accessKey);
+    }
+
+    @Override
+    public Single<Boolean> isLiked(int accountId, int ownerId, int videoId) {
+        return networker.vkDefault(accountId)
+                .likes()
+                .isLiked("video", ownerId, videoId);
+    }
+
+    @Override
     public Single<Pair<Integer, Boolean>> likeOrDislike(int accountId, int ownerId, int videoId, String accessKey, boolean like) {
         if (like) {
             return networker.vkDefault(accountId)
@@ -194,14 +207,14 @@ public class VideosInteractor implements IVideosInteractor {
         } else {
             return networker.vkDefault(accountId)
                     .likes()
-                    .delete("video", ownerId, videoId)
+                    .delete("video", ownerId, videoId, accessKey)
                     .map(integer -> Pair.Companion.create(integer, false));
         }
     }
 
     @Override
-    public Single<List<VideoAlbum>> getCachedAlbums(int accoutnId, int ownerId) {
-        VideoAlbumCriteria criteria = new VideoAlbumCriteria(accoutnId, ownerId);
+    public Single<List<VideoAlbum>> getCachedAlbums(int accountId, int ownerId) {
+        VideoAlbumCriteria criteria = new VideoAlbumCriteria(accountId, ownerId);
         return cache.videoAlbums()
                 .findByCriteria(criteria)
                 .map(dbos -> {
@@ -214,8 +227,8 @@ public class VideosInteractor implements IVideosInteractor {
     }
 
     @Override
-    public Single<List<VideoAlbum>> getActualAlbums(int accoutnId, int ownerId, int count, int offset) {
-        return networker.vkDefault(accoutnId)
+    public Single<List<VideoAlbum>> getActualAlbums(int accountId, int ownerId, int count, int offset) {
+        return networker.vkDefault(accountId)
                 .video()
                 .getAlbums(ownerId, offset, count, true)
                 .flatMap(items -> {
@@ -230,7 +243,7 @@ public class VideosInteractor implements IVideosInteractor {
                     }
 
                     return cache.videoAlbums()
-                            .insertData(accoutnId, ownerId, dbos, offset == 0)
+                            .insertData(accountId, ownerId, dbos, offset == 0)
                             .andThen(Single.just(albums));
                 });
     }

@@ -18,7 +18,7 @@ import com.squareup.picasso.Transformation;
 import java.io.File;
 
 import dev.ragnarok.fenrir.R;
-import dev.ragnarok.fenrir.picasso.transforms.ElipseTransformation;
+import dev.ragnarok.fenrir.picasso.transforms.EllipseTransformation;
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.media.PathAnimator;
@@ -102,7 +102,7 @@ public class CurrentTheme {
 
         switch (style) {
             case AvatarStyle.OVAL:
-                return new ElipseTransformation();
+                return new EllipseTransformation();
             case AvatarStyle.CIRCLE:
             default:
                 return new RoundTransformation();

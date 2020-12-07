@@ -14,14 +14,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.aghajari.zoomhelper.ZoomHelper;
-
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.listener.BackPressCallback;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
+import dev.ragnarok.fenrir.view.zoomhelper.ZoomHelper;
 
 public abstract class NoMainActivity extends AppCompatActivity {
 

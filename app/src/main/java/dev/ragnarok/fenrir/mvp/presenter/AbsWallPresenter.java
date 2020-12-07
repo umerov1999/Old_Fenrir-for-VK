@@ -18,10 +18,7 @@ import androidx.annotation.Nullable;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
+import com.umerov.qrcode.QrGenerator;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -429,7 +426,7 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
 
         onRefresh();
     }
-
+/*
     private Bitmap TextToImageEncode(String Value) throws WriterException {
         BitMatrix bitMatrix;
         try {
@@ -463,7 +460,46 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
         bitmap.setPixels(pixels, 0, 500, 0, 0, bitMatrixWidth, bitMatrixHeight);
         return bitmap;
     }
+ */
 
+    public void fireShowQR(Context context) {
+        Bitmap qr = QrGenerator.generateQR(context, "https://vk.com/" + (ownerId < 0 ? "club" : "id") + Math.abs(ownerId), Color.parseColor("#000000"), Color.parseColor("#ffffff"), 1, 3, R.mipmap.ic_launcher);
+        MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(context);
+        dlgAlert.setCancelable(true);
+        dlgAlert.setNegativeButton(R.string.button_cancel, null);
+        dlgAlert.setPositiveButton(R.string.save, (dialogInterface, i) -> {
+            if (!AppPerms.hasReadWriteStoragePermision(context)) {
+                AppPerms.requestReadWriteStoragePermission((Activity) context);
+            } else {
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+                OutputStream fOutputStream;
+                File file = new File(path, "qr_fenrir_" + (ownerId < 0 ? "club" : "id") + Math.abs(ownerId) + ".png");
+                try {
+                    fOutputStream = new FileOutputStream(file);
+
+                    assert qr != null;
+                    qr.compress(Bitmap.CompressFormat.PNG, 100, fOutputStream);
+
+                    fOutputStream.flush();
+                    fOutputStream.close();
+                    context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+                    CustomToast.CreateCustomToast(context).showToast(R.string.success);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    CustomToast.CreateCustomToast(context).showToastError("Save Failed");
+                }
+            }
+        });
+        dlgAlert.setIcon(R.drawable.qr_code);
+        View view = LayoutInflater.from(context).inflate(R.layout.qr, null);
+        dlgAlert.setTitle(R.string.show_qr);
+        ShapeableImageView imageView = view.findViewById(R.id.qr);
+        imageView.setImageBitmap(qr);
+        dlgAlert.setView(view);
+        dlgAlert.show();
+    }
+
+    /*
     public void fireShowQR(Context context) {
         try {
             Bitmap qr = TextToImageEncode("https://vk.com/" + (ownerId < 0 ? "club" : "id") + Math.abs(ownerId));
@@ -504,6 +540,7 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
 
         }
     }
+     */
 
     protected void onRefresh() {
 

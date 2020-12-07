@@ -174,7 +174,7 @@ public class WallsRepository implements IWallsRepository {
         } else {
             single = networker.vkDefault(accountId)
                     .likes()
-                    .delete("post", ownerId, postId);
+                    .delete("post", ownerId, postId, null);
         }
 
         return single.flatMap(count -> {
@@ -182,6 +182,19 @@ public class WallsRepository implements IWallsRepository {
             PostUpdate update = new PostUpdate(accountId, postId, ownerId).withLikes(count, add);
             return applyPatch(update).andThen(Single.just(count));
         });
+    }
+
+    @Override
+    public Single<Integer> checkAndAddLike(int accountId, int ownerId, int postId) {
+        return networker.vkDefault(accountId)
+                .likes().checkAndAddLike("post", ownerId, postId, null);
+    }
+
+    @Override
+    public Single<Boolean> isLiked(int accountId, int ownerId, int postId) {
+        return networker.vkDefault(accountId)
+                .likes()
+                .isLiked("post", ownerId, postId);
     }
 
     @Override

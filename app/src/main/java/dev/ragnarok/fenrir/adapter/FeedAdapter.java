@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.Group;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Transformation;
@@ -24,11 +25,9 @@ import dev.ragnarok.fenrir.link.internal.OwnerLinkSpanFactory;
 import dev.ragnarok.fenrir.model.News;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.util.AppTextUtils;
-import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.CircleCounterButton;
 
-import static dev.ragnarok.fenrir.util.Utils.safeAllIsEmpty;
 import static dev.ragnarok.fenrir.util.Utils.safeLenghtOf;
 
 public class FeedAdapter extends RecyclerBindableAdapter<News, FeedAdapter.PostHolder> {
@@ -45,22 +44,6 @@ public class FeedAdapter extends RecyclerBindableAdapter<News, FeedAdapter.PostH
         this.context = context;
         attachmentsViewBinder = new AttachmentsViewBinder(context, attachmentsActionCallback);
         transformation = CurrentTheme.createTransformationForAvatar(context);
-    }
-
-    private static boolean needToShowTopDivider(News news) {
-        if (!TextUtils.isEmpty(news.getText())) {
-            return true;
-        }
-
-        if (!Utils.safeIsEmpty(news.getCopyHistory()) && (news.getAttachments() == null || safeAllIsEmpty(news.getAttachments().getPhotos(), news.getAttachments().getVideos()))) {
-            return true;
-        }
-
-        if (news.getAttachments() == null) {
-            return true;
-        }
-
-        return safeAllIsEmpty(news.getAttachments().getPhotos(), news.getAttachments().getVideos());
     }
 
     @Override
@@ -132,7 +115,7 @@ public class FeedAdapter extends RecyclerBindableAdapter<News, FeedAdapter.PostH
         String postTime = AppTextUtils.getDateFromUnixTime(context, item.getDate());
         holder.tvTime.setText(postTime);
 
-        holder.vTextRoot.setVisibility(TextUtils.isEmpty(item.getText()) && !force ? View.GONE : View.VISIBLE);
+        holder.tvText.setVisibility(TextUtils.isEmpty(item.getText()) && !force ? View.GONE : View.VISIBLE);
 
         String ownerAvaUrl = item.getOwnerMaxSquareAvatar();
         ViewUtils.displayAvatar(holder.ivOwnerAvatar, transformation, ownerAvaUrl, Constants.PICASSO_TAG);
@@ -150,8 +133,6 @@ public class FeedAdapter extends RecyclerBindableAdapter<News, FeedAdapter.PostH
                 clickListener.onPostClick(item);
             }
         });
-
-        holder.topDivider.setVisibility(View.GONE);
 
         holder.viewsCounter.setVisibility(item.getViewCount() > 0 ? View.VISIBLE : View.GONE);
         //holder.viewsCounter.setText(String.valueOf(item.getViewCount()));
@@ -246,14 +227,12 @@ public class FeedAdapter extends RecyclerBindableAdapter<News, FeedAdapter.PostH
 
     class PostHolder extends RecyclerView.ViewHolder implements IdentificableHolder, View.OnCreateContextMenuListener {
 
-        final View topDivider;
         final TextView tvOwnerName;
         final ImageView ivOwnerAvatar;
-        final View vTextRoot;
         final TextView tvText;
         final TextView tvShowMore;
         final TextView tvTime;
-        final ViewGroup bottomActionsContainer;
+        final Group bottomActionsContainer;
         final CircleCounterButton likeButton;
         final CircleCounterButton shareButton;
         final CircleCounterButton commentsButton;
@@ -267,10 +246,8 @@ public class FeedAdapter extends RecyclerBindableAdapter<News, FeedAdapter.PostH
             cardView = root.findViewById(R.id.card_view);
             cardView.setTag(genereateHolderId());
 
-            topDivider = root.findViewById(R.id.top_divider);
             ivOwnerAvatar = root.findViewById(R.id.item_post_avatar);
             tvOwnerName = root.findViewById(R.id.item_post_owner_name);
-            vTextRoot = root.findViewById(R.id.item_text_container);
             tvText = root.findViewById(R.id.item_post_text);
             tvShowMore = root.findViewById(R.id.item_post_show_more);
             tvTime = root.findViewById(R.id.item_post_time);

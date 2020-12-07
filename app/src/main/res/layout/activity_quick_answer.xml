@@ -44,7 +44,7 @@
                         android:layout_height="@dimen/message_author_avatar_size"
                         android:layout_marginStart="4dp" />
 
-                    <dev.ragnarok.fenrir.view.BubbleLinearLayout
+                    <dev.ragnarok.fenrir.view.MessageView
                         android:id="@+id/item_message_bubble"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -56,13 +56,9 @@
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="8dp"
-                        app:angle="@dimen/message_bubble_corner_radius"
-                        app:arrowHeight="12dp"
-                        app:arrowLocation="left"
-                        app:arrowPosition="12dp"
-                        app:arrowWidth="8dp"
-                        app:bubbleColor="?attr/message_bubble_color"
-                        app:secondary_bubbleColor="?message_bubble_color">
+                        app:first_color="?attr/message_bubble_color"
+                        app:radius="@dimen/message_bubble_corner_radius"
+                        app:second_color="?message_bubble_color">
 
                         <dev.ragnarok.fenrir.view.emoji.EmojiconTextView
                             android:id="@+id/item_message_text"
@@ -82,7 +78,7 @@
                             android:textSize="@dimen/font_size_additional"
                             tools:text="time" />
 
-                    </dev.ragnarok.fenrir.view.BubbleLinearLayout>
+                    </dev.ragnarok.fenrir.view.MessageView>
 
 
                 </RelativeLayout>

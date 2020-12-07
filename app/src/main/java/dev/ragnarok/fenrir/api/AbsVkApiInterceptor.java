@@ -137,7 +137,7 @@ abstract class AbsVkApiInterceptor implements Interceptor {
                 .add("lang", Constants.DEVICE_COUNTRY_CODE)
                 .add("https", "1");
         if (!HasDeviceId)
-            formBuiler.add("device_id", Utils.getDiviceId(Injection.provideApplicationContext()));
+            formBuiler.add("device_id", Utils.getDeviceId(Injection.provideApplicationContext()));
 
         Request request = original.newBuilder()
                 .method("POST", formBuiler.build())
@@ -198,9 +198,10 @@ abstract class AbsVkApiInterceptor implements Interceptor {
                             continue;
                         }
                     }
-                    if (error.errorCode == ApiErrorCodes.VALIDATE_NEED) {
-                        startValidateActivity(Injection.provideApplicationContext(), error.redirectUri);
-                    }
+                }
+
+                if (error.errorCode == ApiErrorCodes.VALIDATE_NEED) {
+                    startValidateActivity(Injection.provideApplicationContext(), error.redirectUri);
                 }
 
                 if (error.errorCode == ApiErrorCodes.CAPTCHA_NEED) {

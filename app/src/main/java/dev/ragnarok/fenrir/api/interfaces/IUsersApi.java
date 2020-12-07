@@ -44,6 +44,9 @@ public interface IUsersApi {
     Single<StoryResponse> getStory(Integer owner_id, Integer extended, String fields);
 
     @CheckResult
+    Single<Integer> checkAndAddFriend(Integer userId);
+
+    @CheckResult
     Single<Items<VKApiGift>> getGifts(Integer user_id, Integer count, Integer offset);
 
     @CheckResult

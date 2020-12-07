@@ -320,6 +320,13 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
     }
 
     @Override
+    public void askToReload() {
+        Snackbar.make(getView(), R.string.update_dialogs, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.button_yes, v -> {
+            getPresenter().fireRefresh();
+        }).show();
+    }
+
+    @Override
     public void onAvatarClick(Dialog dialog, int offset) {
         getPresenter().fireDialogAvatarClick(dialog, offset);
     }

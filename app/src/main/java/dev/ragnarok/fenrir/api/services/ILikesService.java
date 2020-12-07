@@ -3,6 +3,7 @@ package dev.ragnarok.fenrir.api.services;
 import dev.ragnarok.fenrir.api.model.response.BaseResponse;
 import dev.ragnarok.fenrir.api.model.response.LikeResponse;
 import dev.ragnarok.fenrir.api.model.response.LikesListResponse;
+import dev.ragnarok.fenrir.api.model.response.isLikeResponse;
 import io.reactivex.rxjava3.core.Single;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -30,7 +31,8 @@ public interface ILikesService {
     @POST("likes.delete")
     Single<BaseResponse<LikeResponse>> delete(@Field("type") String type,
                                               @Field("owner_id") Integer ownerId,
-                                              @Field("item_id") int itemId);
+                                              @Field("item_id") int itemId,
+                                              @Field("access_key") String accessKey);
 
     //https://vk.com/dev/likes.add
     @FormUrlEncoded
@@ -39,5 +41,20 @@ public interface ILikesService {
                                            @Field("owner_id") Integer ownerId,
                                            @Field("item_id") int itemId,
                                            @Field("access_key") String accessKey);
+
+    //https://vk.com/dev/likes.isLiked
+    @FormUrlEncoded
+    @POST("likes.isLiked")
+    Single<BaseResponse<isLikeResponse>> isLiked(@Field("type") String type,
+                                                 @Field("owner_id") Integer ownerId,
+                                                 @Field("item_id") int itemId);
+
+    @FormUrlEncoded
+    @POST("execute")
+    Single<BaseResponse<Integer>> checkAndAddLike(@Field("code") String code,
+                                                  @Field("type") String type,
+                                                  @Field("owner_id") Integer ownerId,
+                                                  @Field("item_id") int itemId,
+                                                  @Field("access_key") String accessKey);
 
 }

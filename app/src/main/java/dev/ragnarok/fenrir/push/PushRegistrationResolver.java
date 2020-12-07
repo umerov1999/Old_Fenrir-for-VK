@@ -28,12 +28,12 @@ public class PushRegistrationResolver implements IPushRegistrationResolver {
 
     private static final String TAG = PushRegistrationResolver.class.getSimpleName();
 
-    private final IDevideIdProvider devideIdProvider;
+    private final IDeviceIdProvider deviceIdProvider;
     private final ISettings settings;
     private final INetworker networker;
 
-    public PushRegistrationResolver(IDevideIdProvider devideIdProvider, ISettings settings, INetworker networker) {
-        this.devideIdProvider = devideIdProvider;
+    public PushRegistrationResolver(IDeviceIdProvider deviceIdProvider, ISettings settings, INetworker networker) {
+        this.deviceIdProvider = deviceIdProvider;
         this.settings = settings;
         this.networker = networker;
     }
@@ -224,7 +224,7 @@ public class PushRegistrationResolver implements IPushRegistrationResolver {
 
     private Single<Data> getInfo() {
         return FCMToken.getFcmToken().flatMap(s -> {
-            Data data = new Data(s, devideIdProvider.getDeviceId());
+            Data data = new Data(s, deviceIdProvider.getDeviceId());
             return Single.just(data);
         });
     }

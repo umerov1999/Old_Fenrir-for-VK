@@ -27,6 +27,10 @@ public interface IPhotosInteractor {
 
     Single<Integer> like(int accountId, int ownerId, int photoId, boolean add, String accessKey);
 
+    Single<Integer> checkAndAddLike(int accountId, int ownerId, int photoId, String accessKey);
+
+    Single<Boolean> isLiked(int accountId, int ownerId, int photoId);
+
     Single<Integer> copy(int accountId, int ownerId, int photoId, String accessKey);
 
     Completable removedAlbum(int accountId, int ownerId, int albumId);

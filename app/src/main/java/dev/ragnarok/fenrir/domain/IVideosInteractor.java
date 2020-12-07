@@ -24,9 +24,13 @@ public interface IVideosInteractor {
 
     Single<Pair<Integer, Boolean>> likeOrDislike(int accountId, int ownerId, int videoId, String accessKey, boolean like);
 
-    Single<List<VideoAlbum>> getCachedAlbums(int accoutnId, int ownerId);
+    Single<Boolean> isLiked(int accountId, int ownerId, int videoId);
 
-    Single<List<VideoAlbum>> getActualAlbums(int accoutnId, int ownerId, int count, int offset);
+    Single<Integer> checkAndAddLike(int accountId, int ownerId, int videoId, String accessKey);
+
+    Single<List<VideoAlbum>> getCachedAlbums(int accountId, int ownerId);
+
+    Single<List<VideoAlbum>> getActualAlbums(int accountId, int ownerId, int count, int offset);
 
     Single<List<Video>> search(int accountId, VideoSearchCriteria criteria, int count, int offset);
 

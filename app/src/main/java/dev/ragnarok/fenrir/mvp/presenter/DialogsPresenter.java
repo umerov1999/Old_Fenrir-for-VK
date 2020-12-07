@@ -71,7 +71,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
     private int dialogsOwnerId;
     private boolean endOfContent;
     private int offset;
-    private boolean netLoadnigNow;
+    private boolean netLoadingNow;
     private boolean cacheNowLoading;
 
     public DialogsPresenter(int accountId, int initialDialogsOwnerId, int offset, @Nullable Bundle savedInstanceState) {
@@ -126,7 +126,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
         viewHost.setCreateGroupChatButtonVisible(dialogsOwnerId > 0);
     }
 
-    private void onDialogsFisrtResponse(List<Dialog> data) {
+    private void onDialogsFirstResponse(List<Dialog> data) {
         if (!Settings.get().other().isBe_online() || Utils.isHiddenAccount(getAccountId())) {
             netDisposable.add(accountsInteractor.setOffline(getAccountId())
                     .compose(RxUtils.applySingleIOToMainSchedulers())
@@ -134,7 +134,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
                     }, t -> {
                     }));
         }
-        setNetLoadnigNow(false);
+        setNetLoadingNow(false);
 
         endOfContent = false;
         dialogs.clear();
@@ -194,7 +194,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
 
         cause.printStackTrace();
 
-        setNetLoadnigNow(false);
+        setNetLoadingNow(false);
 
         if (cause instanceof UnauthorizedException) {
             return;
@@ -203,27 +203,27 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
         showError(getView(), cause);
     }
 
-    private void setNetLoadnigNow(boolean netLoadnigNow) {
-        this.netLoadnigNow = netLoadnigNow;
+    private void setNetLoadingNow(boolean netLoadingNow) {
+        this.netLoadingNow = netLoadingNow;
         resolveRefreshingView();
     }
 
     private void requestAtLast() {
-        if (netLoadnigNow) {
+        if (netLoadingNow) {
             return;
         }
 
-        setNetLoadnigNow(true);
+        setNetLoadingNow(true);
 
         netDisposable.add(messagesInteractor.getDialogs(dialogsOwnerId, COUNT, null)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(this::onDialogsFisrtResponse, this::onDialogsGetError));
+                .subscribe(this::onDialogsFirstResponse, this::onDialogsGetError));
 
         resolveRefreshingView();
     }
 
     private void requestNext() {
-        if (netLoadnigNow) {
+        if (netLoadingNow) {
             return;
         }
 
@@ -232,7 +232,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
             return;
         }
 
-        setNetLoadnigNow(true);
+        setNetLoadingNow(true);
         netDisposable.add(messagesInteractor.getDialogs(dialogsOwnerId, COUNT, lastMid)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(this::onNextDialogsResponse,
@@ -248,7 +248,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
                     }));
         }
 
-        setNetLoadnigNow(false);
+        setNetLoadingNow(false);
         endOfContent = isEmpty(dialogs);
 
         int startSize = dialogs.size();
@@ -275,7 +275,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
     private void resolveRefreshingView() {
         // on resume only !!!
         if (isGuiResumed()) {
-            getView().showRefreshing(cacheNowLoading || netLoadnigNow);
+            getView().showRefreshing(cacheNowLoading || netLoadingNow);
         }
     }
 
@@ -300,7 +300,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
         safeNotifyDataSetChanged();
         resolveRefreshingView();
 
-        if (Settings.get().other().isNot_update_dialogs()) {
+        if (Settings.get().other().isNot_update_dialogs() || Utils.isHiddenCurrent()) {
             if (Utils.needReloadStickers(getAccountId())) {
                 try {
                     appendDisposable(InteractorFactory.createStickersInteractor()
@@ -311,10 +311,12 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
                     /*ignore*/
                 }
             }
-
             if (offset > 0) {
                 safeScroll(offset);
                 offset = 0;
+            }
+            if (isGuiReady() && Utils.needReloadDialogs(getAccountId())) {
+                getView().askToReload();
             }
         } else {
             requestAtLast();
@@ -443,7 +445,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
         cacheNowLoading = false;
 
         netDisposable.clear();
-        netLoadnigNow = false;
+        netLoadingNow = false;
 
         requestAtLast();
     }
@@ -479,7 +481,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
     }
 
     private boolean canLoadMore() {
-        return !cacheNowLoading && !endOfContent && !netLoadnigNow && !dialogs.isEmpty();
+        return !cacheNowLoading && !endOfContent && !netLoadingNow && !dialogs.isEmpty();
     }
 
     public void fireScrollToEnd() {
@@ -567,7 +569,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
         cacheNowLoading = false;
 
         netDisposable.clear();
-        netLoadnigNow = false;
+        netLoadingNow = false;
 
         loadCachedThenActualData();
 

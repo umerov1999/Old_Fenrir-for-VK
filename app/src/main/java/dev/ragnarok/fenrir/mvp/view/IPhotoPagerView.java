@@ -1,6 +1,7 @@
 package dev.ragnarok.fenrir.mvp.view;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.List;
 
@@ -24,9 +25,9 @@ public interface IPhotoPagerView extends IMvpView, IAccountDependencyView, IErro
 
     void displayPhotos(@NonNull List<Photo> photos, int initialIndex);
 
-    void setToolbarTitle(String title);
+    void setToolbarTitle(@Nullable String title);
 
-    void setToolbarSubtitle(String subtitle);
+    void setToolbarSubtitle(@Nullable String subtitle);
 
     void sharePhoto(int accountId, @NonNull Photo photo);
 

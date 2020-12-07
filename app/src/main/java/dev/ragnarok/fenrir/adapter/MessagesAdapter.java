@@ -40,7 +40,7 @@ import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
-import dev.ragnarok.fenrir.view.BubbleLinearLayout;
+import dev.ragnarok.fenrir.view.MessageView;
 import dev.ragnarok.fenrir.view.OnlineView;
 import dev.ragnarok.fenrir.view.emoji.EmojiconTextView;
 
@@ -570,7 +570,7 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
     private class MessageHolder extends BaseMessageHolder {
         final EmojiconTextView body;
         final ViewGroup forwardMessagesRoot;
-        final BubbleLinearLayout bubble;
+        final MessageView bubble;
         final View attachmentsRoot;
         final AttachmentsHolder attachmentsHolder;
         final View encryptedView;

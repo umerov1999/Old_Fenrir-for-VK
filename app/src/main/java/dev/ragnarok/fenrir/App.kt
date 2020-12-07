@@ -2,6 +2,7 @@ package dev.ragnarok.fenrir
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.os.Handler
 import androidx.appcompat.app.AppCompatDelegate
 import coil.ImageLoader
 import coil.ImageLoaderFactory
@@ -22,6 +23,7 @@ import ealvatag.tag.TagOptionSingleton
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.plugins.RxJavaPlugins
 import org.conscrypt.Conscrypt
 import java.security.Security
 
@@ -62,6 +64,9 @@ class App : Application(), ImageLoaderFactory {
                 .observeMessagesSendErrors()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ throwable: Throwable -> run { CreateCustomToast(this).showToastError(ErrorLocalizer.localizeThrowable(this, throwable)); throwable.printStackTrace(); } }, RxUtils.ignore()))
+        RxJavaPlugins.setErrorHandler {
+            Handler(mainLooper).post { CreateCustomToast(this).showToastError(ErrorLocalizer.localizeThrowable(this, it)) }
+        }
     }
 
     companion object {

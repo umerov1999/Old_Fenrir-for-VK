@@ -19,7 +19,7 @@
         android:text="@string/restore" />
 
 
-    <dev.ragnarok.fenrir.view.BubbleLinearLayout
+    <dev.ragnarok.fenrir.view.MessageView
         android:id="@+id/item_message_bubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,14 +29,12 @@
         android:paddingTop="6dp"
         android:paddingEnd="12dp"
         android:paddingBottom="6dp"
-        app:arrowHeight="0dp"
-        app:arrowWidth="0dp"
-        app:bubbleColor="?message_bubble_color"
         app:contentPaddingBottom="4dp"
         app:contentPaddingLeft="12dp"
         app:contentPaddingRight="12dp"
         app:contentPaddingTop="4dp"
-        app:secondary_bubbleColor="?message_bubble_color">
+        app:first_color="?message_bubble_color"
+        app:second_color="?message_bubble_color">
 
         <dev.ragnarok.fenrir.view.emoji.EmojiconTextView
             android:id="@+id/item_service_message_text"
@@ -66,6 +64,6 @@
         </LinearLayout>
 
 
-    </dev.ragnarok.fenrir.view.BubbleLinearLayout>
+    </dev.ragnarok.fenrir.view.MessageView>
 
 </LinearLayout>

@@ -44,17 +44,10 @@
             app:emojiconSize="20sp"
             tools:text="Message" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout6"
+        <include
+            layout="@layout/fwd_attachment_links"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <include
-                layout="@layout/fwd_attachment_links"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+            android:layout_height="wrap_content" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/item_forward_message_fwds"

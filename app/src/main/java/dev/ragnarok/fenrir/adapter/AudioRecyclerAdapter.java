@@ -59,7 +59,7 @@ import dev.ragnarok.fenrir.util.DownloadWorkUtils;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.WeakViewAnimatorAdapter;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.Disposable;
 
 import static dev.ragnarok.fenrir.player.util.MusicUtils.observeServiceBinding;
@@ -71,7 +71,7 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
     private final IAudioInteractor mAudioInteractor;
     private final boolean not_show_my;
     private final int iCatalogBlock;
-    private final CompositeDisposable audioListDisposable = new CompositeDisposable();
+    private Disposable audioListDisposable = Disposable.disposed();
     private Disposable mPlayerDisposable = Disposable.disposed();
 
     private boolean iSSelectMode;
@@ -89,36 +89,50 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
         currAudio = MusicUtils.getCurrentAudio();
     }
 
-    private void deleteTrack(int accountId, Audio audio) {
-        audioListDisposable.add(mAudioInteractor.delete(accountId, audio.getId(), audio.getOwnerId()).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() -> {
-        }, ignore -> {
-        }));
+    private void deleteTrack(int accountId, Audio audio, int position) {
+        audioListDisposable = mAudioInteractor.delete(accountId, audio.getId(), audio.getOwnerId()).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() -> {
+            CustomToast.CreateCustomToast(mContext).showToast(R.string.deleted);
+            if (mClickListener != null) {
+                mClickListener.onDelete(position);
+            }
+        }, t -> Utils.showErrorInAdapter((Activity) mContext, t));
     }
 
-    public void addTrack(int accountId, Audio audio) {
-        audioListDisposable.add(mAudioInteractor.add(accountId, audio, null, null).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() -> {
-        }, ignore -> {
-        }));
+    private void addTrack(int accountId, Audio audio) {
+        audioListDisposable = mAudioInteractor.add(accountId, audio, null, null).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() ->
+                CustomToast.CreateCustomToast(mContext).showToast(R.string.added), t -> Utils.showErrorInAdapter((Activity) mContext, t));
     }
 
     private void getMp3AndBitrate(int accountId, Audio audio) {
         if (Utils.isEmpty(audio.getUrl()) || audio.isHLS()) {
-            audioListDisposable.add(mAudioInteractor.getByIdOld(accountId, Collections.singletonList(new IdPair(audio.getId(), audio.getOwnerId()))).compose(RxUtils.applySingleIOToMainSchedulers())
-                    .subscribe(t -> getBitrate(t.get(0).getUrl()), e -> getBitrate(audio.getUrl())));
+            audioListDisposable = mAudioInteractor.getByIdOld(accountId, Collections.singletonList(new IdPair(audio.getId(), audio.getOwnerId()))).compose(RxUtils.applySingleIOToMainSchedulers())
+                    .subscribe(t -> getBitrate(t.get(0).getUrl()), e -> getBitrate(audio.getUrl()));
         } else {
             getBitrate(audio.getUrl());
         }
     }
 
-    private void getBitrate(String url) {
+    private Single<Long> doBitrate(String url) {
         try {
             MediaMetadataRetriever retriever = new MediaMetadataRetriever();
             retriever.setDataSource(Audio.getMp3FromM3u8(url), new HashMap<>());
             String bitrate = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
-            CustomToast.CreateCustomToast(mContext).showToast(mContext.getResources().getString(R.string.bitrate) + " " + (Long.parseLong(bitrate) / 1000) + " bit");
-        } catch (IllegalArgumentException ignored) {
-
+            if (bitrate != null) {
+                return Single.just(Long.parseLong(bitrate) / 1000);
+            }
+            return Single.error(new Throwable("Can't receipt bitrate "));
+        } catch (RuntimeException e) {
+            return Single.error(new Throwable(e.getLocalizedMessage()));
         }
+    }
+
+    private void getBitrate(String url) {
+        if (Utils.isEmpty(url)) {
+            return;
+        }
+        audioListDisposable = doBitrate(url).compose(RxUtils.applySingleIOToMainSchedulers())
+                .subscribe(r -> CustomToast.CreateCustomToast(mContext).showToast(mContext.getResources().getString(R.string.bitrate) + " " + r + " bit"),
+                        e -> Utils.showErrorInAdapter((Activity) mContext, e));
     }
 
     public void toggleSelectMode(boolean iSSelectMode) {
@@ -126,9 +140,9 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
     }
 
     private void get_lyrics(Audio audio) {
-        audioListDisposable.add(mAudioInteractor.getLyrics(Settings.get().accounts().getCurrent(), audio.getLyricsId())
+        audioListDisposable = mAudioInteractor.getLyrics(Settings.get().accounts().getCurrent(), audio.getLyricsId())
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(t -> onAudioLyricsRecived(t, audio), t -> {/*TODO*/}));
+                .subscribe(t -> onAudioLyricsRecived(t, audio), t -> Utils.showErrorInAdapter((Activity) mContext, t));
     }
 
     private void onAudioLyricsRecived(String Text, Audio audio) {
@@ -138,14 +152,14 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
         dlgAlert.setIcon(R.drawable.dir_song);
         dlgAlert.setMessage(Text);
         dlgAlert.setTitle(title != null ? title : mContext.getString(R.string.get_lyrics));
-
-        ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("response", Text);
-        clipboard.setPrimaryClip(clip);
-
         dlgAlert.setPositiveButton("OK", null);
+        dlgAlert.setNeutralButton(R.string.copy_text, (dialog, which) -> {
+            ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("response", Text);
+            clipboard.setPrimaryClip(clip);
+            CustomToast.CreateCustomToast(mContext).showToast(R.string.copied_to_clipboard);
+        });
         dlgAlert.setCancelable(true);
-        CustomToast.CreateCustomToast(mContext).showToast(R.string.copied_to_clipboard);
         dlgAlert.create().show();
     }
 
@@ -161,6 +175,7 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
     public void onDetachedFromRecyclerView(@NotNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         mPlayerDisposable.dispose();
+        audioListDisposable.dispose();
     }
 
     private void onServiceBindEvent(@MusicUtils.PlayerStatus int status) {
@@ -429,19 +444,13 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
                         case AudioItem.add_item_audio:
                             boolean myAudio = audio.getOwnerId() == Settings.get().accounts().getCurrent();
                             if (myAudio) {
-                                deleteTrack(Settings.get().accounts().getCurrent(), audio);
-                                CustomToast.CreateCustomToast(mContext).showToast(R.string.deleted);
-                                if (mClickListener != null) {
-                                    mClickListener.onDelete(position);
-                                }
+                                deleteTrack(Settings.get().accounts().getCurrent(), audio, position);
                             } else {
                                 addTrack(Settings.get().accounts().getCurrent(), audio);
-                                CustomToast.CreateCustomToast(mContext).showToast(R.string.added);
                             }
                             break;
                         case AudioItem.add_and_download_button:
                             addTrack(Settings.get().accounts().getCurrent(), audio);
-                            CustomToast.CreateCustomToast(mContext).showToast(R.string.added);
                         case AudioItem.save_item_audio:
                             if (!AppPerms.hasReadWriteStoragePermision(mContext)) {
                                 AppPerms.requestReadWriteStoragePermission((Activity) mContext);

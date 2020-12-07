@@ -42,7 +42,7 @@ public class HorizontalPlaylistAdapter extends RecyclerBindableAdapter<AudioPlay
         if (!Utils.isEmpty(playlist.getThumb_image()))
             ViewUtils.displayAvatar(holder.thumb, new PolyTransformation(), playlist.getThumb_image(), Constants.PICASSO_TAG);
         else
-            holder.thumb.setImageBitmap(ImageHelper.getElpsedBitmap(BitmapFactory.decodeResource(context.getResources(), Settings.get().ui().isDarkModeEnabled(context) ? R.drawable.generic_audio_nowplaying_dark : R.drawable.generic_audio_nowplaying_light), 20, 20));
+            holder.thumb.setImageBitmap(ImageHelper.getEllipseBitmap(BitmapFactory.decodeResource(context.getResources(), Settings.get().ui().isDarkModeEnabled(context) ? R.drawable.generic_audio_nowplaying_dark : R.drawable.generic_audio_nowplaying_light), 0.1f));
         holder.count.setText(playlist.getCount() + " " + context.getString(R.string.audios_pattern_count));
         holder.name.setText(playlist.getTitle());
         if (Utils.isEmpty(playlist.getDescription()))

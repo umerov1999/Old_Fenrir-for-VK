@@ -17,7 +17,7 @@ import io.reactivex.rxjava3.core.Single;
 
 public interface ICommentsInteractor {
 
-    Single<List<Comment>> getAllCachedData(int accounrId, @NonNull Commented commented);
+    Single<List<Comment>> getAllCachedData(int accountId, @NonNull Commented commented);
 
     Single<CommentsBundle> getCommentsPortion(int accountId, @NonNull Commented commented, int offset,
                                               int count, Integer startCommentId, Integer threadComment, boolean invalidateCache, String sort);
@@ -27,6 +27,10 @@ public interface ICommentsInteractor {
     Single<Integer> safeDraftComment(int accountId, @NonNull Commented commented, String body, int replyToCommentId, int replyToUserId);
 
     Completable like(int accountId, Commented commented, int commentId, boolean add);
+
+    Single<Integer> checkAndAddLike(int accountId, Commented commented, int commentId);
+
+    Single<Boolean> isLiked(int accountId, Commented commented, int commentId);
 
     Completable deleteRestore(int accountId, Commented commented, int commentId, boolean delete);
 

@@ -28,6 +28,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.Display;
@@ -78,6 +79,7 @@ import dev.ragnarok.fenrir.model.ISelectable;
 import dev.ragnarok.fenrir.model.ISomeones;
 import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.ProxyConfig;
+import dev.ragnarok.fenrir.service.ErrorLocalizer;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -88,9 +90,11 @@ import static dev.ragnarok.fenrir.util.Objects.isNull;
 public class Utils {
     public static final List<Integer> donate_users = new ArrayList<>();
     private static final List<Integer> reload_news = new ArrayList<>();
+    private static final List<Integer> reload_dialogs = new ArrayList<>();
     private static final List<Integer> reload_stickers = new ArrayList<>();
     private static String device_id;
     private static float density = 1;
+    private static DisplayMetrics metrics;
 
     private Utils() {
     }
@@ -103,12 +107,24 @@ public class Utils {
         return false;
     }
 
+    public static boolean needReloadDialogs(int account_id) {
+        if (!reload_dialogs.contains(account_id)) {
+            reload_dialogs.add(account_id);
+            return true;
+        }
+        return false;
+    }
+
     public static boolean needReloadStickers(int account_id) {
         if (!reload_stickers.contains(account_id)) {
             reload_stickers.add(account_id);
             return true;
         }
         return false;
+    }
+
+    public static DisplayMetrics getDisplayMetrics() {
+        return metrics;
     }
 
     public static <T> T lastOf(@NonNull List<T> data) {
@@ -853,7 +869,7 @@ public class Utils {
     }
 
     @SuppressLint("HardwareIds")
-    public static String getDiviceId(Context context) {
+    public static String getDeviceId(Context context) {
         if (isEmpty(device_id)) {
             device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
             if (isEmpty(device_id))
@@ -1222,13 +1238,19 @@ public class Utils {
     }
 
     public static void prepareDensity(Context context) {
-        density = context.getResources().getDisplayMetrics().density;
-        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        if (manager != null) {
-            Display display = manager.getDefaultDisplay();
-            if (display != null) {
-                RLottieDrawable.updateScreenRefresh((int) display.getRefreshRate());
+        metrics = context.getResources().getDisplayMetrics();
+        density = metrics.density;
+        Display display = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            display = context.getDisplay();
+        } else {
+            WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            if (manager != null) {
+                display = manager.getDefaultDisplay();
             }
+        }
+        if (display != null) {
+            RLottieDrawable.updateScreenRefresh((int) display.getRefreshRate());
         }
     }
 
@@ -1293,6 +1315,17 @@ public class Utils {
             return vk_official;
         }
         return kate;
+    }
+
+    public static void showErrorInAdapter(Activity context, Throwable throwable) {
+        if (context == null || context.isFinishing() || context.isDestroyed()) {
+            return;
+        }
+        throwable = getCauseIfRuntime(throwable);
+        if (Constants.IS_DEBUG) {
+            throwable.printStackTrace();
+        }
+        showRedTopToast(context, ErrorLocalizer.localizeThrowable(context.getApplicationContext(), throwable));
     }
 
     /**

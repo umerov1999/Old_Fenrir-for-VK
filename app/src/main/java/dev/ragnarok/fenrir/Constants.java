@@ -32,8 +32,8 @@ public class Constants {
     public static final String APK_ID = BuildConfig.APPLICATION_ID;
     public static final String DEVICE_COUNTRY_CODE = "ru";
 
-    public static final String VKANDROID_APP_VERSION_NAME = "6.17.1";
-    public static final String VKANDROID_APP_VERSION_CODE = "6464";
+    public static final String VKANDROID_APP_VERSION_NAME = "6.18";
+    public static final String VKANDROID_APP_VERSION_CODE = "6515";
 
     public static final String KATE_APP_VERSION_NAME = "67.2 lite";
     public static final String KATE_APP_VERSION_CODE = "483";

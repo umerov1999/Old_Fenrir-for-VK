@@ -10,13 +10,13 @@ import dev.ragnarok.fenrir.api.VkRetrofitProvider;
 import dev.ragnarok.fenrir.api.interfaces.IAccountApis;
 import dev.ragnarok.fenrir.api.interfaces.IAudioCoverApi;
 import dev.ragnarok.fenrir.api.interfaces.IAuthApi;
-import dev.ragnarok.fenrir.api.interfaces.ICliperApi;
 import dev.ragnarok.fenrir.api.interfaces.ILongpollApi;
 import dev.ragnarok.fenrir.api.interfaces.INetworker;
+import dev.ragnarok.fenrir.api.interfaces.IUpdateToolApi;
 import dev.ragnarok.fenrir.api.interfaces.IUploadApi;
 import dev.ragnarok.fenrir.api.services.IAudioCoverService;
 import dev.ragnarok.fenrir.api.services.IAuthService;
-import dev.ragnarok.fenrir.api.services.ICliperService;
+import dev.ragnarok.fenrir.api.services.IUpdateToolService;
 import dev.ragnarok.fenrir.settings.IProxySettings;
 
 public class Networker implements INetworker {
@@ -57,8 +57,8 @@ public class Networker implements INetworker {
     }
 
     @Override
-    public ICliperApi cliperApi() {
-        return new CliperApi(() -> otherVkRetrofitProvider.provideCliperRetrofit().map(wrapper -> wrapper.create(ICliperService.class)));
+    public IUpdateToolApi updateToolApi() {
+        return new UpdateToolApi(() -> otherVkRetrofitProvider.provideUpdateToolRetrofit().map(wrapper -> wrapper.create(IUpdateToolService.class)));
     }
 
     @Override

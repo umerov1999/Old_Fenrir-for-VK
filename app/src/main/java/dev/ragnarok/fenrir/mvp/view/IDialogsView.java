@@ -32,6 +32,8 @@ public interface IDialogsView extends IAccountDependencyView, IMvpView, IErrorVi
 
     void showSnackbar(@StringRes int res, boolean isLong);
 
+    void askToReload();
+
     void showEnterNewGroupChatTitle(List<User> users);
 
     void showNotificationSettings(int accountId, int peerId);

@@ -12,7 +12,7 @@ public interface INetworker {
 
     IAudioCoverApi amazonAudioCover();
 
-    ICliperApi cliperApi();
+    IUpdateToolApi updateToolApi();
 
     ILongpollApi longpoll();
 

@@ -65,7 +65,7 @@ import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.model.LocalPhoto;
 import dev.ragnarok.fenrir.model.SwitchableCategory;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
-import dev.ragnarok.fenrir.picasso.transforms.ElipseTransformation;
+import dev.ragnarok.fenrir.picasso.transforms.EllipseTransformation;
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
@@ -629,7 +629,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     private void ShowAdditionalInfo() {
         View view = View.inflate(requireActivity(), R.layout.dialog_additional_us, null);
         ((TextView) view.findViewById(R.id.item_user_agent)).setText("User-Agent: " + Constants.USER_AGENT(Account_Types.BY_TYPE));
-        ((TextView) view.findViewById(R.id.item_device_id)).setText("Device-ID: " + Utils.getDiviceId(requireActivity()));
+        ((TextView) view.findViewById(R.id.item_device_id)).setText("Device-ID: " + Utils.getDeviceId(requireActivity()));
         ((TextView) view.findViewById(R.id.item_gcm_token)).setText("GMS-Token: " + PushToken());
 
         new MaterialAlertDialogBuilder(requireActivity())
@@ -782,7 +782,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         PicassoInstance.with()
                 .load(R.drawable.ava_settings)
-                .transform(new ElipseTransformation())
+                .transform(new EllipseTransformation())
                 .into(ivOval);
 
         new MaterialAlertDialogBuilder(requireActivity())

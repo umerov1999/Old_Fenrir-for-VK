@@ -125,4 +125,9 @@ public interface IUsersService {
                                                     @Field("count") Integer count,
                                                     @Field("extended") Integer extended,
                                                     @Field("fields") String fields);
+
+    @FormUrlEncoded
+    @POST("execute")
+    Single<BaseResponse<Integer>> checkAndAddFriend(@Field("code") String code,
+                                                    @Field("user_id") Integer user_id);
 }

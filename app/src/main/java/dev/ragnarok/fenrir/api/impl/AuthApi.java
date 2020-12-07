@@ -81,7 +81,7 @@ public class AuthApi implements IAuthApi {
                                              String scope, String code, String captchaSid, String captchaKey, boolean forceSms) {
         return service.provideAuthService()
                 .flatMap(service -> service
-                        .directLogin(grantType, clientId, clientSecret, username, pass, v, twoFaSupported ? 1 : null, scope, code, captchaSid, captchaKey, forceSms ? 1 : 0, Utils.getDiviceId(Injection.provideApplicationContext()), 1)
+                        .directLogin(grantType, clientId, clientSecret, username, pass, v, twoFaSupported ? 1 : null, scope, code, captchaSid, captchaKey, forceSms ? 1 : 0, Utils.getDeviceId(Injection.provideApplicationContext()), 1)
                         .compose(withHttpErrorHandling()));
     }
 

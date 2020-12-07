@@ -19,7 +19,7 @@ import dev.ragnarok.fenrir.media.gif.AppGifPlayerFactory;
 import dev.ragnarok.fenrir.media.gif.IGifPlayerFactory;
 import dev.ragnarok.fenrir.media.voice.IVoicePlayerFactory;
 import dev.ragnarok.fenrir.media.voice.VoicePlayerFactory;
-import dev.ragnarok.fenrir.push.IDevideIdProvider;
+import dev.ragnarok.fenrir.push.IDeviceIdProvider;
 import dev.ragnarok.fenrir.push.IPushRegistrationResolver;
 import dev.ragnarok.fenrir.push.PushRegistrationResolver;
 import dev.ragnarok.fenrir.settings.IProxySettings;
@@ -63,8 +63,8 @@ public class Injection {
             synchronized (Injection.class) {
                 if (isNull(resolver)) {
                     Context context = provideApplicationContext();
-                    IDevideIdProvider devideIdProvider = () -> Utils.getDiviceId(context);
-                    resolver = new PushRegistrationResolver(devideIdProvider, provideSettings(), provideNetworkInterfaces());
+                    IDeviceIdProvider deviceIdProvider = () -> Utils.getDeviceId(context);
+                    resolver = new PushRegistrationResolver(deviceIdProvider, provideSettings(), provideNetworkInterfaces());
                 }
             }
         }

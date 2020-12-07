@@ -12,9 +12,15 @@ public interface ILikesApi {
                                       Boolean friendsOnly, Integer offset, Integer count, Boolean skipOwn, String fields);
 
     @CheckResult
-    Single<Integer> delete(String type, Integer ownerId, int itemId);
+    Single<Integer> delete(String type, Integer ownerId, int itemId, String accessKey);
 
     @CheckResult
     Single<Integer> add(String type, Integer ownerId, int itemId, String accessKey);
+
+    @CheckResult
+    Single<Boolean> isLiked(String type, Integer ownerId, int itemId);
+
+    @CheckResult
+    Single<Integer> checkAndAddLike(String type, Integer ownerId, int itemId, String accessKey);
 
 }

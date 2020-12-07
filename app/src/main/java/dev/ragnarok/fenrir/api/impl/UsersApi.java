@@ -120,6 +120,14 @@ class UsersApi extends AbsApi implements IUsersApi {
     }
 
     @Override
+    public Single<Integer> checkAndAddFriend(Integer userId) {
+        return provideService(IUsersService.class, TokenType.USER)
+                .flatMap(service -> service
+                        .checkAndAddFriend("var user_id = Args.user_id; if(API.users.get({\"v\":\"5.126\", \"user_ids\": user_id, \"fields\": \"friend_status\"})[0].friend_status == 0) {return API.friends.add({\"v\":\"5.126\", \"user_id\": user_id});} return 0;", userId)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
     public Single<StoryResponse> getStory(Integer owner_id, Integer extended, String fields) {
         return provideService(IUsersService.class, TokenType.USER)
                 .flatMap(service -> service.getStory(owner_id, extended, fields)

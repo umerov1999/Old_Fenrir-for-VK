@@ -184,6 +184,13 @@ public class OwnersRepository implements IOwnersRepository {
                 .report(userId, type, comment);
     }
 
+    @Override
+    public Single<Integer> checkAndAddFriend(int accountId, int userId) {
+        return networker.vkDefault(accountId)
+                .users()
+                .checkAndAddFriend(userId);
+    }
+
     private void parseParentStory(@NonNull List<VKApiStory> story, @NonNull List<VKApiStory> dtos) {
         for (VKApiStory i : story) {
             if (nonNull(i.parent_story)) {

@@ -22,8 +22,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import dev.ragnarok.fenrir.Constants
 import dev.ragnarok.fenrir.Extra
+import dev.ragnarok.fenrir.Injection
 import dev.ragnarok.fenrir.R
 import dev.ragnarok.fenrir.activity.SendAttachmentsActivity
 import dev.ragnarok.fenrir.domain.IAudioInteractor
@@ -39,6 +42,7 @@ import dev.ragnarok.fenrir.player.ui.RepeatingImageButton
 import dev.ragnarok.fenrir.player.ui.ShuffleButton
 import dev.ragnarok.fenrir.player.util.MusicUtils
 import dev.ragnarok.fenrir.player.util.MusicUtils.PlayerStatus
+import dev.ragnarok.fenrir.service.ErrorLocalizer
 import dev.ragnarok.fenrir.settings.CurrentTheme
 import dev.ragnarok.fenrir.settings.Settings
 import dev.ragnarok.fenrir.util.AppPerms
@@ -338,6 +342,32 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         }
     }
 
+    private fun showErrorInAdapter(throwable: Throwable) {
+        if (!isAdded || view == null) {
+            return
+        }
+        val caused = Utils.getCauseIfRuntime(throwable)
+        if (Constants.IS_DEBUG) {
+            caused.printStackTrace()
+        }
+        Snackbar.make(requireView(), ErrorLocalizer.localizeThrowable(Injection.provideApplicationContext(), caused), BaseTransientBottomBar.LENGTH_LONG).setTextColor(Color.WHITE).setBackgroundTint(Color.parseColor("#eeff0000"))
+                .setAction(R.string.more_info) {
+                    val Text = StringBuilder()
+                    for (stackTraceElement in throwable.stackTrace) {
+                        Text.append("    ")
+                        Text.append(stackTraceElement)
+                        Text.append("\r\n")
+                    }
+                    val dlgAlert = MaterialAlertDialogBuilder(requireActivity())
+                    dlgAlert.setIcon(R.drawable.crash_ic_error)
+                    dlgAlert.setMessage(Text)
+                    dlgAlert.setTitle(R.string.more_info)
+                    dlgAlert.setPositiveButton("OK", null)
+                    dlgAlert.setCancelable(true)
+                    dlgAlert.create().show()
+                }.setActionTextColor(Color.WHITE).show()
+    }
+
     private fun onLyrics() {
         val audio = MusicUtils.getCurrentAudio() ?: return
         get_lyrics(audio)
@@ -346,7 +376,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
     private fun add(accountId: Int, audio: Audio) {
         appendDisposable(mAudioInteractor!!.add(accountId, audio, null, null)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe({ onAudioAdded() }) { })
+                .subscribe({ onAudioAdded() }) { showErrorInAdapter(it) })
     }
 
     private fun onAudioAdded() {
@@ -359,7 +389,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         val ownerId = audio.ownerId
         appendDisposable(mAudioInteractor!!.delete(accoutnId, id, ownerId)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe({ onAudioDeletedOrRestored(id, ownerId, true) }) { })
+                .subscribe({ onAudioDeletedOrRestored(id, ownerId, true) }) { showErrorInAdapter(it) })
     }
 
     private fun restore(accountId: Int, audio: Audio) {
@@ -367,13 +397,13 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         val ownerId = audio.ownerId
         appendDisposable(mAudioInteractor!!.restore(accountId, id, ownerId)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe({ onAudioDeletedOrRestored(id, ownerId, false) }) { })
+                .subscribe({ onAudioDeletedOrRestored(id, ownerId, false) }) { showErrorInAdapter(it) })
     }
 
     private fun get_lyrics(audio: Audio) {
         appendDisposable(mAudioInteractor!!.getLyrics(mAccountId, audio.lyricsId)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe({ Text: String -> onAudioLyricsReceived(Text) }) { })
+                .subscribe({ Text: String -> onAudioLyricsReceived(Text) }) { showErrorInAdapter(it) })
     }
 
     private fun onAudioLyricsReceived(Text: String) {

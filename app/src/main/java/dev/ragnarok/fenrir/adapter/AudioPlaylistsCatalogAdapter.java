@@ -51,7 +51,7 @@ public class AudioPlaylistsCatalogAdapter extends RecyclerView.Adapter<AudioPlay
         if (!Utils.isEmpty(playlist.getThumb_image()))
             ViewUtils.displayAvatar(holder.thumb, new PolyTransformation(), playlist.getThumb_image(), Constants.PICASSO_TAG);
         else
-            holder.thumb.setImageBitmap(ImageHelper.getElpsedBitmap(BitmapFactory.decodeResource(context.getResources(), isDark ? R.drawable.generic_audio_nowplaying_dark : R.drawable.generic_audio_nowplaying_light), 20, 20));
+            holder.thumb.setImageBitmap(ImageHelper.getEllipseBitmap(BitmapFactory.decodeResource(context.getResources(), isDark ? R.drawable.generic_audio_nowplaying_dark : R.drawable.generic_audio_nowplaying_light), 0.1f));
         holder.name.setText(playlist.getTitle());
         if (Utils.isEmpty(playlist.getArtist_name()))
             holder.artist.setVisibility(View.GONE);

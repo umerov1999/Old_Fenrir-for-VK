@@ -21,6 +21,6 @@ public class PolyTransformation implements Transformation {
         if (source == null) {
             return null;
         }
-        return ImageHelper.getElpsedBitmap(source, 20, 20);
+        return ImageHelper.getEllipseBitmap(source, 0.1f);
     }
 }

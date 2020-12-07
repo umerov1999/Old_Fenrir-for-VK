@@ -7,8 +7,8 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        //noinspection OldTargetApi
-        targetSdkVersion 29
+        //noinspection ExpiredTargetSdkVersion,OldTargetApi
+        targetSdkVersion 28
         versionCode 25
         versionName "2.2.5-non-native"
     }
@@ -38,7 +38,7 @@ dependencies {
     implementation 'androidx.activity:activity-ktx:1.1.0'
     implementation 'androidx.fragment:fragment-ktx:1.2.5'
     implementation 'androidx.annotation:annotation:1.2.0-alpha01'
-    implementation "androidx.transition:transition:1.4.0-beta01"
-    implementation 'io.reactivex.rxjava3:rxjava:3.0.7'
+    implementation "androidx.transition:transition:1.4.0-rc01"
+    implementation 'io.reactivex.rxjava3:rxjava:3.0.8'
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
 }

@@ -72,11 +72,13 @@
     <string-array name="array_pagan_symbol_names">
         <item>Валькнут</item>
         <item>Иггдрасиль</item>
+        <item>Мьёльнир</item>
     </string-array>
 
     <string-array name="array_pagan_symbol_items" translatable="false">
         <item>0</item>
         <item>1</item>
+        <item>2</item>
     </string-array>
 
     <string-array name="array_accounts_input">
@@ -1497,6 +1499,7 @@
     <string name="show_wall_cover">Показывать обложку профиля</string>
     <string name="mention_user">Упомянуть</string>
     <string name="update_news">Доступны новые новости</string>
+    <string name="update_dialogs">Обновить диалоги?</string>
     <string name="to_html">В Html</string>
     <string name="to_json">В Json</string>
     <string name="select_type">Выберите формат:</string>
@@ -1526,8 +1529,6 @@
     <string name="search_playlists">Плейлисты</string>
     <string name="changes">Изменения:</string>
     <string name="do_update">Обновить</string>
-    <string name="do_donate">Задонатить</string>
-    <string name="copied_card">Номер карты скопирован в буфер</string>
     <string name="audio_save_mode_button">Скачивать несколько треков</string>
     <string name="hint_stickers">Подсказывать стикеры</string>
     <string name="not_changed">Нет изменений</string>

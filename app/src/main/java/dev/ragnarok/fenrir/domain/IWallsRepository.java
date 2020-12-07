@@ -32,9 +32,13 @@ public interface IWallsRepository {
 
     Single<Integer> like(int accountId, int ownerId, int postId, boolean add);
 
+    Single<Boolean> isLiked(int accountId, int ownerId, int postId);
+
     Single<List<Post>> getWall(int accountId, int ownerId, int offset, int count, int wallFilter);
 
     Single<List<Post>> getWallNoCache(int accountId, int ownerId, int offset, int count, int wallFilter);
+
+    Single<Integer> checkAndAddLike(int accountId, int ownerId, int postId);
 
     Single<List<Post>> getCachedWall(int accountId, int ownerId, int wallFilter);
 

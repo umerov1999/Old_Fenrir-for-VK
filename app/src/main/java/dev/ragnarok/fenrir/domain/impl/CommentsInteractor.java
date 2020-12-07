@@ -79,11 +79,11 @@ public class CommentsInteractor implements ICommentsInteractor {
     }
 
     @Override
-    public Single<List<Comment>> getAllCachedData(int accounrId, @NonNull Commented commented) {
-        CommentsCriteria criteria = new CommentsCriteria(accounrId, commented);
+    public Single<List<Comment>> getAllCachedData(int accountId, @NonNull Commented commented) {
+        CommentsCriteria criteria = new CommentsCriteria(accountId, commented);
         return cache.comments()
                 .getDbosByCriteria(criteria)
-                .compose(dbos2models(accounrId));
+                .compose(dbos2models(accountId));
     }
 
     private SingleTransformer<List<CommentEntity>, List<Comment>> dbos2models(int accountId) {
@@ -202,6 +202,57 @@ public class CommentsInteractor implements ICommentsInteractor {
     }
 
     @Override
+    public Single<Boolean> isLiked(int accountId, Commented commented, int commentId) {
+        String type;
+
+        switch (commented.getSourceType()) {
+            case CommentedType.PHOTO:
+                type = "photo_comment";
+                break;
+            case CommentedType.POST:
+                type = "comment";
+                break;
+            case CommentedType.VIDEO:
+                type = "video_comment";
+                break;
+            case CommentedType.TOPIC:
+                type = "topic_comment";
+                break;
+
+            default:
+                throw new IllegalArgumentException();
+        }
+        return networker.vkDefault(accountId)
+                .likes()
+                .isLiked(type, commented.getSourceOwnerId(), commentId);
+    }
+
+    @Override
+    public Single<Integer> checkAndAddLike(int accountId, Commented commented, int commentId) {
+        String type;
+
+        switch (commented.getSourceType()) {
+            case CommentedType.PHOTO:
+                type = "photo_comment";
+                break;
+            case CommentedType.POST:
+                type = "comment";
+                break;
+            case CommentedType.VIDEO:
+                type = "video_comment";
+                break;
+            case CommentedType.TOPIC:
+                type = "topic_comment";
+                break;
+
+            default:
+                throw new IllegalArgumentException();
+        }
+        return networker.vkDefault(accountId)
+                .likes().checkAndAddLike(type, commented.getSourceOwnerId(), commentId, commented.getAccessKey());
+    }
+
+    @Override
     public Completable like(int accountId, Commented commented, int commentId, boolean add) {
         String type;
 
@@ -234,7 +285,7 @@ public class CommentsInteractor implements ICommentsInteractor {
                         return cache.comments().commitMinorUpdate(update);
                     });
         } else {
-            return api.delete(type, commented.getSourceOwnerId(), commentId)
+            return api.delete(type, commented.getSourceOwnerId(), commentId, commented.getAccessKey())
                     .flatMapCompletable(count -> {
                         update.withLikes(false, count);
                         return cache.comments().commitMinorUpdate(update);

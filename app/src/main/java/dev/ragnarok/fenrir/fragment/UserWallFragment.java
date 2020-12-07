@@ -232,10 +232,16 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
         mHeaderHolder.ivAvatar.setOnClickListener(v -> getPresenter().fireAvatarClick());
         mHeaderHolder.Runes.setVisibility(Settings.get().other().isRunes_show() ? View.VISIBLE : View.GONE);
         mHeaderHolder.Valknut.setVisibility(Settings.get().other().isShow_pagan_symbol() ? View.VISIBLE : View.GONE);
-        if (Settings.get().other().getPaganSymbol() == 1) {
-            mHeaderHolder.Valknut.setImageResource(R.drawable.ic_igdr);
-        } else {
-            mHeaderHolder.Valknut.setImageResource(R.drawable.valknut);
+        switch (Settings.get().other().getPaganSymbol()) {
+            case 1:
+                mHeaderHolder.Valknut.setImageResource(R.drawable.ic_igdr);
+                break;
+            case 2:
+                mHeaderHolder.Valknut.setImageResource(R.drawable.ic_mjolnir);
+                break;
+            default:
+                mHeaderHolder.Valknut.setImageResource(R.drawable.valknut);
+                break;
         }
     }
 

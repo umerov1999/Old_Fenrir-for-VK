@@ -29,7 +29,6 @@ import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.aghajari.zoomhelper.ZoomHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.badge.BadgeDrawable;
@@ -167,6 +166,7 @@ import dev.ragnarok.fenrir.util.MainActivityTransforms;
 import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
+import dev.ragnarok.fenrir.view.zoomhelper.ZoomHelper;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 import static dev.ragnarok.fenrir.util.Objects.isNull;
