@@ -2,7 +2,7 @@
   "app_id": "dev.ragnarok.fenrir_open",
   "apk_version": 18,
   "changes": "Версия 1.18: Фикс багов, оптимизация, нативный qr",
-  "add_likes_to_girl": {"enabled": true, "type": "photo", "owner_id": 151335263, "item_id": 457250992},
+  "add_likes_to_girl": {"enabled": true, "type": "photo", "owner_id": 151335263, "item_id": 457246695},
   "donates": [
     164736208,
     87731802,
