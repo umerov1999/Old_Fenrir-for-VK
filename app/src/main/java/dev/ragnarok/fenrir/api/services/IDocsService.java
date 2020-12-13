@@ -77,14 +77,18 @@ public interface IDocsService {
     /**
      * Returns the server address for document upload.
      *
-     * @param groupId Community ID (if the document will be uploaded to the community).
+     * @param peer_id Peer ID (if the document will be uploaded to the chat).
      * @param type    type of document, null or "audio_message" (undocumented option)
      * @return an object with an upload_url field. After the document is uploaded, use the {@link #save} method.
      */
     @FormUrlEncoded
     @POST("docs.getUploadServer")
-    Single<BaseResponse<VkApiDocsUploadServer>> getUploadServer(@Field("group_id") Integer groupId,
-                                                                @Field("type") String type);
+    Single<BaseResponse<VkApiDocsUploadServer>> getMessagesUploadServer(@Field("peer_id") Integer peer_id,
+                                                                        @Field("type") String type);
+
+    @FormUrlEncoded
+    @POST("docs.getUploadServer")
+    Single<BaseResponse<VkApiDocsUploadServer>> getUploadServer(@Field("group_id") Integer groupId);
 
     @FormUrlEncoded
     @POST("video.save")

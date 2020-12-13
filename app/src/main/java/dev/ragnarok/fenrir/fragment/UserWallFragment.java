@@ -239,6 +239,12 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             case 2:
                 mHeaderHolder.Valknut.setImageResource(R.drawable.ic_mjolnir);
                 break;
+            case 3:
+                mHeaderHolder.Valknut.setImageResource(R.drawable.ic_vegvisir);
+                break;
+            case 4:
+                mHeaderHolder.Valknut.setImageResource(R.drawable.ic_celtic_knot);
+                break;
             default:
                 mHeaderHolder.Valknut.setImageResource(R.drawable.valknut);
                 break;
@@ -251,13 +257,13 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
         return () -> {
             requireArguments();
 
-            int accoutnId = getArguments().getInt(Extra.ACCOUNT_ID);
+            int accountId = getArguments().getInt(Extra.ACCOUNT_ID);
             int ownerId = getArguments().getInt(Extra.OWNER_ID);
 
             ParcelableOwnerWrapper wrapper = getArguments().getParcelable(Extra.OWNER);
             AssertUtils.requireNonNull(wrapper);
 
-            return new UserWallPresenter(accoutnId, ownerId, (User) wrapper.get(), requireActivity(), saveInstanceState);
+            return new UserWallPresenter(accountId, ownerId, (User) wrapper.get(), requireActivity(), saveInstanceState);
         };
     }
 
@@ -411,17 +417,6 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
         super.onCreateOptionsMenu(menu, inflater);
         OptionView view = new OptionView();
         getPresenter().fireOptionViewCreated(view);
-        menu.add(R.string.show_qr).setOnMenuItemClickListener(item -> {
-            getPresenter().fireShowQR(requireActivity());
-            return true;
-        });
-        menu.add(R.string.mentions).setOnMenuItemClickListener(item -> {
-            if (!CheckUpdate.isFullVersion(requireActivity())) {
-                return true;
-            }
-            getPresenter().fireMentions();
-            return true;
-        });
         if (!view.isMy) {
             menu.add(R.string.report).setOnMenuItemClickListener(item -> {
                 getPresenter().fireReport();
@@ -430,17 +425,6 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             if (!view.isBlacklistedByMe) {
                 menu.add(R.string.add_to_blacklist).setOnMenuItemClickListener(item -> {
                     getPresenter().fireAddToBlacklistClick();
-                    return true;
-                });
-            }
-            if (!view.isFavorite) {
-                menu.add(R.string.add_to_bookmarks).setOnMenuItemClickListener(item -> {
-                    getPresenter().fireAddToBookmarks();
-                    return true;
-                });
-            } else {
-                menu.add(R.string.remove_from_bookmarks).setOnMenuItemClickListener(item -> {
-                    getPresenter().fireRemoveFromBookmarks();
                     return true;
                 });
             }
@@ -455,7 +439,29 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
                     return true;
                 });
             }
+            if (!view.isFavorite) {
+                menu.add(R.string.add_to_bookmarks).setOnMenuItemClickListener(item -> {
+                    getPresenter().fireAddToBookmarks();
+                    return true;
+                });
+            } else {
+                menu.add(R.string.remove_from_bookmarks).setOnMenuItemClickListener(item -> {
+                    getPresenter().fireRemoveFromBookmarks();
+                    return true;
+                });
+            }
         }
+        menu.add(R.string.show_qr).setOnMenuItemClickListener(item -> {
+            getPresenter().fireShowQR(requireActivity());
+            return true;
+        });
+        menu.add(R.string.mentions).setOnMenuItemClickListener(item -> {
+            if (!CheckUpdate.isFullVersion(requireActivity())) {
+                return true;
+            }
+            getPresenter().fireMentions();
+            return true;
+        });
     }
 
     private class UserHeaderHolder {

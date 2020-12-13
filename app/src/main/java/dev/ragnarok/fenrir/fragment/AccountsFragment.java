@@ -94,6 +94,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
     private RecyclerView mRecyclerView;
     private AccountAdapter mAdapter;
     private final ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        @Override
         public boolean onMove(@NotNull RecyclerView recyclerView,
                               @NotNull RecyclerView.ViewHolder viewHolder, @NotNull RecyclerView.ViewHolder target) {
             return false;
@@ -110,6 +111,11 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
             if (!idCurrent) {
                 setAsActive(account);
             }
+        }
+
+        @Override
+        public boolean isLongPressDragEnabled() {
+            return false;
         }
     };
     private ArrayList<Account> mData;

@@ -58,9 +58,16 @@ class DocsApi extends AbsApi implements IDocsApi {
     }
 
     @Override
-    public Single<VkApiDocsUploadServer> getUploadServer(Integer groupId, String type) {
+    public Single<VkApiDocsUploadServer> getMessagesUploadServer(Integer peerId, String type) {
         return provideService(IDocsService.class)
-                .flatMap(service -> service.getUploadServer(groupId, type)
+                .flatMap(service -> service.getMessagesUploadServer(peerId, type)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<VkApiDocsUploadServer> getUploadServer(Integer groupId) {
+        return provideService(IDocsService.class)
+                .flatMap(service -> service.getUploadServer(groupId)
                         .map(extractResponseWithErrorHandling()));
     }
 

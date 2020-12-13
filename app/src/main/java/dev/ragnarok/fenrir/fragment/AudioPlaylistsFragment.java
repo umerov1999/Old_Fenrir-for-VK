@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -28,11 +30,13 @@ import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
+import dev.ragnarok.fenrir.activity.AudioSelectActivity;
 import dev.ragnarok.fenrir.adapter.AudioPlaylistsAdapter;
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
 import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.listener.PicassoPauseOnScrollListener;
+import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.AudioPlaylistsPresenter;
@@ -40,6 +44,7 @@ import dev.ragnarok.fenrir.mvp.view.IAudioPlaylistsView;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.MySearchView;
 
@@ -49,6 +54,7 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
 
     public static final String EXTRA_IN_TABS_CONTAINER = "in_tabs_container";
     public static final String ACTION_SELECT = "AudioPlaylistsFragment.ACTION_SELECT";
+    private static final int REQUEST_AUDIO_SELECT = 1987;
     private TextView mEmpty;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AudioPlaylistsAdapter mAdapter;
@@ -93,6 +99,16 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
             toolbar.setVisibility(View.GONE);
         }
         mEmpty = root.findViewById(R.id.fragment_audio_playlist_empty_text);
+        FloatingActionButton mAdd = root.findViewById(R.id.add_button);
+
+        if (mAdd != null) {
+            if (getPresenter().getAccountId() != getPresenter().getOwner_id())
+                mAdd.setVisibility(View.GONE);
+            else {
+                mAdd.setVisibility(View.VISIBLE);
+                mAdd.setOnClickListener(v -> getPresenter().fireCreatePlaylist(requireActivity()));
+            }
+        }
 
         RecyclerView recyclerView = root.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 2));
@@ -185,6 +201,14 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
     }
 
     @Override
+    public void notifyItemRemoved(int position) {
+        if (nonNull(mAdapter)) {
+            mAdapter.notifyItemRemoved(position);
+            resolveEmptyText();
+        }
+    }
+
+    @Override
     public void notifyDataAdded(int position, int count) {
         if (nonNull(mAdapter)) {
             mAdapter.notifyItemRangeInserted(position, count);
@@ -222,6 +246,16 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_AUDIO_SELECT && resultCode == Activity.RESULT_OK) {
+            ArrayList<Audio> audios = data.getParcelableArrayListExtra("attachments");
+            AssertUtils.requireNonNull(audios);
+            getPresenter().fireAudiosSelected(audios);
+        }
+    }
+
+    @Override
     public void onOpenClick(int index, AudioPlaylist album) {
         PlaceFactory.getAudiosInAlbumPlace(getPresenter().getAccountId(), album.getOwnerId(), album.getId(), album.getAccess_key()).tryOpenWith(requireActivity());
     }
@@ -229,6 +263,21 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
     @Override
     public void onDelete(int index, AudioPlaylist album) {
         getPresenter().onDelete(index, album);
+    }
+
+    @Override
+    public void onEdit(int index, AudioPlaylist album) {
+        getPresenter().onEdit(requireActivity(), index, album);
+    }
+
+    @Override
+    public void onAddAudios(int index, AudioPlaylist album) {
+        getPresenter().onPlaceToPending(album);
+    }
+
+    @Override
+    public void doAddAudios(int accountId) {
+        startActivityForResult(AudioSelectActivity.createIntent(requireActivity(), accountId), REQUEST_AUDIO_SELECT);
     }
 
     @Override

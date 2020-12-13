@@ -1396,9 +1396,17 @@ public class MessagesRepository implements IMessagesRepository {
                     if (a instanceof StickerEntity) {
                         int stickerId = ((StickerEntity) a).getId();
 
-                        return networker.vkDefault(accountId)
-                                .messages()
-                                .send(dbo.getId(), dbo.getPeerId(), null, null, null, null, null, null, stickerId, null, null);
+                        return checkForwardMessages(accountId, dbo)
+                                .flatMap(optionalFwd -> {
+                                    if (optionalFwd.getFirst()) {
+                                        return networker.vkDefault(accountId)
+                                                .messages()
+                                                .send(dbo.getId(), dbo.getPeerId(), null, null, null, null, null, null, stickerId, null, optionalFwd.getSecond().get().get(0));
+                                    }
+                                    return networker.vkDefault(accountId)
+                                            .messages()
+                                            .send(dbo.getId(), dbo.getPeerId(), null, null, null, null, null, optionalFwd.getSecond().get(), stickerId, null, null);
+                                });
                     }
 
                     attachments.add(Entity2Dto.createToken(a));
@@ -1423,7 +1431,7 @@ public class MessagesRepository implements IMessagesRepository {
                                 }
                                 return networker.vkDefault(accountId)
                                         .messages()
-                                        .send(dbo.getId(), dbo.getPeerId(), null, dbo.getBody(), null, null, attachments, optionalFwd.getSecond().get(), null, null, null);
+                                        .send(dbo.getId(), dbo.getPeerId(), null, dbo.getBody(), null, null, attachments, null, null, null, null);
                             });
                 });
     }
@@ -1445,7 +1453,7 @@ public class MessagesRepository implements IMessagesRepository {
             String filePath = extras.get(Message.Extra.VOICE_RECORD);
             IDocsApi docsApi = networker.vkDefault(accountId).docs();
 
-            return docsApi.getUploadServer(null, "audio_message")
+            return docsApi.getMessagesUploadServer(dbo.getPeerId(), "audio_message")
                     .flatMap(server -> {
                         File file = new File(filePath);
                         InputStream[] is = new InputStream[1];

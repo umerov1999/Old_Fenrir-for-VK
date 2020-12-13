@@ -374,7 +374,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
     }
 
     private fun add(accountId: Int, audio: Audio) {
-        appendDisposable(mAudioInteractor!!.add(accountId, audio, null, null)
+        appendDisposable(mAudioInteractor!!.add(accountId, audio, null)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
                 .subscribe({ onAudioAdded() }) { showErrorInAdapter(it) })
     }
@@ -384,10 +384,10 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         resolveAddButton()
     }
 
-    private fun delete(accoutnId: Int, audio: Audio) {
+    private fun delete(accountId: Int, audio: Audio) {
         val id = audio.id
         val ownerId = audio.ownerId
-        appendDisposable(mAudioInteractor!!.delete(accoutnId, id, ownerId)
+        appendDisposable(mAudioInteractor!!.delete(accountId, id, ownerId)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
                 .subscribe({ onAudioDeletedOrRestored(id, ownerId, true) }) { showErrorInAdapter(it) })
     }

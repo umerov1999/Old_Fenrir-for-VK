@@ -54,8 +54,8 @@ public class FaveArticlesPresenter extends AccountDependencyPresenter<IFaveArtic
     private void loadCachedData() {
         cacheLoadingNow = true;
 
-        int accoutnId = getAccountId();
-        cacheDisposable.add(faveInteractor.getCachedArticles(accoutnId)
+        int accountId = getAccountId();
+        cacheDisposable.add(faveInteractor.getCachedArticles(accountId)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(this::onCachedDataReceived, this::onCacheGetError));
     }

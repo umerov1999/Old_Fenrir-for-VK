@@ -112,7 +112,7 @@ public class AudioCatalogAdapter extends RecyclerView.Adapter<AudioCatalogAdapte
         } else if (!Utils.isEmpty(category.getAudios())) {
             Audio current = MusicUtils.getCurrentAudio();
             int scroll_to = category.getAudios().indexOf(current);
-            AudioRecyclerAdapter adapter = new AudioRecyclerAdapter(mContext, category.getAudios(), false, false, position);
+            AudioRecyclerAdapter adapter = new AudioRecyclerAdapter(mContext, category.getAudios(), false, false, position, null);
             adapter.setClickListener(this);
             holder.list.setVisibility(View.VISIBLE);
             holder.list.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.HORIZONTAL));

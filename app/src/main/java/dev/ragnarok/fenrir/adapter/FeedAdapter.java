@@ -216,6 +216,8 @@ public class FeedAdapter extends RecyclerBindableAdapter<News, FeedAdapter.PostH
 
         void onIgnoreClick(News news);
 
+        void onFaveClick(News news);
+
         void onCommentButtonClick(News news);
 
         void onLikeClick(News news, boolean add);
@@ -269,6 +271,14 @@ public class FeedAdapter extends RecyclerBindableAdapter<News, FeedAdapter.PostH
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             int position = getItemRawPosition(recyclerView.getChildAdapterPosition(v));
             News feed = getItems().get(position);
+            if ("post".equals(feed.getType())) {
+                menu.add(0, v.getId(), 0, R.string.add_to_bookmarks).setOnMenuItemClickListener(item -> {
+                    if (clickListener != null) {
+                        clickListener.onFaveClick(feed);
+                    }
+                    return true;
+                });
+            }
             menu.add(0, v.getId(), 0, R.string.ban_author).setOnMenuItemClickListener(item -> {
                 if (clickListener != null) {
                     clickListener.onBanClick(feed);

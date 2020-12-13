@@ -84,20 +84,19 @@ public class Place implements Parcelable {
     public static final int MENTIONS = 73;
     public static final int OWNER_ARTICLES = 74;
     public static final int WALL_ATTACHMENTS = 75;
-    public static final int CHAT_DUAL = 76;
-    public static final int STORY_PLAYER = 77;
-    public static final int SINGLE_PHOTO = 78;
-    public static final int ARTIST = 79;
-    public static final int CATALOG_BLOCK_AUDIOS = 80;
-    public static final int CATALOG_BLOCK_PLAYLISTS = 81;
-    public static final int CATALOG_BLOCK_VIDEOS = 82;
-    public static final int CATALOG_BLOCK_LINKS = 83;
-    public static final int SHORT_LINKS = 84;
-    public static final int IMPORTANT_MESSAGES = 85;
-    public static final int MARKET_ALBUMS = 86;
-    public static final int MARKETS = 87;
-    public static final int MARKET_VIEW = 88;
-    public static final int GIFTS = 89;
+    public static final int STORY_PLAYER = 76;
+    public static final int SINGLE_PHOTO = 77;
+    public static final int ARTIST = 78;
+    public static final int CATALOG_BLOCK_AUDIOS = 79;
+    public static final int CATALOG_BLOCK_PLAYLISTS = 80;
+    public static final int CATALOG_BLOCK_VIDEOS = 81;
+    public static final int CATALOG_BLOCK_LINKS = 82;
+    public static final int SHORT_LINKS = 83;
+    public static final int IMPORTANT_MESSAGES = 84;
+    public static final int MARKET_ALBUMS = 85;
+    public static final int MARKETS = 86;
+    public static final int MARKET_VIEW = 87;
+    public static final int GIFTS = 88;
     public static final Creator<Place> CREATOR = new Creator<Place>() {
         @Override
         public Place createFromParcel(Parcel in) {

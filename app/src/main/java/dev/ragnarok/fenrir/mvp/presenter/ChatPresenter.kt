@@ -16,7 +16,9 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import dev.ragnarok.fenrir.*
 import dev.ragnarok.fenrir.activity.ActivityUtils
-import dev.ragnarok.fenrir.api.model.VKApiMessage
+import dev.ragnarok.fenrir.api.model.*
+import dev.ragnarok.fenrir.api.model.server.VkApiDocsUploadServer
+import dev.ragnarok.fenrir.api.model.upload.UploadDocDto
 import dev.ragnarok.fenrir.crypt.AesKeyPair
 import dev.ragnarok.fenrir.crypt.KeyExchangeService
 import dev.ragnarok.fenrir.crypt.KeyLocationPolicy
@@ -24,6 +26,7 @@ import dev.ragnarok.fenrir.crypt.KeyPairDoesNotExistException
 import dev.ragnarok.fenrir.db.Stores
 import dev.ragnarok.fenrir.domain.*
 import dev.ragnarok.fenrir.domain.IOwnersRepository.MODE_NET
+import dev.ragnarok.fenrir.exception.NotFoundException
 import dev.ragnarok.fenrir.exception.UploadNotResolvedException
 import dev.ragnarok.fenrir.link.LinkHelper
 import dev.ragnarok.fenrir.longpoll.ILongpollManager
@@ -45,6 +48,7 @@ import dev.ragnarok.fenrir.task.TextingNotifier
 import dev.ragnarok.fenrir.upload.*
 import dev.ragnarok.fenrir.util.*
 import dev.ragnarok.fenrir.util.Objects
+import dev.ragnarok.fenrir.util.Optional
 import dev.ragnarok.fenrir.util.RxUtils.*
 import dev.ragnarok.fenrir.util.Utils.*
 import io.reactivex.rxjava3.core.Flowable
@@ -52,16 +56,16 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.functions.Consumer
 import io.reactivex.rxjava3.functions.Predicate
-import java.io.File
-import java.io.IOException
+import java.io.*
 import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
-class ChatPrensenter(accountId: Int, private val messagesOwnerId: Int,
-                     initialPeer: Peer,
-                     config: ChatConfig, savedInstanceState: Bundle?) : AbsMessageListPresenter<IChatView>(accountId, savedInstanceState) {
+
+class ChatPresenter(accountId: Int, private val messagesOwnerId: Int,
+                    initialPeer: Peer, needCache: Boolean,
+                    config: ChatConfig, savedInstanceState: Bundle?) : AbsMessageListPresenter<IChatView>(accountId, savedInstanceState) {
 
     private var peer: Peer
     private var subtitle: String? = null
@@ -73,6 +77,7 @@ class ChatPrensenter(accountId: Int, private val messagesOwnerId: Int,
     private var textingNotifier: TextingNotifier
     private var toolbarSubtitleHandler: ToolbarSubtitleHandler = ToolbarSubtitleHandler(this)
     private var draftMessageDbAttachmentsCount: Int = 0
+    private val isNeedCache = needCache
 
     private var recordingLookup: Lookup
 
@@ -630,7 +635,7 @@ class ChatPrensenter(accountId: Int, private val messagesOwnerId: Int,
         setNetLoadingNow(true)
 
         val peerId = this.peerId
-        netLoadingDisposable = messagesRepository.getPeerMessages(messagesOwnerId, peerId, COUNT, null, startMessageId, !HronoType, HronoType)
+        netLoadingDisposable = messagesRepository.getPeerMessages(messagesOwnerId, peerId, COUNT, null, startMessageId, isNeedCache && !HronoType, HronoType)
                 .fromIOToMain()
                 .subscribe({ messages -> onNetDataReceived(messages, startMessageId) }, { this.onMessagesGetError(it) })
     }
@@ -1493,9 +1498,6 @@ class ChatPrensenter(accountId: Int, private val messagesOwnerId: Int,
     }
 
     fun fireChatDownloadClick(context: Context, action: String) {
-        if (!CheckUpdate.isFullVersionPropriety(context)) {
-            return
-        }
         val downloadWork = OneTimeWorkRequest.Builder(ChatDownloadWorker::class.java)
         val data = Data.Builder()
         data.putInt(Extra.OWNER_ID, peerId)
@@ -1721,9 +1723,68 @@ class ChatPrensenter(accountId: Int, private val messagesOwnerId: Int,
         }
     }
 
+    private fun checkGraffitiMessage(filePath: String): Single<Optional<IAttachmentToken?>> {
+        if (!isEmpty(filePath)) {
+            val docsApi = Injection.provideNetworkInterfaces().vkDefault(accountId).docs()
+            return docsApi.getMessagesUploadServer(peerId, "graffiti")
+                    .flatMap { server: VkApiDocsUploadServer ->
+                        val file = File(filePath)
+                        val `is` = arrayOfNulls<InputStream>(1)
+                        try {
+                            `is`[0] = FileInputStream(file)
+                            return@flatMap Injection.provideNetworkInterfaces().uploads()
+                                    .uploadDocumentRx(server.url, file.name, `is`[0]!!, null)
+                                    .doFinally(safelyCloseAction(`is`[0]))
+                                    .flatMap { uploadDto: UploadDocDto ->
+                                        docsApi
+                                                .save(uploadDto.file, null, null)
+                                                .map { dtos: VkApiDoc.Entry ->
+                                                    if (dtos.type.isEmpty()) {
+                                                        throw NotFoundException("Unable to save graffiti message")
+                                                    }
+                                                    val dto = dtos.doc
+                                                    val token = AttachmentsTokenCreator.ofDocument(dto.id, dto.ownerId, dto.accessKey)
+                                                    Optional.wrap(token)
+                                                }
+                                    }
+                        } catch (e: FileNotFoundException) {
+                            safelyClose(`is`[0])
+                            return@flatMap Single.error(e)
+                        }
+                    }
+        }
+        return Single.just(Optional.empty())
+    }
+
+    fun fireSendMyStickerClick(file: String) {
+        netLoadingDisposable = checkGraffitiMessage(file)
+                .compose(applySingleIOToMainSchedulers())
+                .subscribe({
+                    if (!it.isEmpty) {
+                        val kk = it.get() as AttachmentToken
+                        val graffiti = Graffiti().setId(kk.id).setOwner_id(kk.ownerId).setAccess_key(kk.accessKey)
+                        val builder = SaveMessageBuilder(messagesOwnerId, peerId).attach(graffiti)
+                        sendMessage(builder)
+                    }
+                }, { onConversationFetchFail(it) })
+    }
+
     fun fireStickerSendClick(sticker: Sticker) {
         view?.ScrollTo(0)
         val builder = SaveMessageBuilder(messagesOwnerId, peerId).attach(sticker)
+
+        val fwds = ArrayList<Message>()
+        for (model in outConfig.models) {
+            if (model is FwdMessages) {
+                fwds.addAll(model.fwds)
+            }
+        }
+        if (fwds.size == 1) {
+            builder.forwardMessages = fwds
+            outConfig.models.clear()
+            view?.resetInputAttachments()
+            resolveAttachmentsCounter()
+        }
         sendMessage(builder)
     }
 
@@ -2035,9 +2096,9 @@ class ChatPrensenter(accountId: Int, private val messagesOwnerId: Int,
         }
     }
 
-    private class ToolbarSubtitleHandler(prensenter: ChatPrensenter) : Handler(Looper.getMainLooper()) {
+    private class ToolbarSubtitleHandler(presenter: ChatPresenter) : Handler(Looper.getMainLooper()) {
 
-        var reference: WeakReference<ChatPrensenter> = WeakReference(prensenter)
+        var reference: WeakReference<ChatPresenter> = WeakReference(presenter)
 
         override fun handleMessage(msg: android.os.Message) {
             reference.get()?.run {

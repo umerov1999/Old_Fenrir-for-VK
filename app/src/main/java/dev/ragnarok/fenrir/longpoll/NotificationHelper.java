@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 
@@ -14,19 +15,25 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.Person;
 import androidx.core.app.RemoteInput;
 import androidx.core.content.FileProvider;
+import androidx.core.content.pm.ShortcutInfoCompat;
+import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
+import dev.ragnarok.fenrir.activity.ChatBubbleActivity;
 import dev.ragnarok.fenrir.activity.MainActivity;
 import dev.ragnarok.fenrir.activity.QuickAnswerActivity;
 import dev.ragnarok.fenrir.api.model.VKApiMessage;
@@ -44,7 +51,6 @@ import dev.ragnarok.fenrir.service.QuickReplyService;
 import dev.ragnarok.fenrir.settings.ISettings;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Objects;
-import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -79,7 +85,7 @@ public class NotificationHelper {
      */
 
     @SuppressLint("CheckResult")
-    public static void notifNewMessage(Context context, int accountId, Message message) {
+    public static void notifyNewMessage(Context context, int accountId, Message message) {
         ChatEntryFetcher.getRx(context, accountId, accountId)
                 .subscribeOn(NotificationScheduler.INSTANCE)
                 .subscribe(account -> ChatEntryFetcher.getRx(context, accountId, message.getPeerId())
@@ -88,21 +94,31 @@ public class NotificationHelper {
                             if (Settings.get().main().isLoad_history_notif()) {
                                 Repository.INSTANCE.getMessages().getPeerMessages(accountId, message.getPeerId(), 10, 1, null, false, false)
                                         .subscribeOn(NotificationScheduler.INSTANCE)
-                                        .subscribe(history -> {
-                                            Peer account_peer = new Peer(accountId).setTitle(account.title).setAvaUrl(account.img);
-                                            Peer peer = new Peer(message.getPeerId()).setTitle(info.title).setAvaUrl(info.img);
-                                            showNotification(context, accountId, peer, message, info.icon, history, account_peer, account.icon);
-                                        }, t -> {
-                                            Peer account_peer = new Peer(accountId).setTitle(account.title).setAvaUrl(account.img);
-                                            Peer peer = new Peer(message.getPeerId()).setTitle(info.title).setAvaUrl(info.img);
-                                            showNotification(context, accountId, peer, message, info.icon, null, account_peer, account.icon);
-                                        });
+                                        .subscribe(history -> doShowNotification(accountId, context, account, info, message, history), t -> doShowNotification(accountId, context, account, info, message, null));
                             } else {
-                                Peer account_peer = new Peer(accountId).setTitle(account.title).setAvaUrl(account.img);
-                                Peer peer = new Peer(message.getPeerId()).setTitle(info.title).setAvaUrl(info.img);
-                                showNotification(context, accountId, peer, message, info.icon, null, account_peer, account.icon);
+                                doShowNotification(accountId, context, account, info, message, null);
                             }
-                        }, RxUtils.ignore()), RxUtils.ignore());
+                        }, e -> doShowNotification(accountId, context, account, onErrorChat(context), message, null)), e -> doShowNotification(accountId, context, onErrorChat(context), onErrorChat(context), message, null));
+    }
+
+    private static ChatEntryFetcher.DialogInfo onErrorChat(Context context) {
+        ChatEntryFetcher.DialogInfo ret = new ChatEntryFetcher.DialogInfo();
+        ret.icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_avatar_unknown);
+        ret.title = context.getString(R.string.error);
+        return ret;
+    }
+
+    private static void doShowNotification(int accountId, Context context, ChatEntryFetcher.DialogInfo account,
+                                           ChatEntryFetcher.DialogInfo info, Message message, @Nullable List<Message> history) {
+        Peer account_peer = new Peer(accountId).setTitle(account.title).setAvaUrl(account.img);
+        Peer peer = new Peer(message.getPeerId()).setTitle(info.title).setAvaUrl(info.img);
+        if (info.icon == null) {
+            info.icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_avatar_unknown);
+        }
+        if (account.icon == null) {
+            account.icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_avatar_unknown);
+        }
+        showNotification(context, accountId, peer, message, info.icon, history, account_peer, account.icon);
     }
 
     private static String getSenderName(Owner own, Context ctx) {
@@ -173,7 +189,7 @@ public class NotificationHelper {
     }
 
     @SuppressLint("CheckResult")
-    public static void showNotification(Context context, int accountId, Peer peer, Message message, Bitmap avatar, List<Message> History, Peer ich, Bitmap acc_avatar) {
+    private static void showNotification(Context context, int accountId, Peer peer, Message message, Bitmap avatar, @Nullable List<Message> History, Peer ich, Bitmap acc_avatar) {
         boolean hideBody = Settings.get()
                 .security()
                 .needHideMessagesBodyForNotif();
@@ -276,7 +292,7 @@ public class NotificationHelper {
         Intent intent = new Intent(context, MainActivity.class);
         intent.setAction(MainActivity.ACTION_OPEN_PLACE);
 
-        Place chatPlace = PlaceFactory.getChatPlace(accountId, accountId, peer, 0);
+        Place chatPlace = PlaceFactory.getChatPlace(accountId, accountId, peer, true);
         intent.putExtra(Extra.PLACE, chatPlace);
 
         PendingIntent contentIntent = PendingIntent.getActivity(context, message.getId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -311,6 +327,12 @@ public class NotificationHelper {
 
         if (hasFlag(notificationMask, ISettings.INotificationSettings.FLAG_SOUND)) {
             builder.setSound(findNotificationSound());
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            createNotificationShortcut(context, builder, new Person.Builder()
+                    .setName(getSenderName(message.getSender(), context)).setIcon(IconCompat.createWithBitmap(message.getSenderId() == accountId ? acc_avatar : avatar))
+                    .setKey(String.valueOf(message.getSenderId())).build(), peer, accountId);
         }
 
         nManager.notify(createPeerTagFor(accountId, message.getPeerId()), NOTIFICATION_MESSAGE, builder.build());
@@ -436,6 +458,49 @@ public class NotificationHelper {
         if (urit != null)
             return new Content(MimeType, urit);
         return null;
+    }
+
+    @SuppressLint("RestrictedApi")
+    private static void createNotificationShortcut(Context context, NotificationCompat.Builder builder, Person person, Peer peer, int accountId) {
+        if (Peer.isGroupChat(peer.getId())) {
+            return;
+        }
+        try {
+            String person_name = person.getName() != null ? person.getName().toString() : context.getString(R.string.error);
+            String id = "fenrir_peer_" + peer.getId() + "_aid_" + accountId;
+            ShortcutInfoCompat.Builder shortcutBuilder = new ShortcutInfoCompat.Builder(context, id)
+                    .setShortLabel(person_name.trim())
+                    .setLongLabel(person_name)
+                    .setIntent(new Intent(Intent.ACTION_DEFAULT))
+                    .setLongLived(true);
+
+            Bitmap avatar;
+            shortcutBuilder.setPerson(person);
+            shortcutBuilder.setIcon(person.getIcon());
+            if (person.getIcon() != null) {
+                avatar = person.getIcon().getBitmap();
+            } else {
+                avatar = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_avatar_unknown);
+            }
+            ArrayList<ShortcutInfoCompat> arrayList = new ArrayList<>(1);
+            arrayList.add(shortcutBuilder.build());
+            ShortcutManagerCompat.addDynamicShortcuts(context, arrayList);
+            builder.setShortcutId(id);
+
+            Intent bubble_chat = new Intent(context, ChatBubbleActivity.class);
+            bubble_chat.setAction(ChatBubbleActivity.ACTION_OPEN_PLACE);
+            bubble_chat.putExtra(Extra.PLACE, PlaceFactory.getChatPlace(accountId, accountId, peer, true));
+            PendingIntent bubbleIntent = PendingIntent.getActivity(context, 0, bubble_chat, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            NotificationCompat.BubbleMetadata.Builder bubbleBuilder = new NotificationCompat.BubbleMetadata.Builder(bubbleIntent, IconCompat.createWithAdaptiveBitmap(avatar));
+
+            bubbleBuilder.setSuppressNotification(true);
+            bubbleBuilder.setAutoExpandBubble(false);
+            bubbleBuilder.setDesiredHeight(Utils.dp(640));
+            builder.setBubbleMetadata(bubbleBuilder.build());
+        } catch (Exception e) {
+            //FileLog.e(e);
+        }
     }
 
     private static class Content {

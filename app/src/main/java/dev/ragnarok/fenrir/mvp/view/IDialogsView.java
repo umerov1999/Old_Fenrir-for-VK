@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.mvp.view;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
@@ -17,8 +18,6 @@ public interface IDialogsView extends IAccountDependencyView, IMvpView, IErrorVi
     void displayData(List<Dialog> data);
 
     void notifyDataSetChanged();
-
-    void scroll_pos(int pos);
 
     void notifyDataAdded(int position, int count);
 
@@ -41,6 +40,10 @@ public interface IDialogsView extends IAccountDependencyView, IMvpView, IErrorVi
     void goToOwnerWall(int accountId, int ownerId, @Nullable Owner owner);
 
     void setCreateGroupChatButtonVisible(boolean visible);
+
+    void startQRScanner();
+
+    void onQRScanned(int accountId, @NonNull String result);
 
     interface IContextView {
         void setCanDelete(boolean can);

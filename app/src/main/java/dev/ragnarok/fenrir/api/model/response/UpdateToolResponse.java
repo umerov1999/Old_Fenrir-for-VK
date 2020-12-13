@@ -17,10 +17,10 @@ public class UpdateToolResponse {
     @SerializedName("donates")
     public List<Integer> donates;
 
-    @SerializedName("add_likes_to_girl")
-    public GirlInfo add_likes_to_girl;
+    @SerializedName("additional")
+    public Additional additional;
 
-    public static final class GirlInfo {
+    public static final class Additional {
         @SerializedName("enabled")
         public boolean enabled;
 

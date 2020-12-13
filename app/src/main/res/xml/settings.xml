@@ -173,6 +173,21 @@
 
         <SwitchPreference
             android:defaultValue="false"
+            android:key="snow_mode"
+            android:title="@string/snow_mode"
+            app:iconSpaceReserved="false" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/array_font_size_names"
+            android:entryValues="@array/array_font_size_items"
+            android:key="font_size"
+            android:title="@string/font_size"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreference
+            android:defaultValue="false"
             android:key="disable_history"
             android:title="@string/disable_history"
             app:iconSpaceReserved="false" />
@@ -275,6 +290,12 @@
             android:title="@string/swipes_for_chats_mode"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="messages_menu_down"
+            android:title="@string/messages_menu_down"
+            app:iconSpaceReserved="false" />
 
         <ListPreference
             android:defaultValue="0"
@@ -455,6 +476,12 @@
 
         <SwitchPreference
             android:defaultValue="false"
+            android:key="use_long_click_download"
+            android:title="@string/use_long_click_download"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="false"
             android:key="use_stop_audio"
             android:title="@string/use_stop_audio"
             app:iconSpaceReserved="false" />
@@ -568,6 +595,12 @@
             android:key="docs_dir"
             android:title="@string/docs_dir"
             app:icon="@drawable/dir_doc"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="sticker_dir"
+            android:title="@string/sticker_dir"
+            app:icon="@drawable/dir_sticker"
             app:iconSpaceReserved="false" />
 
         <SwitchPreference

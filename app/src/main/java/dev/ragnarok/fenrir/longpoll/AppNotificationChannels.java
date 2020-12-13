@@ -37,6 +37,9 @@ public class AppNotificationChannels {
         channel.setSound(NotificationHelper.findNotificationSound(), ATTRIBUTES);
         channel.enableLights(true);
         channel.enableVibration(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            channel.setAllowBubbles(true);
+        }
         return channel;
     }
 

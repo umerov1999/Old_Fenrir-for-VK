@@ -16,10 +16,10 @@ public class RecommendationsFriendsFragment extends AbsOwnersListFragment<Recomm
 
     private boolean isRequested;
 
-    public static RecommendationsFriendsFragment newInstance(int accoutnId, int userId) {
+    public static RecommendationsFriendsFragment newInstance(int accountId, int userId) {
         Bundle bundle = new Bundle();
         bundle.putInt(Extra.USER_ID, userId);
-        bundle.putInt(Extra.ACCOUNT_ID, accoutnId);
+        bundle.putInt(Extra.ACCOUNT_ID, accountId);
         RecommendationsFriendsFragment friendsFragment = new RecommendationsFriendsFragment();
         friendsFragment.setArguments(bundle);
         return friendsFragment;

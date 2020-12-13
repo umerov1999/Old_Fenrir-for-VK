@@ -7,6 +7,8 @@ import androidx.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 
+import dev.ragnarok.fenrir.api.model.AccessIdPair;
+import dev.ragnarok.fenrir.api.model.response.AddToPlaylistResponse;
 import dev.ragnarok.fenrir.fragment.search.criteria.AudioPlaylistSearchCriteria;
 import dev.ragnarok.fenrir.fragment.search.criteria.AudioSearchCriteria;
 import dev.ragnarok.fenrir.model.Audio;
@@ -20,7 +22,7 @@ import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
 
 public interface IAudioInteractor {
-    Completable add(int accountId, Audio orig, Integer groupId, Integer albumId);
+    Completable add(int accountId, Audio orig, Integer groupId);
 
     Completable delete(int accountId, int audioId, int ownerId);
 
@@ -30,7 +32,7 @@ public interface IAudioInteractor {
 
     Completable sendBroadcast(int accountId, int audioOwnerId, int audioId, @Nullable Collection<Integer> targetIds);
 
-    Single<List<Audio>> get(int accountId, Integer album_id, int ownerId, int offset, int count, String accessKey);
+    Single<List<Audio>> get(int accountId, Integer playlist_id, int ownerId, int offset, int count, String accessKey);
 
     Single<List<Audio>> getById(int accountId, List<IdPair> audios);
 
@@ -50,6 +52,14 @@ public interface IAudioInteractor {
 
     Single<List<AudioPlaylist>> getPlaylists(int accountId, int owner_id, int offset, int count);
 
+    Single<AudioPlaylist> createPlaylist(int accountId, int ownerId, String title, String description);
+
+    Single<Integer> editPlaylist(int accountId, int ownerId, int playlist_id, String title, String description);
+
+    Single<Integer> removeFromPlaylist(int accountId, int ownerId, int playlist_id, Collection<AccessIdPair> audio_ids);
+
+    Single<List<AddToPlaylistResponse>> addToPlaylist(int accountId, int ownerId, int playlist_id, Collection<AccessIdPair> audio_ids);
+
     Single<AudioPlaylist> followPlaylist(int accountId, int playlist_id, int ownerId, String accessKey);
 
     Single<AudioPlaylist> getPlaylistById(int accountId, int playlist_id, int ownerId, String accessKey);
@@ -58,13 +68,13 @@ public interface IAudioInteractor {
 
     Single<List<AudioPlaylist>> getDualPlaylists(int accountId, int owner_id, int first_playlist, int second_playlist);
 
+    Single<Integer> reorder(int accountId, int ownerId, int audio_id, Integer before, Integer after);
+
     Single<List<AudioCatalog>> getCatalog(int accountId, String artist_id);
 
     Single<CatalogBlock> getCatalogBlockById(int accountId, String block_id, String start_from);
 
     Completable PlaceToAudioCache(Context context);
-
-    Single<List<Audio>> loadLocalAudios(int accountId, Context context);
 
     Single<Pair<FindAt, List<AudioPlaylist>>> search_owner_playlist(int accountId, String q, int ownerId, int count, int offset, int loaded);
 }

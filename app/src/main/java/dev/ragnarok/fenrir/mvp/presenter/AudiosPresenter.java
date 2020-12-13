@@ -11,6 +11,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,6 +30,7 @@ import dev.ragnarok.fenrir.util.DownloadWorkUtils;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 
@@ -44,6 +46,7 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
     private final boolean iSSelectMode;
     private final String accessKey;
     private final CompositeDisposable audioListDisposable = new CompositeDisposable();
+    private Disposable swapDisposable = Disposable.disposed();
     private boolean actualReceived;
     private List<AudioPlaylist> Curr;
     private boolean loadingNow;
@@ -81,6 +84,10 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
 
     public boolean isMyAudio() {
         return isAlbum == 0 && option_menu_id == -1 && ownerId == getAccountId();
+    }
+
+    public Integer getPlaylistId() {
+        return isAlbum != 0 ? option_menu_id : null;
     }
 
     public void setLoadingNow(boolean loadingNow) {
@@ -183,6 +190,7 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
     @Override
     public void onDestroyed() {
         audioListDisposable.dispose();
+        swapDisposable.dispose();
         super.onDestroyed();
     }
 
@@ -300,6 +308,51 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
                         .subscribe(this::fireRefresh, t -> showError(getView(), getCauseIfRuntime(t)))))
                 .setNegativeButton(R.string.button_cancel, null);
         builder.create().show();
+    }
+
+    private void tempSwap(int fromPosition, int toPosition) {
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(audios, i, i + 1);
+            }
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(audios, i, i - 1);
+            }
+        }
+        callView(v -> v.notifyItemMoved(fromPosition, toPosition));
+    }
+
+    public boolean fireItemMoved(int fromPosition, int toPosition) {
+        if (audios.size() < 2) {
+            return false;
+        }
+        Audio audio_from = audios.get(fromPosition);
+
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(audios, i, i + 1);
+            }
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(audios, i, i - 1);
+            }
+        }
+        callView(v -> v.notifyItemMoved(fromPosition, toPosition));
+
+        Integer before = null;
+        Integer after = null;
+        if (toPosition == 0) {
+            before = audios.get(1).getId();
+        } else {
+            after = audios.get(toPosition - 1).getId();
+        }
+
+        swapDisposable.dispose();
+        swapDisposable = audioInteractor.reorder(getAccountId(), ownerId, audio_from.getId(), before, after)
+                .compose(RxUtils.applySingleIOToMainSchedulers())
+                .subscribe(RxUtils.ignore(), e -> tempSwap(toPosition, fromPosition));
+        return true;
     }
 
     @Override

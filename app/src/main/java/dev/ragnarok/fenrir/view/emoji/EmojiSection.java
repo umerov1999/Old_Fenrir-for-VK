@@ -11,6 +11,7 @@ public class EmojiSection extends AbsSection {
     public static final int TYPE_CARS = 4;
     public static final int TYPE_ELECTRONICS = 5;
     public static final int TYPE_SYMBOLS = 6;
+    public static final int TYPE_MY_STICKERS = 7;
 
     public final int emojiType;
     public final Drawable drawable;

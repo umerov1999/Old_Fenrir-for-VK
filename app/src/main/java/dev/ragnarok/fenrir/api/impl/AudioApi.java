@@ -5,12 +5,14 @@ import java.util.List;
 
 import dev.ragnarok.fenrir.api.IServiceProvider;
 import dev.ragnarok.fenrir.api.interfaces.IAudioApi;
+import dev.ragnarok.fenrir.api.model.AccessIdPair;
 import dev.ragnarok.fenrir.api.model.IdPair;
 import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiAudio;
 import dev.ragnarok.fenrir.api.model.VKApiAudioCatalog;
 import dev.ragnarok.fenrir.api.model.VKApiAudioPlaylist;
 import dev.ragnarok.fenrir.api.model.VkApiLyrics;
+import dev.ragnarok.fenrir.api.model.response.AddToPlaylistResponse;
 import dev.ragnarok.fenrir.api.model.response.CatalogResponse;
 import dev.ragnarok.fenrir.api.model.server.VkApiAudioUploadServer;
 import dev.ragnarok.fenrir.api.services.IAudioService;
@@ -96,10 +98,50 @@ class AudioApi extends AbsApi implements IAudioApi {
     }
 
     @Override
-    public Single<Integer> add(int audioId, int ownerId, Integer groupId, Integer albumId) {
+    public Single<Integer> add(int audioId, int ownerId, Integer groupId) {
         return provideService(IAudioService.class)
                 .flatMap(service -> service
-                        .add(audioId, ownerId, groupId, albumId)
+                        .add(audioId, ownerId, groupId)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<VKApiAudioPlaylist> createPlaylist(int ownerId, String title, String description) {
+        return provideService(IAudioService.class)
+                .flatMap(service -> service
+                        .createPlaylist(ownerId, title, description)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<Integer> editPlaylist(int ownerId, int playlist_id, String title, String description) {
+        return provideService(IAudioService.class)
+                .flatMap(service -> service
+                        .editPlaylist(ownerId, playlist_id, title, description)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<Integer> removeFromPlaylist(int ownerId, int playlist_id, Collection<AccessIdPair> audio_ids) {
+        return provideService(IAudioService.class)
+                .flatMap(service -> service
+                        .removeFromPlaylist(ownerId, playlist_id, join(audio_ids, ",", AccessIdPair::format))
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<List<AddToPlaylistResponse>> addToPlaylist(int ownerId, int playlist_id, Collection<AccessIdPair> audio_ids) {
+        return provideService(IAudioService.class)
+                .flatMap(service -> service
+                        .addToPlaylist(ownerId, playlist_id, join(audio_ids, ",", AccessIdPair::format))
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<Integer> reorder(int ownerId, int audio_id, Integer before, Integer after) {
+        return provideService(IAudioService.class)
+                .flatMap(service -> service
+                        .reorder(ownerId, audio_id, before, after)
                         .map(extractResponseWithErrorHandling()));
     }
 
@@ -143,11 +185,11 @@ class AudioApi extends AbsApi implements IAudioApi {
     }
 
     @Override
-    public Single<Items<VKApiAudio>> get(Integer album_id, Integer ownerId, Integer offset, Integer count, String accessKey) {
+    public Single<Items<VKApiAudio>> get(Integer playlist_id, Integer ownerId, Integer offset, Integer count, String accessKey) {
         if (Settings.get().other().isUse_old_vk_api())
-            return provideService(IAudioService.class).flatMap(service -> service.getOld(album_id, ownerId, offset, count, "5.90", accessKey).map(extractResponseWithErrorHandling()));
+            return provideService(IAudioService.class).flatMap(service -> service.getOld(playlist_id, ownerId, offset, count, "5.90", accessKey).map(extractResponseWithErrorHandling()));
         else
-            return provideService(IAudioService.class).flatMap(service -> service.get(album_id, ownerId, offset, count, accessKey).map(extractResponseWithErrorHandling()));
+            return provideService(IAudioService.class).flatMap(service -> service.get(playlist_id, ownerId, offset, count, accessKey).map(extractResponseWithErrorHandling()));
     }
 
     @Override

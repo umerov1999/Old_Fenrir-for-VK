@@ -27,6 +27,7 @@ import io.reactivex.rxjava3.plugins.RxJavaPlugins
 import org.conscrypt.Conscrypt
 import java.security.Security
 
+
 class App : Application(), ImageLoaderFactory {
     private val compositeDisposable = CompositeDisposable()
 
@@ -38,6 +39,7 @@ class App : Application(), ImageLoaderFactory {
     override fun onCreate() {
         sInstanse = this
         AppCompatDelegate.setDefaultNightMode(Settings.get().ui().nightMode)
+
         CrashConfig.Builder.create()
                 .apply()
         RLottieDrawable.init(this)

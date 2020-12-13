@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -285,6 +286,11 @@ public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedVi
     }
 
     @Override
+    public void onFaveClick(News news) {
+        getPresenter().fireAddBookmark(news.getSourceId(), news.getPostId());
+    }
+
+    @Override
     public void onCommentButtonClick(News news) {
         getPresenter().fireNewsCommentClick(news);
     }
@@ -419,6 +425,11 @@ public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedVi
                     mFeedSourceAdapter.removeChild(position);
                     getPresenter().fireFeedSourceDelete(Integer.parseInt(entry.getValue().replace("list", "")));
                 }).show();
+    }
+
+    @Override
+    public void showSuccessToast() {
+        Toast.makeText(getContext(), R.string.success, Toast.LENGTH_SHORT).show();
     }
 
     @Override

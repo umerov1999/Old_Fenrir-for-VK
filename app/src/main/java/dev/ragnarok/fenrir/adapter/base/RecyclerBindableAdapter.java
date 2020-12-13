@@ -75,12 +75,19 @@ public abstract class RecyclerBindableAdapter<T, VH extends RecyclerView.ViewHol
         notifyItemRangeInserted(size + getHeadersCount(), items.size());
     }
 
+    public void notifyItemBindableMoved(int fromPosition, int toPosition) {
+        notifyItemMoved(fromPosition + getHeadersCount(), toPosition + getHeadersCount());
+    }
+
     public void notifyItemBindableChanged(int position) {
         notifyItemChanged(position + getHeadersCount());
     }
 
     public void notifyItemBindableRemoved(int position) {
         notifyItemRemoved(position + getHeadersCount());
+        int positionStart = position + getHeadersCount();
+        int itemCount = items.size() - position;
+        notifyItemRangeChanged(positionStart, itemCount);
     }
 
     public void notifyItemBindableRangeInserted(int position, int count) {

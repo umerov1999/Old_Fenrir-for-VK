@@ -131,6 +131,8 @@ public interface ISettings {
 
         String getDocDir();
 
+        String getStickerDir();
+
         boolean isPhoto_to_user_dir();
 
         boolean isDelete_cache_images();
@@ -212,9 +214,13 @@ public interface ISettings {
 
         boolean is_smooth_chat();
 
+        boolean isMessages_menu_down();
+
         boolean isAmoledTheme();
 
         boolean isAudio_round_icon();
+
+        boolean isUse_long_click_download();
 
         boolean isShow_bot_keyboard();
 
@@ -243,7 +249,11 @@ public interface ISettings {
 
         boolean isWebview_night_mode();
 
+        boolean isSnow_mode();
+
         int getPhotoRoundMode();
+
+        int getFontSize();
 
         boolean isLoad_history_notif();
 

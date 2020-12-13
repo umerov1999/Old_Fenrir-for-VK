@@ -412,9 +412,9 @@ class OwnersStorage extends AbsStorage implements IOwnersStorage {
     }
 
     @Override
-    public Single<Optional<UserEntity>> findUserByDomain(int accoutnId, String domain) {
+    public Single<Optional<UserEntity>> findUserByDomain(int accountId, String domain) {
         return Single.create(emitter -> {
-            Uri uri = MessengerContentProvider.getUserContentUriFor(accoutnId);
+            Uri uri = MessengerContentProvider.getUserContentUriFor(accountId);
             String where = UserColumns.DOMAIN + " LIKE ?";
             String[] args = {domain};
             Cursor cursor = getContentResolver().query(uri, null, where, args, null);

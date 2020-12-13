@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.domain;
 
+import android.content.Context;
+
 import java.util.List;
 
 import dev.ragnarok.fenrir.model.StickerSet;
@@ -14,4 +16,6 @@ public interface IStickersInteractor {
     Single<List<StickerSet>> getStickers(int accountId);
 
     Single<List<StickersKeywords>> getKeywordsStickers(int accountId);
+
+    Completable PlaceToStickerCache(Context context);
 }

@@ -370,7 +370,10 @@ open class TouchImageView @JvmOverloads constructor(context: Context, attrs: Att
     /**
      * Reset zoom and translation to initial state.
      */
-    private fun resetZoom() {
+    fun resetZoom() {
+        if (currentZoom == 1f) {
+            return
+        }
         currentZoom = 1f
         fitImageToView()
     }

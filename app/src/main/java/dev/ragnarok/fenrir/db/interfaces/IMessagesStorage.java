@@ -38,7 +38,7 @@ public interface IMessagesStorage extends IStorage {
     Single<Integer> saveDraftMessageBody(int acocuntId, int peerId, String body);
 
     //@CheckResult
-    //Maybe<Integer> getDraftMessageId(int accoutnId, int peerId);
+    //Maybe<Integer> getDraftMessageId(int accountId, int peerId);
 
     Single<Integer> getMessageStatus(int accountId, int dbid);
 

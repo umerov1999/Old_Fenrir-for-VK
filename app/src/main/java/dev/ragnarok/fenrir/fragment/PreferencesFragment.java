@@ -201,6 +201,12 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             return true;
         });
 
+        SwitchPreference messages_menu_down = findPreference("messages_menu_down");
+        messages_menu_down.setOnPreferenceChangeListener((preference, newValue) -> {
+            requireActivity().recreate();
+            return true;
+        });
+
         SwitchPreference prefAmoled = findPreference("amoled_theme");
         prefAmoled.setOnPreferenceChangeListener((preference, newValue) -> {
             requireActivity().recreate();
@@ -233,6 +239,18 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         SwitchPreference do_zoom_photo = findPreference("do_zoom_photo");
         do_zoom_photo.setOnPreferenceChangeListener((preference, newValue) -> {
+            requireActivity().recreate();
+            return true;
+        });
+
+        ListPreference font_size = findPreference("font_size");
+        font_size.setOnPreferenceChangeListener((preference, newValue) -> {
+            requireActivity().recreate();
+            return true;
+        });
+
+        SwitchPreference snow_mode = findPreference("snow_mode");
+        snow_mode.setOnPreferenceChangeListener((preference, newValue) -> {
             requireActivity().recreate();
             return true;
         });
@@ -487,6 +505,27 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     FilePickerDialog dialog = new FilePickerDialog(requireActivity(), properties, Settings.get().ui().getMainTheme());
                     dialog.setTitle(R.string.docs_dir);
                     dialog.setDialogSelectionListener(files -> PreferenceManager.getDefaultSharedPreferences(Injection.provideApplicationContext()).edit().putString("docs_dir", files[0]).apply());
+                    dialog.show();
+                    return true;
+                });
+
+        findPreference("sticker_dir")
+                .setOnPreferenceClickListener(preference -> {
+                    if (!AppPerms.hasReadStoragePermision(getActivity())) {
+                        AppPerms.requestReadExternalStoragePermission(getActivity());
+                        return true;
+                    }
+                    DialogProperties properties = new DialogProperties();
+                    properties.selection_mode = DialogConfigs.SINGLE_MODE;
+                    properties.selection_type = DialogConfigs.DIR_SELECT;
+                    properties.root = Environment.getExternalStorageDirectory();
+                    properties.error_dir = Environment.getExternalStorageDirectory();
+                    properties.offset = new File(Settings.get().other().getStickerDir());
+                    properties.extensions = null;
+                    properties.show_hidden_files = true;
+                    FilePickerDialog dialog = new FilePickerDialog(requireActivity(), properties, Settings.get().ui().getMainTheme());
+                    dialog.setTitle(R.string.docs_dir);
+                    dialog.setDialogSelectionListener(files -> PreferenceManager.getDefaultSharedPreferences(Injection.provideApplicationContext()).edit().putString("sticker_dir", files[0]).apply());
                     dialog.show();
                     return true;
                 });

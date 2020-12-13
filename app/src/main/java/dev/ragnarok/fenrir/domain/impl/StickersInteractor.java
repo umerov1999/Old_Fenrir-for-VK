@@ -1,7 +1,10 @@
 package dev.ragnarok.fenrir.domain.impl;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +22,7 @@ import dev.ragnarok.fenrir.domain.mappers.Entity2Model;
 import dev.ragnarok.fenrir.model.StickerSet;
 import dev.ragnarok.fenrir.model.StickersKeywords;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
@@ -94,5 +98,29 @@ public class StickersInteractor implements IStickersInteractor {
     public Single<List<StickersKeywords>> getKeywordsStickers(int accountId) {
         return storage.getKeywordsStickers(accountId)
                 .map(entities -> mapAll(entities, Entity2Model::map));
+    }
+
+    @Override
+    public Completable PlaceToStickerCache(Context context) {
+        if (!AppPerms.hasReadWriteStoragePermision(context))
+            return Completable.complete();
+        return Completable.create(t -> {
+            File temp = new File(Settings.get().other().getStickerDir());
+            if (!temp.exists()) {
+                t.onComplete();
+                return;
+            }
+            File[] file_list = temp.listFiles();
+            if (file_list == null || file_list.length <= 0) {
+                t.onComplete();
+                return;
+            }
+            Utils.getCachedMyStickers().clear();
+            for (File u : file_list) {
+                if (u.isFile() && (u.getName().contains(".png"))) {
+                    Utils.getCachedMyStickers().add(u.getAbsolutePath());
+                }
+            }
+        });
     }
 }

@@ -34,7 +34,7 @@ public interface IOwnersStorage extends IStorage {
 
     Single<Optional<CommunityEntity>> findCommunityDboById(int accountId, int ownerId);
 
-    Single<Optional<UserEntity>> findUserByDomain(int accoutnId, String domain);
+    Single<Optional<UserEntity>> findUserByDomain(int accountId, String domain);
 
     Single<Optional<CommunityEntity>> findCommunityByDomain(int accountId, String domain);
 

@@ -49,6 +49,7 @@ public class ImportantMessagesFragment extends PlaceSupportMvpFragment<Important
         implements MessagesAdapter.OnMessageActionListener, IImportantMessagesView, AttachmentsViewBinder.VoiceActionListener {
 
     private final ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        @Override
         public boolean onMove(@NotNull RecyclerView recyclerView,
                               @NotNull RecyclerView.ViewHolder viewHolder, @NotNull RecyclerView.ViewHolder target) {
             return false;
@@ -58,6 +59,11 @@ public class ImportantMessagesFragment extends PlaceSupportMvpFragment<Important
         public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
             viewHolder.itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             getPresenter().fireRemoveImportant(viewHolder.getBindingAdapterPosition());
+        }
+
+        @Override
+        public boolean isLongPressDragEnabled() {
+            return false;
         }
     };
     private MessagesAdapter mAdapter;

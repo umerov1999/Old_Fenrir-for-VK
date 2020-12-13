@@ -86,11 +86,11 @@ public class BirthdayFCMMessage {
                 });
     }
 
-    private void onOwnersDataReceived(Context context, int accoutnId, List<Owner> owners) {
+    private void onOwnersDataReceived(Context context, int accountId, List<Owner> owners) {
         for (Owner owner : owners) {
             NotificationUtils.loadRoundedImageRx(context, owner.get100photoOrSmaller(), R.drawable.ic_avatar_unknown)
                     .subscribeOn(NotificationScheduler.INSTANCE)
-                    .subscribe(bitmap -> onUsersDataReceived(context, accoutnId, owner, bitmap), t -> {
+                    .subscribe(bitmap -> onUsersDataReceived(context, accountId, owner, bitmap), t -> {
                     });
         }
     }

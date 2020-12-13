@@ -330,6 +330,12 @@ public class InputViewController {
         }
     }
 
+    public void setOnMySickerClickListener(EmojiconsPopup.OnMyStickerClickedListener sickerMyClickListener) {
+        if (emojiPopup != null) {
+            emojiPopup.setMyOnStickerClickedListener(sickerMyClickListener);
+        }
+    }
+
     private void switchModeTo(int mode) {
         if (mCurrentMode != mode) {
             mCurrentMode = mode;

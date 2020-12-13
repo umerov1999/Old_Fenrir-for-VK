@@ -25,7 +25,7 @@ public class SendAttachmentsActivity extends MainActivity {
         intent.setAction(ACTION_SEND_ATTACHMENTS);
         intent.putExtra(EXTRA_INPUT_ATTACHMENTS, bundle);
         intent.putExtra(MainActivity.EXTRA_NO_REQUIRE_PIN, true);
-        intent.putExtra(Extra.PLACE, PlaceFactory.getDialogsPlace(accountId, accountId, null, 0));
+        intent.putExtra(Extra.PLACE, PlaceFactory.getDialogsPlace(accountId, accountId, null));
         context.startActivity(intent);
     }
 
@@ -33,7 +33,7 @@ public class SendAttachmentsActivity extends MainActivity {
         Intent intent = new Intent(context, ChatActivity.class);
         intent.setAction(ChatActivity.ACTION_OPEN_PLACE);
         intent.putExtra(EXTRA_INPUT_ATTACHMENTS, bundle);
-        intent.putExtra(Extra.PLACE, PlaceFactory.getChatPlace(accountId, accountId, peer, 0));
+        intent.putExtra(Extra.PLACE, PlaceFactory.getChatPlace(accountId, accountId, peer, true));
         context.startActivity(intent);
     }
 

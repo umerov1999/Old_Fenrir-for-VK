@@ -31,7 +31,10 @@ public interface IDocsApi {
     Single<VkApiDoc.Entry> save(String file, String title, String tags);
 
     @CheckResult
-    Single<VkApiDocsUploadServer> getUploadServer(Integer groupId, String type);
+    Single<VkApiDocsUploadServer> getUploadServer(Integer groupId);
+
+    @CheckResult
+    Single<VkApiDocsUploadServer> getMessagesUploadServer(Integer peerId, String type);
 
     @CheckResult
     Single<VkApiVideosUploadServer> getVideoServer(Integer isPrivate, Integer group_id, String name);

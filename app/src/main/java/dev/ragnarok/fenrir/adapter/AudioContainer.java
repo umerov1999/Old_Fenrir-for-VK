@@ -129,7 +129,7 @@ public class AudioContainer extends LinearLayout {
     }
 
     private void addTrack(int accountId, Audio audio) {
-        audioListDisposable = mAudioInteractor.add(accountId, audio, null, null).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() ->
+        audioListDisposable = mAudioInteractor.add(accountId, audio, null).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() ->
                 CustomToast.CreateCustomToast(mContext).showToast(R.string.added), t -> Utils.showErrorInAdapter((Activity) mContext, t));
     }
 

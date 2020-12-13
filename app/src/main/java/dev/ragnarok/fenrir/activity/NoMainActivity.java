@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.activity;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -43,6 +44,11 @@ public abstract class NoMainActivity extends AppCompatActivity {
         w.setNavigationBarColor(CurrentTheme.getNavigationBarColor(this));
 
         getSupportFragmentManager().addOnBackStackChangedListener(mBackStackListener);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(Utils.updateActivityContext(newBase));
     }
 
     @Override

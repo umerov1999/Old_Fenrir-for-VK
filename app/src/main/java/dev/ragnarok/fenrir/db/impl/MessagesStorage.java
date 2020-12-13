@@ -563,9 +563,9 @@ class MessagesStorage extends AbsStorage implements IMessagesStorage {
         });
     }
 
-    private Integer findDraftMessageId(int accoutnId, int peerId) {
+    private Integer findDraftMessageId(int accountId, int peerId) {
         String[] columns = {MessageColumns._ID};
-        Uri uri = MessengerContentProvider.getMessageContentUriFor(accoutnId);
+        Uri uri = MessengerContentProvider.getMessageContentUriFor(accountId);
 
         Cursor cursor = getContext().getContentResolver().query(uri, columns,
                 MessageColumns.PEER_ID + " = ? AND " + MessageColumns.STATUS + " = ?",

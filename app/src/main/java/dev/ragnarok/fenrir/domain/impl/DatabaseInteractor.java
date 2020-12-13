@@ -35,8 +35,8 @@ public class DatabaseInteractor implements IDatabaseInteractor {
     }
 
     @Override
-    public Single<List<Chair>> getChairs(int accoutnId, int facultyId, int count, int offset) {
-        return networker.vkDefault(accoutnId)
+    public Single<List<Chair>> getChairs(int accountId, int facultyId, int count, int offset) {
+        return networker.vkDefault(accountId)
                 .database()
                 .getChairs(facultyId, offset, count)
                 .map(items -> {
@@ -158,8 +158,8 @@ public class DatabaseInteractor implements IDatabaseInteractor {
     }
 
     @Override
-    public Single<List<University>> getUniversities(int accoutnId, String filter, Integer cityId, Integer countyId, int count, int offset) {
-        return networker.vkDefault(accoutnId)
+    public Single<List<University>> getUniversities(int accountId, String filter, Integer cityId, Integer countyId, int count, int offset) {
+        return networker.vkDefault(accountId)
                 .database()
                 .getUniversities(filter, countyId, cityId, offset, count)
                 .map(items -> {

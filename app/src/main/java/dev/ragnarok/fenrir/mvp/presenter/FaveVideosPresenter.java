@@ -53,8 +53,8 @@ public class FaveVideosPresenter extends AccountDependencyPresenter<IFaveVideosV
     private void loadCachedData() {
         cacheLoadingNow = true;
 
-        int accoutnId = getAccountId();
-        cacheDisposable.add(faveInteractor.getCachedVideos(accoutnId)
+        int accountId = getAccountId();
+        cacheDisposable.add(faveInteractor.getCachedVideos(accountId)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(this::onCachedDataReceived, this::onCacheGetError));
     }

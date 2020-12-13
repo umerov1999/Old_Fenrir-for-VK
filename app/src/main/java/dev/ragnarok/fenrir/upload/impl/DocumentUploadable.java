@@ -81,7 +81,7 @@ public class DocumentUploadable implements IUploadable<Document> {
         if (initialServer == null) {
             serverSingle = networker.vkDefault(accountId)
                     .docs()
-                    .getUploadServer(groupId, null)
+                    .getUploadServer(groupId)
                     .map(s -> s);
         } else {
             serverSingle = Single.just(initialServer);

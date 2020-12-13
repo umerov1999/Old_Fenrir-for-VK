@@ -47,6 +47,20 @@
         <item>2</item>
     </string-array>
 
+    <string-array name="array_font_size_names">
+        <item>Поумолчанию</item>
+        <item>Средний</item>
+        <item>Большой</item>
+        <item>Огромный</item>
+    </string-array>
+
+    <string-array name="array_font_size_items" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
     <string-array name="array_news_start_updates_names">
         <item>Отключить</item>
         <item>Обновлять</item>
@@ -73,12 +87,16 @@
         <item>Валькнут</item>
         <item>Иггдрасиль</item>
         <item>Мьёльнир</item>
+        <item>Вегвизир</item>
+        <item>Кельтский узел</item>
     </string-array>
 
     <string-array name="array_pagan_symbol_items" translatable="false">
         <item>0</item>
         <item>1</item>
         <item>2</item>
+        <item>3</item>
+        <item>4</item>
     </string-array>
 
     <string-array name="array_accounts_input">
@@ -150,6 +168,7 @@
     <string name="sending_message_failed">Отправка сообщения не удалась</string>
     <string name="try_again">Повторить</string>
     <string name="delete">Удалить</string>
+    <string name="delete_from_playlist">Удалить из плейлиста</string>
     <string name="select_attachments">Выберите вложения</string>
 
     <string name="attachment_wall_post">Запись</string>
@@ -265,7 +284,7 @@
         <item>4</item>
     </string-array>
 
-    <string-array name="crypt_version_names">
+    <string-array name="crypt_version_names" translatable="false">
         <item>1 (RSA-512, AES-128)</item>
         <item>2 (RSA-2048, AES-256)</item>
     </string-array>
@@ -894,6 +913,7 @@
     <string name="additional_settings">Дополнительные параметры</string>
     <string name="button_continue">Продолжить</string>
     <string name="create_album">Создать новый альбом</string>
+    <string name="create_playlist">Создать плейлист</string>
     <string name="disallow_commenting">Отключить комментирование</string>
     <string name="description_hint">Описание</string>
     <string name="finish">Завершить</string>
@@ -1073,11 +1093,11 @@
     <string name="send_short">Отпр.</string>
     <string name="message_attachment_empty_text">Вложений пока нет (лимит 10)</string>
     <string name="button_add_photo">Добавить фото/видео</string>
-    <string name="log_type_error" translatable="false">Исключения</string>
-    <string name="settings_show_logs_title" translatable="false">Логи</string>
-    <string name="settings_domain" translatable="false">Домен API VK</string>
-    <string name="settings_vk_auth_domain" translatable="false">Домен OAUTH VK</string>
-    <string name="application_logs" translatable="false">Логи приложения</string>
+    <string name="log_type_error">Исключения</string>
+    <string name="settings_show_logs_title">Логи</string>
+    <string name="settings_domain">Домен API VK</string>
+    <string name="settings_vk_auth_domain">Домен OAUTH VK</string>
+    <string name="application_logs">Логи приложения</string>
     <string name="search_option_empty_text">Опции поиска недоступны</string>
     <string name="comment_editing_title">Редактирование</string>
     <string name="saving">Сохранение</string>
@@ -1232,6 +1252,8 @@
     <string name="proxy_authorization">Авторизация</string>
     <string name="button_disable">Отключить</string>
     <string name="action_add">Добавить</string>
+    <string name="action_add_audios">Добавить треки</string>
+    <string name="to_gif_converter">Конвертировать в Gif</string>
     <string name="get_bitrate">Узнать Битрейт</string>
     <string name="use_internal_downloader">Использовать внутренний загрузчик</string>
     <string name="use_internal_downloader_summary">Для видео и документов</string>
@@ -1358,8 +1380,10 @@
     <string name="gifts">Подарки</string>
     <string name="chat">Чат</string>
     <string name="chat_json">Чат из Json</string>
+    <string name="lottie_preview">Lottie Preview</string>
     <string name="open_clipboard_url">Открыть ссылку из буфера</string>
     <string name="set_offline">Стать Offline</string>
+    <string name="scan_qr">Сканировать QR</string>
     <string name="empty_clipboard_url">Буфер обмена не содержит ссылку</string>
     <string name="empty_url">Пустая ссылка</string>
     <string name="get_lyrics">ТЕКСТ ПЕСНИ</string>
@@ -1377,6 +1401,7 @@
     <string name="search_by_artist">Поиск по исполнителю</string>
     <string name="info_reading">Уведомлять о прочтении вашего сообщения</string>
     <string name="use_stop_audio">Стоп вместо паузы аудио</string>
+    <string name="use_long_click_download">Скачивать по долгому нажатию</string>
     <string name="download">Скачать"</string>
     <string name="downloaded">Скаченные"</string>
     <string name="downloading">Скачивание"</string>
@@ -1418,6 +1443,7 @@
     <string name="photo_dir">Фото</string>
     <string name="video_dir">Видео</string>
     <string name="docs_dir">Документы</string>
+    <string name="sticker_dir">Стикеры</string>
     <string name="photo_to_user_dir">Сортировать фото по папкам</string>
     <string name="import_accounts">Импорт аккаунтов</string>
     <string name="export_accounts">Экспорт аккаунтов</string>
@@ -1441,11 +1467,13 @@
     <string name="read_article">Читать</string>
     <string name="copy_simple">Скопировать</string>
     <string name="webview_night_mode">Включить ночной режим WebView</string>
+    <string name="snow_mode">Симуляция снега</string>
     <string name="webview_summary">Красить страницы в зависимости от темы</string>
     <string name="be_online">Быть онлайн</string>
     <string name="wall_attachments">Вложения на стене</string>
     <string name="posts_analized">%1$d постов проверено</string>
     <string name="photo_rounded_view">Скругление краёв изображений</string>
+    <string name="font_size">Размер шрифта</string>
     <string name="load_history_notif">Предпросмотр диалога в уведомлениях</string>
     <string name="load_history_notif_summary">Отображать последние сообщения из чата (может стать причиной капчи)</string>
     <string name="mp3_friendly">Если не работает скачивание</string>
@@ -1570,4 +1598,6 @@
     <string name="custom_icon">Кастомные</string>
     <string name="select_custom_icon">Сменить иконку</string>
     <string name="use_coil_library_summary">Coil library, нестабильно</string>
+    <string name="messages_menu_down">Меню действий с сообщениями внизу</string>
+    <string name="my">Мои</string>
 </resources>

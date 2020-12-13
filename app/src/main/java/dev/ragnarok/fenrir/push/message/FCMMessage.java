@@ -89,7 +89,7 @@ public class FCMMessage {
             return;
         }
 
-        NotificationHelper.notifNewMessage(context, accountId, body, peerId, message_id, vk_time);*/
+        NotificationHelper.notifyNewMessage(context, accountId, body, peerId, message_id, vk_time);*/
     }
 
     private static final class MessageContext {

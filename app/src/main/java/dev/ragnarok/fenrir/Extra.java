@@ -46,7 +46,6 @@ public class Extra {
     public static final String START_FROM = "start_from";
     public static final String RANGE = "range";
     public static final String COUNT = "count";
-    public static final String OFFSET = "offset";
     public static final String SORT = "sort";
     public static final String END_OF_CONTENT = "end_of_content";
     public static final String POST = "post";
@@ -131,4 +130,5 @@ public class Extra {
     public static final String STORY = "story";
     public static final String UPDATE_INFO = "update_info";
     public static final String MARKET = "market";
+    public static final String CACHE = "cache";
 }

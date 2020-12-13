@@ -14,6 +14,7 @@ import android.provider.MediaStore
 import android.text.InputType
 import android.util.SparseBooleanArray
 import android.view.*
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.TextView
@@ -52,7 +53,7 @@ import dev.ragnarok.fenrir.model.*
 import dev.ragnarok.fenrir.model.Types
 import dev.ragnarok.fenrir.model.selection.*
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory
-import dev.ragnarok.fenrir.mvp.presenter.ChatPrensenter
+import dev.ragnarok.fenrir.mvp.presenter.ChatPresenter
 import dev.ragnarok.fenrir.mvp.view.IChatView
 import dev.ragnarok.fenrir.picasso.PicassoInstance
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation
@@ -74,9 +75,9 @@ import java.io.File
 import java.lang.ref.WeakReference
 import java.util.*
 
-class ChatFragment : PlaceSupportMvpFragment<ChatPrensenter, IChatView>(), IChatView, InputViewController.OnInputActionCallback,
+class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatView, InputViewController.OnInputActionCallback,
         BackPressCallback, MessagesAdapter.OnMessageActionListener, InputViewController.RecordActionsCallback,
-        AttachmentsViewBinder.VoiceActionListener, EmojiconsPopup.OnStickerClickedListener,
+        AttachmentsViewBinder.VoiceActionListener, EmojiconsPopup.OnStickerClickedListener, EmojiconsPopup.OnMyStickerClickedListener,
         EmojiconTextView.OnHashTagClickListener, KeyboardButtonAdapter.ClickListener {
 
     private var headerView: View? = null
@@ -86,6 +87,8 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPrensenter, IChatView>(), IChat
     private var stickersKeywordsView: RecyclerView? = null
     private var stickersAdapter: StickersKeyWordsAdapter? = null
     private var adapter: MessagesAdapter? = null
+
+    private var downMenuGroup: FrameLayout? = null
 
     private var inputViewController: InputViewController? = null
     private var emptyText: TextView? = null
@@ -138,6 +141,8 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPrensenter, IChatView>(), IChat
         stickersKeywordsView?.adapter = stickersAdapter
         stickersKeywordsView?.visibility = View.GONE
 
+        downMenuGroup = root.findViewById(R.id.down_menu)
+
         Title = root.findViewById(R.id.dialog_title)
         SubTitle = root.findViewById(R.id.dialog_subtitle)
         Avatar = root.findViewById(R.id.toolbar_avatar)
@@ -183,6 +188,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPrensenter, IChatView>(), IChat
                     it.setSendOnEnter(Settings.get().main().isSendByEnter)
                     it.setRecordActionsCallback(this)
                     it.setOnSickerClickListener(this)
+                    it.setOnMySickerClickListener(this)
                     it.setKeyboardBotClickListener(this)
                     it.setKeyboardBotLongClickListener {
                         run {
@@ -397,12 +403,13 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPrensenter, IChatView>(), IChat
         adapter?.disableVoiceMessagePlaying()
     }
 
-    override fun getPresenterFactory(saveInstanceState: Bundle?): IPresenterFactory<ChatPrensenter> = object : IPresenterFactory<ChatPrensenter> {
-        override fun create(): ChatPrensenter {
+    override fun getPresenterFactory(saveInstanceState: Bundle?): IPresenterFactory<ChatPresenter> = object : IPresenterFactory<ChatPresenter> {
+        override fun create(): ChatPresenter {
             val aid = requireArguments().getInt(Extra.ACCOUNT_ID)
             val messagesOwnerId = requireArguments().getInt(Extra.OWNER_ID)
+            val needCache = requireArguments().getInt(Extra.CACHE)
             val peer = requireArguments().getParcelable<Peer>(Extra.PEER)
-            return ChatPrensenter(aid, messagesOwnerId, peer!!, createStartConfig(), saveInstanceState)
+            return ChatPresenter(aid, messagesOwnerId, peer!!, needCache != 0, createStartConfig(), saveInstanceState)
         }
     }
 
@@ -550,12 +557,24 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPrensenter, IChatView>(), IChat
     }
 
     override fun showActionMode(title: String, canEdit: Boolean, canPin: Boolean, canStar: Boolean, doStar: Boolean) {
-        toolbarRootView?.run {
-            if (childCount == 1) {
-                val v = LayoutInflater.from(context).inflate(R.layout.view_actionmode, this, false)
-                actionModeHolder = ActionModeHolder(v, this@ChatFragment)
-                addView(v)
-//                bringChildToFront(v)
+        if (!Settings.get().main().isMessages_menu_down) {
+            toolbarRootView?.run {
+                if (childCount == 1) {
+                    val v = LayoutInflater.from(context).inflate(R.layout.view_action_mode, this, false)
+                    actionModeHolder = ActionModeHolder(v, this@ChatFragment)
+                    addView(v)
+//              bringChildToFront(v)
+                }
+            }
+        } else {
+            downMenuGroup?.visibility = View.VISIBLE
+            downMenuGroup?.run {
+                if (childCount == 0) {
+                    val v = LayoutInflater.from(context).inflate(R.layout.view_action_mode, this, false)
+                    actionModeHolder = ActionModeHolder(v, this@ChatFragment)
+                    addView(v)
+//              bringChildToFront(v)
+                }
             }
         }
 
@@ -1231,8 +1250,8 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPrensenter, IChatView>(), IChat
                 MaterialAlertDialogBuilder(requireActivity())
                         .setTitle(R.string.confirmation)
                         .setMessage(R.string.select_type)
-                        .setPositiveButton(R.string.to_json) { _, _ -> presenter?.fireChatDownloadClick(requireActivity(), "json") }
-                        .setNegativeButton(R.string.to_html) { _, _ -> presenter?.fireChatDownloadClick(requireActivity(), "html") }
+                        .setPositiveButton(R.string.to_json) { _, _ -> doDownloadChat("json") }
+                        .setNegativeButton(R.string.to_html) { _, _ -> doDownloadChat("html") }
                         .setNeutralButton(R.string.button_cancel, null)
                         .show()
                 return true
@@ -1245,6 +1264,13 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPrensenter, IChatView>(), IChat
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun doDownloadChat(action: String) {
+        if (!CheckUpdate.isFullVersionPropriety(requireActivity())) {
+            return
+        }
+        presenter?.fireChatDownloadClick(requireActivity(), action)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -1265,6 +1291,13 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPrensenter, IChatView>(), IChat
 
     override fun onSendClicked(body: String) {
         presenter?.fireSendClick()
+    }
+
+    override fun onMyStickerClick(file: String) {
+        if (!CheckUpdate.isFullVersionPropriety(requireActivity())) {
+            return
+        }
+        presenter?.fireSendMyStickerClick(file)
     }
 
     override fun onAttachClick() {
@@ -1351,10 +1384,11 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPrensenter, IChatView>(), IChat
         private const val REQUEST_PHOTO_FROM_CAMERA = 154
         private const val REQUEST_UPLOAD_CHAT_AVATAR = 155
 
-        fun newInstance(accountId: Int, messagesOwnerId: Int, peer: Peer): ChatFragment {
+        fun newInstance(accountId: Int, messagesOwnerId: Int, peer: Peer, cache: Int): ChatFragment {
             val args = Bundle()
             args.putInt(Extra.ACCOUNT_ID, accountId)
             args.putInt(Extra.OWNER_ID, messagesOwnerId)
+            args.putInt(Extra.CACHE, cache)
             args.putParcelable(Extra.PEER, peer)
 
             val fragment = ChatFragment()

@@ -99,11 +99,15 @@ class PlaylistFragment : BottomSheetDialogFragment(), AudioRecyclerAdapter.Click
             mAdapter?.notifyItemChanged(viewHolder.bindingAdapterPosition)
             startForPlayList(requireActivity(), mData!!, mAdapter!!.getItemRawPosition(viewHolder.bindingAdapterPosition), false)
         }
+
+        override fun isLongPressDragEnabled(): Boolean {
+            return false
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mAdapter = AudioRecyclerAdapter(requireActivity(), mData, false, false, 0)
+        mAdapter = AudioRecyclerAdapter(requireActivity(), mData, false, false, 0, null)
         mAdapter!!.setClickListener(this)
         mRecyclerView!!.adapter = mAdapter
         val my = MusicUtils.getCurrentAudio()

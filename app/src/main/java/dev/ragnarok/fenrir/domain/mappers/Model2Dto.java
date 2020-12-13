@@ -97,7 +97,7 @@ public class Model2Dto {
 
         if (model instanceof Graffiti) {
             Graffiti graffity = (Graffiti) model;
-            return AttachmentsTokenCreator.ofStory(graffity.getId(), graffity.getOwner_id(), graffity.getAccess_key());
+            return AttachmentsTokenCreator.ofGraffity(graffity.getId(), graffity.getOwner_id(), graffity.getAccess_key());
         }
 
         if (model instanceof PhotoAlbum) {

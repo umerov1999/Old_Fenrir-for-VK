@@ -80,7 +80,7 @@ public class ChatActivity extends NoMainActivity implements PlaceProvider, AppSt
             case Place.CHAT:
                 Peer peer = args.getParcelable(Extra.PEER);
                 AssertUtils.requireNonNull(peer);
-                ChatFragment chatFragment = ChatFragment.Companion.newInstance(args.getInt(Extra.ACCOUNT_ID), args.getInt(Extra.OWNER_ID), peer);
+                ChatFragment chatFragment = ChatFragment.Companion.newInstance(args.getInt(Extra.ACCOUNT_ID), args.getInt(Extra.OWNER_ID), peer, 1);
                 attachToFront(chatFragment);
                 break;
             case Place.VK_PHOTO_ALBUM_GALLERY:

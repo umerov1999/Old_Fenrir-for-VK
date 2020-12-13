@@ -36,6 +36,7 @@ import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.SendAttachmentsActivity;
 import dev.ragnarok.fenrir.adapter.base.RecyclerBindableAdapter;
+import dev.ragnarok.fenrir.api.model.AccessIdPair;
 import dev.ragnarok.fenrir.domain.IAudioInteractor;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
 import dev.ragnarok.fenrir.fragment.search.SearchContentType;
@@ -71,35 +72,49 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
     private final IAudioInteractor mAudioInteractor;
     private final boolean not_show_my;
     private final int iCatalogBlock;
+    private final Integer playlist_id;
+    private final boolean isLongPressDownload;
     private Disposable audioListDisposable = Disposable.disposed();
     private Disposable mPlayerDisposable = Disposable.disposed();
-
     private boolean iSSelectMode;
     private ClickListener mClickListener;
 
     private Audio currAudio;
 
-    public AudioRecyclerAdapter(Context context, List<Audio> data, boolean not_show_my, boolean iSSelectMode, int iCatalogBlock) {
+    public AudioRecyclerAdapter(Context context, List<Audio> data, boolean not_show_my, boolean iSSelectMode, int iCatalogBlock, Integer playlist_id) {
         super(data);
         mAudioInteractor = InteractorFactory.createAudioInteractor();
         mContext = context;
         this.not_show_my = not_show_my;
         this.iSSelectMode = iSSelectMode;
         this.iCatalogBlock = iCatalogBlock;
+        this.playlist_id = playlist_id;
         currAudio = MusicUtils.getCurrentAudio();
+        isLongPressDownload = Settings.get().main().isUse_long_click_download();
     }
 
     private void deleteTrack(int accountId, Audio audio, int position) {
-        audioListDisposable = mAudioInteractor.delete(accountId, audio.getId(), audio.getOwnerId()).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() -> {
-            CustomToast.CreateCustomToast(mContext).showToast(R.string.deleted);
-            if (mClickListener != null) {
-                mClickListener.onDelete(position);
-            }
-        }, t -> Utils.showErrorInAdapter((Activity) mContext, t));
+        if (playlist_id == null) {
+            audioListDisposable = mAudioInteractor.delete(accountId, audio.getId(), audio.getOwnerId()).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() -> {
+                CustomToast.CreateCustomToast(mContext).showToast(R.string.deleted);
+                if (mClickListener != null) {
+                    mClickListener.onDelete(position);
+                }
+            }, t -> Utils.showErrorInAdapter((Activity) mContext, t));
+        } else {
+            audioListDisposable = mAudioInteractor.removeFromPlaylist(accountId, audio.getOwnerId(), playlist_id, Collections.singletonList(new AccessIdPair(audio.getId(), audio.getOwnerId(), audio.getAccessKey()))).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> {
+                if (t != 0) {
+                    CustomToast.CreateCustomToast(mContext).showToast(R.string.deleted);
+                    if (mClickListener != null) {
+                        mClickListener.onDelete(position);
+                    }
+                }
+            }, t -> Utils.showErrorInAdapter((Activity) mContext, t));
+        }
     }
 
     private void addTrack(int accountId, Audio audio) {
-        audioListDisposable = mAudioInteractor.add(accountId, audio, null, null).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() ->
+        audioListDisposable = mAudioInteractor.add(accountId, audio, null).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() ->
                 CustomToast.CreateCustomToast(mContext).showToast(R.string.added), t -> Utils.showErrorInAdapter((Activity) mContext, t));
     }
 
@@ -354,25 +369,27 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
         });
 
         if (!iSSelectMode) {
-            holder.Track.setOnLongClickListener(v -> {
-                if (!AppPerms.hasReadWriteStoragePermision(mContext)) {
-                    AppPerms.requestReadWriteStoragePermission((Activity) mContext);
-                    return false;
-                }
-                holder.saved.setVisibility(View.VISIBLE);
-                holder.saved.setImageResource(R.drawable.save);
-                int ret = DownloadWorkUtils.doDownloadAudio(mContext, audio, Settings.get().accounts().getCurrent(), false);
-                if (ret == 0)
-                    CustomToast.CreateCustomToast(mContext).showToastBottom(R.string.saved_audio);
-                else if (ret == 1 || ret == 2) {
-                    Utils.ThemedSnack(v, ret == 1 ? R.string.audio_force_download : R.string.audio_force_download_pc, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.button_yes,
-                            v1 -> DownloadWorkUtils.doDownloadAudio(mContext, audio, Settings.get().accounts().getCurrent(), true)).show();
-                } else {
-                    holder.saved.setVisibility(View.GONE);
-                    CustomToast.CreateCustomToast(mContext).showToastBottom(R.string.error_audio);
-                }
-                return true;
-            });
+            if (isLongPressDownload) {
+                holder.Track.setOnLongClickListener(v -> {
+                    if (!AppPerms.hasReadWriteStoragePermision(mContext)) {
+                        AppPerms.requestReadWriteStoragePermission((Activity) mContext);
+                        return false;
+                    }
+                    holder.saved.setVisibility(View.VISIBLE);
+                    holder.saved.setImageResource(R.drawable.save);
+                    int ret = DownloadWorkUtils.doDownloadAudio(mContext, audio, Settings.get().accounts().getCurrent(), false);
+                    if (ret == 0)
+                        CustomToast.CreateCustomToast(mContext).showToastBottom(R.string.saved_audio);
+                    else if (ret == 1 || ret == 2) {
+                        Utils.ThemedSnack(v, ret == 1 ? R.string.audio_force_download : R.string.audio_force_download_pc, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.button_yes,
+                                v1 -> DownloadWorkUtils.doDownloadAudio(mContext, audio, Settings.get().accounts().getCurrent(), true)).show();
+                    } else {
+                        holder.saved.setVisibility(View.GONE);
+                        CustomToast.CreateCustomToast(mContext).showToastBottom(R.string.error_audio);
+                    }
+                    return true;
+                });
+            }
             holder.Track.setOnClickListener(view -> {
                 holder.cancelSelectionAnimation();
                 holder.startSomeAnimation();
@@ -384,7 +401,11 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
                     menus.add(new OptionRequest(AudioItem.add_item_audio, mContext.getString(R.string.action_add), R.drawable.list_add));
                     menus.add(new OptionRequest(AudioItem.add_and_download_button, mContext.getString(R.string.add_and_download_button), R.drawable.add_download));
                 } else {
-                    menus.add(new OptionRequest(AudioItem.add_item_audio, mContext.getString(R.string.delete), R.drawable.ic_outline_delete));
+                    if (playlist_id == null) {
+                        menus.add(new OptionRequest(AudioItem.add_item_audio, mContext.getString(R.string.delete), R.drawable.ic_outline_delete));
+                    } else {
+                        menus.add(new OptionRequest(AudioItem.add_item_audio, mContext.getString(R.string.delete_from_playlist), R.drawable.ic_outline_delete));
+                    }
                     menus.add(new OptionRequest(AudioItem.edit_track, mContext.getString(R.string.edit), R.drawable.about_writed));
                 }
                 menus.add(new OptionRequest(AudioItem.share_button, mContext.getString(R.string.share), R.drawable.ic_outline_share));

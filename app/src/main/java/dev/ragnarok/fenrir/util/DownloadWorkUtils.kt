@@ -214,6 +214,36 @@ object DownloadWorkUtils {
         }
     }
 
+    @JvmStatic
+    fun doDownloadSticker(context: Context, sticker: Sticker) {
+        if (!CheckUpdate.isFullVersionPropriety(context)) {
+            return
+        }
+        val link: String? = if (sticker.isAnimated && Settings.get().other().isDeveloper_mode) {
+            sticker.getAnimationByType("light")
+        } else {
+            sticker.getImage(256, false).url
+        }
+        if (Utils.isEmpty(link))
+            return
+        val result_filename = DownloadInfo(makeLegalFilename(sticker.id.toString(), null), Settings.get().other().stickerDir, if (sticker.isAnimated && Settings.get().other().isDeveloper_mode) "json" else "png")
+        CheckDirectory(result_filename.path)
+        if (default_file_exist(context, result_filename)) {
+            return
+        }
+        try {
+            if (!Settings.get().other().isUse_internal_downloader) {
+                toExternalDownloader(context, link!!, result_filename)
+            } else {
+                toDefaultInternalDownloader(context, link!!, result_filename)
+            }
+            Utils.getCachedMyStickers().add(result_filename.build())
+        } catch (e: Exception) {
+            CustomToast.CreateCustomToast(context).showToastError("Sticker Error: " + e.message)
+            return
+        }
+    }
+
     private fun makeDoc(title: String, dir: String, ext: String?): DownloadInfo {
         var ext_i = Utils.firstNonEmptyString(ext, "doc")
         var file = title

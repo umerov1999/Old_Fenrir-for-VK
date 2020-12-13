@@ -434,6 +434,7 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
         val progress: ProgressBar
         private var mLoadingNow = false
         fun bindTo(@NonNull photo_image: Photo) {
+            photo.resetZoom()
             val size: Int = photoSizeFromPrefs
             val url = photo_image.getUrlForSize(size, true)
             reload.setOnClickListener {

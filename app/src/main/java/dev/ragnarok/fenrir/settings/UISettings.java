@@ -128,7 +128,7 @@ class UISettings implements ISettings.IUISettings {
             int type = PreferenceManager.getDefaultSharedPreferences(app).getInt("last_closed_place_type", Place.DIALOGS);
             switch (type) {
                 case Place.DIALOGS:
-                    return PlaceFactory.getDialogsPlace(accountId, accountId, null, 0);
+                    return PlaceFactory.getDialogsPlace(accountId, accountId, null);
                 case Place.FEED:
                     return PlaceFactory.getFeedPlace(accountId);
                 case Place.FRIENDS_AND_FOLLOWERS:
@@ -180,7 +180,7 @@ class UISettings implements ISettings.IUISettings {
             case "12":
                 return PlaceFactory.getNewsfeedCommentsPlace(accountId);
             default:
-                return PlaceFactory.getDialogsPlace(accountId, accountId, null, 0);
+                return PlaceFactory.getDialogsPlace(accountId, accountId, null);
         }
     }
 

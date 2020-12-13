@@ -305,27 +305,18 @@ public class PlaceFactory {
         return new Place(Place.PREFERENCES).setArguments(PreferencesFragment.buildArgs(aid));
     }
 
-    public static Place getDialogsPlace(int accountId, int dialogsOwnerId, @Nullable String subtitle, int Offset) {
+    public static Place getDialogsPlace(int accountId, int dialogsOwnerId, @Nullable String subtitle) {
         return new Place(Place.DIALOGS)
                 .withIntExtra(Extra.ACCOUNT_ID, accountId)
                 .withIntExtra(Extra.OWNER_ID, dialogsOwnerId)
-                .withIntExtra(Extra.OFFSET, Offset)
                 .withStringExtra(Extra.SUBTITLE, subtitle);
     }
 
-    public static Place getChatPlace(int accountId, int messagesOwnerId, @NonNull Peer peer, int Offset) {
+    public static Place getChatPlace(int accountId, int messagesOwnerId, @NonNull Peer peer, boolean cache) {
         return new Place(Place.CHAT)
                 .withIntExtra(Extra.ACCOUNT_ID, accountId)
                 .withIntExtra(Extra.OWNER_ID, messagesOwnerId)
-                .withIntExtra(Extra.OFFSET, Offset)
-                .withParcelableExtra(Extra.PEER, peer);
-    }
-
-    public static Place getChatDualPlace(int accountId, int messagesOwnerId, @NonNull Peer peer, int Offset) {
-        return new Place(Place.CHAT_DUAL)
-                .withIntExtra(Extra.ACCOUNT_ID, accountId)
-                .withIntExtra(Extra.OWNER_ID, messagesOwnerId)
-                .withIntExtra(Extra.OFFSET, Offset)
+                .withIntExtra(Extra.CACHE, cache ? 1 : 0)
                 .withParcelableExtra(Extra.PEER, peer);
     }
 
@@ -414,9 +405,9 @@ public class PlaceFactory {
         return new Place(Place.VIDEOS).setArguments(VideosTabsFragment.buildArgs(accountId, ownerId, action));
     }
 
-    public static Place getVideoAlbumPlace(int accoutnId, int ownerId, int albumId, String action, @Nullable String albumTitle) {
+    public static Place getVideoAlbumPlace(int accountId, int ownerId, int albumId, String action, @Nullable String albumTitle) {
         return new Place(Place.VIDEO_ALBUM)
-                .setArguments(VideosFragment.buildArgs(accoutnId, ownerId, albumId, action, albumTitle));
+                .setArguments(VideosFragment.buildArgs(accountId, ownerId, albumId, action, albumTitle));
     }
 
     public static Place getVideoPreviewPlace(int accountId, @NonNull Video video) {

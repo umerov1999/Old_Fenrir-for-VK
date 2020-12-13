@@ -7,12 +7,14 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 
+import androidx.browser.customtabs.CustomTabColorSchemeParams;
 import androidx.browser.customtabs.CustomTabsIntent;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import dev.ragnarok.fenrir.R;
+import dev.ragnarok.fenrir.domain.InteractorFactory;
 import dev.ragnarok.fenrir.fragment.fave.FaveTabsFragment;
 import dev.ragnarok.fenrir.fragment.search.SearchContentType;
 import dev.ragnarok.fenrir.fragment.search.criteria.NewsFeedCriteria;
@@ -44,21 +46,35 @@ import dev.ragnarok.fenrir.mvp.view.IVkPhotosView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.util.CustomToast;
+import dev.ragnarok.fenrir.util.RxUtils;
+import dev.ragnarok.fenrir.util.Utils;
 
 import static androidx.browser.customtabs.CustomTabsService.ACTION_CUSTOM_TABS_CONNECTION;
 import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 import static dev.ragnarok.fenrir.util.Utils.singletonArrayList;
 
 public class LinkHelper {
-
-
     public static void openUrl(Activity context, int accountId, String link) {
         if (link == null || link.length() <= 0) {
             CustomToast.CreateCustomToast(context).showToastError(R.string.empty_clipboard_url);
             return;
         }
-        if (!openVKlink(context, accountId, link)) {
-            PlaceFactory.getExternalLinkPlace(accountId, link).tryOpenWith(context);
+        if (link.contains("vk.cc")) {
+            InteractorFactory.createUtilsInteractor().checkLink(accountId, link)
+                    .compose(RxUtils.applySingleIOToMainSchedulers())
+                    .subscribe(t -> {
+                        if ("banned".equals(t.status)) {
+                            Utils.showRedTopToast(context, R.string.link_banned);
+                        } else {
+                            if (!openVKlink(context, accountId, t.link)) {
+                                PlaceFactory.getExternalLinkPlace(accountId, t.link).tryOpenWith(context);
+                            }
+                        }
+                    }, e -> Utils.showErrorInAdapter(context, e));
+        } else {
+            if (!openVKlink(context, accountId, link)) {
+                PlaceFactory.getExternalLinkPlace(accountId, link).tryOpenWith(context);
+            }
         }
     }
 
@@ -83,7 +99,7 @@ public class LinkHelper {
                 break;
 
             case AbsLink.DIALOGS:
-                PlaceFactory.getDialogsPlace(accountId, accountId, null, 0).tryOpenWith(activity);
+                PlaceFactory.getDialogsPlace(accountId, accountId, null).tryOpenWith(activity);
                 break;
 
             case AbsLink.PHOTO:
@@ -128,7 +144,7 @@ public class LinkHelper {
             case AbsLink.DIALOG:
                 DialogLink dialogLink = (DialogLink) link;
                 Peer peer = new Peer(dialogLink.peerId);
-                PlaceFactory.getChatPlace(accountId, accountId, peer, 0).tryOpenWith(activity);
+                PlaceFactory.getChatPlace(accountId, accountId, peer, true).tryOpenWith(activity);
                 break;
 
             case AbsLink.WALL:
@@ -190,9 +206,9 @@ public class LinkHelper {
         return true;
     }
 
-    private static boolean openVKlink(Activity activity, int accoutnId, String url) {
+    private static boolean openVKlink(Activity activity, int accountId, String url) {
         AbsLink link = VkLinkParser.parse(url);
-        return link != null && openVKLink(activity, accoutnId, link);
+        return link != null && openVKLink(activity, accountId, link);
     }
 
     public static ArrayList<ResolveInfo> getCustomTabsPackages(Context context) {
@@ -214,7 +230,8 @@ public class LinkHelper {
 
     public static void openLinkInBrowser(Context context, String url) {
         CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
-        intentBuilder.setToolbarColor(CurrentTheme.getColorPrimary(context));
+        intentBuilder.setDefaultColorSchemeParams(new CustomTabColorSchemeParams.Builder()
+                .setToolbarColor(CurrentTheme.getColorPrimary(context)).setSecondaryToolbarColor(CurrentTheme.getColorSecondary(context)).build());
         CustomTabsIntent customTabsIntent = intentBuilder.build();
         getCustomTabsPackages(context);
         if (!getCustomTabsPackages(context).isEmpty()) {
@@ -223,10 +240,10 @@ public class LinkHelper {
         customTabsIntent.launchUrl(context, Uri.parse(url));
     }
 
-    public static void openLinkInBrowserInternal(Context context, int accoutnId, String url) {
+    public static void openLinkInBrowserInternal(Context context, int accountId, String url) {
         if (isEmpty(url))
             return;
-        PlaceFactory.getExternalLinkPlace(accoutnId, url).tryOpenWith(context);
+        PlaceFactory.getExternalLinkPlace(accountId, url).tryOpenWith(context);
     }
 
     public static Commented findCommentedFrom(String url) {

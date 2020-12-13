@@ -117,6 +117,16 @@ public class AudioPlaylistSearchFragment extends AbsSearchFragment<AudioPlaylist
     }
 
     @Override
+    public void onEdit(int index, AudioPlaylist album) {
+
+    }
+
+    @Override
+    public void onAddAudios(int index, AudioPlaylist album) {
+
+    }
+
+    @Override
     public void onAdd(int index, AudioPlaylist album) {
         getPresenter().onAdd(album);
     }

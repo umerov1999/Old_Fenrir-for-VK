@@ -14,6 +14,7 @@ import java.util.List;
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.db.model.PostUpdate;
+import dev.ragnarok.fenrir.domain.IFaveInteractor;
 import dev.ragnarok.fenrir.domain.IFeedInteractor;
 import dev.ragnarok.fenrir.domain.IWallsRepository;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
@@ -31,17 +32,20 @@ import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.DisposableHolder;
 import dev.ragnarok.fenrir.util.InputTextDialog;
+import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 import static dev.ragnarok.fenrir.util.RxUtils.applySingleIOToMainSchedulers;
 import static dev.ragnarok.fenrir.util.RxUtils.ignore;
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class FeedPresenter extends PlaceSupportPresenter<IFeedView> {
 
     private final IFeedInteractor feedInteractor;
+    private final IFaveInteractor faveInteractor;
     private final IWallsRepository walls;
     private final List<News> mFeed;
     private final List<FeedSource> mFeedSources;
@@ -58,6 +62,7 @@ public class FeedPresenter extends PlaceSupportPresenter<IFeedView> {
         super(accountId, savedInstanceState);
 
         walls = Repository.INSTANCE.getWalls();
+        faveInteractor = InteractorFactory.createFaveInteractor();
 
         appendDisposable(walls.observeMinorChanges()
                 .observeOn(Injection.provideMainThreadScheduler())
@@ -426,6 +431,17 @@ public class FeedPresenter extends PlaceSupportPresenter<IFeedView> {
 
     public void fireNewsLikeLongClick(News news) {
         getView().goToLikes(getAccountId(), news.getType(), news.getSourceId(), news.getPostId());
+    }
+
+    public void fireAddBookmark(int ownerId, int postId) {
+        appendDisposable(faveInteractor.addPost(getAccountId(), ownerId, postId, null)
+                .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                .subscribe(this::onPostAddedToBookmarks, t -> showError(getView(), getCauseIfRuntime(t))));
+    }
+
+    private void onPostAddedToBookmarks() {
+        if (isGuiReady())
+            getView().showSuccessToast();
     }
 
     public void fireNewsCommentClick(News news) {

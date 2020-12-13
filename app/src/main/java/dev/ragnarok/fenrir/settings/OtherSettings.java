@@ -306,6 +306,16 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public String getStickerDir() {
+        String ret = PreferenceManager.getDefaultSharedPreferences(app).getString("sticker_dir", null);
+        if (Utils.isEmpty(ret) || !new File(ret).exists()) {
+            ret = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/Fenrir_Stickers";
+            PreferenceManager.getDefaultSharedPreferences(app).edit().putString("sticker_dir", ret).apply();
+        }
+        return ret;
+    }
+
+    @Override
     public boolean isPhoto_to_user_dir() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("photo_to_user_dir", true);
     }

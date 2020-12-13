@@ -70,9 +70,9 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
     private View mUploadRoot;
     private TextView mEmpty;
 
-    public static Bundle buildArgs(int accoutnId, int ownerId, int albumId, String action, @Nullable String albumTitle) {
+    public static Bundle buildArgs(int accountId, int ownerId, int albumId, String action, @Nullable String albumTitle) {
         Bundle args = new Bundle();
-        args.putInt(Extra.ACCOUNT_ID, accoutnId);
+        args.putInt(Extra.ACCOUNT_ID, accountId);
         args.putInt(Extra.ALBUM_ID, albumId);
         args.putInt(Extra.OWNER_ID, ownerId);
         if (albumTitle != null) {
@@ -83,8 +83,8 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
         return args;
     }
 
-    public static VideosFragment newInstance(int accoutnId, int ownerId, int albumId, String action, @Nullable String albumTitle) {
-        return newInstance(buildArgs(accoutnId, ownerId, albumId, action, albumTitle));
+    public static VideosFragment newInstance(int accountId, int ownerId, int albumId, String action, @Nullable String albumTitle) {
+        return newInstance(buildArgs(accountId, ownerId, albumId, action, albumTitle));
     }
 
     public static VideosFragment newInstance(Bundle args) {

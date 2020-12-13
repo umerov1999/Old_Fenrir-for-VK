@@ -46,6 +46,6 @@ public class LongPollNotificationHelper {
             return;
         }
 
-        NotificationHelper.notifNewMessage(context, accountId, message);
+        NotificationHelper.notifyNewMessage(context, accountId, message);
     }
 }

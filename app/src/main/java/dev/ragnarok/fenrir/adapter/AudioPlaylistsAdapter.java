@@ -117,6 +117,10 @@ public class AudioPlaylistsAdapter extends RecyclerView.Adapter<AudioPlaylistsAd
 
         void onDelete(int index, AudioPlaylist album);
 
+        void onEdit(int index, AudioPlaylist album);
+
+        void onAddAudios(int index, AudioPlaylist album);
+
         void onAdd(int index, AudioPlaylist album);
     }
 
@@ -158,6 +162,20 @@ public class AudioPlaylistsAdapter extends RecyclerView.Adapter<AudioPlaylistsAd
                     }
                     return true;
                 });
+                if (Utils.isEmpty(playlist.getOriginal_access_key()) || playlist.getOriginal_id() == 0 || playlist.getOriginal_owner_id() == 0) {
+                    menu.add(0, v.getId(), 0, R.string.edit).setOnMenuItemClickListener(item -> {
+                        if (clickListener != null) {
+                            clickListener.onEdit(position, playlist);
+                        }
+                        return true;
+                    });
+                    menu.add(0, v.getId(), 0, R.string.action_add_audios).setOnMenuItemClickListener(item -> {
+                        if (clickListener != null) {
+                            clickListener.onAddAudios(position, playlist);
+                        }
+                        return true;
+                    });
+                }
             } else {
                 menu.add(0, v.getId(), 0, R.string.save).setOnMenuItemClickListener(item -> {
                     if (clickListener != null) {

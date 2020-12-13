@@ -16,5 +16,5 @@ public interface ISimpleOwnersView extends IMvpView, IErrorView, IAccountDepende
 
     void displayRefreshing(boolean refreshing);
 
-    void showOwnerWall(int accoutnId, Owner owner);
+    void showOwnerWall(int accountId, Owner owner);
 }

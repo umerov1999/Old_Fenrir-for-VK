@@ -108,28 +108,28 @@ public class ShortcutUtils {
         }
     }
 
-    public static Intent chatOpenIntent(Context context, String url, int accoutnId, int peerId, String title) {
+    public static Intent chatOpenIntent(Context context, String url, int accountId, int peerId, String title) {
         Intent intent = new Intent(context.getApplicationContext(), MainActivity.class);
         intent.setAction(MainActivity.ACTION_CHAT_FROM_SHORTCUT);
         intent.putExtra(Extra.PEER_ID, peerId);
         intent.putExtra(Extra.TITLE, title);
         intent.putExtra(Extra.IMAGE, url);
-        intent.putExtra(Extra.ACCOUNT_ID, accoutnId);
+        intent.putExtra(Extra.ACCOUNT_ID, accountId);
         return intent;
     }
 
-    public static void createChatShortcut(Context context, String url, int accoutnId, int peerId, String title) throws IOException {
-        String id = "fenrir_peer_" + peerId + "_aid_" + accoutnId;
+    public static void createChatShortcut(Context context, String url, int accountId, int peerId, String title) throws IOException {
+        String id = "fenrir_peer_" + peerId + "_aid_" + accountId;
 
         Bitmap bm = createBitmap(context, url);
-        Intent intent = chatOpenIntent(context, url, accoutnId, peerId, title);
+        Intent intent = chatOpenIntent(context, url, accountId, peerId, title);
         sendShortcutBroadcast(context, id, intent, title, bm);
     }
 
-    public static Completable createChatShortcutRx(Context context, String url, int accoutnId, int peerId, String title) {
+    public static Completable createChatShortcutRx(Context context, String url, int accountId, int peerId, String title) {
         return Completable.create(e -> {
             try {
-                createChatShortcut(context, url, accoutnId, peerId, title);
+                createChatShortcut(context, url, accountId, peerId, title);
             } catch (Exception e1) {
                 e.onError(e1);
             }
@@ -173,7 +173,7 @@ public class ShortcutUtils {
                     }
 
                     String title = peer.getTitle();
-                    String id = "chat" + peer.getId();
+                    String id = "fenrir_peer_" + peer.getId() + "_aid_" + accountId;
                     String avaurl = peer.getAvaUrl();
                     Intent intent = chatOpenIntent(app, avaurl, accountId, peer.getId(), title);
 

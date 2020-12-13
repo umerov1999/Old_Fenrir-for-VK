@@ -12,7 +12,7 @@ import dev.ragnarok.fenrir.model.database.University;
 import io.reactivex.rxjava3.core.Single;
 
 public interface IDatabaseInteractor {
-    Single<List<Chair>> getChairs(int accoutnId, int facultyId, int count, int offset);
+    Single<List<Chair>> getChairs(int accountId, int facultyId, int count, int offset);
 
     Single<List<Country>> getCountries(int accountId, boolean ignoreCache);
 
@@ -24,5 +24,5 @@ public interface IDatabaseInteractor {
 
     Single<List<School>> getSchools(int accountId, int cityId, String q, int count, int offset);
 
-    Single<List<University>> getUniversities(int accoutnId, String filter, Integer cityId, Integer countyId, int count, int offset);
+    Single<List<University>> getUniversities(int accountId, String filter, Integer cityId, Integer countyId, int count, int offset);
 }

@@ -125,7 +125,7 @@ public class AudiosSearchFragment extends AbsSearchFragment<AudiosSearchPresente
 
     @Override
     AudioRecyclerAdapter createAdapter(List<Audio> data) {
-        AudioRecyclerAdapter adapter = new AudioRecyclerAdapter(requireActivity(), Collections.emptyList(), false, isSelectMode, 0);
+        AudioRecyclerAdapter adapter = new AudioRecyclerAdapter(requireActivity(), Collections.emptyList(), false, isSelectMode, 0, null);
         adapter.setClickListener(new AudioRecyclerAdapter.ClickListener() {
             @Override
             public void onClick(int position, int catalog, Audio audio) {

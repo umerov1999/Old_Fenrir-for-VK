@@ -43,6 +43,11 @@ class MainSettings implements ISettings.IMainSettings {
     }
 
     @Override
+    public boolean isUse_long_click_download() {
+        return getDefaultPreferences().getBoolean("use_long_click_download", false);
+    }
+
+    @Override
     public boolean isPlayer_support_volume() {
         return getDefaultPreferences().getBoolean("is_player_support_volume", false);
     }
@@ -60,6 +65,11 @@ class MainSettings implements ISettings.IMainSettings {
     @Override
     public boolean is_smooth_chat() {
         return getDefaultPreferences().getBoolean("smooth_chat", false);
+    }
+
+    @Override
+    public boolean isMessages_menu_down() {
+        return getDefaultPreferences().getBoolean("messages_menu_down", false);
     }
 
     @Nullable
@@ -147,6 +157,11 @@ class MainSettings implements ISettings.IMainSettings {
     }
 
     @Override
+    public int getFontSize() {
+        return Integer.parseInt(Objects.requireNonNull(getDefaultPreferences().getString("font_size", "0")));
+    }
+
+    @Override
     public void setPrefDisplayImageSize(@PhotoSize int size) {
         getDefaultPreferences()
                 .edit()
@@ -167,6 +182,11 @@ class MainSettings implements ISettings.IMainSettings {
     @Override
     public boolean isLoad_history_notif() {
         return getDefaultPreferences().getBoolean("load_history_notif", false);
+    }
+
+    @Override
+    public boolean isSnow_mode() {
+        return getDefaultPreferences().getBoolean("snow_mode", false);
     }
 
     @Override

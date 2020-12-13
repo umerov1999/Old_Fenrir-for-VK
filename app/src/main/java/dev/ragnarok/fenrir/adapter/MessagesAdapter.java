@@ -38,6 +38,7 @@ import dev.ragnarok.fenrir.model.Sticker;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.DownloadWorkUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.MessageView;
@@ -148,6 +149,11 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
                     .load(image.getUrl())
                     .into(holder.sticker);
         }
+
+        holder.sticker.setOnLongClickListener(v -> {
+            DownloadWorkUtils.doDownloadSticker(context, sticker);
+            return true;
+        });
 
         boolean hasAttachments = Utils.nonEmpty(message.getFwd()) || (nonNull(message.getAttachments()) && message.getAttachments().size_no_stickers() > 0);
         holder.attachmentsRoot.setVisibility(hasAttachments ? View.VISIBLE : View.GONE);

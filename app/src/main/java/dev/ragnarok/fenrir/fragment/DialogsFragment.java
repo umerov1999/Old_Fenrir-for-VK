@@ -1,6 +1,9 @@
 package dev.ragnarok.fenrir.fragment;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -24,6 +27,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -43,6 +48,7 @@ import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
 import dev.ragnarok.fenrir.fragment.search.SearchContentType;
 import dev.ragnarok.fenrir.fragment.search.criteria.DialogsSearchCriteria;
 import dev.ragnarok.fenrir.fragment.search.criteria.MessageSeachCriteria;
+import dev.ragnarok.fenrir.link.LinkHelper;
 import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.listener.PicassoPauseOnScrollListener;
@@ -103,15 +109,13 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
             }
         }
     };
-    private LinearLayoutManager lnr;
 
-    public static DialogsFragment newInstance(int accountId, int dialogsOwnerId, @Nullable String subtitle, int Offset) {
+    public static DialogsFragment newInstance(int accountId, int dialogsOwnerId, @Nullable String subtitle) {
         DialogsFragment fragment = new DialogsFragment();
         Bundle args = new Bundle();
         args.putString(Extra.SUBTITLE, subtitle);
         args.putInt(Extra.ACCOUNT_ID, accountId);
         args.putInt(Extra.OWNER_ID, dialogsOwnerId);
-        args.putInt(Extra.OFFSET, Offset);
         fragment.setArguments(args);
         return fragment;
     }
@@ -188,8 +192,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         });
 
         mRecyclerView = root.findViewById(R.id.recycleView);
-        lnr = new LinearLayoutManager(requireActivity());
-        mRecyclerView.setLayoutManager(lnr);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
         mRecyclerView.addOnScrollListener(new PicassoPauseOnScrollListener(DialogsAdapter.PICASSO_TAG));
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
@@ -223,8 +226,43 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
     }
 
     @Override
+    public void startQRScanner() {
+        IntentIntegrator integrator = IntentIntegrator.forSupportFragment(this);
+        integrator.setPrompt("QR Code/Bar Code");
+        integrator.setCameraId(0);
+        integrator.setBeepEnabled(true);
+        integrator.setBarcodeImageEnabled(false);
+        integrator.initiateScan();
+    }
+
+    @Override
+    public void onQRScanned(int accountId, @NonNull String result) {
+        MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(requireActivity());
+        dlgAlert.setIcon(R.drawable.qr_code);
+        dlgAlert.setMessage(result);
+        dlgAlert.setTitle(getString(R.string.scan_qr));
+        dlgAlert.setPositiveButton(R.string.open, (dialog, which) -> LinkHelper.openUrl(requireActivity(), accountId, result));
+        dlgAlert.setNeutralButton(R.string.copy_text, (dialog, which) -> {
+            ClipboardManager clipboard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("response", result);
+            clipboard.setPrimaryClip(clip);
+            CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.copied_to_clipboard);
+        });
+        dlgAlert.setCancelable(true);
+        dlgAlert.create().show();
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        IntentResult scanner = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (nonNull(scanner)) {
+            if (!Utils.isEmpty(scanner.getContents())) {
+                getPresenter().fireQrScanned(scanner.getContents());
+            }
+            return;
+        }
 
         if (requestCode == REQUEST_CODE_SELECT_USERS_FOR_CHAT && resultCode == Activity.RESULT_OK) {
             ArrayList<Owner> users = data.getParcelableArrayListExtra(Extra.OWNERS);
@@ -352,6 +390,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
                 ModalBottomSheetDialogFragment.Builder menus = new ModalBottomSheetDialogFragment.Builder();
                 menus.add(new OptionRequest(R.id.button_ok, getString(R.string.set_offline), R.drawable.offline));
                 menus.add(new OptionRequest(R.id.button_cancel, getString(R.string.open_clipboard_url), R.drawable.web));
+                menus.add(new OptionRequest(R.id.button_camera, getString(R.string.scan_qr), R.drawable.qr_code));
                 menus.show(getChildFragmentManager(), "left_options", option -> getPresenter().fireDialogOptions(requireActivity(), option));
             });
         }
@@ -413,13 +452,6 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
     }
 
     @Override
-    public void scroll_pos(int pos) {
-        if (nonNull(mRecyclerView)) {
-            lnr.scrollToPositionWithOffset(pos, 0);
-        }
-    }
-
-    @Override
     public void notifyDataAdded(int position, int count) {
         if (nonNull(mAdapter)) {
             mAdapter.updateHidden(Settings.get().security().loadSet("hidden_dialogs"));
@@ -436,7 +468,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
 
     @Override
     public void goToChat(int accountId, int messagesOwnerId, int peerId, String title, String avaurl, int offset) {
-        PlaceFactory.getChatDualPlace(accountId, messagesOwnerId, new Peer(peerId).setTitle(title).setAvaUrl(avaurl), offset).tryOpenWith(requireActivity());
+        PlaceFactory.getChatPlace(accountId, messagesOwnerId, new Peer(peerId).setTitle(title).setAvaUrl(avaurl), true).tryOpenWith(requireActivity());
     }
 
     @Override
@@ -501,7 +533,6 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         return () -> new DialogsPresenter(
                 requireArguments().getInt(Extra.ACCOUNT_ID),
                 requireArguments().getInt(Extra.OWNER_ID),
-                requireArguments().getInt(Extra.OFFSET),
                 saveInstanceState
         );
     }

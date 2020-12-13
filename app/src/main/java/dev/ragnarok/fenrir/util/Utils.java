@@ -11,6 +11,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BlendMode;
@@ -92,11 +93,16 @@ public class Utils {
     private static final List<Integer> reload_news = new ArrayList<>();
     private static final List<Integer> reload_dialogs = new ArrayList<>();
     private static final List<Integer> reload_stickers = new ArrayList<>();
+    private static final List<String> CachedMyStickers = new ArrayList<>();
     private static String device_id;
     private static float density = 1;
     private static DisplayMetrics metrics;
 
     private Utils() {
+    }
+
+    public static List<String> getCachedMyStickers() {
+        return CachedMyStickers;
     }
 
     public static boolean needReloadNews(int account_id) {
@@ -1375,6 +1381,18 @@ public class Utils {
         recyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
         recyclerView.setAdapter(adapter);
         return root;
+    }
+
+    public static Context updateActivityContext(Context base) {
+        Resources res = base.getResources();
+        Configuration config = new Configuration(res.getConfiguration());
+        int size = dev.ragnarok.fenrir.settings.Settings.get().main().getFontSize();
+        if (size == 0) {
+            return base;
+        } else {
+            config.fontScale = res.getConfiguration().fontScale + 0.15f * size;
+            return base.createConfigurationContext(config);
+        }
     }
 
     public static @Nullable

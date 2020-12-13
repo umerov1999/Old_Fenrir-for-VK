@@ -64,10 +64,12 @@ public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView
     public static final String ACTION_SELECT = "AudiosFragment.ACTION_SELECT";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AudioRecyclerAdapter mAudioRecyclerAdapter;
-    private final ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+    private boolean inTabsContainer;
+    private final ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT) {
+        @Override
         public boolean onMove(@NotNull RecyclerView recyclerView,
                               @NotNull RecyclerView.ViewHolder viewHolder, @NotNull RecyclerView.ViewHolder target) {
-            return false;
+            return getPresenter().fireItemMoved(mAudioRecyclerAdapter.getItemRawPosition(viewHolder.getBindingAdapterPosition()), mAudioRecyclerAdapter.getItemRawPosition(target.getBindingAdapterPosition()));
         }
 
         @Override
@@ -76,8 +78,17 @@ public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView
             mAudioRecyclerAdapter.notifyItemChanged(viewHolder.getBindingAdapterPosition());
             getPresenter().playAudio(requireActivity(), mAudioRecyclerAdapter.getItemRawPosition(viewHolder.getBindingAdapterPosition()));
         }
+
+        @Override
+        public boolean isItemViewSwipeEnabled() {
+            return !inTabsContainer;
+        }
+
+        @Override
+        public boolean isLongPressDragEnabled() {
+            return !Settings.get().main().isUse_long_click_download() && getPresenter().isMyAudio();
+        }
     };
-    private boolean inTabsContainer;
     private boolean doAudioLoadTabs;
     private boolean isSelectMode;
     private boolean isSaveMode;
@@ -156,9 +167,7 @@ public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView
             }
         });
 
-        if (!inTabsContainer) {
-            new ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(recyclerView);
-        }
+        new ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(recyclerView);
 
         FloatingActionButton save_mode = root.findViewById(R.id.save_mode_button);
         FloatingActionButton Goto = root.findViewById(R.id.goto_button);
@@ -236,7 +245,7 @@ public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView
             }
         });
 
-        mAudioRecyclerAdapter = new AudioRecyclerAdapter(requireActivity(), Collections.emptyList(), getPresenter().isMyAudio(), isSelectMode, 0);
+        mAudioRecyclerAdapter = new AudioRecyclerAdapter(requireActivity(), Collections.emptyList(), getPresenter().isMyAudio(), isSelectMode, 0, getPresenter().getPlaylistId());
 
 
         headerPlaylist = inflater.inflate(R.layout.header_audio_playlist, recyclerView, false);
@@ -338,9 +347,16 @@ public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView
     }
 
     @Override
+    public void notifyItemMoved(int fromPosition, int toPosition) {
+        if (nonNull(mAudioRecyclerAdapter)) {
+            mAudioRecyclerAdapter.notifyItemBindableMoved(fromPosition, toPosition);
+        }
+    }
+
+    @Override
     public void notifyItemRemoved(int index) {
         if (nonNull(mAudioRecyclerAdapter)) {
-            mAudioRecyclerAdapter.notifyItemRemoved(index);
+            mAudioRecyclerAdapter.notifyItemBindableRemoved(index);
         }
     }
 
@@ -359,9 +375,9 @@ public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView
     }
 
     @Override
-    public void displayRefreshing(boolean refresing) {
+    public void displayRefreshing(boolean refreshing) {
         if (nonNull(mSwipeRefreshLayout)) {
-            mSwipeRefreshLayout.setRefreshing(refresing);
+            mSwipeRefreshLayout.setRefreshing(refreshing);
         }
     }
 

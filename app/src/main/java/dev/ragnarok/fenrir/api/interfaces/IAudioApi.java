@@ -5,12 +5,14 @@ import androidx.annotation.CheckResult;
 import java.util.Collection;
 import java.util.List;
 
+import dev.ragnarok.fenrir.api.model.AccessIdPair;
 import dev.ragnarok.fenrir.api.model.IdPair;
 import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiAudio;
 import dev.ragnarok.fenrir.api.model.VKApiAudioCatalog;
 import dev.ragnarok.fenrir.api.model.VKApiAudioPlaylist;
 import dev.ragnarok.fenrir.api.model.VkApiLyrics;
+import dev.ragnarok.fenrir.api.model.response.AddToPlaylistResponse;
 import dev.ragnarok.fenrir.api.model.response.CatalogResponse;
 import dev.ragnarok.fenrir.api.model.server.VkApiAudioUploadServer;
 import io.reactivex.rxjava3.core.Single;
@@ -39,10 +41,25 @@ public interface IAudioApi {
     Single<Integer> edit(int ownerId, int audioId, String artist, String title, String text);
 
     @CheckResult
-    Single<Integer> add(int audioId, int ownerId, Integer groupId, Integer album_id);
+    Single<Integer> add(int audioId, int ownerId, Integer groupId);
 
     @CheckResult
-    Single<Items<VKApiAudio>> get(Integer album_id, Integer ownerI,
+    Single<VKApiAudioPlaylist> createPlaylist(int ownerId, String title, String description);
+
+    @CheckResult
+    Single<Integer> editPlaylist(int ownerId, int playlist_id, String title, String description);
+
+    @CheckResult
+    Single<Integer> removeFromPlaylist(int ownerId, int playlist_id, Collection<AccessIdPair> audio_ids);
+
+    @CheckResult
+    Single<List<AddToPlaylistResponse>> addToPlaylist(int ownerId, int playlist_id, Collection<AccessIdPair> audio_ids);
+
+    @CheckResult
+    Single<Integer> reorder(int ownerId, int audio_id, Integer before, Integer after);
+
+    @CheckResult
+    Single<Items<VKApiAudio>> get(Integer playlist_id, Integer ownerId,
                                   Integer offset, Integer count, String accessKey);
 
     @CheckResult

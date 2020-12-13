@@ -320,6 +320,7 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         val progress: ProgressBar
         private var mLoadingNow = false
         override fun bindTo(@NonNull story: Story) {
+            photo.resetZoom()
             if (story.isIs_expired) {
                 CreateCustomToast(requireActivity()).showToastError(R.string.is_expired)
                 mLoadingNow = false

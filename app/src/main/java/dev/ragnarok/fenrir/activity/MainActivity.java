@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.activity;
 
+import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -33,9 +34,12 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.stream.JsonReader;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -197,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private final List<Action<MainActivity>> postResumeActions = new ArrayList<>(0);
     protected int mAccountId;
-    protected int mLayoutRes = R.layout.activity_main;
+    protected int mLayoutRes = Settings.get().main().isSnow_mode() ? R.layout.activity_main_with_snow : R.layout.activity_main;
     protected long mLastBackPressedTime;
     /**
      * Атрибуты секции, которая на данный момент находится на главном контейнере экрана
@@ -242,6 +246,11 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
         } else {
             postResumeActions.add(action);
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(Utils.updateActivityContext(newBase));
     }
 
     @Override
@@ -313,6 +322,10 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                 if (getMainActivityTransform() == MainActivityTransforms.MAIN) {
 
                     mCompositeDisposable.add(InteractorFactory.createAudioInteractor().PlaceToAudioCache(this)
+                            .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                            .subscribe(RxUtils.dummy(), t -> {/*TODO*/}));
+
+                    mCompositeDisposable.add(InteractorFactory.createStickersInteractor().PlaceToStickerCache(this)
                             .compose(RxUtils.applyCompletableIOToMainSchedulers())
                             .subscribe(RxUtils.dummy(), t -> {/*TODO*/}));
 
@@ -421,6 +434,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                     ModalBottomSheetDialogFragment.Builder menus = new ModalBottomSheetDialogFragment.Builder();
                     menus.add(new OptionRequest(R.id.button_ok, getString(R.string.set_offline), R.drawable.offline));
                     menus.add(new OptionRequest(R.id.button_cancel, getString(R.string.open_clipboard_url), R.drawable.web));
+                    menus.add(new OptionRequest(R.id.button_camera, getString(R.string.scan_qr), R.drawable.qr_code));
                     menus.show(getSupportFragmentManager(), "left_options", option -> {
                         switch (option.getId()) {
                             case R.id.button_ok:
@@ -434,6 +448,14 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                                     String temp = clipBoard.getPrimaryClip().getItemAt(0).getText().toString();
                                     LinkHelper.openUrl(this, mAccountId, temp);
                                 }
+                                break;
+                            case R.id.button_camera:
+                                IntentIntegrator integrator = new IntentIntegrator(this);
+                                integrator.setPrompt("QR Code/Bar Code");
+                                integrator.setCameraId(0);
+                                integrator.setBeepEnabled(true);
+                                integrator.setBarcodeImageEnabled(false);
+                                integrator.initiateScan();
                                 break;
                         }
                     });
@@ -540,7 +562,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
             String imgUrl = intent.getStringExtra(Extra.IMAGE);
 
             Peer peer = new Peer(peerId).setTitle(title).setAvaUrl(imgUrl);
-            PlaceFactory.getChatPlace(aid, aid, peer, 0).tryOpenWith(this);
+            PlaceFactory.getChatPlace(aid, aid, peer, true).tryOpenWith(this);
             return Settings.get().ui().getSwipes_chat_mode() != SwipesChatMode.SLIDR || Settings.get().ui().getSwipes_chat_mode() == SwipesChatMode.DISABLED;
         }
 
@@ -566,7 +588,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
         resolveToolbarNavigationIcon();
     }
 
-    private void openChat(int accountId, int messagesOwnerId, @NonNull Peer peer, int Offset, boolean ChatOnly) {
+    private void openChat(int accountId, int messagesOwnerId, @NonNull Peer peer, int cache) {
         if (Settings.get().other().isEnable_show_recent_dialogs()) {
             RecentChat recentChat = new RecentChat(accountId, peer.getId(), peer.getTitle(), peer.getAvaUrl());
             getNavigationFragment().appendRecentChat(recentChat);
@@ -574,16 +596,16 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
             getNavigationFragment().selectPage(recentChat);
         }
         if (Settings.get().ui().getSwipes_chat_mode() == SwipesChatMode.DISABLED) {
-            ChatFragment chatFragment = ChatFragment.Companion.newInstance(accountId, messagesOwnerId, peer);
+            ChatFragment chatFragment = ChatFragment.Companion.newInstance(accountId, messagesOwnerId, peer, cache);
             attachToFront(chatFragment);
         } else {
             if (Settings.get().ui().getSwipes_chat_mode() == SwipesChatMode.SLIDR && getMainActivityTransform() == MainActivityTransforms.MAIN) {
                 Intent intent = new Intent(this, ChatActivity.class);
                 intent.setAction(ChatActivity.ACTION_OPEN_PLACE);
-                intent.putExtra(Extra.PLACE, PlaceFactory.getChatPlace(accountId, messagesOwnerId, peer, Offset));
+                intent.putExtra(Extra.PLACE, PlaceFactory.getChatPlace(accountId, messagesOwnerId, peer, true));
                 startActivity(intent);
             } else if (Settings.get().ui().getSwipes_chat_mode() == SwipesChatMode.SLIDR && getMainActivityTransform() != MainActivityTransforms.MAIN) {
-                ChatFragment chatFragment = ChatFragment.Companion.newInstance(accountId, messagesOwnerId, peer);
+                ChatFragment chatFragment = ChatFragment.Companion.newInstance(accountId, messagesOwnerId, peer, cache);
                 attachToFront(chatFragment);
             } else {
                 throw new UnsupportedOperationException();
@@ -594,7 +616,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
     private void openRecentChat(RecentChat chat) {
         int accountId = mAccountId;
         int messagesOwnerId = mAccountId;
-        openChat(accountId, messagesOwnerId, new Peer(chat.getPeerId()).setAvaUrl(chat.getIconUrl()).setTitle(chat.getTitle()), 0, true);
+        openChat(accountId, messagesOwnerId, new Peer(chat.getPeerId()).setAvaUrl(chat.getIconUrl()).setTitle(chat.getTitle()), 1);
     }
 
     private void openTargetPage() {
@@ -672,7 +694,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
 
         switch (sectionDrawerItem.getSection()) {
             case AdditionalNavigationFragment.PAGE_DIALOGS:
-                openPlace(PlaceFactory.getDialogsPlace(aid, aid, null, 0));
+                openPlace(PlaceFactory.getDialogsPlace(aid, aid, null));
                 break;
             case AdditionalNavigationFragment.PAGE_FRIENDS:
                 openPlace(PlaceFactory.getFriendsFollowersPlace(aid, aid, FriendsTabsFragment.TAB_ALL_FRIENDS, null));
@@ -762,6 +784,25 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        IntentResult scanner = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (nonNull(scanner)) {
+            if (!Utils.isEmpty(scanner.getContents())) {
+                MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(this);
+                dlgAlert.setIcon(R.drawable.qr_code);
+                dlgAlert.setMessage(scanner.getContents());
+                dlgAlert.setTitle(getString(R.string.scan_qr));
+                dlgAlert.setPositiveButton(R.string.open, (dialog, which) -> LinkHelper.openUrl(this, mAccountId, scanner.getContents()));
+                dlgAlert.setNeutralButton(R.string.copy_text, (dialog, which) -> {
+                    ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("response", scanner.getContents());
+                    clipboard.setPrimaryClip(clip);
+                    CustomToast.CreateCustomToast(this).showToast(R.string.copied_to_clipboard);
+                });
+                dlgAlert.setCancelable(true);
+                dlgAlert.create().show();
+            }
+            return;
+        }
         switch (requestCode) {
             case REQUEST_LOGIN:
                 mAccountId = Settings.get()
@@ -1049,13 +1090,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
             case Place.CHAT:
                 Peer peer = args.getParcelable(Extra.PEER);
                 AssertUtils.requireNonNull(peer);
-                openChat(args.getInt(Extra.ACCOUNT_ID), args.getInt(Extra.OWNER_ID), peer, args.getInt(Extra.OFFSET), true);
-                break;
-
-            case Place.CHAT_DUAL:
-                Peer peer1 = args.getParcelable(Extra.PEER);
-                AssertUtils.requireNonNull(peer1);
-                openChat(args.getInt(Extra.ACCOUNT_ID), args.getInt(Extra.OWNER_ID), peer1, args.getInt(Extra.OFFSET), false);
+                openChat(args.getInt(Extra.ACCOUNT_ID), args.getInt(Extra.OWNER_ID), peer, args.getInt(Extra.CACHE));
                 break;
 
             case Place.SEARCH:
@@ -1092,8 +1127,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                 attachToFront(DialogsFragment.newInstance(
                         args.getInt(Extra.ACCOUNT_ID),
                         args.getInt(Extra.OWNER_ID),
-                        args.getString(Extra.SUBTITLE),
-                        args.getInt(Extra.OFFSET)
+                        args.getString(Extra.SUBTITLE)
                 ));
                 break;
 

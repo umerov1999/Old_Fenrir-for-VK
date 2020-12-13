@@ -285,10 +285,10 @@ public class WallPostPresenter extends PlaceSupportPresenter<IWallPostView> {
     public void fireAddBookmark() {
         appendDisposable(faveInteractor.addPost(getAccountId(), ownerId, postId, null)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(this::onVideoAddedToBookmarks, t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(this::onPostAddedToBookmarks, t -> showError(getView(), getCauseIfRuntime(t))));
     }
 
-    private void onVideoAddedToBookmarks() {
+    private void onPostAddedToBookmarks() {
         if (isGuiReady())
             getView().showSuccessToast();
     }

@@ -16,10 +16,10 @@ public class OnlineFriendsFragment extends AbsOwnersListFragment<OnlineFriendsPr
 
     private boolean isRequested;
 
-    public static OnlineFriendsFragment newInstance(int accoutnId, int userId) {
+    public static OnlineFriendsFragment newInstance(int accountId, int userId) {
         Bundle bundle = new Bundle();
         bundle.putInt(Extra.USER_ID, userId);
-        bundle.putInt(Extra.ACCOUNT_ID, accoutnId);
+        bundle.putInt(Extra.ACCOUNT_ID, accountId);
         OnlineFriendsFragment friendsFragment = new OnlineFriendsFragment();
         friendsFragment.setArguments(bundle);
         return friendsFragment;

@@ -70,14 +70,12 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
     private final CompositeDisposable cacheLoadingDisposable = new CompositeDisposable();
     private int dialogsOwnerId;
     private boolean endOfContent;
-    private int offset;
     private boolean netLoadingNow;
     private boolean cacheNowLoading;
 
-    public DialogsPresenter(int accountId, int initialDialogsOwnerId, int offset, @Nullable Bundle savedInstanceState) {
+    public DialogsPresenter(int accountId, int initialDialogsOwnerId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
         setSupportAccountHotSwap(true);
-        this.offset = offset;
 
         dialogs = new ArrayList<>();
 
@@ -152,11 +150,6 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
                 /*ignore*/
             }
         }
-
-        if (offset > 0) {
-            safeScroll(offset);
-            offset = 0;
-        }
     }
 
     private void onDebugError(Throwable throwable) {
@@ -178,6 +171,9 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
                     String temp = clipBoard.getPrimaryClip().getItemAt(0).getText().toString();
                     LinkHelper.openUrl((Activity) context, getAccountId(), temp);
                 }
+                break;
+            case R.id.button_camera:
+                getView().startQRScanner();
                 break;
         }
     }
@@ -311,10 +307,6 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
                     /*ignore*/
                 }
             }
-            if (offset > 0) {
-                safeScroll(offset);
-                offset = 0;
-            }
             if (isGuiReady() && Utils.needReloadDialogs(getAccountId())) {
                 getView().askToReload();
             }
@@ -411,12 +403,6 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
     private void safeNotifyDataSetChanged() {
         if (isGuiReady()) {
             getView().notifyDataSetChanged();
-        }
-    }
-
-    private void safeScroll(int position) {
-        if (isGuiReady()) {
-            getView().scroll_pos(position);
         }
     }
 
@@ -598,6 +584,10 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
         contextView.setCanAddToShortcuts(dialogsOwnerId > 0 && !isHide);
         contextView.setCanConfigNotifications(dialogsOwnerId > 0);
         contextView.setIsHidden(isHide);
+    }
+
+    public void fireQrScanned(@NonNull String result) {
+        getView().onQRScanned(getAccountId(), result);
     }
 
     public void fireOptionViewCreated(IDialogsView.IOptionView view) {

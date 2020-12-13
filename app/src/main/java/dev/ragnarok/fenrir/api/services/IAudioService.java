@@ -7,6 +7,7 @@ import dev.ragnarok.fenrir.api.model.VKApiAudio;
 import dev.ragnarok.fenrir.api.model.VKApiAudioCatalog;
 import dev.ragnarok.fenrir.api.model.VKApiAudioPlaylist;
 import dev.ragnarok.fenrir.api.model.VkApiLyrics;
+import dev.ragnarok.fenrir.api.model.response.AddToPlaylistResponse;
 import dev.ragnarok.fenrir.api.model.response.BaseResponse;
 import dev.ragnarok.fenrir.api.model.response.BlockResponse;
 import dev.ragnarok.fenrir.api.model.response.CatalogResponse;
@@ -81,8 +82,7 @@ public interface IAudioService {
     @POST("audio.add")
     Single<BaseResponse<Integer>> add(@Field("audio_id") int audioId,
                                       @Field("owner_id") int ownerId,
-                                      @Field("group_id") Integer groupId,
-                                      @Field("album_id") Integer albumId);
+                                      @Field("group_id") Integer groupId);
 
     /**
      * Returns a list of audio files of a user or community.
@@ -97,7 +97,7 @@ public interface IAudioService {
     //https://vk.com/dev/audio.get
     @FormUrlEncoded
     @POST("audio.get")
-    Single<BaseResponse<Items<VKApiAudio>>> get(@Field("album_id") Integer album_id,
+    Single<BaseResponse<Items<VKApiAudio>>> get(@Field("playlist_id") Integer playlist_id,
                                                 @Field("owner_id") Integer ownerId,
                                                 @Field("offset") Integer offset,
                                                 @Field("count") Integer count,
@@ -106,7 +106,7 @@ public interface IAudioService {
     //https://vk.com/dev/audio.get
     @FormUrlEncoded
     @POST("audio.get")
-    Single<BaseResponse<Items<VKApiAudio>>> getOld(@Field("album_id") Integer album_id,
+    Single<BaseResponse<Items<VKApiAudio>>> getOld(@Field("playlist_id") Integer playlist_id,
                                                    @Field("owner_id") Integer ownerId,
                                                    @Field("offset") Integer offset,
                                                    @Field("count") Integer count,
@@ -221,4 +221,36 @@ public interface IAudioService {
                                        @Field("artist") String artist,
                                        @Field("title") String title,
                                        @Field("text") String text);
+
+    @FormUrlEncoded
+    @POST("audio.createPlaylist")
+    Single<BaseResponse<VKApiAudioPlaylist>> createPlaylist(@Field("owner_id") int ownerId,
+                                                            @Field("title") String title,
+                                                            @Field("description") String description);
+
+    @FormUrlEncoded
+    @POST("audio.editPlaylist")
+    Single<BaseResponse<Integer>> editPlaylist(@Field("owner_id") int ownerId,
+                                               @Field("playlist_id") int playlist_id,
+                                               @Field("title") String title,
+                                               @Field("description") String description);
+
+    @FormUrlEncoded
+    @POST("audio.removeFromPlaylist")
+    Single<BaseResponse<Integer>> removeFromPlaylist(@Field("owner_id") int ownerId,
+                                                     @Field("playlist_id") int playlist_id,
+                                                     @Field("audio_ids") String audio_ids);
+
+    @FormUrlEncoded
+    @POST("audio.addToPlaylist")
+    Single<BaseResponse<List<AddToPlaylistResponse>>> addToPlaylist(@Field("owner_id") int ownerId,
+                                                                    @Field("playlist_id") int playlist_id,
+                                                                    @Field("audio_ids") String audio_ids);
+
+    @FormUrlEncoded
+    @POST("audio.reorder")
+    Single<BaseResponse<Integer>> reorder(@Field("owner_id") int ownerId,
+                                          @Field("audio_id") int audio_id,
+                                          @Field("before") Integer before,
+                                          @Field("after") Integer after);
 }

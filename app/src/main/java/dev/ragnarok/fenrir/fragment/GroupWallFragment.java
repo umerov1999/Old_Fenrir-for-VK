@@ -214,17 +214,6 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
         OptionMenuView optionMenuView = new OptionMenuView();
         getPresenter().fireOptionMenuViewCreated(optionMenuView);
 
-        if (!optionMenuView.isFavorite) {
-            menu.add(R.string.add_to_bookmarks).setOnMenuItemClickListener(item -> {
-                getPresenter().fireAddToBookmarksClick();
-                return true;
-            });
-        } else {
-            menu.add(R.string.remove_from_bookmarks).setOnMenuItemClickListener(item -> {
-                getPresenter().fireRemoveFromBookmarks();
-                return true;
-            });
-        }
         if (!optionMenuView.isSubscribed) {
             menu.add(R.string.notify_wall_added).setOnMenuItemClickListener(item -> {
                 getPresenter().fireSubscribe();
@@ -233,6 +222,18 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
         } else {
             menu.add(R.string.unnotify_wall_added).setOnMenuItemClickListener(item -> {
                 getPresenter().fireUnSubscribe();
+                return true;
+            });
+        }
+
+        if (!optionMenuView.isFavorite) {
+            menu.add(R.string.add_to_bookmarks).setOnMenuItemClickListener(item -> {
+                getPresenter().fireAddToBookmarksClick();
+                return true;
+            });
+        } else {
+            menu.add(R.string.remove_from_bookmarks).setOnMenuItemClickListener(item -> {
+                getPresenter().fireRemoveFromBookmarks();
                 return true;
             });
         }
@@ -295,7 +296,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
 
     @Override
     public void openCommunityDialogs(int accountId, int groupId, String subtitle) {
-        PlaceFactory.getDialogsPlace(accountId, -groupId, subtitle, 0).tryOpenWith(requireActivity());
+        PlaceFactory.getDialogsPlace(accountId, -groupId, subtitle).tryOpenWith(requireActivity());
     }
 
     @Override

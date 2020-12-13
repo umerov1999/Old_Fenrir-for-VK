@@ -1,17 +1,24 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import dev.ragnarok.fenrir.R;
+import dev.ragnarok.fenrir.api.model.AccessIdPair;
 import dev.ragnarok.fenrir.domain.IAudioInteractor;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
+import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IAudioPlaylistsView;
@@ -30,10 +37,11 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
     private static final int GET_COUNT = 50;
     private static final int WEB_SEARCH_DELAY = 1000;
     private final List<AudioPlaylist> addon;
-    private final List<AudioPlaylist> pages;
+    private final List<AudioPlaylist> playlists;
     private final IAudioInteractor fInteractor;
     private final int owner_id;
     private final CompositeDisposable actualDataDisposable = new CompositeDisposable();
+    private AudioPlaylist pending_to_add;
     private int Foffset;
     private boolean actualDataReceived;
     private boolean endOfContent;
@@ -43,7 +51,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
     public AudioPlaylistsPresenter(int accountId, int ownerId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
         owner_id = ownerId;
-        pages = new ArrayList<>();
+        playlists = new ArrayList<>();
         addon = new ArrayList<>();
         fInteractor = InteractorFactory.createAudioInteractor();
         search_at = new FindAt();
@@ -70,7 +78,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
     @Override
     public void onGuiCreated(@NonNull IAudioPlaylistsView view) {
         super.onGuiCreated(view);
-        view.displayData(pages);
+        view.displayData(playlists);
     }
 
     private void loadActualData(int offset) {
@@ -99,13 +107,13 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
         actualDataReceived = true;
 
         if (offset == 0) {
-            pages.clear();
-            pages.addAll(addon);
-            pages.addAll(data);
+            playlists.clear();
+            playlists.addAll(addon);
+            playlists.addAll(data);
             callView(IAudioPlaylistsView::notifyDataSetChanged);
         } else {
-            int startSize = pages.size();
-            pages.addAll(data);
+            int startSize = playlists.size();
+            playlists.addAll(data);
             callView(view -> view.notifyDataAdded(startSize, data.size()));
         }
 
@@ -131,7 +139,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
     }
 
     public boolean fireScrollToEnd() {
-        if (!endOfContent && nonEmpty(pages) && actualDataReceived && !actualDataLoading) {
+        if (!endOfContent && nonEmpty(playlists) && actualDataReceived && !actualDataLoading) {
             loadActualData(Foffset);
             return false;
         }
@@ -152,13 +160,13 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
         endOfContent = search_at.isEnded();
 
         if (this.search_at.getOffset() == 0) {
-            pages.clear();
-            pages.addAll(playlist);
+            playlists.clear();
+            playlists.addAll(playlist);
             callView(IAudioPlaylistsView::notifyDataSetChanged);
         } else {
             if (nonEmpty(playlist)) {
-                int startSize = pages.size();
-                pages.addAll(playlist);
+                int startSize = playlists.size();
+                playlists.addAll(playlist);
                 callView(view -> view.notifyDataAdded(startSize, playlist.size()));
             }
         }
@@ -199,10 +207,46 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
         actualDataDisposable.add(fInteractor.deletePlaylist(accountId, album.getId(), album.getOwnerId())
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(data -> {
-                    pages.remove(index);
-                    callView(IAudioPlaylistsView::notifyDataSetChanged);
+                    playlists.remove(index);
+                    callView(v -> v.notifyItemRemoved(index));
                     getView().getCustomToast().showToast(R.string.success);
                 }, throwable -> showError(getView(), throwable)));
+    }
+
+    public void onEdit(Context context, int index, AudioPlaylist album) {
+        View root = View.inflate(context, R.layout.entry_playlist_info, null);
+        ((TextInputEditText) root.findViewById(R.id.edit_title)).setText(album.getTitle());
+        ((TextInputEditText) root.findViewById(R.id.edit_description)).setText(album.getDescription());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.edit)
+                .setCancelable(true)
+                .setView(root)
+                .setPositiveButton(R.string.button_ok, (dialog, which) -> actualDataDisposable.add(fInteractor.editPlaylist(getAccountId(), album.getOwnerId(), album.getId(),
+                        ((TextInputEditText) root.findViewById(R.id.edit_title)).getText().toString(),
+                        ((TextInputEditText) root.findViewById(R.id.edit_description)).getText().toString()).compose(RxUtils.applySingleIOToMainSchedulers())
+                        .subscribe(v -> fireRefresh(false), t -> showError(getView(), getCauseIfRuntime(t)))))
+                .setNegativeButton(R.string.button_cancel, null);
+        builder.create().show();
+    }
+
+    private void doInsertPlaylist(AudioPlaylist playlist) {
+        int offset = addon.size();
+        playlists.add(offset, playlist);
+        callView(v -> v.notifyDataAdded(offset, 1));
+    }
+
+    public void fireCreatePlaylist(Context context) {
+        View root = View.inflate(context, R.layout.entry_playlist_info, null);
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.create_playlist)
+                .setCancelable(true)
+                .setView(root)
+                .setPositiveButton(R.string.button_ok, (dialog, which) -> actualDataDisposable.add(fInteractor.createPlaylist(getAccountId(), owner_id,
+                        ((TextInputEditText) root.findViewById(R.id.edit_title)).getText().toString(),
+                        ((TextInputEditText) root.findViewById(R.id.edit_description)).getText().toString()).compose(RxUtils.applySingleIOToMainSchedulers())
+                        .subscribe(this::doInsertPlaylist, t -> showError(getView(), getCauseIfRuntime(t)))))
+                .setNegativeButton(R.string.button_cancel, null);
+        builder.create().show();
     }
 
     public void onAdd(AudioPlaylist album) {
@@ -211,6 +255,24 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(data -> getView().getCustomToast().showToast(R.string.success), throwable ->
                         showError(getView(), throwable)));
+    }
+
+    public void fireAudiosSelected(List<Audio> audios) {
+        List<AccessIdPair> targets = new ArrayList<>(audios.size());
+        for (Audio i : audios) {
+            targets.add(new AccessIdPair(i.getId(), i.getOwnerId(), i.getAccessKey()));
+        }
+        int accountId = getAccountId();
+        actualDataDisposable.add(fInteractor.addToPlaylist(accountId, pending_to_add.getOwnerId(), pending_to_add.getId(), targets)
+                .compose(RxUtils.applySingleIOToMainSchedulers())
+                .subscribe(data -> getView().getCustomToast().showToast(R.string.success), throwable ->
+                        showError(getView(), throwable)));
+        pending_to_add = null;
+    }
+
+    public void onPlaceToPending(AudioPlaylist album) {
+        pending_to_add = album;
+        callView(v -> v.doAddAudios(getAccountId()));
     }
 
     public void fireRefresh(boolean sleep_search) {

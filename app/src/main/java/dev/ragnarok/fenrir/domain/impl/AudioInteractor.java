@@ -1,16 +1,16 @@
 package dev.ragnarok.fenrir.domain.impl;
 
-import android.app.Activity;
 import android.content.Context;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import dev.ragnarok.fenrir.api.interfaces.INetworker;
+import dev.ragnarok.fenrir.api.model.AccessIdPair;
 import dev.ragnarok.fenrir.api.model.VKApiAudioPlaylist;
+import dev.ragnarok.fenrir.api.model.response.AddToPlaylistResponse;
 import dev.ragnarok.fenrir.domain.IAudioInteractor;
 import dev.ragnarok.fenrir.domain.mappers.Dto2Model;
 import dev.ragnarok.fenrir.fragment.search.criteria.AudioPlaylistSearchCriteria;
@@ -62,10 +62,10 @@ public class AudioInteractor implements IAudioInteractor {
     }
 
     @Override
-    public Completable add(int accountId, Audio orig, Integer groupId, Integer albumId) {
+    public Completable add(int accountId, Audio orig, Integer groupId) {
         return networker.vkDefault(accountId)
                 .audio()
-                .add(orig.getId(), orig.getOwnerId(), groupId, albumId)
+                .add(orig.getId(), orig.getOwnerId(), groupId)
                 .ignoreElement();
     }
 
@@ -102,10 +102,10 @@ public class AudioInteractor implements IAudioInteractor {
     }
 
     @Override
-    public Single<List<Audio>> get(int accountId, Integer album_id, int ownerId, int offset, int count, String accessKey) {
+    public Single<List<Audio>> get(int accountId, Integer playlist_id, int ownerId, int offset, int count, String accessKey) {
         return networker.vkDefault(accountId)
                 .audio()
-                .get(album_id, ownerId, offset, count, accessKey)
+                .get(playlist_id, ownerId, offset, count, accessKey)
                 .map(items -> listEmptyIfNull(items.getItems()))
                 .map(out -> {
                     List<Audio> ret = new ArrayList<>();
@@ -207,6 +207,38 @@ public class AudioInteractor implements IAudioInteractor {
     }
 
     @Override
+    public Single<AudioPlaylist> createPlaylist(int accountId, int ownerId, String title, String description) {
+        return networker.vkDefault(accountId)
+                .audio()
+                .createPlaylist(ownerId, title, description)
+                .map(out -> out != null ? Dto2Model.transform(out) : null);
+    }
+
+    @Override
+    public Single<Integer> editPlaylist(int accountId, int ownerId, int playlist_id, String title, String description) {
+        return networker.vkDefault(accountId)
+                .audio()
+                .editPlaylist(ownerId, playlist_id, title, description)
+                .map(resultId -> resultId);
+    }
+
+    @Override
+    public Single<Integer> removeFromPlaylist(int accountId, int ownerId, int playlist_id, Collection<AccessIdPair> audio_ids) {
+        return networker.vkDefault(accountId)
+                .audio()
+                .removeFromPlaylist(ownerId, playlist_id, audio_ids)
+                .map(resultId -> resultId);
+    }
+
+    @Override
+    public Single<List<AddToPlaylistResponse>> addToPlaylist(int accountId, int ownerId, int playlist_id, Collection<AccessIdPair> audio_ids) {
+        return networker.vkDefault(accountId)
+                .audio()
+                .addToPlaylist(ownerId, playlist_id, audio_ids)
+                .map(resultId -> resultId);
+    }
+
+    @Override
     public Single<List<AudioCatalog>> getCatalog(int accountId, String artist_id) {
         return networker.vkDefault(accountId)
                 .audio()
@@ -250,6 +282,14 @@ public class AudioInteractor implements IAudioInteractor {
                             ret.add(Dto2Model.transform(out2));
                             return Single.just(ret);
                         }));
+    }
+
+    @Override
+    public Single<Integer> reorder(int accountId, int ownerId, int audio_id, Integer before, Integer after) {
+        return networker.vkDefault(accountId)
+                .audio()
+                .reorder(ownerId, audio_id, before, after)
+                .map(resultId -> resultId);
     }
 
     @Override
@@ -355,43 +395,5 @@ public class AudioInteractor implements IAudioInteractor {
 
                     });
                 });
-    }
-
-    @Override
-    public Single<List<Audio>> loadLocalAudios(int accountId, Context context) {
-        if (!AppPerms.hasReadWriteStoragePermision(context)) {
-            AppPerms.requestReadWriteStoragePermission((Activity) context);
-            return Single.just(new ArrayList<>());
-        }
-        File dir = new File(Settings.get().other().getMusicDir());
-        if (dir.listFiles() == null || java.util.Objects.requireNonNull(dir.listFiles()).length <= 0)
-            return Single.just(new ArrayList<>());
-        ArrayList<File> files = new ArrayList<>();
-        for (File file : java.util.Objects.requireNonNull(dir.listFiles())) {
-            if (!file.isDirectory() && file.getName().contains(".mp3")) {
-                files.add(file);
-            }
-        }
-        if (files.isEmpty())
-            return Single.just(new ArrayList<>());
-        Collections.sort(files, (f1, f2) -> Long.compare(f2.lastModified(), f1.lastModified()));
-
-        ArrayList<Audio> audios = new ArrayList<>(files.size());
-        for (File file : files) {
-
-            Audio rt = new Audio().setId(file.getAbsolutePath().hashCode()).setUrl("file://" + file.getAbsolutePath()).setIsLocal(true).setOwnerId(accountId);
-            String TrackName = file.getName().replace(".mp3", "");
-            String Artist = "";
-            String[] arr = TrackName.split(" - ");
-            if (arr.length > 1) {
-                Artist = arr[0];
-                TrackName = TrackName.replace(Artist + " - ", "");
-            }
-            rt.setArtist(Artist);
-            rt.setTitle(TrackName);
-
-            audios.add(rt);
-        }
-        return Single.just(audios);
     }
 }

@@ -122,7 +122,7 @@ public class AudiosInCatalogFragment extends BaseMvpFragment<AudiosInCatalogPres
             } else
                 CustomToast.CreateCustomToast(requireActivity()).showToastError(R.string.null_audio);
         });
-        mAudioRecyclerAdapter = new AudioRecyclerAdapter(requireActivity(), Collections.emptyList(), false, false, 0);
+        mAudioRecyclerAdapter = new AudioRecyclerAdapter(requireActivity(), Collections.emptyList(), false, false, 0, null);
         mAudioRecyclerAdapter.setClickListener(new AudioRecyclerAdapter.ClickListener() {
             @Override
             public void onClick(int position, int catalog, Audio audio) {

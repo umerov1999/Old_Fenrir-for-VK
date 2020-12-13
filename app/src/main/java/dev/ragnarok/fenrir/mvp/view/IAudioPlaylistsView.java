@@ -12,7 +12,11 @@ public interface IAudioPlaylistsView extends IAccountDependencyView, IMvpView, I
 
     void notifyDataSetChanged();
 
+    void notifyItemRemoved(int position);
+
     void notifyDataAdded(int position, int count);
 
     void showRefreshing(boolean refreshing);
+
+    void doAddAudios(int accountId);
 }

@@ -105,9 +105,9 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
         }
     };
 
-    public static Bundle buildArgs(int accoutnId, int ownerId, @Nullable Owner owner) {
+    public static Bundle buildArgs(int accountId, int ownerId, @Nullable Owner owner) {
         Bundle args = new Bundle();
-        args.putInt(Extra.ACCOUNT_ID, accoutnId);
+        args.putInt(Extra.ACCOUNT_ID, accountId);
         args.putInt(Extra.OWNER_ID, ownerId);
         args.putParcelable(Extra.OWNER, new ParcelableOwnerWrapper(owner));
         return args;

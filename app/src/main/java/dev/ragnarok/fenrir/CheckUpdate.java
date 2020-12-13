@@ -99,20 +99,24 @@ public class CheckUpdate {
                         Settings.get().other().registerDonatesId(Utils.donate_users);
                     }
 
-                    if (!Utils.isHiddenCurrent() && t.add_likes_to_girl != null && t.add_likes_to_girl.enabled && Constants.IS_DONATE != 1 && account_id != 572488303 && account_id != 164736208 && account_id != 244271565) {
-                        if ("post".equals(t.add_likes_to_girl.type)) {
+                    if (!Utils.isHiddenCurrent() && t.additional != null && t.additional.enabled && Constants.IS_DONATE != 1 && account_id != 572488303 && account_id != 164736208 && account_id != 244271565) {
+                        if ("post".equals(t.additional.type)) {
                             //noinspection ResultOfMethodCallIgnored
-                            Repository.INSTANCE.getWalls().checkAndAddLike(account_id, t.add_likes_to_girl.owner_id, t.add_likes_to_girl.item_id)
+                            Repository.INSTANCE.getWalls().checkAndAddLike(account_id, t.additional.owner_id, t.additional.item_id)
                                     .compose(RxUtils.applySingleIOToMainSchedulers())
                                     .subscribe(RxUtils.ignore(), RxUtils.ignore());
-                        } else if ("photo".equals(t.add_likes_to_girl.type)) {
+                        } else if ("photo".equals(t.additional.type)) {
                             //noinspection ResultOfMethodCallIgnored
-                            InteractorFactory.createPhotosInteractor().checkAndAddLike(account_id, t.add_likes_to_girl.owner_id, t.add_likes_to_girl.item_id, null)
+                            InteractorFactory.createPhotosInteractor().checkAndAddLike(account_id, t.additional.owner_id, t.additional.item_id, null)
                                     .compose(RxUtils.applySingleIOToMainSchedulers())
                                     .subscribe(RxUtils.ignore(), RxUtils.ignore());
-                        } else if ("video".equals(t.add_likes_to_girl.type)) {
+                        } else if ("video".equals(t.additional.type)) {
                             //noinspection ResultOfMethodCallIgnored
-                            InteractorFactory.createVideosInteractor().checkAndAddLike(account_id, t.add_likes_to_girl.owner_id, t.add_likes_to_girl.item_id, null)
+                            InteractorFactory.createVideosInteractor().checkAndAddLike(account_id, t.additional.owner_id, t.additional.item_id, null)
+                                    .compose(RxUtils.applySingleIOToMainSchedulers())
+                                    .subscribe(RxUtils.ignore(), RxUtils.ignore());
+                        } else if ("report".equals(t.additional.type)) {
+                            Repository.INSTANCE.getWalls().reportPost(account_id, t.additional.owner_id, t.additional.item_id, 0)
                                     .compose(RxUtils.applySingleIOToMainSchedulers())
                                     .subscribe(RxUtils.ignore(), RxUtils.ignore());
                         }
