@@ -1405,7 +1405,7 @@ public class MessagesRepository implements IMessagesRepository {
                                     }
                                     return networker.vkDefault(accountId)
                                             .messages()
-                                            .send(dbo.getId(), dbo.getPeerId(), null, null, null, null, null, optionalFwd.getSecond().get(), stickerId, null, null);
+                                            .send(dbo.getId(), dbo.getPeerId(), null, null, null, null, null, null, stickerId, null, null);
                                 });
                     }
 
@@ -1431,7 +1431,7 @@ public class MessagesRepository implements IMessagesRepository {
                                 }
                                 return networker.vkDefault(accountId)
                                         .messages()
-                                        .send(dbo.getId(), dbo.getPeerId(), null, dbo.getBody(), null, null, attachments, null, null, null, null);
+                                        .send(dbo.getId(), dbo.getPeerId(), null, dbo.getBody(), null, null, attachments, optionalFwd.getSecond().get(), null, null, null);
                             });
                 });
     }
@@ -1455,6 +1455,7 @@ public class MessagesRepository implements IMessagesRepository {
 
             return docsApi.getMessagesUploadServer(dbo.getPeerId(), "audio_message")
                     .flatMap(server -> {
+                        assert filePath != null;
                         File file = new File(filePath);
                         InputStream[] is = new InputStream[1];
 

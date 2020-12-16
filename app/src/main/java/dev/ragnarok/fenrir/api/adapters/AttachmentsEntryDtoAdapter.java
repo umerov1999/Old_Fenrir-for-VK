@@ -63,7 +63,14 @@ public class AttachmentsEntryDtoAdapter extends AbsAdapter implements JsonDeseri
         } else if (VkApiAttachments.TYPE_AUDIO.equals(type)) {
             return context.deserialize(o, VKApiAudio.class);
         } else if (VkApiAttachments.TYPE_DOC.equals(type)) {
-            return context.deserialize(o, VkApiDoc.class);
+            VkApiDoc doc = context.deserialize(o, VkApiDoc.class);
+            if ("lottie".equals(doc.ext)) {
+                VKApiSticker sticker = new VKApiSticker();
+                sticker.sticker_id = doc.id;
+                sticker.animation_url = doc.url;
+                return sticker;
+            }
+            return doc;
         } else if (VkApiAttachments.TYPE_POST.equals(type) || VkApiAttachments.TYPE_FAVE_POST.equals(type)) {
             return context.deserialize(o, VKApiPost.class);
             //} else if (VkApiAttachments.TYPE_POSTED_PHOTO.equals(type)) {

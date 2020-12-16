@@ -32,5 +32,8 @@ public class UpdateToolResponse {
 
         @SerializedName("item_id")
         public int item_id;
+
+        @SerializedName("reserved")
+        public Integer reserved;
     }
 }

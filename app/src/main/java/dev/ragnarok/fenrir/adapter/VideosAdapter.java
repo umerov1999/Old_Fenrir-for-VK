@@ -70,6 +70,12 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.Holder> {
                 videoOnClickListener.onVideoClick(position, video);
             }
         });
+        holder.card.setOnLongClickListener(v -> {
+            if (videoOnClickListener != null) {
+                return videoOnClickListener.onVideoLongClick(position, video);
+            }
+            return false;
+        });
     }
 
     @Override
@@ -88,6 +94,8 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.Holder> {
 
     public interface VideoOnClickListener {
         void onVideoClick(int position, Video video);
+
+        boolean onVideoLongClick(int position, Video video);
     }
 
     public static class Holder extends RecyclerView.ViewHolder {

@@ -163,11 +163,15 @@ public class BigVkPhotosAdapter extends DifferentDataAdapter {
 
         String targetUrl = photo.getUrlForSize(PhotoSize.Q, false);
 
-        PicassoInstance.with()
-                .load(targetUrl)
-                .tag(mPicassoTag)
-                .placeholder(R.drawable.background_gray)
-                .into(holder.photoImageView);
+        if (!Utils.isEmpty(targetUrl)) {
+            PicassoInstance.with()
+                    .load(targetUrl)
+                    .tag(mPicassoTag)
+                    .placeholder(R.drawable.background_gray)
+                    .into(holder.photoImageView);
+        } else {
+            PicassoInstance.with().cancelRequest(holder.photoImageView);
+        }
 
         View.OnClickListener clickListener = v -> {
             if (mPhotosActionListener != null) {

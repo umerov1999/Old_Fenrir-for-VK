@@ -323,7 +323,7 @@ public class EmojiconsPopup {
     }
 
     public interface OnMyStickerClickedListener {
-        void onMyStickerClick(@NonNull String file);
+        void onMyStickerClick(@NonNull Sticker.LocalSticker file);
     }
 
     public interface OnEmojiconClickedListener {

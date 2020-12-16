@@ -312,11 +312,10 @@ public class PlaceFactory {
                 .withStringExtra(Extra.SUBTITLE, subtitle);
     }
 
-    public static Place getChatPlace(int accountId, int messagesOwnerId, @NonNull Peer peer, boolean cache) {
+    public static Place getChatPlace(int accountId, int messagesOwnerId, @NonNull Peer peer) {
         return new Place(Place.CHAT)
                 .withIntExtra(Extra.ACCOUNT_ID, accountId)
                 .withIntExtra(Extra.OWNER_ID, messagesOwnerId)
-                .withIntExtra(Extra.CACHE, cache ? 1 : 0)
                 .withParcelableExtra(Extra.PEER, peer);
     }
 

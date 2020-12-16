@@ -64,8 +64,7 @@ import kotlin.collections.ArrayList
 
 
 class ChatPresenter(accountId: Int, private val messagesOwnerId: Int,
-                    initialPeer: Peer, needCache: Boolean,
-                    config: ChatConfig, savedInstanceState: Bundle?) : AbsMessageListPresenter<IChatView>(accountId, savedInstanceState) {
+                    initialPeer: Peer, config: ChatConfig, savedInstanceState: Bundle?) : AbsMessageListPresenter<IChatView>(accountId, savedInstanceState) {
 
     private var peer: Peer
     private var subtitle: String? = null
@@ -77,7 +76,6 @@ class ChatPresenter(accountId: Int, private val messagesOwnerId: Int,
     private var textingNotifier: TextingNotifier
     private var toolbarSubtitleHandler: ToolbarSubtitleHandler = ToolbarSubtitleHandler(this)
     private var draftMessageDbAttachmentsCount: Int = 0
-    private val isNeedCache = needCache
 
     private var recordingLookup: Lookup
 
@@ -635,7 +633,7 @@ class ChatPresenter(accountId: Int, private val messagesOwnerId: Int,
         setNetLoadingNow(true)
 
         val peerId = this.peerId
-        netLoadingDisposable = messagesRepository.getPeerMessages(messagesOwnerId, peerId, COUNT, null, startMessageId, isNeedCache && !HronoType, HronoType)
+        netLoadingDisposable = messagesRepository.getPeerMessages(messagesOwnerId, peerId, COUNT, null, startMessageId, !HronoType, HronoType)
                 .fromIOToMain()
                 .subscribe({ messages -> onNetDataReceived(messages, startMessageId) }, { this.onMessagesGetError(it) })
     }
@@ -1723,17 +1721,17 @@ class ChatPresenter(accountId: Int, private val messagesOwnerId: Int,
         }
     }
 
-    private fun checkGraffitiMessage(filePath: String): Single<Optional<IAttachmentToken?>> {
-        if (!isEmpty(filePath)) {
+    private fun checkGraffitiMessage(filePath: Sticker.LocalSticker): Single<Optional<IAttachmentToken?>> {
+        if (!isEmpty(filePath.path)) {
             val docsApi = Injection.provideNetworkInterfaces().vkDefault(accountId).docs()
-            return docsApi.getMessagesUploadServer(peerId, "graffiti")
+            return docsApi.getMessagesUploadServer(peerId, if (filePath.isAnimated) "doc" else "graffiti")
                     .flatMap { server: VkApiDocsUploadServer ->
-                        val file = File(filePath)
+                        val file = File(filePath.path)
                         val `is` = arrayOfNulls<InputStream>(1)
                         try {
                             `is`[0] = FileInputStream(file)
                             return@flatMap Injection.provideNetworkInterfaces().uploads()
-                                    .uploadDocumentRx(server.url, file.name, `is`[0]!!, null)
+                                    .uploadDocumentRx(server.url, if (filePath.isAnimated) filePath.animationName else file.name, `is`[0]!!, null)
                                     .doFinally(safelyCloseAction(`is`[0]))
                                     .flatMap { uploadDto: UploadDocDto ->
                                         docsApi
@@ -1756,15 +1754,21 @@ class ChatPresenter(accountId: Int, private val messagesOwnerId: Int,
         return Single.just(Optional.empty())
     }
 
-    fun fireSendMyStickerClick(file: String) {
+    fun fireSendMyStickerClick(file: Sticker.LocalSticker) {
         netLoadingDisposable = checkGraffitiMessage(file)
                 .compose(applySingleIOToMainSchedulers())
                 .subscribe({
                     if (!it.isEmpty) {
                         val kk = it.get() as AttachmentToken
-                        val graffiti = Graffiti().setId(kk.id).setOwner_id(kk.ownerId).setAccess_key(kk.accessKey)
-                        val builder = SaveMessageBuilder(messagesOwnerId, peerId).attach(graffiti)
-                        sendMessage(builder)
+                        if (!file.isAnimated) {
+                            val graffiti = Graffiti().setId(kk.id).setOwner_id(kk.ownerId).setAccess_key(kk.accessKey)
+                            val builder = SaveMessageBuilder(messagesOwnerId, peerId).attach(graffiti)
+                            sendMessage(builder)
+                        } else {
+                            val doc = Document(kk.id, kk.ownerId).setAccessKey(kk.accessKey)
+                            val builder = SaveMessageBuilder(messagesOwnerId, peerId).attach(doc)
+                            sendMessage(builder)
+                        }
                     }
                 }, { onConversationFetchFail(it) })
     }

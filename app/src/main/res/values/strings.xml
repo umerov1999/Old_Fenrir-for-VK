@@ -49,6 +49,7 @@
 
     <string-array name="array_font_size_names">
         <item>Поумолчанию</item>
+        <item>Маленький</item>
         <item>Средний</item>
         <item>Большой</item>
         <item>Огромный</item>
@@ -56,6 +57,7 @@
 
     <string-array name="array_font_size_items" translatable="false">
         <item>0</item>
+        <item>-1</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>
@@ -1213,6 +1215,7 @@
     <string name="edit_manager_title">Руководитель</string>
     <string name="api_error_701">Пользователь должен быть участником сообщества</string>
     <string name="ban_author">Заблокировать автора</string>
+    <string name="author">Автор</string>
     <string name="not_interested">Неинтересно</string>
     <string name="community_creator_desc">Невозможно изменить уровень полномочий создателя</string>
     <string name="community_creator">Создатель</string>

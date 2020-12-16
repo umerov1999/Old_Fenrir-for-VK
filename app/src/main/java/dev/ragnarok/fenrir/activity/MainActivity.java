@@ -562,7 +562,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
             String imgUrl = intent.getStringExtra(Extra.IMAGE);
 
             Peer peer = new Peer(peerId).setTitle(title).setAvaUrl(imgUrl);
-            PlaceFactory.getChatPlace(aid, aid, peer, true).tryOpenWith(this);
+            PlaceFactory.getChatPlace(aid, aid, peer).tryOpenWith(this);
             return Settings.get().ui().getSwipes_chat_mode() != SwipesChatMode.SLIDR || Settings.get().ui().getSwipes_chat_mode() == SwipesChatMode.DISABLED;
         }
 
@@ -588,7 +588,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
         resolveToolbarNavigationIcon();
     }
 
-    private void openChat(int accountId, int messagesOwnerId, @NonNull Peer peer, int cache) {
+    private void openChat(int accountId, int messagesOwnerId, @NonNull Peer peer) {
         if (Settings.get().other().isEnable_show_recent_dialogs()) {
             RecentChat recentChat = new RecentChat(accountId, peer.getId(), peer.getTitle(), peer.getAvaUrl());
             getNavigationFragment().appendRecentChat(recentChat);
@@ -596,16 +596,16 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
             getNavigationFragment().selectPage(recentChat);
         }
         if (Settings.get().ui().getSwipes_chat_mode() == SwipesChatMode.DISABLED) {
-            ChatFragment chatFragment = ChatFragment.Companion.newInstance(accountId, messagesOwnerId, peer, cache);
+            ChatFragment chatFragment = ChatFragment.Companion.newInstance(accountId, messagesOwnerId, peer);
             attachToFront(chatFragment);
         } else {
             if (Settings.get().ui().getSwipes_chat_mode() == SwipesChatMode.SLIDR && getMainActivityTransform() == MainActivityTransforms.MAIN) {
                 Intent intent = new Intent(this, ChatActivity.class);
                 intent.setAction(ChatActivity.ACTION_OPEN_PLACE);
-                intent.putExtra(Extra.PLACE, PlaceFactory.getChatPlace(accountId, messagesOwnerId, peer, true));
+                intent.putExtra(Extra.PLACE, PlaceFactory.getChatPlace(accountId, messagesOwnerId, peer));
                 startActivity(intent);
             } else if (Settings.get().ui().getSwipes_chat_mode() == SwipesChatMode.SLIDR && getMainActivityTransform() != MainActivityTransforms.MAIN) {
-                ChatFragment chatFragment = ChatFragment.Companion.newInstance(accountId, messagesOwnerId, peer, cache);
+                ChatFragment chatFragment = ChatFragment.Companion.newInstance(accountId, messagesOwnerId, peer);
                 attachToFront(chatFragment);
             } else {
                 throw new UnsupportedOperationException();
@@ -616,7 +616,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
     private void openRecentChat(RecentChat chat) {
         int accountId = mAccountId;
         int messagesOwnerId = mAccountId;
-        openChat(accountId, messagesOwnerId, new Peer(chat.getPeerId()).setAvaUrl(chat.getIconUrl()).setTitle(chat.getTitle()), 1);
+        openChat(accountId, messagesOwnerId, new Peer(chat.getPeerId()).setAvaUrl(chat.getIconUrl()).setTitle(chat.getTitle()));
     }
 
     private void openTargetPage() {
@@ -1090,7 +1090,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
             case Place.CHAT:
                 Peer peer = args.getParcelable(Extra.PEER);
                 AssertUtils.requireNonNull(peer);
-                openChat(args.getInt(Extra.ACCOUNT_ID), args.getInt(Extra.OWNER_ID), peer, args.getInt(Extra.CACHE));
+                openChat(args.getInt(Extra.ACCOUNT_ID), args.getInt(Extra.OWNER_ID), peer);
                 break;
 
             case Place.SEARCH:

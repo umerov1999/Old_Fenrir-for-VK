@@ -468,7 +468,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
 
     @Override
     public void goToChat(int accountId, int messagesOwnerId, int peerId, String title, String avaurl, int offset) {
-        PlaceFactory.getChatPlace(accountId, messagesOwnerId, new Peer(peerId).setTitle(title).setAvaUrl(avaurl), true).tryOpenWith(requireActivity());
+        PlaceFactory.getChatPlace(accountId, messagesOwnerId, new Peer(peerId).setTitle(title).setAvaUrl(avaurl)).tryOpenWith(requireActivity());
     }
 
     @Override

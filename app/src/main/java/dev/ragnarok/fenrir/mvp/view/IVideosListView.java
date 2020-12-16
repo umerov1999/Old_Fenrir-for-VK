@@ -23,6 +23,10 @@ public interface IVideosListView extends IAccountDependencyView, IMvpView, ITool
 
     void notifyDataSetChanged();
 
+    void notifyItemRemoved(int position);
+
+    void notifyItemChanged(int position);
+
     void returnSelectionToParent(Video video);
 
     void showVideoPreview(int accountId, Video video);
@@ -46,4 +50,10 @@ public interface IVideosListView extends IAccountDependencyView, IMvpView, ITool
     void notifyUploadDataChanged();
 
     void onUploaded(Video upload);
+
+    void doVideoLongClick(int accountId, boolean isMy, int position, @NonNull Video video);
+
+    void displayShareDialog(int accountId, @NonNull Video video, boolean canPostToMyWall);
+
+    void showSuccessToast();
 }

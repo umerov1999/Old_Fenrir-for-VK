@@ -2,12 +2,16 @@ package dev.ragnarok.fenrir.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jetbrains.annotations.NotNull;
@@ -30,12 +35,16 @@ import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.DualTabPhotoActivity;
+import dev.ragnarok.fenrir.activity.SendAttachmentsActivity;
 import dev.ragnarok.fenrir.adapter.DocsUploadAdapter;
 import dev.ragnarok.fenrir.adapter.VideosAdapter;
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
 import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.listener.PicassoPauseOnScrollListener;
+import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.ModalBottomSheetDialogFragment;
+import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.OptionRequest;
+import dev.ragnarok.fenrir.model.EditingPostType;
 import dev.ragnarok.fenrir.model.LocalVideo;
 import dev.ragnarok.fenrir.model.Video;
 import dev.ragnarok.fenrir.model.selection.FileManagerSelectableSource;
@@ -45,7 +54,9 @@ import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.VideosListPresenter;
 import dev.ragnarok.fenrir.mvp.view.IVideosListView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
+import dev.ragnarok.fenrir.place.PlaceUtil;
 import dev.ragnarok.fenrir.upload.Upload;
+import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.MySearchView;
@@ -316,6 +327,12 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
     }
 
     @Override
+    public boolean onVideoLongClick(int position, Video video) {
+        getPresenter().fireOnVideoLongClick(position, video);
+        return true;
+    }
+
+    @Override
     public void displayData(@NonNull List<Video> data) {
         if (nonNull(mAdapter)) {
             mAdapter.setData(data);
@@ -353,6 +370,16 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
     }
 
     @Override
+    public void notifyItemRemoved(int position) {
+        mAdapter.notifyItemRemoved(position);
+    }
+
+    @Override
+    public void notifyItemChanged(int position) {
+        mAdapter.notifyItemChanged(position);
+    }
+
+    @Override
     public void returnSelectionToParent(Video video) {
         Intent intent = new Intent();
         intent.putParcelableArrayListExtra(Extra.ATTACHMENTS, Utils.singletonArrayList(video));
@@ -376,5 +403,89 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
         intent.putParcelableArrayListExtra(Extra.ATTACHMENTS, Utils.singletonArrayList(upload));
         requireActivity().setResult(Activity.RESULT_OK, intent);
         requireActivity().finish();
+    }
+
+    @Override
+    public void doVideoLongClick(int accountId, boolean isMy, int position, @NotNull Video video) {
+        ModalBottomSheetDialogFragment.Builder menus = new ModalBottomSheetDialogFragment.Builder();
+        if (!isMy) {
+            if (video.isCanAdd()) {
+                menus.add(new OptionRequest(R.id.action_add_to_my_videos, getString(R.string.add_to_my_videos), R.drawable.plus));
+            }
+        } else {
+            menus.add(new OptionRequest(R.id.action_delete_from_my_videos, getString(R.string.delete), R.drawable.ic_outline_delete));
+        }
+        if (video.isCanEdit()) {
+            menus.add(new OptionRequest(R.id.action_edit, getString(R.string.edit), R.drawable.pencil));
+        }
+        menus.add(new OptionRequest(R.id.action_copy_url, getString(R.string.copy_url), R.drawable.content_copy));
+        menus.add(new OptionRequest(R.id.share_button, getString(R.string.share), R.drawable.share));
+        menus.add(new OptionRequest(R.id.check_show_author, getString(R.string.author), R.drawable.person));
+        menus.header(video.getTitle(), R.drawable.video, video.getImage());
+        menus.columns(2);
+        menus.show(requireActivity().getSupportFragmentManager(), "video_options", option -> {
+            if (option.getId() == R.id.action_copy_url) {
+                ClipboardManager clipboard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(getString(R.string.link), "https://vk.com/video" + video.getOwnerId() + "_" + video.getId());
+                clipboard.setPrimaryClip(clip);
+                CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.copied_url);
+            } else if (option.getId() == R.id.check_show_author) {
+                PlaceFactory.getOwnerWallPlace(accountId, video.getOwnerId(), null).tryOpenWith(requireActivity());
+            } else {
+                getPresenter().fireVideoOption(option.getId(), video, position, requireActivity());
+            }
+        });
+    }
+
+    @Override
+    public void displayShareDialog(int accountId, @NonNull Video video, boolean canPostToMyWall) {
+        String[] items;
+        if (canPostToMyWall) {
+            if (!video.getPrivate()) {
+                items = new String[]{getString(R.string.share_link), getString(R.string.repost_send_message), getString(R.string.repost_to_wall)};
+            } else {
+                items = new String[]{getString(R.string.repost_send_message), getString(R.string.repost_to_wall)};
+            }
+        } else {
+            if (!video.getPrivate()) {
+                items = new String[]{getString(R.string.share_link), getString(R.string.repost_send_message)};
+            } else {
+                items = new String[]{getString(R.string.repost_send_message)};
+            }
+        }
+
+        new MaterialAlertDialogBuilder(requireActivity())
+                .setItems(items, (dialogInterface, i) -> {
+                    if (video.getPrivate()) {
+                        switch (i) {
+                            case 0:
+                                SendAttachmentsActivity.startForSendAttachments(requireActivity(), accountId, video);
+                                break;
+                            case 1:
+                                PlaceUtil.goToPostCreation(requireActivity(), accountId, accountId, EditingPostType.TEMP, Collections.singletonList(video));
+                                break;
+                        }
+                    } else {
+                        switch (i) {
+                            case 0:
+                                Utils.shareLink(requireActivity(), "https://vk.com/video" + video.getOwnerId() + "_" + video.getId(), video.getTitle());
+                                break;
+                            case 1:
+                                SendAttachmentsActivity.startForSendAttachments(requireActivity(), accountId, video);
+                                break;
+                            case 2:
+                                PlaceUtil.goToPostCreation(requireActivity(), accountId, accountId, EditingPostType.TEMP, Collections.singletonList(video));
+                                break;
+                        }
+                    }
+                })
+                .setCancelable(true)
+                .setTitle(R.string.repost_title)
+                .show();
+    }
+
+    @Override
+    public void showSuccessToast() {
+        Toast.makeText(getContext(), R.string.success, Toast.LENGTH_SHORT).show();
     }
 }

@@ -41,6 +41,11 @@ public class ConversationVideosFragment extends AbsChatAttachmentsFragment<Video
     }
 
     @Override
+    public boolean onVideoLongClick(int position, Video video) {
+        return false;
+    }
+
+    @Override
     public void displayAttachments(List<Video> data) {
         VideosAdapter adapter = (VideosAdapter) getAdapter();
         adapter.setData(data);

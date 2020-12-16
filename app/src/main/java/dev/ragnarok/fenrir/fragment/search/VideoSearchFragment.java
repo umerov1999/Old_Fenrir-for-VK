@@ -60,6 +60,11 @@ public class VideoSearchFragment extends AbsSearchFragment<VideosSearchPresenter
         getPresenter().fireVideoClick(video);
     }
 
+    @Override
+    public boolean onVideoLongClick(int position, Video video) {
+        return false;
+    }
+
     @NotNull
     @Override
     public IPresenterFactory<VideosSearchPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {

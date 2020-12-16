@@ -43,10 +43,9 @@ import dev.ragnarok.fenrir.util.ViewUtils;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
-import static dev.ragnarok.fenrir.util.RxUtils.ignore;
 import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 
-public class QuickAnswerActivity extends AppCompatActivity {
+public class QuickAnswerActivityBubbles extends AppCompatActivity {
 
     public static final String PARAM_BODY = "body";
 
@@ -58,17 +57,15 @@ public class QuickAnswerActivity extends AppCompatActivity {
     private TextingNotifier notifier;
     private int accountId;
     private Message msg;
-    private boolean messageIsRead;
     private IMessagesRepository messagesRepository;
 
     public static Intent forStart(Context context, int accountId, Message msg, String body, String imgUrl, String title) {
-        Intent intent = new Intent(context, QuickAnswerActivity.class);
+        Intent intent = new Intent(context, QuickAnswerActivityBubbles.class);
         intent.putExtra(PARAM_BODY, body);
         intent.putExtra(Extra.ACCOUNT_ID, accountId);
         intent.putExtra(Extra.MESSAGE, msg);
         intent.putExtra(Extra.TITLE, title);
         intent.putExtra(Extra.IMAGE, imgUrl);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 
@@ -126,11 +123,6 @@ public class QuickAnswerActivity extends AppCompatActivity {
         etText.addTextChangedListener(new TextWatcherAdapter() {
             @Override
             public void afterTextChanged(Editable editable) {
-                if (!messageIsRead) {
-                    setMessageAsRead();
-                    messageIsRead = true;
-                }
-
                 cancelFinishWithDelay();
 
                 if (Objects.nonNull(notifier)) {
@@ -222,11 +214,5 @@ public class QuickAnswerActivity extends AppCompatActivity {
         NotificationHelper.tryCancelNotificationForPeer(this, accountId, msg.getPeerId());
         messagesRepository.runSendingQueue();
         finish();
-    }
-
-    private void setMessageAsRead() {
-        compositeDisposable.add(messagesRepository.markAsRead(accountId, msg.getPeerId(), msg.getId())
-                .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(RxUtils.dummy(), ignore()));
     }
 }

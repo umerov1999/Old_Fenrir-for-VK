@@ -463,7 +463,7 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
  */
 
     public void fireShowQR(Context context) {
-        Bitmap qr = QrGenerator.generateQR(context, "https://vk.com/" + (ownerId < 0 ? "club" : "id") + Math.abs(ownerId), Color.parseColor("#000000"), Color.parseColor("#ffffff"), 1, 3, R.mipmap.ic_launcher);
+        Bitmap qr = QrGenerator.generateQR(context, "https://vk.com/" + (ownerId < 0 ? "club" : "id") + Math.abs(ownerId), Color.parseColor("#000000"), Color.parseColor("#ffffff"), 1, 3, R.drawable.client_qr);
         MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(context);
         dlgAlert.setCancelable(true);
         dlgAlert.setNegativeButton(R.string.button_cancel, null);

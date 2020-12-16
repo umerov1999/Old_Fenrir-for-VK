@@ -219,14 +219,14 @@ object DownloadWorkUtils {
         if (!CheckUpdate.isFullVersionPropriety(context)) {
             return
         }
-        val link: String? = if (sticker.isAnimated && Settings.get().other().isDeveloper_mode) {
+        val link: String? = if (sticker.isAnimated) {
             sticker.getAnimationByType("light")
         } else {
             sticker.getImage(256, false).url
         }
         if (Utils.isEmpty(link))
             return
-        val result_filename = DownloadInfo(makeLegalFilename(sticker.id.toString(), null), Settings.get().other().stickerDir, if (sticker.isAnimated && Settings.get().other().isDeveloper_mode) "json" else "png")
+        val result_filename = DownloadInfo(makeLegalFilename(sticker.id.toString(), null), Settings.get().other().stickerDir, if (sticker.isAnimated) "json" else "png")
         CheckDirectory(result_filename.path)
         if (default_file_exist(context, result_filename)) {
             return
@@ -237,7 +237,7 @@ object DownloadWorkUtils {
             } else {
                 toDefaultInternalDownloader(context, link!!, result_filename)
             }
-            Utils.getCachedMyStickers().add(result_filename.build())
+            Utils.getCachedMyStickers().add(Sticker.LocalSticker(result_filename.build(), sticker.isAnimated))
         } catch (e: Exception) {
             CustomToast.CreateCustomToast(context).showToastError("Sticker Error: " + e.message)
             return

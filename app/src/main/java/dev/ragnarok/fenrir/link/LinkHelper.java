@@ -144,7 +144,7 @@ public class LinkHelper {
             case AbsLink.DIALOG:
                 DialogLink dialogLink = (DialogLink) link;
                 Peer peer = new Peer(dialogLink.peerId);
-                PlaceFactory.getChatPlace(accountId, accountId, peer, true).tryOpenWith(activity);
+                PlaceFactory.getChatPlace(accountId, accountId, peer).tryOpenWith(activity);
                 break;
 
             case AbsLink.WALL:

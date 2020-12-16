@@ -163,7 +163,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/linearLayout"
+        android:layout_above="@+id/input_view"
         android:layout_below="@id/pinned_root_view">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -226,15 +226,8 @@
 
     </RelativeLayout>
 
-    <FrameLayout
-        android:id="@+id/down_menu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/linearLayout"
-        android:visibility="gone" />
-
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/input_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -310,11 +303,18 @@
 
     </LinearLayout>
 
+    <FrameLayout
+        android:id="@+id/down_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone" />
+
     <TextView
         android:id="@+id/fragment_chat_empty_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/linearLayout"
+        android:layout_above="@+id/input_view"
         android:gravity="center"
         android:padding="16dp"
         android:text="@string/chat_empty_text"

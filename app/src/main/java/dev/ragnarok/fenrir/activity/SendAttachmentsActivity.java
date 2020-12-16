@@ -33,7 +33,7 @@ public class SendAttachmentsActivity extends MainActivity {
         Intent intent = new Intent(context, ChatActivity.class);
         intent.setAction(ChatActivity.ACTION_OPEN_PLACE);
         intent.putExtra(EXTRA_INPUT_ATTACHMENTS, bundle);
-        intent.putExtra(Extra.PLACE, PlaceFactory.getChatPlace(accountId, accountId, peer, true));
+        intent.putExtra(Extra.PLACE, PlaceFactory.getChatPlace(accountId, accountId, peer));
         context.startActivity(intent);
     }
 

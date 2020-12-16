@@ -154,7 +154,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         Writing_msg_Group = root.findViewById(R.id.writingGroup)
         Writing_msg = root.findViewById(R.id.writing)
         Writing_msg_Ava = root.findViewById(R.id.writingava)
-        InputView = root.findViewById(R.id.linearLayout)
+        InputView = root.findViewById(R.id.input_view)
 
         Writing_msg_Group?.visibility = View.GONE
 
@@ -340,6 +340,10 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         fun isVisible(): Boolean = rootView.visibility == View.VISIBLE
 
         fun hide() {
+            if (Settings.get().main().isMessages_menu_down) {
+                reference.get()?.InputView?.visibility = View.VISIBLE
+                reference.get()?.downMenuGroup?.visibility = View.GONE
+            }
             rootView.visibility = View.GONE
             reference.get()?.presenter?.fireActionModeDestroy()
         }
@@ -407,9 +411,8 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         override fun create(): ChatPresenter {
             val aid = requireArguments().getInt(Extra.ACCOUNT_ID)
             val messagesOwnerId = requireArguments().getInt(Extra.OWNER_ID)
-            val needCache = requireArguments().getInt(Extra.CACHE)
             val peer = requireArguments().getParcelable<Peer>(Extra.PEER)
-            return ChatPresenter(aid, messagesOwnerId, peer!!, needCache != 0, createStartConfig(), saveInstanceState)
+            return ChatPresenter(aid, messagesOwnerId, peer!!, createStartConfig(), saveInstanceState)
         }
     }
 
@@ -568,6 +571,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
             }
         } else {
             downMenuGroup?.visibility = View.VISIBLE
+            InputView?.visibility = View.INVISIBLE
             downMenuGroup?.run {
                 if (childCount == 0) {
                     val v = LayoutInflater.from(context).inflate(R.layout.view_action_mode, this, false)
@@ -588,6 +592,10 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
 
     override fun finishActionMode() {
         actionModeHolder?.rootView?.visibility = View.GONE
+        if (Settings.get().main().isMessages_menu_down) {
+            InputView?.visibility = View.VISIBLE
+            downMenuGroup?.visibility = View.GONE
+        }
     }
 
     private fun onEditLocalPhotosSelected(photos: List<LocalPhoto>) {
@@ -1293,7 +1301,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         presenter?.fireSendClick()
     }
 
-    override fun onMyStickerClick(file: String) {
+    override fun onMyStickerClick(file: Sticker.LocalSticker) {
         if (!CheckUpdate.isFullVersionPropriety(requireActivity())) {
             return
         }
@@ -1384,11 +1392,10 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         private const val REQUEST_PHOTO_FROM_CAMERA = 154
         private const val REQUEST_UPLOAD_CHAT_AVATAR = 155
 
-        fun newInstance(accountId: Int, messagesOwnerId: Int, peer: Peer, cache: Int): ChatFragment {
+        fun newInstance(accountId: Int, messagesOwnerId: Int, peer: Peer): ChatFragment {
             val args = Bundle()
             args.putInt(Extra.ACCOUNT_ID, accountId)
             args.putInt(Extra.OWNER_ID, messagesOwnerId)
-            args.putInt(Extra.CACHE, cache)
             args.putParcelable(Extra.PEER, peer)
 
             val fragment = ChatFragment()

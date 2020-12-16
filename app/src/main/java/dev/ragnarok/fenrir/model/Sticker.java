@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
+import java.io.File;
 import java.util.List;
 
 import dev.ragnarok.fenrir.settings.Settings;
@@ -261,6 +264,35 @@ public class Sticker extends AbsModel {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(url);
             dest.writeString(type);
+        }
+    }
+
+    public static final class LocalSticker {
+        private final String path;
+        private final boolean isAnimated;
+
+        public LocalSticker(@NonNull String path, boolean isAnimated) {
+            this.path = path;
+            this.isAnimated = isAnimated;
+        }
+
+        public @NonNull
+        String getPath() {
+            return path;
+        }
+
+        public @NonNull
+        String getPreviewPath() {
+            return "file://" + path;
+        }
+
+        public boolean isAnimated() {
+            return isAnimated;
+        }
+
+        public @NonNull
+        String getAnimationName() {
+            return new File(path).getName().replace(".json", ".lottie");
         }
     }
 }

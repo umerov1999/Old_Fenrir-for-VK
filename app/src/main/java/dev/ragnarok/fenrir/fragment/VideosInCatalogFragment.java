@@ -161,4 +161,9 @@ public class VideosInCatalogFragment extends BaseMvpFragment<VideosInCatalogPres
     public void onVideoClick(int position, Video video) {
         PlaceFactory.getVideoPreviewPlace(getPresenter().getAccountId(), video).tryOpenWith(requireActivity());
     }
+
+    @Override
+    public boolean onVideoLongClick(int position, Video video) {
+        return false;
+    }
 }

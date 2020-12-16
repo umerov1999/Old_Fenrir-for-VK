@@ -48,7 +48,7 @@
             android:id="@+id/fragment_comments_reply_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@id/linearLayout"
+            android:layout_above="@id/input_view"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -75,7 +75,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout"
+            android:id="@+id/input_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

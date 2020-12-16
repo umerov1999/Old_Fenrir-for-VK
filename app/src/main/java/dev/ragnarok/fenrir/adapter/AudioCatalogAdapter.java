@@ -200,6 +200,11 @@ public class AudioCatalogAdapter extends RecyclerView.Adapter<AudioCatalogAdapte
     }
 
     @Override
+    public boolean onVideoLongClick(int position, Video video) {
+        return false;
+    }
+
+    @Override
     public void onLinkClick(int index, @NonNull Link doc) {
         LinkHelper.openLinkInBrowser(mContext, doc.getUrl());
     }

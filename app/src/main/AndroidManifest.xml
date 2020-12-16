@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="dev.ragnarok.fenrir">
+    package="dev.ragnarok.fenrir"
+    android:installLocation="auto">
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -65,6 +74,13 @@
             android:taskAffinity=""
             android:theme="@style/QuickReply"
             android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".activity.QuickAnswerActivityBubbles"
+            android:allowEmbedded="true"
+            android:documentLaunchMode="always"
+            android:resizeableActivity="true"
+            android:theme="@style/QuickReply" />
 
         <activity
             android:name=".activity.KeyExchangeCommitActivity"
@@ -307,16 +323,6 @@
             android:name=".activity.ChatActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/chat"
-            android:theme="@style/App.DayNight.Swipes"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-
-        <activity
-            android:name=".activity.ChatBubbleActivity"
-            android:allowEmbedded="true"
-            android:configChanges="keyboardHidden|orientation"
-            android:documentLaunchMode="always"
-            android:label="@string/chat"
-            android:resizeableActivity="true"
             android:theme="@style/App.DayNight.Swipes"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 

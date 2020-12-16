@@ -3,11 +3,13 @@ package dev.ragnarok.fenrir.mvp.presenter;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,6 +41,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 import static dev.ragnarok.fenrir.Injection.provideMainThreadScheduler;
 import static dev.ragnarok.fenrir.util.Utils.findIndexById;
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class VideosListPresenter extends AccountDependencyPresenter<IVideosListView> {
@@ -396,6 +399,10 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
         }
     }
 
+    public void fireOnVideoLongClick(int position, @NonNull Video video) {
+        callView(v -> v.doVideoLongClick(getAccountId(), ownerId == getAccountId(), position, video));
+    }
+
     private boolean canLoadMore() {
         return !endOfContent && !requestNow && hasActualNetData && !cacheNowLoading && nonEmpty(data);
     }
@@ -415,6 +422,56 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
             getView().returnSelectionToParent(video);
         } else {
             getView().showVideoPreview(getAccountId(), video);
+        }
+    }
+
+    private void fireEditVideo(Context context, int position, @NonNull Video video) {
+        View root = View.inflate(context, R.layout.entry_video_info, null);
+        ((TextInputEditText) root.findViewById(R.id.edit_title)).setText(video.getTitle());
+        ((TextInputEditText) root.findViewById(R.id.edit_description)).setText(video.getDescription());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.edit)
+                .setCancelable(true)
+                .setView(root)
+                .setPositiveButton(R.string.button_ok, (dialog, which) -> {
+                    String title = ((TextInputEditText) root.findViewById(R.id.edit_title)).getText().toString();
+                    String description = ((TextInputEditText) root.findViewById(R.id.edit_description)).getText().toString();
+                    appendDisposable(interactor.edit(getAccountId(), video.getOwnerId(), video.getId(),
+                            title, description).compose(RxUtils.applyCompletableIOToMainSchedulers())
+                            .subscribe(() -> {
+                                data.get(position).setTitle(title).setDescription(description);
+                                callView(v -> v.notifyItemChanged(position));
+                            }, t -> showError(getView(), getCauseIfRuntime(t))));
+                })
+                .setNegativeButton(R.string.button_cancel, null);
+        builder.create().show();
+    }
+
+    private void onAddComplete() {
+        callView(IVideosListView::showSuccessToast);
+    }
+
+    public void fireVideoOption(int id, @NonNull Video video, int position, Context context) {
+        switch (id) {
+            case R.id.action_add_to_my_videos:
+                netDisposable.add(interactor.addToMy(getAccountId(), getAccountId(), video.getOwnerId(), video.getId())
+                        .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                        .subscribe(this::onAddComplete, t -> showError(getView(), getCauseIfRuntime(t))));
+                break;
+            case R.id.action_edit:
+                fireEditVideo(context, position, video);
+                break;
+            case R.id.action_delete_from_my_videos:
+                netDisposable.add(interactor.delete(getAccountId(), video.getId(), video.getOwnerId(), getAccountId())
+                        .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                        .subscribe(() -> {
+                            data.remove(position);
+                            callView(v -> v.notifyItemRemoved(position));
+                        }, t -> showError(getView(), getCauseIfRuntime(t))));
+                break;
+            case R.id.share_button:
+                getView().displayShareDialog(getAccountId(), video, getAccountId() != ownerId);
+                break;
         }
     }
 }

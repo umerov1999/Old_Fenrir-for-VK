@@ -169,6 +169,11 @@ public class WallVideosAttachmentsFragment extends PlaceSupportMvpFragment<WallV
     }
 
     @Override
+    public boolean onVideoLongClick(int position, Video video) {
+        return false;
+    }
+
+    @Override
     public void onSetLoadingStatus(int isLoad) {
         switch (isLoad) {
             case 1:

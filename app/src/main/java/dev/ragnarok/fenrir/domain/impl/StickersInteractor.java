@@ -19,6 +19,7 @@ import dev.ragnarok.fenrir.db.model.entity.StickersKeywordsEntity;
 import dev.ragnarok.fenrir.domain.IStickersInteractor;
 import dev.ragnarok.fenrir.domain.mappers.Dto2Entity;
 import dev.ragnarok.fenrir.domain.mappers.Entity2Model;
+import dev.ragnarok.fenrir.model.Sticker;
 import dev.ragnarok.fenrir.model.StickerSet;
 import dev.ragnarok.fenrir.model.StickersKeywords;
 import dev.ragnarok.fenrir.settings.Settings;
@@ -117,8 +118,10 @@ public class StickersInteractor implements IStickersInteractor {
             }
             Utils.getCachedMyStickers().clear();
             for (File u : file_list) {
-                if (u.isFile() && (u.getName().contains(".png"))) {
-                    Utils.getCachedMyStickers().add(u.getAbsolutePath());
+                if (u.isFile() && (u.getName().contains(".png") || u.getName().contains(".webp"))) {
+                    Utils.getCachedMyStickers().add(new Sticker.LocalSticker(u.getAbsolutePath(), false));
+                } else if (u.isFile() && u.getName().contains(".json")) {
+                    Utils.getCachedMyStickers().add(new Sticker.LocalSticker(u.getAbsolutePath(), true));
                 }
             }
         });

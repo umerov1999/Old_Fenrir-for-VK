@@ -33,9 +33,9 @@ import java.util.List;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
-import dev.ragnarok.fenrir.activity.ChatBubbleActivity;
 import dev.ragnarok.fenrir.activity.MainActivity;
 import dev.ragnarok.fenrir.activity.QuickAnswerActivity;
+import dev.ragnarok.fenrir.activity.QuickAnswerActivityBubbles;
 import dev.ragnarok.fenrir.api.model.VKApiMessage;
 import dev.ragnarok.fenrir.domain.Repository;
 import dev.ragnarok.fenrir.link.internal.OwnerLinkSpanFactory;
@@ -292,7 +292,7 @@ public class NotificationHelper {
         Intent intent = new Intent(context, MainActivity.class);
         intent.setAction(MainActivity.ACTION_OPEN_PLACE);
 
-        Place chatPlace = PlaceFactory.getChatPlace(accountId, accountId, peer, true);
+        Place chatPlace = PlaceFactory.getChatPlace(accountId, accountId, peer);
         intent.putExtra(Extra.PLACE, chatPlace);
 
         PendingIntent contentIntent = PendingIntent.getActivity(context, message.getId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -332,7 +332,7 @@ public class NotificationHelper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             createNotificationShortcut(context, builder, new Person.Builder()
                     .setName(getSenderName(message.getSender(), context)).setIcon(IconCompat.createWithBitmap(message.getSenderId() == accountId ? acc_avatar : avatar))
-                    .setKey(String.valueOf(message.getSenderId())).build(), peer, accountId);
+                    .setKey(String.valueOf(message.getSenderId())).build(), peer, accountId, message, text);
         }
 
         nManager.notify(createPeerTagFor(accountId, message.getPeerId()), NOTIFICATION_MESSAGE, builder.build());
@@ -461,7 +461,7 @@ public class NotificationHelper {
     }
 
     @SuppressLint("RestrictedApi")
-    private static void createNotificationShortcut(Context context, NotificationCompat.Builder builder, Person person, Peer peer, int accountId) {
+    private static void createNotificationShortcut(Context context, NotificationCompat.Builder builder, Person person, Peer peer, int accountId, Message message, CharSequence text) {
         if (Peer.isGroupChat(peer.getId())) {
             return;
         }
@@ -487,16 +487,13 @@ public class NotificationHelper {
             ShortcutManagerCompat.addDynamicShortcuts(context, arrayList);
             builder.setShortcutId(id);
 
-            Intent bubble_chat = new Intent(context, ChatBubbleActivity.class);
-            bubble_chat.setAction(ChatBubbleActivity.ACTION_OPEN_PLACE);
-            bubble_chat.putExtra(Extra.PLACE, PlaceFactory.getChatPlace(accountId, accountId, peer, true));
-            PendingIntent bubbleIntent = PendingIntent.getActivity(context, 0, bubble_chat, PendingIntent.FLAG_UPDATE_CURRENT);
-
+            Intent intentQuick = QuickAnswerActivityBubbles.forStart(context, accountId, message, text != null ? text.toString() : context.getString(R.string.error), peer.getAvaUrl(), peer.getTitle());
+            PendingIntent bubbleIntent = PendingIntent.getActivity(context, 0, intentQuick, PendingIntent.FLAG_UPDATE_CURRENT);
             NotificationCompat.BubbleMetadata.Builder bubbleBuilder = new NotificationCompat.BubbleMetadata.Builder(bubbleIntent, IconCompat.createWithAdaptiveBitmap(avatar));
 
             bubbleBuilder.setSuppressNotification(true);
             bubbleBuilder.setAutoExpandBubble(false);
-            bubbleBuilder.setDesiredHeight(Utils.dp(640));
+            bubbleBuilder.setDesiredHeight(Utils.dp(300));
             builder.setBubbleMetadata(bubbleBuilder.build());
         } catch (Exception e) {
             //FileLog.e(e);

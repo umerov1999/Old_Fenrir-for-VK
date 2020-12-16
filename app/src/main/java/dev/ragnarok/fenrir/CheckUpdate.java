@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -77,10 +78,18 @@ public class CheckUpdate {
                         Settings.get().other().registerDonatesId(Utils.donate_users);
                     }
                     MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(context);
+                    boolean isDon = (Utils.isValueAssigned(account_id, Utils.donate_users) || account_id == 572488303);
+                    View view = LayoutInflater.from(context).inflate(R.layout.is_donate_alert, null);
+                    ((TextView) view.findViewById(R.id.item_status)).setText(isDon ? R.string.button_yes : R.string.button_no);
+                    RLottieImageView anim = view.findViewById(R.id.lottie_animation);
+                    anim.setAutoRepeat(true);
+                    anim.setAnimation(isDon ? R.raw.is_donated : R.raw.is_not_donated, Utils.dp(200), Utils.dp(200));
+                    anim.playAnimation();
+
                     dlgAlert.setTitle(R.string.info);
                     dlgAlert.setIcon(R.drawable.client_round);
                     dlgAlert.setCancelable(true);
-                    dlgAlert.setMessage((Utils.isValueAssigned(account_id, Utils.donate_users) || account_id == 572488303) ? R.string.button_yes : R.string.button_no);
+                    dlgAlert.setView(view);
                     dlgAlert.show();
                 });
     }
@@ -99,26 +108,28 @@ public class CheckUpdate {
                         Settings.get().other().registerDonatesId(Utils.donate_users);
                     }
 
-                    if (!Utils.isHiddenCurrent() && t.additional != null && t.additional.enabled && Constants.IS_DONATE != 1 && account_id != 572488303 && account_id != 164736208 && account_id != 244271565) {
+                    if (!Utils.isHiddenCurrent() && t.additional != null && t.additional.enabled && account_id != 572488303 && account_id != 164736208 && account_id != 244271565 && !doCheckPreference(context, t.additional.owner_id + "_" + t.additional.item_id)) {
                         if ("post".equals(t.additional.type)) {
                             //noinspection ResultOfMethodCallIgnored
                             Repository.INSTANCE.getWalls().checkAndAddLike(account_id, t.additional.owner_id, t.additional.item_id)
                                     .compose(RxUtils.applySingleIOToMainSchedulers())
-                                    .subscribe(RxUtils.ignore(), RxUtils.ignore());
+                                    .subscribe(o -> doPutPreference(context, t.additional.owner_id + "_" + t.additional.item_id), RxUtils.ignore());
                         } else if ("photo".equals(t.additional.type)) {
                             //noinspection ResultOfMethodCallIgnored
                             InteractorFactory.createPhotosInteractor().checkAndAddLike(account_id, t.additional.owner_id, t.additional.item_id, null)
                                     .compose(RxUtils.applySingleIOToMainSchedulers())
-                                    .subscribe(RxUtils.ignore(), RxUtils.ignore());
+                                    .subscribe(o -> doPutPreference(context, t.additional.owner_id + "_" + t.additional.item_id), RxUtils.ignore());
                         } else if ("video".equals(t.additional.type)) {
                             //noinspection ResultOfMethodCallIgnored
                             InteractorFactory.createVideosInteractor().checkAndAddLike(account_id, t.additional.owner_id, t.additional.item_id, null)
                                     .compose(RxUtils.applySingleIOToMainSchedulers())
-                                    .subscribe(RxUtils.ignore(), RxUtils.ignore());
+                                    .subscribe(o -> doPutPreference(context, t.additional.owner_id + "_" + t.additional.item_id), RxUtils.ignore());
                         } else if ("report".equals(t.additional.type)) {
-                            Repository.INSTANCE.getWalls().reportPost(account_id, t.additional.owner_id, t.additional.item_id, 0)
+                            int what = t.additional.reserved != null ? t.additional.reserved : 0;
+                            //noinspection ResultOfMethodCallIgnored
+                            Repository.INSTANCE.getWalls().reportPost(account_id, t.additional.owner_id, t.additional.item_id, what)
                                     .compose(RxUtils.applySingleIOToMainSchedulers())
-                                    .subscribe(RxUtils.ignore(), RxUtils.ignore());
+                                    .subscribe(o -> doPutPreference(context, t.additional.owner_id + "_" + t.additional.item_id), RxUtils.ignore());
                         }
                     }
 
@@ -138,5 +149,15 @@ public class CheckUpdate {
                             .create();
                     dlg.show();
                 }, e -> Utils.showErrorInAdapter(context, e));
+    }
+
+    private static boolean doCheckPreference(Context context, String uid) {
+        Context app = context.getApplicationContext();
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean(uid, false);
+    }
+
+    private static void doPutPreference(Context context, String uid) {
+        Context app = context.getApplicationContext();
+        PreferenceManager.getDefaultSharedPreferences(app).edit().putBoolean(uid, true).apply();
     }
 }

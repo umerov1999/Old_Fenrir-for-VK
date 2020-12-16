@@ -82,7 +82,7 @@ public interface IDocsService {
      * @return an object with an upload_url field. After the document is uploaded, use the {@link #save} method.
      */
     @FormUrlEncoded
-    @POST("docs.getUploadServer")
+    @POST("docs.getMessagesUploadServer")
     Single<BaseResponse<VkApiDocsUploadServer>> getMessagesUploadServer(@Field("peer_id") Integer peer_id,
                                                                         @Field("type") String type);
 

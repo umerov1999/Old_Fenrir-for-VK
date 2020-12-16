@@ -80,6 +80,7 @@ import dev.ragnarok.fenrir.model.ISelectable;
 import dev.ragnarok.fenrir.model.ISomeones;
 import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.ProxyConfig;
+import dev.ragnarok.fenrir.model.Sticker;
 import dev.ragnarok.fenrir.service.ErrorLocalizer;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import io.reactivex.rxjava3.core.Completable;
@@ -93,7 +94,7 @@ public class Utils {
     private static final List<Integer> reload_news = new ArrayList<>();
     private static final List<Integer> reload_dialogs = new ArrayList<>();
     private static final List<Integer> reload_stickers = new ArrayList<>();
-    private static final List<String> CachedMyStickers = new ArrayList<>();
+    private static final List<Sticker.LocalSticker> CachedMyStickers = new ArrayList<>();
     private static String device_id;
     private static float density = 1;
     private static DisplayMetrics metrics;
@@ -101,7 +102,7 @@ public class Utils {
     private Utils() {
     }
 
-    public static List<String> getCachedMyStickers() {
+    public static List<Sticker.LocalSticker> getCachedMyStickers() {
         return CachedMyStickers;
     }
 
