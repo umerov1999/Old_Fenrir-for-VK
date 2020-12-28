@@ -38,6 +38,7 @@ import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.LocalPhotosPresenter;
 import dev.ragnarok.fenrir.mvp.view.ILocalPhotosView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
+import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.ViewUtils;
 
@@ -45,7 +46,16 @@ public class LocalPhotosFragment extends BaseMvpFragment<LocalPhotosPresenter, I
         implements ILocalPhotosView, LocalPhotosAdapter.ClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String EXTRA_MAX_SELECTION_COUNT = "max_selection_count";
-    private static final int REQYEST_PERMISSION_READ_EXTERNAL_STORAGE = 89;
+    private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+            new AppPerms.onPermissionsGranted() {
+                @Override
+                public void granted() {
+                    if (isPresenterPrepared()) {
+                        getPresenter().fireReadExternalStoregePermissionResolved();
+                    }
+                }
+            });
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LocalPhotosAdapter mAdapter;
@@ -159,15 +169,7 @@ public class LocalPhotosFragment extends BaseMvpFragment<LocalPhotosPresenter, I
 
     @Override
     public void requestReadExternalStoragePermission() {
-        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQYEST_PERMISSION_READ_EXTERNAL_STORAGE);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQYEST_PERMISSION_READ_EXTERNAL_STORAGE) {
-            getPresenter().fireReadExternalStoregePermissionResolved();
-        }
+        requestReadPermission.launch();
     }
 
     @Override

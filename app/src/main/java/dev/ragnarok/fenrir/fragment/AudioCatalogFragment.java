@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.fragment;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,8 @@ import dev.ragnarok.fenrir.mvp.view.IAudioCatalogView;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.AppPerms;
+import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 
@@ -46,6 +49,14 @@ import static dev.ragnarok.fenrir.util.Objects.nonNull;
 public class AudioCatalogFragment extends BaseMvpFragment<AudioCatalogPresenter, IAudioCatalogView> implements IAudioCatalogView, AudioCatalogAdapter.ClickListener {
 
     public static final String EXTRA_IN_TABS_CONTAINER = "in_tabs_container";
+    private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+            new AppPerms.onPermissionsGranted() {
+                @Override
+                public void granted() {
+                    CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text);
+                }
+            });
     private TextView mEmpty;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AudioCatalogAdapter mAdapter;
@@ -206,5 +217,10 @@ public class AudioCatalogFragment extends BaseMvpFragment<AudioCatalogPresenter,
     @Override
     public void onAddPlayList(int index, AudioPlaylist album) {
         getPresenter().onAdd(album);
+    }
+
+    @Override
+    public void onRequestWritePermissions() {
+        requestWritePermission.launch();
     }
 }

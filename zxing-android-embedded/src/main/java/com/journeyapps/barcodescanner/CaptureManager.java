@@ -137,7 +137,7 @@ public class CaptureManager {
      */
     public static Intent resultIntent(BarcodeResult rawResult, String barcodeImagePath) {
         Intent intent = new Intent(Intents.Scan.ACTION);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
         intent.putExtra(Intents.Scan.RESULT, rawResult.toString());
         intent.putExtra(Intents.Scan.RESULT_FORMAT, rawResult.getBarcodeFormat().toString());
         byte[] rawBytes = rawResult.getRawBytes();

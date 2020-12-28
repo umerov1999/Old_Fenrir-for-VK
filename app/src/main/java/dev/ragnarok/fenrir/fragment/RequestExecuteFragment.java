@@ -26,10 +26,20 @@ import dev.ragnarok.fenrir.listener.TextWatcherAdapter;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.RequestExecutePresenter;
 import dev.ragnarok.fenrir.mvp.view.IRequestExecuteView;
+import dev.ragnarok.fenrir.util.AppPerms;
 
 public class RequestExecuteFragment extends BaseMvpFragment<RequestExecutePresenter, IRequestExecuteView> implements IRequestExecuteView {
 
-    private static final int REQUEST_PERMISSION_WRITE = 14;
+    private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+            new AppPerms.onPermissionsGranted() {
+                @Override
+                public void granted() {
+                    if (isPresenterPrepared()) {
+                        getPresenter().fireWritePermissionResolved();
+                    }
+                }
+            });
     private TextInputEditText mResposeBody;
 
     public static RequestExecuteFragment newInstance(int accountId) {
@@ -108,15 +118,7 @@ public class RequestExecuteFragment extends BaseMvpFragment<RequestExecutePresen
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_PERMISSION_WRITE) {
-            getPresenter().fireWritePermissionResolved();
-        }
-    }
-
-    @Override
     public void requestWriteExternalStoragePermission() {
-        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_WRITE);
+        requestWritePermission.launch();
     }
 }

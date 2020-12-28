@@ -16,24 +16,26 @@ import dev.ragnarok.fenrir.model.EditingPostType;
 import dev.ragnarok.fenrir.mvp.presenter.BaseDocumentPresenter;
 import dev.ragnarok.fenrir.mvp.view.IBasicDocumentView;
 import dev.ragnarok.fenrir.place.PlaceUtil;
+import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.Utils;
 
 public abstract class AbsDocumentPreviewFragment<P extends BaseDocumentPresenter<V>, V
         extends IBasicDocumentView> extends BaseMvpFragment<P, V> implements IBasicDocumentView {
 
-    private static final int REQUEST_WRITE_PERMISSION = 160;
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_WRITE_PERMISSION && isPresenterPrepared()) {
-            getPresenter().fireWritePermissionResolved();
-        }
-    }
+    private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+            new AppPerms.onPermissionsGranted() {
+                @Override
+                public void granted() {
+                    if (isPresenterPrepared()) {
+                        getPresenter().fireWritePermissionResolved();
+                    }
+                }
+            });
 
     @Override
     public void requestWriteExternalStoragePermission() {
-        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_PERMISSION);
+        requestWritePermission.launch();
     }
 
     @Override

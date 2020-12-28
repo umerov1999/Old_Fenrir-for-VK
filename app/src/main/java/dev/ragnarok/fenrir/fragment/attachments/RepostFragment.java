@@ -18,20 +18,15 @@ import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.RepostPresenter;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.IRepostView;
-import dev.ragnarok.fenrir.place.Place;
 
 public class RepostFragment extends AbsAttachmentsEditFragment<RepostPresenter, IRepostView> implements IRepostView {
 
     private static final String EXTRA_POST = "post";
     private static final String EXTRA_GROUP_ID = "group_id";
 
-    public static RepostFragment obtain(Place place) {
+    public static RepostFragment newInstance(Bundle args) {
         RepostFragment fragment = new RepostFragment();
-        fragment.setArguments(place.getArgs());
-        if (place.hasTargeting()) {
-            fragment.setTargetFragment(place.target, place.requestCode);
-        }
-
+        fragment.setArguments(args);
         return fragment;
     }
 

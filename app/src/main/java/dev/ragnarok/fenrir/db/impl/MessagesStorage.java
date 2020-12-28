@@ -31,6 +31,7 @@ import dev.ragnarok.fenrir.db.interfaces.IMessagesStorage;
 import dev.ragnarok.fenrir.db.model.MessageEditEntity;
 import dev.ragnarok.fenrir.db.model.MessagePatch;
 import dev.ragnarok.fenrir.db.model.entity.Entity;
+import dev.ragnarok.fenrir.db.model.entity.KeyboardEntity;
 import dev.ragnarok.fenrir.db.model.entity.MessageEntity;
 import dev.ragnarok.fenrir.exception.NotFoundException;
 import dev.ragnarok.fenrir.model.ChatAction;
@@ -97,6 +98,7 @@ class MessagesStorage extends AbsStorage implements IMessagesStorage {
         cv.put(MessageColumns.EXTRAS, isNull(dbo.getExtras()) ? null : GSON.toJson(dbo.getExtras()));
         cv.put(MessageColumns.UPDATE_TIME, dbo.getUpdateTime());
         cv.put(MessageColumns.PAYLOAD, dbo.getPayload());
+        cv.put(MessageColumns.KEYBOARD, isNull(dbo.getKeyboard()) ? null : GSON.toJson(dbo.getKeyboard()));
 
         Uri uri = MessengerContentProvider.getMessageContentUriFor(accountId);
 
@@ -139,10 +141,15 @@ class MessagesStorage extends AbsStorage implements IMessagesStorage {
         int fromId = cursor.getInt(cursor.getColumnIndex(MessageColumns.FROM_ID));
 
         HashMap<Integer, String> extras = null;
+        KeyboardEntity keyboard = null;
 
         String extrasText = cursor.getString(cursor.getColumnIndex(MessageColumns.EXTRAS));
         if (nonEmpty(extrasText)) {
             extras = GSON.fromJson(extrasText, EXTRAS_TYPE);
+        }
+        String keyboardText = cursor.getString(cursor.getColumnIndex(MessageColumns.KEYBOARD));
+        if (nonEmpty(keyboardText)) {
+            keyboard = GSON.fromJson(keyboardText, KeyboardEntity.class);
         }
 
         return new MessageEntity(id, peerId, fromId)
@@ -171,7 +178,8 @@ class MessagesStorage extends AbsStorage implements IMessagesStorage {
                 .setPhoto200(cursor.getString(cursor.getColumnIndex(MessageColumns.PHOTO_200)))
                 .setRandomId(cursor.getInt(cursor.getColumnIndex(MessageColumns.RANDOM_ID)))
                 .setUpdateTime(cursor.getLong(cursor.getColumnIndex(MessageColumns.UPDATE_TIME)))
-                .setPayload(cursor.getString(cursor.getColumnIndex(MessageColumns.PAYLOAD)));
+                .setPayload(cursor.getString(cursor.getColumnIndex(MessageColumns.PAYLOAD)))
+                .setKeyboard(keyboard);
 
     }
 
@@ -342,6 +350,7 @@ class MessagesStorage extends AbsStorage implements IMessagesStorage {
             cv.put(MessageColumns.ATTACH_TO, MessageColumns.DONT_ATTACH);
             cv.put(MessageColumns.EXTRAS, isNull(patch.getExtras()) ? null : GSON.toJson(patch.getExtras()));
             cv.put(MessageColumns.PAYLOAD, patch.getPayload());
+            cv.put(MessageColumns.KEYBOARD, isNull(patch.getKeyboard()) ? null : GSON.toJson(patch.getKeyboard()));
 
             // Other fileds is NULL
 
@@ -396,6 +405,7 @@ class MessagesStorage extends AbsStorage implements IMessagesStorage {
                             cv.put(MessageColumns.ATTACH_TO, MessageColumns.DONT_ATTACH);
                             cv.put(MessageColumns.EXTRAS, isNull(patch.getExtras()) ? null : GSON.toJson(patch.getExtras()));
                             cv.put(MessageColumns.PAYLOAD, patch.getPayload());
+                            cv.put(MessageColumns.KEYBOARD, isNull(patch.getKeyboard()) ? null : GSON.toJson(patch.getKeyboard()));
 
                             String where = MessageColumns._ID + " = ?";
                             String[] args = {String.valueOf(messageId)};

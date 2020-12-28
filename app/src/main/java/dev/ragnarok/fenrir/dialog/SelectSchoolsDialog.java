@@ -1,24 +1,19 @@
 package dev.ragnarok.fenrir.dialog;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +30,7 @@ import dev.ragnarok.fenrir.util.RxUtils;
 
 public class SelectSchoolsDialog extends AccountDependencyDialogFragment implements SchoolsAdapter.Listener {
 
+    public static final String REQUEST_CODE_SCHOOL = "request_school";
     private static final int COUNT_PER_REQUEST = 1000;
     private static final int RUN_SEACRH_DELAY = 1000;
     private final Handler mHandler = new Handler(Looper.getMainLooper());
@@ -65,11 +61,10 @@ public class SelectSchoolsDialog extends AccountDependencyDialogFragment impleme
         mDatabaseInteractor = InteractorFactory.createDatabaseInteractor();
     }
 
+    @NonNull
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-
-        View root = inflater.inflate(R.layout.dialog_country_or_city_select, container, false);
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        View root = View.inflate(requireActivity(), R.layout.dialog_country_or_city_select, null);
 
         TextInputEditText input = root.findViewById(R.id.input);
         input.setText(filter);
@@ -85,13 +80,6 @@ public class SelectSchoolsDialog extends AccountDependencyDialogFragment impleme
         mRecyclerView = root.findViewById(R.id.list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false));
 
-        return root;
-    }
-
-    @Override
-    public void onViewCreated(@NotNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
         boolean firstRun = false;
         if (mData == null) {
             mData = new ArrayList<>();
@@ -105,6 +93,12 @@ public class SelectSchoolsDialog extends AccountDependencyDialogFragment impleme
         if (firstRun) {
             request(0);
         }
+
+        return new MaterialAlertDialogBuilder(requireActivity())
+                .setTitle(R.string.school)
+                .setView(root)
+                .setNegativeButton(R.string.button_cancel, null)
+                .create();
     }
 
     private void request(int offset) {
@@ -130,16 +124,16 @@ public class SelectSchoolsDialog extends AccountDependencyDialogFragment impleme
 
     @Override
     public void onClick(School school) {
-        Intent intent = new Intent();
-        intent.putExtra(Extra.SCHOOL, school);
-        intent.putExtra(Extra.ID, school.getId());
-        intent.putExtra(Extra.TITLE, school.getTitle());
+        Bundle intent = new Bundle();
+        intent.putParcelable(Extra.SCHOOL, school);
+        intent.putInt(Extra.ID, school.getId());
+        intent.putString(Extra.TITLE, school.getTitle());
 
         if (getArguments() != null) {
-            intent.putExtras(getArguments());
+            intent.putAll(getArguments());
         }
 
-        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
+        getParentFragmentManager().setFragmentResult(REQUEST_CODE_SCHOOL, intent);
         dismiss();
     }
 }

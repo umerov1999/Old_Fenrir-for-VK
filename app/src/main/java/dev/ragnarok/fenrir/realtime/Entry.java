@@ -21,8 +21,8 @@ public final class Entry {
 
     public boolean has(int id) {
         if (updates.hasNonFullMessages()) {
-            for (Integer nonFullId : updates.getNonFull()) {
-                if (id == nonFullId) {
+            for (AddMessageUpdate nonFullId : updates.getNonFull()) {
+                if (id == nonFullId.getMessageId()) {
                     return true;
                 }
             }
@@ -51,12 +51,14 @@ public final class Entry {
         if (update.isFull()) {
             updates.prepareFull().add(update);
         } else {
-            updates.prepareNonFull().add(update.getMessageId());
+            updates.prepareNonFull().add(update);
         }
     }
 
     public void append(int messageId) {
-        updates.prepareNonFull().add(messageId);
+        AddMessageUpdate u = new AddMessageUpdate();
+        u.message_id = messageId;
+        updates.prepareNonFull().add(u);
     }
 
     public int getId() {

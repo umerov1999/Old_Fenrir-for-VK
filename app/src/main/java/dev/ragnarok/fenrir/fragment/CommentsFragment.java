@@ -1,8 +1,6 @@
 package dev.ragnarok.fenrir.fragment;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -20,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,6 +36,8 @@ import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.adapter.CommentsAdapter;
 import dev.ragnarok.fenrir.adapter.OwnersListAdapter;
+import dev.ragnarok.fenrir.fragment.attachments.CommentCreateFragment;
+import dev.ragnarok.fenrir.fragment.attachments.CommentEditFragment;
 import dev.ragnarok.fenrir.fragment.base.PlaceSupportMvpFragment;
 import dev.ragnarok.fenrir.listener.BackPressCallback;
 import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener;
@@ -74,8 +75,6 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
 
     private static final String EXTRA_AT_COMMENT_THREAD = "at_comment_thread";
 
-    private static final int REQUEST_CODE_ATTACHMENTS = 17;
-    private static final int REQUEST_EDIT = 18;
     private CommentsInputViewController mInputController;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
@@ -307,7 +306,13 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
     @Override
     public void openAttachmentsManager(int accountId, Integer draftCommentId, int sourceOwnerId, String draftCommentBody) {
         PlaceFactory.getCommentCreatePlace(accountId, draftCommentId, sourceOwnerId, draftCommentBody)
-                .targetTo(this, REQUEST_CODE_ATTACHMENTS)
+                .setFragmentListener(CommentCreateFragment.REQUEST_CREATE_COMMENT, new FragmentResultListener() {
+                    @Override
+                    public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
+                        String body = result.getString(Extra.BODY);
+                        postPrenseterReceive(presenter -> presenter.fireEditBodyResult(body));
+                    }
+                })
                 .tryOpenWith(requireActivity());
     }
 
@@ -336,7 +341,16 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
     @Override
     public void goToCommentEdit(int accountId, Comment comment, Integer commemtId) {
         PlaceFactory.getEditCommentPlace(accountId, comment, commemtId)
-                .targetTo(this, REQUEST_EDIT)
+                .setFragmentListener(CommentEditFragment.REQUEST_COMMENT_EDIT, new FragmentResultListener() {
+                    @Override
+                    public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
+                        Comment comment = result.getParcelable(Extra.COMMENT);
+
+                        if (nonNull(comment)) {
+                            postPrenseterReceive(presenter -> presenter.fireCommentEditResult(comment));
+                        }
+                    }
+                })
                 .tryOpenWith(requireActivity());
     }
 
@@ -563,24 +577,6 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
     @Override
     public void onHashTagClicked(String hashTag) {
         getPresenter().fireHashtagClick(hashTag);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_CODE_ATTACHMENTS) {
-            String body = data.getStringExtra(Extra.BODY);
-            postPrenseterReceive(presenter -> presenter.fireEditBodyResult(body));
-        }
-
-        if (requestCode == REQUEST_EDIT && resultCode == Activity.RESULT_OK) {
-            Comment comment = data.getParcelableExtra(Extra.COMMENT);
-
-            if (nonNull(comment)) {
-                postPrenseterReceive(presenter -> presenter.fireCommentEditResult(comment));
-            }
-        }
     }
 
     @Override

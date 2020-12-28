@@ -7,6 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -48,7 +52,17 @@ import static dev.ragnarok.fenrir.util.Objects.nonNull;
 public class ChatUsersFragment extends BaseMvpFragment<ChatMembersPresenter, IChatMembersView>
         implements IChatMembersView, ChatMembersListAdapter.ActionListener {
 
-    private static final int REQUEST_CODE_ADD_USER = 110;
+    private final ActivityResultLauncher<Intent> requestAddUser = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        ArrayList<Owner> users = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
+                        AssertUtils.requireNonNull(users);
+                        postPrenseterReceive(presenter -> presenter.fireUserSelected(users));
+                    }
+                }
+            });
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ChatMembersListAdapter mAdapter;
 
@@ -84,17 +98,6 @@ public class ChatUsersFragment extends BaseMvpFragment<ChatMembersPresenter, ICh
         FloatingActionButton fabAdd = root.findViewById(R.id.fragment_chat_users_add);
         fabAdd.setOnClickListener(v -> getPresenter().fireAddUserClick());
         return root;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_ADD_USER && resultCode == Activity.RESULT_OK && data != null) {
-            ArrayList<Owner> users = data.getParcelableArrayListExtra(Extra.OWNERS);
-            AssertUtils.requireNonNull(users);
-
-            postPrenseterReceive(presenter -> presenter.fireUserSelected(users));
-        }
     }
 
     @Override
@@ -172,7 +175,7 @@ public class ChatUsersFragment extends BaseMvpFragment<ChatMembersPresenter, ICh
 
         Intent intent = SelectProfilesActivity.createIntent(requireActivity(), place, criteria);
 
-        startActivityForResult(intent, REQUEST_CODE_ADD_USER);
+        requestAddUser.launch(intent);
     }
 
     @NotNull

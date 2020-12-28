@@ -8,7 +8,7 @@
 
 <b>Инструкция по сборке:</b>
 Требуется:
-  1) Android Studio 4.2 Beta 1 или выше. Kotlin 1.4.*
+  1) Android Studio 4.2 Beta 2 или выше. Kotlin 1.4.*
   2) Android SDK 28,30
   
 <b>Компиляция:</b>

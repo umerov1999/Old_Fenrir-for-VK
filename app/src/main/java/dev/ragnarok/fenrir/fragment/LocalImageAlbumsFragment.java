@@ -29,6 +29,7 @@ import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.LocalPhotoAlbumsPresenter;
 import dev.ragnarok.fenrir.mvp.view.ILocalPhotoAlbumsView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
+import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.MySearchView;
@@ -36,11 +37,19 @@ import dev.ragnarok.fenrir.view.MySearchView;
 public class LocalImageAlbumsFragment extends BaseMvpFragment<LocalPhotoAlbumsPresenter, ILocalPhotoAlbumsView>
         implements LocalPhotoAlbumsAdapter.ClickListener, SwipeRefreshLayout.OnRefreshListener, ILocalPhotoAlbumsView {
 
-    private static final int REQYEST_PERMISSION_READ_EXTERNAL_STORAGE = 89;
+    private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+            new AppPerms.onPermissionsGranted() {
+                @Override
+                public void granted() {
+                    if (isPresenterPrepared()) {
+                        getPresenter().fireReadExternalStoregePermissionResolved();
+                    }
+                }
+            });
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView mEmptyTextView;
-
     private LocalPhotoAlbumsAdapter mAlbumsAdapter;
 
     @Override
@@ -136,15 +145,7 @@ public class LocalImageAlbumsFragment extends BaseMvpFragment<LocalPhotoAlbumsPr
 
     @Override
     public void requestReadExternalStoragePermission() {
-        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQYEST_PERMISSION_READ_EXTERNAL_STORAGE);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQYEST_PERMISSION_READ_EXTERNAL_STORAGE) {
-            getPresenter().fireReadExternalStoregePermissionResolved();
-        }
+        requestReadPermission.launch();
     }
 
     @NotNull

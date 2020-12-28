@@ -35,6 +35,8 @@ public class MessageEntity extends Entity {
 
     private boolean hasAttachmens;
 
+    private KeyboardEntity keyboard;
+
     @MessageStatus
     private int status;
 
@@ -141,6 +143,15 @@ public class MessageEntity extends Entity {
 
     public MessageEntity setEncrypted(boolean encrypted) {
         this.encrypted = encrypted;
+        return this;
+    }
+
+    public KeyboardEntity getKeyboard() {
+        return keyboard;
+    }
+
+    public MessageEntity setKeyboard(KeyboardEntity keyboard) {
+        this.keyboard = keyboard;
         return this;
     }
 

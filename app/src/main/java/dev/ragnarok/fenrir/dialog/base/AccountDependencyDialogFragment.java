@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.dialog.base;
 
+import android.Manifest;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import java.util.Collections;
 
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.Injection;
+import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.adapter.AttachmentsViewBinder;
 import dev.ragnarok.fenrir.link.LinkHelper;
 import dev.ragnarok.fenrir.model.Article;
@@ -35,6 +37,8 @@ import dev.ragnarok.fenrir.model.WikiPage;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.player.MusicPlaybackService;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.AppPerms;
+import dev.ragnarok.fenrir.util.CustomToast;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 
@@ -43,6 +47,14 @@ public abstract class AccountDependencyDialogFragment extends BaseDialogFragment
 
     private static final String ARGUMENT_INVALID_ACCOUNT_CONTEXT = "invalid_account_context";
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+    private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+            new AppPerms.onPermissionsGranted() {
+                @Override
+                public void granted() {
+                    CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text);
+                }
+            });
     private int accountId;
     private boolean supportAccountHotSwap;
 
@@ -216,6 +228,11 @@ public abstract class AccountDependencyDialogFragment extends BaseDialogFragment
     @Override
     public void onFaveArticle(@NonNull Article article) {
 
+    }
+
+    @Override
+    public void onRequestWritePermissions() {
+        requestWritePermission.launch();
     }
 
     protected void onAccountContextInvalidState() {

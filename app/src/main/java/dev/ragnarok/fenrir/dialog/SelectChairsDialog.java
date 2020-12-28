@@ -1,19 +1,15 @@
 package dev.ragnarok.fenrir.dialog;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.app.Dialog;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +25,7 @@ import dev.ragnarok.fenrir.util.RxUtils;
 
 public class SelectChairsDialog extends AccountDependencyDialogFragment implements ChairsAdapter.Listener {
 
+    public static final String REQUEST_CODE_CHAIRS = "request_chairs";
     private static final int COUNT_PER_REQUEST = 1000;
     private int mAccountId;
     private int facultyId;
@@ -55,19 +52,12 @@ public class SelectChairsDialog extends AccountDependencyDialogFragment implemen
         facultyId = getArguments().getInt(Extra.FACULTY_ID);
     }
 
+    @NonNull
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-
-        View root = inflater.inflate(R.layout.dialog_simple_recycler_view, container, false);
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        View root = View.inflate(requireActivity(), R.layout.dialog_simple_recycler_view, null);
         mRecyclerView = root.findViewById(R.id.list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false));
-        return root;
-    }
-
-    @Override
-    public void onViewCreated(@NotNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
 
         boolean firstRun = false;
         if (mData == null) {
@@ -82,6 +72,12 @@ public class SelectChairsDialog extends AccountDependencyDialogFragment implemen
         if (firstRun) {
             request(0);
         }
+
+        return new MaterialAlertDialogBuilder(requireActivity())
+                .setTitle(R.string.chair)
+                .setView(root)
+                .setNegativeButton(R.string.button_cancel, null)
+                .create();
     }
 
     private void request(int offset) {
@@ -102,16 +98,15 @@ public class SelectChairsDialog extends AccountDependencyDialogFragment implemen
 
     @Override
     public void onClick(Chair chair) {
-        Intent intent = new Intent();
-        intent.putExtra(Extra.CHAIR, chair);
-        intent.putExtra(Extra.ID, chair.getId());
-        intent.putExtra(Extra.TITLE, chair.getTitle());
+        Bundle intent = new Bundle();
+        intent.putParcelable(Extra.CHAIR, chair);
+        intent.putInt(Extra.ID, chair.getId());
+        intent.putString(Extra.TITLE, chair.getTitle());
 
         if (getArguments() != null) {
-            intent.putExtras(getArguments());
+            intent.putAll(getArguments());
         }
-
-        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
+        getParentFragmentManager().setFragmentResult(REQUEST_CODE_CHAIRS, intent);
         dismiss();
     }
 }

@@ -22,7 +22,5 @@ public interface IBaseSearchView<T> extends IMvpView, IErrorView, IAccountDepend
 
     void showLoading(boolean loading);
 
-    void displaySearchQuery(String query);
-
     void displayFilter(int accountId, ArrayList<BaseOption> options);
 }

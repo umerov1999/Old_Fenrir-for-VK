@@ -63,6 +63,8 @@ public class Message extends AbsModel implements Identificable, ISelectable {
 
     private String payload;
 
+    private Keyboard keyboard;
+
     //chat_columns
 
     @ChatAction
@@ -151,6 +153,7 @@ public class Message extends AbsModel implements Identificable, ISelectable {
         hasAttachments = in.readInt() == 1;
         updateTime = in.readLong();
         payload = in.readString();
+        keyboard = in.readParcelable(Keyboard.class.getClassLoader());
     }
 
     @ChatAction
@@ -215,6 +218,15 @@ public class Message extends AbsModel implements Identificable, ISelectable {
 
     public Message setRandomId(int randomId) {
         this.randomId = randomId;
+        return this;
+    }
+
+    public Keyboard getKeyboard() {
+        return keyboard;
+    }
+
+    public Message setKeyboard(Keyboard keyboard) {
+        this.keyboard = keyboard;
         return this;
     }
 
@@ -548,6 +560,7 @@ public class Message extends AbsModel implements Identificable, ISelectable {
         dest.writeInt(hasAttachments ? 1 : 0);
         dest.writeLong(updateTime);
         dest.writeString(payload);
+        dest.writeParcelable(keyboard, flags);
     }
 
     public long getUpdateTime() {

@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,11 +41,6 @@ public class CreatePhotoAlbumFragment extends BaseMvpFragment<EditPhotoAlbumPres
     private static final String TAG = CreatePhotoAlbumFragment.class.getSimpleName();
     private static final String EXTRA_EDITOR = "editor";
 
-    private static final int REQUEST_PRIVACY_VIEW = 113;
-    private static final int REQUEST_PRIVACY_COMMENT = 135;
-    private static final int REQUEST_CREATE = 136;
-    private static final int REUQEST_EDIT = 137;
-
     private RecyclerView mRecyclerView;
     private AbsSteppersVerticalAdapter<CreatePhotoAlbumStepsHost> mAdapter;
 
@@ -81,57 +74,6 @@ public class CreatePhotoAlbumFragment extends BaseMvpFragment<EditPhotoAlbumPres
         mRecyclerView = root.findViewById(R.id.recycleView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
         return root;
-    }
-
-    /*@Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_PRIVACY_VIEW && resultCode == Activity.RESULT_OK && data != null) {
-            Privacy privacy = data.getParcelableExtra(Extra.PRIVACY);
-            AssertUtils.requireNonNull(privacy);
-
-            mStepsHost.getState().setPrivacyView(privacy);
-            mAdapter.notifyItemChanged(CreatePhotoAlbumStepsHost.STEP_PRIVACY_VIEW);
-        }
-
-        if (requestCode == REQUEST_PRIVACY_COMMENT && resultCode == Activity.RESULT_OK && data != null) {
-            Privacy privacy = data.getParcelableExtra(Extra.PRIVACY);
-            AssertUtils.requireNonNull(privacy);
-
-            mStepsHost.getState().setPrivacyComment(privacy);
-            mAdapter.notifyItemChanged(CreatePhotoAlbumStepsHost.STEP_PRIVACY_COMMENT);
-        }
-
-        if (requestCode == REUQEST_EDIT || requestCode == REQUEST_CREATE) {
-            if (resultCode == Activity.RESULT_CANCELED) {
-                String error = data.getStringExtra(Extra.ERROR);
-                safeSnackbar(error);
-                return;
-            }
-
-            Bundle resultData = data.getBundleExtra(Extra.RESULT_DATA);
-            VKApiPhotoAlbum album = resultData.getParcelable(Extra.ALBUM);
-            AssertUtils.requireNonNull(resultData);
-            AssertUtils.requireNonNull(album);
-
-            if (requestCode == REQUEST_CREATE) {
-                onPhotoAlbumCreated(album);
-            }
-
-            if (requestCode == REUQEST_EDIT) {
-                onPhotoAlbumEdited(album);
-            }
-        }
-    }*/
-
-    private void onPhotoAlbumEdited(PhotoAlbum album) {
-        if (getTargetFragment() != null) {
-            Intent data = new Intent();
-            data.putExtra(Extra.ALBUM, album);
-            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, data);
-        }
-
-        goBack();
     }
 
     @Override
@@ -200,38 +142,6 @@ public class CreatePhotoAlbumFragment extends BaseMvpFragment<EditPhotoAlbumPres
         return getPresenter().fireBackButtonClick();
     }
 
-    /*private void doRequest() {
-        CreatePhotoAlbumStepsHost.PhotoAlbumState state = mStepsHost.getState();
-
-        String title = state.getTitle();
-        String desc = state.getDescription();
-        Integer groupId = mOwnerId < 0 ? Math.abs(mOwnerId) : null;
-
-        SimplePrivacy privacyView = state.getPrivacyView().toSimple();
-        SimplePrivacy privacyComemnt = state.getPrivacyComment().toSimple();
-
-        Request request;
-        String dialogTitle;
-        int requestCode;
-
-        if (!isEditing()) {
-            dialogTitle = getString(R.string.create_an_album);
-            requestCode = REQUEST_CREATE;
-
-            request = PhotoRequestFactory.getCreateAlbumRequest(title, groupId, desc, privacyView,
-                    privacyComemnt, state.isUploadByAdminsOnly(), state.isCommentsDisabled());
-        } else {
-            dialogTitle = getString(R.string.album_edit);
-            requestCode = REUQEST_EDIT;
-
-            request = PhotoRequestFactory.getEditAlbumRequest(mAlbum.getId(), mAlbum.getOwnerId(), title, desc, privacyView,
-                    privacyComemnt, state.isUploadByAdminsOnly(), state.isCommentsDisabled());
-        }
-
-        ProgressDialogFragment.newInstance(dialogTitle, title, request, this, requestCode, false)
-                .show(getParentFragmentManager(), "progress");
-    }*/
-
     @Override
     public void onResume() {
         super.onResume();
@@ -248,41 +158,6 @@ public class CreatePhotoAlbumFragment extends BaseMvpFragment<EditPhotoAlbumPres
                 .build()
                 .apply(requireActivity());
     }
-
-    /*private void onPhotoAlbumCreated(@NonNull VKApiPhotoAlbum album) {
-        if (getTargetFragment() != null) {
-            Intent data = new Intent();
-            data.putExtra(Extra.ALBUM, album);
-            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, data);
-        }
-
-        goBackWithResult();
-
-        PlaceFactory.getVKPhotosAlbumPlace(getAccountId(), album.owner_id, album.id,
-                VKPhotosFragment.ACTION_SHOW_PHOTOS)
-                .withParcelableExtra(Extra.ALBUM, album)
-                .tryOpenWith(requireActivity());
-    }*/
-
-    /*@Override
-    public void onPrivacyViewClick() {
-        Logger.d(TAG, "onPrivacyViewClick");
-
-        PlaceFactory.getPrivacyViewPlace(getAccountId(), mStepsHost.getState().getPrivacyView())
-                .targetTo(this, REQUEST_PRIVACY_VIEW)
-                .tryOpenWith(getContext());
-    }
-
-    @Override
-    public void onPrivacyCommentClick() {
-        PlaceFactory.getPrivacyViewPlace(getAccountId(), mStepsHost.getState().getPrivacyComment())
-                .targetTo(this, REQUEST_PRIVACY_COMMENT)
-                .tryOpenWith(getContext());
-    }*/
-
-    /*private boolean isEditing() {
-        return mAlbum != null;
-    }*/
 
     @Override
     public void onNextButtonClick(int step) {

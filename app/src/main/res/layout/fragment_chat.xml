@@ -183,7 +183,7 @@
             android:layout_marginTop="@dimen/fab_margin"
             android:layout_marginEnd="@dimen/fab_margin"
             android:layout_marginBottom="10dp"
-            android:src="@drawable/view"
+            android:src="@drawable/ic_outline_keyboard_arrow_up"
             app:fabSize="mini"
             app:layout_behavior="dev.ragnarok.fenrir.view.FABBehavior" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

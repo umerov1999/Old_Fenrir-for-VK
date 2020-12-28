@@ -60,8 +60,6 @@ public class BrowserFragment extends BaseFragment implements BackPressCallback {
         super.onCreate(savedInstanceState);
         mAccountId = getArguments().getInt(Extra.ACCOUNT_ID);
 
-        setRetainInstance(true);
-
         if (savedInstanceState != null) {
             restoreFromInstanceState(savedInstanceState);
         }

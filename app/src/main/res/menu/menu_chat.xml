@@ -39,8 +39,16 @@
         android:title="@string/chat_users" />
 
     <item
+        android:id="@+id/action_invite_link"
+        android:title="@string/invite_link" />
+
+    <item
         android:id="@+id/download_peer_to"
         android:title="@string/download_peer_to" />
+
+    <item
+        android:id="@+id/make_screenshot"
+        android:title="@string/make_screenshot" />
 
     <item
         android:id="@+id/action_key_exchange"

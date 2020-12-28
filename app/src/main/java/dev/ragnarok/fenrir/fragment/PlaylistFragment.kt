@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.fragment
 
+import android.Manifest
 import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -27,9 +28,11 @@ import dev.ragnarok.fenrir.player.MusicPlaybackService
 import dev.ragnarok.fenrir.player.MusicPlaybackService.Companion.startForPlayList
 import dev.ragnarok.fenrir.player.util.MusicUtils
 import dev.ragnarok.fenrir.settings.Settings
+import dev.ragnarok.fenrir.util.AppPerms
 import dev.ragnarok.fenrir.util.CustomToast.Companion.CreateCustomToast
 import dev.ragnarok.fenrir.util.Objects
 import java.util.*
+
 
 class PlaylistFragment : BottomSheetDialogFragment(), AudioRecyclerAdapter.ClickListener, BackPressCallback {
     private var mRecyclerView: RecyclerView? = null
@@ -139,6 +142,13 @@ class PlaylistFragment : BottomSheetDialogFragment(), AudioRecyclerAdapter.Click
 
     override fun onUrlPhotoOpen(url: String, prefix: String, photo_prefix: String) {
         PlaceFactory.getSingleURLPhotoPlace(url, prefix, photo_prefix).tryOpenWith(requireActivity())
+    }
+
+    private val requestWritePermission = AppPerms.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+    ) { CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text) }
+
+    override fun onRequestWritePermissions() {
+        requestWritePermission.launch()
     }
 
     override fun onResume() {

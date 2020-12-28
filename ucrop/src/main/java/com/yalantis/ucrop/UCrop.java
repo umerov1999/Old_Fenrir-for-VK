@@ -1,6 +1,5 @@
 package com.yalantis.ucrop;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,7 +13,6 @@ import androidx.annotation.FloatRange;
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.yalantis.ucrop.model.AspectRatio;
 
@@ -28,9 +26,6 @@ import java.util.Locale;
  * Builder class to ease Intent setup.
  */
 public class UCrop {
-
-    public static final int REQUEST_CROP = 69;
-    public static final int REQUEST_CROP_SECOND = 70;
     public static final int RESULT_ERROR = 96;
     public static final int MIN_SIZE = 10;
 
@@ -166,44 +161,6 @@ public class UCrop {
     public UCrop withOptions(@NonNull Options options) {
         mCropOptionsBundle.putAll(options.getOptionBundle());
         return this;
-    }
-
-    /**
-     * Send the crop Intent from an Activity
-     *
-     * @param activity Activity to receive result
-     */
-    public void start(@NonNull Activity activity) {
-        start(activity, REQUEST_CROP);
-    }
-
-    /**
-     * Send the crop Intent from an Activity with a custom request code
-     *
-     * @param activity    Activity to receive result
-     * @param requestCode requestCode for result
-     */
-    public void start(@NonNull Activity activity, int requestCode) {
-        activity.startActivityForResult(getIntent(activity), requestCode);
-    }
-
-    /**
-     * Send the crop Intent from a Fragment
-     *
-     * @param fragment Fragment to receive result
-     */
-    public void start(@NonNull Context context, @NonNull Fragment fragment) {
-        start(context, fragment, REQUEST_CROP);
-    }
-
-    /**
-     * Send the crop Intent with a custom request code
-     *
-     * @param fragment    Fragment to receive result
-     * @param requestCode requestCode for result
-     */
-    public void start(@NonNull Context context, @NonNull Fragment fragment, int requestCode) {
-        fragment.startActivityForResult(getIntent(context), requestCode);
     }
 
     /**

@@ -1,14 +1,11 @@
 package dev.ragnarok.fenrir.dialog;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -33,6 +30,7 @@ import static dev.ragnarok.fenrir.util.RxUtils.ignore;
 
 public class PostShareDialog extends DialogFragment {
 
+    public static final String REQUEST_POST_SHARE = "request_post_share";
     private static final String EXTRA_METHOD = "share-method";
     private static final String EXTRA_OWNER_ID = "share-owner-id";
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -49,28 +47,23 @@ public class PostShareDialog extends DialogFragment {
         return fragment;
     }
 
-    public static int extractMethod(@NonNull Intent data) {
-        AssertUtils.requireNonNull(data.getExtras());
-        return data.getExtras().getInt(EXTRA_METHOD);
+    public static int extractMethod(@NonNull Bundle data) {
+        AssertUtils.assertTrue(data.containsKey(EXTRA_METHOD));
+        return data.getInt(EXTRA_METHOD);
     }
 
-    public static Post extractPost(@NonNull Intent data) {
-        return data.getParcelableExtra(Extra.POST);
+    public static Post extractPost(@NonNull Bundle data) {
+        return data.getParcelable(Extra.POST);
     }
 
-    public static int extractAccountId(@NonNull Intent data) {
-        AssertUtils.requireNonNull(data.getExtras());
-        return data.getExtras().getInt(Extra.ACCOUNT_ID);
+    public static int extractAccountId(@NonNull Bundle data) {
+        AssertUtils.assertTrue(data.containsKey(Extra.ACCOUNT_ID));
+        return data.getInt(Extra.ACCOUNT_ID);
     }
 
-    public static int extractOwnerId(@NonNull Intent data) {
-        AssertUtils.requireNonNull(data.getExtras());
-        return data.getExtras().getInt(EXTRA_OWNER_ID);
-    }
-
-    public PostShareDialog targetTo(Fragment fragment, int requestCode) {
-        setTargetFragment(fragment, requestCode);
-        return this;
+    public static int extractOwnerId(@NonNull Bundle data) {
+        AssertUtils.assertTrue(data.containsKey(EXTRA_OWNER_ID));
+        return data.getInt(EXTRA_OWNER_ID);
     }
 
     @Override
@@ -87,19 +80,18 @@ public class PostShareDialog extends DialogFragment {
     }
 
     private void onItemClick(Item item) {
-        if (nonNull(getTargetFragment())) {
-            Intent data = new Intent();
+        if (nonNull(getParentFragmentManager())) {
+            Bundle data = new Bundle();
 
             int method = item.getKey();
-            data.putExtra(Extra.ACCOUNT_ID, mAccountId);
-            data.putExtra(EXTRA_METHOD, method);
-            data.putExtra(Extra.POST, mPost);
+            data.putInt(Extra.ACCOUNT_ID, mAccountId);
+            data.putInt(EXTRA_METHOD, method);
+            data.putParcelable(Extra.POST, mPost);
 
             if (method == Methods.REPOST_GROUP) {
-                data.putExtra(EXTRA_OWNER_ID, item.getExtra());
+                data.putInt(EXTRA_OWNER_ID, item.getExtra());
             }
-
-            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, data);
+            getParentFragmentManager().setFragmentResult(REQUEST_POST_SHARE, data);
             dismissAllowingStateLoss();
         }
     }

@@ -4,7 +4,9 @@ import android.text.TextUtils;
 
 import java.util.ArrayList;
 
+import dev.ragnarok.fenrir.api.model.VkApiConversation;
 import dev.ragnarok.fenrir.model.Peer;
+import dev.ragnarok.fenrir.util.Utils;
 
 public class AddMessageUpdate extends AbsLongpollEvent {
 
@@ -22,6 +24,9 @@ public class AddMessageUpdate extends AbsLongpollEvent {
     public String sourceAct;
     public int sourceMid;
     public ArrayList<String> fwds;
+    public VkApiConversation.CurrentKeyboard keyboard;
+    public String payload;
+    public String reply;
     public int peer_id;
     public String random_id;
 
@@ -41,6 +46,14 @@ public class AddMessageUpdate extends AbsLongpollEvent {
         return text;
     }
 
+    public String getPayload() {
+        return payload;
+    }
+
+    public VkApiConversation.CurrentKeyboard getKeyboard() {
+        return keyboard;
+    }
+
     public boolean isGroupChat() {
         return Peer.isGroupChat(peer_id);
     }
@@ -53,12 +66,16 @@ public class AddMessageUpdate extends AbsLongpollEvent {
         return fwds != null && !fwds.isEmpty();
     }
 
+    public boolean hasReply() {
+        return !Utils.isEmpty(reply);
+    }
+
     public boolean isServiceMessage() {
         return !TextUtils.isEmpty(sourceAct);
     }
 
     public boolean isFull() {
-        return !hasMedia() && !hasFwds() && !isServiceMessage();
+        return !hasMedia() && !hasFwds() && !hasReply() && !isServiceMessage();
     }
 
     public int getPeerId() {

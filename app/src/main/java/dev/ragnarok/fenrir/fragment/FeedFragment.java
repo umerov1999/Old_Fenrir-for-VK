@@ -13,6 +13,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -68,8 +72,18 @@ import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedView> implements IFeedView,
         SwipeRefreshLayout.OnRefreshListener, FeedAdapter.ClickListener, HorizontalOptionsAdapter.Listener<FeedSource>, HorizontalOptionsAdapter.CustomListener<FeedSource> {
 
-    private static final int REQUEST_CREATE_LIST = 216;
     private final Gson mGson = new Gson();
+    private final ActivityResultLauncher<Intent> requestProfileSelect = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        ArrayList<Owner> owners = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
+                        AssertUtils.requireNonNull(owners);
+                        postPrenseterReceive(presenter -> presenter.fireAddToFaveList(requireActivity(), owners));
+                    }
+                }
+            });
     private FeedAdapter mAdapter;
     private TextView mEmptyText;
     private RecyclerView mRecycleView;
@@ -113,7 +127,7 @@ public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedVi
             getPresenter().fireRefresh();
             return true;
         } else if (item.getItemId() == R.id.action_create_list) {
-            SelectProfilesActivity.startFaveSelection(this, REQUEST_CREATE_LIST);
+            requestProfileSelect.launch(SelectProfilesActivity.startFaveSelection(requireActivity()));
             return true;
         }
 
@@ -225,16 +239,6 @@ public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedVi
     @Override
     public void onAvatarClick(int ownerId) {
         super.onOwnerClick(ownerId);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CREATE_LIST && resultCode == Activity.RESULT_OK) {
-            ArrayList<Owner> owners = data.getParcelableArrayListExtra(Extra.OWNERS);
-            AssertUtils.requireNonNull(owners);
-            postPrenseterReceive(presenter -> presenter.fireAddToFaveList(requireActivity(), owners));
-        }
     }
 
     @Override

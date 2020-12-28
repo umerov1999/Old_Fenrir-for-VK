@@ -13,6 +13,10 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,7 +49,6 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
 
     public static final String EXTRA_VIDEO = "video";
     public static final String EXTRA_SIZE = "size";
-    private static final int CODE = 1088;
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private View mDecorView;
     private VideoControllerView mControllerView;
@@ -55,6 +58,13 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
     private @InternalVideoSize
     int size;
     private boolean doNotPause;
+    private final ActivityResultLauncher<Intent> requestSwipeble = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    doNotPause = false;
+                }
+            });
     private boolean isLandscape;
 
     private void onOpen() {
@@ -62,15 +72,8 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
         intent.setAction(MainActivity.ACTION_OPEN_WALL);
         intent.putExtra(Extra.OWNER_ID, video.getOwnerId());
         doNotPause = true;
-        SwipebleActivity.start(this, intent, CODE);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CODE) {
-            doNotPause = false;
-        }
+        SwipebleActivity.applyIntent(intent);
+        requestSwipeble.launch(intent);
     }
 
     @Override
@@ -274,7 +277,8 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
         Commented commented = Commented.from(video);
         intent.putExtra(Extra.PLACE, PlaceFactory.getCommentsPlace(Settings.get().accounts().getCurrent(), commented, null));
         doNotPause = true;
-        SwipebleActivity.start(this, intent, CODE);
+        SwipebleActivity.applyIntent(intent);
+        requestSwipeble.launch(intent);
     }
 
     @Override

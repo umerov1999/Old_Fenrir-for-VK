@@ -63,7 +63,6 @@ import dev.ragnarok.fenrir.db.model.MessagePatch;
 import dev.ragnarok.fenrir.db.model.PeerPatch;
 import dev.ragnarok.fenrir.db.model.entity.DialogEntity;
 import dev.ragnarok.fenrir.db.model.entity.Entity;
-import dev.ragnarok.fenrir.db.model.entity.KeyboardEntity;
 import dev.ragnarok.fenrir.db.model.entity.MessageEntity;
 import dev.ragnarok.fenrir.db.model.entity.OwnerEntities;
 import dev.ragnarok.fenrir.db.model.entity.SimpleDialogEntity;
@@ -87,7 +86,6 @@ import dev.ragnarok.fenrir.model.Conversation;
 import dev.ragnarok.fenrir.model.CryptStatus;
 import dev.ragnarok.fenrir.model.Dialog;
 import dev.ragnarok.fenrir.model.IOwnersBundle;
-import dev.ragnarok.fenrir.model.Keyboard;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.MessageStatus;
 import dev.ragnarok.fenrir.model.MessageUpdate;
@@ -191,7 +189,7 @@ public class MessagesRepository implements IMessagesRepository {
     }
 
     private static Conversation entity2Model(int accountId, SimpleDialogEntity entity, IOwnersBundle owners) {
-        Conversation ret = new Conversation(entity.getPeerId())
+        return new Conversation(entity.getPeerId())
                 .setInRead(entity.getInRead())
                 .setOutRead(entity.getOutRead())
                 .setPhoto50(entity.getPhoto50())
@@ -202,17 +200,8 @@ public class MessagesRepository implements IMessagesRepository {
                 .setInterlocutor(Peer.isGroup(entity.getPeerId()) || Peer.isUser(entity.getPeerId()) ? owners.getById(entity.getPeerId()) : null)
                 .setPinned(isNull(entity.getPinned()) ? null : Entity2Model.message(accountId, entity.getPinned(), owners))
                 .setAcl(entity.getAcl())
-                .setGroupChannel(entity.isGroupChannel());
-        if (nonNull(entity.getCurrentKeyboard())) {
-            List<Keyboard.Button> buttons = new ArrayList<>();
-            for (KeyboardEntity.ButtonEntity i : entity.getCurrentKeyboard().getButtons()) {
-                buttons.add(new Keyboard.Button().setType(i.getType()).setColor(i.getColor()).setLabel(i.getLabel()).setLink(i.getLink()).setPayload(i.getPayload()));
-            }
-            ret.setCurrentKeyboard(new Keyboard().setAuthor_id(
-                    entity.getCurrentKeyboard().getAuthor_id()).setInline(entity.getCurrentKeyboard().getInline())
-                    .setOne_time(entity.getCurrentKeyboard().getInline()).setButtons(buttons));
-        }
-        return ret;
+                .setGroupChannel(entity.isGroupChannel())
+                .setCurrentKeyboard(Entity2Model.buildKeyboardFromDbo(entity.getCurrentKeyboard()));
     }
 
     private static MessageUpdate patch2Update(int accountId, MessagePatch patch) {
@@ -957,6 +946,7 @@ public class MessagesRepository implements IMessagesRepository {
 
                     patch.setEncrypted(builder.isRequireEncryption());
                     patch.setPayload(builder.getPayload());
+                    patch.setKeyboard(builder.getKeyboard());
                     patch.setDate(Unixtime.now());
                     patch.setRead(false);
                     patch.setOut(true);

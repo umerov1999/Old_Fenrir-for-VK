@@ -14,7 +14,7 @@ import dev.ragnarok.fenrir.util.Utils;
 public class FullAndNonFullUpdates {
 
     private List<AddMessageUpdate> full;
-    private List<Integer> nonFull;
+    private List<AddMessageUpdate> nonFull;
 
     @NonNull
     public List<AddMessageUpdate> prepareFull() {
@@ -26,7 +26,7 @@ public class FullAndNonFullUpdates {
     }
 
     @NonNull
-    public List<Integer> prepareNonFull() {
+    public List<AddMessageUpdate> prepareNonFull() {
         if (Objects.isNull(nonFull)) {
             nonFull = new ArrayList<>(1);
         }
@@ -38,7 +38,7 @@ public class FullAndNonFullUpdates {
         return full;
     }
 
-    public List<Integer> getNonFull() {
+    public List<AddMessageUpdate> getNonFull() {
         return nonFull;
     }
 

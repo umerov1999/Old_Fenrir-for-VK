@@ -593,6 +593,10 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
         view.setIsSubscribed(details.isSetSubscribed());
     }
 
+    public void fireGetRegistrationDate() {
+        Utils.getRegistrationDate(context, getOwnerId());
+    }
+
     public void fireReport() {
         MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(context);
         alert.setTitle(R.string.report);

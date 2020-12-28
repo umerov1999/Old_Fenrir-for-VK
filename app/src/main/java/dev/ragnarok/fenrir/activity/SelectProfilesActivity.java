@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,14 +35,14 @@ public class SelectProfilesActivity extends MainActivity implements SelectedProf
     private RecyclerView mRecyclerView;
     private SelectedProfilesAdapter mProfilesAdapter;
 
-    public static Intent createIntent(Context context, @NonNull Place initialPlace, @NonNull SelectProfileCriteria criteria) {
+    public static Intent createIntent(@NonNull Context context, @NonNull Place initialPlace, @NonNull SelectProfileCriteria criteria) {
         return new Intent(context, SelectProfilesActivity.class)
                 .setAction(MainActivity.ACTION_OPEN_PLACE)
                 .putExtra(Extra.PLACE, initialPlace)
                 .putExtra(Extra.CRITERIA, criteria);
     }
 
-    public static void startFriendsSelection(@NonNull Fragment fragment, int requestCode) {
+    public static Intent startFriendsSelection(@NonNull Context context) {
         int aid = Settings.get()
                 .accounts()
                 .getCurrent();
@@ -52,14 +51,14 @@ public class SelectProfilesActivity extends MainActivity implements SelectedProf
 
         SelectProfileCriteria criteria = new SelectProfileCriteria().setOwnerType(SelectProfileCriteria.OwnerType.ONLY_FRIENDS);
 
-        Intent intent = new Intent(fragment.requireActivity(), SelectProfilesActivity.class);
+        Intent intent = new Intent(context, SelectProfilesActivity.class);
         intent.setAction(MainActivity.ACTION_OPEN_PLACE);
         intent.putExtra(Extra.PLACE, place);
         intent.putExtra(Extra.CRITERIA, criteria);
-        fragment.startActivityForResult(intent, requestCode);
+        return intent;
     }
 
-    public static void startFaveSelection(@NonNull Fragment fragment, int requestCode) {
+    public static Intent startFaveSelection(@NonNull Context context) {
         int aid = Settings.get()
                 .accounts()
                 .getCurrent();
@@ -68,23 +67,12 @@ public class SelectProfilesActivity extends MainActivity implements SelectedProf
 
         SelectProfileCriteria criteria = new SelectProfileCriteria().setOwnerType(SelectProfileCriteria.OwnerType.OWNERS);
 
-        Intent intent = new Intent(fragment.requireActivity(), SelectProfilesActivity.class);
+        Intent intent = new Intent(context, SelectProfilesActivity.class);
         intent.setAction(MainActivity.ACTION_OPEN_PLACE);
         intent.putExtra(Extra.PLACE, place);
         intent.putExtra(Extra.CRITERIA, criteria);
-        fragment.startActivityForResult(intent, requestCode);
+        return intent;
     }
-
-    /*public static void start(Activity activity, @Nullable ArrayList<VKApiUser> users, int requestCode){
-        int aid = Accounts.getCurrentUid(activity);
-        Place place = PlaceFactory.getFriendsFollowersPlace(aid, aid, FriendsTabsFragment.TAB_ALL_FRIENDS, null);
-
-        Intent intent = new Intent(activity, SelectProfilesActivity.class);
-        intent.setAction(SelectProfilesActivity.ACTION_OPEN_PLACE);
-        intent.putExtra(Extra.PLACE, place);
-        intent.putParcelableArrayListExtra(Extra.USERS, users);
-        activity.startActivityForResult(intent, requestCode);
-    }*/
 
     @Override
     protected @MainActivityTransforms

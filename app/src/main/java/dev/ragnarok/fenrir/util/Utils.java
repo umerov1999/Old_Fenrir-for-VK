@@ -25,6 +25,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.Settings;
@@ -49,14 +50,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.exoplayer2.MediaItem;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.umerov.rlottie.RLottieDrawable;
 import com.umerov.rlottie.RLottieImageView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -66,8 +73,11 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.Constants;
@@ -78,6 +88,7 @@ import dev.ragnarok.fenrir.api.model.Identificable;
 import dev.ragnarok.fenrir.media.exo.OkHttpDataSourceFactory;
 import dev.ragnarok.fenrir.model.ISelectable;
 import dev.ragnarok.fenrir.model.ISomeones;
+import dev.ragnarok.fenrir.model.Lang;
 import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.ProxyConfig;
 import dev.ragnarok.fenrir.model.Sticker;
@@ -85,7 +96,11 @@ import dev.ragnarok.fenrir.service.ErrorLocalizer;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import static dev.ragnarok.fenrir.util.Objects.isNull;
 
@@ -1216,6 +1231,10 @@ public class Utils {
         return !verified ? CurrentTheme.getPrimaryTextColorCode(context) : Color.parseColor("#009900");
     }
 
+    public static float getDensity() {
+        return density;
+    }
+
     public static int dp(float value) {
         if (value == 0) {
             return 0;
@@ -1257,7 +1276,7 @@ public class Utils {
             }
         }
         if (display != null) {
-            RLottieDrawable.updateScreenRefresh((int) display.getRefreshRate());
+            RLottieDrawable.updateScreenRefreshRate((int) display.getRefreshRate());
         }
     }
 
@@ -1384,16 +1403,49 @@ public class Utils {
         return root;
     }
 
+    private static Locale getLocaleSettings(@Lang int lang) {
+        switch (lang) {
+            case Lang.ENGLISH:
+                Constants.DEVICE_COUNTRY_CODE = "en";
+                return Locale.ENGLISH;
+            case Lang.RUSSIA:
+                Constants.DEVICE_COUNTRY_CODE = "ru";
+                return new Locale("ru", "RU");
+        }
+        Constants.DEVICE_COUNTRY_CODE = "ru";
+        return Locale.getDefault();
+    }
+
     public static Context updateActivityContext(Context base) {
-        Resources res = base.getResources();
-        Configuration config = new Configuration(res.getConfiguration());
         int size = dev.ragnarok.fenrir.settings.Settings.get().main().getFontSize();
+        @Lang int lang = dev.ragnarok.fenrir.settings.Settings.get().other().getLanguage();
         if (size == 0) {
-            return base;
+            if (lang == Lang.DEFAULT) {
+                return base;
+            } else {
+                Resources res = base.getResources();
+                Configuration config = new Configuration(res.getConfiguration());
+                config.locale = getLocaleSettings(lang);
+                return base.createConfigurationContext(config);
+            }
         } else {
+            Resources res = base.getResources();
+            Configuration config = new Configuration(res.getConfiguration());
             config.fontScale = res.getConfiguration().fontScale + 0.15f * size;
+            if (lang != Lang.DEFAULT) {
+                config.locale = getLocaleSettings(lang);
+            }
             return base.createConfigurationContext(config);
         }
+    }
+
+    public static boolean checkValues(Collection<Boolean> values) {
+        for (Boolean i : values) {
+            if (!i) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static @Nullable
@@ -1410,6 +1462,67 @@ public class Utils {
             return null;
         }
         return info;
+    }
+
+    private static String parseResponse(String str, Pattern pattern) {
+        Matcher matcher = pattern.matcher(str);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return null;
+    }
+
+    public static void getRegistrationDate(Context context, int owner_id) {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .readTimeout(30, TimeUnit.SECONDS)
+                .addInterceptor(chain -> {
+                    Request request = chain.request().newBuilder().addHeader("User-Agent", Constants.USER_AGENT(Account_Types.BY_TYPE)).build();
+                    return chain.proceed(request);
+                });
+        ProxyUtil.applyProxyConfig(builder, Injection.provideProxySettings().getActiveProxy());
+        Request request = new Request.Builder()
+                .url("https://vk.com/foaf.php?id=" + owner_id).build();
+
+        builder.build().newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call th, @NotNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call th, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String resp = response.body().string();
+                    String result = "";
+                    try {
+                        String tmp = parseResponse(resp, Pattern.compile("ya:created dc:date=\"(.*?)\""));
+                        if (!isEmpty(tmp)) {
+                            result += "Зарегистрирован: " + DateFormat.getDateInstance(1).format(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ").parse(tmp));
+                        }
+                        tmp = parseResponse(resp, Pattern.compile("ya:lastLoggedIn dc:date=\"(.*?)\""));
+                        if (!isEmpty(tmp)) {
+                            result += "\nАвторизация: " + DateFormat.getDateInstance(1).format(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ").parse(tmp));
+                        }
+                        tmp = parseResponse(resp, Pattern.compile("ya:modified dc:date=\"(.*?)\""));
+                        if (!isEmpty(tmp)) {
+                            result += "\nИзменение: " + DateFormat.getDateInstance(1).format(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ").parse(tmp));
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    Handler uiHandler = new Handler(context.getMainLooper());
+                    String finalResult = result;
+                    uiHandler.post(() -> {
+                        MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(context);
+                        dlgAlert.setIcon(R.drawable.dir_person);
+                        dlgAlert.setMessage(finalResult);
+                        dlgAlert.setTitle(context.getString(R.string.registration_date));
+                        dlgAlert.setCancelable(true);
+                        dlgAlert.create().show();
+                    });
+                }
+            }
+        });
     }
 
     public interface safeCallInt {

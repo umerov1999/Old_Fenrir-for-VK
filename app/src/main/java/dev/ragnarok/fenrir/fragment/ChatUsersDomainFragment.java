@@ -28,6 +28,7 @@ import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.ChatUsersDomainPresenter;
 import dev.ragnarok.fenrir.mvp.view.IChatUsersDomainView;
+import dev.ragnarok.fenrir.view.MySearchView;
 
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
@@ -66,6 +67,23 @@ public class ChatUsersDomainFragment extends BaseMvpBottomSheetDialogFragment<Ch
 
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
+
+        MySearchView mySearchView = root.findViewById(R.id.searchview);
+        mySearchView.setRightButtonVisibility(false);
+        mySearchView.setLeftIcon(R.drawable.magnify);
+        mySearchView.setOnQueryTextListener(new MySearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                getPresenter().fireQuery(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                getPresenter().fireQuery(newText);
+                return false;
+            }
+        });
 
         mAdapter = new ChatMembersListDomainAdapter(requireActivity(), Collections.emptyList());
         mAdapter.setActionListener(this);

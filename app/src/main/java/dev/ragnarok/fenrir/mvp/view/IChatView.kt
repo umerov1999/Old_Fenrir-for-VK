@@ -36,7 +36,7 @@ interface IChatView : IBasicMessageListView, IErrorView {
     fun notifyItemRemoved(position: Int)
 
     fun configOptionMenu(canLeaveChat: Boolean, canChangeTitle: Boolean, canShowMembers: Boolean,
-                         encryptionStatusVisible: Boolean, encryprionEnabled: Boolean, encryptionPlusEnabled: Boolean, keyExchangeVisible: Boolean, HronoVisible: Boolean, ProfileVisible: Boolean)
+                         encryptionStatusVisible: Boolean, encryprionEnabled: Boolean, encryptionPlusEnabled: Boolean, keyExchangeVisible: Boolean, HronoVisible: Boolean, ProfileVisible: Boolean, InviteLink: Boolean)
 
     fun goToSearchMessage(accountId: Int, peer: Peer)
     fun showImageSizeSelectDialog(streams: List<Uri>)
@@ -46,6 +46,7 @@ interface IChatView : IBasicMessageListView, IErrorView {
     fun notifyChatResume(accountId: Int, peerId: Int, title: String?, image: String?)
     fun goToConversationAttachments(accountId: Int, peerId: Int)
     fun goToChatMembers(accountId: Int, chatId: Int)
+    fun showChatMembers(accountId: Int, chatId: Int)
     fun showChatTitleChangeDialog(initialValue: String?)
     fun showUserWall(accountId: Int, peerId: Int)
     fun forwardMessagesToAnotherConversation(messages: ArrayList<Message>, accountId: Int)
@@ -68,11 +69,12 @@ interface IChatView : IBasicMessageListView, IErrorView {
     fun startAudioSelection(accountId: Int)
     fun startDocSelection(accountId: Int)
     fun startCamera(fileUri: Uri)
-    fun showDeleteForAllDialog(ids: ArrayList<Int>)
+    fun showDeleteForAllDialog(ids: ArrayList<Message>)
     fun ScrollTo(position: Int)
     fun showSnackbar(@StringRes res: Int, isLong: Boolean)
     fun goToMessagesLookup(accountId: Int, peerId: Int, messageId: Int)
     fun convert_to_keyboard(keyboard: Keyboard?)
 
     fun updateStickers(items: List<Sticker>)
+    fun copyToClipBoard(link: String)
 }

@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.fragment.conversation;
 
+import android.Manifest;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -12,15 +13,27 @@ import java.util.Collections;
 import java.util.List;
 
 import dev.ragnarok.fenrir.Extra;
+import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.adapter.AudioRecyclerAdapter;
 import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.conversations.ChatAttachmentAudioPresenter;
 import dev.ragnarok.fenrir.mvp.view.conversations.IChatAttachmentAudiosView;
+import dev.ragnarok.fenrir.util.AppPerms;
+import dev.ragnarok.fenrir.util.CustomToast;
 
 public class ConversationAudiosFragment extends AbsChatAttachmentsFragment<Audio, ChatAttachmentAudioPresenter, IChatAttachmentAudiosView>
         implements AudioRecyclerAdapter.ClickListener, IChatAttachmentAudiosView {
 
+
+    private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+            new AppPerms.onPermissionsGranted() {
+                @Override
+                public void granted() {
+                    CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text);
+                }
+            });
 
     @Override
     protected RecyclerView.LayoutManager createLayoutManager() {
@@ -47,6 +60,11 @@ public class ConversationAudiosFragment extends AbsChatAttachmentsFragment<Audio
     @Override
     public void onDelete(int position) {
 
+    }
+
+    @Override
+    public void onRequestWritePermissions() {
+        requestWritePermission.launch();
     }
 
     @Override

@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="app_name">Fenrir VK</string>
+    <string name="app_name" translatable="false">Fenrir VK</string>
+
+    <string-array name="array_language_names">
+        <item>Поумолчанию</item>
+        <item>Английский</item>
+        <item>Русский</item>
+    </string-array>
+
+    <string-array name="array_language_items" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
 
     <string-array name="array_chat_background_names">
         <item>Монотонный</item>
@@ -547,7 +559,7 @@
     <string name="hometown">Родной город</string>
     <string name="languages">Языки</string>
     <string name="relatives_parents">Родители</string>
-    <string name="relatives_siblings">Братья и сестры</string>
+    <string name="relatives_siblings">Братья и сёстры</string>
     <string name="relatives_children">Дети</string>
     <string name="relatives_grandchildren">Внуки</string>
     <string name="relatives_others">Другие</string>
@@ -631,7 +643,7 @@
     <string name="dislike">Мне не нравится</string>
     <string name="copied_url">Ссылка скопирована</string>
     <string name="copy_url">Копировать ссылку</string>
-    <string name="copy_id">Копировать ИД</string>
+    <string name="copy_id">Копировать ID</string>
     <string name="add_to_news">В Новостную ленту</string>
     <string name="target_url">Внешняя ссылка</string>
     <string name="goto_user">Открыть владельца</string>
@@ -649,6 +661,7 @@
     <string name="button_access">Понял</string>
     <string name="button_no">Нет</string>
     <string name="button_cancel">Отмена</string>
+    <string name="button_super_delete">Супер</string>
     <string name="field_is_required">Обязательное поле для заполнения</string>
     <string name="attach_message">Прикрепить сообщение</string>
     <string name="enter_your_status">Введите свой статус</string>
@@ -693,6 +706,7 @@
     <string name="edit_chat">Редактировать беседу</string>
     <string name="change_chat_title">Изменить название беседы</string>
     <string name="chat_users">Участники беседы</string>
+    <string name="invite_link">Пригласительная ссылка</string>
     <string name="creator_of_conversation">Создатель беседы</string>
     <string name="invited_by">Пригласил %1$s</string>
     <string name="remove_chat_user_commit">Вы действительно хотите исключить пользователя %1$s из беседы?</string>
@@ -721,11 +735,11 @@
     <string name="fork_phoenix">Форк Phoenix</string>
     <string name="repo">Репозиторий: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="telegram">Телеграм-канал: https://t.me/phoenixvk_mod</string>
-    <string name="in_full_version_new">Донат от 50₽</string>
+    <string name="in_full_version_new">Донат от 100₽</string>
     <string name="qiwi_sber">Qiwi, Сбер: 89859844541</string>
     <string name="web_money">Web Money WMZ: Z990444118809</string>
     <string name="is_donated">Проверка доната</string>
-    <string name="donate_info">Далее требуется отправить скрин и ид от страницы @fenrir8814 и ждать подтверждения. Далее перезапустить клиент</string>
+    <string name="donate_info">Далее требуется отправить скрин и ид от страницы @fenrir_lint и ждать подтверждения. Далее перезапустить клиент</string>
     <string name="comment">Комментарий</string>
     <string name="search">Поиск</string>
     <string name="input">Ввод</string>
@@ -740,8 +754,7 @@
     <string name="loading_owner_photo_album">Загрузка фотоальбома</string>
     <string name="no_photos_found">Фотографии не найдены</string>
     <string name="please_wait">Пожалуйста, подождите</string>
-    <string name="permission_granted_text">Разрешение %1$s успешно получено. Повторите действие еще раз.</string>
-    <string name="permission_is_not_granted_text">Разрешение %1$s не получено. Действие не может быть выполнено.</string>
+    <string name="permission_all_granted_text">Разрешения предоставлены. Повторите действие еще раз</string>
     <string name="add_to_bookmarks">Добавить в закладки</string>
     <string name="remove_from_bookmarks">Убрать из закладок</string>
     <string name="notify_wall_added">Уведомлять о записях</string>
@@ -1453,6 +1466,7 @@
     <string name="entry_account">Ввести</string>
     <string name="show_qr">Показать QR</string>
     <string name="download_peer_to">Скачать переписку</string>
+    <string name="make_screenshot">Скриншот</string>
     <string name="usages">Использованные</string>
     <string name="is_player_support_volume">Переключатель громкости в плеере</string>
     <string name="notif_photos">%1$d фото</string>
@@ -1603,4 +1617,9 @@
     <string name="use_coil_library_summary">Coil library, нестабильно</string>
     <string name="messages_menu_down">Меню действий с сообщениями внизу</string>
     <string name="my">Мои</string>
+    <string name="registration_date">Дата регистрации</string>
+    <string name="not_permitted">Разрешения не предоставлены! Функция не доступна</string>
+    <string name="dialog_send_helper">Переслать можно свайпом диалога</string>
+    <string name="language_ui">Язык</string>
+    <string name="please_wait_internal">Пожалуйста, подождите...</string>
 </resources>

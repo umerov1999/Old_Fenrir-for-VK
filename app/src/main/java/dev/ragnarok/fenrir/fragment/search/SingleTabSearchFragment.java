@@ -10,9 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-
-import org.jetbrains.annotations.NotNull;
 
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
@@ -26,13 +23,6 @@ import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.MySearchView;
 
 public class SingleTabSearchFragment extends Fragment implements MySearchView.OnQueryTextListener, MySearchView.OnAdditionalButtonClickListener {
-
-    private final FragmentManager.FragmentLifecycleCallbacks mFragmentLifecycleCallbacks = new FragmentManager.FragmentLifecycleCallbacks() {
-        @Override
-        public void onFragmentViewCreated(@NotNull FragmentManager fm, @NotNull Fragment f, @NotNull View v, Bundle savedInstanceState) {
-            syncChildFragment();
-        }
-    };
     @SearchContentType
     private int mContentType;
     private int mAccountId;
@@ -79,17 +69,9 @@ public class SingleTabSearchFragment extends Fragment implements MySearchView.On
         mAccountId = getArguments().getInt(Extra.ACCOUNT_ID);
         mInitialCriteria = getArguments().getParcelable(Extra.CRITERIA);
 
-        getChildFragmentManager().registerFragmentLifecycleCallbacks(mFragmentLifecycleCallbacks, false);
-
         if (Objects.nonNull(savedInstanceState)) {
             attachedChild = savedInstanceState.getBoolean("attachedChild");
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        getChildFragmentManager().unregisterFragmentLifecycleCallbacks(mFragmentLifecycleCallbacks);
-        super.onDestroy();
     }
 
     private void resolveLeftButton(MySearchView searchView) {
@@ -120,14 +102,6 @@ public class SingleTabSearchFragment extends Fragment implements MySearchView.On
             attachedChild = true;
         }
         return root;
-    }
-
-    private void syncChildFragment() {
-        Fragment fragment = getChildFragmentManager().findFragmentById(R.id.child_container);
-
-        if (fragment instanceof AbsSearchFragment) {
-            ((AbsSearchFragment<?, ?, ?, ?>) fragment).syncYourCriteriaWithParent();
-        }
     }
 
     @Override

@@ -13,7 +13,7 @@ public class AeSimpleSHA1 {
             int halfbyte = (b >>> 4) & 0x0F;
             int two_halfs = 0;
             do {
-                buf.append((0 <= halfbyte) && (halfbyte <= 9) ? (char) ('0' + halfbyte) : (char) ('a' + (halfbyte - 10)));
+                buf.append(halfbyte <= 9 ? (char) ('0' + halfbyte) : (char) ('a' + halfbyte - 10));
                 halfbyte = b & 0x0F;
             } while (two_halfs++ < 1);
         }

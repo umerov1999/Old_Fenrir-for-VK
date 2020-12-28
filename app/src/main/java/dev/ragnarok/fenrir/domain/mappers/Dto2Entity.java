@@ -714,26 +714,7 @@ public class Dto2Entity {
                         .setPhoto200(dto.settings.photo.photo200);
             }
         }
-
-        if (nonNull(dto.current_keyboard) && nonNull(dto.current_keyboard.buttons)) {
-            List<KeyboardEntity.ButtonEntity> buttons = new ArrayList<>();
-            for (List<VkApiConversation.ButtonElement> i : dto.current_keyboard.buttons) {
-                for (VkApiConversation.ButtonElement s : i) {
-                    if (isNull(s.action) || (!"text".equals(s.action.type) && !"open_link".equals(s.action.type))) {
-                        continue;
-                    }
-                    buttons.add(new KeyboardEntity.ButtonEntity().setType(s.action.type).setColor(s.color).setLabel(s.action.label).setLink(s.action.link).setPayload(s.action.payload));
-                }
-            }
-            if (!Utils.isEmpty(buttons)) {
-                entity.setCurrentKeyboard(
-                        new KeyboardEntity().setAuthor_id(dto.current_keyboard.author_id)
-                                .setInline(dto.current_keyboard.inline)
-                                .setOne_time(dto.current_keyboard.one_time)
-                                .setButtons(buttons));
-            }
-        }
-
+        entity.setCurrentKeyboard(mapKeyboard(dto.current_keyboard));
         return entity;
     }
 
@@ -763,26 +744,33 @@ public class Dto2Entity {
             }
         }
 
-        if (nonNull(dto.conversation.current_keyboard) && nonNull(dto.conversation.current_keyboard.buttons)) {
-            List<KeyboardEntity.ButtonEntity> buttons = new ArrayList<>();
-            for (List<VkApiConversation.ButtonElement> i : dto.conversation.current_keyboard.buttons) {
-                for (VkApiConversation.ButtonElement s : i) {
-                    if (isNull(s.action) || (!"text".equals(s.action.type) && !"open_link".equals(s.action.type))) {
-                        continue;
-                    }
-                    buttons.add(new KeyboardEntity.ButtonEntity().setType(s.action.type).setColor(s.color).setLabel(s.action.label).setLink(s.action.link).setPayload(s.action.payload));
-                }
-            }
-            if (!Utils.isEmpty(buttons)) {
-                entity.setCurrentKeyboard(
-                        new KeyboardEntity().setAuthor_id(dto.conversation.current_keyboard.author_id)
-                                .setInline(dto.conversation.current_keyboard.inline)
-                                .setOne_time(dto.conversation.current_keyboard.one_time)
-                                .setButtons(buttons));
-            }
-        }
+        entity.setCurrentKeyboard(mapKeyboard(dto.conversation.current_keyboard));
 
         return entity;
+    }
+
+    public static KeyboardEntity mapKeyboard(VkApiConversation.CurrentKeyboard keyboard) {
+        if (keyboard == null || Utils.isEmpty(keyboard.buttons)) {
+            return null;
+        }
+        List<List<KeyboardEntity.ButtonEntity>> buttons = new ArrayList<>();
+        for (List<VkApiConversation.ButtonElement> i : keyboard.buttons) {
+            List<KeyboardEntity.ButtonEntity> v = new ArrayList<>();
+            for (VkApiConversation.ButtonElement s : i) {
+                if (isNull(s.action) || (!"text".equals(s.action.type) && !"open_link".equals(s.action.type))) {
+                    continue;
+                }
+                v.add(new KeyboardEntity.ButtonEntity().setType(s.action.type).setColor(s.color).setLabel(s.action.label).setLink(s.action.link).setPayload(s.action.payload));
+            }
+            buttons.add(v);
+        }
+        if (!Utils.isEmpty(buttons)) {
+            return new KeyboardEntity().setAuthor_id(keyboard.author_id)
+                    .setInline(keyboard.inline)
+                    .setOne_time(keyboard.one_time)
+                    .setButtons(buttons);
+        }
+        return null;
     }
 
     public static List<Entity> mapAttachemntsList(VkApiAttachments attachments) {
@@ -1200,6 +1188,7 @@ public class Dto2Entity {
                 .setBody(dto.body)
                 .setEncrypted(encrypted)
                 .setImportant(dto.important)
+                .setKeyboard(mapKeyboard(dto.keyboard))
                 .setDeleted(dto.deleted)
                 .setDeletedForAll(false) // cant be deleted for all?
                 .setForwardCount(safeCountOf(dto.fwd_messages))

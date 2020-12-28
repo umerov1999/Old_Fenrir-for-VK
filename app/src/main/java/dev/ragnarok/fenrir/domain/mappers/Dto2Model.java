@@ -83,6 +83,7 @@ import dev.ragnarok.fenrir.model.Gift;
 import dev.ragnarok.fenrir.model.GiftItem;
 import dev.ragnarok.fenrir.model.Graffiti;
 import dev.ragnarok.fenrir.model.IOwnersBundle;
+import dev.ragnarok.fenrir.model.Keyboard;
 import dev.ragnarok.fenrir.model.Link;
 import dev.ragnarok.fenrir.model.Market;
 import dev.ragnarok.fenrir.model.MarketAlbum;
@@ -386,6 +387,8 @@ public class Dto2Model {
         message.action_text = update.sourceText;
         message.action = update.sourceAct;
         message.random_id = update.random_id;
+        message.keyboard = update.keyboard;
+        message.payload = update.payload;
         return message;
     }
 
@@ -471,6 +474,30 @@ public class Dto2Model {
         return data;
     }
 
+    public static Keyboard transformKeyboard(VkApiConversation.CurrentKeyboard keyboard) {
+        if (keyboard == null || Utils.isEmpty(keyboard.buttons)) {
+            return null;
+        }
+        List<List<Keyboard.Button>> buttons = new ArrayList<>();
+        for (List<VkApiConversation.ButtonElement> i : keyboard.buttons) {
+            List<Keyboard.Button> v = new ArrayList<>();
+            for (VkApiConversation.ButtonElement s : i) {
+                if (isNull(s.action) || (!"text".equals(s.action.type) && !"open_link".equals(s.action.type))) {
+                    continue;
+                }
+                v.add(new Keyboard.Button().setType(s.action.type).setColor(s.color).setLabel(s.action.label).setLink(s.action.link).setPayload(s.action.payload));
+            }
+            buttons.add(v);
+        }
+        if (!Utils.isEmpty(buttons)) {
+            return new Keyboard().setAuthor_id(keyboard.author_id)
+                    .setInline(keyboard.inline)
+                    .setOne_time(keyboard.one_time)
+                    .setButtons(buttons);
+        }
+        return null;
+    }
+
     public static Message transform(int aid, @NonNull VKApiMessage message, @NonNull IOwnersBundle owners) {
         boolean encrypted = CryptHelper.analizeMessageBody(message.body) == MessageType.CRYPTED;
         Message appMessage = new Message(message.id)
@@ -498,7 +525,8 @@ public class Dto2Model {
                 .setPhoto100(message.action_photo_100)
                 .setPhoto200(message.action_photo_200)
                 .setSender(owners.getById(message.from_id))
-                .setPayload(message.payload);
+                .setPayload(message.payload)
+                .setKeyboard(transformKeyboard(message.keyboard));
 
         if (message.action_mid != 0) {
             appMessage.setActionUser(owners.getById(message.action_mid));

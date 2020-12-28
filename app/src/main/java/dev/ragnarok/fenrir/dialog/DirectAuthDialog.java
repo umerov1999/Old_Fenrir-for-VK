@@ -1,10 +1,8 @@
 package dev.ragnarok.fenrir.dialog;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -14,7 +12,6 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
@@ -30,7 +27,8 @@ import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.DirectAuthPresenter;
 import dev.ragnarok.fenrir.mvp.view.IDirectAuthView;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
-import dev.ragnarok.fenrir.util.Objects;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class DirectAuthDialog extends BaseMvpDialogFragment<DirectAuthPresenter, IDirectAuthView> implements IDirectAuthView {
 
@@ -54,11 +52,6 @@ public class DirectAuthDialog extends BaseMvpDialogFragment<DirectAuthPresenter,
         DirectAuthDialog fragment = new DirectAuthDialog();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public DirectAuthDialog targetTo(Fragment fragment, int code) {
-        setTargetFragment(fragment, code);
-        return this;
     }
 
     @NonNull
@@ -148,60 +141,60 @@ public class DirectAuthDialog extends BaseMvpDialogFragment<DirectAuthPresenter,
     public void setLoginButtonEnabled(boolean enabled) {
         Button buttonLogin = ((AlertDialog) getDialog()).getButton(DialogInterface.BUTTON_POSITIVE);
 
-        if (Objects.nonNull(buttonLogin)) {
+        if (nonNull(buttonLogin)) {
             buttonLogin.setEnabled(enabled);
         }
     }
 
     @Override
     public void setSmsRootVisible(boolean visible) {
-        if (Objects.nonNull(mSmsCodeRoot)) {
+        if (nonNull(mSmsCodeRoot)) {
             mSmsCodeRoot.setVisibility(visible ? View.VISIBLE : View.GONE);
         }
     }
 
     @Override
     public void setAppCodeRootVisible(boolean visible) {
-        if (Objects.nonNull(mEnterAppCodeRoot)) {
+        if (nonNull(mEnterAppCodeRoot)) {
             mEnterAppCodeRoot.setVisibility(visible ? View.VISIBLE : View.GONE);
         }
     }
 
     @Override
     public void moveFocusToSmsCode() {
-        if (Objects.nonNull(mSmsCode)) {
+        if (nonNull(mSmsCode)) {
             mSmsCode.requestFocus();
         }
     }
 
     @Override
     public void moveFocusToAppCode() {
-        if (Objects.nonNull(mSmsCode)) {
+        if (nonNull(mSmsCode)) {
             mAppCode.requestFocus();
         }
     }
 
     @Override
     public void displayLoading(boolean loading) {
-        if (Objects.nonNull(mLoadingRoot)) {
+        if (nonNull(mLoadingRoot)) {
             mLoadingRoot.setVisibility(loading ? View.VISIBLE : View.GONE);
         }
 
-        if (Objects.nonNull(mContentRoot)) {
+        if (nonNull(mContentRoot)) {
             mContentRoot.setVisibility(loading ? View.INVISIBLE : View.VISIBLE);
         }
     }
 
     @Override
     public void setCaptchaRootVisible(boolean visible) {
-        if (Objects.nonNull(mCaptchaRoot)) {
+        if (nonNull(mCaptchaRoot)) {
             mCaptchaRoot.setVisibility(visible ? View.VISIBLE : View.GONE);
         }
     }
 
     @Override
     public void displayCaptchaImage(String img) {
-        if (Objects.nonNull(mCaptchaImage)) {
+        if (nonNull(mCaptchaImage)) {
             PicassoInstance.with()
                     .load(img)
                     .placeholder(R.drawable.background_gray)
@@ -211,7 +204,7 @@ public class DirectAuthDialog extends BaseMvpDialogFragment<DirectAuthPresenter,
 
     @Override
     public void moveFocusToCaptcha() {
-        if (Objects.nonNull(mCaptcha)) {
+        if (nonNull(mCaptcha)) {
             mCaptcha.requestFocus();
         }
     }
@@ -230,23 +223,34 @@ public class DirectAuthDialog extends BaseMvpDialogFragment<DirectAuthPresenter,
 
     @Override
     public void returnSuccessToParent(int userId, String accessToken, String Login, String Password, String twoFA) {
-        returnResultAndDissmiss(new Intent(ACTION_LOGIN_COMPLETE).putExtra(Extra.TOKEN, accessToken).putExtra(Extra.USER_ID, userId).putExtra(Extra.LOGIN, Login).putExtra(Extra.PASSWORD, Password).putExtra(Extra.TWOFA, twoFA));
+        Bundle data = new Bundle();
+        data.putString(Extra.TOKEN, accessToken);
+        data.putInt(Extra.USER_ID, userId);
+        data.putString(Extra.LOGIN, Login);
+        data.putString(Extra.PASSWORD, Password);
+        data.putString(Extra.TWOFA, twoFA);
+        returnResultAndDissmiss(ACTION_LOGIN_COMPLETE, data);
     }
 
     @Override
     public void returnSuccessValidation(String url, String Login, String Password, String twoFA) {
-        returnResultAndDissmiss(new Intent(ACTION_VALIDATE_VIA_WEB).putExtra(Extra.URL, url).putExtra(Extra.LOGIN, Login).putExtra(Extra.PASSWORD, Password).putExtra(Extra.TWOFA, twoFA));
+        Bundle data = new Bundle();
+        data.putString(Extra.URL, url);
+        data.putString(Extra.LOGIN, Login);
+        data.putString(Extra.PASSWORD, Password);
+        data.putString(Extra.TWOFA, twoFA);
+        returnResultAndDissmiss(ACTION_VALIDATE_VIA_WEB, data);
     }
 
-    private void returnResultAndDissmiss(Intent data) {
-        if (Objects.nonNull(getTargetFragment())) {
-            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, data);
+    private void returnResultAndDissmiss(@NonNull String key, @NonNull Bundle data) {
+        if (nonNull(getParentFragmentManager())) {
+            getParentFragmentManager().setFragmentResult(key, data);
         }
         dismiss();
     }
 
     @Override
     public void returnLoginViaWebAction() {
-        returnResultAndDissmiss(new Intent(ACTION_LOGIN_VIA_WEB));
+        returnResultAndDissmiss(ACTION_LOGIN_VIA_WEB, new Bundle());
     }
 }

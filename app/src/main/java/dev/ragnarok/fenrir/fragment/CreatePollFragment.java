@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -38,6 +36,7 @@ import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class CreatePollFragment extends BaseMvpFragment<CreatePollPresenter, ICreatePollView> implements ICreatePollView {
 
+    public static final String REQUEST_CREATE_POLL = "request_create_poll";
     private TextInputEditText mQuestion;
     private CheckBox mAnonymous;
     private CheckBox mMultiply;
@@ -215,10 +214,10 @@ public class CreatePollFragment extends BaseMvpFragment<CreatePollPresenter, ICr
 
     @Override
     public void sendResultAndGoBack(@NonNull Poll poll) {
-        if (nonNull(getTargetFragment())) {
-            Intent intent = new Intent();
-            intent.putExtra(Extra.POLL, poll);
-            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
+        if (nonNull(getParentFragmentManager())) {
+            Bundle intent = new Bundle();
+            intent.putParcelable(Extra.POLL, poll);
+            getParentFragmentManager().setFragmentResult(REQUEST_CREATE_POLL, intent);
         }
 
         requireActivity().onBackPressed();

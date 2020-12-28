@@ -430,7 +430,7 @@ object DownloadWorkUtils {
                 mNotifyManager.createNotificationChannel(channel)
                 NotificationCompat.Builder(applicationContext, channel.id)
             } else {
-                NotificationCompat.Builder(applicationContext).setPriority(Notification.PRIORITY_MIN)
+                NotificationCompat.Builder(applicationContext, "worker_channel").setPriority(Notification.PRIORITY_MIN)
             }
             builder.setContentTitle(applicationContext.getString(R.string.work_manager))
                     .setContentText(applicationContext.getString(R.string.may_down_charge))

@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.fragment;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
@@ -17,6 +18,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -94,9 +99,46 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     private static final String TAG = PreferencesFragment.class.getSimpleName();
 
-    private static final int REQUEST_CHAT_LIGHT_BACKGROUND = 117;
-    private static final int REQUEST_CHAT_DARK_BACKGROUND = 118;
-    private static final int REQUEST_PIN_FOR_SECURITY = 120;
+    private final ActivityResultLauncher<Intent> requestLightBackgound = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        changeDrawerBackground(false, result.getData());
+                        //requireActivity().recreate();
+                    }
+                }
+            });
+
+    private final ActivityResultLauncher<Intent> requestDarkBackgound = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        changeDrawerBackground(true, result.getData());
+                        //requireActivity().recreate();
+                    }
+                }
+            });
+
+    private final ActivityResultLauncher<Intent> requestPin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        PlaceFactory.getSecuritySettingsPlace().tryOpenWith(requireActivity());
+                    }
+                }
+            });
+
+    private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+            new AppPerms.onPermissionsGranted() {
+                @Override
+                public void granted() {
+                    CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text);
+                }
+            });
 
     public static Bundle buildArgs(int accountId) {
         Bundle args = new Bundle();
@@ -142,15 +184,19 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
     }
 
-    private void selectLocalImage(int requestCode) {
+    private void selectLocalImage(boolean isDark) {
         if (!AppPerms.hasReadStoragePermision(getActivity())) {
-            AppPerms.requestReadExternalStoragePermission(getActivity());
+            requestReadPermission.launch();
             return;
         }
 
         Intent intent = new Intent(getActivity(), PhotosActivity.class);
         intent.putExtra(PhotosActivity.EXTRA_MAX_SELECTION_COUNT, 1);
-        startActivityForResult(intent, requestCode);
+        if (isDark) {
+            requestDarkBackgound.launch(intent);
+        } else {
+            requestLightBackgound.launch(intent);
+        }
     }
 
     private void EnableChatPhotoBackground(int index) {
@@ -245,6 +291,12 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         ListPreference font_size = findPreference("font_size");
         font_size.setOnPreferenceChangeListener((preference, newValue) -> {
+            requireActivity().recreate();
+            return true;
+        });
+
+        ListPreference language_ui = findPreference("language_ui");
+        language_ui.setOnPreferenceChangeListener((preference, newValue) -> {
             requireActivity().recreate();
             return true;
         });
@@ -370,7 +422,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         Preference lightSideBarPreference = findPreference("chat_light_background");
         if (lightSideBarPreference != null) {
             lightSideBarPreference.setOnPreferenceClickListener(preference -> {
-                selectLocalImage(REQUEST_CHAT_LIGHT_BACKGROUND);
+                selectLocalImage(false);
                 return true;
             });
             File bitmap = getDrawerBackgroundFile(requireActivity(), true);
@@ -384,7 +436,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         Preference darkSideBarPreference = findPreference("chat_dark_background");
         if (darkSideBarPreference != null) {
             darkSideBarPreference.setOnPreferenceClickListener(preference -> {
-                selectLocalImage(REQUEST_CHAT_DARK_BACKGROUND);
+                selectLocalImage(true);
                 return true;
             });
             File bitmap = getDrawerBackgroundFile(requireActivity(), false);
@@ -428,7 +480,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         findPreference("music_dir")
                 .setOnPreferenceClickListener(preference -> {
                     if (!AppPerms.hasReadStoragePermision(getActivity())) {
-                        AppPerms.requestReadExternalStoragePermission(getActivity());
+                        requestReadPermission.launch();
                         return true;
                     }
                     DialogProperties properties = new DialogProperties();
@@ -449,7 +501,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         findPreference("photo_dir")
                 .setOnPreferenceClickListener(preference -> {
                     if (!AppPerms.hasReadStoragePermision(getActivity())) {
-                        AppPerms.requestReadExternalStoragePermission(getActivity());
+                        requestReadPermission.launch();
                         return true;
                     }
                     DialogProperties properties = new DialogProperties();
@@ -470,7 +522,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         findPreference("video_dir")
                 .setOnPreferenceClickListener(preference -> {
                     if (!AppPerms.hasReadStoragePermision(getActivity())) {
-                        AppPerms.requestReadExternalStoragePermission(getActivity());
+                        requestReadPermission.launch();
                         return true;
                     }
                     DialogProperties properties = new DialogProperties();
@@ -491,7 +543,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         findPreference("docs_dir")
                 .setOnPreferenceClickListener(preference -> {
                     if (!AppPerms.hasReadStoragePermision(getActivity())) {
-                        AppPerms.requestReadExternalStoragePermission(getActivity());
+                        requestReadPermission.launch();
                         return true;
                     }
                     DialogProperties properties = new DialogProperties();
@@ -512,7 +564,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         findPreference("sticker_dir")
                 .setOnPreferenceClickListener(preference -> {
                     if (!AppPerms.hasReadStoragePermision(getActivity())) {
-                        AppPerms.requestReadExternalStoragePermission(getActivity());
+                        requestReadPermission.launch();
                         return true;
                     }
                     DialogProperties properties = new DialogProperties();
@@ -592,7 +644,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     private void onSecurityClick() {
         if (Settings.get().security().isUsePinForSecurity()) {
-            startActivityForResult(new Intent(requireActivity(), EnterPinActivity.class), REQUEST_PIN_FOR_SECURITY);
+            requestPin.launch(new Intent(requireActivity(), EnterPinActivity.class));
         } else {
             PlaceFactory.getSecuritySettingsPlace().tryOpenWith(requireActivity());
         }
@@ -604,28 +656,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if ((requestCode == REQUEST_CHAT_DARK_BACKGROUND || requestCode == REQUEST_CHAT_LIGHT_BACKGROUND)
-                && resultCode == Activity.RESULT_OK && data != null) {
-            changeDrawerBackground(requestCode, data);
-            //requireActivity().recreate();
-        }
-
-        if (requestCode == REQUEST_PIN_FOR_SECURITY && resultCode == Activity.RESULT_OK) {
-            PlaceFactory.getSecuritySettingsPlace().tryOpenWith(requireActivity());
-        }
-    }
-
-    private void changeDrawerBackground(int requestCode, Intent data) {
+    private void changeDrawerBackground(boolean isDark, Intent data) {
         ArrayList<LocalPhoto> photos = data.getParcelableArrayListExtra(Extra.PHOTOS);
         if (isEmpty(photos)) {
             return;
         }
 
         LocalPhoto photo = photos.get(0);
-        boolean light = requestCode == REQUEST_CHAT_LIGHT_BACKGROUND;
+        boolean light = !isDark;
 
         File file = getDrawerBackgroundFile(requireActivity(), light);
 

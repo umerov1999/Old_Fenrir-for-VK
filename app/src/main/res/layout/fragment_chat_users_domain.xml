@@ -35,6 +35,14 @@
             android:textSize="16sp" />
     </LinearLayout>
 
+    <dev.ragnarok.fenrir.view.MySearchView
+        android:id="@+id/searchview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp"
+        app:layout_scrollFlags="scroll|enterAlways|snap" />
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

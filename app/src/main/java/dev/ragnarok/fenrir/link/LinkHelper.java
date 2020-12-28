@@ -11,6 +11,7 @@ import androidx.browser.customtabs.CustomTabColorSchemeParams;
 import androidx.browser.customtabs.CustomTabsIntent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import dev.ragnarok.fenrir.R;
@@ -20,6 +21,7 @@ import dev.ragnarok.fenrir.fragment.search.SearchContentType;
 import dev.ragnarok.fenrir.fragment.search.criteria.NewsFeedCriteria;
 import dev.ragnarok.fenrir.link.types.AbsLink;
 import dev.ragnarok.fenrir.link.types.AudioPlaylistLink;
+import dev.ragnarok.fenrir.link.types.AudioTrackLink;
 import dev.ragnarok.fenrir.link.types.AudiosLink;
 import dev.ragnarok.fenrir.link.types.BoardLink;
 import dev.ragnarok.fenrir.link.types.DialogLink;
@@ -40,11 +42,14 @@ import dev.ragnarok.fenrir.link.types.WallLink;
 import dev.ragnarok.fenrir.link.types.WallPostLink;
 import dev.ragnarok.fenrir.model.Commented;
 import dev.ragnarok.fenrir.model.CommentedType;
+import dev.ragnarok.fenrir.model.IdPair;
 import dev.ragnarok.fenrir.model.Peer;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.mvp.view.IVkPhotosView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
+import dev.ragnarok.fenrir.player.MusicPlaybackService;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
+import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
@@ -70,6 +75,12 @@ public class LinkHelper {
                                 PlaceFactory.getExternalLinkPlace(accountId, t.link).tryOpenWith(context);
                             }
                         }
+                    }, e -> Utils.showErrorInAdapter(context, e));
+        } else if (link.contains("vk.me")) {
+            InteractorFactory.createUtilsInteractor().joinChatByInviteLink(accountId, link)
+                    .compose(RxUtils.applySingleIOToMainSchedulers())
+                    .subscribe(t -> {
+                        PlaceFactory.getChatPlace(accountId, accountId, new Peer(Peer.fromChatId(t.chat_id))).tryOpenWith(context);
                     }, e -> Utils.showErrorInAdapter(context, e));
         } else {
             if (!openVKlink(context, accountId, link)) {
@@ -197,6 +208,16 @@ public class LinkHelper {
                 FeedSearchLink feedSearchLink = (FeedSearchLink) link;
                 NewsFeedCriteria criteria = new NewsFeedCriteria(feedSearchLink.getQ());
                 PlaceFactory.getSingleTabSearchPlace(accountId, SearchContentType.NEWS, criteria).tryOpenWith(activity);
+                break;
+
+            case AbsLink.AUDIO_TRACK:
+                AudioTrackLink audioLink = (AudioTrackLink) link;
+                InteractorFactory.createAudioInteractor().getById(accountId, Collections.singletonList(new IdPair(audioLink.trackId, audioLink.ownerId)))
+                        .compose(RxUtils.applySingleIOToMainSchedulers())
+                        .subscribe(t -> {
+                            MusicPlaybackService.startForPlayList(activity, new ArrayList<>(t), 0, false);
+                            PlaceFactory.getPlayerPlace(Settings.get().accounts().getCurrent()).tryOpenWith(activity);
+                        }, e -> Utils.showErrorInAdapter(activity, e));
                 break;
 
             default:

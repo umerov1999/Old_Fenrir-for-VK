@@ -81,6 +81,7 @@ class ChatPresenter(accountId: Int, private val messagesOwnerId: Int,
 
     private val messagesRepository: IMessagesRepository = Repository.messages
     private val stickersInteractor = InteractorFactory.createStickersInteractor()
+    private val utilsInteractor = InteractorFactory.createUtilsInteractor()
     private val longpollManager: ILongpollManager = LongpollInstance.get()
     private val uploadManager: IUploadManager = Injection.provideUploadManager()
 
@@ -688,6 +689,11 @@ class ChatPresenter(accountId: Int, private val messagesOwnerId: Int,
     }
 
     fun fireDraftMessageTextEdited(s: String) {
+        if (Peer.isGroupChat(peerId)) {
+            if (!Utils.isEmpty(s) && s.length == 1 && s[0] == '@') {
+                view?.showChatMembers(accountId, Peer.toChatId(peerId))
+            }
+        }
         edited?.run {
             val wasEmpty = body.isNullOrBlank()
             body = s
@@ -1073,6 +1079,10 @@ class ChatPresenter(accountId: Int, private val messagesOwnerId: Int,
 
         addMessageToList(message)
         view?.notifyDataChanged()
+        if (!message.isOut) {
+            conversation?.currentKeyboard = message.keyboard
+            view?.convert_to_keyboard(message.keyboard)
+        }
     }
 
     private fun isChatWithUser(userId: Int): Boolean {
@@ -1378,8 +1388,8 @@ class ChatPresenter(accountId: Int, private val messagesOwnerId: Int,
      * STATUS_WAITING_FOR_UPLOAD - отменяем "аплоад", удаляем из БД и списка
      */
     private fun deleteSelectedMessages() {
-        val sent = ArrayList<Int>(0)
-        val canDeleteForAll = ArrayList<Int>(0)
+        val sent = ArrayList<Message>(0)
+        val canDeleteForAll = ArrayList<Message>(0)
 
         var hasChanged = false
         val iterator = data.iterator()
@@ -1394,9 +1404,9 @@ class ChatPresenter(accountId: Int, private val messagesOwnerId: Int,
             when (message.status) {
                 MessageStatus.SENT -> {
                     if (canDeleteForAll(message)) {
-                        canDeleteForAll.add(message.id)
+                        canDeleteForAll.add(message)
                     } else {
-                        sent.add(message.id)
+                        sent.add(message)
                     }
                 }
                 MessageStatus.QUEUE, MessageStatus.ERROR, MessageStatus.SENDING -> {
@@ -1417,7 +1427,7 @@ class ChatPresenter(accountId: Int, private val messagesOwnerId: Int,
         }
 
         if (sent.nonEmpty()) {
-            deleteSentImpl(sent, false)
+            deleteSentImpl(sent, 0)
         }
 
         if (hasChanged) {
@@ -1429,10 +1439,49 @@ class ChatPresenter(accountId: Int, private val messagesOwnerId: Int,
         }
     }
 
-    private fun deleteSentImpl(ids: Collection<Int>, forAll: Boolean) {
+    private fun normalDelete(ids: Collection<Int>, forAll: Boolean) {
         appendDisposable(messagesRepository.deleteMessages(messagesOwnerId, peerId, ids, forAll)
                 .fromIOToMain()
                 .subscribe(dummy(), { t -> showError(view, t) }))
+    }
+
+    private fun deleteSentImpl(ids: Collection<Message>, forAll: Int) {
+        if (forAll == 2) {
+            superDeleteSentImpl(ids)
+            return
+        }
+
+        val messages: ArrayList<Int> = ArrayList(ids.size)
+        for (tmp in ids) {
+            messages.add(tmp.id)
+        }
+        normalDelete(messages, forAll == 1)
+    }
+
+    private fun superDeleteEditRecursive(messages: ArrayList<Message>, result: ArrayList<Int>) {
+        if (messages.isEmpty()) {
+            if (!Utils.isEmpty(result)) {
+                normalDelete(result, true)
+            }
+            return
+        }
+        val message = messages.removeAt(0)
+        appendDisposable(messagesRepository.edit(messagesOwnerId, message, "Ragnarök",
+                Collections.emptyList(), false)
+                .fromIOToMain()
+                .subscribe({
+                    run {
+                        result.add(it.id)
+                        onMessageEdited(it)
+                        superDeleteEditRecursive(messages, result)
+                    }
+                }, { onMessageEditFail(it) }))
+    }
+
+    private fun superDeleteSentImpl(messages: Collection<Message>) {
+        val tmp = ArrayList(messages)
+        val result = ArrayList<Int>()
+        superDeleteEditRecursive(tmp, result)
     }
 
     private fun canDeleteForAll(message: Message): Boolean {
@@ -1642,7 +1691,7 @@ class ChatPresenter(accountId: Int, private val messagesOwnerId: Int,
                     .getEncryptionLocationPolicy(messagesOwnerId, peerId) == KeyLocationPolicy.RAM
         }
 
-        view?.configOptionMenu(chat, chat, chat, isEncryptionSupport, isEncryptionEnabled, isPlusEncryption, isEncryptionSupport, !HronoType, peerId < VKApiMessage.CHAT_PEER)
+        view?.configOptionMenu(chat, chat, chat, isEncryptionSupport, isEncryptionEnabled, isPlusEncryption, isEncryptionSupport, !HronoType, peerId < VKApiMessage.CHAT_PEER, chat)
     }
 
     fun fireEncriptionStatusClick() {
@@ -1813,6 +1862,14 @@ class ChatPresenter(accountId: Int, private val messagesOwnerId: Int,
         }
     }
 
+    fun fireGenerateInviteLink() {
+        netLoadingDisposable = utilsInteractor.getInviteLink(accountId, peerId, 0)
+                .compose(applySingleIOToMainSchedulers())
+                .subscribe({
+                    view?.copyToClipBoard(it.link)
+                }, { onConversationFetchFail(it) })
+    }
+
     fun fireTermsOfUseAcceptClick(requestCode: Int) {
         Settings.get().security().isKeyEncryptionPolicyAccepted = true
 
@@ -1945,6 +2002,10 @@ class ChatPresenter(accountId: Int, private val messagesOwnerId: Int,
 
     fun fireEditAddImageClick() {
         view?.startImagesSelection(accountId, messagesOwnerId)
+    }
+
+    fun fireShowChatMembers() {
+        view?.showChatMembers(accountId, Peer.toChatId(peerId))
     }
 
     fun fireLongAvatarClick(Id: Int) {
@@ -2086,12 +2147,16 @@ class ChatPresenter(accountId: Int, private val messagesOwnerId: Int,
         fireEditLocalPhotosSelected(listOf(makedPhoto), size)
     }
 
-    fun fireDeleteForAllClick(ids: ArrayList<Int>) {
-        deleteSentImpl(ids, true)
+    fun fireDeleteForAllClick(ids: ArrayList<Message>) {
+        deleteSentImpl(ids, 1)
     }
 
-    fun fireDeleteForMeClick(ids: ArrayList<Int>) {
-        deleteSentImpl(ids, false)
+    fun fireDeleteSuper(ids: ArrayList<Message>) {
+        deleteSentImpl(ids, 2)
+    }
+
+    fun fireDeleteForMeClick(ids: ArrayList<Message>) {
+        deleteSentImpl(ids, 0)
     }
 
     fun fireScrollToEnd() {

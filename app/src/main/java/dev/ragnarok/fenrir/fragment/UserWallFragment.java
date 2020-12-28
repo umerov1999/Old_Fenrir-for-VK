@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,6 +14,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -56,6 +61,7 @@ import dev.ragnarok.fenrir.picasso.transforms.BlurTransformation;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.InputTextDialog;
 import dev.ragnarok.fenrir.util.Utils;
@@ -69,7 +75,41 @@ import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPresenter>
         implements IUserWallView {
 
-    private static final int REQUEST_UPLOAD_AVATAR = 46;
+    private final ActivityResultLauncher<Intent> openRequestResizeAvatar = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                getPresenter().fireNewAvatarPhotoSelected(UCrop.getOutput(result.getData()).getPath());
+            } else if (result.getResultCode() == UCrop.RESULT_ERROR) {
+                showThrowable(UCrop.getError(result.getData()));
+            }
+        }
+    });
+    private final ActivityResultLauncher<Intent> openRequestSelectAvatar = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                ArrayList<LocalPhoto> photos = result.getData().getParcelableArrayListExtra(Extra.PHOTOS);
+                if (nonEmpty(photos)) {
+                    Uri to_up = photos.get(0).getFullImageUri();
+                    if (new File(to_up.getPath()).isFile()) {
+                        to_up = Uri.fromFile(new File(to_up.getPath()));
+                    }
+                    openRequestResizeAvatar.launch(UCrop.of(to_up, Uri.fromFile(new File(requireActivity().getExternalCacheDir() + File.separator + "scale.jpg")))
+                            .withAspectRatio(1, 1)
+                            .getIntent(requireActivity()));
+                }
+            }
+        }
+    });
+    private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+            new AppPerms.onPermissionsGranted() {
+                @Override
+                public void granted() {
+                    getPresenter().fireShowQR(requireActivity());
+                }
+            });
     private UserHeaderHolder mHeaderHolder;
 
     @Override
@@ -144,24 +184,6 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
                 .show();
     }
 
-    @Override
-    public void displayCounters(int friends, int mutual, int followers, int groups, int photos, int audios, int videos, int articles, int products, int gifts) {
-        if (nonNull(mHeaderHolder)) {
-            if (Settings.get().other().isShow_mutual_count()) {
-                setupCounterWith(mHeaderHolder.bFriends, friends, mutual);
-            } else {
-                setupCounter(mHeaderHolder.bFriends, friends);
-            }
-            setupCounter(mHeaderHolder.bGroups, groups);
-            setupCounter(mHeaderHolder.bPhotos, photos);
-            setupCounter(mHeaderHolder.bAudios, audios);
-            setupCounter(mHeaderHolder.bVideos, videos);
-            setupCounter(mHeaderHolder.bArticles, articles);
-            setupCounter(mHeaderHolder.bProducts, products);
-            setupCounter(mHeaderHolder.bGifts, gifts);
-        }
-    }
-
     /*@Override
     public void displayOwnerData(User user) {
         if (isNull(mHeaderHolder)) return;
@@ -214,6 +236,24 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
     }*/
 
     @Override
+    public void displayCounters(int friends, int mutual, int followers, int groups, int photos, int audios, int videos, int articles, int products, int gifts) {
+        if (nonNull(mHeaderHolder)) {
+            if (Settings.get().other().isShow_mutual_count()) {
+                setupCounterWith(mHeaderHolder.bFriends, friends, mutual);
+            } else {
+                setupCounter(mHeaderHolder.bFriends, friends);
+            }
+            setupCounter(mHeaderHolder.bGroups, groups);
+            setupCounter(mHeaderHolder.bPhotos, photos);
+            setupCounter(mHeaderHolder.bAudios, audios);
+            setupCounter(mHeaderHolder.bVideos, videos);
+            setupCounter(mHeaderHolder.bArticles, articles);
+            setupCounter(mHeaderHolder.bProducts, products);
+            setupCounter(mHeaderHolder.bGifts, gifts);
+        }
+    }
+
+    @Override
     public void displayUserStatus(String statusText, boolean swAudioIcon) {
         if (nonNull(mHeaderHolder)) {
             mHeaderHolder.tvStatus.setText(statusText);
@@ -231,22 +271,22 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
         mHeaderHolder = new UserHeaderHolder(headerRootView);
         mHeaderHolder.ivAvatar.setOnClickListener(v -> getPresenter().fireAvatarClick());
         mHeaderHolder.Runes.setVisibility(Settings.get().other().isRunes_show() ? View.VISIBLE : View.GONE);
-        mHeaderHolder.Valknut.setVisibility(Settings.get().other().isShow_pagan_symbol() ? View.VISIBLE : View.GONE);
+        mHeaderHolder.paganSymbol.setVisibility(Settings.get().other().isShow_pagan_symbol() ? View.VISIBLE : View.GONE);
         switch (Settings.get().other().getPaganSymbol()) {
             case 1:
-                mHeaderHolder.Valknut.setImageResource(R.drawable.ic_igdr);
+                mHeaderHolder.paganSymbol.setImageResource(R.drawable.ic_igdr);
                 break;
             case 2:
-                mHeaderHolder.Valknut.setImageResource(R.drawable.ic_mjolnir);
+                mHeaderHolder.paganSymbol.setImageResource(R.drawable.ic_mjolnir);
                 break;
             case 3:
-                mHeaderHolder.Valknut.setImageResource(R.drawable.ic_vegvisir);
+                mHeaderHolder.paganSymbol.setImageResource(R.drawable.ic_vegvisir);
                 break;
             case 4:
-                mHeaderHolder.Valknut.setImageResource(R.drawable.ic_celtic_knot);
+                mHeaderHolder.paganSymbol.setImageResource(R.drawable.ic_celtic_knot);
                 break;
             default:
-                mHeaderHolder.Valknut.setImageResource(R.drawable.valknut);
+                mHeaderHolder.paganSymbol.setImageResource(R.drawable.valknut);
                 break;
         }
     }
@@ -372,32 +412,10 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
                 case 2:
                     Intent attachPhotoIntent = new Intent(requireActivity(), PhotosActivity.class);
                     attachPhotoIntent.putExtra(PhotosActivity.EXTRA_MAX_SELECTION_COUNT, 1);
-                    startActivityForResult(attachPhotoIntent, REQUEST_UPLOAD_AVATAR);
+                    openRequestSelectAvatar.launch(attachPhotoIntent);
                     break;
             }
         }).setCancelable(true).show();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
-            getPresenter().fireNewAvatarPhotoSelected(UCrop.getOutput(data).getPath());
-        } else if (resultCode == UCrop.RESULT_ERROR) {
-            showThrowable(UCrop.getError(data));
-        }
-        if (requestCode == REQUEST_UPLOAD_AVATAR && resultCode == Activity.RESULT_OK) {
-            ArrayList<LocalPhoto> photos = data.getParcelableArrayListExtra(Extra.PHOTOS);
-            if (nonEmpty(photos)) {
-                Uri to_up = photos.get(0).getFullImageUri();
-                if (new File(to_up.getPath()).isFile()) {
-                    to_up = Uri.fromFile(new File(to_up.getPath()));
-                }
-                UCrop.of(to_up, Uri.fromFile(new File(requireActivity().getExternalCacheDir() + File.separator + "scale.jpg")))
-                        .withAspectRatio(1, 1)
-                        .start(requireActivity(), this);
-            }
-        }
     }
 
     @Override
@@ -417,6 +435,10 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
         super.onCreateOptionsMenu(menu, inflater);
         OptionView view = new OptionView();
         getPresenter().fireOptionViewCreated(view);
+        menu.add(R.string.registration_date).setOnMenuItemClickListener(item -> {
+            getPresenter().fireGetRegistrationDate();
+            return true;
+        });
         if (!view.isMy) {
             menu.add(R.string.report).setOnMenuItemClickListener(item -> {
                 getPresenter().fireReport();
@@ -452,7 +474,11 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             }
         }
         menu.add(R.string.show_qr).setOnMenuItemClickListener(item -> {
-            getPresenter().fireShowQR(requireActivity());
+            if (!AppPerms.hasReadWriteStoragePermision(requireActivity())) {
+                requestWritePermission.launch();
+            } else {
+                getPresenter().fireShowQR(requireActivity());
+            }
             return true;
         });
         menu.add(R.string.mentions).setOnMenuItemClickListener(item -> {
@@ -490,7 +516,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
         final MaterialButton bPrimaryAction;
         final RLottieImageView bDonate;
 
-        final ImageView Valknut;
+        final RLottieImageView paganSymbol;
         final View Runes;
 
         final HorizontalOptionsAdapter<PostFilter> mPostFilterAdapter;
@@ -516,8 +542,8 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             fabMessage = root.findViewById(R.id.header_user_profile_fab_message);
             fabMoreInfo = root.findViewById(R.id.info_btn);
             bPrimaryAction = root.findViewById(R.id.subscribe_btn);
-            Valknut = root.findViewById(R.id.valknut_icon);
-            Runes = root.findViewById(R.id.runes_icon);
+            paganSymbol = root.findViewById(R.id.pagan_symbol);
+            Runes = root.findViewById(R.id.runes_container);
             ivVerified = root.findViewById(R.id.item_verified);
             bDonate = root.findViewById(R.id.donated_anim);
 

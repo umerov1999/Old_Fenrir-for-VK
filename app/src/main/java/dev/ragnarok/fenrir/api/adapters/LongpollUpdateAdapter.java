@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import dev.ragnarok.fenrir.api.model.VKApiMessage;
+import dev.ragnarok.fenrir.api.model.VkApiConversation;
 import dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent;
 import dev.ragnarok.fenrir.api.model.longpoll.AddMessageUpdate;
 import dev.ragnarok.fenrir.api.model.longpoll.BadgeCountChangeUpdate;
@@ -49,15 +50,15 @@ public class LongpollUpdateAdapter extends AbsAdapter implements JsonDeserialize
     public AbsLongpollEvent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonArray array = json.getAsJsonArray();
         int action = array.get(0).getAsInt();
-        return deserialize(action, array);
+        return deserialize(action, array, context);
     }
 
     @Nullable
-    private AbsLongpollEvent deserialize(int action, JsonArray array) {
+    private AbsLongpollEvent deserialize(int action, JsonArray array, JsonDeserializationContext context) {
         switch (action) {
             case AbsLongpollEvent.ACTION_MESSAGE_EDITED:
             case AbsLongpollEvent.ACTION_MESSAGE_ADDED:
-                return deserializeAddMessageUpdate(array);
+                return deserializeAddMessageUpdate(array, context);
 
             case AbsLongpollEvent.ACTION_USER_WRITE_TEXT_IN_DIALOG:
                 WriteTextInDialogUpdate w = new WriteTextInDialogUpdate();
@@ -124,7 +125,7 @@ public class LongpollUpdateAdapter extends AbsAdapter implements JsonDeserialize
         return null;
     }
 
-    private AddMessageUpdate deserializeAddMessageUpdate(JsonArray array) {
+    private AddMessageUpdate deserializeAddMessageUpdate(JsonArray array, JsonDeserializationContext context) {
         AddMessageUpdate update = new AddMessageUpdate();
 
         int flags = optInt(array, 2);
@@ -145,14 +146,22 @@ public class LongpollUpdateAdapter extends AbsAdapter implements JsonDeserialize
             update.sourceText = optString(extra, "source_text");
             update.sourceAct = optString(extra, "source_act");
             update.sourceMid = optInt(extra, "source_mid");
+            update.payload = optString(extra, "payload");
+            if (extra.has("keyboard")) {
+                update.keyboard = context.deserialize(extra.get("keyboard"), VkApiConversation.CurrentKeyboard.class);
+            }
         }
 
         JsonObject attachments = (JsonObject) opt(array, 7);
         if (nonNull(attachments)) {
             update.hasMedia = attachments.has("attach1_type");
             String fwd = optString(attachments, "fwd");
+            String reply = optString(attachments, "reply");
             if (nonEmpty(fwd)) {
                 update.fwds = parseLineWithSeparators(fwd, ",");
+            }
+            if (nonEmpty(reply)) {
+                update.reply = reply;
             }
         }
 

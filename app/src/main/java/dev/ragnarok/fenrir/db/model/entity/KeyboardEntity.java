@@ -6,7 +6,7 @@ public class KeyboardEntity {
     private boolean one_time;
     private boolean inline;
     private int author_id;
-    private List<ButtonEntity> buttons;
+    private List<List<ButtonEntity>> buttons;
 
     public KeyboardEntity() {
     }
@@ -38,11 +38,11 @@ public class KeyboardEntity {
         return this;
     }
 
-    public List<ButtonEntity> getButtons() {
+    public List<List<ButtonEntity>> getButtons() {
         return buttons;
     }
 
-    public KeyboardEntity setButtons(List<ButtonEntity> buttons) {
+    public KeyboardEntity setButtons(List<List<ButtonEntity>> buttons) {
         this.buttons = buttons;
         return this;
     }

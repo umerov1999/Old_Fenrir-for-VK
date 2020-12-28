@@ -372,7 +372,9 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
             if (isLongPressDownload) {
                 holder.Track.setOnLongClickListener(v -> {
                     if (!AppPerms.hasReadWriteStoragePermision(mContext)) {
-                        AppPerms.requestReadWriteStoragePermission((Activity) mContext);
+                        if (mClickListener != null) {
+                            mClickListener.onRequestWritePermissions();
+                        }
                         return false;
                     }
                     holder.saved.setVisibility(View.VISIBLE);
@@ -474,7 +476,9 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
                             addTrack(Settings.get().accounts().getCurrent(), audio);
                         case AudioItem.save_item_audio:
                             if (!AppPerms.hasReadWriteStoragePermision(mContext)) {
-                                AppPerms.requestReadWriteStoragePermission((Activity) mContext);
+                                if (mClickListener != null) {
+                                    mClickListener.onRequestWritePermissions();
+                                }
                                 break;
                             }
                             holder.saved.setVisibility(View.VISIBLE);
@@ -546,6 +550,8 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
         void onDelete(int position);
 
         void onUrlPhotoOpen(@NonNull String url, @NonNull String prefix, @NonNull String photo_prefix);
+
+        void onRequestWritePermissions();
     }
 
     class AudioHolder extends RecyclerView.ViewHolder {

@@ -27,7 +27,6 @@ import io.reactivex.rxjava3.plugins.RxJavaPlugins
 import org.conscrypt.Conscrypt
 import java.security.Security
 
-
 class App : Application(), ImageLoaderFactory {
     private val compositeDisposable = CompositeDisposable()
 

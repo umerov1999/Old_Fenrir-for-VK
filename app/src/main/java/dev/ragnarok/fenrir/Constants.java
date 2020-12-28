@@ -19,7 +19,7 @@ public class Constants {
 
     public static final String API_VERSION = "5.126";
     public static final String AUTH_VERSION = "5.122";
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 4;
 
     public static final @Account_Types
     int DEFAULT_ACCOUNT_TYPE = Account_Types.VK_ANDROID;
@@ -30,19 +30,10 @@ public class Constants {
     //public static final String DEVICE_COUNTRY_CODE = Injection.provideApplicationContext().getResources().getConfiguration().locale.getCountry().toLowerCase();
     public static final int VERSION_APK = BuildConfig.VERSION_CODE;
     public static final String APK_ID = BuildConfig.APPLICATION_ID;
-    public static final String DEVICE_COUNTRY_CODE = "ru";
-
-    public static final String VKANDROID_APP_VERSION_NAME = "6.18.1";
-    public static final String VKANDROID_APP_VERSION_CODE = "6561";
-
-    public static final String KATE_APP_VERSION_NAME = "67.2 lite";
-    public static final String KATE_APP_VERSION_CODE = "483";
-
-    public static final String KATE_USER_AGENT = String.format(Locale.US, "KateMobileAndroid/%s-%s (Android %s; SDK %d; %s; %s; %s; %s)", KATE_APP_VERSION_NAME, KATE_APP_VERSION_CODE, Build.VERSION.RELEASE, Build.VERSION.SDK_INT, Build.SUPPORTED_ABIS[0], Utils.getDeviceName(), DEVICE_COUNTRY_CODE, SCREEN_RESOLUTION());
-    public static final String KATE_USER_AGENT_FAKE = String.format(Locale.US, "KateMobileAndroid/%s-%s (Android %s; SDK %d; %s; %s; %s; %s)", KATE_APP_VERSION_NAME, KATE_APP_VERSION_CODE, Build.VERSION.RELEASE, Build.VERSION.SDK_INT, BuildConfig.FAKE_ABI, BuildConfig.FAKE_DEVICE, DEVICE_COUNTRY_CODE, SCREEN_RESOLUTION());
-    public static final String VKANDROID_USER_AGENT = String.format(Locale.US, "VKAndroidApp/%s-%s (Android %s; SDK %d; %s; %s; %s; %s)", VKANDROID_APP_VERSION_NAME, VKANDROID_APP_VERSION_CODE, Build.VERSION.RELEASE, Build.VERSION.SDK_INT, Build.SUPPORTED_ABIS[0], Utils.getDeviceName(), DEVICE_COUNTRY_CODE, SCREEN_RESOLUTION());
-    public static final String VKANDROID_USER_AGENT_FAKE = String.format(Locale.US, "VKAndroidApp/%s-%s (Android %s; SDK %d; %s; %s; %s; %s)", VKANDROID_APP_VERSION_NAME, VKANDROID_APP_VERSION_CODE, Build.VERSION.RELEASE, Build.VERSION.SDK_INT, BuildConfig.FAKE_ABI, BuildConfig.FAKE_DEVICE, DEVICE_COUNTRY_CODE, SCREEN_RESOLUTION());
-
+    public static final String VKANDROID_APP_VERSION_NAME = "6.19.1";
+    public static final String VKANDROID_APP_VERSION_CODE = "6685";
+    public static final String KATE_APP_VERSION_NAME = "68 lite";
+    public static final String KATE_APP_VERSION_CODE = "484";
     public static final int API_ID = BuildConfig.VK_API_APP_ID;
     public static final String SECRET = BuildConfig.VK_CLIENT_SECRET;
     public static final String MAIN_OWNER_FIELDS = UserColumns.API_FIELDS + "," + GroupColumns.API_FIELDS;
@@ -50,6 +41,11 @@ public class Constants {
     public static final int PIN_DIGITS_COUNT = 4;
     public static final String PICASSO_TAG = "picasso_tag";
     public static final boolean IS_DEBUG = BuildConfig.DEBUG;
+    public static String DEVICE_COUNTRY_CODE = "ru";
+    public static final String KATE_USER_AGENT = String.format(Locale.US, "KateMobileAndroid/%s-%s (Android %s; SDK %d; %s; %s; %s; %s)", KATE_APP_VERSION_NAME, KATE_APP_VERSION_CODE, Build.VERSION.RELEASE, Build.VERSION.SDK_INT, Build.SUPPORTED_ABIS[0], Utils.getDeviceName(), DEVICE_COUNTRY_CODE, SCREEN_RESOLUTION());
+    public static final String KATE_USER_AGENT_FAKE = String.format(Locale.US, "KateMobileAndroid/%s-%s (Android %s; SDK %d; %s; %s; %s; %s)", KATE_APP_VERSION_NAME, KATE_APP_VERSION_CODE, Build.VERSION.RELEASE, Build.VERSION.SDK_INT, BuildConfig.FAKE_ABI, BuildConfig.FAKE_DEVICE, DEVICE_COUNTRY_CODE, SCREEN_RESOLUTION());
+    public static final String VKANDROID_USER_AGENT = String.format(Locale.US, "VKAndroidApp/%s-%s (Android %s; SDK %d; %s; %s; %s; %s)", VKANDROID_APP_VERSION_NAME, VKANDROID_APP_VERSION_CODE, Build.VERSION.RELEASE, Build.VERSION.SDK_INT, Build.SUPPORTED_ABIS[0], Utils.getDeviceName(), DEVICE_COUNTRY_CODE, SCREEN_RESOLUTION());
+    public static final String VKANDROID_USER_AGENT_FAKE = String.format(Locale.US, "VKAndroidApp/%s-%s (Android %s; SDK %d; %s; %s; %s; %s)", VKANDROID_APP_VERSION_NAME, VKANDROID_APP_VERSION_CODE, Build.VERSION.RELEASE, Build.VERSION.SDK_INT, BuildConfig.FAKE_ABI, BuildConfig.FAKE_DEVICE, DEVICE_COUNTRY_CODE, SCREEN_RESOLUTION());
 
     private static String SCREEN_RESOLUTION() {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();

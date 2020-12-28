@@ -47,6 +47,6 @@ public class FirebaseInstallationsRegistrar implements ComponentRegistrar {
                                                 c.getProvider(UserAgentPublisher.class),
                                                 c.getProvider(HeartBeatInfo.class)))
                         .build(),
-                LibraryVersionComponent.create("fire-installations", "16.3.4"));
+                LibraryVersionComponent.create("fire-installations", "16.3.5"));
     }
 }

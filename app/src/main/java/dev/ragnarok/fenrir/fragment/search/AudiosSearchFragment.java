@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.fragment.search;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import dev.ragnarok.fenrir.mvp.view.search.IAudioSearchView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.player.util.MusicUtils;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
 
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
@@ -38,6 +40,14 @@ import static dev.ragnarok.fenrir.util.Objects.nonNull;
 public class AudiosSearchFragment extends AbsSearchFragment<AudiosSearchPresenter, IAudioSearchView, Audio, AudioRecyclerAdapter> implements IAudioSearchView {
 
     public static final String ACTION_SELECT = "AudiosSearchFragment.ACTION_SELECT";
+    private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+            new AppPerms.onPermissionsGranted() {
+                @Override
+                public void granted() {
+                    CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text);
+                }
+            });
     private boolean isSelectMode;
 
     public static AudiosSearchFragment newInstance(int accountId, AudioSearchCriteria criteria) {
@@ -145,6 +155,11 @@ public class AudiosSearchFragment extends AbsSearchFragment<AudiosSearchPresente
             @Override
             public void onUrlPhotoOpen(@NonNull String url, @NonNull String prefix, @NonNull String photo_prefix) {
                 PlaceFactory.getSingleURLPhotoPlace(url, prefix, photo_prefix).tryOpenWith(requireActivity());
+            }
+
+            @Override
+            public void onRequestWritePermissions() {
+                requestWritePermission.launch();
             }
         });
         return adapter;

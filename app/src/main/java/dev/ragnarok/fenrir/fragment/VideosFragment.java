@@ -13,6 +13,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -56,6 +60,7 @@ import dev.ragnarok.fenrir.mvp.view.IVideosListView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.place.PlaceUtil;
 import dev.ragnarok.fenrir.upload.Upload;
+import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
@@ -69,8 +74,32 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
 
     public static final String EXTRA_IN_TABS_CONTAINER = "in_tabs_container";
     public static final String EXTRA_ALBUM_TITLE = "album_title";
-    private static final int PERM_REQUEST_READ_STORAGE = 17;
-    private static final int REQUEST_CODE_FILE = 115;
+    private final ActivityResultLauncher<Intent> requestFile = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        String file = result.getData().getStringExtra(FileManagerFragment.returnFileParameter);
+                        LocalVideo vid = result.getData().getParcelableExtra(Extra.VIDEO);
+
+                        if (nonEmpty(file)) {
+                            getPresenter().fireFileForUploadSelected(file);
+                        } else if (nonNull(vid)) {
+                            getPresenter().fireFileForUploadSelected(vid.getData().toString());
+                        }
+                    }
+                }
+            });
+    private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+            new AppPerms.onPermissionsGranted() {
+                @Override
+                public void granted() {
+                    if (isPresenterPrepared()) {
+                        getPresenter().fireReadPermissionResolved();
+                    }
+                }
+            });
     /**
      * True - если фрагмент находится внутри TabLayout
      */
@@ -159,15 +188,7 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
 
     @Override
     public void requestReadExternalStoragePermission() {
-        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERM_REQUEST_READ_STORAGE);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERM_REQUEST_READ_STORAGE) {
-            getPresenter().fireReadPermissionResolved();
-        }
+        requestReadPermission.launch();
     }
 
     @Override
@@ -177,7 +198,7 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
                 .with(new FileManagerSelectableSource());
 
         Intent intent = DualTabPhotoActivity.createIntent(requireActivity(), 1, sources);
-        startActivityForResult(intent, REQUEST_CODE_FILE);
+        requestFile.launch(intent);
     }
 
     @Override
@@ -303,22 +324,6 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
 
         resolveEmptyTextVisibility();
         return root;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_CODE_FILE && resultCode == Activity.RESULT_OK) {
-            String file = data.getStringExtra(FileManagerFragment.returnFileParameter);
-            LocalVideo vid = data.getParcelableExtra(Extra.VIDEO);
-
-            if (nonEmpty(file)) {
-                getPresenter().fireFileForUploadSelected(file);
-            } else if (nonNull(vid)) {
-                getPresenter().fireFileForUploadSelected(vid.getData().toString());
-            }
-        }
     }
 
     @Override

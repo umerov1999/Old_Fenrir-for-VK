@@ -214,10 +214,6 @@ public abstract class AbsSearchPresenter<V extends IBaseSearchView<T>, C extends
         doSearch();
     }
 
-    public void fireSyncCriteriaRequest() {
-        getView().displaySearchQuery(criteria.getQuery());
-    }
-
     public void fireOptionsChanged() {
         fireCriteriaChanged();
     }

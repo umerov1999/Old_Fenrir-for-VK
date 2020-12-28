@@ -45,6 +45,8 @@ public interface IDialogsView extends IAccountDependencyView, IMvpView, IErrorVi
 
     void onQRScanned(int accountId, @NonNull String result);
 
+    void notifyHasAttachments(boolean has);
+
     interface IContextView {
         void setCanDelete(boolean can);
 

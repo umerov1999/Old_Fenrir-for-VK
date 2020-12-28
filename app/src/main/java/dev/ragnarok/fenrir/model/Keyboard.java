@@ -3,6 +3,7 @@ package dev.ragnarok.fenrir.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Keyboard implements Parcelable {
@@ -21,7 +22,7 @@ public class Keyboard implements Parcelable {
     private boolean one_time;
     private boolean inline;
     private int author_id;
-    private List<Button> buttons;
+    private List<List<Button>> buttons;
 
     public Keyboard() {
     }
@@ -30,7 +31,12 @@ public class Keyboard implements Parcelable {
         one_time = in.readByte() != 0;
         inline = in.readByte() != 0;
         author_id = in.readInt();
-        buttons = in.createTypedArrayList(Button.CREATOR);
+
+        int size = in.readInt();
+        buttons = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            buttons.add(i, in.createTypedArrayList(Button.CREATOR));
+        }
     }
 
     public boolean getOne_time() {
@@ -60,11 +66,11 @@ public class Keyboard implements Parcelable {
         return this;
     }
 
-    public List<Button> getButtons() {
+    public List<List<Button>> getButtons() {
         return buttons;
     }
 
-    public Keyboard setButtons(List<Button> buttons) {
+    public Keyboard setButtons(List<List<Button>> buttons) {
         this.buttons = buttons;
         return this;
     }
@@ -79,7 +85,11 @@ public class Keyboard implements Parcelable {
         dest.writeByte((byte) (one_time ? 1 : 0));
         dest.writeByte((byte) (inline ? 1 : 0));
         dest.writeInt(author_id);
-        dest.writeTypedList(buttons);
+
+        dest.writeInt(buttons.size());
+        for (List<Button> i : buttons) {
+            dest.writeTypedList(i);
+        }
     }
 
     public static class Button implements Parcelable {

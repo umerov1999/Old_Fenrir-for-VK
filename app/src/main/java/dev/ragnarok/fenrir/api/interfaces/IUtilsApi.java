@@ -6,6 +6,8 @@ import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiCheckedLink;
 import dev.ragnarok.fenrir.api.model.VKApiShortLink;
 import dev.ragnarok.fenrir.api.model.response.ResolveDomailResponse;
+import dev.ragnarok.fenrir.api.model.response.VkApiChatResponse;
+import dev.ragnarok.fenrir.api.model.response.VkApiLinkResponse;
 import io.reactivex.rxjava3.core.Single;
 
 public interface IUtilsApi {
@@ -24,4 +26,10 @@ public interface IUtilsApi {
 
     @CheckResult
     Single<VKApiCheckedLink> checkLink(String url);
+
+    @CheckResult
+    Single<VkApiChatResponse> joinChatByInviteLink(String link);
+
+    @CheckResult
+    Single<VkApiLinkResponse> getInviteLink(Integer peer_id, Integer reset);
 }

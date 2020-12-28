@@ -10,15 +10,16 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/valknut_icon"
+        <com.umerov.rlottie.RLottieImageView
+            android:id="@+id/pagan_symbol"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/valknut" />
+            android:src="@drawable/valknut"
+            app:loopAnimation="true" />
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/runes_icon"
+            android:id="@+id/runes_container"
             style="@style/CardViewMD2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

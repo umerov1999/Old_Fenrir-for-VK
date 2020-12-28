@@ -28,4 +28,10 @@ public class AssertUtils {
             throw new IllegalStateException();
         }
     }
+
+    public static void assertTrue(boolean value) {
+        if (!value) {
+            throw new IllegalStateException();
+        }
+    }
 }

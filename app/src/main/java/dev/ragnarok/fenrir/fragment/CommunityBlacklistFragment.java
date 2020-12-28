@@ -7,6 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,7 +49,17 @@ import dev.ragnarok.fenrir.util.ViewUtils;
 public class CommunityBlacklistFragment extends BaseMvpFragment<CommunityBlacklistPresenter, ICommunityBlacklistView>
         implements ICommunityBlacklistView, CommunityBannedAdapter.ActionListener {
 
-    private static final int REQUEST_SELECT_PROFILES = 17;
+    private final ActivityResultLauncher<Intent> requestSelectProfile = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        ArrayList<Owner> users = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
+                        AssertUtils.requireNonNull(users);
+                        postPrenseterReceive(presenter -> presenter.fireAddToBanUsersSelected(users));
+                    }
+                }
+            });
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private CommunityBannedAdapter mAdapter;
 
@@ -129,16 +143,6 @@ public class CommunityBlacklistFragment extends BaseMvpFragment<CommunityBlackli
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_SELECT_PROFILES && resultCode == Activity.RESULT_OK) {
-            ArrayList<Owner> users = data.getParcelableArrayListExtra(Extra.OWNERS);
-            AssertUtils.requireNonNull(users);
-            postPrenseterReceive(presenter -> presenter.fireAddToBanUsersSelected(users));
-        }
-    }
-
-    @Override
     public void startSelectProfilesActivity(int accountId, int groupId) {
         PeopleSearchCriteria criteria = new PeopleSearchCriteria("")
                 .setGroupId(groupId);
@@ -147,7 +151,7 @@ public class CommunityBlacklistFragment extends BaseMvpFragment<CommunityBlackli
 
         Place place = PlaceFactory.getSingleTabSearchPlace(accountId, SearchContentType.PEOPLE, criteria);
         Intent intent = SelectProfilesActivity.createIntent(requireActivity(), place, c);
-        startActivityForResult(intent, REQUEST_SELECT_PROFILES);
+        requestSelectProfile.launch(intent);
     }
 
     @Override

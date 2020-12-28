@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import dev.ragnarok.fenrir.link.types.AbsLink;
 import dev.ragnarok.fenrir.link.types.AudioPlaylistLink;
+import dev.ragnarok.fenrir.link.types.AudioTrackLink;
 import dev.ragnarok.fenrir.link.types.AudiosLink;
 import dev.ragnarok.fenrir.link.types.AwayLink;
 import dev.ragnarok.fenrir.link.types.BoardLink;
@@ -61,6 +62,7 @@ public class VkLinkParser {
     private static final Pattern PATTERN_WALL_POST_COMMENT = Pattern.compile("vk\\.com/wall(-?\\d*)_(\\d*)\\?reply=(\\d*)");
     private static final Pattern PATTERN_BOARD = Pattern.compile("vk\\.com/board(\\d+)");
     private static final Pattern PATTERN_FEED_SEARCH = Pattern.compile("vk\\.com/feed\\?q=([^&]*)&section=search");
+    private static final Pattern PATTERN_FENRIR_TRACK = Pattern.compile("vk\\.com/audio/(-?\\d*)_(\\d*)"); //+
     private static final List<IParser> PARSERS = new LinkedList<>();
 
     static {
@@ -242,6 +244,11 @@ public class VkLinkParser {
         }
 
         vkLink = parseAudios(string);
+        if (vkLink != null) {
+            return vkLink;
+        }
+
+        vkLink = parseAudioTrack(string);
         if (vkLink != null) {
             return vkLink;
         }
@@ -428,6 +435,20 @@ public class VkLinkParser {
         try {
             if (matcher.find()) {
                 return new VideoLink(parseInt(matcher.group(1)), parseInt(matcher.group(2)));
+            }
+        } catch (NumberFormatException ignored) {
+
+        }
+
+        return null;
+    }
+
+    private static AbsLink parseAudioTrack(String string) {
+        Matcher matcher = PATTERN_FENRIR_TRACK.matcher(string);
+
+        try {
+            if (matcher.find()) {
+                return new AudioTrackLink(parseInt(matcher.group(1)), parseInt(matcher.group(2)));
             }
         } catch (NumberFormatException ignored) {
 

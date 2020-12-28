@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.util
 
-import java.util.*
-
 class FindAt {
 
     constructor() {
@@ -32,7 +30,7 @@ class FindAt {
         if (Utils.isEmpty(q) && Utils.isEmpty(this.q)) {
             return true
         } else if (!Utils.isEmpty(this.q) && !Utils.isEmpty(q)) {
-            if (this.q!!.toLowerCase(Locale.ROOT) == q!!.toLowerCase(Locale.ROOT)) return true
+            if (this.q!!.equals(q!!, ignoreCase = true)) return true
         }
         this.q = q
         this.offset = 0

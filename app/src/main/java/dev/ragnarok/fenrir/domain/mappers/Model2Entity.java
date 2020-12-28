@@ -17,6 +17,7 @@ import dev.ragnarok.fenrir.db.model.entity.Entity;
 import dev.ragnarok.fenrir.db.model.entity.EventEntity;
 import dev.ragnarok.fenrir.db.model.entity.GiftItemEntity;
 import dev.ragnarok.fenrir.db.model.entity.GraffitiEntity;
+import dev.ragnarok.fenrir.db.model.entity.KeyboardEntity;
 import dev.ragnarok.fenrir.db.model.entity.LinkEntity;
 import dev.ragnarok.fenrir.db.model.entity.MarketAlbumEntity;
 import dev.ragnarok.fenrir.db.model.entity.MarketEntity;
@@ -44,6 +45,7 @@ import dev.ragnarok.fenrir.model.Document;
 import dev.ragnarok.fenrir.model.Event;
 import dev.ragnarok.fenrir.model.GiftItem;
 import dev.ragnarok.fenrir.model.Graffiti;
+import dev.ragnarok.fenrir.model.Keyboard;
 import dev.ragnarok.fenrir.model.Link;
 import dev.ragnarok.fenrir.model.Market;
 import dev.ragnarok.fenrir.model.MarketAlbum;
@@ -62,6 +64,7 @@ import dev.ragnarok.fenrir.model.Video;
 import dev.ragnarok.fenrir.model.VoiceMessage;
 import dev.ragnarok.fenrir.model.WallReply;
 import dev.ragnarok.fenrir.model.WikiPage;
+import dev.ragnarok.fenrir.util.Utils;
 
 import static dev.ragnarok.fenrir.domain.mappers.MapUtil.mapAll;
 import static dev.ragnarok.fenrir.domain.mappers.MapUtil.mapAndAdd;
@@ -70,6 +73,23 @@ import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 
 public class Model2Entity {
+
+    public static KeyboardEntity buildKeyboardEntity(Keyboard keyboard) {
+        if (keyboard == null || Utils.isEmpty(keyboard.getButtons())) {
+            return null;
+        }
+        List<List<KeyboardEntity.ButtonEntity>> buttons = new ArrayList<>(keyboard.getButtons().size());
+        for (List<Keyboard.Button> i : keyboard.getButtons()) {
+            List<KeyboardEntity.ButtonEntity> vt = new ArrayList<>(i.size());
+            for (Keyboard.Button s : i) {
+                vt.add(new KeyboardEntity.ButtonEntity().setType(s.getType()).setColor(s.getColor()).setLabel(s.getLabel()).setLink(s.getLink()).setPayload(s.getPayload()));
+            }
+            buttons.add(vt);
+        }
+        return new KeyboardEntity().setAuthor_id(
+                keyboard.getAuthor_id()).setInline(keyboard.getInline())
+                .setOne_time(keyboard.getOne_time()).setButtons(buttons);
+    }
 
     public static MessageEntity buildMessageEntity(Message message) {
         return new MessageEntity(message.getId(), message.getPeerId(), message.getSenderId())
@@ -96,7 +116,8 @@ public class Model2Entity {
                 .setAttachments(nonNull(message.getAttachments()) ? buildEntityAttachments(message.getAttachments()) : null)
                 .setForwardMessages(mapAll(message.getFwd(), Model2Entity::buildMessageEntity, false))
                 .setUpdateTime(message.getUpdateTime())
-                .setPayload(message.getPayload());
+                .setPayload(message.getPayload())
+                .setKeyboard(buildKeyboardEntity(message.getKeyboard()));
     }
 
     public static List<Entity> buildEntityAttachments(Attachments attachments) {

@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.fragment;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -60,6 +61,14 @@ public class DocPreviewFragment extends BaseFragment implements View.OnClickList
     private int ownerId;
     private int documentId;
     private Document document;
+    private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+            new AppPerms.onPermissionsGranted() {
+                @Override
+                public void granted() {
+                    DownloadWorkUtils.doDownloadDoc(requireActivity(), document);
+                }
+            });
     private TouchImageView preview;
     private ImageView ivDocIcon;
     private TextView tvTitle;
@@ -350,7 +359,7 @@ public class DocPreviewFragment extends BaseFragment implements View.OnClickList
 
     private void download() {
         if (!AppPerms.hasWriteStoragePermision(requireActivity())) {
-            AppPerms.requestWriteStoragePermission(requireActivity());
+            requestWritePermission.launch();
             return;
         }
 

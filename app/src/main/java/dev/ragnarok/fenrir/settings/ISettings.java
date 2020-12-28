@@ -13,6 +13,7 @@ import java.util.Set;
 
 import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.crypt.KeyLocationPolicy;
+import dev.ragnarok.fenrir.model.Lang;
 import dev.ragnarok.fenrir.model.PhotoSize;
 import dev.ragnarok.fenrir.model.SwitchableCategory;
 import dev.ragnarok.fenrir.model.drawer.RecentChat;
@@ -171,6 +172,9 @@ public interface ISettings {
         boolean isRunes_show();
 
         boolean isShow_pagan_symbol();
+
+        @Lang
+        int getLanguage();
 
         void setSymbolSelectShow(boolean show);
     }

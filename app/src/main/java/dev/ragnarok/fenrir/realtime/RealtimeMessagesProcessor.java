@@ -116,8 +116,8 @@ class RealtimeMessagesProcessor implements IRealtimeMessagesProcessor {
             }
 
             if (updates.hasNonFullMessages()) {
-                for (Integer id : updates.getNonFull()) {
-                    result.add(id);
+                for (AddMessageUpdate update : updates.getNonFull()) {
+                    result.add(update.getMessageId()).setBackup(Dto2Model.transform(entry.getAccountId(), update));
                 }
             }
             return result;

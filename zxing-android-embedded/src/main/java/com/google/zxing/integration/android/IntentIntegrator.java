@@ -16,12 +16,13 @@
 
 package com.google.zxing.integration.android;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
+
+import androidx.activity.result.ActivityResult;
+import androidx.annotation.NonNull;
 
 import com.google.zxing.client.android.Intents;
 import com.journeyapps.barcodescanner.CaptureActivity;
@@ -43,7 +44,6 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class IntentIntegrator {
 
-    public static final int REQUEST_CODE = 0x0000c0de; // Only use bottom 16 bits
     // Product Codes
     public static final String UPC_A = "UPC_A";
 
@@ -69,73 +69,25 @@ public class IntentIntegrator {
                     ITF, RSS_14, RSS_EXPANDED);
     public static final Collection<String> ALL_CODE_TYPES = null;
     private static final String TAG = IntentIntegrator.class.getSimpleName();
-    private final Activity activity;
     private final Map<String, Object> moreExtras = new HashMap<>(3);
-    private android.app.Fragment fragment;
-    private androidx.fragment.app.Fragment supportFragment;
+    private final Context context;
     private Collection<String> desiredBarcodeFormats;
-
     private Class<?> captureActivity;
 
-    private int requestCode = REQUEST_CODE;
-
-    public IntentIntegrator(Activity activity) {
-        this.activity = activity;
-    }
-
-    /**
-     * @param fragment {@link Fragment} invoking the integration.
-     *                 {@link #startActivityForResult(Intent, int)} will be called on the {@link Fragment} instead
-     *                 of an {@link Activity}
-     */
-    public static IntentIntegrator forSupportFragment(androidx.fragment.app.Fragment fragment) {
-        IntentIntegrator integrator = new IntentIntegrator(fragment.getActivity());
-        integrator.supportFragment = fragment;
-        return integrator;
-    }
-
-    /**
-     * @param fragment {@link Fragment} invoking the integration.
-     *                 {@link #startActivityForResult(Intent, int)} will be called on the {@link Fragment} instead
-     *                 of an {@link Activity}
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static IntentIntegrator forFragment(Fragment fragment) {
-        IntentIntegrator integrator = new IntentIntegrator(fragment.getActivity());
-        integrator.fragment = fragment;
-        return integrator;
-    }
-
-    /**
-     * <p>Call this from your {@link Activity}'s
-     * method.</p>
-     * <p>
-     * This checks that the requestCode is equal to the default REQUEST_CODE.
-     *
-     * @param requestCode request code from {@code onActivityResult()}
-     * @param resultCode  result code from {@code onActivityResult()}
-     * @param intent      {@link Intent} from {@code onActivityResult()}
-     * @return null if the event handled here was not related to this class, or
-     * else an {@link IntentResult} containing the result of the scan. If the user cancelled scanning,
-     * the fields will be null.
-     */
-    public static IntentResult parseActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == REQUEST_CODE) {
-            return parseActivityResult(resultCode, intent);
-        }
-        return null;
+    public IntentIntegrator(Context context) {
+        this.context = context;
     }
 
     /**
      * Parse activity result, without checking the request code.
      *
-     * @param resultCode result code from {@code onActivityResult()}
-     * @param intent     {@link Intent} from {@code onActivityResult()}
+     * @param result result from {@code onActivityResult()}
      * @return an {@link IntentResult} containing the result of the scan. If the user cancelled scanning,
      * the fields will be null.
      */
-    public static IntentResult parseActivityResult(int resultCode, Intent intent) {
-        if (resultCode == Activity.RESULT_OK) {
+    public static IntentResult parseActivityResult(@NonNull ActivityResult result) {
+        Intent intent = result.getData();
+        if (result.getResultCode() == Activity.RESULT_OK) {
             String contents = intent.getStringExtra(Intents.Scan.RESULT);
             String formatName = intent.getStringExtra(Intents.Scan.RESULT_FORMAT);
             byte[] rawBytes = intent.getByteArrayExtra(Intents.Scan.RESULT_BYTES);
@@ -177,21 +129,6 @@ public class IntentIntegrator {
      */
     public IntentIntegrator setCaptureActivity(Class<?> captureActivity) {
         this.captureActivity = captureActivity;
-        return this;
-    }
-
-    /**
-     * Change the request code that is used for the Intent. If it is changed, it is the caller's
-     * responsibility to check the request code from the result intent.
-     *
-     * @param requestCode the new request code
-     * @return this
-     */
-    public IntentIntegrator setRequestCode(int requestCode) {
-        if (requestCode <= 0 || requestCode > 0x0000ffff) {
-            throw new IllegalArgumentException("requestCode out of range");
-        }
-        this.requestCode = requestCode;
         return this;
     }
 
@@ -296,13 +233,6 @@ public class IntentIntegrator {
 
     /**
      * Initiates a scan for all known barcode types with the default camera.
-     */
-    public final void initiateScan() {
-        startActivityForResult(createScanIntent(), requestCode);
-    }
-
-    /**
-     * Initiates a scan for all known barcode types with the default camera.
      * And starts a timer to finish on timeout
      *
      * @return Activity.RESULT_CANCELED and true on parameter TIMEOUT.
@@ -318,7 +248,7 @@ public class IntentIntegrator {
      * @return the intent
      */
     public Intent createScanIntent() {
-        Intent intentScan = new Intent(activity, getCaptureActivity());
+        Intent intentScan = new Intent(context, getCaptureActivity());
         intentScan.setAction(Intents.Scan.ACTION);
 
         // check which types of codes to scan for
@@ -347,38 +277,9 @@ public class IntentIntegrator {
      *
      * @param desiredBarcodeFormats names of {@code BarcodeFormat}s to scan for
      */
-    public final void initiateScan(Collection<String> desiredBarcodeFormats) {
+    public Intent createScanIntent(Collection<String> desiredBarcodeFormats) {
         setDesiredBarcodeFormats(desiredBarcodeFormats);
-        initiateScan();
-    }
-
-    /**
-     * Start an activity. This method is defined to allow different methods of activity starting for
-     * newer versions of Android and for compatibility library.
-     *
-     * @param intent Intent to start.
-     * @param code   Request code for the activity
-     * @see android.app.Activity#startActivityForResult(Intent, int)
-     * @see android.app.Fragment#startActivityForResult(Intent, int)
-     */
-    protected void startActivityForResult(Intent intent, int code) {
-        if (fragment != null) {
-            fragment.startActivityForResult(intent, code);
-        } else if (supportFragment != null) {
-            supportFragment.startActivityForResult(intent, code);
-        } else {
-            activity.startActivityForResult(intent, code);
-        }
-    }
-
-    protected void startActivity(Intent intent) {
-        if (fragment != null) {
-            fragment.startActivity(intent);
-        } else if (supportFragment != null) {
-            supportFragment.startActivity(intent);
-        } else {
-            activity.startActivity(intent);
-        }
+        return createScanIntent();
     }
 
     private void attachMoreExtras(Intent intent) {

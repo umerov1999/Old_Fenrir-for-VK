@@ -16,6 +16,8 @@ import java.util.Set;
 import dev.ragnarok.fenrir.api.interfaces.INetworker;
 import dev.ragnarok.fenrir.api.model.VKApiCheckedLink;
 import dev.ragnarok.fenrir.api.model.VkApiFriendList;
+import dev.ragnarok.fenrir.api.model.response.VkApiChatResponse;
+import dev.ragnarok.fenrir.api.model.response.VkApiLinkResponse;
 import dev.ragnarok.fenrir.db.interfaces.IStorages;
 import dev.ragnarok.fenrir.db.model.entity.FriendListEntity;
 import dev.ragnarok.fenrir.domain.IOwnersRepository;
@@ -232,6 +234,22 @@ public class UtilsInteractor implements IUtilsInteractor {
         return networker.vkDefault(accountId)
                 .utils()
                 .checkLink(url)
+                .map(out -> out);
+    }
+
+    @Override
+    public Single<VkApiChatResponse> joinChatByInviteLink(int accountId, String link) {
+        return networker.vkDefault(accountId)
+                .utils()
+                .joinChatByInviteLink(link)
+                .map(out -> out);
+    }
+
+    @Override
+    public Single<VkApiLinkResponse> getInviteLink(int accountId, Integer peer_id, Integer reset) {
+        return networker.vkDefault(accountId)
+                .utils()
+                .getInviteLink(peer_id, reset)
                 .map(out -> out);
     }
 }

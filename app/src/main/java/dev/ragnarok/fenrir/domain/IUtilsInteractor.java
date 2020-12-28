@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import dev.ragnarok.fenrir.api.model.VKApiCheckedLink;
+import dev.ragnarok.fenrir.api.model.response.VkApiChatResponse;
+import dev.ragnarok.fenrir.api.model.response.VkApiLinkResponse;
 import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.Privacy;
 import dev.ragnarok.fenrir.model.ShortLink;
@@ -25,4 +27,8 @@ public interface IUtilsInteractor {
     Single<Integer> deleteFromLastShortened(int accountId, String key);
 
     Single<VKApiCheckedLink> checkLink(int accountId, String url);
+
+    Single<VkApiChatResponse> joinChatByInviteLink(int accountId, String link);
+
+    Single<VkApiLinkResponse> getInviteLink(int accountId, Integer peer_id, Integer reset);
 }

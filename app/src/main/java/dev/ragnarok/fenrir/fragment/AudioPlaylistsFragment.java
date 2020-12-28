@@ -8,6 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -54,7 +58,17 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
 
     public static final String EXTRA_IN_TABS_CONTAINER = "in_tabs_container";
     public static final String ACTION_SELECT = "AudioPlaylistsFragment.ACTION_SELECT";
-    private static final int REQUEST_AUDIO_SELECT = 1987;
+    private final ActivityResultLauncher<Intent> requestAudioSelect = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        ArrayList<Audio> audios = result.getData().getParcelableArrayListExtra("attachments");
+                        AssertUtils.requireNonNull(audios);
+                        getPresenter().fireAudiosSelected(audios);
+                    }
+                }
+            });
     private TextView mEmpty;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AudioPlaylistsAdapter mAdapter;
@@ -246,16 +260,6 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_AUDIO_SELECT && resultCode == Activity.RESULT_OK) {
-            ArrayList<Audio> audios = data.getParcelableArrayListExtra("attachments");
-            AssertUtils.requireNonNull(audios);
-            getPresenter().fireAudiosSelected(audios);
-        }
-    }
-
-    @Override
     public void onOpenClick(int index, AudioPlaylist album) {
         PlaceFactory.getAudiosInAlbumPlace(getPresenter().getAccountId(), album.getOwnerId(), album.getId(), album.getAccess_key()).tryOpenWith(requireActivity());
     }
@@ -277,7 +281,7 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
 
     @Override
     public void doAddAudios(int accountId) {
-        startActivityForResult(AudioSelectActivity.createIntent(requireActivity(), accountId), REQUEST_AUDIO_SELECT);
+        requestAudioSelect.launch(AudioSelectActivity.createIntent(requireActivity(), accountId));
     }
 
     @Override

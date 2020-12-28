@@ -16,6 +16,7 @@ import java.util.List;
 
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.R;
+import dev.ragnarok.fenrir.crypt.KeyLocationPolicy;
 import dev.ragnarok.fenrir.domain.IAccountsInteractor;
 import dev.ragnarok.fenrir.domain.IMessagesRepository;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
@@ -25,11 +26,15 @@ import dev.ragnarok.fenrir.link.LinkHelper;
 import dev.ragnarok.fenrir.longpoll.ILongpollManager;
 import dev.ragnarok.fenrir.longpoll.LongpollInstance;
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.Option;
+import dev.ragnarok.fenrir.model.AbsModel;
 import dev.ragnarok.fenrir.model.Dialog;
+import dev.ragnarok.fenrir.model.FwdMessages;
 import dev.ragnarok.fenrir.model.Message;
+import dev.ragnarok.fenrir.model.ModelsBundle;
 import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.Peer;
 import dev.ragnarok.fenrir.model.PeerUpdate;
+import dev.ragnarok.fenrir.model.SaveMessageBuilder;
 import dev.ragnarok.fenrir.model.User;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IDialogsView;
@@ -68,14 +73,16 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
     private final ILongpollManager longpollManager;
     private final CompositeDisposable netDisposable = new CompositeDisposable();
     private final CompositeDisposable cacheLoadingDisposable = new CompositeDisposable();
+    private final ModelsBundle models;
     private int dialogsOwnerId;
     private boolean endOfContent;
     private boolean netLoadingNow;
     private boolean cacheNowLoading;
 
-    public DialogsPresenter(int accountId, int initialDialogsOwnerId, @Nullable Bundle savedInstanceState) {
+    public DialogsPresenter(int accountId, int initialDialogsOwnerId, @Nullable ModelsBundle models, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
         setSupportAccountHotSwap(true);
+        this.models = models;
 
         dialogs = new ArrayList<>();
 
@@ -287,6 +294,36 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
                 }));
     }
 
+    public void fireRepost(@NonNull Dialog dialog) {
+        if (models == null) {
+            return;
+        }
+        ArrayList<Message> fwds = new ArrayList<Message>();
+        SaveMessageBuilder builder = new SaveMessageBuilder(getAccountId(), dialog.getPeerId());
+        for (AbsModel model : models) {
+            if (model instanceof FwdMessages) {
+                fwds.addAll(((FwdMessages) model).fwds);
+            } else {
+                builder.attach(model);
+            }
+        }
+        builder.setForwardMessages(fwds);
+        boolean encryptionEnabled = Settings.get().security().isMessageEncryptionEnabled(getAccountId(), dialog.getPeerId());
+
+        @KeyLocationPolicy
+        int keyLocationPolicy = KeyLocationPolicy.PERSIST;
+        if (encryptionEnabled) {
+            keyLocationPolicy = Settings.get().security().getEncryptionLocationPolicy(getAccountId(), dialog.getPeerId());
+        }
+        builder.setRequireEncryption(encryptionEnabled).setKeyLocationPolicy(keyLocationPolicy);
+        appendDisposable(messagesInteractor.put(builder)
+                .compose(RxUtils.applySingleIOToMainSchedulers())
+                .doOnSuccess(v -> {
+                    messagesInteractor.runSendingQueue();
+                })
+                .subscribe(t -> callView(v -> v.showSnackbar(R.string.success, false)), this::onDialogsGetError));
+    }
+
     private void onCachedDataReceived(List<Dialog> data) {
         cacheNowLoading = false;
 
@@ -295,6 +332,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
 
         safeNotifyDataSetChanged();
         resolveRefreshingView();
+        callView(v -> v.notifyHasAttachments(models != null));
 
         if (Settings.get().other().isNot_update_dialogs() || Utils.isHiddenCurrent()) {
             if (Utils.needReloadStickers(getAccountId())) {

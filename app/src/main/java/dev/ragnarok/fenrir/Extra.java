@@ -66,7 +66,6 @@ public class Extra {
     public static final String SHUFFLE_MODE = "shuffle_mode";
     public static final String USERS = "users";
     public static final String USER = "user";
-    public static final String Q = "q";
     public static final String CRITERIA = "criteria";
     public static final String VIDEOS = "videos";
     public static final String DOCS = "docs";

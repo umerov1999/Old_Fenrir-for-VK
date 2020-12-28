@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.fragment;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,7 @@ import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.player.util.MusicUtils;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.ViewUtils;
 
@@ -48,6 +50,14 @@ public class AudiosInCatalogFragment extends BaseMvpFragment<AudiosInCatalogPres
         implements IAudiosInCatalogView {
 
     public static final String EXTRA_IN_TABS_CONTAINER = "in_tabs_container";
+    private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+            new AppPerms.onPermissionsGranted() {
+                @Override
+                public void granted() {
+                    CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text);
+                }
+            });
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AudioRecyclerAdapter mAudioRecyclerAdapter;
     private String Header;
@@ -142,6 +152,11 @@ public class AudiosInCatalogFragment extends BaseMvpFragment<AudiosInCatalogPres
             @Override
             public void onUrlPhotoOpen(@NonNull String url, @NonNull String prefix, @NonNull String photo_prefix) {
                 PlaceFactory.getSingleURLPhotoPlace(url, prefix, photo_prefix).tryOpenWith(requireActivity());
+            }
+
+            @Override
+            public void onRequestWritePermissions() {
+                requestWritePermission.launch();
             }
         });
         recyclerView.setAdapter(mAudioRecyclerAdapter);

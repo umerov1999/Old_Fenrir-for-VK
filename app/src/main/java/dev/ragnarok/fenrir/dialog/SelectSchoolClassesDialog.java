@@ -1,19 +1,15 @@
 package dev.ragnarok.fenrir.dialog;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.app.Dialog;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +25,7 @@ import dev.ragnarok.fenrir.util.RxUtils;
 
 public class SelectSchoolClassesDialog extends AccountDependencyDialogFragment implements SchoolClassesAdapter.Listener {
 
+    public static final String REQUEST_CODE_SCHOOL_CLASSES = "request_school_classes";
     private int mAccountId;
     private int countryId;
     private IDatabaseInteractor mDatabaseInteractor;
@@ -54,20 +51,12 @@ public class SelectSchoolClassesDialog extends AccountDependencyDialogFragment i
         mDatabaseInteractor = InteractorFactory.createDatabaseInteractor();
     }
 
+    @NonNull
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-
-        View root = inflater.inflate(R.layout.dialog_simple_recycler_view, container, false);
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        View root = View.inflate(requireActivity(), R.layout.dialog_simple_recycler_view, null);
         mRecyclerView = root.findViewById(R.id.list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false));
-
-        return root;
-    }
-
-    @Override
-    public void onViewCreated(@NotNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
 
         boolean firstRun = false;
         if (mData == null) {
@@ -82,6 +71,12 @@ public class SelectSchoolClassesDialog extends AccountDependencyDialogFragment i
         if (firstRun) {
             request();
         }
+
+        return new MaterialAlertDialogBuilder(requireActivity())
+                .setTitle(R.string.school_class)
+                .setView(root)
+                .setNegativeButton(R.string.button_cancel, null)
+                .create();
     }
 
     private void request() {
@@ -98,16 +93,16 @@ public class SelectSchoolClassesDialog extends AccountDependencyDialogFragment i
 
     @Override
     public void onClick(SchoolClazz schoolClazz) {
-        Intent intent = new Intent();
-        intent.putExtra(Extra.SCHOOL_CLASS, schoolClazz);
-        intent.putExtra(Extra.ID, schoolClazz.getId());
-        intent.putExtra(Extra.TITLE, schoolClazz.getTitle());
+        Bundle intent = new Bundle();
+        intent.putParcelable(Extra.SCHOOL_CLASS, schoolClazz);
+        intent.putInt(Extra.ID, schoolClazz.getId());
+        intent.putString(Extra.TITLE, schoolClazz.getTitle());
 
         if (getArguments() != null) {
-            intent.putExtras(getArguments());
+            intent.putAll(getArguments());
         }
 
-        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
+        getParentFragmentManager().setFragmentResult(REQUEST_CODE_SCHOOL_CLASSES, intent);
         dismiss();
     }
 }

@@ -1,9 +1,7 @@
 package dev.ragnarok.fenrir.fragment.search;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputType;
@@ -15,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -49,13 +48,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class FilterEditFragment extends BottomSheetDialogFragment implements SearchOptionsAdapter.OptionClickListener {
 
-    private static final int REQUEST_CODE_COUTRY = 126;
-    private static final int REQUEST_CODE_CITY = 127;
-    private static final int REQUEST_CODE_UNIVERSITY = 128;
-    private static final int REQUEST_CODE_FACULTY = 129;
-    private static final int REQUEST_CODE_CHAIR = 130;
-    private static final int REQUEST_CODE_SCHOOL = 131;
-    private static final int REQUEST_CODE_SCHOOL_CLASS = 132;
+    public static final String REQUEST_FILTER_EDIT = "request_filter_edit";
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private ArrayList<BaseOption> mData;
     private SearchOptionsAdapter mAdapter;
@@ -69,6 +62,14 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         FilterEditFragment fragment = new FilterEditFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    private void onDialogResult(@NotNull Bundle result) {
+        int key = result.getInt(Extra.KEY);
+        Integer id = result.containsKey(Extra.ID) ? result.getInt(Extra.ID) : null;
+        String title = result.containsKey(Extra.TITLE) ? result.getString(Extra.TITLE) : null;
+
+        mergeDatabaseOptionValue(key, id == null ? null : new DatabaseOption.Entry(id, title));
     }
 
     @Override
@@ -118,10 +119,9 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
     }
 
     private void onSaveClick() {
-        Intent data = new Intent();
-        data.putParcelableArrayListExtra(Extra.LIST, mData);
-
-        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, data);
+        Bundle data = new Bundle();
+        data.putParcelableArrayList(Extra.LIST, mData);
+        getParentFragmentManager().setFragmentResult(REQUEST_FILTER_EDIT, data);
         dismiss();
     }
 
@@ -139,29 +139,6 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
                 })
                 .setPositiveButton(R.string.button_cancel, null)
                 .show();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-            case REQUEST_CODE_COUTRY:
-            case REQUEST_CODE_CITY:
-            case REQUEST_CODE_UNIVERSITY:
-            case REQUEST_CODE_FACULTY:
-            case REQUEST_CODE_CHAIR:
-            case REQUEST_CODE_SCHOOL:
-            case REQUEST_CODE_SCHOOL_CLASS:
-                Bundle extras = data.getExtras();
-
-                int key = extras.getInt(Extra.KEY);
-                Integer id = extras.containsKey(Extra.ID) ? extras.getInt(Extra.ID) : null;
-                String title = extras.containsKey(Extra.TITLE) ? extras.getString(Extra.TITLE) : null;
-
-                mergeDatabaseOptionValue(key, id == null ? null : new DatabaseOption.Entry(id, title));
-                break;
-        }
     }
 
     private void mergeDatabaseOptionValue(int key, DatabaseOption.Entry value) {
@@ -201,12 +178,17 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         switch (databaseOption.type) {
             case DatabaseOption.TYPE_COUNTRY:
                 SelectCountryDialog selectCountryDialog = new SelectCountryDialog();
-                selectCountryDialog.setTargetFragment(this, REQUEST_CODE_COUTRY);
 
                 Bundle args = new Bundle();
                 args.putInt(Extra.KEY, databaseOption.key);
                 args.putInt(Extra.ACCOUNT_ID, mAccountId);
                 selectCountryDialog.setArguments(args);
+                getParentFragmentManager().setFragmentResultListener(SelectCountryDialog.REQUEST_CODE_COUNTRY, selectCountryDialog, new FragmentResultListener() {
+                    @Override
+                    public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
+                        onDialogResult(result);
+                    }
+                });
                 selectCountryDialog.show(getParentFragmentManager(), "countries");
                 break;
 
@@ -333,7 +315,12 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         args.putInt(Extra.KEY, databaseOption.key);
 
         SelectCityDialog selectCityDialog = SelectCityDialog.newInstance(mAccountId, countryId, args);
-        selectCityDialog.setTargetFragment(this, REQUEST_CODE_CITY);
+        getParentFragmentManager().setFragmentResultListener(SelectCityDialog.REQUEST_CODE_CITY, selectCityDialog, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
+                onDialogResult(result);
+            }
+        });
         selectCityDialog.show(getParentFragmentManager(), "cities");
     }
 
@@ -342,7 +329,12 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         args.putInt(Extra.KEY, databaseOption.key);
 
         SelectUniversityDialog dialog = SelectUniversityDialog.newInstance(mAccountId, countryId, args);
-        dialog.setTargetFragment(this, REQUEST_CODE_UNIVERSITY);
+        getParentFragmentManager().setFragmentResultListener(SelectUniversityDialog.REQUEST_CODE_UNIVERSITY, dialog, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
+                onDialogResult(result);
+            }
+        });
         dialog.show(getParentFragmentManager(), "universities");
     }
 
@@ -351,7 +343,12 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         args.putInt(Extra.KEY, databaseOption.key);
 
         SelectSchoolsDialog dialog = SelectSchoolsDialog.newInstance(mAccountId, cityId, args);
-        dialog.setTargetFragment(this, REQUEST_CODE_SCHOOL);
+        getParentFragmentManager().setFragmentResultListener(SelectSchoolsDialog.REQUEST_CODE_SCHOOL, dialog, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
+                onDialogResult(result);
+            }
+        });
         dialog.show(getParentFragmentManager(), "schools");
     }
 
@@ -360,7 +357,12 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         args.putInt(Extra.KEY, databaseOption.key);
 
         SelectFacultyDialog dialog = SelectFacultyDialog.newInstance(mAccountId, universityId, args);
-        dialog.setTargetFragment(this, REQUEST_CODE_FACULTY);
+        getParentFragmentManager().setFragmentResultListener(SelectFacultyDialog.REQUEST_CODE_FACULTY, dialog, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
+                onDialogResult(result);
+            }
+        });
         dialog.show(getParentFragmentManager(), "faculties");
     }
 
@@ -369,7 +371,12 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         args.putInt(Extra.KEY, databaseOption.key);
 
         SelectChairsDialog dialog = SelectChairsDialog.newInstance(mAccountId, facultyId, args);
-        dialog.setTargetFragment(this, REQUEST_CODE_CHAIR);
+        getParentFragmentManager().setFragmentResultListener(SelectChairsDialog.REQUEST_CODE_CHAIRS, dialog, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
+                onDialogResult(result);
+            }
+        });
         dialog.show(getParentFragmentManager(), "chairs");
     }
 
@@ -378,7 +385,12 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         args.putInt(Extra.KEY, databaseOption.key);
 
         SelectSchoolClassesDialog dialog = SelectSchoolClassesDialog.newInstance(mAccountId, countryId, args);
-        dialog.setTargetFragment(this, REQUEST_CODE_SCHOOL_CLASS);
+        getParentFragmentManager().setFragmentResultListener(SelectSchoolClassesDialog.REQUEST_CODE_SCHOOL_CLASSES, dialog, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
+                onDialogResult(result);
+            }
+        });
         dialog.show(getParentFragmentManager(), "school-classes");
     }
 

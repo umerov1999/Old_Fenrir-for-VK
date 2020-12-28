@@ -5,6 +5,7 @@ import java.util.Map;
 
 import dev.ragnarok.fenrir.db.model.entity.Entity;
 import dev.ragnarok.fenrir.db.model.entity.MessageEntity;
+import dev.ragnarok.fenrir.model.Keyboard;
 
 
 public class MessageEditEntity {
@@ -20,6 +21,7 @@ public class MessageEditEntity {
     private List<Entity> attachments;
     private boolean read;
     private String payload;
+    private Keyboard keyboard;
 
     private String body;
 
@@ -36,6 +38,15 @@ public class MessageEditEntity {
 
     public MessageEditEntity setBody(String body) {
         this.body = body;
+        return this;
+    }
+
+    public Keyboard getKeyboard() {
+        return keyboard;
+    }
+
+    public MessageEditEntity setKeyboard(Keyboard keyboard) {
+        this.keyboard = keyboard;
         return this;
     }
 

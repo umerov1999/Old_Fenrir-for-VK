@@ -291,7 +291,9 @@ public class AudioContainer extends LinearLayout {
 
                 holder.Track.setOnLongClickListener(v -> {
                     if (!AppPerms.hasReadWriteStoragePermision(mContext)) {
-                        AppPerms.requestReadWriteStoragePermission((Activity) mContext);
+                        if (mAttachmentsActionCallback != null) {
+                            mAttachmentsActionCallback.onRequestWritePermissions();
+                        }
                         return false;
                     }
                     holder.saved.setVisibility(View.VISIBLE);
@@ -380,7 +382,9 @@ public class AudioContainer extends LinearLayout {
                                 addTrack(Settings.get().accounts().getCurrent(), audio);
                             case AudioItem.save_item_audio:
                                 if (!AppPerms.hasReadWriteStoragePermision(mContext)) {
-                                    AppPerms.requestReadWriteStoragePermission((Activity) mContext);
+                                    if (mAttachmentsActionCallback != null) {
+                                        mAttachmentsActionCallback.onRequestWritePermissions();
+                                    }
                                     break;
                                 }
                                 holder.saved.setVisibility(View.VISIBLE);

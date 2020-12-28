@@ -185,7 +185,7 @@ public class UploadManagerImpl implements IUploadManager {
 
                 builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID);
             } else {
-                builder = new NotificationCompat.Builder(context).setPriority(Notification.PRIORITY_LOW);
+                builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID).setPriority(Notification.PRIORITY_LOW);
             }
 
             builder.setContentTitle(context.getString(R.string.files_uploading_notification_title))

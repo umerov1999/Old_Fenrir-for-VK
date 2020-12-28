@@ -1,6 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -48,7 +47,6 @@ import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.IWallView;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Analytics;
-import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.RxUtils;
@@ -468,26 +466,21 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
         dlgAlert.setCancelable(true);
         dlgAlert.setNegativeButton(R.string.button_cancel, null);
         dlgAlert.setPositiveButton(R.string.save, (dialogInterface, i) -> {
-            if (!AppPerms.hasReadWriteStoragePermision(context)) {
-                AppPerms.requestReadWriteStoragePermission((Activity) context);
-            } else {
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-                OutputStream fOutputStream;
-                File file = new File(path, "qr_fenrir_" + (ownerId < 0 ? "club" : "id") + Math.abs(ownerId) + ".png");
-                try {
-                    fOutputStream = new FileOutputStream(file);
+            String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+            OutputStream fOutputStream;
+            File file = new File(path, "qr_fenrir_" + (ownerId < 0 ? "club" : "id") + Math.abs(ownerId) + ".png");
+            try {
+                fOutputStream = new FileOutputStream(file);
+                assert qr != null;
+                qr.compress(Bitmap.CompressFormat.PNG, 100, fOutputStream);
 
-                    assert qr != null;
-                    qr.compress(Bitmap.CompressFormat.PNG, 100, fOutputStream);
-
-                    fOutputStream.flush();
-                    fOutputStream.close();
-                    context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
-                    CustomToast.CreateCustomToast(context).showToast(R.string.success);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    CustomToast.CreateCustomToast(context).showToastError("Save Failed");
-                }
+                fOutputStream.flush();
+                fOutputStream.close();
+                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+                CustomToast.CreateCustomToast(context).showToast(R.string.success);
+            } catch (IOException e) {
+                e.printStackTrace();
+                CustomToast.CreateCustomToast(context).showToastError("Save Failed");
             }
         });
         dlgAlert.setIcon(R.drawable.qr_code);

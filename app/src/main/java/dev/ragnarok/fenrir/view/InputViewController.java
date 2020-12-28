@@ -14,13 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.Collections;
 
 import dev.ragnarok.fenrir.R;
-import dev.ragnarok.fenrir.adapter.KeyboardButtonAdapter;
 import dev.ragnarok.fenrir.listener.TextWatcherAdapter;
 import dev.ragnarok.fenrir.model.Keyboard;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
@@ -28,6 +23,7 @@ import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
+import dev.ragnarok.fenrir.view.emoji.BotKeyboardView;
 import dev.ragnarok.fenrir.view.emoji.EmojiconEditText;
 import dev.ragnarok.fenrir.view.emoji.EmojiconsPopup;
 
@@ -48,12 +44,11 @@ public class InputViewController {
     private final ImageView mButtonSend;
     private final ImageView mRecordResumePause;
     private final TextWatcherAdapter mTextWatcher;
-    private final KeyboardButtonAdapter mKeyboardAdapter;
-    private final RecyclerView botKeyboard;
     private final int mIconColorActive;
     private final int mIconColorInactive;
     private final TextView mRecordingDuration;
     private final ImageView currentKeyboardShow;
+    private BotKeyboardView botKeyboard;
     private EmojiconsPopup emojiPopup;
     private boolean emojiOnScreen;
     private boolean emojiNeed;
@@ -139,21 +134,18 @@ public class InputViewController {
                 }
             }
         });
-        botKeyboard.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false));
-        mKeyboardAdapter = new KeyboardButtonAdapter(activity, Collections.emptyList());
-        botKeyboard.setAdapter(mKeyboardAdapter);
         resolveModeViews();
     }
 
-    public void setKeyboardBotClickListener(KeyboardButtonAdapter.ClickListener listener) {
-        mKeyboardAdapter.setClickListener(listener);
+    public void setKeyboardBotClickListener(BotKeyboardView.BotKeyboardViewDelegate listener) {
+        botKeyboard.setDelegate(listener);
     }
 
     public void setKeyboardBotLongClickListener(View.OnLongClickListener listener) {
         currentKeyboardShow.setOnLongClickListener(listener);
     }
 
-    private void closeBotKeyboard() {
+    public void closeBotKeyboard() {
         if (!keyboardOnScreen) {
             return;
         }
@@ -162,15 +154,16 @@ public class InputViewController {
         currentKeyboardShow.clearColorFilter();
     }
 
-    public void updateBotKeyboard(Keyboard currentKeyboard, boolean show) {
+    public boolean updateBotKeyboard(Keyboard currentKeyboard, boolean show) {
+        boolean ret = false;
         if (Objects.isNull(currentKeyboard) || currentKeyboard.getButtons().size() <= 0) {
             botKeyboard.setVisibility(View.GONE);
-            mKeyboardAdapter.setItems(Collections.emptyList());
+            ret = botKeyboard.setButtons(null);
             keyboardOnScreen = false;
             currentKeyboardShow.setVisibility(View.GONE);
         } else {
             botKeyboard.setVisibility(show ? (Settings.get().main().isShow_bot_keyboard() ? View.VISIBLE : View.GONE) : View.GONE);
-            mKeyboardAdapter.setItems(currentKeyboard.getButtons());
+            ret = botKeyboard.setButtons(currentKeyboard.getButtons());
             keyboardOnScreen = show;
             currentKeyboardShow.setVisibility(Settings.get().main().isShow_bot_keyboard() ? View.VISIBLE : View.GONE);
             if (show) {
@@ -179,6 +172,7 @@ public class InputViewController {
                 currentKeyboardShow.clearColorFilter();
             }
         }
+        return ret;
     }
 
     public void storeEmoji() {
@@ -190,6 +184,8 @@ public class InputViewController {
     public void destroyView() {
         emojiPopup.destroy();
         emojiPopup = null;
+        botKeyboard.destroy();
+        botKeyboard = null;
     }
 
     private void onResumePauseButtonClick() {
@@ -228,7 +224,7 @@ public class InputViewController {
         }
     }
 
-    private void showEmoji(boolean visible) {
+    public void showEmoji(boolean visible) {
         if (emojiOnScreen == visible) {
             return;
         }
@@ -292,7 +288,11 @@ public class InputViewController {
     public void AppendTextQuietly(String text) {
         if (text != null) {
             mInputField.removeTextChangedListener(mTextWatcher);
-            mInputField.setText(mInputField.getText() + " " + text);
+            String txt = Utils.firstNonEmptyString(mInputField.getText().toString(), " ");
+            if (txt.lastIndexOf('@') != -1) {
+                txt = txt.substring(0, txt.length() - 1);
+            }
+            mInputField.setText(txt + " " + text);
             mInputField.requestFocus();
             if (!Utils.isEmpty(text))
                 mInputField.setSelection(mInputField.getText().length());

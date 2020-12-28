@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +11,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -51,6 +56,7 @@ import dev.ragnarok.fenrir.picasso.transforms.BlurTransformation;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.Utils;
 
@@ -60,7 +66,24 @@ import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWallPresenter> implements IGroupWallView {
 
-    private static final int REQUEST_LOGIN_COMMUNITY = 14;
+    private final ActivityResultLauncher<Intent> requestCommunity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        ArrayList<Token> tokens = LoginActivity.extractGroupTokens(result.getData());
+                        getPresenter().fireGroupTokensReceived(tokens);
+                    }
+                }
+            });
+    private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+            new AppPerms.onPermissionsGranted() {
+                @Override
+                public void granted() {
+                    getPresenter().fireShowQR(requireActivity());
+                }
+            });
     private GroupHeaderHolder mHeaderHolder;
 
     @Override
@@ -252,7 +275,11 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
         }
 
         if (item.getItemId() == R.id.action_show_qr) {
-            getPresenter().fireShowQR(requireActivity());
+            if (!AppPerms.hasReadWriteStoragePermision(requireActivity())) {
+                requestWritePermission.launch();
+            } else {
+                getPresenter().fireShowQR(requireActivity());
+            }
             return true;
         }
 
@@ -291,7 +318,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
     @Override
     public void startLoginCommunityActivity(int groupId) {
         Intent intent = LoginActivity.createIntent(requireActivity(), String.valueOf(Constants.API_ID), "messages,photos,docs,manage", Collections.singletonList(groupId));
-        startActivityForResult(intent, REQUEST_LOGIN_COMMUNITY);
+        requestCommunity.launch(intent);
     }
 
     @Override
@@ -319,16 +346,6 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
         OptionMenuView optionMenuView = new OptionMenuView();
         getPresenter().fireOptionMenuViewCreated(optionMenuView);
         menu.findItem(R.id.action_community_control).setVisible(optionMenuView.controlVisible);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_LOGIN_COMMUNITY && resultCode == Activity.RESULT_OK) {
-            ArrayList<Token> tokens = LoginActivity.extractGroupTokens(data);
-            getPresenter().fireGroupTokensReceived(tokens);
-        }
     }
 
     @Override

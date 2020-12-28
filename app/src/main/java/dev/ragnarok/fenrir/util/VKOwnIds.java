@@ -287,11 +287,11 @@ public class VKOwnIds {
     }
 
     public boolean constainsUids() {
-        return uids != null && !uids.isEmpty();
+        return !uids.isEmpty();
     }
 
     public boolean constainsGids() {
-        return gids != null && !gids.isEmpty();
+        return !gids.isEmpty();
     }
 
     public boolean isEmpty() {

@@ -26,6 +26,7 @@ import dev.ragnarok.fenrir.db.model.entity.FavePageEntity;
 import dev.ragnarok.fenrir.db.model.entity.GiftEntity;
 import dev.ragnarok.fenrir.db.model.entity.GiftItemEntity;
 import dev.ragnarok.fenrir.db.model.entity.GraffitiEntity;
+import dev.ragnarok.fenrir.db.model.entity.KeyboardEntity;
 import dev.ragnarok.fenrir.db.model.entity.LinkEntity;
 import dev.ragnarok.fenrir.db.model.entity.MarketAlbumEntity;
 import dev.ragnarok.fenrir.db.model.entity.MarketEntity;
@@ -74,6 +75,7 @@ import dev.ragnarok.fenrir.model.GiftItem;
 import dev.ragnarok.fenrir.model.Graffiti;
 import dev.ragnarok.fenrir.model.IOwnersBundle;
 import dev.ragnarok.fenrir.model.IdPair;
+import dev.ragnarok.fenrir.model.Keyboard;
 import dev.ragnarok.fenrir.model.Link;
 import dev.ragnarok.fenrir.model.Market;
 import dev.ragnarok.fenrir.model.MarketAlbum;
@@ -493,6 +495,23 @@ public class Entity2Model {
         return dialog;
     }
 
+    public static Keyboard buildKeyboardFromDbo(KeyboardEntity keyboard) {
+        if (keyboard == null || Utils.isEmpty(keyboard.getButtons())) {
+            return null;
+        }
+        List<List<Keyboard.Button>> buttons = new ArrayList<>(keyboard.getButtons().size());
+        for (List<KeyboardEntity.ButtonEntity> i : keyboard.getButtons()) {
+            List<Keyboard.Button> vt = new ArrayList<>(i.size());
+            for (KeyboardEntity.ButtonEntity s : i) {
+                vt.add(new Keyboard.Button().setType(s.getType()).setColor(s.getColor()).setLabel(s.getLabel()).setLink(s.getLink()).setPayload(s.getPayload()));
+            }
+            buttons.add(vt);
+        }
+        return new Keyboard().setAuthor_id(
+                keyboard.getAuthor_id()).setInline(keyboard.getInline())
+                .setOne_time(keyboard.getOne_time()).setButtons(buttons);
+    }
+
     public static Message message(int accountId, MessageEntity dbo, IOwnersBundle owners) {
         Message message = new Message(dbo.getId())
                 .setAccountId(accountId)
@@ -519,7 +538,8 @@ public class Entity2Model {
                 .setSender(owners.getById(dbo.getFromId()))
                 .setRandomId(dbo.getRandomId())
                 .setUpdateTime(dbo.getUpdateTime())
-                .setPayload(dbo.getPayload());
+                .setPayload(dbo.getPayload())
+                .setKeyboard(buildKeyboardFromDbo(dbo.getKeyboard()));
 
         if (dbo.getActionMemberId() != 0) {
             message.setActionUser(owners.getById(dbo.getActionMemberId()));

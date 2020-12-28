@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.fragment;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,7 @@ import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.player.util.MusicUtils;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.upload.Upload;
+import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.MySearchView;
@@ -43,6 +45,16 @@ import static dev.ragnarok.fenrir.util.Objects.nonNull;
 public class AudiosLocalFragment extends BaseMvpFragment<AudiosLocalPresenter, IAudiosLocalView>
         implements MySearchView.OnQueryTextListener, DocsUploadAdapter.ActionListener, AudioLocalRecyclerAdapter.ClickListener, IAudiosLocalView {
 
+    private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+            new AppPerms.onPermissionsGranted() {
+                @Override
+                public void granted() {
+                    if (isPresenterPrepared()) {
+                        getPresenter().LoadAudiosTool();
+                    }
+                }
+            });
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AudioLocalRecyclerAdapter mAudioRecyclerAdapter;
     private boolean doAudioLoadTabs;
@@ -123,7 +135,12 @@ public class AudiosLocalFragment extends BaseMvpFragment<AudiosLocalPresenter, I
         super.onResume();
         if (!doAudioLoadTabs) {
             doAudioLoadTabs = true;
-            getPresenter().LoadAudiosTool();
+            if (!AppPerms.hasReadStoragePermision(getActivity())) {
+                requestReadPermission.launch();
+                return;
+            } else {
+                getPresenter().LoadAudiosTool();
+            }
         }
     }
 

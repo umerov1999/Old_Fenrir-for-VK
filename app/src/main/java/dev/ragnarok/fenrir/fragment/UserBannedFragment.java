@@ -9,6 +9,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -50,7 +54,17 @@ import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class UserBannedFragment extends BaseMvpFragment<UserBannedPresenter, IUserBannedView> implements IUserBannedView, PeopleAdapter.LongClickListener {
 
-    private static final int REQUEST_SELECT = 13;
+    private final ActivityResultLauncher<Intent> requestSelect = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        ArrayList<Owner> users = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
+                        AssertUtils.requireNonNull(users);
+                        postPrenseterReceive(presenter -> presenter.fireUsersSelected(users));
+                    }
+                }
+            });
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private PeopleAdapter mPeopleAdapter;
@@ -164,21 +178,11 @@ public class UserBannedFragment extends BaseMvpFragment<UserBannedPresenter, IUs
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_SELECT && resultCode == Activity.RESULT_OK) {
-            ArrayList<Owner> users = data.getParcelableArrayListExtra(Extra.OWNERS);
-            AssertUtils.requireNonNull(users);
-            postPrenseterReceive(presenter -> presenter.fireUsersSelected(users));
-        }
-    }
-
-    @Override
     public void startUserSelection(int accountId) {
         Place place = PlaceFactory.getFriendsFollowersPlace(accountId, accountId, FriendsTabsFragment.TAB_ALL_FRIENDS, null);
         SelectProfileCriteria criteria = new SelectProfileCriteria();
         Intent intent = SelectProfilesActivity.createIntent(requireActivity(), place, criteria);
-        startActivityForResult(intent, REQUEST_SELECT);
+        requestSelect.launch(intent);
     }
 
     @Override

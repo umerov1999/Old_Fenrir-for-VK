@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.fragment.app.FragmentActivity;
-
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 
@@ -19,9 +17,8 @@ import dev.ragnarok.fenrir.util.ViewUtils;
  */
 public class SwipebleActivity extends MainActivity {
 
-    public static void start(FragmentActivity context, Intent intent, int code) {
+    public static void applyIntent(Intent intent) {
         intent.putExtra(MainActivity.EXTRA_NO_REQUIRE_PIN, true);
-        context.startActivityForResult(intent, code);
     }
 
     public static void start(Context context, Intent intent) {

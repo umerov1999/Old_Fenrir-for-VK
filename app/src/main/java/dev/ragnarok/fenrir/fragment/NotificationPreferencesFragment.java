@@ -10,6 +10,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
@@ -32,8 +36,19 @@ import dev.ragnarok.fenrir.util.Logger;
 
 public class NotificationPreferencesFragment extends PreferenceFragmentCompat {
 
-    public static final int REQUEST_CODE_RINGTONE = 116;
     private static final String TAG = NotificationPreferencesFragment.class.getSimpleName();
+    private final ActivityResultLauncher<Intent> requestRingTone = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        String uri = result.getData().getData().getPath();
+                        Settings.get()
+                                .notifications()
+                                .setNotificationRingtoneUri(uri);
+                    }
+                }
+            });
     private Ringtone current;
     private int selection;
 
@@ -109,7 +124,7 @@ public class NotificationPreferencesFragment extends PreferenceFragmentCompat {
                 .setNeutralButton(R.string.ringtone_custom, (dialog, which) -> {
                     Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                     intent.setType("file/audio");
-                    startActivityForResult(intent, REQUEST_CODE_RINGTONE);
+                    requestRingTone.launch(intent);
                 }).setOnDismissListener(dialog -> stopRingtoneIfExist()).show();
     }
 
@@ -117,19 +132,6 @@ public class NotificationPreferencesFragment extends PreferenceFragmentCompat {
     public void onDestroy() {
         super.onDestroy();
         stopRingtoneIfExist();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_RINGTONE) {
-            if (resultCode == Activity.RESULT_OK) {
-                String uri = data.getData().getPath();
-                Settings.get()
-                        .notifications()
-                        .setNotificationRingtoneUri(uri);
-            }
-        }
     }
 
     public Map<String, String> getNotifications() {

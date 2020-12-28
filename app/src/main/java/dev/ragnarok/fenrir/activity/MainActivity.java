@@ -19,6 +19,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -195,12 +199,55 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
     public static final String EXTRA_INPUT_ATTACHMENTS = "input_attachments";
     protected static final int DOUBLE_BACK_PRESSED_TIMEOUT = 2000;
     private static final String TAG = "MainActivity_LOG";
-    private static final int REQUEST_LOGIN = 101;
-    private static final int REQUEST_CODE_CLOSE = 102;
-    private static final int REQUEST_ENTER_PIN = 103;
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private final List<Action<MainActivity>> postResumeActions = new ArrayList<>(0);
+    private final ActivityResultLauncher<Intent> requestEnterPin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() != RESULT_OK) {
+                        finish();
+                    }
+                }
+            });
     protected int mAccountId;
+    private final ActivityResultLauncher<Intent> requestQRScan = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    IntentResult scanner = IntentIntegrator.parseActivityResult(result);
+                    if (nonNull(scanner)) {
+                        if (!Utils.isEmpty(scanner.getContents())) {
+                            MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(MainActivity.this);
+                            dlgAlert.setIcon(R.drawable.qr_code);
+                            dlgAlert.setMessage(scanner.getContents());
+                            dlgAlert.setTitle(getString(R.string.scan_qr));
+                            dlgAlert.setPositiveButton(R.string.open, (dialog, which) -> LinkHelper.openUrl(MainActivity.this, mAccountId, scanner.getContents()));
+                            dlgAlert.setNeutralButton(R.string.copy_text, (dialog, which) -> {
+                                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("response", scanner.getContents());
+                                clipboard.setPrimaryClip(clip);
+                                CustomToast.CreateCustomToast(MainActivity.this).showToast(R.string.copied_to_clipboard);
+                            });
+                            dlgAlert.setCancelable(true);
+                            dlgAlert.create().show();
+                        }
+                    }
+                }
+            });
+    private final ActivityResultLauncher<Intent> requestLogin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    mAccountId = Settings.get()
+                            .accounts()
+                            .getCurrent();
+
+                    if (mAccountId == ISettings.IAccountsSettings.INVALID_ID) {
+                        supportFinishAfterTransition();
+                    }
+                }
+            });
     protected int mLayoutRes = Settings.get().main().isSnow_mode() ? R.layout.activity_main_with_snow : R.layout.activity_main;
     protected long mLastBackPressedTime;
     /**
@@ -388,7 +435,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
 
     private void startEnterPinActivity() {
         Intent intent = new Intent(this, EnterPinActivity.getClass(this));
-        startActivityForResult(intent, REQUEST_ENTER_PIN);
+        requestEnterPin.launch(intent);
     }
 
     private void checkFCMRegistration() {
@@ -451,11 +498,10 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                                 break;
                             case R.id.button_camera:
                                 IntentIntegrator integrator = new IntentIntegrator(this);
-                                integrator.setPrompt("QR Code/Bar Code");
                                 integrator.setCameraId(0);
                                 integrator.setBeepEnabled(true);
                                 integrator.setBarcodeImageEnabled(false);
-                                integrator.initiateScan();
+                                requestQRScan.launch(integrator.createScanIntent());
                                 break;
                         }
                     });
@@ -653,7 +699,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
 
     private void startAccountsActivity() {
         Intent intent = new Intent(this, AccountsActivity.class);
-        startActivityForResult(intent, REQUEST_LOGIN);
+        requestLogin.launch(intent);
     }
 
     private void clearBackStack() {
@@ -773,58 +819,6 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
 
     private boolean isAuthValid() {
         return mAccountId != ISettings.IAccountsSettings.INVALID_ID;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        AppPerms.tryInterceptAppPermission(this, requestCode, permissions, grantResults);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        IntentResult scanner = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (nonNull(scanner)) {
-            if (!Utils.isEmpty(scanner.getContents())) {
-                MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(this);
-                dlgAlert.setIcon(R.drawable.qr_code);
-                dlgAlert.setMessage(scanner.getContents());
-                dlgAlert.setTitle(getString(R.string.scan_qr));
-                dlgAlert.setPositiveButton(R.string.open, (dialog, which) -> LinkHelper.openUrl(this, mAccountId, scanner.getContents()));
-                dlgAlert.setNeutralButton(R.string.copy_text, (dialog, which) -> {
-                    ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("response", scanner.getContents());
-                    clipboard.setPrimaryClip(clip);
-                    CustomToast.CreateCustomToast(this).showToast(R.string.copied_to_clipboard);
-                });
-                dlgAlert.setCancelable(true);
-                dlgAlert.create().show();
-            }
-            return;
-        }
-        switch (requestCode) {
-            case REQUEST_LOGIN:
-                mAccountId = Settings.get()
-                        .accounts()
-                        .getCurrent();
-
-                if (mAccountId == ISettings.IAccountsSettings.INVALID_ID) {
-                    supportFinishAfterTransition();
-                }
-                break;
-
-            case REQUEST_CODE_CLOSE:
-                if (resultCode == RESULT_OK) {
-                    finish();
-                }
-                break;
-            case REQUEST_ENTER_PIN:
-                if (resultCode != RESULT_OK) {
-                    finish();
-                }
-                break;
-        }
     }
 
     /*
@@ -1099,7 +1093,6 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
 
             case Place.BUILD_NEW_POST:
                 PostCreateFragment postCreateFragment = PostCreateFragment.newInstance(args);
-                place.applyTargetingTo(postCreateFragment);
                 attachToFront(postCreateFragment);
                 break;
 
@@ -1108,19 +1101,19 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                 int accountId = args.getInt(Extra.ACCOUNT_ID);
                 Integer commemtId = args.getInt(Extra.COMMENT_ID);
                 CommentEditFragment commentEditFragment = CommentEditFragment.newInstance(accountId, comment, commemtId);
-                place.applyTargetingTo(commentEditFragment);
+                place.applyFragmentListener(commentEditFragment, getSupportFragmentManager());
                 attachToFront(commentEditFragment);
                 break;
             }
 
             case Place.EDIT_POST:
                 PostEditFragment postEditFragment = PostEditFragment.newInstance(args);
-                place.applyTargetingTo(postEditFragment);
                 attachToFront(postEditFragment);
                 break;
 
             case Place.REPOST:
-                attachToFront(RepostFragment.obtain(place));
+                RepostFragment repostFragment = RepostFragment.newInstance(args);
+                attachToFront(repostFragment);
                 break;
 
             case Place.DIALOGS:
@@ -1255,7 +1248,6 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
             case Place.CREATE_PHOTO_ALBUM:
             case Place.EDIT_PHOTO_ALBUM:
                 CreatePhotoAlbumFragment createPhotoAlbumFragment = CreatePhotoAlbumFragment.newInstance(args);
-                place.applyTargetingTo(createPhotoAlbumFragment);
                 attachToFront(createPhotoAlbumFragment);
                 break;
 
@@ -1273,7 +1265,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
 
             case Place.CREATE_POLL:
                 CreatePollFragment createPollFragment = CreatePollFragment.newInstance(args);
-                place.applyTargetingTo(createPollFragment);
+                place.applyFragmentListener(createPollFragment, getSupportFragmentManager());
                 attachToFront(createPollFragment);
                 break;
 
@@ -1462,7 +1454,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                 place.getArgs().getString(Extra.BODY)
         );
 
-        place.applyTargetingTo(fragment);
+        place.applyFragmentListener(fragment, getSupportFragmentManager());
         attachToFront(fragment);
     }
 

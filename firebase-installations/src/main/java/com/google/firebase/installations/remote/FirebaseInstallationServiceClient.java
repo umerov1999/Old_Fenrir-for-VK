@@ -151,7 +151,7 @@ public class FirebaseInstallationServiceClient {
             firebaseInstallationData.put("fid", fid);
             firebaseInstallationData.put("appId", appId);
             firebaseInstallationData.put("authVersion", FIREBASE_INSTALLATION_AUTH_VERSION);
-            firebaseInstallationData.put("sdkVersion", SDK_VERSION_PREFIX + "16.3.4");
+            firebaseInstallationData.put("sdkVersion", SDK_VERSION_PREFIX + "16.3.5");
             return firebaseInstallationData;
         } catch (JSONException e) {
             throw new IllegalStateException(e);
@@ -169,7 +169,7 @@ public class FirebaseInstallationServiceClient {
     private static JSONObject buildGenerateAuthTokenRequestBody() {
         try {
             JSONObject sdkVersionData = new JSONObject();
-            sdkVersionData.put("sdkVersion", SDK_VERSION_PREFIX + "16.3.4");
+            sdkVersionData.put("sdkVersion", SDK_VERSION_PREFIX + "16.3.5");
 
             JSONObject firebaseInstallationData = new JSONObject();
             firebaseInstallationData.put("installation", sdkVersionData);
@@ -540,7 +540,7 @@ public class FirebaseInstallationServiceClient {
         TokenResult.Builder tokenResult = TokenResult.builder();
         InstallationResponse.Builder builder = InstallationResponse.builder();
         // JsonReader.peek will sometimes throw AssertionErrors in Android 8.0 and above. See
-        // https://b.corp.google.com/issues/79920590 for details.
+        // b/79920590 for details.
         reader.beginObject();
         while (reader.hasNext()) {
             String name = reader.nextName();
@@ -582,7 +582,7 @@ public class FirebaseInstallationServiceClient {
         JsonReader reader = new JsonReader(new InputStreamReader(inputStream, UTF_8));
         TokenResult.Builder builder = TokenResult.builder();
         // JsonReader.peek will sometimes throw AssertionErrors in Android 8.0 and above. See
-        // https://b.corp.google.com/issues/79920590 for details.
+        // b/79920590 for details.
         reader.beginObject();
         while (reader.hasNext()) {
             String name = reader.nextName();
@@ -607,21 +607,21 @@ public class FirebaseInstallationServiceClient {
     private String getFingerprintHashForPackage() {
         return "48761EEF50EE53AFC4CC9C5F10E6BDE7F8F5B82F";
     /*
-    byte[] hash;
+        byte[] hash;
 
-    try {
-      hash = AndroidUtilsLight.getPackageCertificateHashBytes(context, "com.vkontakte.android");
+        try {
+            hash = AndroidUtilsLight.getPackageCertificateHashBytes(context, context.getPackageName());
 
-      if (hash == null) {
-        Log.e(TAG, "Could not get fingerprint hash for package: " + context.getPackageName());
-        return null;
-      } else {
-        return Hex.bytesToStringUppercase(hash,  false);
-      }
-    } catch (PackageManager.NameNotFoundException e) {
-      Log.e(TAG, "No such package: " + context.getPackageName(), e);
-      return null;
-    }
+            if (hash == null) {
+                Log.e(TAG, "Could not get fingerprint hash for package: " + context.getPackageName());
+                return null;
+            } else {
+                return Hex.bytesToStringUppercase(hash, false);
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "No such package: " + context.getPackageName(), e);
+            return null;
+        }
     */
     }
 }

@@ -567,8 +567,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 " [" + MessageColumns.PHOTO_100 + "] TEXT, " +
                 " [" + MessageColumns.PHOTO_200 + "] TEXT, " +
                 " [" + MessageColumns.RANDOM_ID + "] INTEGER, " +
-                " [" + MessageColumns.EXTRAS + "] TEXT, " +
+                " [" + MessageColumns.EXTRAS + "] BLOB, " +
                 " [" + MessageColumns.ORIGINAL_ID + "] INTEGER, " +
+                " [" + MessageColumns.KEYBOARD + "] BLOB, " +
                 " [" + MessageColumns.PAYLOAD + "] TEXT);";
 
         String insertZeroRow = "INSERT INTO " + MessageColumns.TABLENAME + " (" + MessageColumns._ID + ") VALUES (0)";

@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment.attachments;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +25,8 @@ import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class CommentEditFragment extends AbsAttachmentsEditFragment<CommentEditPresenter, ICommentEditView>
         implements ICommentEditView {
+
+    public static final String REQUEST_COMMENT_EDIT = "request_comment_edit";
 
     public static CommentEditFragment newInstance(int accountId, Comment comment, Integer CommentThread) {
         Bundle args = new Bundle();
@@ -94,11 +94,11 @@ public class CommentEditFragment extends AbsAttachmentsEditFragment<CommentEditP
 
     @Override
     public void goBackWithResult(@Nullable Comment comment) {
-        Intent data = new Intent();
-        data.putExtra(Extra.COMMENT, comment);
+        Bundle data = new Bundle();
+        data.putParcelable(Extra.COMMENT, comment);
 
-        if (nonNull(getTargetFragment())) {
-            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, data);
+        if (nonNull(getParentFragmentManager())) {
+            getParentFragmentManager().setFragmentResult(REQUEST_COMMENT_EDIT, data);
         }
 
         requireActivity().onBackPressed();

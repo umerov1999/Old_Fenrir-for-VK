@@ -53,6 +53,10 @@ class SinglePhotoFragment : BaseFragment(), GoBackCallback, BackPressCallback {
         photo_prefix = makeLegalFilename(requireArguments().getString(Extra.KEY)!!, null)
     }
 
+    private val requestWritePermission = AppPerms.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), {
+        doSaveOnDrive(false)
+    })
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_single_url_photo, container, false)
@@ -100,17 +104,10 @@ class SinglePhotoFragment : BaseFragment(), GoBackCallback, BackPressCallback {
         return root
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_WRITE_PERMISSION) {
-            doSaveOnDrive(false)
-        }
-    }
-
     private fun doSaveOnDrive(Request: Boolean) {
         if (Request) {
             if (!AppPerms.hasWriteStoragePermision(instance)) {
-                requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_WRITE_PERMISSION)
+                requestWritePermission.launch()
             }
         }
         var dir = File(Settings.get().other().photoDir)

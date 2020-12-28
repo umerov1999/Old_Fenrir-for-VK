@@ -16,12 +16,9 @@ import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.AbsModel;
 import dev.ragnarok.fenrir.model.AttachmenEntry;
-import dev.ragnarok.fenrir.model.Audio;
-import dev.ragnarok.fenrir.model.Document;
 import dev.ragnarok.fenrir.model.LocalPhoto;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.Poll;
-import dev.ragnarok.fenrir.model.Video;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.IBaseAttachmentsEditView;
@@ -373,16 +370,8 @@ public abstract class AbsAttachmentsEditPresenter<V extends IBaseAttachmentsEdit
         safeNotifyDataSetChanged();
     }
 
-    public final void fireAudiosSelected(@NonNull ArrayList<Audio> audios) {
-        onModelsAdded(audios);
-    }
-
-    public final void fireVideosSelected(@NonNull ArrayList<Video> videos) {
-        onModelsAdded(videos);
-    }
-
-    public final void fireDocumentsSelected(@NonNull ArrayList<Document> documents) {
-        onModelsAdded(documents);
+    public final void fireAttachmentsSelected(@NonNull ArrayList<? extends AbsModel> attachments) {
+        onModelsAdded(attachments);
     }
 
     public void fireUploadPhotoSizeSelected(@NonNull List<LocalPhoto> photos, int size) {

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import dev.ragnarok.fenrir.api.model.VKApiMessage;
 import dev.ragnarok.fenrir.api.model.VkApiAttachments;
+import dev.ragnarok.fenrir.api.model.VkApiConversation;
 import dev.ragnarok.fenrir.api.util.VKStringUtils;
 
 public class MessageDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApiMessage> {
@@ -30,6 +31,10 @@ public class MessageDtoAdapter extends AbsAdapter implements JsonDeserializer<VK
         //dto.read_state = optIntAsBoolean(root, "read_state");
         //dto.title = VKStringUtils.unescape(optString(root, "title"));
         dto.body = VKStringUtils.unescape(root.has("text") ? optString(root, "text") : optString(root, "body"));
+
+        if (root.has("keyboard")) {
+            dto.keyboard = context.deserialize(root.get("keyboard"), VkApiConversation.CurrentKeyboard.class);
+        }
 
         if (root.has("attachments")) {
             dto.attachments = context.deserialize(root.get("attachments"), VkApiAttachments.class);

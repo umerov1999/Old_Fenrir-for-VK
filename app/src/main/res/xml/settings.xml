@@ -7,6 +7,15 @@
         android:title="@string/general_settings"
         app:iconSpaceReserved="false">
 
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/array_language_names"
+            android:entryValues="@array/array_language_items"
+            android:key="language_ui"
+            android:title="@string/language_ui"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
         <Preference
             android:key="proxy"
             android:title="@string/http_proxy"

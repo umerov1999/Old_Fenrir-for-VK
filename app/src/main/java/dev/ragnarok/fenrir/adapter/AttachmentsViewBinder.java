@@ -1,7 +1,6 @@
 package dev.ragnarok.fenrir.adapter;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.method.LinkMovementMethod;
@@ -261,7 +260,9 @@ public class AttachmentsViewBinder {
 
         holder.mWaveFormView.setOnLongClickListener(v -> {
             if (!AppPerms.hasReadWriteStoragePermision(mContext)) {
-                AppPerms.requestReadWriteStoragePermission((Activity) mContext);
+                if (mAttachmentsActionCallback != null) {
+                    mAttachmentsActionCallback.onRequestWritePermissions();
+                }
                 return true;
             }
             DownloadWorkUtils.doDownloadVoice(mContext, voice);
@@ -978,10 +979,11 @@ public class AttachmentsViewBinder {
         void onMarketAlbumOpen(@NonNull MarketAlbum market_album);
 
         void onMarketOpen(@NonNull Market market);
+
+        void onRequestWritePermissions();
     }
 
     private static final class CopyHolder {
-
         final ViewGroup itemView;
         final ImageView ivAvatar;
         final TextView ownerName;

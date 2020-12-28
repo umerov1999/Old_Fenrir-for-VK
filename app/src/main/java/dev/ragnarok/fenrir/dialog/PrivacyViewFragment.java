@@ -6,6 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -28,13 +32,45 @@ import dev.ragnarok.fenrir.model.User;
 import dev.ragnarok.fenrir.util.AssertUtils;
 
 public class PrivacyViewFragment extends AccountDependencyDialogFragment implements PrivacyAdapter.ActionListener {
-
-    private static final int REQUEST_CODE_ADD_TO_ALLOWED = 103;
-    private static final int REQUEST_CODE_ADD_TO_DISALLOWED = 104;
-
+    public static final String REQUEST_PRIVACY_VIEW = "request_privacy_view";
     private static final String SAVE_PRIVACY = "save_privacy";
     private Privacy mPrivacy;
     private PrivacyAdapter mAdapter;
+    private final ActivityResultLauncher<Intent> requestSelectUsersAllowed = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        ArrayList<Owner> users = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
+                        AssertUtils.requireNonNull(users);
+
+                        for (Owner user : users) {
+                            if (user instanceof User) {
+                                mPrivacy.allowFor((User) user);
+                            }
+                        }
+                        safeNotifyDatasetChanged();
+                    }
+                }
+            });
+
+    private final ActivityResultLauncher<Intent> requestSelectUsersDisAllowed = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        ArrayList<Owner> users = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
+                        AssertUtils.requireNonNull(users);
+
+                        for (Owner user : users) {
+                            if (user instanceof User) {
+                                mPrivacy.disallowFor((User) user);
+                            }
+                        }
+                        safeNotifyDatasetChanged();
+                    }
+                }
+            });
 
     public static Bundle buildArgs(int aid, Privacy privacy) {
         Bundle bundle = new Bundle();
@@ -84,10 +120,10 @@ public class PrivacyViewFragment extends AccountDependencyDialogFragment impleme
     }
 
     private void returnResult() {
-        if (getTargetFragment() != null) {
-            Intent intent = new Intent();
-            intent.putExtra(Extra.PRIVACY, mPrivacy);
-            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
+        if (getParentFragmentManager() != null) {
+            Bundle intent = new Bundle();
+            intent.putParcelable(Extra.PRIVACY, mPrivacy);
+            getParentFragmentManager().setFragmentResult(REQUEST_PRIVACY_VIEW, intent);
         }
     }
 
@@ -151,42 +187,12 @@ public class PrivacyViewFragment extends AccountDependencyDialogFragment impleme
 
     @Override
     public void onAddToAllowedClick() {
-        SelectProfilesActivity.startFriendsSelection(this, REQUEST_CODE_ADD_TO_ALLOWED);
+        requestSelectUsersAllowed.launch(SelectProfilesActivity.startFriendsSelection(requireActivity()));
     }
 
     @Override
     public void onAddToDisallowedClick() {
-        SelectProfilesActivity.startFriendsSelection(this, REQUEST_CODE_ADD_TO_DISALLOWED);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != Activity.RESULT_OK || data == null) return;
-
-        ArrayList<Owner> users = data.getParcelableArrayListExtra(Extra.OWNERS);
-        AssertUtils.requireNonNull(users);
-
-        switch (requestCode) {
-            case REQUEST_CODE_ADD_TO_ALLOWED:
-                for (Owner user : users) {
-                    if (user instanceof User) {
-                        mPrivacy.allowFor((User) user);
-                    }
-                }
-
-                break;
-            case REQUEST_CODE_ADD_TO_DISALLOWED:
-                for (Owner user : users) {
-                    if (user instanceof User) {
-                        mPrivacy.disallowFor((User) user);
-                    }
-                }
-
-                break;
-        }
-
-        safeNotifyDatasetChanged();
+        requestSelectUsersDisAllowed.launch(SelectProfilesActivity.startFriendsSelection(requireActivity()));
     }
 
     @Override

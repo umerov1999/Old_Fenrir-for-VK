@@ -123,6 +123,8 @@ public class TmpResult {
 
         private VKApiMessage dto;
 
+        private VKApiMessage backup;
+
         Msg(int id) {
             this.id = id;
         }
@@ -133,6 +135,10 @@ public class TmpResult {
 
         public Msg setDto(VKApiMessage dto) {
             this.dto = dto;
+            if (backup != null && backup.keyboard != null) {
+                dto.keyboard = backup.keyboard;
+                dto.payload = backup.payload;
+            }
             return this;
         }
 
@@ -151,6 +157,15 @@ public class TmpResult {
 
         public Msg setAlreadyExists(boolean alreadyExists) {
             this.alreadyExists = alreadyExists;
+            return this;
+        }
+
+        public VKApiMessage getBackup() {
+            return backup;
+        }
+
+        public Msg setBackup(VKApiMessage backup) {
+            this.backup = backup;
             return this;
         }
 

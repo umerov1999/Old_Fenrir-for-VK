@@ -95,7 +95,6 @@ public class KeepLongpollService extends Service {
         return null;
     }
 
-    @SuppressWarnings("deprecation")
     private void startWithNotification() {
         Intent notificationIntent = new Intent(this, KeepLongpollService.class);
         notificationIntent.setAction(ACTION_STOP);
@@ -115,7 +114,7 @@ public class KeepLongpollService extends Service {
 
             builder = new NotificationCompat.Builder(this, channel.getId());
         } else {
-            builder = new NotificationCompat.Builder(this).setPriority(Notification.PRIORITY_MIN);
+            builder = new NotificationCompat.Builder(this, KEEP_LONGPOLL_CHANNEL).setPriority(Notification.PRIORITY_MIN);
         }
 
         NotificationCompat.Action action_stop = new NotificationCompat.Action.Builder

@@ -1,10 +1,13 @@
 package dev.ragnarok.fenrir.fragment
 
+import android.Manifest
 import android.app.Dialog
 import android.content.*
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
+import android.net.Uri
 import android.os.*
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
@@ -24,6 +27,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import com.umerov.qrcode.QrGenerator.generateQR
 import dev.ragnarok.fenrir.Constants
 import dev.ragnarok.fenrir.Extra
 import dev.ragnarok.fenrir.Injection
@@ -56,6 +60,10 @@ import dev.ragnarok.fenrir.util.Utils.isEmpty
 import dev.ragnarok.fenrir.view.swipehelper.HorizontalSwipeBehavior
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
 import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.math.abs
@@ -157,6 +165,52 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         }
     }
 
+    private val requestWriteQRPermission = AppPerms.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+    ) { CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text) }
+
+    @Suppress("DEPRECATION")
+    private fun fireAudioQR() {
+        val audio = MusicUtils.getCurrentAudio()
+        if (audio == null) {
+            return
+        }
+        val qr = generateQR(requireActivity(), "https://vk.com/audio/" + audio.ownerId + "_" + audio.id, Color.parseColor("#000000"), Color.parseColor("#ffffff"), 1, 3, R.drawable.client_qr)
+        val dlgAlert = MaterialAlertDialogBuilder(requireActivity())
+        dlgAlert.setCancelable(true)
+        dlgAlert.setNegativeButton(R.string.button_cancel, null)
+        dlgAlert.setPositiveButton(R.string.save) { _, _ ->
+            if (!AppPerms.hasReadWriteStoragePermision(requireActivity())) {
+                requestWriteQRPermission.launch()
+            } else {
+                val path = Environment.getExternalStorageDirectory().absolutePath
+                val fOutputStream: OutputStream
+                val file = File(path, "qr_fenrir_audio_" + audio.ownerId + "_" + audio.id + ".png")
+                try {
+                    fOutputStream = FileOutputStream(file)
+                    assert(qr != null)
+                    qr!!.compress(Bitmap.CompressFormat.PNG, 100, fOutputStream)
+                    fOutputStream.flush()
+                    fOutputStream.close()
+                    requireActivity().sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)))
+                    CreateCustomToast(requireActivity()).showToast(R.string.success)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    CreateCustomToast(requireActivity()).showToastError("Save Failed")
+                }
+            }
+        }
+        dlgAlert.setIcon(R.drawable.qr_code)
+        val view: View = LayoutInflater.from(requireActivity()).inflate(R.layout.qr, null)
+        dlgAlert.setTitle(R.string.show_qr)
+        val imageView: ShapeableImageView = view.findViewById(R.id.qr)
+        imageView.setImageBitmap(qr)
+        dlgAlert.setView(view)
+        dlgAlert.show()
+    }
+
+    private val requestWriteAudioPermission = AppPerms.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+    ) { onSaveButtonClick(requireView()) }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_audio_player, container, false)
         mProgress = root.findViewById(android.R.id.progress)
@@ -192,13 +246,21 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                     icon = R.drawable.content_copy
                     iconColor = CurrentTheme.getColorSecondary(requireActivity())
                     callback = {
-                        val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clipboard = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         var Artist = if (MusicUtils.getArtistName() != null) MusicUtils.getArtistName() else ""
                         if (MusicUtils.getAlbumName() != null) Artist += " (" + MusicUtils.getAlbumName() + ")"
                         val Name = if (MusicUtils.getTrackName() != null) MusicUtils.getTrackName() else ""
                         val clip = ClipData.newPlainText("response", "$Artist - $Name")
                         clipboard.setPrimaryClip(clip)
                         CreateCustomToast(requireActivity()).showToast(R.string.copied_to_clipboard)
+                    }
+                }
+                item {
+                    labelRes = R.string.show_qr
+                    icon = R.drawable.qr_code
+                    iconColor = CurrentTheme.getColorSecondary(requireActivity())
+                    callback = {
+                        fireAudioQR()
                     }
                 }
                 item {
@@ -264,7 +326,15 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         mNextButton.setRepeatListener(mFastForwardListener)
         mProgress?.setOnSeekBarChangeListener(this)
         ivSave = root.findViewById(R.id.audio_save)
-        ivSave?.setOnClickListener { onSaveButtonClick(it) }
+        ivSave?.setOnClickListener {
+            run {
+                if (!AppPerms.hasReadWriteStoragePermision(requireActivity())) {
+                    requestWriteAudioPermission.launch()
+                } else {
+                    onSaveButtonClick(it)
+                }
+            }
+        }
         ivAdd = root.findViewById(R.id.audio_add)
         if (Settings.get().main().isPlayer_support_volume) {
             ivAdd?.setImageResource(R.drawable.volume_minus)
@@ -299,10 +369,6 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
 
     private fun onSaveButtonClick(v: View) {
         val audio = MusicUtils.getCurrentAudio() ?: return
-        if (!AppPerms.hasReadWriteStoragePermision(context)) {
-            AppPerms.requestReadWriteStoragePermission(requireActivity())
-            return
-        }
         when (doDownloadAudio(requireActivity(), audio, mAccountId, false)) {
             0 -> {
                 CreateCustomToast(requireActivity()).showToastBottom(R.string.saved_audio)
@@ -412,10 +478,10 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         val dlgAlert = MaterialAlertDialogBuilder(requireActivity())
         dlgAlert.setIcon(R.drawable.dir_song)
         dlgAlert.setMessage(Text)
-        dlgAlert.setTitle(title ?: requireContext().getString(R.string.get_lyrics))
+        dlgAlert.setTitle(title ?: requireActivity().getString(R.string.get_lyrics))
         dlgAlert.setPositiveButton("OK", null)
-        dlgAlert.setNeutralButton(requireContext().getString(R.string.copy_text)) { _: DialogInterface, _: Int ->
-            val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        dlgAlert.setNeutralButton(requireActivity().getString(R.string.copy_text)) { _: DialogInterface, _: Int ->
+            val clipboard = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("response", Text)
             clipboard.setPrimaryClip(clip)
             CreateCustomToast(requireActivity()).showToast(R.string.copied_to_clipboard)
@@ -530,7 +596,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         }
         if (tvAlbum != null) {
             var album = ""
-            if (MusicUtils.getAlbumName() != null) album += requireContext().getString(R.string.album) + " " + MusicUtils.getAlbumName()
+            if (MusicUtils.getAlbumName() != null) album += requireActivity().getString(R.string.album) + " " + MusicUtils.getAlbumName()
             tvAlbum!!.text = album
         }
         if (tvTitle != null) {
@@ -546,7 +612,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                     run {
                         ivCover!!.scaleType = ImageView.ScaleType.CENTER
                         ivCover!!.setImageResource(R.drawable.itunes)
-                        ivCover!!.drawable.setTint(CurrentTheme.getColorOnSurface(requireContext()))
+                        ivCover!!.drawable.setTint(CurrentTheme.getColorOnSurface(requireActivity()))
                     }
                 })
                 crossfade(true)
@@ -565,7 +631,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
             }
             ivCover!!.scaleType = ImageView.ScaleType.CENTER
             ivCover!!.setImageResource(R.drawable.itunes)
-            ivCover!!.drawable.setTint(CurrentTheme.getColorOnSurface(requireContext()))
+            ivCover!!.drawable.setTint(CurrentTheme.getColorOnSurface(requireActivity()))
         }
         resolveAddButton()
         val current = MusicUtils.getCurrentAudio()
@@ -629,11 +695,10 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
     private fun startEffectsPanel() {
         try {
             val effects = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
-            effects.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, requireContext().packageName)
+            effects.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, requireActivity().packageName)
             effects.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, MusicUtils.getAudioSessionId())
             effects.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-            requireActivity().startActivityForResult(effects, REQUEST_EQ, null)
-            startActivityForResult(effects, REQUEST_EQ)
+            startActivity(effects)
         } catch (ignored: ActivityNotFoundException) {
             Toast.makeText(requireActivity(), "No system equalizer found", Toast.LENGTH_SHORT).show()
         }
@@ -867,7 +932,6 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
     companion object {
         // Message to refresh the time
         private const val REFRESH_TIME = 1
-        private const val REQUEST_EQ = 139
 
         @JvmStatic
         fun buildArgs(accountId: Int): Bundle {

@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment.attachments;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +22,8 @@ import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class CommentCreateFragment extends AbsAttachmentsEditFragment<CommentCreatePresenter, ICreateCommentView>
         implements ICreateCommentView {
+
+    public static final String REQUEST_CREATE_COMMENT = "request_create_comment";
 
     public static CommentCreateFragment newInstance(int accountId, int commentDbid, int sourceOwnerId, String body) {
         Bundle args = new Bundle();
@@ -96,11 +96,11 @@ public class CommentCreateFragment extends AbsAttachmentsEditFragment<CommentCre
 
     @Override
     public void returnDataToParent(String textBody) {
-        Intent data = new Intent();
-        data.putExtra(Extra.BODY, textBody);
+        Bundle data = new Bundle();
+        data.putString(Extra.BODY, textBody);
 
-        if (nonNull(getTargetFragment())) {
-            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, data);
+        if (nonNull(getParentFragmentManager())) {
+            getParentFragmentManager().setFragmentResult(REQUEST_CREATE_COMMENT, data);
         }
     }
 

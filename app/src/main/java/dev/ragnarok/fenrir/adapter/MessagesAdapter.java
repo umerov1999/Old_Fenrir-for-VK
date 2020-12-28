@@ -38,6 +38,7 @@ import dev.ragnarok.fenrir.model.Sticker;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.DownloadWorkUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
@@ -151,7 +152,13 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
         }
 
         holder.sticker.setOnLongClickListener(v -> {
-            DownloadWorkUtils.doDownloadSticker(context, sticker);
+            if (!AppPerms.hasReadWriteStoragePermision(context)) {
+                if (attachmentsActionCallback != null) {
+                    attachmentsActionCallback.onRequestWritePermissions();
+                }
+            } else {
+                DownloadWorkUtils.doDownloadSticker(context, sticker);
+            }
             return true;
         });
 

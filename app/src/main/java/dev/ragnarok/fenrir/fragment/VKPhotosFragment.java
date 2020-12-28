@@ -13,6 +13,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -59,8 +63,38 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
         implements BigVkPhotosAdapter.PhotosActionListener, BigVkPhotosAdapter.UploadActionListener, IVkPhotosView {
 
     private static final String TAG = VKPhotosFragment.class.getSimpleName();
-    private static final int REQUEST_PERMISSION_READ_EXTARNAL_STORAGE = 14;
-    private static final int REQUEST_UPLOAD_LOCAL_PHOTO = 121;
+    private final ActivityResultLauncher<Intent> requestUploadPhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        ArrayList<LocalPhoto> photos = result.getData().getParcelableArrayListExtra(Extra.PHOTOS);
+                        if (nonEmpty(photos)) {
+                            onPhotosForUploadSelected(photos);
+                        }
+                    }
+                }
+            });
+    private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+            new AppPerms.onPermissionsGranted() {
+                @Override
+                public void granted() {
+                    if (isPresenterPrepared()) {
+                        getPresenter().fireReadStoragePermissionChanged();
+                    }
+                }
+            });
+    private final AppPerms.doRequestPermissions requestReadPermissionForLoadDownload = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+            new AppPerms.onPermissionsGranted() {
+                @Override
+                public void granted() {
+                    if (isPresenterPrepared()) {
+                        getPresenter().loadDownload();
+                    }
+                }
+            });
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private BigVkPhotosAdapter mAdapter;
     private TextView mEmptyText;
@@ -156,18 +190,6 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
 
     private boolean isSelectionMode() {
         return ACTION_SELECT_PHOTOS.equals(mAction);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_UPLOAD_LOCAL_PHOTO && resultCode == Activity.RESULT_OK) {
-            ArrayList<LocalPhoto> photos = data.getParcelableArrayListExtra(Extra.PHOTOS);
-
-            if (nonEmpty(photos)) {
-                onPhotosForUploadSelected(photos);
-            }
-        }
     }
 
     private void onPhotosForUploadSelected(@NonNull List<LocalPhoto> photos) {
@@ -317,7 +339,7 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
     @Override
     public void startLocalPhotosSelection() {
         if (!AppPerms.hasReadStoragePermision(requireActivity())) {
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_PERMISSION_READ_EXTARNAL_STORAGE);
+            requestReadPermission.launch();
             return;
         }
 
@@ -339,7 +361,7 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_get_downloaded) {
             if (!AppPerms.hasReadWriteStoragePermision(requireActivity())) {
-                AppPerms.requestReadExternalStoragePermission(requireActivity());
+                requestReadPermissionForLoadDownload.launch();
                 return true;
             }
             getPresenter().loadDownload();
@@ -349,18 +371,10 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (REQUEST_PERMISSION_READ_EXTARNAL_STORAGE == requestCode) {
-            getPresenter().fireReadStoragePermissionChanged();
-        }
-    }
-
     private void startLocalPhotosSelectionActibity() {
         Intent intent = new Intent(requireActivity(), PhotosActivity.class);
         intent.putExtra(PhotosActivity.EXTRA_MAX_SELECTION_COUNT, Integer.MAX_VALUE);
-        startActivityForResult(intent, REQUEST_UPLOAD_LOCAL_PHOTO);
+        requestUploadPhoto.launch(intent);
     }
 
     @Override

@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import dev.ragnarok.fenrir.model.Lang;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
 
@@ -417,6 +418,12 @@ class OtherSettings implements ISettings.IOtherSettings {
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    @Lang
+    @Override
+    public int getLanguage() {
+        return Integer.parseInt(java.util.Objects.requireNonNull(PreferenceManager.getDefaultSharedPreferences(app).getString("language_ui", "0")));
     }
 
     @Override

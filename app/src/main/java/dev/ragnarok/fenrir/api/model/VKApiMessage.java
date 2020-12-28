@@ -70,6 +70,9 @@ public class VKApiMessage {
      * Whether the message is deleted (false — no, true — yes).
      */
     public boolean deleted;
+
+    public VkApiConversation.CurrentKeyboard keyboard;
+
     /**
      * поле передано, если это служебное сообщение
      * строка, может быть chat_photo_update или chat_photo_remove,

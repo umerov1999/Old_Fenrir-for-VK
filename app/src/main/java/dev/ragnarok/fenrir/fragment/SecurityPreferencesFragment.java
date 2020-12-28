@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,10 +34,32 @@ import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AssertUtils;
 
 public class SecurityPreferencesFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener {
-
-    private static final int REQUEST_CREATE_PIN = 1786;
-    private static final int REQUEST_CHANGE_PIN = 1787;
+    private final ActivityResultLauncher<Intent> requestChangePin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        int[] values = CreatePinFragment.extractValueFromIntent(result.getData());
+                        Settings.get()
+                                .security()
+                                .setPin(values);
+                    }
+                }
+            });
     private SwitchPreference mUsePinForSecurityPreference;
+    private final ActivityResultLauncher<Intent> requestCreatePin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        int[] values = CreatePinFragment.extractValueFromIntent(result.getData());
+                        Settings.get()
+                                .security()
+                                .setPin(values);
+                        mUsePinForSecurityPreference.setChecked(true);
+                    }
+                }
+            });
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -44,7 +70,7 @@ public class SecurityPreferencesFragment extends PreferenceFragmentCompat implem
 
         Preference changePinPreference = findPreference(SecuritySettings.KEY_CHANGE_PIN);
         changePinPreference.setOnPreferenceClickListener(preference -> {
-            startActivityForResult(new Intent(requireActivity(), CreatePinActivity.class), REQUEST_CHANGE_PIN);
+            requestChangePin.launch(new Intent(requireActivity(), CreatePinActivity.class));
             return true;
         });
 
@@ -136,26 +162,7 @@ public class SecurityPreferencesFragment extends PreferenceFragmentCompat implem
     }
 
     private void startCreatePinActivity() {
-        startActivityForResult(new Intent(requireActivity(), CreatePinActivity.class), REQUEST_CREATE_PIN);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CREATE_PIN && resultCode == Activity.RESULT_OK) {
-            int[] values = CreatePinFragment.extractValueFromIntent(data);
-            Settings.get()
-                    .security()
-                    .setPin(values);
-            mUsePinForSecurityPreference.setChecked(true);
-        }
-
-        if (requestCode == REQUEST_CHANGE_PIN && resultCode == Activity.RESULT_OK) {
-            int[] values = CreatePinFragment.extractValueFromIntent(data);
-            Settings.get()
-                    .security()
-                    .setPin(values);
-        }
+        requestCreatePin.launch(new Intent(requireActivity(), CreatePinActivity.class));
     }
 
     @Override

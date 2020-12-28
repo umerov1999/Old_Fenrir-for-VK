@@ -402,6 +402,7 @@ public class MessengerContentProvider extends ContentProvider {
         sMessagesProjectionMap.put(MessageColumns.RANDOM_ID, MessageColumns.FULL_RANDOM_ID);
         sMessagesProjectionMap.put(MessageColumns.EXTRAS, MessageColumns.FULL_EXTRAS);
         sMessagesProjectionMap.put(MessageColumns.PAYLOAD, MessageColumns.FULL_PAYLOAD);
+        sMessagesProjectionMap.put(MessageColumns.KEYBOARD, MessageColumns.FULL_KEYBOARD);
 
         sAttachmentsProjectionMap = new HashMap<>();
         sAttachmentsProjectionMap.put(BaseColumns._ID, AttachmentsColumns.FULL_ID);

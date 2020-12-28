@@ -195,6 +195,13 @@ public class AudioCatalogAdapter extends RecyclerView.Adapter<AudioCatalogAdapte
     }
 
     @Override
+    public void onRequestWritePermissions() {
+        if (clickListener != null) {
+            clickListener.onRequestWritePermissions();
+        }
+    }
+
+    @Override
     public void onVideoClick(int position, Video video) {
         PlaceFactory.getVideoPreviewPlace(account_id, video).tryOpenWith(mContext);
     }
@@ -213,6 +220,8 @@ public class AudioCatalogAdapter extends RecyclerView.Adapter<AudioCatalogAdapte
         void onClick(int index, AudioCatalog value);
 
         void onAddPlayList(int index, AudioPlaylist album);
+
+        void onRequestWritePermissions();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

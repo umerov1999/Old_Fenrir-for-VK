@@ -9,16 +9,22 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -38,9 +44,11 @@ import java.util.List;
 
 import dev.ragnarok.fenrir.CheckUpdate;
 import dev.ragnarok.fenrir.Extra;
+import dev.ragnarok.fenrir.HelperSimple;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.EnterPinActivity;
+import dev.ragnarok.fenrir.activity.MainActivity;
 import dev.ragnarok.fenrir.activity.SelectProfilesActivity;
 import dev.ragnarok.fenrir.adapter.DialogsAdapter;
 import dev.ragnarok.fenrir.dialog.DialogNotifOptionsDialog;
@@ -77,14 +85,58 @@ import static dev.ragnarok.fenrir.util.Objects.nonNull;
 public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsView>
         implements IDialogsView, DialogsAdapter.ClickListener {
 
-    private static final int REQUEST_CODE_SELECT_USERS_FOR_CHAT = 114;
-    private static final int REQUEST_SHOW_CHAT_FOR_SECURITY = 128;
+    private final ActivityResultLauncher<Intent> requestSelectProfile = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        ArrayList<Owner> users = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
+                        AssertUtils.requireNonNull(users);
+
+                        getPresenter().fireUsersForChatSelected(users);
+                    }
+                }
+            });
+    private final ActivityResultLauncher<Intent> requestQRScan = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    IntentResult scanner = IntentIntegrator.parseActivityResult(result);
+                    if (nonNull(scanner)) {
+                        if (!Utils.isEmpty(scanner.getContents())) {
+                            getPresenter().fireQrScanned(scanner.getContents());
+                        }
+                        return;
+                    }
+                }
+            });
     private RecyclerView mRecyclerView;
     private DialogsAdapter mAdapter;
+    private final ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NotNull RecyclerView recyclerView,
+                              @NotNull RecyclerView.ViewHolder viewHolder, @NotNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
+            viewHolder.itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+            mAdapter.notifyItemChanged(viewHolder.getBindingAdapterPosition());
+            Dialog dialog = mAdapter.getByPosition(viewHolder.getBindingAdapterPosition());
+            if (isPresenterPrepared()) {
+                getPresenter().fireRepost(dialog);
+            }
+        }
+
+        @Override
+        public boolean isLongPressDragEnabled() {
+            return false;
+        }
+    };
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private Toolbar toolbar;
     private boolean isCreateChat = true;
-
     private FloatingActionButton mFab;
     private final RecyclerView.OnScrollListener mFabScrollListener = new RecyclerView.OnScrollListener() {
         int scrollMinOffset;
@@ -109,6 +161,17 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
             }
         }
     };
+    private final ActivityResultLauncher<Intent> requestEnterPin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Settings.get().security().setShowHiddenDialogs(true);
+                        ReconfigureOptionsHide();
+                        notifyDataSetChanged();
+                    }
+                }
+            });
 
     public static DialogsFragment newInstance(int accountId, int dialogsOwnerId, @Nullable String subtitle) {
         DialogsFragment fragment = new DialogsFragment();
@@ -129,7 +192,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
 
     private void onSecurityClick() {
         if (Settings.get().security().isUsePinForSecurity()) {
-            startActivityForResult(new Intent(requireActivity(), EnterPinActivity.class), REQUEST_SHOW_CHAT_FOR_SECURITY);
+            requestEnterPin.launch(new Intent(requireActivity(), EnterPinActivity.class));
         } else {
             Settings.get().security().setShowHiddenDialogs(true);
             ReconfigureOptionsHide();
@@ -227,12 +290,11 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
 
     @Override
     public void startQRScanner() {
-        IntentIntegrator integrator = IntentIntegrator.forSupportFragment(this);
-        integrator.setPrompt("QR Code/Bar Code");
+        IntentIntegrator integrator = new IntentIntegrator(requireActivity());
         integrator.setCameraId(0);
         integrator.setBeepEnabled(true);
         integrator.setBarcodeImageEnabled(false);
-        integrator.initiateScan();
+        requestQRScan.launch(integrator.createScanIntent());
     }
 
     @Override
@@ -253,26 +315,12 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        IntentResult scanner = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (nonNull(scanner)) {
-            if (!Utils.isEmpty(scanner.getContents())) {
-                getPresenter().fireQrScanned(scanner.getContents());
+    public void notifyHasAttachments(boolean has) {
+        if (has) {
+            new ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(mRecyclerView);
+            if (HelperSimple.INSTANCE.needHelp(HelperSimple.DIALOG_SEND_HELPER, 3)) {
+                showSnackbar(R.string.dialog_send_helper, true);
             }
-            return;
-        }
-
-        if (requestCode == REQUEST_CODE_SELECT_USERS_FOR_CHAT && resultCode == Activity.RESULT_OK) {
-            ArrayList<Owner> users = data.getParcelableArrayListExtra(Extra.OWNERS);
-            AssertUtils.requireNonNull(users);
-
-            getPresenter().fireUsersForChatSelected(users);
-        } else if (requestCode == REQUEST_SHOW_CHAT_FOR_SECURITY && resultCode == Activity.RESULT_OK) {
-            Settings.get().security().setShowHiddenDialogs(true);
-            ReconfigureOptionsHide();
-            notifyDataSetChanged();
         }
     }
 
@@ -370,7 +418,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
     }
 
     private void createGroupChat() {
-        SelectProfilesActivity.startFriendsSelection(this, REQUEST_CODE_SELECT_USERS_FOR_CHAT);
+        requestSelectProfile.launch(SelectProfilesActivity.startFriendsSelection(requireActivity()));
     }
 
     private void resolveToolbarNavigationIcon() {
@@ -533,6 +581,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         return () -> new DialogsPresenter(
                 requireArguments().getInt(Extra.ACCOUNT_ID),
                 requireArguments().getInt(Extra.OWNER_ID),
+                requireActivity().getIntent().getParcelableExtra(MainActivity.EXTRA_INPUT_ATTACHMENTS),
                 saveInstanceState
         );
     }

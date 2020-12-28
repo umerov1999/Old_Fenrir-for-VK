@@ -38,6 +38,7 @@ import dev.ragnarok.fenrir.place.Place
 import dev.ragnarok.fenrir.place.PlaceFactory
 import dev.ragnarok.fenrir.place.PlaceUtil
 import dev.ragnarok.fenrir.settings.Settings
+import dev.ragnarok.fenrir.util.AppPerms
 import dev.ragnarok.fenrir.util.CustomToast.Companion.CreateCustomToast
 import dev.ragnarok.fenrir.util.Objects
 import dev.ragnarok.fenrir.util.Utils
@@ -57,7 +58,6 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
     companion object {
         private const val EXTRA_PHOTOS = "photos"
         private const val EXTRA_NEED_UPDATE = "need_update"
-        private const val REQUEST_PERMISSION_WRITE_STORAGE = 9020
         private val SIZES = SparseIntArray()
         private const val DEFAULT_PHOTO_SIZE = PhotoSize.W
 
@@ -124,6 +124,12 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
             SIZES.put(4, PhotoSize.W)
         }
     }
+
+    private val requestWritePermission = AppPerms.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), {
+        if (isPresenterPrepared) {
+            presenter?.fireWriteExternalStoragePermissionResolved()
+        }
+    })
 
     private val mGoBackAnimationAdapter = WeakGoBackAnimationAdapter(this)
     private var mViewPager: ViewPager2? = null
@@ -340,7 +346,7 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
     }
 
     override fun requestWriteToExternalStoragePermission() {
-        requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_PERMISSION_WRITE_STORAGE)
+        requestWritePermission.launch()
     }
 
     override fun setButtonRestoreVisible(visible: Boolean) {
@@ -380,13 +386,6 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
     override fun rebindPhotoAt(position: Int) {
         if (Objects.nonNull(mPagerAdapter)) {
             mPagerAdapter!!.notifyItemChanged(position)
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_PERMISSION_WRITE_STORAGE && isPresenterPrepared) {
-            presenter?.fireWriteExternalStoragePermissionResolved()
         }
     }
 

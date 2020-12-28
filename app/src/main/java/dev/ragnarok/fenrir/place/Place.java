@@ -7,6 +7,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 
 public class Place implements Parcelable {
 
@@ -109,8 +111,8 @@ public class Place implements Parcelable {
         }
     };
     public final int type;
-    public Fragment target;
-    public int requestCode;
+    private String requestListenerKey;
+    private FragmentResultListener requestListener;
     private Bundle args;
 
     public Place(int type) {
@@ -128,9 +130,9 @@ public class Place implements Parcelable {
         }
     }
 
-    public Place targetTo(Fragment fragment, int requestCode) {
-        target = fragment;
-        this.requestCode = requestCode;
+    public Place setFragmentListener(@NonNull String requestListenerKey, @NonNull FragmentResultListener requestListener) {
+        this.requestListenerKey = requestListenerKey;
+        this.requestListener = requestListener;
         return this;
     }
 
@@ -177,13 +179,13 @@ public class Place implements Parcelable {
         return args;
     }
 
-    public boolean hasTargeting() {
-        return target != null;
+    public boolean hasListener() {
+        return requestListener != null;
     }
 
-    public void applyTargetingTo(@NonNull Fragment fragment) {
-        if (hasTargeting()) {
-            fragment.setTargetFragment(target, requestCode);
+    public void applyFragmentListener(@NonNull Fragment fragment, @NonNull FragmentManager fragmentManager) {
+        if (hasListener()) {
+            fragmentManager.setFragmentResultListener(requestListenerKey, fragment, requestListener);
         }
     }
 

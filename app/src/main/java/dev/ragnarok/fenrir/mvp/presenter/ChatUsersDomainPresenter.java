@@ -11,9 +11,11 @@ import java.util.List;
 import dev.ragnarok.fenrir.domain.IMessagesRepository;
 import dev.ragnarok.fenrir.domain.Repository;
 import dev.ragnarok.fenrir.model.AppChatUser;
+import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IChatUsersDomainView;
 import dev.ragnarok.fenrir.util.RxUtils;
+import dev.ragnarok.fenrir.util.Utils;
 
 
 public class ChatUsersDomainPresenter extends AccountDependencyPresenter<IChatUsersDomainView> {
@@ -23,15 +25,56 @@ public class ChatUsersDomainPresenter extends AccountDependencyPresenter<IChatUs
     private final IMessagesRepository messagesInteractor;
 
     private final List<AppChatUser> users;
+    private final List<AppChatUser> found;
+    private final List<AppChatUser> original;
     private boolean refreshing;
+    private String query;
 
     public ChatUsersDomainPresenter(int accountId, int chatId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
         this.chatId = chatId;
         users = new ArrayList<>();
+        found = new ArrayList<>();
+        original = new ArrayList<>();
         messagesInteractor = Repository.INSTANCE.getMessages();
 
         requestData();
+    }
+
+    public void setLoadingNow(boolean loadingNow) {
+        refreshing = loadingNow;
+        resolveRefreshing();
+    }
+
+    public void updateCriteria() {
+        setLoadingNow(true);
+        users.clear();
+        if (Utils.isEmpty(query)) {
+            users.addAll(original);
+            setLoadingNow(false);
+            callView(IChatUsersDomainView::notifyDataSetChanged);
+            return;
+        }
+        for (AppChatUser i : original) {
+            Owner user = i.getMember();
+            if (i == null) {
+                continue;
+            }
+            if (user.getFullName().toLowerCase().contains(query.toLowerCase()) || user.getDomain().toLowerCase().contains(query.toLowerCase())) {
+                users.add(i);
+            }
+        }
+        setLoadingNow(false);
+        callView(IChatUsersDomainView::notifyDataSetChanged);
+    }
+
+    public void fireQuery(String q) {
+        if (Utils.isEmpty(q))
+            query = null;
+        else {
+            query = q;
+        }
+        updateCriteria();
     }
 
     @Override
@@ -74,10 +117,9 @@ public class ChatUsersDomainPresenter extends AccountDependencyPresenter<IChatUs
     private void onDataReceived(List<AppChatUser> users) {
         setRefreshing(false);
 
-        this.users.clear();
-        this.users.addAll(users);
-
-        callView(IChatUsersDomainView::notifyDataSetChanged);
+        original.clear();
+        original.addAll(users);
+        updateCriteria();
     }
 
     public void fireRefresh() {

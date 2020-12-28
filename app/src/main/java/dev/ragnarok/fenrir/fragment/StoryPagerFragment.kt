@@ -75,8 +75,14 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         transformation = CurrentTheme.createTransformationForAvatar(requireActivity())
     }
 
+    private val requestWritePermission = AppPerms.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), {
+        if (isPresenterPrepared) {
+            presenter?.fireWritePermissionResolved()
+        }
+    })
+
     override fun requestWriteExternalStoragePermission() {
-        requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_WRITE_PERMISSION)
+        requestWritePermission.launch()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -156,13 +162,6 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
             val index = requireArguments().getInt(Extra.INDEX)
             val stories: ArrayList<Story> = requireArguments().getParcelableArrayList(Extra.STORY)!!
             return StoryPagerPresenter(aid, stories, index, requireActivity(), saveInstanceState)
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_WRITE_PERMISSION && isPresenterPrepared) {
-            presenter?.fireWritePermissionResolved()
         }
     }
 
@@ -469,8 +468,6 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
     }
 
     companion object {
-        private const val REQUEST_WRITE_PERMISSION = 160
-
         @JvmStatic
         fun newInstance(args: Bundle?): StoryPagerFragment {
             val fragment = StoryPagerFragment()

@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,10 +18,15 @@ import android.view.ViewGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -85,10 +91,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class AccountsFragment extends BaseFragment implements View.OnClickListener, AccountAdapter.Callback {
 
-    private static final int REQUEST_PIN_FOR_SECURITY = 120;
     private static final String SAVE_DATA = "save_data";
-    private static final int REQUEST_LOGIN = 107;
-    private static final int REQEUST_DIRECT_LOGIN = 108;
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private TextView empty;
     private RecyclerView mRecyclerView;
@@ -120,6 +123,49 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
     };
     private ArrayList<Account> mData;
     private IOwnersRepository mOwnersInteractor;
+    private final ActivityResultLauncher<Intent> requestLoginWeb = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        int uid = result.getData().getExtras().getInt(Extra.USER_ID);
+                        String token = result.getData().getStringExtra(Extra.TOKEN);
+                        String Login = result.getData().getStringExtra(Extra.LOGIN);
+                        String Password = result.getData().getStringExtra(Extra.PASSWORD);
+                        String TwoFA = result.getData().getStringExtra(Extra.TWOFA);
+                        processNewAccount(uid, token, Constants.DEFAULT_ACCOUNT_TYPE, Login != null ? Login : "", Password != null ? Password : "", TwoFA != null ? TwoFA : "none", true, true);
+                    }
+                }
+            });
+    private final ActivityResultLauncher<Intent> requestPin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        startExportAccounts();
+                    }
+                }
+            });
+    private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+            new AppPerms.onPermissionsGranted() {
+                @Override
+                public void granted() {
+                    if (Settings.get().security().isUsePinForSecurity()) {
+                        requestPin.launch(new Intent(requireActivity(), EnterPinActivity.class));
+                    } else {
+                        startExportAccounts();
+                    }
+                }
+            });
+    private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+            new AppPerms.onPermissionsGranted() {
+                @Override
+                public void granted() {
+                    startImportAccounts();
+                }
+            });
     private IAccountsInteractor accountsInteractor;
 
     @Override
@@ -237,50 +283,6 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
         dialog.show();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-            case REQUEST_PIN_FOR_SECURITY:
-                if (resultCode == Activity.RESULT_OK) {
-                    startExportAccounts();
-                }
-                break;
-            case REQUEST_LOGIN:
-                if (resultCode == Activity.RESULT_OK) {
-                    int uid = data.getExtras().getInt(Extra.USER_ID);
-                    String token = data.getStringExtra(Extra.TOKEN);
-                    String Login = data.getStringExtra(Extra.LOGIN);
-                    String Password = data.getStringExtra(Extra.PASSWORD);
-                    String TwoFA = data.getStringExtra(Extra.TWOFA);
-                    processNewAccount(uid, token, Constants.DEFAULT_ACCOUNT_TYPE, Login != null ? Login : "", Password != null ? Password : "", TwoFA != null ? TwoFA : "none", true, true);
-                }
-                break;
-
-            case REQEUST_DIRECT_LOGIN:
-                if (resultCode == Activity.RESULT_OK) {
-                    if (DirectAuthDialog.ACTION_LOGIN_VIA_WEB.equals(data.getAction())) {
-                        startLoginViaWeb();
-                    } else if (DirectAuthDialog.ACTION_VALIDATE_VIA_WEB.equals(data.getAction())) {
-                        String url = data.getStringExtra(Extra.URL);
-                        String Login = data.getStringExtra(Extra.LOGIN);
-                        String Password = data.getStringExtra(Extra.PASSWORD);
-                        String TwoFA = data.getStringExtra(Extra.TWOFA);
-                        startValidateViaWeb(url, Login, Password, TwoFA);
-                    } else if (DirectAuthDialog.ACTION_LOGIN_COMPLETE.equals(data.getAction())) {
-                        int uid = data.getExtras().getInt(Extra.USER_ID);
-                        String token = data.getStringExtra(Extra.TOKEN);
-                        String Login = data.getStringExtra(Extra.LOGIN);
-                        String Password = data.getStringExtra(Extra.PASSWORD);
-                        String TwoFA = data.getStringExtra(Extra.TWOFA);
-                        processNewAccount(uid, token, Constants.DEFAULT_ACCOUNT_TYPE, Login, Password, TwoFA, true, true);
-                    }
-                }
-                break;
-        }
-    }
-
     private int indexOf(int uid) {
         for (int i = 0; i < mData.size(); i++) {
             if (mData.get(i).getId() == uid) {
@@ -334,18 +336,44 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
 
     private void startLoginViaWeb() {
         Intent intent = LoginActivity.createIntent(requireActivity(), String.valueOf(Constants.API_ID), Auth.getScope());
-        startActivityForResult(intent, REQUEST_LOGIN);
+        requestLoginWeb.launch(intent);
     }
 
     private void startValidateViaWeb(String url, String Login, String Password, String TwoFa) {
         Intent intent = LoginActivity.createIntent(requireActivity(), url, Login, Password, TwoFa);
-        startActivityForResult(intent, REQUEST_LOGIN);
+        requestLoginWeb.launch(intent);
     }
 
     private void startDirectLogin() {
-        DirectAuthDialog.newInstance()
-                .targetTo(this, REQEUST_DIRECT_LOGIN)
-                .show(getParentFragmentManager(), "direct-login");
+        DirectAuthDialog auth = DirectAuthDialog.newInstance();
+        getParentFragmentManager().setFragmentResultListener(DirectAuthDialog.ACTION_LOGIN_VIA_WEB, auth, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
+                startLoginViaWeb();
+            }
+        });
+        getParentFragmentManager().setFragmentResultListener(DirectAuthDialog.ACTION_VALIDATE_VIA_WEB, auth, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
+                String url = result.getString(Extra.URL);
+                String Login = result.getString(Extra.LOGIN);
+                String Password = result.getString(Extra.PASSWORD);
+                String TwoFA = result.getString(Extra.TWOFA);
+                startValidateViaWeb(url, Login, Password, TwoFA);
+            }
+        });
+        getParentFragmentManager().setFragmentResultListener(DirectAuthDialog.ACTION_LOGIN_COMPLETE, auth, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
+                int uid = result.getInt(Extra.USER_ID);
+                String token = result.getString(Extra.TOKEN);
+                String Login = result.getString(Extra.LOGIN);
+                String Password = result.getString(Extra.PASSWORD);
+                String TwoFA = result.getString(Extra.TWOFA);
+                processNewAccount(uid, token, Constants.DEFAULT_ACCOUNT_TYPE, Login, Password, TwoFA, true, true);
+            }
+        });
+        auth.show(getParentFragmentManager(), "direct-login");
     }
 
     @Override
@@ -447,6 +475,46 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
         }
     }
 
+    private void startImportAccounts() {
+        DialogProperties properties = new DialogProperties();
+        properties.selection_mode = DialogConfigs.SINGLE_MODE;
+        properties.selection_type = DialogConfigs.FILE_SELECT;
+        properties.root = Environment.getExternalStorageDirectory();
+        properties.error_dir = Environment.getExternalStorageDirectory();
+        properties.offset = Environment.getExternalStorageDirectory();
+        properties.extensions = new String[]{"json"};
+        properties.show_hidden_files = true;
+        FilePickerDialog dialog = new FilePickerDialog(requireActivity(), properties, Settings.get().ui().getMainTheme());
+        dialog.setTitle(R.string.import_accounts);
+        dialog.setDialogSelectionListener(files -> {
+            try {
+                StringBuilder jbld = new StringBuilder();
+                File file = new File(files[0]);
+                if (file.exists()) {
+                    FileInputStream dataFromServerStream = new FileInputStream(file);
+                    BufferedReader d = new BufferedReader(new InputStreamReader(dataFromServerStream, StandardCharsets.UTF_8));
+                    while (d.ready())
+                        jbld.append(d.readLine());
+                    d.close();
+                    JsonArray reader = JsonParser.parseString(jbld.toString()).getAsJsonObject().getAsJsonArray("fenrir_accounts");
+                    for (JsonElement i : reader) {
+                        JsonObject elem = i.getAsJsonObject();
+                        int id = elem.get("user_id").getAsInt();
+                        if (Settings.get().accounts().getRegistered().contains(id))
+                            continue;
+                        String token = elem.get("access_token").getAsString();
+                        int Type = elem.get("type").getAsInt();
+                        processNewAccount(id, token, Type, "", "", "fenrir_app", true, false);
+                    }
+                }
+                CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.accounts_restored, file.getAbsolutePath());
+            } catch (Exception e) {
+                CustomToast.CreateCustomToast(requireActivity()).showToastError(e.getLocalizedMessage());
+            }
+        });
+        dialog.show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_proxy) {
@@ -483,14 +551,14 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
         }
 
         if (item.getItemId() == R.id.export_accounts) {
-            if (!AppPerms.hasReadWriteStoragePermision(getActivity())) {
-                AppPerms.requestReadWriteStoragePermission(getActivity());
-                return true;
-            }
             if (Settings.get().accounts() == null || Settings.get().accounts().getRegistered() == null || Settings.get().accounts().getRegistered().size() <= 0)
                 return true;
+            if (!AppPerms.hasReadWriteStoragePermision(getActivity())) {
+                requestWritePermission.launch();
+                return true;
+            }
             if (Settings.get().security().isUsePinForSecurity()) {
-                startActivityForResult(new Intent(requireActivity(), EnterPinActivity.class), REQUEST_PIN_FOR_SECURITY);
+                requestPin.launch(new Intent(requireActivity(), EnterPinActivity.class));
             } else
                 startExportAccounts();
             return true;
@@ -498,46 +566,10 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
 
         if (item.getItemId() == R.id.import_accounts) {
             if (!AppPerms.hasReadStoragePermision(getActivity())) {
-                AppPerms.requestReadExternalStoragePermission(getActivity());
+                requestReadPermission.launch();
                 return true;
             }
-            DialogProperties properties = new DialogProperties();
-            properties.selection_mode = DialogConfigs.SINGLE_MODE;
-            properties.selection_type = DialogConfigs.FILE_SELECT;
-            properties.root = Environment.getExternalStorageDirectory();
-            properties.error_dir = Environment.getExternalStorageDirectory();
-            properties.offset = Environment.getExternalStorageDirectory();
-            properties.extensions = new String[]{"json"};
-            properties.show_hidden_files = true;
-            FilePickerDialog dialog = new FilePickerDialog(requireActivity(), properties, Settings.get().ui().getMainTheme());
-            dialog.setTitle(R.string.import_accounts);
-            dialog.setDialogSelectionListener(files -> {
-                try {
-                    StringBuilder jbld = new StringBuilder();
-                    File file = new File(files[0]);
-                    if (file.exists()) {
-                        FileInputStream dataFromServerStream = new FileInputStream(file);
-                        BufferedReader d = new BufferedReader(new InputStreamReader(dataFromServerStream, StandardCharsets.UTF_8));
-                        while (d.ready())
-                            jbld.append(d.readLine());
-                        d.close();
-                        JsonArray reader = JsonParser.parseString(jbld.toString()).getAsJsonObject().getAsJsonArray("fenrir_accounts");
-                        for (JsonElement i : reader) {
-                            JsonObject elem = i.getAsJsonObject();
-                            int id = elem.get("user_id").getAsInt();
-                            if (Settings.get().accounts().getRegistered().contains(id))
-                                continue;
-                            String token = elem.get("access_token").getAsString();
-                            int Type = elem.get("type").getAsInt();
-                            processNewAccount(id, token, Type, "", "", "fenrir_app", true, false);
-                        }
-                    }
-                    CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.accounts_restored, file.getAbsolutePath());
-                } catch (Exception e) {
-                    CustomToast.CreateCustomToast(requireActivity()).showToastError(e.getLocalizedMessage());
-                }
-            });
-            dialog.show();
+            startImportAccounts();
             return true;
         }
 

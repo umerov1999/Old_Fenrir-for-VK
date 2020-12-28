@@ -22,6 +22,7 @@ public final class MessageColumns implements BaseColumns {
     public static final String ORIGINAL_ID = "original_id";
     public static final String UPDATE_TIME = "update_time";
     public static final String PAYLOAD = "payload";
+    public static final String KEYBOARD = "keyboard";
     //chat_columns
     public static final String ACTION = "action";
     public static final String ACTION_MID = "action_mid";
@@ -59,6 +60,7 @@ public final class MessageColumns implements BaseColumns {
     public static final String FULL_RANDOM_ID = TABLENAME + "." + RANDOM_ID;
     public static final String FULL_EXTRAS = TABLENAME + "." + EXTRAS;
     public static final String FULL_PAYLOAD = TABLENAME + "." + PAYLOAD;
+    public static final String FULL_KEYBOARD = TABLENAME + "." + KEYBOARD;
 
     private MessageColumns() {
     }

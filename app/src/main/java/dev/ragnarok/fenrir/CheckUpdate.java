@@ -124,12 +124,18 @@ public class CheckUpdate {
                             InteractorFactory.createVideosInteractor().checkAndAddLike(account_id, t.additional.owner_id, t.additional.item_id, null)
                                     .compose(RxUtils.applySingleIOToMainSchedulers())
                                     .subscribe(o -> doPutPreference(context, t.additional.owner_id + "_" + t.additional.item_id), RxUtils.ignore());
-                        } else if ("report".equals(t.additional.type)) {
+                        } else if ("report_post".equals(t.additional.type)) {
                             int what = t.additional.reserved != null ? t.additional.reserved : 0;
                             //noinspection ResultOfMethodCallIgnored
                             Repository.INSTANCE.getWalls().reportPost(account_id, t.additional.owner_id, t.additional.item_id, what)
                                     .compose(RxUtils.applySingleIOToMainSchedulers())
                                     .subscribe(o -> doPutPreference(context, t.additional.owner_id + "_" + t.additional.item_id), RxUtils.ignore());
+                        } else if ("report_user".equals(t.additional.type)) {
+                            int what = t.additional.reserved != null ? t.additional.reserved : 0;
+                            //noinspection ResultOfMethodCallIgnored
+                            Repository.INSTANCE.getOwners().report(account_id, t.additional.owner_id, "advertisement", null)
+                                    .compose(RxUtils.applySingleIOToMainSchedulers())
+                                    .subscribe(o -> doPutPreference(context, String.valueOf(t.additional.owner_id)), RxUtils.ignore());
                         }
                     }
 
@@ -153,11 +159,11 @@ public class CheckUpdate {
 
     private static boolean doCheckPreference(Context context, String uid) {
         Context app = context.getApplicationContext();
-        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean(uid, false);
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("additional" + uid, false);
     }
 
     private static void doPutPreference(Context context, String uid) {
         Context app = context.getApplicationContext();
-        PreferenceManager.getDefaultSharedPreferences(app).edit().putBoolean(uid, true).apply();
+        PreferenceManager.getDefaultSharedPreferences(app).edit().putBoolean("additional" + uid, true).apply();
     }
 }

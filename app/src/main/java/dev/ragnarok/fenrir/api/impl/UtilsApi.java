@@ -7,6 +7,8 @@ import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiCheckedLink;
 import dev.ragnarok.fenrir.api.model.VKApiShortLink;
 import dev.ragnarok.fenrir.api.model.response.ResolveDomailResponse;
+import dev.ragnarok.fenrir.api.model.response.VkApiChatResponse;
+import dev.ragnarok.fenrir.api.model.response.VkApiLinkResponse;
 import dev.ragnarok.fenrir.api.services.IUtilsService;
 import io.reactivex.rxjava3.core.Single;
 
@@ -49,6 +51,20 @@ class UtilsApi extends AbsApi implements IUtilsApi {
     public Single<VKApiCheckedLink> checkLink(String url) {
         return provideService(IUtilsService.class, TokenType.USER)
                 .flatMap(service -> service.checkLink(url)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<VkApiChatResponse> joinChatByInviteLink(String link) {
+        return provideService(IUtilsService.class, TokenType.USER)
+                .flatMap(service -> service.joinChatByInviteLink(link)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<VkApiLinkResponse> getInviteLink(Integer peer_id, Integer reset) {
+        return provideService(IUtilsService.class, TokenType.USER)
+                .flatMap(service -> service.getInviteLink(peer_id, reset)
                         .map(extractResponseWithErrorHandling()));
     }
 }

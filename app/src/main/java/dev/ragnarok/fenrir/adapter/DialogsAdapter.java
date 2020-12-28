@@ -89,6 +89,11 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.DialogVi
         mStartOfToday = Utils.startOfTodayMillis();
     }
 
+    @NotNull
+    public Dialog getByPosition(int position) {
+        return mDialogs.get(position);
+    }
+
     public void cleanup() {
         unregisterAdapterDataObserver(mDataObserver);
     }

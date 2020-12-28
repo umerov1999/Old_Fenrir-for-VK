@@ -51,8 +51,6 @@ public class VKPhotoAlbumsFragment extends BaseMvpFragment<PhotoAlbumsPresenter,
         VkPhotoAlbumsAdapter.ClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String ACTION_SELECT_ALBUM = "dev.ragnarok.fenrir.ACTION_SELECT_ALBUM";
-    private static final int REQUEST_CREATE_ALBUM = 134;
-    private static final int REQUEST_EDIT_ALBUM = 138;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private FloatingActionButton mFab;
     private VkPhotoAlbumsAdapter mAdapter;
@@ -121,34 +119,6 @@ public class VKPhotoAlbumsFragment extends BaseMvpFragment<PhotoAlbumsPresenter,
                 .build()
                 .apply(requireActivity());
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        //if (requestCode == REQUEST_CREATE_ALBUM) {
-        //    VKApiPhotoAlbum album = data.getParcelableExtra(Extra.ALBUM);
-        //    AssertUtils.requireNonNull(album);
-        //    this.mData.add(0, album);
-        //    safeNotifyDatasetChanged();
-        //}
-
-        //if (requestCode == REQUEST_EDIT_ALBUM) {
-        //    VKApiPhotoAlbum album = data.getParcelableExtra(Extra.ALBUM);
-        //    AssertUtils.requireNonNull(album);
-        //    replacePhotoAlbum(album);
-        //}
-    }
-
-    //private void replacePhotoAlbum(@NonNull VKApiPhotoAlbum album) {
-    //    for (int i = 0; i < mData.size(); i++) {
-    //        if (mData.get(i).equals(album)) {
-    //            mData.set(i, album);
-    //           if (mAdapter != null) mAdapter.notifyItemChanged(i);
-    //            break;
-    //        }
-    //    }
-    //}
 
     @Override
     public void showDeleteConfirmDialog(@NonNull PhotoAlbum album) {
@@ -253,7 +223,6 @@ public class VKPhotoAlbumsFragment extends BaseMvpFragment<PhotoAlbumsPresenter,
     @Override
     public void goToAlbumCreation(int accountId, int ownerId) {
         PlaceFactory.getCreatePhotoAlbumPlace(accountId, ownerId)
-                .targetTo(this, REQUEST_CREATE_ALBUM)
                 .tryOpenWith(requireActivity());
     }
 
@@ -261,7 +230,6 @@ public class VKPhotoAlbumsFragment extends BaseMvpFragment<PhotoAlbumsPresenter,
     public void goToAlbumEditing(int accountId, @NonNull PhotoAlbum album, @NonNull PhotoAlbumEditor editor) {
         PlaceFactory.getEditPhotoAlbumPlace(accountId, album, editor)
                 //.withParcelableExtra(Extra.OWNER, owner)
-                .targetTo(this, REQUEST_EDIT_ALBUM)
                 .tryOpenWith(requireActivity());
     }
 

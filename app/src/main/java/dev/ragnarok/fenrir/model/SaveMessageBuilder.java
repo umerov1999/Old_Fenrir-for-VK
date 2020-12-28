@@ -21,6 +21,7 @@ public class SaveMessageBuilder {
 
     private Integer draftMessageId;
     private String payload;
+    private Keyboard keyboard;
 
     @KeyLocationPolicy
     private int keyLocationPolicy;
@@ -58,6 +59,15 @@ public class SaveMessageBuilder {
 
     public SaveMessageBuilder attach(@NonNull AbsModel attachment) {
         prepareAttachments(1).add(attachment);
+        return this;
+    }
+
+    public Keyboard getKeyboard() {
+        return keyboard;
+    }
+
+    public SaveMessageBuilder setKeyboard(Keyboard keyboard) {
+        this.keyboard = keyboard;
         return this;
     }
 

@@ -50,6 +50,7 @@ public class LottieActivity extends AppCompatActivity {
         MaterialButton toGif = findViewById(R.id.lottie_to_gif);
         toGif.setOnClickListener(v -> {
             toGif.setEnabled(false);
+            lottie.stopAnimation();
             RLottie2Gif.create(lottie.getAnimatedDrawable())
                     .setListener(new RLottie2Gif.Lottie2GifListener() {
                         long start;
@@ -76,6 +77,7 @@ public class LottieActivity extends AppCompatActivity {
                                     "File Size : " + (new File(file + ".gif").length() / 1024) + "kb";
                             log(logs);
                             toGif.post(() -> toGif.setEnabled(true));
+                            lottie.post(() -> lottie.playAnimation());
                         }
                     })
                     .setBackgroundColor(Color.TRANSPARENT)

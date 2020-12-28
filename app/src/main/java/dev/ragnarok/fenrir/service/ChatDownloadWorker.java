@@ -545,7 +545,7 @@ public class ChatDownloadWorker extends Worker {
             mNotifyManager.createNotificationChannel(channel);
             builder = new NotificationCompat.Builder(getApplicationContext(), channel.getId());
         } else {
-            builder = new NotificationCompat.Builder(getApplicationContext()).setPriority(Notification.PRIORITY_MIN);
+            builder = new NotificationCompat.Builder(getApplicationContext(), "worker_channel").setPriority(Notification.PRIORITY_MIN);
         }
         builder.setContentTitle(getApplicationContext().getString(R.string.work_manager))
                 .setContentText(getApplicationContext().getString(R.string.may_down_charge))

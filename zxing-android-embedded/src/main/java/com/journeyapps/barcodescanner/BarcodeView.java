@@ -23,6 +23,7 @@ import java.util.Map;
  *
  * @see CameraPreview for more details on the preview lifecycle.
  */
+@SuppressWarnings("unchecked")
 public class BarcodeView extends CameraPreview {
 
     private DecodeMode decodeMode = DecodeMode.NONE;

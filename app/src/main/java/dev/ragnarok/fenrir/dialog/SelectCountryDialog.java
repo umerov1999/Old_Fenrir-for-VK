@@ -1,8 +1,6 @@
 package dev.ragnarok.fenrir.dialog;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -34,6 +32,7 @@ import static dev.ragnarok.fenrir.util.Objects.nonNull;
 public class SelectCountryDialog extends BaseMvpDialogFragment<CountriesPresenter, ICountriesView>
         implements CountriesAdapter.Listener, ICountriesView {
 
+    public static final String REQUEST_CODE_COUNTRY = "request_country";
     private CountriesAdapter mAdapter;
     private View mLoadingView;
 
@@ -98,16 +97,15 @@ public class SelectCountryDialog extends BaseMvpDialogFragment<CountriesPresente
 
     @Override
     public void returnSelection(Country country) {
-        Intent intent = new Intent();
-        intent.putExtra(Extra.COUNTRY, country);
-        intent.putExtra(Extra.ID, country.getId());
-        intent.putExtra(Extra.TITLE, country.getTitle());
+        Bundle intent = new Bundle();
+        intent.putParcelable(Extra.COUNTRY, country);
+        intent.putInt(Extra.ID, country.getId());
+        intent.putString(Extra.TITLE, country.getTitle());
 
         if (getArguments() != null) {
-            intent.putExtras(getArguments());
+            intent.putAll(getArguments());
         }
-
-        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
+        getParentFragmentManager().setFragmentResult(REQUEST_CODE_COUNTRY, intent);
         dismiss();
     }
 
