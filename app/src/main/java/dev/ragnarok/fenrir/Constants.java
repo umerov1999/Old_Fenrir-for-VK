@@ -27,11 +27,10 @@ public class Constants {
     public static final boolean IS_HAS_LOGIN_WEB = false;
     public static final String FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".fileprovider";
 
-    //public static final String DEVICE_COUNTRY_CODE = Injection.provideApplicationContext().getResources().getConfiguration().locale.getCountry().toLowerCase();
     public static final int VERSION_APK = BuildConfig.VERSION_CODE;
     public static final String APK_ID = BuildConfig.APPLICATION_ID;
-    public static final String VKANDROID_APP_VERSION_NAME = "6.19.1";
-    public static final String VKANDROID_APP_VERSION_CODE = "6685";
+    public static final String VKANDROID_APP_VERSION_NAME = "6.19.4";
+    public static final String VKANDROID_APP_VERSION_CODE = "6703";
     public static final String KATE_APP_VERSION_NAME = "68 lite";
     public static final String KATE_APP_VERSION_CODE = "484";
     public static final int API_ID = BuildConfig.VK_API_APP_ID;

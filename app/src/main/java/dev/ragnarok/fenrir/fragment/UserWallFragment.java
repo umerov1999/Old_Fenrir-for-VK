@@ -14,8 +14,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -75,41 +73,30 @@ import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPresenter>
         implements IUserWallView {
 
-    private final ActivityResultLauncher<Intent> openRequestResizeAvatar = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-            if (result.getResultCode() == Activity.RESULT_OK) {
-                getPresenter().fireNewAvatarPhotoSelected(UCrop.getOutput(result.getData()).getPath());
-            } else if (result.getResultCode() == UCrop.RESULT_ERROR) {
-                showThrowable(UCrop.getError(result.getData()));
-            }
+    private final ActivityResultLauncher<Intent> openRequestResizeAvatar = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            getPresenter().fireNewAvatarPhotoSelected(UCrop.getOutput(result.getData()).getPath());
+        } else if (result.getResultCode() == UCrop.RESULT_ERROR) {
+            showThrowable(UCrop.getError(result.getData()));
         }
     });
-    private final ActivityResultLauncher<Intent> openRequestSelectAvatar = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-            if (result.getResultCode() == Activity.RESULT_OK) {
-                ArrayList<LocalPhoto> photos = result.getData().getParcelableArrayListExtra(Extra.PHOTOS);
-                if (nonEmpty(photos)) {
-                    Uri to_up = photos.get(0).getFullImageUri();
-                    if (new File(to_up.getPath()).isFile()) {
-                        to_up = Uri.fromFile(new File(to_up.getPath()));
-                    }
-                    openRequestResizeAvatar.launch(UCrop.of(to_up, Uri.fromFile(new File(requireActivity().getExternalCacheDir() + File.separator + "scale.jpg")))
-                            .withAspectRatio(1, 1)
-                            .getIntent(requireActivity()));
+    private final ActivityResultLauncher<Intent> openRequestSelectAvatar = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            ArrayList<LocalPhoto> photos = result.getData().getParcelableArrayListExtra(Extra.PHOTOS);
+            if (nonEmpty(photos)) {
+                Uri to_up = photos.get(0).getFullImageUri();
+                if (new File(to_up.getPath()).isFile()) {
+                    to_up = Uri.fromFile(new File(to_up.getPath()));
                 }
+                openRequestResizeAvatar.launch(UCrop.of(to_up, Uri.fromFile(new File(requireActivity().getExternalCacheDir() + File.separator + "scale.jpg")))
+                        .withAspectRatio(1, 1)
+                        .getIntent(requireActivity()));
             }
         }
     });
     private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-            new AppPerms.onPermissionsGranted() {
-                @Override
-                public void granted() {
-                    getPresenter().fireShowQR(requireActivity());
-                }
-            });
+            () -> getPresenter().fireShowQR(requireActivity()));
     private UserHeaderHolder mHeaderHolder;
 
     @Override
@@ -147,7 +134,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
         if (user.isDonated()) {
             mHeaderHolder.bDonate.setVisibility(View.VISIBLE);
             mHeaderHolder.bDonate.setAutoRepeat(true);
-            mHeaderHolder.bDonate.setAnimation(R.raw.donater, Utils.dp(100), Utils.dp(100));
+            mHeaderHolder.bDonate.setAnimation(R.raw.donater, Utils.dp(100), Utils.dp(100), new int[]{0xffffff, CurrentTheme.getColorControlNormal(requireActivity())});
             mHeaderHolder.bDonate.playAnimation();
         } else {
             mHeaderHolder.bDonate.setImageDrawable(null);
@@ -274,7 +261,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
         mHeaderHolder.paganSymbol.setVisibility(Settings.get().other().isShow_pagan_symbol() ? View.VISIBLE : View.GONE);
         switch (Settings.get().other().getPaganSymbol()) {
             case 1:
-                mHeaderHolder.paganSymbol.setImageResource(R.drawable.ic_igdr);
+                mHeaderHolder.paganSymbol.setImageResource(R.drawable.valknut);
                 break;
             case 2:
                 mHeaderHolder.paganSymbol.setImageResource(R.drawable.ic_mjolnir);
@@ -286,7 +273,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
                 mHeaderHolder.paganSymbol.setImageResource(R.drawable.ic_celtic_knot);
                 break;
             default:
-                mHeaderHolder.paganSymbol.setImageResource(R.drawable.valknut);
+                mHeaderHolder.paganSymbol.setImageResource(R.drawable.ic_igdr);
                 break;
         }
     }

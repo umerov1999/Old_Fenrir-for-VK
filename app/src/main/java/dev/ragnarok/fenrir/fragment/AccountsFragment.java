@@ -18,15 +18,12 @@ import android.view.ViewGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -124,48 +121,34 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
     private ArrayList<Account> mData;
     private IOwnersRepository mOwnersInteractor;
     private final ActivityResultLauncher<Intent> requestLoginWeb = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        int uid = result.getData().getExtras().getInt(Extra.USER_ID);
-                        String token = result.getData().getStringExtra(Extra.TOKEN);
-                        String Login = result.getData().getStringExtra(Extra.LOGIN);
-                        String Password = result.getData().getStringExtra(Extra.PASSWORD);
-                        String TwoFA = result.getData().getStringExtra(Extra.TWOFA);
-                        processNewAccount(uid, token, Constants.DEFAULT_ACCOUNT_TYPE, Login != null ? Login : "", Password != null ? Password : "", TwoFA != null ? TwoFA : "none", true, true);
-                    }
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    int uid = result.getData().getExtras().getInt(Extra.USER_ID);
+                    String token = result.getData().getStringExtra(Extra.TOKEN);
+                    String Login = result.getData().getStringExtra(Extra.LOGIN);
+                    String Password = result.getData().getStringExtra(Extra.PASSWORD);
+                    String TwoFA = result.getData().getStringExtra(Extra.TWOFA);
+                    processNewAccount(uid, token, Constants.DEFAULT_ACCOUNT_TYPE, Login != null ? Login : "", Password != null ? Password : "", TwoFA != null ? TwoFA : "none", true, true);
                 }
             });
     private final ActivityResultLauncher<Intent> requestPin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        startExportAccounts();
-                    }
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    startExportAccounts();
                 }
             });
     private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-            new AppPerms.onPermissionsGranted() {
-                @Override
-                public void granted() {
-                    if (Settings.get().security().isUsePinForSecurity()) {
-                        requestPin.launch(new Intent(requireActivity(), EnterPinActivity.class));
-                    } else {
-                        startExportAccounts();
-                    }
+            () -> {
+                if (Settings.get().security().isUsePinForSecurity()) {
+                    requestPin.launch(new Intent(requireActivity(), EnterPinActivity.class));
+                } else {
+                    startExportAccounts();
                 }
             });
     private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-            new AppPerms.onPermissionsGranted() {
-                @Override
-                public void granted() {
-                    startImportAccounts();
-                }
-            });
+            () -> startImportAccounts());
     private IAccountsInteractor accountsInteractor;
 
     @Override
@@ -346,32 +329,21 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
 
     private void startDirectLogin() {
         DirectAuthDialog auth = DirectAuthDialog.newInstance();
-        getParentFragmentManager().setFragmentResultListener(DirectAuthDialog.ACTION_LOGIN_VIA_WEB, auth, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
-                startLoginViaWeb();
-            }
+        getParentFragmentManager().setFragmentResultListener(DirectAuthDialog.ACTION_LOGIN_VIA_WEB, auth, (requestKey, result) -> startLoginViaWeb());
+        getParentFragmentManager().setFragmentResultListener(DirectAuthDialog.ACTION_VALIDATE_VIA_WEB, auth, (requestKey, result) -> {
+            String url = result.getString(Extra.URL);
+            String Login = result.getString(Extra.LOGIN);
+            String Password = result.getString(Extra.PASSWORD);
+            String TwoFA = result.getString(Extra.TWOFA);
+            startValidateViaWeb(url, Login, Password, TwoFA);
         });
-        getParentFragmentManager().setFragmentResultListener(DirectAuthDialog.ACTION_VALIDATE_VIA_WEB, auth, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
-                String url = result.getString(Extra.URL);
-                String Login = result.getString(Extra.LOGIN);
-                String Password = result.getString(Extra.PASSWORD);
-                String TwoFA = result.getString(Extra.TWOFA);
-                startValidateViaWeb(url, Login, Password, TwoFA);
-            }
-        });
-        getParentFragmentManager().setFragmentResultListener(DirectAuthDialog.ACTION_LOGIN_COMPLETE, auth, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
-                int uid = result.getInt(Extra.USER_ID);
-                String token = result.getString(Extra.TOKEN);
-                String Login = result.getString(Extra.LOGIN);
-                String Password = result.getString(Extra.PASSWORD);
-                String TwoFA = result.getString(Extra.TWOFA);
-                processNewAccount(uid, token, Constants.DEFAULT_ACCOUNT_TYPE, Login, Password, TwoFA, true, true);
-            }
+        getParentFragmentManager().setFragmentResultListener(DirectAuthDialog.ACTION_LOGIN_COMPLETE, auth, (requestKey, result) -> {
+            int uid = result.getInt(Extra.USER_ID);
+            String token = result.getString(Extra.TOKEN);
+            String Login = result.getString(Extra.LOGIN);
+            String Password = result.getString(Extra.PASSWORD);
+            String TwoFA = result.getString(Extra.TWOFA);
+            processNewAccount(uid, token, Constants.DEFAULT_ACCOUNT_TYPE, Login, Password, TwoFA, true, true);
         });
         auth.show(getParentFragmentManager(), "direct-login");
     }

@@ -1411,12 +1411,19 @@ public class Utils {
             case Lang.RUSSIA:
                 Constants.DEVICE_COUNTRY_CODE = "ru";
                 return new Locale("ru", "RU");
+            case Lang.DEFAULT:
+                break;
         }
         Constants.DEVICE_COUNTRY_CODE = "ru";
         return Locale.getDefault();
     }
 
     public static Context updateActivityContext(Context base) {
+        if (base.getResources().getConfiguration().locale != null && !isEmpty(base.getResources().getConfiguration().locale.getLanguage())) {
+            Constants.DEVICE_COUNTRY_CODE = base.getResources().getConfiguration().locale.getLanguage().toLowerCase();
+        } else {
+            Constants.DEVICE_COUNTRY_CODE = "ru";
+        }
         int size = dev.ragnarok.fenrir.settings.Settings.get().main().getFontSize();
         @Lang int lang = dev.ragnarok.fenrir.settings.Settings.get().other().getLanguage();
         if (size == 0) {

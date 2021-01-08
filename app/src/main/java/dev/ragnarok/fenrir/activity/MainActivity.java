@@ -19,8 +19,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.ColorInt;
@@ -101,6 +99,7 @@ import dev.ragnarok.fenrir.fragment.NewsfeedCommentsFragment;
 import dev.ragnarok.fenrir.fragment.NewsfeedMentionsFragment;
 import dev.ragnarok.fenrir.fragment.NotificationPreferencesFragment;
 import dev.ragnarok.fenrir.fragment.OwnerArticlesFragment;
+import dev.ragnarok.fenrir.fragment.PhotoAllCommentFragment;
 import dev.ragnarok.fenrir.fragment.PhotoPagerFragment;
 import dev.ragnarok.fenrir.fragment.PlaylistsInCatalogFragment;
 import dev.ragnarok.fenrir.fragment.PollFragment;
@@ -202,50 +201,39 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private final List<Action<MainActivity>> postResumeActions = new ArrayList<>(0);
     private final ActivityResultLauncher<Intent> requestEnterPin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() != RESULT_OK) {
-                        finish();
-                    }
+            result -> {
+                if (result.getResultCode() != RESULT_OK) {
+                    finish();
                 }
             });
     protected int mAccountId;
     private final ActivityResultLauncher<Intent> requestQRScan = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    IntentResult scanner = IntentIntegrator.parseActivityResult(result);
-                    if (nonNull(scanner)) {
-                        if (!Utils.isEmpty(scanner.getContents())) {
-                            MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(MainActivity.this);
-                            dlgAlert.setIcon(R.drawable.qr_code);
-                            dlgAlert.setMessage(scanner.getContents());
-                            dlgAlert.setTitle(getString(R.string.scan_qr));
-                            dlgAlert.setPositiveButton(R.string.open, (dialog, which) -> LinkHelper.openUrl(MainActivity.this, mAccountId, scanner.getContents()));
-                            dlgAlert.setNeutralButton(R.string.copy_text, (dialog, which) -> {
-                                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                                ClipData clip = ClipData.newPlainText("response", scanner.getContents());
-                                clipboard.setPrimaryClip(clip);
-                                CustomToast.CreateCustomToast(MainActivity.this).showToast(R.string.copied_to_clipboard);
-                            });
-                            dlgAlert.setCancelable(true);
-                            dlgAlert.create().show();
-                        }
-                    }
+            result -> {
+                IntentResult scanner = IntentIntegrator.parseActivityResult(result);
+                if (!Utils.isEmpty(scanner.getContents())) {
+                    MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(this);
+                    dlgAlert.setIcon(R.drawable.qr_code);
+                    dlgAlert.setMessage(scanner.getContents());
+                    dlgAlert.setTitle(getString(R.string.scan_qr));
+                    dlgAlert.setPositiveButton(R.string.open, (dialog, which) -> LinkHelper.openUrl(this, mAccountId, scanner.getContents()));
+                    dlgAlert.setNeutralButton(R.string.copy_text, (dialog, which) -> {
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("response", scanner.getContents());
+                        clipboard.setPrimaryClip(clip);
+                        CustomToast.CreateCustomToast(this).showToast(R.string.copied_to_clipboard);
+                    });
+                    dlgAlert.setCancelable(true);
+                    dlgAlert.create().show();
                 }
             });
     private final ActivityResultLauncher<Intent> requestLogin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    mAccountId = Settings.get()
-                            .accounts()
-                            .getCurrent();
+            result -> {
+                mAccountId = Settings.get()
+                        .accounts()
+                        .getCurrent();
 
-                    if (mAccountId == ISettings.IAccountsSettings.INVALID_ID) {
-                        supportFinishAfterTransition();
-                    }
+                if (mAccountId == ISettings.IAccountsSettings.INVALID_ID) {
+                    supportFinishAfterTransition();
                 }
             });
     protected int mLayoutRes = Settings.get().main().isSnow_mode() ? R.layout.activity_main_with_snow : R.layout.activity_main;
@@ -1428,6 +1416,13 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                         args.getInt(Extra.ACCOUNT_ID),
                         args.getInt(Extra.OWNER_ID),
                         args.getInt(Extra.ALBUM_ID)
+                ));
+                break;
+
+            case Place.PHOTO_ALL_COMMENT:
+                attachToFront(PhotoAllCommentFragment.newInstance(
+                        args.getInt(Extra.ACCOUNT_ID),
+                        args.getInt(Extra.OWNER_ID)
                 ));
                 break;
 

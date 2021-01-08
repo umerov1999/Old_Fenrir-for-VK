@@ -12,6 +12,7 @@ import dev.ragnarok.fenrir.api.interfaces.IPhotosApi;
 import dev.ragnarok.fenrir.api.model.AccessIdPair;
 import dev.ragnarok.fenrir.api.model.IAttachmentToken;
 import dev.ragnarok.fenrir.api.model.Items;
+import dev.ragnarok.fenrir.api.model.VKApiComment;
 import dev.ragnarok.fenrir.api.model.VKApiPhoto;
 import dev.ragnarok.fenrir.api.model.VKApiPhotoAlbum;
 import dev.ragnarok.fenrir.api.model.VKApiPhotoTags;
@@ -287,5 +288,17 @@ class PhotosApi extends AbsApi implements IPhotosApi {
     public Single<List<VKApiPhotoTags>> getTags(Integer ownerId, Integer photo_id, String access_key) {
         return provideService(IPhotosService.class, TokenType.USER)
                 .flatMap(service -> service.getTags(ownerId, photo_id, access_key).map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<Items<VKApiComment>> getAllComments(Integer ownerId, Integer album_id, Integer need_likes, Integer offset, Integer count) {
+        return provideService(IPhotosService.class, TokenType.USER)
+                .flatMap(service -> service.getAllComments(ownerId, album_id, need_likes, offset, count).map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<Items<VKApiPhoto>> search(String q, Double lat_gps, Double long_gps, Integer sort, Integer radius, Integer offset, Integer count) {
+        return provideService(IPhotosService.class, TokenType.USER)
+                .flatMap(service -> service.search(q, lat_gps, long_gps, sort, radius, offset, count).map(extractResponseWithErrorHandling()));
     }
 }

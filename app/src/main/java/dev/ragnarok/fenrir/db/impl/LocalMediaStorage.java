@@ -29,6 +29,7 @@ import dev.ragnarok.fenrir.model.LocalVideo;
 import dev.ragnarok.fenrir.picasso.Content_Local;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.util.Objects;
+import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
 
 import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
@@ -52,11 +53,14 @@ class LocalMediaStorage extends AbsStorage implements ILocalMediaStorage {
                 .setTitle(cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME)));
     }
 
-    private static Audio mapAudio(int accountId, Cursor cursor) {
+    private static @Nullable
+    Audio mapAudio(int accountId, Cursor cursor) {
         long id = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
         String data = PicassoInstance.buildUriForPicassoNew(Content_Local.AUDIO, id).toString();
 
-
+        if (Utils.isEmpty(cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME)))) {
+            return null;
+        }
         String TrackName = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME)).replace(".mp3", "");
         String Artist = "";
         String[] arr = TrackName.split(" - ");
@@ -108,7 +112,11 @@ class LocalMediaStorage extends AbsStorage implements ILocalMediaStorage {
             ArrayList<Audio> data = new ArrayList<>(safeCountOf(cursor));
             if (Objects.nonNull(cursor)) {
                 while (cursor.moveToNext()) {
-                    data.add(mapAudio(accountId, cursor));
+                    Audio audio = mapAudio(accountId, cursor);
+                    if (audio == null) {
+                        continue;
+                    }
+                    data.add(audio);
                 }
                 cursor.close();
             }

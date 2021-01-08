@@ -22,6 +22,7 @@ import dev.ragnarok.fenrir.model.AbsModel;
 import dev.ragnarok.fenrir.model.Article;
 import dev.ragnarok.fenrir.model.AttachmenEntry;
 import dev.ragnarok.fenrir.model.Audio;
+import dev.ragnarok.fenrir.model.AudioArtist;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.Call;
 import dev.ragnarok.fenrir.model.Document;
@@ -127,6 +128,8 @@ public class AttachmentsBottomSheetAdapter extends RecyclerView.Adapter<Recycler
             bindMarket(holder, (Market) model);
         } else if (model instanceof MarketAlbum) {
             bindMarketAlbum(holder, (MarketAlbum) model);
+        } else if (model instanceof AudioArtist) {
+            bindAudioArtist(holder, (AudioArtist) model);
         } else if (model instanceof AudioPlaylist) {
             bindAudioPlaylist(holder, (AudioPlaylist) model);
         } else if (model instanceof Graffiti) {
@@ -218,6 +221,15 @@ public class AttachmentsBottomSheetAdapter extends RecyclerView.Adapter<Recycler
         holder.Retry.setVisibility(View.GONE);
         holder.tintView.setVisibility(View.GONE);
         String photoLink = nonNull(market_album.getPhoto()) ? market_album.getPhoto().getUrlForSize(PhotoSize.X, false) : null;
+        bindImageView(holder, photoLink);
+    }
+
+    private void bindAudioArtist(EntryHolder holder, AudioArtist artist) {
+        holder.title.setText(artist.getName());
+        holder.progress.setVisibility(View.INVISIBLE);
+        holder.Retry.setVisibility(View.GONE);
+        holder.tintView.setVisibility(View.GONE);
+        String photoLink = artist.getMaxPhoto();
         bindImageView(holder, photoLink);
     }
 

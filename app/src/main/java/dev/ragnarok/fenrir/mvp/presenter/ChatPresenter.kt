@@ -998,6 +998,7 @@ class ChatPresenter(accountId: Int, private val messagesOwnerId: Int,
 
     private fun addMessageToList(message: Message) {
         addElementToList(message, data, MESSAGES_COMPARATOR)
+        resolveEmptyTextVisibility()
     }
 
     private fun onMessagesUpdate(updates: List<MessageUpdate>) {

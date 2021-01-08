@@ -63,12 +63,7 @@ public class DocPreviewFragment extends BaseFragment implements View.OnClickList
     private Document document;
     private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-            new AppPerms.onPermissionsGranted() {
-                @Override
-                public void granted() {
-                    DownloadWorkUtils.doDownloadDoc(requireActivity(), document);
-                }
-            });
+            this::doDownloadDoc);
     private TouchImageView preview;
     private ImageView ivDocIcon;
     private TextView tvTitle;
@@ -94,6 +89,13 @@ public class DocPreviewFragment extends BaseFragment implements View.OnClickList
         DocPreviewFragment fragment = new DocPreviewFragment();
         fragment.setArguments(arsg);
         return fragment;
+    }
+
+    private void doDownloadDoc() {
+        if (DownloadWorkUtils.doDownloadDoc(requireActivity(), document, false) == 1) {
+            Utils.ThemedSnack(requireView(), R.string.audio_force_download, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.button_yes,
+                    v1 -> DownloadWorkUtils.doDownloadDoc(requireActivity(), document, true)).show();
+        }
     }
 
     @Override
@@ -363,7 +365,7 @@ public class DocPreviewFragment extends BaseFragment implements View.OnClickList
             return;
         }
 
-        DownloadWorkUtils.doDownloadDoc(requireActivity(), document);
+        doDownloadDoc();
     }
 
     private void openOwnerWall() {

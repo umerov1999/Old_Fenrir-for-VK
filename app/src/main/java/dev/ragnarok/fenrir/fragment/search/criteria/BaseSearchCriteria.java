@@ -11,6 +11,7 @@ import java.util.Objects;
 import dev.ragnarok.fenrir.fragment.search.options.BaseOption;
 import dev.ragnarok.fenrir.fragment.search.options.DatabaseOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleBooleanOption;
+import dev.ragnarok.fenrir.fragment.search.options.SimpleGPSOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleNumberOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleTextOption;
 import dev.ragnarok.fenrir.fragment.search.options.SpinnerOption;
@@ -65,6 +66,9 @@ public class BaseSearchCriteria implements Parcelable, Cloneable {
                     break;
                 case BaseOption.SPINNER:
                     classLoader = SpinnerOption.class.getClassLoader();
+                    break;
+                case BaseOption.GPS:
+                    classLoader = SimpleGPSOption.class.getClassLoader();
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown option type !!!");

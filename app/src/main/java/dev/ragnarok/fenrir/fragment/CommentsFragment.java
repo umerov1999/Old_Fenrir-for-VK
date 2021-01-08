@@ -18,7 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -306,12 +305,9 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
     @Override
     public void openAttachmentsManager(int accountId, Integer draftCommentId, int sourceOwnerId, String draftCommentBody) {
         PlaceFactory.getCommentCreatePlace(accountId, draftCommentId, sourceOwnerId, draftCommentBody)
-                .setFragmentListener(CommentCreateFragment.REQUEST_CREATE_COMMENT, new FragmentResultListener() {
-                    @Override
-                    public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
-                        String body = result.getString(Extra.BODY);
-                        postPrenseterReceive(presenter -> presenter.fireEditBodyResult(body));
-                    }
+                .setFragmentListener(CommentCreateFragment.REQUEST_CREATE_COMMENT, (requestKey, result) -> {
+                    String body = result.getString(Extra.BODY);
+                    postPrenseterReceive(presenter -> presenter.fireEditBodyResult(body));
                 })
                 .tryOpenWith(requireActivity());
     }
@@ -341,14 +337,11 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
     @Override
     public void goToCommentEdit(int accountId, Comment comment, Integer commemtId) {
         PlaceFactory.getEditCommentPlace(accountId, comment, commemtId)
-                .setFragmentListener(CommentEditFragment.REQUEST_COMMENT_EDIT, new FragmentResultListener() {
-                    @Override
-                    public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
-                        Comment comment = result.getParcelable(Extra.COMMENT);
+                .setFragmentListener(CommentEditFragment.REQUEST_COMMENT_EDIT, (requestKey, result) -> {
+                    Comment comment1 = result.getParcelable(Extra.COMMENT);
 
-                        if (nonNull(comment)) {
-                            postPrenseterReceive(presenter -> presenter.fireCommentEditResult(comment));
-                        }
+                    if (nonNull(comment1)) {
+                        postPrenseterReceive(presenter -> presenter.fireCommentEditResult(comment1));
                     }
                 })
                 .tryOpenWith(requireActivity());

@@ -92,6 +92,15 @@
             android:title="@string/do_auto_play_video"
             app:iconSpaceReserved="false" />
 
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/array_end_list_anim_names"
+            android:entryValues="@array/array_end_list_anim_items"
+            android:key="end_list_anim"
+            android:title="@string/end_list_anim"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

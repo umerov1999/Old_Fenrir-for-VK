@@ -74,4 +74,8 @@ public class AttachmentsTokenCreator {
     public static IAttachmentToken ofVideo(int id, int ownerId, String accessKey) {
         return new AttachmentToken("video", id, ownerId, accessKey);
     }
+
+    public static IAttachmentToken ofArtist(String id) {
+        return new AttachmentTokenString("artist", id);
+    }
 }

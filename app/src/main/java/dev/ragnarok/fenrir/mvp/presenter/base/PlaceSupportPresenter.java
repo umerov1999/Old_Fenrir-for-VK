@@ -15,6 +15,7 @@ import dev.ragnarok.fenrir.fragment.search.SearchContentType;
 import dev.ragnarok.fenrir.fragment.search.criteria.NewsFeedCriteria;
 import dev.ragnarok.fenrir.model.Article;
 import dev.ragnarok.fenrir.model.Audio;
+import dev.ragnarok.fenrir.model.AudioArtist;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.Commented;
 import dev.ragnarok.fenrir.model.Document;
@@ -124,6 +125,10 @@ public abstract class PlaceSupportPresenter<V extends IMvpView & IAttachmentsPla
 
     public void fireMarketClick(@NonNull Market market) {
         getView().toMarketOpen(getAccountId(), market);
+    }
+
+    public void fireArtistClick(@NonNull AudioArtist artist) {
+        getView().toArtistOpen(getAccountId(), artist);
     }
 
     public void fireFaveArticleClick(@NotNull Article article) {

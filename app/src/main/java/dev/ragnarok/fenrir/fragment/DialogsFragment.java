@@ -14,8 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -86,28 +84,19 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         implements IDialogsView, DialogsAdapter.ClickListener {
 
     private final ActivityResultLauncher<Intent> requestSelectProfile = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        ArrayList<Owner> users = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
-                        AssertUtils.requireNonNull(users);
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    ArrayList<Owner> users = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
+                    AssertUtils.requireNonNull(users);
 
-                        getPresenter().fireUsersForChatSelected(users);
-                    }
+                    getPresenter().fireUsersForChatSelected(users);
                 }
             });
     private final ActivityResultLauncher<Intent> requestQRScan = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    IntentResult scanner = IntentIntegrator.parseActivityResult(result);
-                    if (nonNull(scanner)) {
-                        if (!Utils.isEmpty(scanner.getContents())) {
-                            getPresenter().fireQrScanned(scanner.getContents());
-                        }
-                        return;
-                    }
+            result -> {
+                IntentResult scanner = IntentIntegrator.parseActivityResult(result);
+                if (!Utils.isEmpty(scanner.getContents())) {
+                    getPresenter().fireQrScanned(scanner.getContents());
                 }
             });
     private RecyclerView mRecyclerView;
@@ -162,14 +151,11 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         }
     };
     private final ActivityResultLauncher<Intent> requestEnterPin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Settings.get().security().setShowHiddenDialogs(true);
-                        ReconfigureOptionsHide();
-                        notifyDataSetChanged();
-                    }
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Settings.get().security().setShowHiddenDialogs(true);
+                    ReconfigureOptionsHide();
+                    notifyDataSetChanged();
                 }
             });
 

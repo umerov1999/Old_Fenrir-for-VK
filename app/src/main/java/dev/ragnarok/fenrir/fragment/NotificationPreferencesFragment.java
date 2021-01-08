@@ -10,8 +10,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBar;
@@ -38,15 +36,12 @@ public class NotificationPreferencesFragment extends PreferenceFragmentCompat {
 
     private static final String TAG = NotificationPreferencesFragment.class.getSimpleName();
     private final ActivityResultLauncher<Intent> requestRingTone = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        String uri = result.getData().getData().getPath();
-                        Settings.get()
-                                .notifications()
-                                .setNotificationRingtoneUri(uri);
-                    }
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    String uri = result.getData().getData().getPath();
+                    Settings.get()
+                            .notifications()
+                            .setNotificationRingtoneUri(uri);
                 }
             });
     private Ringtone current;

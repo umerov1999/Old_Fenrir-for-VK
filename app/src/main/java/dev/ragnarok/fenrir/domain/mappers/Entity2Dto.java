@@ -7,6 +7,7 @@ import java.util.List;
 import dev.ragnarok.fenrir.api.model.AttachmentsTokenCreator;
 import dev.ragnarok.fenrir.api.model.IAttachmentToken;
 import dev.ragnarok.fenrir.db.model.entity.ArticleEntity;
+import dev.ragnarok.fenrir.db.model.entity.AudioArtistEntity;
 import dev.ragnarok.fenrir.db.model.entity.AudioEntity;
 import dev.ragnarok.fenrir.db.model.entity.AudioPlaylistEntity;
 import dev.ragnarok.fenrir.db.model.entity.CallEntity;
@@ -83,6 +84,11 @@ public class Entity2Dto {
         if (entity instanceof CallEntity) {
             CallEntity call = (CallEntity) entity;
             return AttachmentsTokenCreator.ofCall(call.getInitiator_id(), call.getReceiver_id(), call.getState(), call.getTime());
+        }
+
+        if (entity instanceof AudioArtistEntity) {
+            AudioArtistEntity artist = (AudioArtistEntity) entity;
+            return AttachmentsTokenCreator.ofArtist(artist.getId());
         }
 
         if (entity instanceof WallReplyEntity) {

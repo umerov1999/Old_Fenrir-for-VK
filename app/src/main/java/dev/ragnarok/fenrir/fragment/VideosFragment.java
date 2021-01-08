@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -75,29 +73,23 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
     public static final String EXTRA_IN_TABS_CONTAINER = "in_tabs_container";
     public static final String EXTRA_ALBUM_TITLE = "album_title";
     private final ActivityResultLauncher<Intent> requestFile = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        String file = result.getData().getStringExtra(FileManagerFragment.returnFileParameter);
-                        LocalVideo vid = result.getData().getParcelableExtra(Extra.VIDEO);
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    String file = result.getData().getStringExtra(FileManagerFragment.returnFileParameter);
+                    LocalVideo vid = result.getData().getParcelableExtra(Extra.VIDEO);
 
-                        if (nonEmpty(file)) {
-                            getPresenter().fireFileForUploadSelected(file);
-                        } else if (nonNull(vid)) {
-                            getPresenter().fireFileForUploadSelected(vid.getData().toString());
-                        }
+                    if (nonEmpty(file)) {
+                        getPresenter().fireFileForUploadSelected(file);
+                    } else if (nonNull(vid)) {
+                        getPresenter().fireFileForUploadSelected(vid.getData().toString());
                     }
                 }
             });
     private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-            new AppPerms.onPermissionsGranted() {
-                @Override
-                public void granted() {
-                    if (isPresenterPrepared()) {
-                        getPresenter().fireReadPermissionResolved();
-                    }
+            () -> {
+                if (isPresenterPrepared()) {
+                    getPresenter().fireReadPermissionResolved();
                 }
             });
     /**

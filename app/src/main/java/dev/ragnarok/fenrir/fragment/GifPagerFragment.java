@@ -96,7 +96,7 @@ public class GifPagerFragment extends AbsDocumentPreviewFragment<GifPagerPresent
         });
 
         root.findViewById(R.id.button_share).setOnClickListener(v -> getPresenter().fireShareButtonClick());
-        root.findViewById(R.id.button_download).setOnClickListener(v -> getPresenter().fireDownloadButtonClick());
+        root.findViewById(R.id.button_download).setOnClickListener(v -> getPresenter().fireDownloadButtonClick(requireActivity(), requireView()));
 
 
         resolveFullscreenViews();

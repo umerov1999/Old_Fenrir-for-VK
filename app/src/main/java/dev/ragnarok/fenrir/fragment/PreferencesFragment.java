@@ -18,8 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -100,45 +98,31 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     private static final String TAG = PreferencesFragment.class.getSimpleName();
 
     private final ActivityResultLauncher<Intent> requestLightBackgound = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                        changeDrawerBackground(false, result.getData());
-                        //requireActivity().recreate();
-                    }
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    changeDrawerBackground(false, result.getData());
+                    //requireActivity().recreate();
                 }
             });
 
     private final ActivityResultLauncher<Intent> requestDarkBackgound = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                        changeDrawerBackground(true, result.getData());
-                        //requireActivity().recreate();
-                    }
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    changeDrawerBackground(true, result.getData());
+                    //requireActivity().recreate();
                 }
             });
 
     private final ActivityResultLauncher<Intent> requestPin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        PlaceFactory.getSecuritySettingsPlace().tryOpenWith(requireActivity());
-                    }
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    PlaceFactory.getSecuritySettingsPlace().tryOpenWith(requireActivity());
                 }
             });
 
     private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-            new AppPerms.onPermissionsGranted() {
-                @Override
-                public void granted() {
-                    CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text);
-                }
-            });
+            () -> CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text));
 
     public static Bundle buildArgs(int accountId) {
         Bundle args = new Bundle();

@@ -32,12 +32,9 @@ public class RequestExecuteFragment extends BaseMvpFragment<RequestExecutePresen
 
     private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-            new AppPerms.onPermissionsGranted() {
-                @Override
-                public void granted() {
-                    if (isPresenterPrepared()) {
-                        getPresenter().fireWritePermissionResolved();
-                    }
+            () -> {
+                if (isPresenterPrepared()) {
+                    getPresenter().fireWritePermissionResolved();
                 }
             });
     private TextInputEditText mResposeBody;

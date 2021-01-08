@@ -57,4 +57,6 @@ public class Types {
     public static final int MARKET = 67108864;
 
     public static final int MARKET_ALBUM = 134217728;
+
+    public static final int ARTIST = 268435456;
 }

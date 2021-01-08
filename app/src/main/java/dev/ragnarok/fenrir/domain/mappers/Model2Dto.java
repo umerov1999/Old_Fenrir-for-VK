@@ -8,6 +8,7 @@ import dev.ragnarok.fenrir.api.model.IAttachmentToken;
 import dev.ragnarok.fenrir.model.AbsModel;
 import dev.ragnarok.fenrir.model.Article;
 import dev.ragnarok.fenrir.model.Audio;
+import dev.ragnarok.fenrir.model.AudioArtist;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.Call;
 import dev.ragnarok.fenrir.model.Document;
@@ -108,6 +109,11 @@ public class Model2Dto {
         if (model instanceof Call) {
             Call call = (Call) model;
             return AttachmentsTokenCreator.ofCall(call.getInitiator_id(), call.getReceiver_id(), call.getState(), call.getTime());
+        }
+
+        if (model instanceof AudioArtist) {
+            AudioArtist artist = (AudioArtist) model;
+            return AttachmentsTokenCreator.ofArtist(artist.getId());
         }
 
         if (model instanceof WallReply) {

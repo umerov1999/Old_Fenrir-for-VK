@@ -53,6 +53,7 @@ public class Attachments implements Parcelable, Cloneable {
     private ArrayList<Market> markets;
     private ArrayList<MarketAlbum> market_albums;
     private ArrayList<WallReply> wall_replies;
+    private ArrayList<AudioArtist> audioArtists;
 
     public Attachments() {
     }
@@ -80,6 +81,7 @@ public class Attachments implements Parcelable, Cloneable {
         markets = in.createTypedArrayList(Market.CREATOR);
         market_albums = in.createTypedArrayList(MarketAlbum.CREATOR);
         wall_replies = in.createTypedArrayList(WallReply.CREATOR);
+        audioArtists = in.createTypedArrayList(AudioArtist.CREATOR);
     }
 
     public ArrayList<VoiceMessage> getVoiceMessages() {
@@ -110,6 +112,7 @@ public class Attachments implements Parcelable, Cloneable {
         dest.writeTypedList(markets);
         dest.writeTypedList(market_albums);
         dest.writeTypedList(wall_replies);
+        dest.writeTypedList(audioArtists);
     }
 
     public void add(AbsModel model) {
@@ -190,6 +193,11 @@ public class Attachments implements Parcelable, Cloneable {
 
         if (model instanceof MarketAlbum) {
             prepareMarketAlbums().add((MarketAlbum) model);
+            return;
+        }
+
+        if (model instanceof AudioArtist) {
+            prepareAudioArtist().add((AudioArtist) model);
             return;
         }
 
@@ -290,6 +298,10 @@ public class Attachments implements Parcelable, Cloneable {
 
         if (nonEmpty(market_albums)) {
             result.addAll(market_albums);
+        }
+
+        if (nonEmpty(audioArtists)) {
+            result.addAll(audioArtists);
         }
 
         if (nonEmpty(wall_replies)) {
@@ -419,6 +431,14 @@ public class Attachments implements Parcelable, Cloneable {
         return market_albums;
     }
 
+    public ArrayList<AudioArtist> prepareAudioArtist() {
+        if (audioArtists == null) {
+            audioArtists = new ArrayList<>(1);
+        }
+
+        return audioArtists;
+    }
+
     public ArrayList<AudioPlaylist> prepareAudioPlaylists() {
         if (audio_playlists == null) {
             audio_playlists = new ArrayList<>(1);
@@ -514,7 +534,8 @@ public class Attachments implements Parcelable, Cloneable {
                 events,
                 markets,
                 market_albums,
-                wall_replies
+                wall_replies,
+                audioArtists
         );
     }
 
@@ -540,7 +561,8 @@ public class Attachments implements Parcelable, Cloneable {
                 events,
                 markets,
                 market_albums,
-                wall_replies
+                wall_replies,
+                audioArtists
         );
     }
 
@@ -583,6 +605,7 @@ public class Attachments implements Parcelable, Cloneable {
                 safeIsEmpty(markets) &&
                 safeIsEmpty(market_albums) &&
                 safeIsEmpty(wall_replies) &&
+                safeIsEmpty(audioArtists) &&
                 safeIsEmpty(gifts);
     }
 
@@ -712,6 +735,12 @@ public class Attachments implements Parcelable, Cloneable {
             }
         }
 
+        if (audioArtists != null) {
+            for (AudioArtist audio_artist : audioArtists) {
+                result.add(new DocLink(audio_artist));
+            }
+        }
+
         if (wall_replies != null) {
             for (WallReply ns : wall_replies) {
                 result.add(new DocLink(ns));
@@ -745,6 +774,7 @@ public class Attachments implements Parcelable, Cloneable {
         clone.events = cloneListAsArrayList(events);
         clone.markets = cloneListAsArrayList(markets);
         clone.market_albums = cloneListAsArrayList(market_albums);
+        clone.audioArtists = cloneListAsArrayList(audioArtists);
         clone.wall_replies = cloneListAsArrayList(wall_replies);
         return clone;
     }
@@ -841,6 +871,10 @@ public class Attachments implements Parcelable, Cloneable {
             line = line + " wall_replies=" + safeCountOf(wall_replies);
         }
 
+        if (nonNull(audioArtists)) {
+            line = line + " audioArtists=" + safeCountOf(audioArtists);
+        }
+
         return line.trim();
     }
 
@@ -874,6 +908,10 @@ public class Attachments implements Parcelable, Cloneable {
 
     public ArrayList<MarketAlbum> getMarketAlbums() {
         return market_albums;
+    }
+
+    public ArrayList<AudioArtist> getAudioArtists() {
+        return audioArtists;
     }
 
     public ArrayList<WallReply> getWallReplies() {

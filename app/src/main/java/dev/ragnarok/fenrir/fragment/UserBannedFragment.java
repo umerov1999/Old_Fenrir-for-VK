@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -55,14 +53,11 @@ import static dev.ragnarok.fenrir.util.Objects.nonNull;
 public class UserBannedFragment extends BaseMvpFragment<UserBannedPresenter, IUserBannedView> implements IUserBannedView, PeopleAdapter.LongClickListener {
 
     private final ActivityResultLauncher<Intent> requestSelect = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        ArrayList<Owner> users = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
-                        AssertUtils.requireNonNull(users);
-                        postPrenseterReceive(presenter -> presenter.fireUsersSelected(users));
-                    }
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    ArrayList<Owner> users = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
+                    AssertUtils.requireNonNull(users);
+                    postPrenseterReceive(presenter -> presenter.fireUsersSelected(users));
                 }
             });
     private SwipeRefreshLayout mSwipeRefreshLayout;

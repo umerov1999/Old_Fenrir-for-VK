@@ -7,8 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -50,14 +48,11 @@ public class CommunityManagersFragment extends BaseMvpFragment<CommunityManagers
         implements ICommunityManagersView {
 
     private final ActivityResultLauncher<Intent> requestSelectProfile = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        ArrayList<Owner> users = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
-                        AssertUtils.requireNonNull(users);
-                        postPrenseterReceive(presenter -> presenter.fireProfilesSelected(users));
-                    }
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    ArrayList<Owner> users = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
+                    AssertUtils.requireNonNull(users);
+                    postPrenseterReceive(presenter -> presenter.fireProfilesSelected(users));
                 }
             });
     private SwipeRefreshLayout mSwipeRefreshLayout;

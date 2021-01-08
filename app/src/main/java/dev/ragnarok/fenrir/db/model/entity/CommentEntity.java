@@ -42,6 +42,8 @@ public class CommentEntity {
 
     private int threads;
 
+    private int pid;
+
     private AttachmentsEntity attachments;
 
     public CommentEntity(int sourceId, int sourceOwnerId, int sourceType, String sourceAccessKey, int id) {
@@ -173,6 +175,15 @@ public class CommentEntity {
         AssertUtils.requireNonNull(entities, "Entities can't bee null");
 
         attachments = new AttachmentsEntity(entities);
+        return this;
+    }
+
+    public int getPid() {
+        return pid;
+    }
+
+    public CommentEntity setPid(int pid) {
+        this.pid = pid;
         return this;
     }
 

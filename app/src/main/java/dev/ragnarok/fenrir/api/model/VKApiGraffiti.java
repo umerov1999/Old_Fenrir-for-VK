@@ -24,6 +24,6 @@ public class VKApiGraffiti implements VKApiAttachment {
 
     @Override
     public String getType() {
-        return TYPE_GRAFFITY;
+        return TYPE_GRAFFITI;
     }
 }

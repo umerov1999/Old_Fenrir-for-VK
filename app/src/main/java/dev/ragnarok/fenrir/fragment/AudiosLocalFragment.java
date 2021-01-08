@@ -47,12 +47,9 @@ public class AudiosLocalFragment extends BaseMvpFragment<AudiosLocalPresenter, I
 
     private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-            new AppPerms.onPermissionsGranted() {
-                @Override
-                public void granted() {
-                    if (isPresenterPrepared()) {
-                        getPresenter().LoadAudiosTool();
-                    }
+            () -> {
+                if (isPresenterPrepared()) {
+                    getPresenter().LoadAudiosTool();
                 }
             });
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -137,7 +134,6 @@ public class AudiosLocalFragment extends BaseMvpFragment<AudiosLocalPresenter, I
             doAudioLoadTabs = true;
             if (!AppPerms.hasReadStoragePermision(getActivity())) {
                 requestReadPermission.launch();
-                return;
             } else {
                 getPresenter().LoadAudiosTool();
             }

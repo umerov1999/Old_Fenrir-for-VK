@@ -262,6 +262,12 @@ public class PlaceFactory {
                 .withIntExtra(Extra.ALBUM_ID, albumId);
     }
 
+    public static Place getPhotoAllCommentsPlace(int accountId, int ownerId) {
+        return new Place(Place.PHOTO_ALL_COMMENT)
+                .withIntExtra(Extra.ACCOUNT_ID, accountId)
+                .withIntExtra(Extra.OWNER_ID, ownerId);
+    }
+
     public static Place getMarketViewPlace(int accountId, @NonNull Market market) {
         return new Place(Place.MARKET_VIEW).setArguments(MarketViewFragment.buildArgs(accountId, market));
     }

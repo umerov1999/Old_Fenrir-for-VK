@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import dev.ragnarok.fenrir.fragment.search.SearchContentType;
 import dev.ragnarok.fenrir.fragment.search.criteria.BaseSearchCriteria;
 import dev.ragnarok.fenrir.model.Audio;
+import dev.ragnarok.fenrir.model.AudioArtist;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.Commented;
 import dev.ragnarok.fenrir.model.Document;
@@ -79,4 +80,6 @@ public interface IAttachmentsPlacesView {
     void toMarketAlbumOpen(int accountId, @NonNull MarketAlbum market_album);
 
     void toMarketOpen(int accountId, @NonNull Market market);
+
+    void toArtistOpen(int accountId, @NonNull AudioArtist artist);
 }

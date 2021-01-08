@@ -15,6 +15,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.Map;
 
+import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.MainActivity;
 import dev.ragnarok.fenrir.longpoll.AppNotificationChannels;
@@ -174,7 +175,7 @@ public class LikeFCMMessage {
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);
 
         Intent intent = new Intent(context, MainActivity.class);
-        //intent.putExtra(Extra.PLACE, place);
+        intent.putExtra(Extra.PLACE, place);
         intent.setAction(MainActivity.ACTION_OPEN_PLACE);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 

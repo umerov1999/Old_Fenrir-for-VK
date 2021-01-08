@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -74,14 +72,11 @@ public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedVi
 
     private final Gson mGson = new Gson();
     private final ActivityResultLauncher<Intent> requestProfileSelect = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        ArrayList<Owner> owners = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
-                        AssertUtils.requireNonNull(owners);
-                        postPrenseterReceive(presenter -> presenter.fireAddToFaveList(requireActivity(), owners));
-                    }
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    ArrayList<Owner> owners = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
+                    AssertUtils.requireNonNull(owners);
+                    postPrenseterReceive(presenter -> presenter.fireAddToFaveList(requireActivity(), owners));
                 }
             });
     private FeedAdapter mAdapter;

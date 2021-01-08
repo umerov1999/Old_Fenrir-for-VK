@@ -9,6 +9,7 @@ import java.util.Calendar;
 
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.AbsModel;
+import dev.ragnarok.fenrir.model.AudioArtist;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.Call;
 import dev.ragnarok.fenrir.model.Document;
@@ -70,6 +71,10 @@ public class DocLink {
 
         if (model instanceof Call) {
             return Types.CALL;
+        }
+
+        if (model instanceof AudioArtist) {
+            return Types.ARTIST;
         }
 
         if (model instanceof WallReply) {
@@ -148,6 +153,9 @@ public class DocLink {
                 }
                 return null;
 
+            case Types.ARTIST:
+                return ((AudioArtist) attachment).getMaxPhoto();
+
             case Types.MARKET:
                 return ((Market) attachment).getThumb_photo();
 
@@ -194,6 +202,9 @@ public class DocLink {
 
             case Types.MARKET:
                 return ((Market) attachment).getTitle();
+
+            case Types.ARTIST:
+                return ((AudioArtist) attachment).getName();
 
             case Types.MARKET_ALBUM:
                 return ((MarketAlbum) attachment).getTitle();

@@ -38,6 +38,8 @@ public class CommentDtoAdapter extends AbsAdapter implements JsonDeserializer<VK
             dto.threads = root.get("thread").getAsJsonObject().get("count").getAsInt();
         }
 
+        dto.pid = optInt(root, "pid");
+
         if (root.has("likes")) {
             JsonObject likesRoot = root.getAsJsonObject("likes");
             dto.likes = optInt(likesRoot, "count");

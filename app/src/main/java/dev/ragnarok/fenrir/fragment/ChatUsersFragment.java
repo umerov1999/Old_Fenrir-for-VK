@@ -7,8 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -53,14 +51,11 @@ public class ChatUsersFragment extends BaseMvpFragment<ChatMembersPresenter, ICh
         implements IChatMembersView, ChatMembersListAdapter.ActionListener {
 
     private final ActivityResultLauncher<Intent> requestAddUser = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                        ArrayList<Owner> users = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
-                        AssertUtils.requireNonNull(users);
-                        postPrenseterReceive(presenter -> presenter.fireUserSelected(users));
-                    }
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    ArrayList<Owner> users = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
+                    AssertUtils.requireNonNull(users);
+                    postPrenseterReceive(presenter -> presenter.fireUserSelected(users));
                 }
             });
     private SwipeRefreshLayout mSwipeRefreshLayout;

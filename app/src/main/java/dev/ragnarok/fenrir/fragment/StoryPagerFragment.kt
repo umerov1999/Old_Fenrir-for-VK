@@ -75,11 +75,11 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         transformation = CurrentTheme.createTransformationForAvatar(requireActivity())
     }
 
-    private val requestWritePermission = AppPerms.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), {
+    private val requestWritePermission = AppPerms.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
         if (isPresenterPrepared) {
             presenter?.fireWritePermissionResolved()
         }
-    })
+    }
 
     override fun requestWriteExternalStoragePermission() {
         requestWritePermission.launch()

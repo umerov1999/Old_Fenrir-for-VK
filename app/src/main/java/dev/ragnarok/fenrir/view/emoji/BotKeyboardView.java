@@ -18,6 +18,7 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.Keyboard;
@@ -34,32 +35,26 @@ public class BotKeyboardView extends ScrollView {
     private int panelHeight;
     private int buttonHeight;
 
-    private final ViewTreeObserver.OnGlobalLayoutListener onGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
-        @Override
-        public void onGlobalLayout() {
-            Rect r = new Rect();
-            if (this == null) {
-                return;
-            }
-            getWindowVisibleDisplayFrame(r);
+    private final ViewTreeObserver.OnGlobalLayoutListener onGlobalLayoutListener = () -> {
+        Rect r = new Rect();
+        getWindowVisibleDisplayFrame(r);
 
-            int screenHeight = getRootView().getHeight();
-            int heightDifference = screenHeight - (r.bottom - r.top);
+        int screenHeight = getRootView().getHeight();
+        int heightDifference = screenHeight - (r.bottom - r.top);
 
-            int navBarHeight = getContext().getResources().getIdentifier("navigation_bar_height", "dimen", "android");
+        int navBarHeight = getContext().getResources().getIdentifier("navigation_bar_height", "dimen", "android");
 
-            if (navBarHeight > 0) {
-                heightDifference -= getContext().getResources().getDimensionPixelSize(navBarHeight);
-            }
+        if (navBarHeight > 0) {
+            heightDifference -= getContext().getResources().getDimensionPixelSize(navBarHeight);
+        }
 
-            int statusbarHeight = getContext().getResources().getIdentifier("status_bar_height", "dimen", "android");
-            if (statusbarHeight > 0) {
-                heightDifference -= getContext().getResources().getDimensionPixelSize(statusbarHeight);
-            }
+        int statusbarHeight = getContext().getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (statusbarHeight > 0) {
+            heightDifference -= getContext().getResources().getDimensionPixelSize(statusbarHeight);
+        }
 
-            if (heightDifference > 200) {
-                setPanelHeight(heightDifference);
-            }
+        if (heightDifference > 200) {
+            setPanelHeight(heightDifference);
         }
     };
 
@@ -126,7 +121,7 @@ public class BotKeyboardView extends ScrollView {
     }
 
     public boolean setButtons(@Nullable List<List<Keyboard.Button>> buttons) {
-        if (botButtons == null ? buttons == null : botButtons.equals(buttons)) {
+        if (Objects.equals(botButtons, buttons)) {
             return false;
         }
         botButtons = buttons;
@@ -135,7 +130,7 @@ public class BotKeyboardView extends ScrollView {
         scrollTo(0, 0);
 
         if (buttons != null && buttons.size() != 0) {
-            buttonHeight = !isFullSize ? 42 : (int) Math.max(42, (panelHeight - Utils.dp(30) - (botButtons.size() - 1) * Utils.dp(10)) / botButtons.size() / Utils.getDensity());
+            buttonHeight = !isFullSize ? 42 : (int) Math.max(42, (float) (panelHeight - Utils.dp(30) - (botButtons.size() - 1) * Utils.dp(10)) / botButtons.size() / Utils.getDensity());
             for (int a = 0; a < buttons.size(); a++) {
                 List<Keyboard.Button> row = buttons.get(a);
 
@@ -179,7 +174,7 @@ public class BotKeyboardView extends ScrollView {
     public void setPanelHeight(int height) {
         panelHeight = height;
         if (isFullSize && botButtons != null && botButtons.size() != 0) {
-            buttonHeight = !isFullSize ? 42 : (int) Math.max(42, (panelHeight - Utils.dp(30) - (botButtons.size() - 1) * Utils.dp(10)) / botButtons.size() / Utils.getDensity());
+            buttonHeight = (int) Math.max(42, (float) (panelHeight - Utils.dp(30) - (botButtons.size() - 1) * Utils.dp(10)) / botButtons.size() / Utils.getDensity());
             int count = container.getChildCount();
             int newHeight = Utils.dp(buttonHeight);
             for (int a = 0; a < count; a++) {

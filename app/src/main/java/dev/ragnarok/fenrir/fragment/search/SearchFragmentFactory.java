@@ -12,6 +12,7 @@ import dev.ragnarok.fenrir.fragment.search.criteria.GroupSearchCriteria;
 import dev.ragnarok.fenrir.fragment.search.criteria.MessageSeachCriteria;
 import dev.ragnarok.fenrir.fragment.search.criteria.NewsFeedCriteria;
 import dev.ragnarok.fenrir.fragment.search.criteria.PeopleSearchCriteria;
+import dev.ragnarok.fenrir.fragment.search.criteria.PhotoSearchCriteria;
 import dev.ragnarok.fenrir.fragment.search.criteria.VideoSearchCriteria;
 import dev.ragnarok.fenrir.fragment.search.criteria.WallSearchCriteria;
 
@@ -62,6 +63,10 @@ public class SearchFragmentFactory {
             case SearchContentType.DIALOGS:
                 return DialogsSearchFragment.newInstance(accountId,
                         criteria instanceof DialogsSearchCriteria ? (DialogsSearchCriteria) criteria : null);
+
+            case SearchContentType.PHOTOS:
+                return PhotoSearchFragment.newInstance(accountId,
+                        criteria instanceof PhotoSearchCriteria ? (PhotoSearchCriteria) criteria : null);
 
             default:
                 throw new UnsupportedOperationException();

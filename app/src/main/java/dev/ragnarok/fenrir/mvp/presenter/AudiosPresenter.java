@@ -206,6 +206,13 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
         }
     }
 
+    public void fireSelectAll() {
+        for (Audio i : audios) {
+            i.setIsSelected(true);
+        }
+        callView(IAudiosView::notifyListChanged);
+    }
+
     public ArrayList<Audio> getSelected(boolean noDownloaded) {
         ArrayList<Audio> ret = new ArrayList<>();
         for (Audio i : audios) {

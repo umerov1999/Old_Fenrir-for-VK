@@ -10,22 +10,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,55 +65,33 @@ public abstract class AbsAttachmentsEditFragment<P extends AbsAttachmentsEditPre
 
     private final AppPerms.doRequestPermissions requestCameraPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-            new AppPerms.onPermissionsGranted() {
-                @Override
-                public void granted() {
-                    getPresenter().fireCameraPermissionResolved();
-                }
-            });
+            () -> getPresenter().fireCameraPermissionResolved());
     private final AppPerms.doRequestPermissions requestReqadPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-            new AppPerms.onPermissionsGranted() {
-                @Override
-                public void granted() {
-                    getPresenter().fireReadStoragePermissionResolved();
-                }
-            });
-    private final ActivityResultLauncher<Uri> openCameraRequest = registerForActivityResult(new ActivityResultContracts.TakePicture(), new ActivityResultCallback<Boolean>() {
-        @Override
-        public void onActivityResult(Boolean result) {
-            if (result) {
-                getPresenter().firePhotoMaked();
-            }
+            () -> getPresenter().fireReadStoragePermissionResolved());
+    private final ActivityResultLauncher<Uri> openCameraRequest = registerForActivityResult(new ActivityResultContracts.TakePicture(), result -> {
+        if (result) {
+            getPresenter().firePhotoMaked();
         }
     });
-    private final ActivityResultLauncher<Intent> openRequestAudioVideoDoc = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-            if (result.getData() != null && result.getResultCode() == Activity.RESULT_OK) {
-                ArrayList<AbsModel> attachments = result.getData().getParcelableArrayListExtra(Extra.ATTACHMENTS);
-                getPresenter().fireAttachmentsSelected(attachments);
-            }
+    private final ActivityResultLauncher<Intent> openRequestAudioVideoDoc = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getData() != null && result.getResultCode() == Activity.RESULT_OK) {
+            ArrayList<AbsModel> attachments = result.getData().getParcelableArrayListExtra(Extra.ATTACHMENTS);
+            getPresenter().fireAttachmentsSelected(attachments);
         }
     });
-    private final ActivityResultLauncher<Intent> openRequestPhotoFromVK = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-            if (result.getData() != null && result.getResultCode() == Activity.RESULT_OK) {
-                ArrayList<Photo> photos = result.getData().getParcelableArrayListExtra("attachments");
-                AssertUtils.requireNonNull(photos);
-                getPresenter().fireVkPhotosSelected(photos);
-            }
+    private final ActivityResultLauncher<Intent> openRequestPhotoFromVK = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getData() != null && result.getResultCode() == Activity.RESULT_OK) {
+            ArrayList<Photo> photos = result.getData().getParcelableArrayListExtra("attachments");
+            AssertUtils.requireNonNull(photos);
+            getPresenter().fireVkPhotosSelected(photos);
         }
     });
-    private final ActivityResultLauncher<Intent> openRequestPhotoFromGallery = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-            if (result.getData() != null && result.getResultCode() == Activity.RESULT_OK) {
-                ArrayList<LocalPhoto> photos = result.getData().getParcelableArrayListExtra(Extra.PHOTOS);
-                AssertUtils.requireNonNull(photos);
-                getPresenter().firePhotosFromGallerySelected(photos);
-            }
+    private final ActivityResultLauncher<Intent> openRequestPhotoFromGallery = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getData() != null && result.getResultCode() == Activity.RESULT_OK) {
+            ArrayList<LocalPhoto> photos = result.getData().getParcelableArrayListExtra(Extra.PHOTOS);
+            AssertUtils.requireNonNull(photos);
+            getPresenter().firePhotosFromGallerySelected(photos);
         }
     });
     private TextInputEditText mTextBody;
@@ -350,13 +323,10 @@ public abstract class AbsAttachmentsEditFragment<P extends AbsAttachmentsEditPre
     @Override
     public void openPollCreationWindow(int accountId, int ownerId) {
         PlaceFactory.getCreatePollPlace(accountId, ownerId)
-                .setFragmentListener(CreatePollFragment.REQUEST_CREATE_POLL, new FragmentResultListener() {
-                    @Override
-                    public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
-                        Poll poll = result.getParcelable("poll");
-                        AssertUtils.requireNonNull(poll);
-                        getPresenter().firePollCreated(poll);
-                    }
+                .setFragmentListener(CreatePollFragment.REQUEST_CREATE_POLL, (requestKey, result) -> {
+                    Poll poll = result.getParcelable("poll");
+                    AssertUtils.requireNonNull(poll);
+                    getPresenter().firePollCreated(poll);
                 })
                 .tryOpenWith(requireActivity());
     }

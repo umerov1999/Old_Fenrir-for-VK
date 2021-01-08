@@ -1,11 +1,9 @@
 package dev.ragnarok.fenrir.fragment.base;
 
 import android.Manifest;
-import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentResultListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,6 +21,7 @@ import dev.ragnarok.fenrir.fragment.search.criteria.BaseSearchCriteria;
 import dev.ragnarok.fenrir.link.LinkHelper;
 import dev.ragnarok.fenrir.model.Article;
 import dev.ragnarok.fenrir.model.Audio;
+import dev.ragnarok.fenrir.model.AudioArtist;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.Commented;
 import dev.ragnarok.fenrir.model.CommentedType;
@@ -58,12 +57,7 @@ public abstract class PlaceSupportMvpFragment<P extends PlaceSupportPresenter<V>
 
     private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-            new AppPerms.onPermissionsGranted() {
-                @Override
-                public void granted() {
-                    CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text);
-                }
-            });
+            () -> CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text));
 
     @Override
     public void onOwnerClick(int ownerId) {
@@ -202,6 +196,11 @@ public abstract class PlaceSupportMvpFragment<P extends PlaceSupportPresenter<V>
     }
 
     @Override
+    public void onArtistOpen(@NonNull AudioArtist artist) {
+        getPresenter().fireArtistClick(artist);
+    }
+
+    @Override
     public void openLink(int accountId, @NonNull Link link) {
         LinkHelper.openLinkInBrowser(requireActivity(), link.getUrl());
     }
@@ -225,6 +224,11 @@ public abstract class PlaceSupportMvpFragment<P extends PlaceSupportPresenter<V>
     @Override
     public void toMarketAlbumOpen(int accountId, @NonNull MarketAlbum market_album) {
         PlaceFactory.getMarketPlace(accountId, market_album.getOwner_id(), market_album.getId()).tryOpenWith(requireActivity());
+    }
+
+    @Override
+    public void toArtistOpen(int accountId, @NonNull AudioArtist artist) {
+        PlaceFactory.getArtistPlace(accountId, artist.getId(), false).tryOpenWith(requireActivity());
     }
 
     @Override
@@ -306,30 +310,27 @@ public abstract class PlaceSupportMvpFragment<P extends PlaceSupportPresenter<V>
     @Override
     public void repostPost(int accountId, @NonNull Post post) {
         PostShareDialog dialog = PostShareDialog.newInstance(accountId, post);
-        getParentFragmentManager().setFragmentResultListener(PostShareDialog.REQUEST_POST_SHARE, dialog, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
-                int method = PostShareDialog.extractMethod(result);
-                int accountId = PostShareDialog.extractAccountId(result);
-                Post post = PostShareDialog.extractPost(result);
+        getParentFragmentManager().setFragmentResultListener(PostShareDialog.REQUEST_POST_SHARE, dialog, (requestKey, result) -> {
+            int method = PostShareDialog.extractMethod(result);
+            int accountId1 = PostShareDialog.extractAccountId(result);
+            Post post1 = PostShareDialog.extractPost(result);
 
-                AssertUtils.requireNonNull(post);
+            AssertUtils.requireNonNull(post1);
 
-                switch (method) {
-                    case PostShareDialog.Methods.SHARE_LINK:
-                        Utils.shareLink(requireActivity(), post.generateVkPostLink(), post.getText());
-                        break;
-                    case PostShareDialog.Methods.REPOST_YOURSELF:
-                        PlaceFactory.getRepostPlace(accountId, null, post).tryOpenWith(requireActivity());
-                        break;
-                    case PostShareDialog.Methods.SEND_MESSAGE:
-                        SendAttachmentsActivity.startForSendAttachments(requireActivity(), accountId, post);
-                        break;
-                    case PostShareDialog.Methods.REPOST_GROUP:
-                        int ownerId = PostShareDialog.extractOwnerId(result);
-                        PlaceFactory.getRepostPlace(accountId, Math.abs(ownerId), post).tryOpenWith(requireActivity());
-                        break;
-                }
+            switch (method) {
+                case PostShareDialog.Methods.SHARE_LINK:
+                    Utils.shareLink(requireActivity(), post1.generateVkPostLink(), post1.getText());
+                    break;
+                case PostShareDialog.Methods.REPOST_YOURSELF:
+                    PlaceFactory.getRepostPlace(accountId1, null, post1).tryOpenWith(requireActivity());
+                    break;
+                case PostShareDialog.Methods.SEND_MESSAGE:
+                    SendAttachmentsActivity.startForSendAttachments(requireActivity(), accountId1, post1);
+                    break;
+                case PostShareDialog.Methods.REPOST_GROUP:
+                    int ownerId = PostShareDialog.extractOwnerId(result);
+                    PlaceFactory.getRepostPlace(accountId1, Math.abs(ownerId), post1).tryOpenWith(requireActivity());
+                    break;
             }
         });
         dialog.show(getParentFragmentManager(), "post-sharing");

@@ -4,14 +4,11 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.content.PermissionChecker;
 import androidx.fragment.app.Fragment;
-
-import java.util.Map;
 
 import dev.ragnarok.fenrir.R;
 
@@ -44,14 +41,11 @@ public class AppPerms {
     }
 
     public static doRequestPermissions requestPermissions(@NonNull Fragment fragment, @NonNull String[] permissions, @NonNull onPermissionsGranted callback) {
-        ActivityResultLauncher<String[]> request = fragment.registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), new ActivityResultCallback<Map<String, Boolean>>() {
-            @Override
-            public void onActivityResult(Map<String, Boolean> result) {
-                if (Utils.checkValues(result.values())) {
-                    callback.granted();
-                } else {
-                    Utils.showRedTopToast(fragment.requireActivity(), R.string.not_permitted);
-                }
+        ActivityResultLauncher<String[]> request = fragment.registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+            if (Utils.checkValues(result.values())) {
+                callback.granted();
+            } else {
+                Utils.showRedTopToast(fragment.requireActivity(), R.string.not_permitted);
             }
         });
         return new doRequestPermissions() {

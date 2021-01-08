@@ -67,6 +67,7 @@ public class Comment extends AbsModel implements Identificable {
     //not parcelable
     private boolean animationNow;
     private int threads;
+    private int pid;
 
     public Comment(Commented commented) {
         this.commented = commented;
@@ -90,6 +91,7 @@ public class Comment extends AbsModel implements Identificable {
         dbid = in.readInt();
         deleted = in.readByte() != 0;
         threads = in.readInt();
+        pid = in.readInt();
     }
 
     @Override
@@ -192,6 +194,15 @@ public class Comment extends AbsModel implements Identificable {
         return this;
     }
 
+    public int getPid() {
+        return pid;
+    }
+
+    public Comment setPid(int pid) {
+        this.pid = pid;
+        return this;
+    }
+
     public Commented getCommented() {
         return commented;
     }
@@ -272,6 +283,7 @@ public class Comment extends AbsModel implements Identificable {
         dest.writeInt(dbid);
         dest.writeByte((byte) (deleted ? 1 : 0));
         dest.writeInt(threads);
+        dest.writeInt(pid);
     }
 
     public int getAttachmentsCount() {

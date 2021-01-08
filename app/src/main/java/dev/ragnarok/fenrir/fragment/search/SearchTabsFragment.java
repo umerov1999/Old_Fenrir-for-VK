@@ -34,6 +34,7 @@ public class SearchTabsFragment extends Fragment {
     public static final int TAB_VIDEOS = 5;
     public static final int TAB_MESSAGES = 6;
     public static final int TAB_DOCUMENTS = 7;
+    public static final int TAB_PHOTOS = 8;
     private static final String TAG = SearchTabsFragment.class.getSimpleName();
     private static final String SAVE_CURRENT_TAB = "save_current_tab";
     private int mCurrentTab;
@@ -86,6 +87,9 @@ public class SearchTabsFragment extends Fragment {
                     break;
                 case TAB_DOCUMENTS:
                     tab.setText(R.string.documents);
+                    break;
+                case TAB_PHOTOS:
+                    tab.setText(R.string.photos);
                     break;
                 case TAB_NEWS:
                     tab.setText(R.string.feed);
@@ -172,6 +176,10 @@ public class SearchTabsFragment extends Fragment {
                     fragment = SingleTabSearchFragment.newInstance(accountId, SearchContentType.DOCUMENTS);
                     break;
 
+                case TAB_PHOTOS:
+                    fragment = SingleTabSearchFragment.newInstance(accountId, SearchContentType.PHOTOS);
+                    break;
+
                 case TAB_NEWS:
                     fragment = SingleTabSearchFragment.newInstance(accountId, SearchContentType.NEWS);
                     break;
@@ -190,7 +198,7 @@ public class SearchTabsFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return 8;
+            return 9;
         }
     }
 }

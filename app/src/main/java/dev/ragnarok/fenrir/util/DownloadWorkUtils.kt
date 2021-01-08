@@ -256,13 +256,17 @@ object DownloadWorkUtils {
     }
 
     @JvmStatic
-    fun doDownloadDoc(context: Context, doc: Document) {
+    fun doDownloadDoc(context: Context, doc: Document, force: Boolean): Int {
         if (Utils.isEmpty(doc.url))
-            return
+            return 2
         val result_filename = makeDoc(makeLegalFilename(doc.title, null), Settings.get().other().docDir, doc.ext)
         CheckDirectory(result_filename.path)
         if (default_file_exist(context, result_filename)) {
-            return
+            if (force) {
+                result_filename.setFile(result_filename.file + ("." + DOWNLOAD_DATE_FORMAT.format(Date())))
+            } else {
+                return 1
+            }
         }
         try {
             if (!Settings.get().other().isUse_internal_downloader) {
@@ -272,8 +276,9 @@ object DownloadWorkUtils {
             }
         } catch (e: Exception) {
             CustomToast.CreateCustomToast(context).showToastError("Docs Error: " + e.message)
-            return
+            return 2
         }
+        return 0
     }
 
     @JvmStatic

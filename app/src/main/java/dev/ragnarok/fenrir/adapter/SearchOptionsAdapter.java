@@ -15,6 +15,7 @@ import dev.ragnarok.fenrir.adapter.base.RecyclerBindableAdapter;
 import dev.ragnarok.fenrir.fragment.search.options.BaseOption;
 import dev.ragnarok.fenrir.fragment.search.options.DatabaseOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleBooleanOption;
+import dev.ragnarok.fenrir.fragment.search.options.SimpleGPSOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleNumberOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleTextOption;
 import dev.ragnarok.fenrir.fragment.search.options.SpinnerOption;
@@ -43,7 +44,6 @@ public class SearchOptionsAdapter extends RecyclerBindableAdapter<BaseOption, Re
 
                 if (option instanceof SpinnerOption) {
                     bindSpinnerHolder((SpinnerOption) option, normalHolder);
-
                 }
 
                 if (option instanceof SimpleTextOption) {
@@ -54,12 +54,39 @@ public class SearchOptionsAdapter extends RecyclerBindableAdapter<BaseOption, Re
                     bindDatabaseHolder((DatabaseOption) option, normalHolder);
                 }
 
+                if (option instanceof SimpleGPSOption) {
+                    bindSimpleGpsHolder((SimpleGPSOption) option, normalHolder);
+                }
+
                 break;
             case TYPE_BOOLEAN:
                 SimpleBooleanHolder simpleBooleanHolder = (SimpleBooleanHolder) viewHolder;
                 bindSimpleBooleanHolder((SimpleBooleanOption) option, simpleBooleanHolder);
                 break;
         }
+    }
+
+    private void bindSimpleGpsHolder(SimpleGPSOption option, NormalHolder holder) {
+        holder.title.setText(option.title);
+        holder.value.setText(option.simpleGPS() == null ? null : option.simpleGPS());
+        holder.delete.setVisibility(option.simpleGPS() == null ? View.INVISIBLE : View.VISIBLE);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (mOptionClickListener != null) {
+                mOptionClickListener.onGPSOptionClick(option);
+            }
+        });
+
+        holder.delete.setOnClickListener(v -> {
+            holder.value.setText(null);
+            holder.delete.setVisibility(View.INVISIBLE);
+            option.long_gps = 0;
+            option.lat_gps = 0;
+
+            if (mOptionClickListener != null) {
+                mOptionClickListener.onOptionCleared(option);
+            }
+        });
     }
 
     private void bindDatabaseHolder(DatabaseOption option, NormalHolder holder) {
@@ -201,7 +228,8 @@ public class SearchOptionsAdapter extends RecyclerBindableAdapter<BaseOption, Re
         if (option instanceof SimpleNumberOption
                 || option instanceof SimpleTextOption
                 || option instanceof SpinnerOption
-                || option instanceof DatabaseOption) {
+                || option instanceof DatabaseOption
+                || option instanceof SimpleGPSOption) {
             return TYPE_NORMAL;
         }
 
@@ -228,6 +256,8 @@ public class SearchOptionsAdapter extends RecyclerBindableAdapter<BaseOption, Re
         void onSimpleBooleanOptionChanged(SimpleBooleanOption option);
 
         void onOptionCleared(BaseOption option);
+
+        void onGPSOptionClick(SimpleGPSOption gpsOption);
     }
 
     public static class NormalHolder extends RecyclerView.ViewHolder {

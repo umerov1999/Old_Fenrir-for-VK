@@ -12,6 +12,7 @@ import dev.ragnarok.fenrir.api.model.PhotoSizeDto;
 import dev.ragnarok.fenrir.api.model.VKApiArticle;
 import dev.ragnarok.fenrir.api.model.VKApiAttachment;
 import dev.ragnarok.fenrir.api.model.VKApiAudio;
+import dev.ragnarok.fenrir.api.model.VKApiAudioArtist;
 import dev.ragnarok.fenrir.api.model.VKApiAudioPlaylist;
 import dev.ragnarok.fenrir.api.model.VKApiCall;
 import dev.ragnarok.fenrir.api.model.VKApiCareer;
@@ -68,6 +69,7 @@ import dev.ragnarok.fenrir.crypt.CryptHelper;
 import dev.ragnarok.fenrir.crypt.MessageType;
 import dev.ragnarok.fenrir.db.model.IdPairEntity;
 import dev.ragnarok.fenrir.db.model.entity.ArticleEntity;
+import dev.ragnarok.fenrir.db.model.entity.AudioArtistEntity;
 import dev.ragnarok.fenrir.db.model.entity.AudioEntity;
 import dev.ragnarok.fenrir.db.model.entity.AudioMessageEntity;
 import dev.ragnarok.fenrir.db.model.entity.AudioPlaylistEntity;
@@ -690,7 +692,8 @@ public class Dto2Entity {
                 .setDeleted(false)
                 .setAttachmentsCount(comment.getAttachmentsCount())
                 .setAttachments(attachmentsEntities)
-                .setThreads(comment.threads);
+                .setThreads(comment.threads)
+                .setPid(comment.pid);
     }
 
     public static SimpleDialogEntity mapConversation(VkApiConversation dto) {
@@ -859,6 +862,10 @@ public class Dto2Entity {
             return mapMarketAlbum((VkApiMarketAlbum) dto);
         }
 
+        if (dto instanceof VKApiAudioArtist) {
+            return mapAudioArtist((VKApiAudioArtist) dto);
+        }
+
         if (dto instanceof VKApiWikiPage) {
             return mapWikiPage((VKApiWikiPage) dto);
         }
@@ -1017,6 +1024,10 @@ public class Dto2Entity {
         return new StickerEntity.Img(dto.url, dto.width, dto.height);
     }
 
+    public static AudioArtistEntity.AudioArtistImageEntity mapArtistImage(VKApiAudioArtist.Image dto) {
+        return new AudioArtistEntity.AudioArtistImageEntity(dto.url, dto.width, dto.height);
+    }
+
     public static StickerSetEntity.Img map(VKApiStickerSet.Image dto) {
         return new StickerSetEntity.Img(dto.url, dto.width, dto.height);
     }
@@ -1132,6 +1143,13 @@ public class Dto2Entity {
                 .setTitle(dto.title)
                 .setUpdated_time(dto.updated_time)
                 .setPhoto(dto.photo != null ? mapPhoto(dto.photo) : null);
+    }
+
+    public static AudioArtistEntity mapAudioArtist(VKApiAudioArtist dto) {
+        return new AudioArtistEntity()
+                .setId(dto.id)
+                .setName(dto.name)
+                .setPhoto(mapAll(dto.photo, Dto2Entity::mapArtistImage));
     }
 
     public static AudioMessageEntity mapAudioMessage(VkApiAudioMessage dto) {

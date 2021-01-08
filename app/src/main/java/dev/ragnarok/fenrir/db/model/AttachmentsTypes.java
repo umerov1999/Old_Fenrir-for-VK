@@ -1,6 +1,7 @@
 package dev.ragnarok.fenrir.db.model;
 
 import dev.ragnarok.fenrir.db.model.entity.ArticleEntity;
+import dev.ragnarok.fenrir.db.model.entity.AudioArtistEntity;
 import dev.ragnarok.fenrir.db.model.entity.AudioEntity;
 import dev.ragnarok.fenrir.db.model.entity.AudioMessageEntity;
 import dev.ragnarok.fenrir.db.model.entity.AudioPlaylistEntity;
@@ -50,6 +51,7 @@ public final class AttachmentsTypes {
     public static final int EVENT = 1048576;
     public static final int MARKET = 2097152;
     public static final int MARKET_ALBUM = 4194304;
+    public static final int ARTIST = 8388608;
 
     private AttachmentsTypes() {
     }
@@ -85,6 +87,8 @@ public final class AttachmentsTypes {
             return STORY;
         } else if (entity instanceof CallEntity) {
             return CALL;
+        } else if (entity instanceof AudioArtistEntity) {
+            return ARTIST;
         } else if (entity instanceof AudioPlaylistEntity) {
             return AUDIO_PLAYLIST;
         } else if (entity instanceof GraffitiEntity) {
@@ -138,6 +142,8 @@ public final class AttachmentsTypes {
                 return StoryEntity.class;
             case CALL:
                 return CallEntity.class;
+            case ARTIST:
+                return AudioArtistEntity.class;
             case AUDIO_PLAYLIST:
                 return AudioPlaylistEntity.class;
             case GRAFFITY:

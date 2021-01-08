@@ -45,7 +45,6 @@ public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbum
     private String mAction;
     private ArrayList<PhotoAlbum> mData;
     private boolean netLoadingNow;
-    private boolean cacheLoadingNow;
 
     public PhotoAlbumsPresenter(int accountId, int ownerId, @Nullable AdditionalParams params, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
@@ -136,7 +135,6 @@ public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbum
     private void onActualAlbumsReceived(int offset, List<PhotoAlbum> albums) {
         // reset cache loading
         cacheDisposable.clear();
-        cacheLoadingNow = false;
 
         netLoadingNow = false;
 
@@ -154,7 +152,6 @@ public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbum
     }
 
     private void loadAllFromDb() {
-        cacheLoadingNow = true;
 
         int accountId = getAccountId();
         cacheDisposable.add(photosInteractor.getCachedAlbums(accountId, mOwnerId)
@@ -163,7 +160,6 @@ public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbum
     }
 
     private void onCachedDataReceived(List<PhotoAlbum> albums) {
-        cacheLoadingNow = false;
 
         mData.clear();
         mData.addAll(albums);
@@ -253,9 +249,14 @@ public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbum
         }
     }
 
+    public void fireAllComments() {
+        if (isGuiReady()) {
+            getView().goToPhotoComments(getAccountId(), mOwnerId);
+        }
+    }
+
     public void fireRefresh() {
         cacheDisposable.clear();
-        cacheLoadingNow = false;
 
         netDisposable.clear();
         netLoadingNow = false;

@@ -16,24 +16,4 @@ public class UpdateToolResponse {
 
     @SerializedName("donates")
     public List<Integer> donates;
-
-    @SerializedName("additional")
-    public Additional additional;
-
-    public static final class Additional {
-        @SerializedName("enabled")
-        public boolean enabled;
-
-        @SerializedName("type")
-        public String type;
-
-        @SerializedName("owner_id")
-        public int owner_id;
-
-        @SerializedName("item_id")
-        public int item_id;
-
-        @SerializedName("reserved")
-        public Integer reserved;
-    }
 }

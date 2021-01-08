@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import dev.ragnarok.fenrir.db.model.entity.ArticleEntity;
+import dev.ragnarok.fenrir.db.model.entity.AudioArtistEntity;
 import dev.ragnarok.fenrir.db.model.entity.AudioEntity;
 import dev.ragnarok.fenrir.db.model.entity.AudioMessageEntity;
 import dev.ragnarok.fenrir.db.model.entity.AudioPlaylistEntity;
@@ -57,6 +58,7 @@ import dev.ragnarok.fenrir.model.AbsModel;
 import dev.ragnarok.fenrir.model.Article;
 import dev.ragnarok.fenrir.model.Attachments;
 import dev.ragnarok.fenrir.model.Audio;
+import dev.ragnarok.fenrir.model.AudioArtist;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.Call;
 import dev.ragnarok.fenrir.model.Career;
@@ -219,12 +221,10 @@ public class Entity2Model {
     @NonNull
     public static List<User> buildUserArray(@NonNull List<Integer> users, @NonNull IOwnersBundle owners) {
         List<User> data = new ArrayList<>(safeCountOf(users));
-        if (nonNull(users)) {
-            for (Integer pair : users) {
-                Owner dt = owners.getById(pair);
-                if (dt.getOwnerType() == OwnerType.USER)
-                    data.add((User) owners.getById(pair));
-            }
+        for (Integer pair : users) {
+            Owner dt = owners.getById(pair);
+            if (dt.getOwnerType() == OwnerType.USER)
+                data.add((User) owners.getById(pair));
         }
 
         return data;
@@ -461,6 +461,7 @@ public class Entity2Model {
                 .setAttachments(attachments)
                 .setAuthor(owners.getById(dbo.getFromId()))
                 .setThreads(dbo.getThreads())
+                .setPid(dbo.getPid())
                 .setDeleted(dbo.isDeleted());
     }
 
@@ -627,6 +628,10 @@ public class Entity2Model {
 
         if (entity instanceof MarketAlbumEntity) {
             return buildMarketAlbumFromDbo((MarketAlbumEntity) entity);
+        }
+
+        if (entity instanceof AudioArtistEntity) {
+            return buildAudioArtistFromDbo((AudioArtistEntity) entity);
         }
 
         if (entity instanceof PollEntity) {
@@ -904,6 +909,16 @@ public class Entity2Model {
                 .setPhoto(dbo.getPhoto() != null ? map(dbo.getPhoto()) : null);
     }
 
+    public static AudioArtist.AudioArtistImage mapArtistImage(AudioArtistEntity.AudioArtistImageEntity dbo) {
+        return new AudioArtist.AudioArtistImage(dbo.getUrl(), dbo.getWidth(), dbo.getHeight());
+    }
+
+    public static AudioArtist buildAudioArtistFromDbo(AudioArtistEntity dbo) {
+        return new AudioArtist(dbo.getId())
+                .setName(dbo.getName())
+                .setPhoto(mapAll(dbo.getPhoto(), Entity2Model::mapArtistImage));
+    }
+
     public static Story buildStoryFromDbo(StoryEntity dbo, IOwnersBundle owners) {
         return new Story().setId(dbo.getId())
                 .setOwnerId(dbo.getOwnerId())
@@ -949,7 +964,7 @@ public class Entity2Model {
                 .setCanPublish(dbo.isCanPublish())
                 .setRepostsCount(dbo.getRepostCount())
                 .setUserReposted(dbo.isUserReposted())
-                .setFriends(buildUserArray(dbo.getFriendsTags(), owners))
+                .setFriends(dbo.getFriendsTags() == null ? null : buildUserArray(dbo.getFriendsTags(), owners))
                 .setViewCount(dbo.getViews());
 
         if (nonEmpty(dbo.getAttachments())) {

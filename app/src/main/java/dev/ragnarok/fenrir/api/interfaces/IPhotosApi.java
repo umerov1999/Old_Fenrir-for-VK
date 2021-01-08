@@ -9,6 +9,7 @@ import java.util.List;
 import dev.ragnarok.fenrir.api.model.AccessIdPair;
 import dev.ragnarok.fenrir.api.model.IAttachmentToken;
 import dev.ragnarok.fenrir.api.model.Items;
+import dev.ragnarok.fenrir.api.model.VKApiComment;
 import dev.ragnarok.fenrir.api.model.VKApiPhoto;
 import dev.ragnarok.fenrir.api.model.VKApiPhotoAlbum;
 import dev.ragnarok.fenrir.api.model.VKApiPhotoTags;
@@ -119,5 +120,11 @@ public interface IPhotosApi {
 
     @CheckResult
     Single<List<VKApiPhotoTags>> getTags(Integer ownerId, Integer photo_id, String access_key);
+
+    @CheckResult
+    Single<Items<VKApiComment>> getAllComments(Integer ownerId, Integer album_id, Integer need_likes, Integer offset, Integer count);
+
+    @CheckResult
+    Single<Items<VKApiPhoto>> search(String q, Double lat_gps, Double long_gps, Integer sort, Integer radius, Integer offset, Integer count);
 
 }

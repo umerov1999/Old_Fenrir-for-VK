@@ -10,8 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -73,49 +71,32 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
     public static final String MESSAGE_SYNC_ATTACHMENTS = "message_attachments_sync";
     private final AppPerms.doRequestPermissions requestCameraPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-            new AppPerms.onPermissionsGranted() {
-                @Override
-                public void granted() {
-                    getPresenter().fireCameraPermissionResolved();
-                }
-            });
-    private final ActivityResultLauncher<Uri> openCameraRequest = registerForActivityResult(new ActivityResultContracts.TakePicture(), new ActivityResultCallback<Boolean>() {
-        @Override
-        public void onActivityResult(Boolean result) {
-            if (result) {
-                getPresenter().firePhotoMaked();
-            }
+            () -> getPresenter().fireCameraPermissionResolved());
+    private final ActivityResultLauncher<Uri> openCameraRequest = registerForActivityResult(new ActivityResultContracts.TakePicture(), result -> {
+        if (result) {
+            getPresenter().firePhotoMaked();
         }
     });
-    private final ActivityResultLauncher<Intent> openRequestAudioVideoDoc = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-            if (result.getData() != null && result.getResultCode() == Activity.RESULT_OK) {
-                ArrayList<AbsModel> attachments = result.getData().getParcelableArrayListExtra(Extra.ATTACHMENTS);
-                getPresenter().fireAttachmentsSelected(attachments);
-            }
+    private final ActivityResultLauncher<Intent> openRequestAudioVideoDoc = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getData() != null && result.getResultCode() == Activity.RESULT_OK) {
+            ArrayList<AbsModel> attachments = result.getData().getParcelableArrayListExtra(Extra.ATTACHMENTS);
+            getPresenter().fireAttachmentsSelected(attachments);
         }
     });
-    private final ActivityResultLauncher<Intent> openRequestPhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-            if (result.getData() != null && result.getResultCode() == Activity.RESULT_OK) {
-                ArrayList<Photo> vkphotos = result.getData().getParcelableArrayListExtra(Extra.ATTACHMENTS);
-                ArrayList<LocalPhoto> localPhotos = result.getData().getParcelableArrayListExtra(Extra.PHOTOS);
-                String file = result.getData().getStringExtra(FileManagerFragment.returnFileParameter);
-                LocalVideo video = result.getData().getParcelableExtra(Extra.VIDEO);
-                getPresenter().firePhotosSelected(vkphotos, localPhotos, file, video);
-            }
+    private final ActivityResultLauncher<Intent> openRequestPhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getData() != null && result.getResultCode() == Activity.RESULT_OK) {
+            ArrayList<Photo> vkphotos = result.getData().getParcelableArrayListExtra(Extra.ATTACHMENTS);
+            ArrayList<LocalPhoto> localPhotos = result.getData().getParcelableArrayListExtra(Extra.PHOTOS);
+            String file = result.getData().getStringExtra(FileManagerFragment.returnFileParameter);
+            LocalVideo video = result.getData().getParcelableExtra(Extra.VIDEO);
+            getPresenter().firePhotosSelected(vkphotos, localPhotos, file, video);
         }
     });
-    private final ActivityResultLauncher<Intent> openRequestResizePhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-            if (result.getResultCode() == Activity.RESULT_OK) {
-                getPresenter().doUploadFile(UCrop.getOutput(result.getData()).getPath(), Upload.IMAGE_SIZE_FULL, false);
-            } else if (result.getResultCode() == UCrop.RESULT_ERROR) {
-                showThrowable(UCrop.getError(result.getData()));
-            }
+    private final ActivityResultLauncher<Intent> openRequestResizePhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            getPresenter().doUploadFile(UCrop.getOutput(result.getData()).getPath(), Upload.IMAGE_SIZE_FULL, false);
+        } else if (result.getResultCode() == UCrop.RESULT_ERROR) {
+            showThrowable(UCrop.getError(result.getData()));
         }
     });
     private AttachmentsBottomSheetAdapter mAdapter;

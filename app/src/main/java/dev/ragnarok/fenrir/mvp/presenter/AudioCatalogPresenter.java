@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,13 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dev.ragnarok.fenrir.R;
+import dev.ragnarok.fenrir.activity.SendAttachmentsActivity;
 import dev.ragnarok.fenrir.domain.IAudioInteractor;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
+import dev.ragnarok.fenrir.model.AudioArtist;
 import dev.ragnarok.fenrir.model.AudioCatalog;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IAudioCatalogView;
 import dev.ragnarok.fenrir.util.RxUtils;
+import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
@@ -103,11 +107,16 @@ public class AudioCatalogPresenter extends AccountDependencyPresenter<IAudioCata
         super.onDestroyed();
     }
 
-    public void fireRefresh() {
+    public void fireRepost(Context context) {
+        if (Utils.isEmpty(artist_id)) {
+            return;
+        }
+        SendAttachmentsActivity.startForSendAttachments(context, getAccountId(), new AudioArtist(artist_id));
+    }
 
+    public void fireRefresh() {
         actualDataDisposable.clear();
         actualDataLoading = false;
-
         loadActualData();
     }
 }

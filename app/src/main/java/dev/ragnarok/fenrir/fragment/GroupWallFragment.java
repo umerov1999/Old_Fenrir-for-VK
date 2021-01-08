@@ -11,8 +11,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -67,23 +65,15 @@ import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWallPresenter> implements IGroupWallView {
 
     private final ActivityResultLauncher<Intent> requestCommunity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        ArrayList<Token> tokens = LoginActivity.extractGroupTokens(result.getData());
-                        getPresenter().fireGroupTokensReceived(tokens);
-                    }
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    ArrayList<Token> tokens = LoginActivity.extractGroupTokens(result.getData());
+                    getPresenter().fireGroupTokensReceived(tokens);
                 }
             });
     private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-            new AppPerms.onPermissionsGranted() {
-                @Override
-                public void granted() {
-                    getPresenter().fireShowQR(requireActivity());
-                }
-            });
+            () -> getPresenter().fireShowQR(requireActivity()));
     private GroupHeaderHolder mHeaderHolder;
 
     @Override

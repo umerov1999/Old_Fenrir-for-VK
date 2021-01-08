@@ -42,12 +42,7 @@ public class AudiosSearchFragment extends AbsSearchFragment<AudiosSearchPresente
     public static final String ACTION_SELECT = "AudiosSearchFragment.ACTION_SELECT";
     private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-            new AppPerms.onPermissionsGranted() {
-                @Override
-                public void granted() {
-                    CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text);
-                }
-            });
+            () -> CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text));
     private boolean isSelectMode;
 
     public static AudiosSearchFragment newInstance(int accountId, AudioSearchCriteria criteria) {

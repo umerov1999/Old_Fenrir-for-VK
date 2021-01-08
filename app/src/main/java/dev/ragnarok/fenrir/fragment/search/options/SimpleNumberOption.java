@@ -27,6 +27,11 @@ public class SimpleNumberOption extends BaseOption {
         super(SIMPLE_NUMBER, key, title, active);
     }
 
+    public SimpleNumberOption(int key, int title, boolean active, int value) {
+        super(SIMPLE_NUMBER, key, title, active);
+        this.value = value;
+    }
+
     protected SimpleNumberOption(Parcel in) {
         super(in);
         value = ParcelUtils.readObjectInteger(in);

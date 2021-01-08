@@ -1,13 +1,16 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+
 import java.util.ArrayList;
 
-import dev.ragnarok.fenrir.App;
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.media.gif.IGifPlayer;
@@ -20,6 +23,7 @@ import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.DownloadWorkUtils;
 import dev.ragnarok.fenrir.util.Objects;
+import dev.ragnarok.fenrir.util.Utils;
 
 public class GifPagerPresenter extends BaseDocumentPresenter<IGifPagerView> implements IGifPlayer.IStatusChangeListener, IGifPlayer.IVideoSizeChangeListener {
 
@@ -179,19 +183,19 @@ public class GifPagerPresenter extends BaseDocumentPresenter<IGifPagerView> impl
         getView().shareDocument(getAccountId(), mDocuments.get(mCurrentIndex));
     }
 
-    public void fireDownloadButtonClick() {
-        if (!AppPerms.hasWriteStoragePermision(App.getInstance())) {
+    public void fireDownloadButtonClick(Context context, View view) {
+        if (!AppPerms.hasWriteStoragePermision(context)) {
             getView().requestWriteExternalStoragePermission();
             return;
         }
 
-        downloadImpl();
+        downloadImpl(context, view);
     }
 
     @Override
-    public void onWritePermissionResolved() {
-        if (AppPerms.hasWriteStoragePermision(App.getInstance())) {
-            downloadImpl();
+    public void onWritePermissionResolved(Context context, View view) {
+        if (AppPerms.hasWriteStoragePermision(context)) {
+            downloadImpl(context, view);
         }
     }
 
@@ -224,9 +228,13 @@ public class GifPagerPresenter extends BaseDocumentPresenter<IGifPagerView> impl
         super.onDestroyed();
     }
 
-    private void downloadImpl() {
+    private void downloadImpl(Context context, View view) {
         Document document = mDocuments.get(mCurrentIndex);
-        DownloadWorkUtils.doDownloadDoc(App.getInstance(), document);
+
+        if (DownloadWorkUtils.doDownloadDoc(context, document, false) == 1) {
+            Utils.ThemedSnack(view, R.string.audio_force_download, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.button_yes,
+                    v1 -> DownloadWorkUtils.doDownloadDoc(context, document, true)).show();
+        }
     }
 
     @Override

@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -59,12 +57,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
     int size;
     private boolean doNotPause;
     private final ActivityResultLauncher<Intent> requestSwipeble = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    doNotPause = false;
-                }
-            });
+            result -> doNotPause = false);
     private boolean isLandscape;
 
     private void onOpen() {

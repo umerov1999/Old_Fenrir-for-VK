@@ -176,6 +176,8 @@ public interface ISettings {
         @Lang
         int getLanguage();
 
+        int getEndListAnimation();
+
         void setSymbolSelectShow(boolean show);
     }
 

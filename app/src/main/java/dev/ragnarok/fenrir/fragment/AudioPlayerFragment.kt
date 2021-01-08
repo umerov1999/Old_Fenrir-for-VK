@@ -170,11 +170,8 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
 
     @Suppress("DEPRECATION")
     private fun fireAudioQR() {
-        val audio = MusicUtils.getCurrentAudio()
-        if (audio == null) {
-            return
-        }
-        val qr = generateQR(requireActivity(), "https://vk.com/audio/" + audio.ownerId + "_" + audio.id, Color.parseColor("#000000"), Color.parseColor("#ffffff"), 1, 3, R.drawable.client_qr)
+        val audio = MusicUtils.getCurrentAudio() ?: return
+        val qr = generateQR("https://vk.com/audio/" + audio.ownerId + "_" + audio.id, CurrentTheme.getColorPrimary(requireActivity()), CurrentTheme.getColorSecondary(requireActivity()), Color.parseColor("#ffffff"), Color.parseColor("#000000"), 3)
         val dlgAlert = MaterialAlertDialogBuilder(requireActivity())
         dlgAlert.setCancelable(true)
         dlgAlert.setNegativeButton(R.string.button_cancel, null)

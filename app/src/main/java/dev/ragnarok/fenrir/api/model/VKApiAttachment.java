@@ -26,11 +26,12 @@ public interface VKApiAttachment {
     String TYPE_STICKER = "sticker";
     String TYPE_AUDIO_MESSAGE = "audio_message";
     String TYPE_GIFT = "gift";
-    String TYPE_GRAFFITY = "graffiti";
+    String TYPE_GRAFFITI = "graffiti";
     String TYPE_AUDIO_PLAYLIST = "audio_playlist";
     String TYPE_MARKET = "market";
     String TYPE_PRODUCT = "product";
     String TYPE_MARKET_ALBUM = "market_album";
+    String TYPE_ARTIST = "artist";
     String[] IGNORE_ATTACHMENTS = {"mini_app", "photos_list"};
 
     /**

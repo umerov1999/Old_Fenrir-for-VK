@@ -1,6 +1,8 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,11 +29,11 @@ public class BaseDocumentPresenter<V extends IBasicDocumentView> extends Account
         docsInteractor = InteractorFactory.createDocsInteractor();
     }
 
-    public final void fireWritePermissionResolved() {
-        onWritePermissionResolved();
+    public final void fireWritePermissionResolved(Context context, View view) {
+        onWritePermissionResolved(context, view);
     }
 
-    protected void onWritePermissionResolved() {
+    protected void onWritePermissionResolved(Context context, View view) {
         // hook for child classes
     }
 

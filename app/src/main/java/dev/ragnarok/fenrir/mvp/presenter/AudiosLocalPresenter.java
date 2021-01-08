@@ -225,7 +225,7 @@ public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLoca
         uploadsData.clear();
         uploadsData.addAll(data);
 
-        resolveUploadDataVisiblity();
+        resolveUploadDataVisibility();
     }
 
     private void onUploadResults(Pair<Upload, UploadResult<?>> pair) {
@@ -263,7 +263,7 @@ public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLoca
             }
         }
 
-        resolveUploadDataVisiblity();
+        resolveUploadDataVisibility();
     }
 
     private void onUploadDeleted(int[] ids) {
@@ -275,11 +275,11 @@ public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLoca
             }
         }
 
-        resolveUploadDataVisiblity();
+        resolveUploadDataVisibility();
     }
 
     @OnGuiCreated
-    private void resolveUploadDataVisiblity() {
+    private void resolveUploadDataVisibility() {
         if (isGuiReady()) {
             getView().setUploadDataVisible(!uploadsData.isEmpty());
         }

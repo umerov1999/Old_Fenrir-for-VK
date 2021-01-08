@@ -427,6 +427,11 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public int getEndListAnimation() {
+        return Integer.parseInt(java.util.Objects.requireNonNull(PreferenceManager.getDefaultSharedPreferences(app).getString("end_list_anim", "0")));
+    }
+
+    @Override
     public boolean isShow_pagan_symbol() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("show_pagan_symbol", false);
     }

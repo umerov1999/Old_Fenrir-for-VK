@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import dev.ragnarok.fenrir.api.interfaces.INetworker;
+import dev.ragnarok.fenrir.api.model.VKApiComment;
 import dev.ragnarok.fenrir.api.model.VKApiPhoto;
 import dev.ragnarok.fenrir.api.model.VKApiPhotoAlbum;
 import dev.ragnarok.fenrir.api.model.VKApiPhotoTags;
@@ -15,17 +16,26 @@ import dev.ragnarok.fenrir.db.interfaces.IStorages;
 import dev.ragnarok.fenrir.db.model.PhotoPatch;
 import dev.ragnarok.fenrir.db.model.entity.PhotoAlbumEntity;
 import dev.ragnarok.fenrir.db.model.entity.PhotoEntity;
+import dev.ragnarok.fenrir.domain.IOwnersRepository;
 import dev.ragnarok.fenrir.domain.IPhotosInteractor;
+import dev.ragnarok.fenrir.domain.Repository;
 import dev.ragnarok.fenrir.domain.mappers.Dto2Entity;
 import dev.ragnarok.fenrir.domain.mappers.Dto2Model;
 import dev.ragnarok.fenrir.domain.mappers.Entity2Model;
 import dev.ragnarok.fenrir.exception.NotFoundException;
+import dev.ragnarok.fenrir.fragment.search.criteria.PhotoSearchCriteria;
+import dev.ragnarok.fenrir.fragment.search.options.SimpleGPSOption;
+import dev.ragnarok.fenrir.fragment.search.options.SpinnerOption;
 import dev.ragnarok.fenrir.model.AccessIdPair;
+import dev.ragnarok.fenrir.model.Comment;
+import dev.ragnarok.fenrir.model.Commented;
+import dev.ragnarok.fenrir.model.CommentedType;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.PhotoAlbum;
 import dev.ragnarok.fenrir.model.criteria.PhotoAlbumsCriteria;
 import dev.ragnarok.fenrir.model.criteria.PhotoCriteria;
 import dev.ragnarok.fenrir.util.Utils;
+import dev.ragnarok.fenrir.util.VKOwnIds;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
 
@@ -97,6 +107,27 @@ public class PhotosInteractor implements IPhotosInteractor {
     }
 
     @Override
+    public Single<List<Photo>> search(int accountId, PhotoSearchCriteria criteria, Integer offset, Integer count) {
+        SpinnerOption sortOption = criteria.findOptionByKey(PhotoSearchCriteria.KEY_SORT);
+        Integer sort = (sortOption == null || sortOption.value == null) ? null : sortOption.value.id;
+        Integer radius = criteria.extractNumberValueFromOption(PhotoSearchCriteria.KEY_RADIUS);
+        SimpleGPSOption gpsOption = criteria.findOptionByKey(PhotoSearchCriteria.KEY_GPS);
+        return networker.vkDefault(accountId)
+                .photos()
+                .search(criteria.getQuery(), gpsOption.lat_gps < 0.1 ? null : gpsOption.lat_gps, gpsOption.long_gps < 0.1 ? null : gpsOption.long_gps, sort, radius, offset, count)
+                .map(items -> Utils.listEmptyIfNull(items.getItems()))
+                .flatMap(dtos -> {
+                    List<Photo> photos = new ArrayList<>(dtos.size());
+
+                    for (VKApiPhoto dto : dtos) {
+                        photos.add(Dto2Model.transform(dto));
+                    }
+
+                    return Single.just(photos);
+                });
+    }
+
+    @Override
     public Single<List<Photo>> getAllCachedData(int accountId, int ownerId, int albumId) {
         PhotoCriteria criteria = new PhotoCriteria(accountId).setAlbumId(albumId).setOwnerId(ownerId);
 
@@ -148,6 +179,30 @@ public class PhotosInteractor implements IPhotosInteractor {
         return networker.vkDefault(accountId)
                 .photos().getTags(ownerId, photo_id, access_key)
                 .map(items -> items);
+    }
+
+    @Override
+    public Single<List<Comment>> getAllComments(int accountId, int ownerId, Integer album_id, int offset, int count) {
+        return networker.vkDefault(accountId)
+                .photos()
+                .getAllComments(ownerId, album_id, 1, offset, count)
+                .flatMap(items -> {
+                    List<VKApiComment> dtos = Utils.listEmptyIfNull(items.getItems());
+                    VKOwnIds ownids = new VKOwnIds();
+                    for (VKApiComment dto : dtos) {
+                        ownids.append(dto);
+                    }
+                    return Repository.INSTANCE.getOwners()
+                            .findBaseOwnersDataAsBundle(accountId, ownids.getAll(), IOwnersRepository.MODE_ANY, Collections.emptyList())
+                            .map(bundle -> {
+                                List<Comment> dbos = new ArrayList<>(dtos.size());
+                                for (VKApiComment i : dtos) {
+                                    Commented commented = new Commented(i.pid, ownerId, CommentedType.PHOTO, null);
+                                    dbos.add(Dto2Model.buildComment(commented, i, bundle));
+                                }
+                                return dbos;
+                            });
+                });
     }
 
     @Override

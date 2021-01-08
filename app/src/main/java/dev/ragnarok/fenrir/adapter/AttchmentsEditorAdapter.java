@@ -20,6 +20,7 @@ import dev.ragnarok.fenrir.model.AbsModel;
 import dev.ragnarok.fenrir.model.Article;
 import dev.ragnarok.fenrir.model.AttachmenEntry;
 import dev.ragnarok.fenrir.model.Audio;
+import dev.ragnarok.fenrir.model.AudioArtist;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.Call;
 import dev.ragnarok.fenrir.model.Document;
@@ -290,6 +291,19 @@ public class AttchmentsEditorAdapter extends RecyclerBindableAdapter<AttachmenEn
         }
     }
 
+    private void bindAudioArtist(ViewHolder holder, AudioArtist artist) {
+        holder.tvTitle.setText(artist.getName());
+        if (artist.getMaxPhoto() == null) {
+            PicassoInstance.with().cancelRequest(holder.photoImageView);
+
+        } else {
+            PicassoInstance.with()
+                    .load(artist.getMaxPhoto())
+                    .placeholder(R.drawable.background_gray)
+                    .into(holder.photoImageView);
+        }
+    }
+
     private void bindNotSupported(ViewHolder holder) {
         holder.tvTitle.setText(R.string.not_supported);
         PicassoInstance.with().cancelRequest(holder.photoImageView);
@@ -382,7 +396,7 @@ public class AttchmentsEditorAdapter extends RecyclerBindableAdapter<AttachmenEn
         PicassoInstance.with()
                 .load(R.drawable.background_gray)
                 .into(holder.photoImageView);
-        holder.tvTitle.setText(context.getString(R.string.title_mssages));
+        holder.tvTitle.setText(context.getString(R.string.title_messages));
     }
 
     private void bindWallReplies(ViewHolder holder, WallReply messages) {
@@ -432,6 +446,8 @@ public class AttchmentsEditorAdapter extends RecyclerBindableAdapter<AttachmenEn
             bindMarket(holder, (Market) model);
         } else if (model instanceof MarketAlbum) {
             bindMarketAlbum(holder, (MarketAlbum) model);
+        } else if (model instanceof AudioArtist) {
+            bindAudioArtist(holder, (AudioArtist) model);
         } else if (model instanceof AudioPlaylist) {
             bindAudioPlaylist(holder, (AudioPlaylist) model);
         } else if (model instanceof Graffiti) {

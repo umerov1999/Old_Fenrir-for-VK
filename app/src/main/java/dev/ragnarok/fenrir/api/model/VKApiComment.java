@@ -59,6 +59,8 @@ public class VKApiComment {
 
     public int threads;
 
+    public int pid;
+
     /**
      * Creates empty Comment instance.
      */

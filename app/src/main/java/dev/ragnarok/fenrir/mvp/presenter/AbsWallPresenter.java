@@ -45,6 +45,7 @@ import dev.ragnarok.fenrir.model.criteria.WallCriteria;
 import dev.ragnarok.fenrir.mvp.presenter.base.PlaceSupportPresenter;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.IWallView;
+import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Analytics;
 import dev.ragnarok.fenrir.util.CustomToast;
@@ -461,7 +462,7 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
  */
 
     public void fireShowQR(Context context) {
-        Bitmap qr = QrGenerator.generateQR(context, "https://vk.com/" + (ownerId < 0 ? "club" : "id") + Math.abs(ownerId), Color.parseColor("#000000"), Color.parseColor("#ffffff"), 1, 3, R.drawable.client_qr);
+        Bitmap qr = QrGenerator.generateQR("https://vk.com/" + (ownerId < 0 ? "club" : "id") + Math.abs(ownerId), CurrentTheme.getColorPrimary(context), CurrentTheme.getColorSecondary(context), Color.parseColor("#ffffff"), Color.parseColor("#000000"), 3);
         MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(context);
         dlgAlert.setCancelable(true);
         dlgAlert.setNegativeButton(R.string.button_cancel, null);

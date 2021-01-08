@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import dev.ragnarok.fenrir.db.model.entity.ArticleEntity;
+import dev.ragnarok.fenrir.db.model.entity.AudioArtistEntity;
 import dev.ragnarok.fenrir.db.model.entity.AudioEntity;
 import dev.ragnarok.fenrir.db.model.entity.AudioMessageEntity;
 import dev.ragnarok.fenrir.db.model.entity.AudioPlaylistEntity;
@@ -38,6 +39,7 @@ import dev.ragnarok.fenrir.model.AbsModel;
 import dev.ragnarok.fenrir.model.Article;
 import dev.ragnarok.fenrir.model.Attachments;
 import dev.ragnarok.fenrir.model.Audio;
+import dev.ragnarok.fenrir.model.AudioArtist;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.Call;
 import dev.ragnarok.fenrir.model.CryptStatus;
@@ -138,6 +140,7 @@ public class Model2Entity {
         mapAndAdd(attachments.getEvents(), Model2Entity::buildEventDbo, entities);
         mapAndAdd(attachments.getMarkets(), Model2Entity::buildMarketDbo, entities);
         mapAndAdd(attachments.getMarketAlbums(), Model2Entity::buildMarketAlbumDbo, entities);
+        mapAndAdd(attachments.getAudioArtists(), Model2Entity::buildAudioArtistDbo, entities);
         mapAndAdd(attachments.getGraffity(), Model2Entity::buildGraffityDbo, entities);
         mapAndAdd(attachments.getAudioPlaylists(), Model2Entity::buildAudioPlaylistEntity, entities);
         mapAndAdd(attachments.getPolls(), Model2Entity::buildPollDbo, entities);
@@ -183,6 +186,8 @@ public class Model2Entity {
                 entities.add(buildMarketDbo((Market) model));
             } else if (model instanceof MarketAlbum) {
                 entities.add(buildMarketAlbumDbo((MarketAlbum) model));
+            } else if (model instanceof AudioArtist) {
+                entities.add(buildAudioArtistDbo((AudioArtist) model));
             } else if (model instanceof WallReply) {
                 entities.add(buildWallReplyDbo((WallReply) model));
             } else if (model instanceof Graffiti) {
@@ -328,6 +333,17 @@ public class Model2Entity {
                 .setTitle(dbo.getTitle())
                 .setUpdated_time(dbo.getUpdated_time())
                 .setPhoto(dbo.getPhoto() != null ? buildPhotoEntity(dbo.getPhoto()) : null);
+    }
+
+    public static AudioArtistEntity.AudioArtistImageEntity mapArtistImage(@NonNull AudioArtist.AudioArtistImage dbo) {
+        return new AudioArtistEntity.AudioArtistImageEntity(dbo.getUrl(), dbo.getWidth(), dbo.getHeight());
+    }
+
+    public static AudioArtistEntity buildAudioArtistDbo(@NonNull AudioArtist dbo) {
+        return new AudioArtistEntity()
+                .setId(dbo.getId())
+                .setName(dbo.getName())
+                .setPhoto(mapAll(dbo.getPhoto(), Model2Entity::mapArtistImage));
     }
 
     public static GraffitiEntity buildGraffityDbo(Graffiti dbo) {

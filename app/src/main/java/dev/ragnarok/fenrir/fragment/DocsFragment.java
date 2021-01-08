@@ -8,8 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -67,28 +65,22 @@ public class DocsFragment extends BaseMvpFragment<DocsListPresenter, IDocListVie
         implements IDocListView, DocsAdapter.ActionListener, DocsUploadAdapter.ActionListener, DocsAsImagesAdapter.ActionListener {
 
     private final ActivityResultLauncher<Intent> requestFile = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        String file = result.getData().getStringExtra(FileManagerFragment.returnFileParameter);
-                        ArrayList<LocalPhoto> photos = result.getData().getParcelableArrayListExtra(Extra.PHOTOS);
-                        if (nonEmpty(file)) {
-                            getPresenter().fireFileForUploadSelected(file);
-                        } else if (nonEmpty(photos)) {
-                            getPresenter().fireLocalPhotosForUploadSelected(photos);
-                        }
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    String file = result.getData().getStringExtra(FileManagerFragment.returnFileParameter);
+                    ArrayList<LocalPhoto> photos = result.getData().getParcelableArrayListExtra(Extra.PHOTOS);
+                    if (nonEmpty(file)) {
+                        getPresenter().fireFileForUploadSelected(file);
+                    } else if (nonEmpty(photos)) {
+                        getPresenter().fireLocalPhotosForUploadSelected(photos);
                     }
                 }
             });
     private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-            new AppPerms.onPermissionsGranted() {
-                @Override
-                public void granted() {
-                    if (isPresenterPrepared()) {
-                        getPresenter().fireReadPermissionResolved();
-                    }
+            () -> {
+                if (isPresenterPrepared()) {
+                    getPresenter().fireReadPermissionResolved();
                 }
             });
     private SwipeRefreshLayout mSwipeRefreshLayout;

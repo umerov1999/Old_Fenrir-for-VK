@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -25,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
+import dev.ragnarok.fenrir.CheckUpdate;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
@@ -67,6 +71,12 @@ public class VKPhotoAlbumsFragment extends BaseMvpFragment<PhotoAlbumsPresenter,
         VKPhotoAlbumsFragment fragment = new VKPhotoAlbumsFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -258,6 +268,30 @@ public class VKPhotoAlbumsFragment extends BaseMvpFragment<PhotoAlbumsPresenter,
             mAdapter.notifyItemRangeInserted(position, size);
             resolveEmptyTextVisibility();
         }
+    }
+
+    @Override
+    public void goToPhotoComments(int accountId, int ownerId) {
+        PlaceFactory.getPhotoAllCommentsPlace(accountId, ownerId).tryOpenWith(requireActivity());
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_photo_albums, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_photo_comments) {
+            if (!CheckUpdate.isFullVersionPropriety(requireActivity())) {
+                return false;
+            }
+            getPresenter().fireAllComments();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @NotNull

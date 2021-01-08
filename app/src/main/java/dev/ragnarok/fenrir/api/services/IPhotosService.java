@@ -3,6 +3,7 @@ package dev.ragnarok.fenrir.api.services;
 import java.util.List;
 
 import dev.ragnarok.fenrir.api.model.Items;
+import dev.ragnarok.fenrir.api.model.VKApiComment;
 import dev.ragnarok.fenrir.api.model.VKApiPhoto;
 import dev.ragnarok.fenrir.api.model.VKApiPhotoAlbum;
 import dev.ragnarok.fenrir.api.model.VKApiPhotoTags;
@@ -284,5 +285,23 @@ public interface IPhotosService {
     Single<BaseResponse<List<VKApiPhotoTags>>> getTags(@Field("owner_id") Integer ownerId,
                                                        @Field("photo_id") Integer photo_id,
                                                        @Field("access_key") String access_key);
+
+    @FormUrlEncoded
+    @POST("photos.getAllComments")
+    Single<BaseResponse<Items<VKApiComment>>> getAllComments(@Field("owner_id") Integer ownerId,
+                                                             @Field("album_id") Integer album_id,
+                                                             @Field("need_likes") Integer need_likes,
+                                                             @Field("offset") Integer offset,
+                                                             @Field("count") Integer count);
+
+    @FormUrlEncoded
+    @POST("photos.search")
+    Single<BaseResponse<Items<VKApiPhoto>>> search(@Field("q") String q,
+                                                   @Field("lat") Double lat_gps,
+                                                   @Field("long") Double long_gps,
+                                                   @Field("sort") Integer sort,
+                                                   @Field("radius") Integer radius,
+                                                   @Field("offset") Integer offset,
+                                                   @Field("count") Integer count);
 
 }

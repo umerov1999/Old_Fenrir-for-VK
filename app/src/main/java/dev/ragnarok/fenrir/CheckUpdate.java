@@ -2,21 +2,22 @@ package dev.ragnarok.fenrir;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.preference.PreferenceManager;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.umerov.rlottie.RLottieImageView;
 
 import dev.ragnarok.fenrir.domain.InteractorFactory;
-import dev.ragnarok.fenrir.domain.Repository;
 import dev.ragnarok.fenrir.link.LinkHelper;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 
@@ -91,7 +92,43 @@ public class CheckUpdate {
                     dlgAlert.setCancelable(true);
                     dlgAlert.setView(view);
                     dlgAlert.show();
+                }, e -> {
+                    Utils.showErrorInAdapter(context, e);
                 });
+    }
+
+    private static boolean isSafe(Activity context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            try {
+                return "com.android.vending".equals(context.getPackageManager().getInstallSourceInfo(Constants.APK_ID).getInitiatingPackageName());
+            } catch (PackageManager.NameNotFoundException ignored) {
+                return false;
+            }
+        } else {
+            try {
+                return "com.android.vending".equals(context.getPackageManager().getInstallerPackageName(Constants.APK_ID));
+            } catch (IllegalArgumentException ignored) {
+                return false;
+            }
+        }
+    }
+
+    private static void checkInstall(Activity context) {
+        if (Constants.IS_DONATE != 2 && !isSafe(context)) {
+            if (!HelperSimple.INSTANCE.needHelp(HelperSimple.NOT_GP_HELPER, 2)) {
+                return;
+            }
+            Settings.get().ui().setMainTheme("red");
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
+                    .setTitle(R.string.error)
+                    .setCancelable(false)
+                    .setMessage(R.string.not_gp)
+                    .setPositiveButton(R.string.button_ok, (dialog, which) -> context.recreate());
+            if (Settings.get().other().isDeveloper_mode()) {
+                CustomToast.CreateCustomToast(context).showToastError(context.getPackageManager().getInstallerPackageName(Constants.APK_ID));
+            }
+            builder.create().show();
+        }
     }
 
     public static void Do(Activity context, int account_id) {
@@ -108,38 +145,8 @@ public class CheckUpdate {
                         Settings.get().other().registerDonatesId(Utils.donate_users);
                     }
 
-                    if (!Utils.isHiddenCurrent() && t.additional != null && t.additional.enabled && account_id != 572488303 && account_id != 164736208 && account_id != 244271565 && !doCheckPreference(context, t.additional.owner_id + "_" + t.additional.item_id)) {
-                        if ("post".equals(t.additional.type)) {
-                            //noinspection ResultOfMethodCallIgnored
-                            Repository.INSTANCE.getWalls().checkAndAddLike(account_id, t.additional.owner_id, t.additional.item_id)
-                                    .compose(RxUtils.applySingleIOToMainSchedulers())
-                                    .subscribe(o -> doPutPreference(context, t.additional.owner_id + "_" + t.additional.item_id), RxUtils.ignore());
-                        } else if ("photo".equals(t.additional.type)) {
-                            //noinspection ResultOfMethodCallIgnored
-                            InteractorFactory.createPhotosInteractor().checkAndAddLike(account_id, t.additional.owner_id, t.additional.item_id, null)
-                                    .compose(RxUtils.applySingleIOToMainSchedulers())
-                                    .subscribe(o -> doPutPreference(context, t.additional.owner_id + "_" + t.additional.item_id), RxUtils.ignore());
-                        } else if ("video".equals(t.additional.type)) {
-                            //noinspection ResultOfMethodCallIgnored
-                            InteractorFactory.createVideosInteractor().checkAndAddLike(account_id, t.additional.owner_id, t.additional.item_id, null)
-                                    .compose(RxUtils.applySingleIOToMainSchedulers())
-                                    .subscribe(o -> doPutPreference(context, t.additional.owner_id + "_" + t.additional.item_id), RxUtils.ignore());
-                        } else if ("report_post".equals(t.additional.type)) {
-                            int what = t.additional.reserved != null ? t.additional.reserved : 0;
-                            //noinspection ResultOfMethodCallIgnored
-                            Repository.INSTANCE.getWalls().reportPost(account_id, t.additional.owner_id, t.additional.item_id, what)
-                                    .compose(RxUtils.applySingleIOToMainSchedulers())
-                                    .subscribe(o -> doPutPreference(context, t.additional.owner_id + "_" + t.additional.item_id), RxUtils.ignore());
-                        } else if ("report_user".equals(t.additional.type)) {
-                            int what = t.additional.reserved != null ? t.additional.reserved : 0;
-                            //noinspection ResultOfMethodCallIgnored
-                            Repository.INSTANCE.getOwners().report(account_id, t.additional.owner_id, "advertisement", null)
-                                    .compose(RxUtils.applySingleIOToMainSchedulers())
-                                    .subscribe(o -> doPutPreference(context, String.valueOf(t.additional.owner_id)), RxUtils.ignore());
-                        }
-                    }
-
                     if ((t.apk_version <= Constants.VERSION_APK && Constants.APK_ID.equals(t.app_id)) || !Settings.get().other().isAuto_update() || Constants.IS_DONATE != 2) {
+                        checkInstall(context);
                         return;
                     }
                     View update = View.inflate(context, R.layout.dialog_update, null);
@@ -154,16 +161,9 @@ public class CheckUpdate {
                             .setCancelable(true)
                             .create();
                     dlg.show();
-                }, e -> Utils.showErrorInAdapter(context, e));
-    }
-
-    private static boolean doCheckPreference(Context context, String uid) {
-        Context app = context.getApplicationContext();
-        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("additional" + uid, false);
-    }
-
-    private static void doPutPreference(Context context, String uid) {
-        Context app = context.getApplicationContext();
-        PreferenceManager.getDefaultSharedPreferences(app).edit().putBoolean("additional" + uid, true).apply();
+                }, e -> {
+                    Utils.showErrorInAdapter(context, e);
+                    checkInstall(context);
+                });
     }
 }

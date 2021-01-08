@@ -17,6 +17,7 @@ import dev.ragnarok.fenrir.adapter.AttachmentsViewBinder;
 import dev.ragnarok.fenrir.link.LinkHelper;
 import dev.ragnarok.fenrir.model.Article;
 import dev.ragnarok.fenrir.model.Audio;
+import dev.ragnarok.fenrir.model.AudioArtist;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.Commented;
 import dev.ragnarok.fenrir.model.CommentedType;
@@ -49,12 +50,7 @@ public abstract class AccountDependencyDialogFragment extends BaseDialogFragment
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-            new AppPerms.onPermissionsGranted() {
-                @Override
-                public void granted() {
-                    CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text);
-                }
-            });
+            () -> CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text));
     private int accountId;
     private boolean supportAccountHotSwap;
 
@@ -218,6 +214,11 @@ public abstract class AccountDependencyDialogFragment extends BaseDialogFragment
     @Override
     public void onMarketOpen(@NonNull Market market) {
         PlaceFactory.getMarketViewPlace(accountId, market).tryOpenWith(requireActivity());
+    }
+
+    @Override
+    public void onArtistOpen(@NonNull AudioArtist artist) {
+        PlaceFactory.getArtistPlace(accountId, artist.getId(), false).tryOpenWith(requireActivity());
     }
 
     @Override

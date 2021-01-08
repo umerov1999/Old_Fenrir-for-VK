@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -59,14 +57,11 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
     public static final String EXTRA_IN_TABS_CONTAINER = "in_tabs_container";
     public static final String ACTION_SELECT = "AudioPlaylistsFragment.ACTION_SELECT";
     private final ActivityResultLauncher<Intent> requestAudioSelect = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        ArrayList<Audio> audios = result.getData().getParcelableArrayListExtra("attachments");
-                        AssertUtils.requireNonNull(audios);
-                        getPresenter().fireAudiosSelected(audios);
-                    }
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    ArrayList<Audio> audios = result.getData().getParcelableArrayListExtra("attachments");
+                    AssertUtils.requireNonNull(audios);
+                    getPresenter().fireAudiosSelected(audios);
                 }
             });
     private TextView mEmpty;

@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -37,38 +35,32 @@ public class PrivacyViewFragment extends AccountDependencyDialogFragment impleme
     private Privacy mPrivacy;
     private PrivacyAdapter mAdapter;
     private final ActivityResultLauncher<Intent> requestSelectUsersAllowed = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                        ArrayList<Owner> users = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
-                        AssertUtils.requireNonNull(users);
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    ArrayList<Owner> users = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
+                    AssertUtils.requireNonNull(users);
 
-                        for (Owner user : users) {
-                            if (user instanceof User) {
-                                mPrivacy.allowFor((User) user);
-                            }
+                    for (Owner user : users) {
+                        if (user instanceof User) {
+                            mPrivacy.allowFor((User) user);
                         }
-                        safeNotifyDatasetChanged();
                     }
+                    safeNotifyDatasetChanged();
                 }
             });
 
     private final ActivityResultLauncher<Intent> requestSelectUsersDisAllowed = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                        ArrayList<Owner> users = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
-                        AssertUtils.requireNonNull(users);
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    ArrayList<Owner> users = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
+                    AssertUtils.requireNonNull(users);
 
-                        for (Owner user : users) {
-                            if (user instanceof User) {
-                                mPrivacy.disallowFor((User) user);
-                            }
+                    for (Owner user : users) {
+                        if (user instanceof User) {
+                            mPrivacy.disallowFor((User) user);
                         }
-                        safeNotifyDatasetChanged();
                     }
+                    safeNotifyDatasetChanged();
                 }
             });
 
@@ -120,11 +112,9 @@ public class PrivacyViewFragment extends AccountDependencyDialogFragment impleme
     }
 
     private void returnResult() {
-        if (getParentFragmentManager() != null) {
-            Bundle intent = new Bundle();
-            intent.putParcelable(Extra.PRIVACY, mPrivacy);
-            getParentFragmentManager().setFragmentResult(REQUEST_PRIVACY_VIEW, intent);
-        }
+        Bundle intent = new Bundle();
+        intent.putParcelable(Extra.PRIVACY, mPrivacy);
+        getParentFragmentManager().setFragmentResult(REQUEST_PRIVACY_VIEW, intent);
     }
 
     @Override

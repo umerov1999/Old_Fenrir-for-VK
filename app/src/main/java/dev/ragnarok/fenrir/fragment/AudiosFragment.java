@@ -66,12 +66,7 @@ public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView
     public static final String ACTION_SELECT = "AudiosFragment.ACTION_SELECT";
     private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-            new AppPerms.onPermissionsGranted() {
-                @Override
-                public void granted() {
-                    CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text);
-                }
-            });
+            () -> CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text));
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AudioRecyclerAdapter mAudioRecyclerAdapter;
     private boolean inTabsContainer;
@@ -188,24 +183,32 @@ public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView
             }
             isSaveMode = !isSaveMode;
             Goto.setImageResource(isSaveMode ? R.drawable.check : R.drawable.audio_player);
+            save_mode.setImageResource(isSaveMode ? R.drawable.ic_dismiss : R.drawable.save);
             mAudioRecyclerAdapter.toggleSelectMode(isSaveMode);
             getPresenter().fireUpdateSelectMode();
         });
 
-        if (isSelectMode)
+        if (isSelectMode) {
             Goto.setImageResource(R.drawable.check);
-        else
+            save_mode.setImageResource(R.drawable.ic_dismiss);
+        } else {
             Goto.setImageResource(R.drawable.audio_player);
-        if (!isSelectMode) {
-            Goto.setOnLongClickListener(v -> {
+            save_mode.setImageResource(R.drawable.save);
+        }
+
+        Goto.setOnLongClickListener(v -> {
+            if (!isSelectMode && !isSaveMode) {
                 Audio curr = MusicUtils.getCurrentAudio();
                 if (curr != null) {
                     PlaceFactory.getPlayerPlace(Settings.get().accounts().getCurrent()).tryOpenWith(requireActivity());
-                } else
+                } else {
                     CustomToast.CreateCustomToast(requireActivity()).showToastError(R.string.null_audio);
-                return false;
-            });
-        }
+                }
+            } else {
+                getPresenter().fireSelectAll();
+            }
+            return true;
+        });
         Goto.setOnClickListener(v -> {
             if (isSelectMode) {
                 Intent intent = new Intent();
@@ -217,6 +220,7 @@ public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView
                     List<Audio> tracks = getPresenter().getSelected(true);
                     isSaveMode = false;
                     Goto.setImageResource(R.drawable.audio_player);
+                    save_mode.setImageResource(R.drawable.save);
                     mAudioRecyclerAdapter.toggleSelectMode(isSaveMode);
                     getPresenter().fireUpdateSelectMode();
 

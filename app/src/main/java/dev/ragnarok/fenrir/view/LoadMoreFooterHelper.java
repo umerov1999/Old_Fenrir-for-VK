@@ -8,6 +8,7 @@ import com.umerov.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.LoadMoreState;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
+import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
 
 public class LoadMoreFooterHelper {
@@ -15,9 +16,11 @@ public class LoadMoreFooterHelper {
     public Callback callback;
     public Holder holder;
     public int state = LoadMoreState.INVISIBLE;
+    public int animation_id;
 
     public static LoadMoreFooterHelper createFrom(View view, Callback callback) {
         LoadMoreFooterHelper helper = new LoadMoreFooterHelper();
+        helper.animation_id = Settings.get().other().getEndListAnimation();
         helper.holder = new Holder(view);
         helper.callback = callback;
         helper.holder.bLoadMore.setOnClickListener(v -> {
@@ -42,7 +45,11 @@ public class LoadMoreFooterHelper {
             case LoadMoreState.END_OF_LIST:
                 holder.tvEndOfList.setVisibility(View.VISIBLE);
                 holder.tvEndOfList.setAutoRepeat(false);
-                holder.tvEndOfList.setAnimation(R.raw.loaded, Utils.dp(40), Utils.dp(40), new int[]{0xffffff, CurrentTheme.getColorControlNormal(holder.bLoadMore.getContext())});
+                if (animation_id == 0) {
+                    holder.tvEndOfList.setAnimation(R.raw.end_list_succes, Utils.dp(40), Utils.dp(40), new int[]{0xffffff, CurrentTheme.getColorControlNormal(holder.bLoadMore.getContext())});
+                } else {
+                    holder.tvEndOfList.setAnimation(R.raw.end_list_balls, Utils.dp(40), Utils.dp(40), new int[]{0xffffff, CurrentTheme.getColorControlNormal(holder.bLoadMore.getContext())});
+                }
                 holder.tvEndOfList.playAnimation();
                 holder.bLoadMore.setVisibility(View.INVISIBLE);
                 holder.progress.setVisibility(View.INVISIBLE);

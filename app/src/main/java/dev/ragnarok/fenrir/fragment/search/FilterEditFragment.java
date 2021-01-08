@@ -1,9 +1,16 @@
 package dev.ragnarok.fenrir.fragment.search;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,8 +19,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +30,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
@@ -37,10 +46,13 @@ import dev.ragnarok.fenrir.dialog.SelectUniversityDialog;
 import dev.ragnarok.fenrir.fragment.search.options.BaseOption;
 import dev.ragnarok.fenrir.fragment.search.options.DatabaseOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleBooleanOption;
+import dev.ragnarok.fenrir.fragment.search.options.SimpleGPSOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleNumberOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleTextOption;
 import dev.ragnarok.fenrir.fragment.search.options.SpinnerOption;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
+import dev.ragnarok.fenrir.util.AppPerms;
+import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.InputTextDialog;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
@@ -50,6 +62,9 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
 
     public static final String REQUEST_FILTER_EDIT = "request_filter_edit";
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+    private final AppPerms.doRequestPermissions requestGPSPermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+            () -> CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text));
     private ArrayList<BaseOption> mData;
     private SearchOptionsAdapter mAdapter;
     private int mAccountId;
@@ -153,6 +168,18 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         }
     }
 
+    private void mergeGPSOptionValue(SimpleGPSOption value) {
+        for (BaseOption option : mData) {
+            if (option.key == value.key && option instanceof SimpleGPSOption) {
+                SimpleGPSOption gpsOption = (SimpleGPSOption) option;
+                gpsOption.lat_gps = value.lat_gps;
+                gpsOption.long_gps = value.long_gps;
+                mAdapter.notifyDataSetChanged();
+                break;
+            }
+        }
+    }
+
     private void resetChildDependensies(int... childs) {
         if (childs != null) {
             boolean changed = false;
@@ -183,12 +210,7 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
                 args.putInt(Extra.KEY, databaseOption.key);
                 args.putInt(Extra.ACCOUNT_ID, mAccountId);
                 selectCountryDialog.setArguments(args);
-                getParentFragmentManager().setFragmentResultListener(SelectCountryDialog.REQUEST_CODE_COUNTRY, selectCountryDialog, new FragmentResultListener() {
-                    @Override
-                    public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
-                        onDialogResult(result);
-                    }
-                });
+                getParentFragmentManager().setFragmentResultListener(SelectCountryDialog.REQUEST_CODE_COUNTRY, selectCountryDialog, (requestKey, result) -> onDialogResult(result));
                 selectCountryDialog.show(getParentFragmentManager(), "countries");
                 break;
 
@@ -310,17 +332,26 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         resetChildDependensies(option.childDependencies);
     }
 
+    @Override
+    public void onGPSOptionClick(SimpleGPSOption gpsOption) {
+        new MyLocation().getLocation(requireActivity(), location -> {
+            Handler uiHandler = new Handler(requireActivity().getMainLooper());
+            uiHandler.post(() -> {
+                if (location != null) {
+                    gpsOption.lat_gps = location.getLatitude();
+                    gpsOption.long_gps = location.getLongitude();
+                }
+                mergeGPSOptionValue(gpsOption);
+            });
+        });
+    }
+
     private void showCitiesDialog(DatabaseOption databaseOption, int countryId) {
         Bundle args = new Bundle();
         args.putInt(Extra.KEY, databaseOption.key);
 
         SelectCityDialog selectCityDialog = SelectCityDialog.newInstance(mAccountId, countryId, args);
-        getParentFragmentManager().setFragmentResultListener(SelectCityDialog.REQUEST_CODE_CITY, selectCityDialog, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
-                onDialogResult(result);
-            }
-        });
+        getParentFragmentManager().setFragmentResultListener(SelectCityDialog.REQUEST_CODE_CITY, selectCityDialog, (requestKey, result) -> onDialogResult(result));
         selectCityDialog.show(getParentFragmentManager(), "cities");
     }
 
@@ -329,12 +360,7 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         args.putInt(Extra.KEY, databaseOption.key);
 
         SelectUniversityDialog dialog = SelectUniversityDialog.newInstance(mAccountId, countryId, args);
-        getParentFragmentManager().setFragmentResultListener(SelectUniversityDialog.REQUEST_CODE_UNIVERSITY, dialog, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
-                onDialogResult(result);
-            }
-        });
+        getParentFragmentManager().setFragmentResultListener(SelectUniversityDialog.REQUEST_CODE_UNIVERSITY, dialog, (requestKey, result) -> onDialogResult(result));
         dialog.show(getParentFragmentManager(), "universities");
     }
 
@@ -343,12 +369,7 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         args.putInt(Extra.KEY, databaseOption.key);
 
         SelectSchoolsDialog dialog = SelectSchoolsDialog.newInstance(mAccountId, cityId, args);
-        getParentFragmentManager().setFragmentResultListener(SelectSchoolsDialog.REQUEST_CODE_SCHOOL, dialog, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
-                onDialogResult(result);
-            }
-        });
+        getParentFragmentManager().setFragmentResultListener(SelectSchoolsDialog.REQUEST_CODE_SCHOOL, dialog, (requestKey, result) -> onDialogResult(result));
         dialog.show(getParentFragmentManager(), "schools");
     }
 
@@ -357,12 +378,7 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         args.putInt(Extra.KEY, databaseOption.key);
 
         SelectFacultyDialog dialog = SelectFacultyDialog.newInstance(mAccountId, universityId, args);
-        getParentFragmentManager().setFragmentResultListener(SelectFacultyDialog.REQUEST_CODE_FACULTY, dialog, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
-                onDialogResult(result);
-            }
-        });
+        getParentFragmentManager().setFragmentResultListener(SelectFacultyDialog.REQUEST_CODE_FACULTY, dialog, (requestKey, result) -> onDialogResult(result));
         dialog.show(getParentFragmentManager(), "faculties");
     }
 
@@ -371,12 +387,7 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         args.putInt(Extra.KEY, databaseOption.key);
 
         SelectChairsDialog dialog = SelectChairsDialog.newInstance(mAccountId, facultyId, args);
-        getParentFragmentManager().setFragmentResultListener(SelectChairsDialog.REQUEST_CODE_CHAIRS, dialog, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
-                onDialogResult(result);
-            }
-        });
+        getParentFragmentManager().setFragmentResultListener(SelectChairsDialog.REQUEST_CODE_CHAIRS, dialog, (requestKey, result) -> onDialogResult(result));
         dialog.show(getParentFragmentManager(), "chairs");
     }
 
@@ -385,12 +396,7 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         args.putInt(Extra.KEY, databaseOption.key);
 
         SelectSchoolClassesDialog dialog = SelectSchoolClassesDialog.newInstance(mAccountId, countryId, args);
-        getParentFragmentManager().setFragmentResultListener(SelectSchoolClassesDialog.REQUEST_CODE_SCHOOL_CLASSES, dialog, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
-                onDialogResult(result);
-            }
-        });
+        getParentFragmentManager().setFragmentResultListener(SelectSchoolClassesDialog.REQUEST_CODE_SCHOOL_CLASSES, dialog, (requestKey, result) -> onDialogResult(result));
         dialog.show(getParentFragmentManager(), "school-classes");
     }
 
@@ -412,5 +418,127 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
     public void onDestroy() {
         mCompositeDisposable.dispose();
         super.onDestroy();
+    }
+
+    public interface LocationResult {
+        void gotLocation(Location location);
+    }
+
+    class MyLocation {
+        Timer timer1;
+        LocationManager lm;
+        LocationResult locationResult;
+        boolean gps_enabled;
+        boolean network_enabled;
+        LocationListener locationListenerNetwork = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                timer1.cancel();
+                locationResult.gotLocation(location);
+                lm.removeUpdates(this);
+                lm.removeUpdates(locationListenerGps);
+            }
+
+            public void onProviderDisabled(String provider) {
+            }
+
+            public void onProviderEnabled(String provider) {
+            }
+
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+        };
+        LocationListener locationListenerGps = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                timer1.cancel();
+                locationResult.gotLocation(location);
+                lm.removeUpdates(this);
+                lm.removeUpdates(locationListenerNetwork);
+            }
+
+            public void onProviderDisabled(String provider) {
+            }
+
+            public void onProviderEnabled(String provider) {
+            }
+
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+        };
+
+        public boolean getLocation(Context context, LocationResult result) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestGPSPermission.launch();
+                return false;
+            }
+            // I use LocationResult callback class to pass location value from
+            // MyLocation to user code.
+            locationResult = result;
+            if (lm == null)
+                lm = (LocationManager) context
+                        .getSystemService(Context.LOCATION_SERVICE);
+
+            // Exceptions will be thrown if the provider is not permitted.
+            try {
+                gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            } catch (Exception ignored) {
+            }
+            try {
+                network_enabled = lm
+                        .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            } catch (Exception ignored) {
+            }
+
+            // Don't start listeners if no provider is enabled.
+            if (!gps_enabled && !network_enabled)
+                return false;
+
+            if (gps_enabled)
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,
+                        locationListenerGps);
+            if (network_enabled)
+                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
+                        locationListenerNetwork);
+            timer1 = new Timer();
+            timer1.schedule(new GetLastLocation(), 5000);
+            return true;
+        }
+
+        class GetLastLocation extends TimerTask {
+            @Override
+            public void run() {
+                if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    requestGPSPermission.launch();
+                    return;
+                }
+                lm.removeUpdates(locationListenerGps);
+                lm.removeUpdates(locationListenerNetwork);
+
+                Location net_loc = null, gps_loc = null;
+                if (gps_enabled)
+                    gps_loc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if (network_enabled)
+                    net_loc = lm
+                            .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+                // If there are both values, use the latest one.
+                if (gps_loc != null && net_loc != null) {
+                    if (gps_loc.getTime() > net_loc.getTime())
+                        locationResult.gotLocation(gps_loc);
+                    else
+                        locationResult.gotLocation(net_loc);
+                    return;
+                }
+
+                if (gps_loc != null) {
+                    locationResult.gotLocation(gps_loc);
+                    return;
+                }
+                if (net_loc != null) {
+                    locationResult.gotLocation(net_loc);
+                    return;
+                }
+                locationResult.gotLocation(null);
+            }
+        }
     }
 }

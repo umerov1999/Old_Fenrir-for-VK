@@ -78,7 +78,7 @@ public class FwdsFragment extends PlaceSupportMvpFragment<FwdsPresenter, IFwdsVi
         ActionBar actionBar = ActivityUtils.supportToolbarFor(this);
         if (actionBar != null) {
             actionBar.setSubtitle(null);
-            actionBar.setTitle(R.string.title_mssages);
+            actionBar.setTitle(R.string.title_messages);
         }
 
         new ActivityFeatures.Builder()

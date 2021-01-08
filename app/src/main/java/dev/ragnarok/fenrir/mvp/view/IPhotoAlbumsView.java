@@ -40,4 +40,6 @@ public interface IPhotoAlbumsView extends IMvpView, IAccountDependencyView, IErr
     void notifyItemRemoved(int index);
 
     void notifyDataAdded(int position, int size);
+
+    void goToPhotoComments(int accountId, int ownerId);
 }

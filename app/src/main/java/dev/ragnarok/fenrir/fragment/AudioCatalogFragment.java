@@ -3,6 +3,9 @@ package dev.ragnarok.fenrir.fragment;
 import android.Manifest;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -51,12 +54,7 @@ public class AudioCatalogFragment extends BaseMvpFragment<AudioCatalogPresenter,
     public static final String EXTRA_IN_TABS_CONTAINER = "in_tabs_container";
     private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-            new AppPerms.onPermissionsGranted() {
-                @Override
-                public void granted() {
-                    CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text);
-                }
-            });
+            () -> CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text));
     private TextView mEmpty;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AudioCatalogAdapter mAdapter;
@@ -92,6 +90,7 @@ public class AudioCatalogFragment extends BaseMvpFragment<AudioCatalogPresenter,
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inTabsContainer = requireArguments().getBoolean(EXTRA_IN_TABS_CONTAINER);
+        setHasOptionsMenu(requireArguments().containsKey(Extra.ARTIST) && requireArguments().getString(Extra.ARTIST) != null);
     }
 
     @Override
@@ -188,6 +187,20 @@ public class AudioCatalogFragment extends BaseMvpFragment<AudioCatalogPresenter,
         if (nonNull(mSwipeRefreshLayout)) {
             mSwipeRefreshLayout.setRefreshing(refreshing);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_share) {
+            getPresenter().fireRepost(requireActivity());
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_share_main, menu);
     }
 
     @NotNull

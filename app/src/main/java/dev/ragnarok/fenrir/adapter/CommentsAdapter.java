@@ -72,7 +72,7 @@ public class CommentsAdapter extends RecyclerBindableAdapter<Comment, RecyclerVi
     protected void onBindItemViewHolder(RecyclerView.ViewHolder viewHolder, int position, int type) {
         switch (type) {
             case TYPE_NORMAL:
-                bindNormalHolder((NormalCommentHoler) viewHolder, getItem(position));
+                bindNormalHolder((NormalCommentHolder) viewHolder, getItem(position));
                 break;
             case TYPE_DELETED:
                 bindDeletedComment((DeletedHolder) viewHolder, getItem(position));
@@ -88,7 +88,7 @@ public class CommentsAdapter extends RecyclerBindableAdapter<Comment, RecyclerVi
         });
     }
 
-    private void bindNormalHolder(NormalCommentHoler holder, Comment comment) {
+    private void bindNormalHolder(NormalCommentHolder holder, Comment comment) {
         holder.cancelSelectionAnimation();
 
         if (comment.isAnimationNow()) {
@@ -187,7 +187,7 @@ public class CommentsAdapter extends RecyclerBindableAdapter<Comment, RecyclerVi
     protected RecyclerView.ViewHolder viewHolder(View view, int type) {
         switch (type) {
             case TYPE_NORMAL:
-                return new NormalCommentHoler(view);
+                return new NormalCommentHolder(view);
             case TYPE_DELETED:
                 return new DeletedHolder(view);
             default:
@@ -250,7 +250,7 @@ public class CommentsAdapter extends RecyclerBindableAdapter<Comment, RecyclerVi
         }
     }
 
-    private class NormalCommentHoler extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
+    private class NormalCommentHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
         final TextView tvOwnerName;
         final ImageView ivOwnerAvatar;
@@ -266,7 +266,7 @@ public class CommentsAdapter extends RecyclerBindableAdapter<Comment, RecyclerVi
         final Animator.AnimatorListener animationAdapter;
         ObjectAnimator animator;
 
-        NormalCommentHoler(View root) {
+        NormalCommentHolder(View root) {
             super(root);
             ivOwnerAvatar = root.findViewById(R.id.item_comment_owner_avatar);
             tvOwnerName = root.findViewById(R.id.item_comment_owner_name);

@@ -39,6 +39,7 @@ import dev.ragnarok.fenrir.link.internal.OwnerLinkSpanFactory;
 import dev.ragnarok.fenrir.model.Article;
 import dev.ragnarok.fenrir.model.Attachments;
 import dev.ragnarok.fenrir.model.Audio;
+import dev.ragnarok.fenrir.model.AudioArtist;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.CryptStatus;
 import dev.ragnarok.fenrir.model.Document;
@@ -683,6 +684,17 @@ public class AttachmentsViewBinder {
                             ivPhotoT.setVisibility(View.GONE);
                         }
                         break;
+                    case Types.ARTIST:
+                        if (imageUrl != null) {
+                            ivType.setVisibility(View.VISIBLE);
+                            ivPhotoT.setVisibility(View.VISIBLE);
+                            ViewUtils.displayAvatar(ivPhotoT, null, imageUrl, Constants.PICASSO_TAG);
+                            Utils.setColorFilter(ivType.getBackground(), CurrentTheme.getColorPrimary(mContext));
+                            ivType.setImageResource(R.drawable.artist_icon);
+                        } else {
+                            ivPhotoT.setVisibility(View.GONE);
+                        }
+                        break;
                     case Types.MARKET:
                         if (imageUrl != null) {
                             ivType.setVisibility(View.VISIBLE);
@@ -926,6 +938,9 @@ public class AttachmentsViewBinder {
             case Types.MARKET:
                 mAttachmentsActionCallback.onMarketOpen((Market) link.attachment);
                 break;
+            case Types.ARTIST:
+                mAttachmentsActionCallback.onArtistOpen((AudioArtist) link.attachment);
+                break;
         }
     }
 
@@ -979,6 +994,8 @@ public class AttachmentsViewBinder {
         void onMarketAlbumOpen(@NonNull MarketAlbum market_album);
 
         void onMarketOpen(@NonNull Market market);
+
+        void onArtistOpen(@NonNull AudioArtist artist);
 
         void onRequestWritePermissions();
     }

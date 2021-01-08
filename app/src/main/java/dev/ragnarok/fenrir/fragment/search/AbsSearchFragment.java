@@ -9,11 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
-import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -129,12 +126,7 @@ public abstract class AbsSearchFragment<P extends AbsSearchPresenter<V, ?, T, ?>
     @Override
     public void displayFilter(int accountId, ArrayList<BaseOption> options) {
         FilterEditFragment fragment = FilterEditFragment.newInstance(accountId, options);
-        getParentFragmentManager().setFragmentResultListener(FilterEditFragment.REQUEST_FILTER_EDIT, fragment, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NotNull String requestKey, @NotNull Bundle result) {
-                onSeachOptionsChanged();
-            }
-        });
+        getParentFragmentManager().setFragmentResultListener(FilterEditFragment.REQUEST_FILTER_EDIT, fragment, (requestKey, result) -> onSeachOptionsChanged());
         fragment.show(getParentFragmentManager(), "filter-edit");
     }
 

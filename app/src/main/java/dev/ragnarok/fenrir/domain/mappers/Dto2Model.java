@@ -12,6 +12,7 @@ import dev.ragnarok.fenrir.api.model.PhotoSizeDto;
 import dev.ragnarok.fenrir.api.model.VKApiArticle;
 import dev.ragnarok.fenrir.api.model.VKApiAttachment;
 import dev.ragnarok.fenrir.api.model.VKApiAudio;
+import dev.ragnarok.fenrir.api.model.VKApiAudioArtist;
 import dev.ragnarok.fenrir.api.model.VKApiAudioCatalog;
 import dev.ragnarok.fenrir.api.model.VKApiAudioPlaylist;
 import dev.ragnarok.fenrir.api.model.VKApiCall;
@@ -61,6 +62,7 @@ import dev.ragnarok.fenrir.crypt.MessageType;
 import dev.ragnarok.fenrir.model.Article;
 import dev.ragnarok.fenrir.model.Attachments;
 import dev.ragnarok.fenrir.model.Audio;
+import dev.ragnarok.fenrir.model.AudioArtist;
 import dev.ragnarok.fenrir.model.AudioCatalog;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.Call;
@@ -126,7 +128,7 @@ public class Dto2Model {
         return new FriendList(dto.id, dto.name);
     }
 
-    public static PhotoAlbum transfrom(VKApiPhotoAlbum dto) {
+    public static PhotoAlbum transform(VKApiPhotoAlbum dto) {
         return new PhotoAlbum(dto.id, dto.owner_id)
                 .setSize(dto.size)
                 .setTitle(dto.title)
@@ -303,6 +305,10 @@ public class Dto2Model {
     }
 
     public static List<MarketAlbum> transformMarketAlbums(List<VkApiMarketAlbum> dtos) {
+        return mapAll(dtos, Dto2Model::transform);
+    }
+
+    public static List<AudioArtist> transformAudioArtist(List<VKApiAudioArtist> dtos) {
         return mapAll(dtos, Dto2Model::transform);
     }
 
@@ -673,12 +679,10 @@ public class Dto2Model {
     @NonNull
     public static List<User> buildUserArray(@NonNull List<Integer> users, @NonNull IOwnersBundle owners) {
         List<User> data = new ArrayList<>(safeCountOf(users));
-        if (nonNull(users)) {
-            for (Integer pair : users) {
-                Owner dt = owners.getById(pair);
-                if (dt.getOwnerType() == OwnerType.USER)
-                    data.add((User) owners.getById(pair));
-            }
+        for (Integer pair : users) {
+            Owner dt = owners.getById(pair);
+            if (dt.getOwnerType() == OwnerType.USER)
+                data.add((User) owners.getById(pair));
         }
 
         return data;
@@ -712,6 +716,7 @@ public class Dto2Model {
                 .setCanLike(dto.can_like)
                 .setCanEdit(dto.can_edit)
                 .setThreads(dto.threads)
+                .setPid(dto.pid)
                 .setAuthor(owners.getById(dto.from_id));
 
         if (dto.attachments != null) {
@@ -1000,6 +1005,16 @@ public class Dto2Model {
                 .setIsFavorite(article.is_favorite);
     }
 
+    public static AudioArtist.AudioArtistImage map(VKApiAudioArtist.Image dto) {
+        return new AudioArtist.AudioArtistImage(dto.url, dto.width, dto.height);
+    }
+
+    public static AudioArtist transform(VKApiAudioArtist dto) {
+        return new AudioArtist(dto.id)
+                .setName(dto.name)
+                .setPhoto(mapAll(dto.photo, Dto2Model::map));
+    }
+
     public static Sticker.Image map(VKApiSticker.Image dto) {
         return new Sticker.Image(dto.url, dto.width, dto.height);
     }
@@ -1214,10 +1229,13 @@ public class Dto2Model {
                 case VKApiAttachment.TYPE_MARKET_ALBUM:
                     attachments.prepareMarketAlbums().add(transform((VkApiMarketAlbum) attachment));
                     break;
+                case VKApiAttachment.TYPE_ARTIST:
+                    attachments.prepareAudioArtist().add(transform((VKApiAudioArtist) attachment));
+                    break;
                 case VKApiAttachment.TYPE_AUDIO_PLAYLIST:
                     attachments.prepareAudioPlaylists().add(transform((VKApiAudioPlaylist) attachment));
                     break;
-                case VKApiAttachment.TYPE_GRAFFITY:
+                case VKApiAttachment.TYPE_GRAFFITI:
                     attachments.prepareGraffity().add(transform((VKApiGraffiti) attachment));
                     break;
                 case VKApiAttachment.TYPE_POLL:
@@ -1332,7 +1350,7 @@ public class Dto2Model {
                 .setCanPublish(original.can_publish)
                 .setRepostsCount(original.reposts_count)
                 .setUserReposted(original.user_reposted)
-                .setFriends(buildUserArray(original.friends, owners))
+                .setFriends(original.friends == null ? null : buildUserArray(original.friends, owners))
                 .setSource(owners.getById(original.source_id))
                 .setViewCount(original.views);
 

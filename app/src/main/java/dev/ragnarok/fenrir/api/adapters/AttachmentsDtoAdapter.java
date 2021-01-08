@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import dev.ragnarok.fenrir.api.model.VKApiArticle;
 import dev.ragnarok.fenrir.api.model.VKApiAttachment;
 import dev.ragnarok.fenrir.api.model.VKApiAudio;
+import dev.ragnarok.fenrir.api.model.VKApiAudioArtist;
 import dev.ragnarok.fenrir.api.model.VKApiAudioPlaylist;
 import dev.ragnarok.fenrir.api.model.VKApiCall;
 import dev.ragnarok.fenrir.api.model.VKApiGiftItem;
@@ -103,7 +104,7 @@ public class AttachmentsDtoAdapter extends AbsAdapter implements JsonDeserialize
             return context.deserialize(o, VkApiAudioMessage.class);
         } else if (VKApiAttachment.TYPE_GIFT.equals(type)) {
             return context.deserialize(o, VKApiGiftItem.class);
-        } else if (VKApiAttachment.TYPE_GRAFFITY.equals(type)) {
+        } else if (VKApiAttachment.TYPE_GRAFFITI.equals(type)) {
             return context.deserialize(o, VKApiGraffiti.class);
         } else if (VKApiAttachment.TYPE_STORY.equals(type)) {
             return context.deserialize(o, VKApiStory.class);
@@ -117,6 +118,8 @@ public class AttachmentsDtoAdapter extends AbsAdapter implements JsonDeserialize
             return context.deserialize(o, VkApiEvent.class);
         } else if (VKApiAttachment.TYPE_MARKET_ALBUM.equals(type)) {
             return context.deserialize(o, VkApiMarketAlbum.class);
+        } else if (VKApiAttachment.TYPE_ARTIST.equals(type)) {
+            return context.deserialize(o, VKApiAudioArtist.class);
         } else if (VKApiAttachment.TYPE_MARKET.equals(type) || VKApiAttachment.TYPE_PRODUCT.equals(type)) {
             return context.deserialize(o, VkApiMarket.class);
         } else if (!Utils.isValueAssigned(type, VKApiAttachment.IGNORE_ATTACHMENTS)) {
