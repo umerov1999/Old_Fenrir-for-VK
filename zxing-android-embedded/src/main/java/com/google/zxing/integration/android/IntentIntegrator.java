@@ -19,12 +19,23 @@ package com.google.zxing.integration.android;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResult;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.ChecksumException;
+import com.google.zxing.FormatException;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.RGBLuminanceSource;
+import com.google.zxing.Reader;
+import com.google.zxing.Result;
 import com.google.zxing.client.android.Intents;
+import com.google.zxing.common.HybridBinarizer;
 import com.journeyapps.barcodescanner.CaptureActivity;
 
 import java.util.Arrays;
@@ -104,6 +115,29 @@ public class IntentIntegrator {
                     intent);
         }
         return new IntentResult(intent);
+    }
+
+    public static String decodeFromBitmap(@Nullable Bitmap generatedQRCode) {
+        if(generatedQRCode == null) {
+            return "error";
+        }
+        int width = generatedQRCode.getWidth();
+        int height = generatedQRCode.getHeight();
+        int[] pixels = new int[width * height];
+        generatedQRCode.getPixels(pixels, 0, width, 0, 0, width, height);
+        RGBLuminanceSource source = new RGBLuminanceSource(width, height, pixels);
+        BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(source));
+        Reader reader = new MultiFormatReader();
+        Result result;
+        try {
+            result = reader.decode(binaryBitmap);
+        } catch (NotFoundException | ChecksumException | FormatException e) {
+            return e.getLocalizedMessage();
+        }
+        if(result == null) {
+            return "error";
+        }
+        return result.getText();
     }
 
     private static List<String> list(String... values) {

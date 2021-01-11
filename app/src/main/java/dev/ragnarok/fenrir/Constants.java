@@ -29,8 +29,8 @@ public class Constants {
 
     public static final int VERSION_APK = BuildConfig.VERSION_CODE;
     public static final String APK_ID = BuildConfig.APPLICATION_ID;
-    public static final String VKANDROID_APP_VERSION_NAME = "6.19.4";
-    public static final String VKANDROID_APP_VERSION_CODE = "6703";
+    public static final String VK_ANDROID_APP_VERSION_NAME = "6.19.4";
+    public static final String VK_ANDROID_APP_VERSION_CODE = "6703";
     public static final String KATE_APP_VERSION_NAME = "68 lite";
     public static final String KATE_APP_VERSION_CODE = "484";
     public static final int API_ID = BuildConfig.VK_API_APP_ID;
@@ -43,8 +43,8 @@ public class Constants {
     public static String DEVICE_COUNTRY_CODE = "ru";
     public static final String KATE_USER_AGENT = String.format(Locale.US, "KateMobileAndroid/%s-%s (Android %s; SDK %d; %s; %s; %s; %s)", KATE_APP_VERSION_NAME, KATE_APP_VERSION_CODE, Build.VERSION.RELEASE, Build.VERSION.SDK_INT, Build.SUPPORTED_ABIS[0], Utils.getDeviceName(), DEVICE_COUNTRY_CODE, SCREEN_RESOLUTION());
     public static final String KATE_USER_AGENT_FAKE = String.format(Locale.US, "KateMobileAndroid/%s-%s (Android %s; SDK %d; %s; %s; %s; %s)", KATE_APP_VERSION_NAME, KATE_APP_VERSION_CODE, Build.VERSION.RELEASE, Build.VERSION.SDK_INT, BuildConfig.FAKE_ABI, BuildConfig.FAKE_DEVICE, DEVICE_COUNTRY_CODE, SCREEN_RESOLUTION());
-    public static final String VKANDROID_USER_AGENT = String.format(Locale.US, "VKAndroidApp/%s-%s (Android %s; SDK %d; %s; %s; %s; %s)", VKANDROID_APP_VERSION_NAME, VKANDROID_APP_VERSION_CODE, Build.VERSION.RELEASE, Build.VERSION.SDK_INT, Build.SUPPORTED_ABIS[0], Utils.getDeviceName(), DEVICE_COUNTRY_CODE, SCREEN_RESOLUTION());
-    public static final String VKANDROID_USER_AGENT_FAKE = String.format(Locale.US, "VKAndroidApp/%s-%s (Android %s; SDK %d; %s; %s; %s; %s)", VKANDROID_APP_VERSION_NAME, VKANDROID_APP_VERSION_CODE, Build.VERSION.RELEASE, Build.VERSION.SDK_INT, BuildConfig.FAKE_ABI, BuildConfig.FAKE_DEVICE, DEVICE_COUNTRY_CODE, SCREEN_RESOLUTION());
+    public static final String VK_ANDROID_USER_AGENT = String.format(Locale.US, "VKAndroidApp/%s-%s (Android %s; SDK %d; %s; %s; %s; %s)", VK_ANDROID_APP_VERSION_NAME, VK_ANDROID_APP_VERSION_CODE, Build.VERSION.RELEASE, Build.VERSION.SDK_INT, Build.SUPPORTED_ABIS[0], Utils.getDeviceName(), DEVICE_COUNTRY_CODE, SCREEN_RESOLUTION());
+    public static final String VK_ANDROID_USER_AGENT_FAKE = String.format(Locale.US, "VKAndroidApp/%s-%s (Android %s; SDK %d; %s; %s; %s; %s)", VK_ANDROID_APP_VERSION_NAME, VK_ANDROID_APP_VERSION_CODE, Build.VERSION.RELEASE, Build.VERSION.SDK_INT, BuildConfig.FAKE_ABI, BuildConfig.FAKE_DEVICE, DEVICE_COUNTRY_CODE, SCREEN_RESOLUTION());
 
     private static String SCREEN_RESOLUTION() {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
@@ -59,15 +59,15 @@ public class Constants {
         switch (type) {
             case Account_Types.BY_TYPE:
             case Account_Types.VK_ANDROID:
-                return VKANDROID_USER_AGENT;
+                return VK_ANDROID_USER_AGENT;
             case Account_Types.VK_ANDROID_HIDDEN:
-                return VKANDROID_USER_AGENT_FAKE;
+                return VK_ANDROID_USER_AGENT_FAKE;
             case Account_Types.KATE:
                 return KATE_USER_AGENT;
             case Account_Types.KATE_HIDDEN:
                 return KATE_USER_AGENT_FAKE;
         }
-        return Utils.BY_DEFAULT_ACCOUNT_TYPE(VKANDROID_USER_AGENT, KATE_USER_AGENT);
+        return Utils.BY_DEFAULT_ACCOUNT_TYPE(VK_ANDROID_USER_AGENT, KATE_USER_AGENT);
     }
 
     @NotNull
@@ -77,7 +77,7 @@ public class Constants {
         }
         int account_id = Settings.get().accounts().getCurrent();
         if (account_id == ISettings.IAccountsSettings.INVALID_ID) {
-            return Utils.BY_DEFAULT_ACCOUNT_TYPE(VKANDROID_USER_AGENT, KATE_USER_AGENT);
+            return Utils.BY_DEFAULT_ACCOUNT_TYPE(VK_ANDROID_USER_AGENT, KATE_USER_AGENT);
         }
         return getTypedUserAgent(Settings.get().accounts().getType(account_id));
     }

@@ -3,10 +3,12 @@ package dev.ragnarok.fenrir.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.umerov.parcel.ParcelNative;
+
 import static dev.ragnarok.fenrir.util.Utils.firstNonNull;
 
 
-public class PhotoSizes implements Parcelable {
+public class PhotoSizes implements Parcelable, ParcelNative.ParcelableNative {
 
     public static final Creator<PhotoSizes> CREATOR = new Creator<PhotoSizes>() {
         @Override
@@ -19,6 +21,7 @@ public class PhotoSizes implements Parcelable {
             return new PhotoSizes[size];
         }
     };
+    public static final ParcelNative.Creator<PhotoSizes> NativeCreator = PhotoSizes::new;
     private Size s;
     private Size m;
     private Size x;
@@ -32,6 +35,19 @@ public class PhotoSizes implements Parcelable {
 
     public PhotoSizes() {
 
+    }
+
+    protected PhotoSizes(ParcelNative in) {
+        s = in.readParcelable(Size.NativeCreator);
+        m = in.readParcelable(Size.NativeCreator);
+        x = in.readParcelable(Size.NativeCreator);
+        o = in.readParcelable(Size.NativeCreator);
+        p = in.readParcelable(Size.NativeCreator);
+        q = in.readParcelable(Size.NativeCreator);
+        r = in.readParcelable(Size.NativeCreator);
+        y = in.readParcelable(Size.NativeCreator);
+        z = in.readParcelable(Size.NativeCreator);
+        w = in.readParcelable(Size.NativeCreator);
     }
 
     protected PhotoSizes(Parcel in) {
@@ -207,7 +223,21 @@ public class PhotoSizes implements Parcelable {
         return firstNonNull(s, m, x, o, p, q, r, y, z, w) == null;
     }
 
-    public static final class Size implements Parcelable {
+    @Override
+    public void writeToParcelNative(ParcelNative parcel) {
+        parcel.writeParcelable(s);
+        parcel.writeParcelable(m);
+        parcel.writeParcelable(x);
+        parcel.writeParcelable(o);
+        parcel.writeParcelable(p);
+        parcel.writeParcelable(q);
+        parcel.writeParcelable(r);
+        parcel.writeParcelable(y);
+        parcel.writeParcelable(z);
+        parcel.writeParcelable(w);
+    }
+
+    public static final class Size implements Parcelable, ParcelNative.ParcelableNative {
 
         public static final Creator<Size> CREATOR = new Creator<Size>() {
             @Override
@@ -220,6 +250,7 @@ public class PhotoSizes implements Parcelable {
                 return new Size[size];
             }
         };
+        public static final ParcelNative.Creator<Size> NativeCreator = Size::new;
         private final int w;
         private final int h;
         private final String url;
@@ -228,6 +259,12 @@ public class PhotoSizes implements Parcelable {
             this.w = w;
             this.h = h;
             this.url = url;
+        }
+
+        Size(ParcelNative in) {
+            w = in.readInt();
+            h = in.readInt();
+            url = in.readString();
         }
 
         Size(Parcel in) {
@@ -255,6 +292,13 @@ public class PhotoSizes implements Parcelable {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(w);
+            dest.writeInt(h);
+            dest.writeString(url);
+        }
+
+        @Override
+        public void writeToParcelNative(ParcelNative dest) {
             dest.writeInt(w);
             dest.writeInt(h);
             dest.writeString(url);

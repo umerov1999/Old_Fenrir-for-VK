@@ -60,6 +60,8 @@ public interface ISettings {
 
         boolean isShow_audio_cover();
 
+        boolean isNative_parcel();
+
         boolean isUse_coil();
 
         String get_Api_Domain();
@@ -156,6 +158,8 @@ public interface ISettings {
 
         boolean isChange_upload_size();
 
+        boolean isShow_photos_line();
+
         boolean isDo_auto_play_video();
 
         boolean isHint_stickers();
@@ -200,6 +204,10 @@ public interface ISettings {
 
         void storeAccessToken(int accountId, String accessToken);
 
+        void storeLogin(int accountId, String loginCombo);
+
+        String getLogin(int accountId);
+
         void storeTokenType(int accountId, @Account_Types int type);
 
         String getAccessToken(int accountId);
@@ -210,6 +218,8 @@ public interface ISettings {
         void removeAccessToken(int accountId);
 
         void removeType(int accountId);
+
+        void removeLogin(int accountId);
     }
 
     interface IMainSettings {

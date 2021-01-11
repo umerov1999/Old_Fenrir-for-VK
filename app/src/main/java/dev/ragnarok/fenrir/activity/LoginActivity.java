@@ -39,10 +39,12 @@ public class LoginActivity extends Activity {
     private static final String EXTRA_LOGIN = "login";
     private static final String EXTRA_PASSWORD = "password";
     private static final String EXTRA_TWO_FA = "twofa";
+    private static final String EXTRA_SAVE = "save";
     private static final String EXTRA_GROUP_IDS = "group_ids";
-    String TLogin;
-    String TPassword;
-    String TwoFA;
+    private String TLogin;
+    private String TPassword;
+    private String TwoFA;
+    private boolean isSave;
 
     public static Intent createIntent(Context context, String clientId, String scope) {
         return new Intent(context, LoginActivity.class)
@@ -50,9 +52,11 @@ public class LoginActivity extends Activity {
                 .putExtra(EXTRA_SCOPE, scope);
     }
 
-    public static Intent createIntent(Context context, String validate_url, String Login, String Password, String TwoFa) {
+    public static Intent createIntent(Context context, String validate_url, String Login, String Password, String TwoFa, boolean isSave) {
         return new Intent(context, LoginActivity.class)
-                .putExtra(EXTRA_VALIDATE, validate_url).putExtra(EXTRA_LOGIN, Login).putExtra(EXTRA_PASSWORD, Password).putExtra(EXTRA_TWO_FA, TwoFa);
+                .putExtra(EXTRA_VALIDATE, validate_url).putExtra(EXTRA_LOGIN, Login)
+                .putExtra(EXTRA_PASSWORD, Password).putExtra(EXTRA_TWO_FA, TwoFa)
+                .putExtra(EXTRA_SAVE, isSave);
     }
 
     public static Intent createIntent(Context context, String clientId, String scope, Collection<Integer> groupIds) {
@@ -130,6 +134,7 @@ public class LoginActivity extends Activity {
             TLogin = getIntent().getStringExtra(EXTRA_LOGIN);
             TPassword = getIntent().getStringExtra(EXTRA_PASSWORD);
             TwoFA = getIntent().getStringExtra(EXTRA_TWO_FA);
+            isSave = getIntent().getBooleanExtra(EXTRA_SAVE, false);
             webview.loadUrl(getIntent().getStringExtra(EXTRA_VALIDATE));
         }
     }
@@ -158,6 +163,7 @@ public class LoginActivity extends Activity {
                         intent.putExtra(Extra.LOGIN, TLogin);
                         intent.putExtra(Extra.PASSWORD, TPassword);
                         intent.putExtra(Extra.TWOFA, TwoFA);
+                        intent.putExtra(Extra.SAVE, isSave);
                     }
 
                     setResult(RESULT_OK, intent);

@@ -21,6 +21,7 @@ import dev.ragnarok.fenrir.longpoll.AppNotificationChannels
 import dev.ragnarok.fenrir.longpoll.NotificationHelper
 import dev.ragnarok.fenrir.model.*
 import dev.ragnarok.fenrir.player.util.MusicUtils
+import dev.ragnarok.fenrir.service.QuickReplyService
 import dev.ragnarok.fenrir.settings.ISettings
 import dev.ragnarok.fenrir.settings.Settings
 import ealvatag.audio.AudioFileIO
@@ -465,6 +466,15 @@ object DownloadWorkUtils {
                 val ReadPendingIntent = PendingIntent.getActivity(applicationContext, id.hashCode(), intent_open, PendingIntent.FLAG_UPDATE_CURRENT)
                 mBuilder.setContentIntent(ReadPendingIntent)
 
+                if (Settings.get().other().isDeveloper_mode) {
+                    val DeleteIntent = QuickReplyService.intentForDeleteFile(applicationContext, file_v.build(), NotificationHelper.NOTIFICATION_DOWNLOAD, id.toString())
+                    val DeletePendingIntent = PendingIntent.getService(applicationContext, id.hashCode(), DeleteIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+                    val actionDelete = NotificationCompat.Action.Builder(R.drawable.ic_outline_delete,
+                            applicationContext.resources.getString(R.string.delete), DeletePendingIntent)
+                            .build()
+                    mBuilder.addAction(actionDelete)
+                }
+
                 show_notification(mBuilder, NotificationHelper.NOTIFICATION_DOWNLOAD, NotificationHelper.NOTIFICATION_DOWNLOADING)
                 Utils.inMainThread { CustomToast.CreateCustomToast(applicationContext).showToastBottom(R.string.saved) }
             }
@@ -547,6 +557,15 @@ object DownloadWorkUtils {
                         .getMimeTypeFromExtension(file_v.ext)).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 val ReadPendingIntent = PendingIntent.getActivity(applicationContext, id.hashCode(), intent_open, PendingIntent.FLAG_UPDATE_CURRENT)
                 mBuilder.setContentIntent(ReadPendingIntent)
+
+                if (Settings.get().other().isDeveloper_mode) {
+                    val DeleteIntent = QuickReplyService.intentForDeleteFile(applicationContext, file_v.build(), NotificationHelper.NOTIFICATION_DOWNLOAD, id.toString())
+                    val DeletePendingIntent = PendingIntent.getService(applicationContext, id.hashCode(), DeleteIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+                    val actionDelete = NotificationCompat.Action.Builder(R.drawable.ic_outline_delete,
+                            applicationContext.resources.getString(R.string.delete), DeletePendingIntent)
+                            .build()
+                    mBuilder.addAction(actionDelete)
+                }
 
                 show_notification(mBuilder, NotificationHelper.NOTIFICATION_DOWNLOAD, NotificationHelper.NOTIFICATION_DOWNLOADING)
                 MusicUtils.CachedAudios.add(file_v.build_filename())

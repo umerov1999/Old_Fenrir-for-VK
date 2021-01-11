@@ -1,6 +1,9 @@
 package dev.ragnarok.fenrir.fragment;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -12,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
@@ -55,6 +59,7 @@ import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.spots.SpotsDialog;
+import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.CommentsInputViewController;
 import dev.ragnarok.fenrir.view.LoadMoreFooterHelperComment;
@@ -505,6 +510,17 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
         getPresenter().fireCommentContextViewCreated(contextView, comment);
 
         menu.setHeaderTitle(comment.getFullAuthorName());
+
+        if (!Utils.isEmpty(comment.getText())) {
+            menu.add(R.string.copy).setOnMenuItemClickListener(item -> {
+                ClipboardManager clipboard = (ClipboardManager) requireActivity()
+                        .getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("comment", comment.getText());
+                clipboard.setPrimaryClip(clip);
+                CustomToast.CreateCustomToast(requireActivity()).setDuration(Toast.LENGTH_LONG).showToast(R.string.copied_to_clipboard);
+                return true;
+            });
+        }
 
         menu.add(R.string.reply).setOnMenuItemClickListener(item -> {
             getPresenter().fireReplyToCommentClick(comment);

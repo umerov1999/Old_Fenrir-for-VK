@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.util.SparseArray
 import android.view.*
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.annotation.NonNull
@@ -20,6 +19,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Transformation
+import com.umerov.rlottie.RLottieImageView
 import dev.ragnarok.fenrir.Constants
 import dev.ragnarok.fenrir.Extra
 import dev.ragnarok.fenrir.R
@@ -264,7 +264,7 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
 
     private inner class Holder(rootView: View) : MultiHolder(rootView), SurfaceHolder.Callback {
         val mSurfaceView: SurfaceView
-        val mProgressBar: ProgressBar
+        val mProgressBar: RLottieImageView
         val mAspectRatioLayout: AlternativeAspectRatioFrameLayout
         override var isSurfaceReady = false
         override fun surfaceCreated(holder: SurfaceHolder) {
@@ -281,6 +281,12 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
 
         override fun setProgressVisible(visible: Boolean) {
             mProgressBar.visibility = if (visible) View.VISIBLE else View.GONE
+            if (visible) {
+                mProgressBar.setAnimation(R.raw.loading, Utils.dp(100F), Utils.dp(40F), intArrayOf(0xffffff, CurrentTheme.getColorControlNormal(requireActivity())))
+                mProgressBar.playAnimation()
+            } else {
+                mProgressBar.stopAnimation()
+            }
         }
 
         override fun SetAspectRatio(w: Int, h: Int) {
@@ -316,7 +322,7 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         val reload: FloatingActionButton
         private val mPicassoLoadCallback: WeakPicassoLoadCallback
         val photo: TouchImageView
-        val progress: ProgressBar
+        val progress: RLottieImageView
         private var mLoadingNow = false
         override fun bindTo(@NonNull story: Story) {
             photo.resetZoom()
@@ -344,6 +350,12 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
 
         private fun resolveProgressVisibility() {
             progress.visibility = if (mLoadingNow) View.VISIBLE else View.GONE
+            if (mLoadingNow) {
+                progress.setAnimation(R.raw.loading, Utils.dp(100F), Utils.dp(40F), intArrayOf(0xffffff, CurrentTheme.getColorControlNormal(requireActivity())))
+                progress.playAnimation()
+            } else {
+                progress.stopAnimation()
+            }
         }
 
         private fun loadImage(@NonNull url: String?) {

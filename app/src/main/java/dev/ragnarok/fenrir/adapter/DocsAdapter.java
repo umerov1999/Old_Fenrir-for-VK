@@ -18,9 +18,7 @@ import dev.ragnarok.fenrir.adapter.base.RecyclerBindableAdapter;
 import dev.ragnarok.fenrir.model.Document;
 import dev.ragnarok.fenrir.model.PhotoSize;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
-import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.util.AppTextUtils;
-import dev.ragnarok.fenrir.util.Utils;
 
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
@@ -98,7 +96,6 @@ public class DocsAdapter extends RecyclerBindableAdapter<Document, DocsAdapter.D
             ivImage = root.findViewById(R.id.item_document_big_image);
             tvTitle = root.findViewById(R.id.item_document_big_title);
             tvSize = root.findViewById(R.id.item_document_big_size);
-            Utils.setColorFilter(tvExt.getBackground(), CurrentTheme.getColorPrimary(root.getContext()));
         }
     }
 }

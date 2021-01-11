@@ -1482,4 +1482,12 @@
     <string name="end_list_anim">Анимация \"конец списка\"</string>
     <string name="radius">Радиус</string>
     <string name="gps">Геолокация</string>
+    <string name="restore_login_info">Логин: %1$s, Пароль %2$s, Токен %3$s, Валидация %4$s</string>
+    <string name="registration_date_info">Зарегистрирован: %1$s\nАвторизация: %2$s\nИзменение стены %3$s</string>
+    <string name="all_photos">Все фото</string>
+    <string name="photo_with_user">Фото с пользователем</string>
+    <string name="detect_qr">Распознать QR</string>
+    <string name="show_photos_line">Показывать трекбар с фотками</string>
+    <string name="native_parcel">Нативный Parcel</string>
+    <string name="native_parcel_summary">Если вылетает при открытии фото</string>
 </resources>

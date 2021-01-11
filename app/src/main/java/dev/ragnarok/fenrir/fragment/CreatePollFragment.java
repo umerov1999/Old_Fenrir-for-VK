@@ -214,11 +214,9 @@ public class CreatePollFragment extends BaseMvpFragment<CreatePollPresenter, ICr
 
     @Override
     public void sendResultAndGoBack(@NonNull Poll poll) {
-        if (nonNull(getParentFragmentManager())) {
-            Bundle intent = new Bundle();
-            intent.putParcelable(Extra.POLL, poll);
-            getParentFragmentManager().setFragmentResult(REQUEST_CREATE_POLL, intent);
-        }
+        Bundle intent = new Bundle();
+        intent.putParcelable(Extra.POLL, poll);
+        getParentFragmentManager().setFragmentResult(REQUEST_CREATE_POLL, intent);
 
         requireActivity().onBackPressed();
     }

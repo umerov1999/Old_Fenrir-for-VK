@@ -62,6 +62,10 @@ class AccountsSettings implements ISettings.IAccountsSettings {
         return "token" + uid;
     }
 
+    private static String loginKeyFor(int uid) {
+        return "login" + uid;
+    }
+
     private static String typeAccKeyFor(int uid) {
         return "account_type" + uid;
     }
@@ -198,6 +202,18 @@ class AccountsSettings implements ISettings.IAccountsSettings {
     }
 
     @Override
+    public void storeLogin(int accountId, String loginCombo) {
+        preferences.edit()
+                .putString(loginKeyFor(accountId), loginCombo)
+                .apply();
+    }
+
+    @Override
+    public String getLogin(int accountId) {
+        return preferences.getString(loginKeyFor(accountId), null);
+    }
+
+    @Override
     public void storeTokenType(int accountId, @Account_Types int type) {
         types.put(accountId, type);
         preferences.edit()
@@ -232,6 +248,13 @@ class AccountsSettings implements ISettings.IAccountsSettings {
         types.remove(accountId);
         preferences.edit()
                 .remove(typeAccKeyFor(accountId))
+                .apply();
+    }
+
+    @Override
+    public void removeLogin(int accountId) {
+        preferences.edit()
+                .remove(loginKeyFor(accountId))
                 .apply();
     }
 }

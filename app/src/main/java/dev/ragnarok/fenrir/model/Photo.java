@@ -2,10 +2,12 @@ package dev.ragnarok.fenrir.model;
 
 import android.os.Parcel;
 
+import com.umerov.parcel.ParcelNative;
+
 import dev.ragnarok.fenrir.util.Objects;
 
 
-public class Photo extends AbsModel implements ISomeones {
+public class Photo extends AbsModel implements ISomeones, ParcelNative.ParcelableNative {
 
     public static final Creator<Photo> CREATOR = new Creator<Photo>() {
         @Override
@@ -18,6 +20,8 @@ public class Photo extends AbsModel implements ISomeones {
             return new Photo[size];
         }
     };
+
+    public static final ParcelNative.Creator<Photo> NativeCreator = Photo::new;
     private int id;
     private int ownerId;
     private int albumId;
@@ -38,6 +42,26 @@ public class Photo extends AbsModel implements ISomeones {
 
     public Photo() {
 
+    }
+
+    protected Photo(ParcelNative in) {
+        id = in.readInt();
+        ownerId = in.readInt();
+        albumId = in.readInt();
+        width = in.readInt();
+        height = in.readInt();
+        sizes = in.readParcelable(PhotoSizes.NativeCreator);
+        text = in.readString();
+        date = in.readLong();
+        userLikes = in.readBoolean();
+        canComment = in.readBoolean();
+        likesCount = in.readInt();
+        commentsCount = in.readInt();
+        tagsCount = in.readInt();
+        accessKey = in.readString();
+        deleted = in.readBoolean();
+        postId = in.readInt();
+        repostsCount = in.readInt();
     }
 
     protected Photo(Parcel in) {
@@ -263,5 +287,26 @@ public class Photo extends AbsModel implements ISomeones {
         int result = id;
         result = 31 * result + ownerId;
         return result;
+    }
+
+    @Override
+    public void writeToParcelNative(ParcelNative parcel) {
+        parcel.writeInt(id);
+        parcel.writeInt(ownerId);
+        parcel.writeInt(albumId);
+        parcel.writeInt(width);
+        parcel.writeInt(height);
+        parcel.writeParcelable(sizes);
+        parcel.writeString(text);
+        parcel.writeLong(date);
+        parcel.writeBoolean(userLikes);
+        parcel.writeBoolean(canComment);
+        parcel.writeInt(likesCount);
+        parcel.writeInt(commentsCount);
+        parcel.writeInt(tagsCount);
+        parcel.writeString(accessKey);
+        parcel.writeBoolean(deleted);
+        parcel.writeInt(postId);
+        parcel.writeInt(repostsCount);
     }
 }

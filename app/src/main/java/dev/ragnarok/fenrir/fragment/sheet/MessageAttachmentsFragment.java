@@ -140,9 +140,7 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
         mEmptyView = view.findViewById(R.id.no_attachments_text);
 
         view.findViewById(R.id.button_send).setOnClickListener(v -> {
-            if (nonNull(getParentFragmentManager())) {
-                getParentFragmentManager().setFragmentResult(MESSAGE_CLOSE_ONLY, new Bundle());
-            }
+            getParentFragmentManager().setFragmentResult(MESSAGE_CLOSE_ONLY, new Bundle());
             getDialog().dismiss();
         });
 
@@ -266,11 +264,9 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
 
     @Override
     public void syncAccompanyingWithParent(ModelsBundle accompanying) {
-        if (nonNull(getParentFragmentManager())) {
-            Bundle data = new Bundle();
-            data.putParcelable(Extra.BUNDLE, accompanying);
-            getParentFragmentManager().setFragmentResult(MESSAGE_SYNC_ATTACHMENTS, data);
-        }
+        Bundle data = new Bundle();
+        data.putParcelable(Extra.BUNDLE, accompanying);
+        getParentFragmentManager().setFragmentResult(MESSAGE_SYNC_ATTACHMENTS, data);
     }
 
     @Override

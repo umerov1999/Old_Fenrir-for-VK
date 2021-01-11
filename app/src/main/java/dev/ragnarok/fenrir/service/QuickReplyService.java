@@ -5,8 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.RemoteInput;
+
+import java.io.File;
 
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.domain.IMessagesRepository;
@@ -19,6 +23,7 @@ public class QuickReplyService extends IntentService {
 
     public static final String ACTION_ADD_MESSAGE = "SendService.ACTION_ADD_MESSAGE";
     public static final String ACTION_MARK_AS_READ = "SendService.ACTION_MARK_AS_READ";
+    public static final String ACTION_DELETE_FILE = "SendService.ACTION_DELETE_FILE";
 
     public QuickReplyService() {
         super(QuickReplyService.class.getName());
@@ -30,6 +35,15 @@ public class QuickReplyService extends IntentService {
         intent.putExtra(Extra.ACCOUNT_ID, accountId);
         intent.putExtra(Extra.PEER_ID, peerId);
         intent.putExtra(Extra.MESSAGE, msg);
+        return intent;
+    }
+
+    public static Intent intentForDeleteFile(Context context, @NonNull String path, int notificationId, @NonNull String notificationTag) {
+        Intent intent = new Intent(context, QuickReplyService.class);
+        intent.setAction(ACTION_DELETE_FILE);
+        intent.putExtra(Extra.DOC, path);
+        intent.putExtra(Extra.ID, notificationId);
+        intent.putExtra(Extra.TYPE, notificationTag);
         return intent;
     }
 
@@ -58,6 +72,9 @@ public class QuickReplyService extends IntentService {
             int peerId = intent.getExtras().getInt(Extra.PEER_ID);
             int msgId = intent.getExtras().getInt(Extra.MESSAGE_ID);
             Repository.INSTANCE.getMessages().markAsRead(accountId, peerId, msgId).blockingSubscribe(RxUtils.dummy(), RxUtils.ignore());
+        } else if (intent != null && ACTION_DELETE_FILE.equals(intent.getAction()) && intent.getExtras() != null) {
+            NotificationManagerCompat.from(this).cancel(intent.getExtras().getString(Extra.TYPE), intent.getExtras().getInt(Extra.ID));
+            new File(intent.getExtras().getString(Extra.DOC)).delete();
         }
     }
 

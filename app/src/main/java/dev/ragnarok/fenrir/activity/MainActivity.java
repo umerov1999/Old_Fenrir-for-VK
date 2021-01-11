@@ -1171,17 +1171,8 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                 break;
 
             case Place.VK_PHOTO_ALBUM_GALLERY:
-                attachToFront(PhotoPagerFragment.newInstance(place.type, args));
-                break;
-
             case Place.FAVE_PHOTOS_GALLERY:
-                attachToFront(PhotoPagerFragment.newInstance(place.type, args));
-                break;
-
             case Place.SIMPLE_PHOTO_GALLERY:
-                attachToFront(PhotoPagerFragment.newInstance(place.type, args));
-                break;
-
             case Place.VK_PHOTO_TMP_SOURCE:
                 attachToFront(PhotoPagerFragment.newInstance(place.type, args));
                 break;

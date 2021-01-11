@@ -18,8 +18,6 @@ import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.CommentCreatePresenter;
 import dev.ragnarok.fenrir.mvp.view.ICreateCommentView;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 public class CommentCreateFragment extends AbsAttachmentsEditFragment<CommentCreatePresenter, ICreateCommentView>
         implements ICreateCommentView {
 
@@ -99,9 +97,7 @@ public class CommentCreateFragment extends AbsAttachmentsEditFragment<CommentCre
         Bundle data = new Bundle();
         data.putString(Extra.BODY, textBody);
 
-        if (nonNull(getParentFragmentManager())) {
-            getParentFragmentManager().setFragmentResult(REQUEST_CREATE_COMMENT, data);
-        }
+        getParentFragmentManager().setFragmentResult(REQUEST_CREATE_COMMENT, data);
     }
 
     @Override

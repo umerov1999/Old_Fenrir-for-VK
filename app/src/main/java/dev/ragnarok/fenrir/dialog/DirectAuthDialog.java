@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
+import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -108,6 +109,9 @@ public class DirectAuthDialog extends BaseMvpDialogFragment<DirectAuthPresenter,
             }
         });
         mCaptchaImage = view.findViewById(R.id.captcha_img);
+
+        MaterialCheckBox mSavePassword = view.findViewById(R.id.save_password);
+        mSavePassword.setOnCheckedChangeListener((buttonView, isChecked) -> getPresenter().fireSaveEdit(isChecked));
 
         builder.setView(view);
         builder.setPositiveButton(R.string.button_login, null);
@@ -222,35 +226,35 @@ public class DirectAuthDialog extends BaseMvpDialogFragment<DirectAuthPresenter,
     }
 
     @Override
-    public void returnSuccessToParent(int userId, String accessToken, String Login, String Password, String twoFA) {
+    public void returnSuccessToParent(int userId, String accessToken, String Login, String Password, String twoFA, boolean isSave) {
         Bundle data = new Bundle();
         data.putString(Extra.TOKEN, accessToken);
         data.putInt(Extra.USER_ID, userId);
         data.putString(Extra.LOGIN, Login);
         data.putString(Extra.PASSWORD, Password);
         data.putString(Extra.TWOFA, twoFA);
-        returnResultAndDissmiss(ACTION_LOGIN_COMPLETE, data);
+        data.putBoolean(Extra.SAVE, isSave);
+        returnResultAndDismiss(ACTION_LOGIN_COMPLETE, data);
     }
 
     @Override
-    public void returnSuccessValidation(String url, String Login, String Password, String twoFA) {
+    public void returnSuccessValidation(String url, String Login, String Password, String twoFA, boolean isSave) {
         Bundle data = new Bundle();
         data.putString(Extra.URL, url);
         data.putString(Extra.LOGIN, Login);
         data.putString(Extra.PASSWORD, Password);
         data.putString(Extra.TWOFA, twoFA);
-        returnResultAndDissmiss(ACTION_VALIDATE_VIA_WEB, data);
+        data.putBoolean(Extra.SAVE, isSave);
+        returnResultAndDismiss(ACTION_VALIDATE_VIA_WEB, data);
     }
 
-    private void returnResultAndDissmiss(@NonNull String key, @NonNull Bundle data) {
-        if (nonNull(getParentFragmentManager())) {
-            getParentFragmentManager().setFragmentResult(key, data);
-        }
+    private void returnResultAndDismiss(@NonNull String key, @NonNull Bundle data) {
+        getParentFragmentManager().setFragmentResult(key, data);
         dismiss();
     }
 
     @Override
     public void returnLoginViaWebAction() {
-        returnResultAndDissmiss(ACTION_LOGIN_VIA_WEB, new Bundle());
+        returnResultAndDismiss(ACTION_LOGIN_VIA_WEB, new Bundle());
     }
 }

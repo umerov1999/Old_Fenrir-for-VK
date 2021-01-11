@@ -169,7 +169,7 @@ public class PushRegistrationResolver implements IPushRegistrationResolver {
         } else {
             return networker.vkManual(registration.getUserId(), registration.getVkToken())
                     .account()
-                    .registerDevice(registration.getGmcToken(), 1, Constants.VKANDROID_APP_VERSION_CODE, "fcm",
+                    .registerDevice(registration.getGmcToken(), 1, Constants.VK_ANDROID_APP_VERSION_CODE, "fcm",
                             "vk_client", 4, deviceModel, registration.getDeviceId(), Build.VERSION.RELEASE, null)
                     .ignoreElement();
         }

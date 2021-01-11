@@ -281,6 +281,24 @@ class ChatPresenter(accountId: Int, private val messagesOwnerId: Int,
         if (position < 0 || data.size <= position) {
             return
         }
+        val message = data[position]
+        when (message.status) {
+            MessageStatus.SENDING, MessageStatus.QUEUE, MessageStatus.WAITING_FOR_UPLOAD -> {
+                deleteMessageFromDbAsync(message)
+                view?.notifyItemRemoved(position)
+                return
+            }
+            MessageStatus.ERROR -> {
+                view?.showErrorSendDialog(message)
+                return
+            }
+            MessageStatus.EDITING -> {
+
+            }
+            MessageStatus.SENT -> {
+
+            }
+        }
         fireForwardToHereClick(ArrayList(Collections.singleton(data[position])))
     }
 

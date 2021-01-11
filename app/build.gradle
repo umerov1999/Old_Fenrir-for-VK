@@ -17,8 +17,8 @@ android {
         minSdkVersion 21
         //noinspection ExpiredTargetSdkVersion,OldTargetApi
         targetSdkVersion 29
-        versionCode 22
-        versionName '1.22'
+        versionCode 24
+        versionName '1.24'
 
         buildConfigField 'int', 'VK_API_APP_ID', getProps("vk_app_id")
         buildConfigField 'String', 'VK_CLIENT_SECRET', getProps("vk_client_secret")
@@ -148,6 +148,7 @@ dependencies {
     implementation "com.squareup.retrofit2:adapter-rxjava3:$retrofitLibraryVersion"
     implementation "com.squareup.okhttp3:okhttp:$okhttpLibraryVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttpLibraryVersion"
+    implementation "com.squareup.okio:okio:2.10.0"
     implementation "com.google.android.exoplayer:exoplayer-core:$exoLibraryVersion"
     implementation "com.google.android.exoplayer:exoplayer-hls:$exoLibraryVersion"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.0-alpha2'

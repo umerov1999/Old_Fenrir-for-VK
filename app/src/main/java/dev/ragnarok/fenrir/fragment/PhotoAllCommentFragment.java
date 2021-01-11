@@ -1,12 +1,16 @@
 package dev.ragnarok.fenrir.fragment;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,6 +39,8 @@ import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.PhotoAllCommentPresenter;
 import dev.ragnarok.fenrir.mvp.view.IPhotoAllCommentView;
 import dev.ragnarok.fenrir.spots.SpotsDialog;
+import dev.ragnarok.fenrir.util.CustomToast;
+import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.emoji.EmojiconTextView;
 
@@ -234,6 +240,17 @@ public class PhotoAllCommentFragment extends PlaceSupportMvpFragment<PhotoAllCom
                     getPresenter().fireGoPhotoClick(comment);
                     return true;
                 });
+
+        if (!Utils.isEmpty(comment.getText())) {
+            menu.add(R.string.copy).setOnMenuItemClickListener(item -> {
+                ClipboardManager clipboard = (ClipboardManager) requireActivity()
+                        .getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("comment", comment.getText());
+                clipboard.setPrimaryClip(clip);
+                CustomToast.CreateCustomToast(requireActivity()).setDuration(Toast.LENGTH_LONG).showToast(R.string.copied_to_clipboard);
+                return true;
+            });
+        }
 
         menu.add(R.string.report).setOnMenuItemClickListener(item -> {
             getPresenter().fireReport(comment, requireActivity());

@@ -1635,4 +1635,12 @@
     <string name="end_list_anim">End list animation</string>
     <string name="radius">Radius</string>
     <string name="gps">GPS</string>
+    <string name="restore_login_info">Login: %1$s, Password %2$s, Token %3$s, Validation %4$s</string>
+    <string name="registration_date_info">Registered: %1$s\nAuth: %2$s\nWall Changed %3$s</string>
+    <string name="all_photos">All Photos</string>
+    <string name="photo_with_user">Photo with user</string>
+    <string name="detect_qr">Detect QR</string>
+    <string name="show_photos_line">Show photos line</string>
+    <string name="native_parcel">Native Parcel</string>
+    <string name="native_parcel_summary">If it crashes when opening a photo</string>
 </resources>

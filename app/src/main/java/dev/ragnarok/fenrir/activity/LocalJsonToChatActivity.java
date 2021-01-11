@@ -91,14 +91,12 @@ public class LocalJsonToChatActivity extends NoMainActivity implements PlaceProv
         Bundle args = place.getArgs();
         switch (place.type) {
             case Place.VK_PHOTO_ALBUM_GALLERY:
-
             case Place.FAVE_PHOTOS_GALLERY:
-
             case Place.SIMPLE_PHOTO_GALLERY:
-
             case Place.VK_PHOTO_TMP_SOURCE:
                 attachFrontFragment(PhotoPagerFragment.newInstance(place.type, args));
                 break;
+
             case Place.GIF_PAGER:
                 attachFrontFragment(GifPagerFragment.newInstance(args));
                 break;

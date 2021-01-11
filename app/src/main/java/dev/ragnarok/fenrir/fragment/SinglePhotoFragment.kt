@@ -9,11 +9,11 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import androidx.annotation.IdRes
 import androidx.annotation.NonNull
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Callback
+import com.umerov.rlottie.RLottieImageView
 import dev.ragnarok.fenrir.App.Companion.instance
 import dev.ragnarok.fenrir.Extra
 import dev.ragnarok.fenrir.R
@@ -21,11 +21,13 @@ import dev.ragnarok.fenrir.activity.ActivityFeatures
 import dev.ragnarok.fenrir.fragment.base.BaseFragment
 import dev.ragnarok.fenrir.listener.BackPressCallback
 import dev.ragnarok.fenrir.picasso.PicassoInstance
+import dev.ragnarok.fenrir.settings.CurrentTheme
 import dev.ragnarok.fenrir.settings.Settings
 import dev.ragnarok.fenrir.util.AppPerms
 import dev.ragnarok.fenrir.util.CustomToast.Companion.CreateCustomToast
 import dev.ragnarok.fenrir.util.DownloadWorkUtils.doDownloadPhoto
 import dev.ragnarok.fenrir.util.DownloadWorkUtils.makeLegalFilename
+import dev.ragnarok.fenrir.util.Utils
 import dev.ragnarok.fenrir.util.Utils.nonEmpty
 import dev.ragnarok.fenrir.view.CircleCounterButton
 import dev.ragnarok.fenrir.view.TouchImageView
@@ -53,9 +55,9 @@ class SinglePhotoFragment : BaseFragment(), GoBackCallback, BackPressCallback {
         photo_prefix = makeLegalFilename(requireArguments().getString(Extra.KEY)!!, null)
     }
 
-    private val requestWritePermission = AppPerms.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), {
+    private val requestWritePermission = AppPerms.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
         doSaveOnDrive(false)
-    })
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -168,7 +170,7 @@ class SinglePhotoFragment : BaseFragment(), GoBackCallback, BackPressCallback {
         val reload: FloatingActionButton
         private val mPicassoLoadCallback: WeakPicassoLoadCallback
         val photo: TouchImageView
-        val progress: ProgressBar
+        val progress: RLottieImageView
         private var mLoadingNow = false
         fun bindTo(@NonNull url: String?) {
             reload.setOnClickListener {
@@ -187,6 +189,12 @@ class SinglePhotoFragment : BaseFragment(), GoBackCallback, BackPressCallback {
 
         private fun resolveProgressVisibility() {
             progress.visibility = if (mLoadingNow) View.VISIBLE else View.GONE
+            if (mLoadingNow) {
+                progress.setAnimation(R.raw.loading, Utils.dp(100F), Utils.dp(40F), intArrayOf(0xffffff, CurrentTheme.getColorControlNormal(requireActivity())))
+                progress.playAnimation()
+            } else {
+                progress.stopAnimation()
+            }
         }
 
         private fun loadImage(@NonNull url: String?) {
@@ -231,7 +239,6 @@ class SinglePhotoFragment : BaseFragment(), GoBackCallback, BackPressCallback {
     }
 
     companion object {
-        private const val REQUEST_WRITE_PERMISSION = 160
 
         @JvmStatic
         fun newInstance(args: Bundle?): SinglePhotoFragment {

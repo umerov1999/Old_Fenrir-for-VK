@@ -83,15 +83,14 @@ public class ChatActivity extends NoMainActivity implements PlaceProvider, AppSt
                 ChatFragment chatFragment = ChatFragment.Companion.newInstance(args.getInt(Extra.ACCOUNT_ID), args.getInt(Extra.OWNER_ID), peer);
                 attachToFront(chatFragment);
                 break;
+
             case Place.VK_PHOTO_ALBUM_GALLERY:
-
             case Place.FAVE_PHOTOS_GALLERY:
-
             case Place.SIMPLE_PHOTO_GALLERY:
-
             case Place.VK_PHOTO_TMP_SOURCE:
                 attachToFront(PhotoPagerFragment.newInstance(place.type, args));
                 break;
+
             case Place.GIF_PAGER:
                 attachToFront(GifPagerFragment.newInstance(args));
                 break;

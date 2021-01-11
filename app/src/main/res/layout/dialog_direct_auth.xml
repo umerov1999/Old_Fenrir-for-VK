@@ -123,6 +123,14 @@
 
             </LinearLayout>
 
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/save_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/save"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:textSize="14sp" />
+
         </LinearLayout>
 
         <FrameLayout

@@ -7,7 +7,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
+
+import com.umerov.rlottie.RLottieImageView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -32,8 +33,10 @@ import dev.ragnarok.fenrir.model.Document;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.GifPagerPresenter;
 import dev.ragnarok.fenrir.mvp.view.IGifPagerView;
+import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.Objects;
+import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.AlternativeAspectRatioFrameLayout;
 import dev.ragnarok.fenrir.view.CircleCounterButton;
 import dev.ragnarok.fenrir.view.FlingRelativeLayout;
@@ -240,7 +243,7 @@ public class GifPagerFragment extends AbsDocumentPreviewFragment<GifPagerPresent
 
         final SurfaceView mSurfaceView;
         final SurfaceHolder mSurfaceHolder;
-        final ProgressBar mProgressBar;
+        final RLottieImageView mProgressBar;
         final AlternativeAspectRatioFrameLayout mAspectRatioLayout;
         boolean mSurfaceReady;
 
@@ -288,6 +291,12 @@ public class GifPagerFragment extends AbsDocumentPreviewFragment<GifPagerPresent
 
         void setProgressVisible(boolean visible) {
             mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+            if (visible) {
+                mProgressBar.setAnimation(R.raw.loading, Utils.dp(100F), Utils.dp(40F), new int[]{0xffffff, CurrentTheme.getColorControlNormal(requireActivity())});
+                mProgressBar.playAnimation();
+            } else {
+                mProgressBar.stopAnimation();
+            }
         }
     }
 

@@ -21,8 +21,6 @@ import dev.ragnarok.fenrir.mvp.presenter.CommentEditPresenter;
 import dev.ragnarok.fenrir.mvp.view.ICommentEditView;
 import dev.ragnarok.fenrir.util.AssertUtils;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 public class CommentEditFragment extends AbsAttachmentsEditFragment<CommentEditPresenter, ICommentEditView>
         implements ICommentEditView {
 
@@ -97,9 +95,7 @@ public class CommentEditFragment extends AbsAttachmentsEditFragment<CommentEditP
         Bundle data = new Bundle();
         data.putParcelable(Extra.COMMENT, comment);
 
-        if (nonNull(getParentFragmentManager())) {
-            getParentFragmentManager().setFragmentResult(REQUEST_COMMENT_EDIT, data);
-        }
+        getParentFragmentManager().setFragmentResult(REQUEST_COMMENT_EDIT, data);
 
         requireActivity().onBackPressed();
     }

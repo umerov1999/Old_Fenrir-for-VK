@@ -129,4 +129,5 @@ public class Extra {
     public static final String STORY = "story";
     public static final String UPDATE_INFO = "update_info";
     public static final String MARKET = "market";
+    public static final String SAVE = "save";
 }

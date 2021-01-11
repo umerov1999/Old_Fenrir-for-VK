@@ -367,8 +367,18 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public boolean isShow_photos_line() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("show_photos_line", true);
+    }
+
+    @Override
     public boolean isDo_auto_play_video() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("do_auto_play_video", false);
+    }
+
+    @Override
+    public boolean isNative_parcel() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("native_parcel", false);
     }
 
     @Override

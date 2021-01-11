@@ -1096,6 +1096,7 @@ public class Utils {
             case "blue_violet":
             case "ice":
             case "ice_green":
+            case "green":
                 if (isOfReadToast) {
                     return Color.parseColor("#448AFF");
                 } else {
@@ -1103,9 +1104,11 @@ public class Utils {
                 }
             case "red":
             case "red_violet":
+            case "pink_gray":
                 return Color.parseColor("#F44336");
             case "violet":
             case "violet_red":
+            case "violet_gray":
                 return Color.parseColor("#9800ff");
             case "violet_green":
             case "violet_yellow":
@@ -1500,20 +1503,22 @@ public class Utils {
             public void onResponse(@NotNull Call th, @NotNull Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String resp = response.body().string();
-                    String result = "";
+                    String result = context.getString(R.string.error);
                     try {
+                        String registered = null, auth = null, changes = null;
                         String tmp = parseResponse(resp, Pattern.compile("ya:created dc:date=\"(.*?)\""));
                         if (!isEmpty(tmp)) {
-                            result += "Зарегистрирован: " + DateFormat.getDateInstance(1).format(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ").parse(tmp));
+                            registered = DateFormat.getDateInstance(1).format(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ").parse(tmp));
                         }
                         tmp = parseResponse(resp, Pattern.compile("ya:lastLoggedIn dc:date=\"(.*?)\""));
                         if (!isEmpty(tmp)) {
-                            result += "\nАвторизация: " + DateFormat.getDateInstance(1).format(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ").parse(tmp));
+                            auth = DateFormat.getDateInstance(1).format(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ").parse(tmp));
                         }
                         tmp = parseResponse(resp, Pattern.compile("ya:modified dc:date=\"(.*?)\""));
                         if (!isEmpty(tmp)) {
-                            result += "\nИзменение: " + DateFormat.getDateInstance(1).format(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ").parse(tmp));
+                            changes = DateFormat.getDateInstance(1).format(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ").parse(tmp));
                         }
+                        result = context.getString(R.string.registration_date_info, registered, auth, changes);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }

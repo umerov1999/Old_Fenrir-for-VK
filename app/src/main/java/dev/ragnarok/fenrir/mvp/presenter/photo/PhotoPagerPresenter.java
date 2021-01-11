@@ -1,6 +1,11 @@
 package dev.ragnarok.fenrir.mvp.presenter.photo;
 
+import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -28,6 +36,7 @@ import dev.ragnarok.fenrir.domain.IOwnersRepository;
 import dev.ragnarok.fenrir.domain.IPhotosInteractor;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
 import dev.ragnarok.fenrir.domain.Repository;
+import dev.ragnarok.fenrir.link.LinkHelper;
 import dev.ragnarok.fenrir.model.AccessIdPair;
 import dev.ragnarok.fenrir.model.Commented;
 import dev.ragnarok.fenrir.model.FunctionSource;
@@ -37,12 +46,14 @@ import dev.ragnarok.fenrir.model.PhotoAlbum;
 import dev.ragnarok.fenrir.model.PhotoSize;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IPhotoPagerView;
+import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.push.OwnerInfo;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.AssertUtils;
+import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.DownloadWorkUtils;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.RxUtils;
@@ -416,6 +427,39 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
         appendDisposable(photosInteractor.copy(accountId, photo.getOwnerId(), photo.getId(), photo.getAccessKey())
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(ignored -> onPhotoCopied(), t -> showError(getView(), getCauseIfRuntime(t))));
+    }
+
+    public void fireDetectQRClick(Activity context) {
+        PicassoInstance.with().load(getCurrent().getUrlForSize(PhotoSize.W, false))
+                .into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        String data = IntentIntegrator.decodeFromBitmap(bitmap);
+                        MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(context);
+                        dlgAlert.setIcon(R.drawable.qr_code);
+                        dlgAlert.setMessage(data);
+                        dlgAlert.setTitle(getString(R.string.scan_qr));
+                        dlgAlert.setPositiveButton(R.string.open, (dialog, which) -> LinkHelper.openUrl(context, getAccountId(), data));
+                        dlgAlert.setNeutralButton(R.string.copy_text, (dialog, which) -> {
+                            ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                            ClipData clip = ClipData.newPlainText("response", data);
+                            clipboard.setPrimaryClip(clip);
+                            CustomToast.CreateCustomToast(context).showToast(R.string.copied_to_clipboard);
+                        });
+                        dlgAlert.setCancelable(true);
+                        dlgAlert.create().show();
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                        CustomToast.CreateCustomToast(context).showToastError(e.getLocalizedMessage());
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                    }
+                });
     }
 
     private void onPhotoCopied() {

@@ -29,9 +29,10 @@ public class DirectAuthPresenter extends RxSupportPresenter<IDirectAuthView> {
 
     private final INetworker networker;
 
-    private Captcha requieredCaptcha;
+    private Captcha requiredCaptcha;
     private boolean requireSmsCode;
     private boolean requireAppCode;
+    private boolean savePassword;
 
     private boolean loginNow;
 
@@ -56,7 +57,7 @@ public class DirectAuthPresenter extends RxSupportPresenter<IDirectAuthView> {
 
         String trimmedUsername = nonEmpty(username) ? username.trim() : "";
         String trimmedPass = nonEmpty(pass) ? pass.trim() : "";
-        String captchaSid = Objects.nonNull(requieredCaptcha) ? requieredCaptcha.getSid() : null;
+        String captchaSid = Objects.nonNull(requiredCaptcha) ? requiredCaptcha.getSid() : null;
         String captchaCode = nonEmpty(captcha) ? captcha.trim() : null;
 
         String code;
@@ -81,14 +82,14 @@ public class DirectAuthPresenter extends RxSupportPresenter<IDirectAuthView> {
     private void onLoginError(Throwable t) {
         setLoginNow(false);
 
-        requieredCaptcha = null;
+        requiredCaptcha = null;
         requireAppCode = false;
         requireSmsCode = false;
 
         if (t instanceof CaptchaNeedException) {
             String sid = ((CaptchaNeedException) t).getSid();
             String img = ((CaptchaNeedException) t).getImg();
-            requieredCaptcha = new Captcha(sid, img);
+            requiredCaptcha = new Captcha(sid, img);
         } else if (t instanceof NeedValidationException) {
             if (Constants.DEFAULT_ACCOUNT_TYPE == Account_Types.KATE) {
                 RedirectUrl = ((NeedValidationException) t).getValidationURL();
@@ -123,7 +124,7 @@ public class DirectAuthPresenter extends RxSupportPresenter<IDirectAuthView> {
         resolveAppCodeRootVisibility();
         resolveButtonLoginState();
 
-        if (Objects.nonNull(requieredCaptcha)) {
+        if (Objects.nonNull(requiredCaptcha)) {
             callView(IDirectAuthView::moveFocusToCaptcha);
         } else if (requireSmsCode) {
             callView(IDirectAuthView::moveFocusToSmsCode);
@@ -149,10 +150,10 @@ public class DirectAuthPresenter extends RxSupportPresenter<IDirectAuthView> {
     @OnGuiCreated
     private void resolveCaptchaViews() {
         if (isGuiReady()) {
-            getView().setCaptchaRootVisible(Objects.nonNull(requieredCaptcha));
+            getView().setCaptchaRootVisible(Objects.nonNull(requiredCaptcha));
 
-            if (Objects.nonNull(requieredCaptcha)) {
-                getView().displayCaptchaImage(requieredCaptcha.getImg());
+            if (Objects.nonNull(requiredCaptcha)) {
+                getView().displayCaptchaImage(requiredCaptcha.getImg());
             }
         }
     }
@@ -168,12 +169,12 @@ public class DirectAuthPresenter extends RxSupportPresenter<IDirectAuthView> {
             else if (requireAppCode)
                 TwFa = "2fa_app";
             String TwFafin = TwFa;
-            callView(view -> view.returnSuccessToParent(response.user_id, response.access_token, nonEmpty(username) ? username.trim() : "", Pass, TwFafin));
+            callView(view -> view.returnSuccessToParent(response.user_id, response.access_token, nonEmpty(username) ? username.trim() : "", Pass, TwFafin, savePassword));
         }
     }
 
     public void onValidate() {
-        callView(view -> view.returnSuccessValidation(RedirectUrl, nonEmpty(username) ? username.trim() : "", nonEmpty(pass) ? pass.trim() : "", "web_validation"));
+        callView(view -> view.returnSuccessValidation(RedirectUrl, nonEmpty(username) ? username.trim() : "", nonEmpty(pass) ? pass.trim() : "", "web_validation", savePassword));
     }
 
     private void setLoginNow(boolean loginNow) {
@@ -202,7 +203,7 @@ public class DirectAuthPresenter extends RxSupportPresenter<IDirectAuthView> {
         if (isGuiResumed()) {
             getView().setLoginButtonEnabled(trimmedNonEmpty(username)
                     && nonEmpty(pass)
-                    && (Objects.isNull(requieredCaptcha) || trimmedNonEmpty(captcha))
+                    && (Objects.isNull(requiredCaptcha) || trimmedNonEmpty(captcha))
                     && (!requireSmsCode || trimmedNonEmpty(smsCode))
                     && (!requireAppCode || trimmedNonEmpty(appCode)));
         }
@@ -226,6 +227,10 @@ public class DirectAuthPresenter extends RxSupportPresenter<IDirectAuthView> {
     public void fireCaptchaEdit(CharSequence s) {
         captcha = s.toString();
         resolveButtonLoginState();
+    }
+
+    public void fireSaveEdit(boolean isSave) {
+        savePassword = isSave;
     }
 
     public void fireButtonSendCodeViaSmsClick() {

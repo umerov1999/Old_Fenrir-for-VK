@@ -25,7 +25,6 @@ import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.RxUtils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 import static dev.ragnarok.fenrir.util.RxUtils.ignore;
 
 public class PostShareDialog extends DialogFragment {
@@ -80,20 +79,18 @@ public class PostShareDialog extends DialogFragment {
     }
 
     private void onItemClick(Item item) {
-        if (nonNull(getParentFragmentManager())) {
-            Bundle data = new Bundle();
+        Bundle data = new Bundle();
 
-            int method = item.getKey();
-            data.putInt(Extra.ACCOUNT_ID, mAccountId);
-            data.putInt(EXTRA_METHOD, method);
-            data.putParcelable(Extra.POST, mPost);
+        int method = item.getKey();
+        data.putInt(Extra.ACCOUNT_ID, mAccountId);
+        data.putInt(EXTRA_METHOD, method);
+        data.putParcelable(Extra.POST, mPost);
 
-            if (method == Methods.REPOST_GROUP) {
-                data.putInt(EXTRA_OWNER_ID, item.getExtra());
-            }
-            getParentFragmentManager().setFragmentResult(REQUEST_POST_SHARE, data);
-            dismissAllowingStateLoss();
+        if (method == Methods.REPOST_GROUP) {
+            data.putInt(EXTRA_OWNER_ID, item.getExtra());
         }
+        getParentFragmentManager().setFragmentResult(REQUEST_POST_SHARE, data);
+        dismissAllowingStateLoss();
     }
 
     @NonNull

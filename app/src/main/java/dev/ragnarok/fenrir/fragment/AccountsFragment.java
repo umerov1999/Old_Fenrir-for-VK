@@ -2,6 +2,8 @@ package dev.ragnarok.fenrir.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -35,10 +37,12 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.annotations.SerializedName;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -118,6 +122,28 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
             return false;
         }
     };
+    private int temp_to_show;
+    private final ActivityResultLauncher<Intent> requestEnterPin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+
+                    SaveAccount restore = new Gson().fromJson(Settings.get().accounts().getLogin(temp_to_show), SaveAccount.class);
+
+                    String password = requireActivity().getString(R.string.restore_login_info, restore.login, restore.password, Settings.get().accounts().getAccessToken(temp_to_show), restore.two_factor_auth);
+                    MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(requireActivity());
+                    dlgAlert.setMessage(password);
+                    dlgAlert.setTitle(R.string.login_password_hint);
+                    dlgAlert.setPositiveButton("OK", null);
+                    dlgAlert.setNeutralButton(R.string.copy_text, (dialog, which) -> {
+                        ClipboardManager clipboard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("response", password);
+                        clipboard.setPrimaryClip(clip);
+                        CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.copied_to_clipboard);
+                    });
+                    dlgAlert.setCancelable(true);
+                    dlgAlert.create().show();
+                }
+            });
     private ArrayList<Account> mData;
     private IOwnersRepository mOwnersInteractor;
     private final ActivityResultLauncher<Intent> requestLoginWeb = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -128,7 +154,8 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                     String Login = result.getData().getStringExtra(Extra.LOGIN);
                     String Password = result.getData().getStringExtra(Extra.PASSWORD);
                     String TwoFA = result.getData().getStringExtra(Extra.TWOFA);
-                    processNewAccount(uid, token, Constants.DEFAULT_ACCOUNT_TYPE, Login != null ? Login : "", Password != null ? Password : "", TwoFA != null ? TwoFA : "none", true, true);
+                    boolean isSave = result.getData().getBooleanExtra(Extra.SAVE, false);
+                    processNewAccount(uid, token, Constants.DEFAULT_ACCOUNT_TYPE, Login, Password, TwoFA, true, true, isSave);
                 }
             });
     private final ActivityResultLauncher<Intent> requestPin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -292,7 +319,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
         resolveEmptyText();
     }
 
-    private void processNewAccount(int uid, String token, @Account_Types int type, String Login, String Password, String TwoFA, boolean IsSend, boolean isCurrent) {
+    private void processNewAccount(int uid, String token, @Account_Types int type, String Login, String Password, String TwoFA, boolean IsSend, boolean isCurrent, boolean needSave) {
         //Accounts account = new Accounts(token, uid);
 
         // важно!! Если мы получили новый токен, то необходимо удалить запись
@@ -310,6 +337,13 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                 .accounts()
                 .registerAccountId(uid, isCurrent);
 
+        if (needSave) {
+            String json = new Gson().toJson(new SaveAccount(Login, Password, TwoFA));
+            Settings.get()
+                    .accounts()
+                    .storeLogin(uid, json);
+        }
+
         merge(new Account(uid, null));
 
         mCompositeDisposable.add(mOwnersInteractor.getBaseOwnerInfo(uid, uid, IOwnersRepository.MODE_ANY)
@@ -322,8 +356,8 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
         requestLoginWeb.launch(intent);
     }
 
-    private void startValidateViaWeb(String url, String Login, String Password, String TwoFa) {
-        Intent intent = LoginActivity.createIntent(requireActivity(), url, Login, Password, TwoFa);
+    private void startValidateViaWeb(String url, String Login, String Password, String TwoFa, boolean needSave) {
+        Intent intent = LoginActivity.createIntent(requireActivity(), url, Login, Password, TwoFa, needSave);
         requestLoginWeb.launch(intent);
     }
 
@@ -335,7 +369,8 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
             String Login = result.getString(Extra.LOGIN);
             String Password = result.getString(Extra.PASSWORD);
             String TwoFA = result.getString(Extra.TWOFA);
-            startValidateViaWeb(url, Login, Password, TwoFA);
+            boolean isSave = result.getBoolean(Extra.SAVE);
+            startValidateViaWeb(url, Login, Password, TwoFA, isSave);
         });
         getParentFragmentManager().setFragmentResultListener(DirectAuthDialog.ACTION_LOGIN_COMPLETE, auth, (requestKey, result) -> {
             int uid = result.getInt(Extra.USER_ID);
@@ -343,7 +378,8 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
             String Login = result.getString(Extra.LOGIN);
             String Password = result.getString(Extra.PASSWORD);
             String TwoFA = result.getString(Extra.TWOFA);
-            processNewAccount(uid, token, Constants.DEFAULT_ACCOUNT_TYPE, Login, Password, TwoFA, true, true);
+            boolean isSave = result.getBoolean(Extra.SAVE);
+            processNewAccount(uid, token, Constants.DEFAULT_ACCOUNT_TYPE, Login, Password, TwoFA, true, true, isSave);
         });
         auth.show(getParentFragmentManager(), "direct-login");
     }
@@ -363,6 +399,10 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
         Settings.get()
                 .accounts()
                 .removeType(account.getId());
+
+        Settings.get()
+                .accounts()
+                .removeLogin(account.getId());
 
         Settings.get()
                 .accounts()
@@ -395,6 +435,9 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
         if (account.getId() > 0) {
             menus.add(new OptionRequest(0, getString(R.string.delete), R.drawable.ic_outline_delete));
             menus.add(new OptionRequest(1, getString(R.string.add_to_home_screen), R.drawable.plus));
+            if (!Utils.isEmpty(Settings.get().accounts().getLogin(account.getId()))) {
+                menus.add(new OptionRequest(3, getString(R.string.login_password_hint), R.drawable.view));
+            }
             if (!idCurrent) {
                 menus.add(new OptionRequest(2, getString(R.string.set_as_active), R.drawable.account_circle));
             }
@@ -411,6 +454,14 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                     break;
                 case 2:
                     setAsActive(account);
+                    break;
+                case 3:
+                    if (!Settings.get().security().isUsePinForSecurity()) {
+                        CustomToast.CreateCustomToast(requireActivity()).showToastError(R.string.not_supported_hide);
+                    } else {
+                        temp_to_show = account.getId();
+                        requestEnterPin.launch(new Intent(requireActivity(), EnterPinActivity.class));
+                    }
                     break;
             }
         });
@@ -476,7 +527,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                             continue;
                         String token = elem.get("access_token").getAsString();
                         int Type = elem.get("type").getAsInt();
-                        processNewAccount(id, token, Type, "", "", "fenrir_app", true, false);
+                        processNewAccount(id, token, Type, null, null, "fenrir_app", true, false, false);
                     }
                 }
                 CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.accounts_restored, file.getAbsolutePath());
@@ -512,7 +563,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                             int selected = ((Spinner) root.findViewById(R.id.access_token_type)).getSelectedItemPosition();
                             int[] types = {Account_Types.VK_ANDROID, Account_Types.KATE, Account_Types.VK_ANDROID_HIDDEN, Account_Types.KATE_HIDDEN};
                             if (!Utils.isEmpty(access_token) && id != 0 && selected >= 0 && selected < 3) {
-                                processNewAccount(id, access_token, types[selected], "", "", "fenrir_app", true, false);
+                                processNewAccount(id, access_token, types[selected], null, null, "fenrir_app", true, false, false);
                             }
                         } catch (NumberFormatException ignored) {
                         }
@@ -566,7 +617,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
 
     private void createShortcut(Account account) {
         if (account.getId() < 0) {
-            return; // this is comminity
+            return; // this is community
         }
 
         User user = (User) account.getOwner();
@@ -580,5 +631,19 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
         }).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() -> {
                 },
                 t -> Snackbar.make(requireView(), t.getLocalizedMessage(), BaseTransientBottomBar.LENGTH_LONG).setTextColor(Color.WHITE).setBackgroundTint(Color.parseColor("#eeff0000")).setAnchorView(mRecyclerView).show()));
+    }
+
+    private static class SaveAccount {
+        @SerializedName("login")
+        String login;
+        @SerializedName("password")
+        String password;
+        @SerializedName("two_factor_auth")
+        String two_factor_auth;
+        SaveAccount(String login, String password, String two_factor_auth) {
+            this.login = login;
+            this.password = password;
+            this.two_factor_auth = two_factor_auth;
+        }
     }
 }
