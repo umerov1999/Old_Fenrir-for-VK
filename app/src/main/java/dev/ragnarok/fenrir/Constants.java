@@ -22,7 +22,7 @@ public class Constants {
     public static final int DATABASE_VERSION = 4;
 
     public static final @Account_Types
-    int DEFAULT_ACCOUNT_TYPE = Account_Types.VK_ANDROID;
+    int DEFAULT_ACCOUNT_TYPE = BuildConfig.DEFAULT_ACCOUNT_TYPE;
 
     public static final boolean IS_HAS_LOGIN_WEB = false;
     public static final String FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".fileprovider";
@@ -33,6 +33,7 @@ public class Constants {
     public static final String VK_ANDROID_APP_VERSION_CODE = "6703";
     public static final String KATE_APP_VERSION_NAME = "68 lite";
     public static final String KATE_APP_VERSION_CODE = "484";
+    public static final String KATE_RECEIPT_GMS_TOKEN = BuildConfig.KATE_RECEIPT_GMS_TOKEN.replaceAll("[\\w%\\-]+:", ":");
     public static final int API_ID = BuildConfig.VK_API_APP_ID;
     public static final String SECRET = BuildConfig.VK_CLIENT_SECRET;
     public static final String MAIN_OWNER_FIELDS = UserColumns.API_FIELDS + "," + GroupColumns.API_FIELDS;

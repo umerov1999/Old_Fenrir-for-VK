@@ -377,6 +377,11 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public boolean isDisable_likes() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("disable_likes", false);
+    }
+
+    @Override
     public boolean isNative_parcel() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("native_parcel", false);
     }
@@ -443,7 +448,7 @@ class OtherSettings implements ISettings.IOtherSettings {
 
     @Override
     public boolean isShow_pagan_symbol() {
-        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("show_pagan_symbol", false);
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("show_pagan_symbol", true);
     }
 
     @Override
@@ -457,6 +462,6 @@ class OtherSettings implements ISettings.IOtherSettings {
 
     @Override
     public boolean isRunes_show() {
-        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("runes_show", false);
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("runes_show", true);
     }
 }

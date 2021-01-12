@@ -204,7 +204,7 @@ class ZoomHelper {
 
                 if (placeHolderEnabled) {
                     view.postDelayed({
-                        placeHolderView!!.visibility = View.INVISIBLE
+                        placeHolderView?.visibility = View.INVISIBLE
                     }, placeHolderDelay)
                 }
 
@@ -348,11 +348,11 @@ class ZoomHelper {
             if (placeHolderEnabled) {
                 placeHolderView?.visibility = View.VISIBLE
                 placeHolderView?.postDelayed({
-                    if (zoomableView!!.parent is ViewGroup) {
-                        val parent = zoomableView!!.parent as ViewGroup
+                    if (zoomableView?.parent is ViewGroup) {
+                        val parent = zoomableView?.parent as ViewGroup
                         parent.removeView(zoomableView)
                     }
-                    zoomableViewParent?.addView(zoomableView!!, viewIndex!!, viewLayoutParams)
+                    viewIndex?.let { zoomableViewParent?.addView(zoomableView, it, viewLayoutParams) }
                     zoomableViewParent?.removeView(placeHolderView)
                     dismissDialog()
                 }, placeHolderDismissDelay)

@@ -57,7 +57,7 @@ class ImageAdapter : RecyclerView.Adapter<ImageAdapter.ImageVewHolder>() {
     }
 
     inner class ImageVewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var item_image_iv: ShapeableImageView? = null
+        private var item_image_iv: ShapeableImageView? = null
 
         init {
             item_image_iv = itemView.findViewById(R.id.item_image_iv)

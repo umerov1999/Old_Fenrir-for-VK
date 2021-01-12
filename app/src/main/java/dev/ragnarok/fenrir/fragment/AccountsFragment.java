@@ -640,6 +640,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
         String password;
         @SerializedName("two_factor_auth")
         String two_factor_auth;
+
         SaveAccount(String login, String password, String two_factor_auth) {
             this.login = login;
             this.password = password;

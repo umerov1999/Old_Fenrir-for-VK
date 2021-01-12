@@ -148,6 +148,12 @@
 
         <SwitchPreference
             android:defaultValue="false"
+            android:key="disable_likes"
+            android:title="@string/disable_likes"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="false"
             android:key="change_upload_size"
             android:title="@string/change_upload_size"
             app:iconSpaceReserved="false" />
@@ -643,12 +649,12 @@
         app:iconSpaceReserved="false"
         app:initialExpandedChildrenCount="2">
         <SwitchPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="runes_show"
             android:title="@string/runes_show"
             app:iconSpaceReserved="false" />
         <SwitchPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="show_pagan_symbol"
             android:title="@string/show_pagan_symbol"
             app:iconSpaceReserved="false" />

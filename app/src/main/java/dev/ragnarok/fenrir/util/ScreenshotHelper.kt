@@ -19,7 +19,7 @@ object ScreenshotHelper {
             saveDir.mkdirs()
         }
         if (!saveDir.exists()) {
-            Toast.makeText(activity, activity.getText(R.string.error).toString() + " " + saveDir.absolutePath, 1).show()
+            Toast.makeText(activity, activity.getText(R.string.error).toString() + " " + saveDir.absolutePath, Toast.LENGTH_LONG).show()
             return
         }
         val file = File(saveDir, "screenshot_" + java.lang.Long.valueOf(System.currentTimeMillis() / 1000) + ".jpg")
@@ -37,7 +37,7 @@ object ScreenshotHelper {
                 Toast.makeText(activity, """
      ${activity.getText(R.string.success)}
      ${file.absolutePath}
-     """.trimIndent(), 1).show()
+     """.trimIndent(), Toast.LENGTH_LONG).show()
                 activity.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)))
                 fileOutputStream.close()
             } catch (e: Exception) {

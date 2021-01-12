@@ -330,7 +330,7 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
     }
 
     private void addOrRemoveLike() {
-        if (Utils.isHiddenAccount(getAccountId())) {
+        if (Settings.get().other().isDisable_likes() || Utils.isHiddenAccount(getAccountId())) {
             return;
         }
         Photo photo = getCurrent();

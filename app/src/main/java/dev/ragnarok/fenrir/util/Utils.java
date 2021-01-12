@@ -1346,6 +1346,17 @@ public class Utils {
         return kate;
     }
 
+    public static String getErrorString(Activity context, Throwable throwable) {
+        if (context == null || context.isFinishing() || context.isDestroyed()) {
+            return null;
+        }
+        throwable = getCauseIfRuntime(throwable);
+        if (Constants.IS_DEBUG) {
+            throwable.printStackTrace();
+        }
+        return ErrorLocalizer.localizeThrowable(context.getApplicationContext(), throwable);
+    }
+
     public static void showErrorInAdapter(Activity context, Throwable throwable) {
         if (context == null || context.isFinishing() || context.isDestroyed()) {
             return;

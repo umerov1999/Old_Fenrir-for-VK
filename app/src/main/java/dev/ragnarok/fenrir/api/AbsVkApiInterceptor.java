@@ -50,10 +50,6 @@ abstract class AbsVkApiInterceptor implements Interceptor {
         this.gson = gson;
     }
 
-    private static String getIdToken() {
-        return "d4gdb0joSiM:APA91bFAM-gVwLCkCABy5DJPPRH5TNDHW9xcGu_OLhmdUSA8zuUsBiU_DexHrTLLZWtzWHZTT5QUaVkBk_GJVQyCE_yQj9UId3pU3vxvizffCPQISmh2k93Fs7XH1qPbDvezEiMyeuLDXb5ebOVGehtbdk_9u5pwUw";
-    }
-
     protected abstract String getToken();
 
     protected abstract @Account_Types
@@ -78,7 +74,7 @@ abstract class AbsVkApiInterceptor implements Interceptor {
      */
 
     private boolean upgradeToken() {
-        String fcm = getIdToken();
+        String fcm = Constants.KATE_RECEIPT_GMS_TOKEN;
         String oldToken = getToken();
         String token = Injection.provideNetworkInterfaces().vkDefault(getAccountId()).account().refreshToken(fcm).blockingGet().token;
         Log.w("refresh", oldToken + " " + token + " " + fcm);

@@ -20,11 +20,10 @@ android {
         versionCode 24
         versionName '1.24'
 
-        buildConfigField 'int', 'VK_API_APP_ID', getProps("vk_app_id")
-        buildConfigField 'String', 'VK_CLIENT_SECRET', getProps("vk_client_secret")
         buildConfigField 'String', 'SERVICE_TOKEN', getProps("vk_service_token")
         buildConfigField 'String', 'FAKE_ABI', getProps("fake_abi")
         buildConfigField 'String', 'FAKE_DEVICE', getProps("fake_device")
+        buildConfigField 'String', 'KATE_RECEIPT_GMS_TOKEN', getProps("kate_receipt_gms_token")
 
         ndk {
             abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
@@ -50,7 +49,7 @@ android {
         release {
             minifyEnabled false
             shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
         debug {
@@ -65,6 +64,9 @@ android {
             applicationId "dev.ragnarok.fenrir_full"
             dimension "type"
             buildConfigField 'int', 'IS_DONATE', '1'
+            buildConfigField 'int', 'VK_API_APP_ID', getProps("vk_app_id")
+            buildConfigField 'int', 'DEFAULT_ACCOUNT_TYPE', 'Account_Types.VK_ANDROID'
+            buildConfigField 'String', 'VK_CLIENT_SECRET', getProps("vk_client_secret")
             buildConfigField 'String', 'YOUTUBE_DEV_KEY', getProps("youtube_dev_key")
             buildConfigField 'String', 'FCM_SESSION_ID_GEN_URL', getProps("fcm_session_id_gen_url")
         }
@@ -72,6 +74,9 @@ android {
             applicationId "dev.ragnarok.fenrir_public"
             dimension "type"
             buildConfigField 'int', 'IS_DONATE', '0'
+            buildConfigField 'int', 'VK_API_APP_ID', getProps("vk_app_id")
+            buildConfigField 'int', 'DEFAULT_ACCOUNT_TYPE', 'Account_Types.VK_ANDROID'
+            buildConfigField 'String', 'VK_CLIENT_SECRET', getProps("vk_client_secret")
             buildConfigField 'String', 'YOUTUBE_DEV_KEY', getProps("youtube_dev_key")
             buildConfigField 'String', 'FCM_SESSION_ID_GEN_URL', getProps("fcm_session_id_gen_url")
         }
@@ -79,6 +84,19 @@ android {
             applicationId "dev.ragnarok.fenrir_open"
             dimension "type"
             buildConfigField 'int', 'IS_DONATE', '2'
+            buildConfigField 'int', 'VK_API_APP_ID', getProps("vk_app_id")
+            buildConfigField 'int', 'DEFAULT_ACCOUNT_TYPE', 'Account_Types.VK_ANDROID'
+            buildConfigField 'String', 'VK_CLIENT_SECRET', getProps("vk_client_secret")
+            buildConfigField 'String', 'YOUTUBE_DEV_KEY', getProps("telega_youtube_dev_key")
+            buildConfigField 'String', 'FCM_SESSION_ID_GEN_URL', getProps("telega_fcm_session_id_gen_url")
+        }
+        kate {
+            applicationId "dev.ragnarok.fenrir_kate_telegram"
+            dimension "type"
+            buildConfigField 'int', 'IS_DONATE', '2'
+            buildConfigField 'int', 'VK_API_APP_ID', getProps("kate_app_id")
+            buildConfigField 'int', 'DEFAULT_ACCOUNT_TYPE', 'Account_Types.KATE'
+            buildConfigField 'String', 'VK_CLIENT_SECRET', getProps("kate_client_secret")
             buildConfigField 'String', 'YOUTUBE_DEV_KEY', getProps("telega_youtube_dev_key")
             buildConfigField 'String', 'FCM_SESSION_ID_GEN_URL', getProps("telega_fcm_session_id_gen_url")
         }
@@ -134,10 +152,19 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxjava:3.0.9'
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     implementation 'com.google.firebase:firebase-database:19.6.0'
-    implementation('com.google.firebase:firebase-messaging:21.0.1') {
+    market_liteImplementation('com.google.firebase:firebase-messaging:21.0.1') {
         exclude group: "com.google.firebase", module: "firebase-installations"
     }
-    implementation project(path: ':firebase-installations')
+    market_liteImplementation project(path: ':firebase-installations')
+    market_fullImplementation('com.google.firebase:firebase-messaging:21.0.1') {
+        exclude group: "com.google.firebase", module: "firebase-installations"
+    }
+    market_fullImplementation project(path: ':firebase-installations')
+    for_telegramImplementation('com.google.firebase:firebase-messaging:21.0.1') {
+        exclude group: "com.google.firebase", module: "firebase-installations"
+    }
+    for_telegramImplementation project(path: ':firebase-installations')
+    kateImplementation 'com.google.firebase:firebase-messaging:20.1.0'
     implementation project(path: ':ealvatag')
     implementation project(path: ':crashx')
     implementation project(path: ':slidr')

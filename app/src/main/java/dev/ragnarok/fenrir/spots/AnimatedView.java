@@ -3,6 +3,8 @@ package dev.ragnarok.fenrir.spots;
 import android.content.Context;
 import android.view.View;
 
+import androidx.annotation.Keep;
+
 class AnimatedView extends View {
 
     private int target;
@@ -15,6 +17,7 @@ class AnimatedView extends View {
         return getX() / target;
     }
 
+    @Keep
     public void setXFactor(float xFactor) {
         setX(target * xFactor);
     }

@@ -3,6 +3,7 @@ package dev.ragnarok.fenrir.spots;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -99,7 +100,7 @@ public class SpotsDialog extends AlertDialog {
         Animator[] animators = new Animator[size];
         for (int i = 0; i < spots.length; i++) {
             AnimatedView animatedView = spots[i];
-            Animator move = ObjectAnimator.ofFloat(animatedView, "xFactor", 0, 1);
+            @SuppressLint("Recycle") Animator move = ObjectAnimator.ofFloat(animatedView, "xFactor", 0, 1);
             move.setDuration(DURATION);
             move.setInterpolator(new HesitateInterpolator());
             move.setStartDelay(DELAY * i);

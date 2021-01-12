@@ -564,6 +564,9 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
     }
 
     public void fireLikeClick(Post post) {
+        if (Settings.get().other().isDisable_likes() || Utils.isHiddenAccount(getAccountId())) {
+            return;
+        }
         int accountId = getAccountId();
 
         appendDisposable(walls.like(accountId, post.getOwnerId(), post.getVkid(), !post.isUserLikes())

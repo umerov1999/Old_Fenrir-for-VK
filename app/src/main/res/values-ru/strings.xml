@@ -1490,4 +1490,5 @@
     <string name="show_photos_line">Показывать трекбар с фотками</string>
     <string name="native_parcel">Нативный Parcel</string>
     <string name="native_parcel_summary">Если вылетает при открытии фото</string>
+    <string name="disable_likes">Отключить лайки (фото, стена)</string>
 </resources>

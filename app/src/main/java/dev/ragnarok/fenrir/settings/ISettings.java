@@ -160,6 +160,8 @@ public interface ISettings {
 
         boolean isShow_photos_line();
 
+        boolean isDisable_likes();
+
         boolean isDo_auto_play_video();
 
         boolean isHint_stickers();

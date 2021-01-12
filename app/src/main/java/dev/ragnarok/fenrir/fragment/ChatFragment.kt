@@ -16,8 +16,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.TextView
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -126,25 +124,23 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
     private var InputView: View? = null
 
     private val requestRecordPermission = AppPerms.requestPermissions(this, arrayOf(Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE), { presenter?.fireRecordPermissionsResolved() })
+            Manifest.permission.WRITE_EXTERNAL_STORAGE)) { presenter?.fireRecordPermissionsResolved() }
     private val requestCameraEditPermission = AppPerms.requestPermissions(this, arrayOf(Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), { presenter?.fireEditCameraClick() })
+            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) { presenter?.fireEditCameraClick() }
 
-    private val openCameraRequest = registerForActivityResult(ActivityResultContracts.TakePicture(),
-            object : ActivityResultCallback<Boolean> {
-                override fun onActivityResult(result: Boolean) {
-                    if (result) {
-                        when (val defaultSize = Settings.get().main().uploadImageSize) {
-                            null -> {
-                                ImageSizeAlertDialog.Builder(activity)
-                                        .setOnSelectedCallback { size -> presenter?.fireEditPhotoMaked(size) }
-                                        .show()
-                            }
-                            else -> presenter?.fireEditPhotoMaked(defaultSize)
-                        }
-                    }
+    private val openCameraRequest = registerForActivityResult(ActivityResultContracts.TakePicture()
+    ) { result ->
+        if (result) {
+            when (val defaultSize = Settings.get().main().uploadImageSize) {
+                null -> {
+                    ImageSizeAlertDialog.Builder(activity)
+                            .setOnSelectedCallback { size -> presenter?.fireEditPhotoMaked(size) }
+                            .show()
                 }
-            })
+                else -> presenter?.fireEditPhotoMaked(defaultSize)
+            }
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_chat, container, false) as ViewGroup
@@ -622,15 +618,13 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         }
     }
 
-    private val openRequestPhotoResize = registerForActivityResult(ActivityResultContracts.StartActivityForResult(), object : ActivityResultCallback<ActivityResult> {
-        override fun onActivityResult(result: ActivityResult) {
-            if (result.resultCode == RESULT_OK) {
-                result.data?.let { presenter?.fireFilePhotoForUploadSelected(UCrop.getOutput(it)!!.path, Upload.IMAGE_SIZE_FULL) }
-            } else if (result.resultCode == UCrop.RESULT_ERROR) {
-                result.data?.let { showThrowable(UCrop.getError(it)) }
-            }
+    private val openRequestPhotoResize = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            result.data?.let { presenter?.fireFilePhotoForUploadSelected(UCrop.getOutput(it)!!.path, Upload.IMAGE_SIZE_FULL) }
+        } else if (result.resultCode == UCrop.RESULT_ERROR) {
+            result.data?.let { showThrowable(UCrop.getError(it)) }
         }
-    })
+    }
 
     private fun onEditLocalPhotosSelected(photos: List<LocalPhoto>) {
         when (val defaultSize = Settings.get().main().uploadImageSize) {
@@ -705,30 +699,28 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         fragment.show(parentFragmentManager, "message-attachments")
     }
 
-    private val openRequestPhoto = registerForActivityResult(ActivityResultContracts.StartActivityForResult(), object : ActivityResultCallback<ActivityResult> {
-        override fun onActivityResult(result: ActivityResult) {
-            if (result.data != null && result.resultCode == RESULT_OK) {
-                val vkphotos: List<Photo> = result.data?.getParcelableArrayListExtra(Extra.ATTACHMENTS)
-                        ?: Collections.emptyList()
-                val localPhotos: List<LocalPhoto> = result.data?.getParcelableArrayListExtra(Extra.PHOTOS)
-                        ?: Collections.emptyList()
+    private val openRequestPhoto = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.data != null && result.resultCode == RESULT_OK) {
+            val vkphotos: List<Photo> = result.data?.getParcelableArrayListExtra(Extra.ATTACHMENTS)
+                    ?: Collections.emptyList()
+            val localPhotos: List<LocalPhoto> = result.data?.getParcelableArrayListExtra(Extra.PHOTOS)
+                    ?: Collections.emptyList()
 
-                val vid: LocalVideo? = result.data?.getParcelableExtra(Extra.VIDEO)
+            val vid: LocalVideo? = result.data?.getParcelableExtra(Extra.VIDEO)
 
-                val file = result.data?.getStringExtra(FileManagerFragment.returnFileParameter)
+            val file = result.data?.getStringExtra(FileManagerFragment.returnFileParameter)
 
-                if (file != null && nonEmpty(file)) {
-                    onEditLocalFileSelected(file)
-                } else if (vkphotos.isNotEmpty()) {
-                    presenter?.fireEditAttachmentsSelected(vkphotos)
-                } else if (localPhotos.isNotEmpty()) {
-                    onEditLocalPhotosSelected(localPhotos)
-                } else if (vid != null) {
-                    onEditLocalVideoSelected(vid)
-                }
+            if (file != null && nonEmpty(file)) {
+                onEditLocalFileSelected(file)
+            } else if (vkphotos.isNotEmpty()) {
+                presenter?.fireEditAttachmentsSelected(vkphotos)
+            } else if (localPhotos.isNotEmpty()) {
+                onEditLocalPhotosSelected(localPhotos)
+            } else if (vid != null) {
+                onEditLocalVideoSelected(vid)
             }
         }
-    })
+    }
 
     override fun startImagesSelection(accountId: Int, ownerId: Int) {
         val sources = Sources()
@@ -742,15 +734,13 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         openRequestPhoto.launch(intent)
     }
 
-    private val openRequestAudioVideoDoc = registerForActivityResult(ActivityResultContracts.StartActivityForResult(), object : ActivityResultCallback<ActivityResult> {
-        override fun onActivityResult(result: ActivityResult) {
-            if (result.data != null && result.resultCode == RESULT_OK) {
-                val attachments: List<AbsModel> = result.data?.getParcelableArrayListExtra(Extra.ATTACHMENTS)
-                        ?: Collections.emptyList()
-                presenter?.fireEditAttachmentsSelected(attachments)
-            }
+    private val openRequestAudioVideoDoc = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.data != null && result.resultCode == RESULT_OK) {
+            val attachments: List<AbsModel> = result.data?.getParcelableArrayListExtra(Extra.ATTACHMENTS)
+                    ?: Collections.emptyList()
+            presenter?.fireEditAttachmentsSelected(attachments)
         }
-    })
+    }
 
     override fun startVideoSelection(accountId: Int, ownerId: Int) {
         val intent = VideoSelectActivity.createIntent(activity, accountId, ownerId)
@@ -784,7 +774,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
             setTitle(R.string.confirmation)
             setMessage(R.string.messages_delete_for_all_question_message)
             setCancelable(true)
-            setNeutralButton(R.string.button_super_delete, { _, _ -> presenter?.fireDeleteSuper(ids) })
+            setNeutralButton(R.string.button_super_delete) { _, _ -> presenter?.fireDeleteSuper(ids) }
             setPositiveButton(R.string.button_for_all) { _, _ -> presenter?.fireDeleteForAllClick(ids) }
             setNegativeButton(R.string.button_for_me) { _, _ -> presenter?.fireDeleteForMeClick(ids) }
         }.show()
@@ -957,15 +947,13 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         PlaceFactory.getSingleTabSearchPlace(accountId, SearchContentType.MESSAGES, criteria).tryOpenWith(requireActivity())
     }
 
-    private val openRequestUploadChatAvatar = registerForActivityResult(ActivityResultContracts.StartActivityForResult(), object : ActivityResultCallback<ActivityResult> {
-        override fun onActivityResult(result: ActivityResult) {
-            if (result.resultCode == RESULT_OK) {
-                result.data?.let { presenter?.fireNewChatPhotoSelected(UCrop.getOutput(it)!!.path!!) }
-            } else if (result.resultCode == UCrop.RESULT_ERROR) {
-                result.data?.let { showThrowable(UCrop.getError(it)) }
-            }
+    private val openRequestUploadChatAvatar = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            result.data?.let { presenter?.fireNewChatPhotoSelected(UCrop.getOutput(it)!!.path!!) }
+        } else if (result.resultCode == UCrop.RESULT_ERROR) {
+            result.data?.let { showThrowable(UCrop.getError(it)) }
         }
-    })
+    }
 
     override fun showImageSizeSelectDialog(streams: List<Uri>) {
         ImageSizeAlertDialog.Builder(activity)
@@ -1078,22 +1066,20 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         ChatUsersDomainFragment.newInstance(Settings.get().accounts().current, chatId) { t -> insertDomain(t) }.show(childFragmentManager, "chat_users_domain")
     }
 
-    private val openRequestSelectPhotoToChatAvatar = registerForActivityResult(ActivityResultContracts.StartActivityForResult(), object : ActivityResultCallback<ActivityResult> {
-        override fun onActivityResult(result: ActivityResult) {
-            if (result.data != null && result.resultCode == RESULT_OK) {
-                val photos: ArrayList<LocalPhoto>? = result.data?.getParcelableArrayListExtra(Extra.PHOTOS)
-                if (nonEmpty(photos)) {
-                    var to_up = photos!![0].fullImageUri
-                    if (File(to_up.path!!).isFile) {
-                        to_up = Uri.fromFile(File(to_up.path!!))
-                    }
-                    openRequestUploadChatAvatar.launch(UCrop.of(to_up, Uri.fromFile(File(requireActivity().externalCacheDir.toString() + File.separator + "scale.jpg")))
-                            .withAspectRatio(1f, 1f)
-                            .getIntent(requireActivity()))
+    private val openRequestSelectPhotoToChatAvatar = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.data != null && result.resultCode == RESULT_OK) {
+            val photos: ArrayList<LocalPhoto>? = result.data?.getParcelableArrayListExtra(Extra.PHOTOS)
+            if (nonEmpty(photos)) {
+                var to_up = photos!![0].fullImageUri
+                if (File(to_up.path!!).isFile) {
+                    to_up = Uri.fromFile(File(to_up.path!!))
                 }
+                openRequestUploadChatAvatar.launch(UCrop.of(to_up, Uri.fromFile(File(requireActivity().externalCacheDir.toString() + File.separator + "scale.jpg")))
+                        .withAspectRatio(1f, 1f)
+                        .getIntent(requireActivity()))
             }
         }
-    })
+    }
 
     override fun showChatTitleChangeDialog(initialValue: String?) {
         MaterialAlertDialogBuilder(requireActivity())

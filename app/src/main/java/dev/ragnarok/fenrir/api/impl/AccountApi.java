@@ -99,7 +99,7 @@ class AccountApi extends AbsApi implements IAccountApi {
     public Single<RefreshToken> refreshToken(String receipt) {
         return provideService(IAccountService.class, TokenType.USER)
                 .flatMap(service -> service
-                        .refreshToken(receipt.replaceAll("[\\w%\\-]+:", ":"))
+                        .refreshToken(receipt)
                         .map(extractResponseWithErrorHandling()));
     }
 }

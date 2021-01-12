@@ -1072,7 +1072,7 @@ class MusicPlaybackService : Service() {
 
     companion object {
         private const val TAG = "MusicPlaybackService"
-        private val D = Constants.IS_DEBUG
+        private const val D = Constants.IS_DEBUG
         const val PLAYSTATE_CHANGED = "dev.ragnarok.fenrir.player.playstatechanged"
         const val POSITION_CHANGED = "dev.ragnarok.fenrir.player.positionchanged"
         const val META_CHANGED = "dev.ragnarok.fenrir.player.metachanged"

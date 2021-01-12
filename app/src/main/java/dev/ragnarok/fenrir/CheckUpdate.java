@@ -145,7 +145,7 @@ public class CheckUpdate {
                         Settings.get().other().registerDonatesId(Utils.donate_users);
                     }
 
-                    if ((t.apk_version <= Constants.VERSION_APK && Constants.APK_ID.equals(t.app_id)) || !Settings.get().other().isAuto_update() || Constants.IS_DONATE != 2) {
+                    if ((t.apk_version <= Constants.VERSION_APK && (Constants.DEFAULT_ACCOUNT_TYPE == Account_Types.KATE || Constants.APK_ID.equals(t.app_id))) || !Settings.get().other().isAuto_update() || Constants.IS_DONATE != 2) {
                         checkInstall(context);
                         return;
                     }

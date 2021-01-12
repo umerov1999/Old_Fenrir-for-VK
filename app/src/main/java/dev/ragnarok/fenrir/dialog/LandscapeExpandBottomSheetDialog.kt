@@ -6,7 +6,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dev.ragnarok.fenrir.util.Utils
 
-class LandscapeExpandBottomSheetDialog : BottomSheetDialog {
+open class LandscapeExpandBottomSheetDialog : BottomSheetDialog {
     constructor(context: Context) : super(context) {
         if (Utils.isLandscape(context)) {
             behavior.state = BottomSheetBehavior.STATE_EXPANDED

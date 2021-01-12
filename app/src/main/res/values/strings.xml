@@ -1643,4 +1643,5 @@
     <string name="show_photos_line">Show photos line</string>
     <string name="native_parcel">Native Parcel</string>
     <string name="native_parcel_summary">If it crashes when opening a photo</string>
+    <string name="disable_likes">Disable likes (photos, walls)</string>
 </resources>
