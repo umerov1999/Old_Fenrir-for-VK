@@ -29,14 +29,26 @@ interface IChatView : IBasicMessageListView, IErrorView {
     fun displayPinnedMessage(pinned: Message?, canChange: Boolean)
     fun hideInputView()
 
-    fun goToMessageAttachmentsEditor(accountId: Int, messageOwnerId: Int, destination: UploadDestination,
-                                     body: String?, attachments: ModelsBundle?)
+    fun goToMessageAttachmentsEditor(
+        accountId: Int, messageOwnerId: Int, destination: UploadDestination,
+        body: String?, attachments: ModelsBundle?
+    )
 
     fun showErrorSendDialog(message: Message)
     fun notifyItemRemoved(position: Int)
 
-    fun configOptionMenu(canLeaveChat: Boolean, canChangeTitle: Boolean, canShowMembers: Boolean,
-                         encryptionStatusVisible: Boolean, encryprionEnabled: Boolean, encryptionPlusEnabled: Boolean, keyExchangeVisible: Boolean, HronoVisible: Boolean, ProfileVisible: Boolean, InviteLink: Boolean)
+    fun configOptionMenu(
+        canLeaveChat: Boolean,
+        canChangeTitle: Boolean,
+        canShowMembers: Boolean,
+        encryptionStatusVisible: Boolean,
+        encryprionEnabled: Boolean,
+        encryptionPlusEnabled: Boolean,
+        keyExchangeVisible: Boolean,
+        HronoVisible: Boolean,
+        ProfileVisible: Boolean,
+        InviteLink: Boolean
+    )
 
     fun goToSearchMessage(accountId: Int, peer: Peer)
     fun showImageSizeSelectDialog(streams: List<Uri>)

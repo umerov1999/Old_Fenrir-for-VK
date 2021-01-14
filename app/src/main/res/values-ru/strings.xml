@@ -634,12 +634,7 @@
     <string name="fork_phoenix">Форк Phoenix</string>
     <string name="repo">Репозиторий: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="telegram">Телеграм-канал: https://t.me/phoenixvk_mod</string>
-    <string name="in_full_version_new">Донат от 100₽</string>
-    <string name="qiwi_sber">Qiwi, Сбер: 89859844541</string>
-    <string name="web_money">Web Money WMZ: Z990444118809</string>
     <string name="is_donated">Проверка доната</string>
-    <string name="not_gp">Вы скачали приложение не из Google Play. Тем самым вы не уважаете работу автора</string>
-    <string name="donate_info">Далее требуется отправить скрин и ид от страницы @fenrir_lint и ждать подтверждения. Далее перезапустить клиент</string>
     <string name="comment">Комментарий</string>
     <string name="search">Поиск</string>
     <string name="input">Ввод</string>
@@ -1108,7 +1103,6 @@
     <string name="accounts_restored">Аккаунты восстановлены из резервной копии</string>
     <string name="error_video_playback_is_not_possible">Воспроизведение видео невозможно</string>
     <string name="request_executor_title">Тестирование запросов</string>
-    <string name="test_crash_title">Симуляция краша</string>
     <string name="request_body_title">Тело запроса</string>
     <string name="request_method_title">Метод</string>
     <string name="request_params_title">Параметры запроса</string>
@@ -1459,7 +1453,6 @@
     <string name="runes_show">Показывать руны</string>
     <string name="show_pagan_symbol">Показывать символ</string>
     <string name="pagan_symbol">Языческий символ</string>
-    <string name="auto_update">Получать обновления</string>
     <string name="photo_settings">Просмотр фото</string>
     <string name="canceled_by_receiver">Отменён получателем</string>
     <string name="canceled_by_initiator">Отменён инициатором</string>
@@ -1491,4 +1484,6 @@
     <string name="native_parcel">Нативный Parcel</string>
     <string name="native_parcel_summary">Если вылетает при открытии фото</string>
     <string name="disable_likes">Отключить лайки (фото, стена)</string>
+    <string name="date_start">Дата от:</string>
+    <string name="date_to">Дата до:</string>
 </resources>

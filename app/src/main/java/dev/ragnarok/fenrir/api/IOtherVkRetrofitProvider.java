@@ -12,5 +12,5 @@ public interface IOtherVkRetrofitProvider {
 
     Single<RetrofitWrapper> provideAmazonAudioCoverRetrofit();
 
-    Single<RetrofitWrapper> provideUpdateToolRetrofit();
+    Single<RetrofitWrapper> provideDebugToolRetrofit();
 }

@@ -27,7 +27,10 @@ import dev.ragnarok.fenrir.view.mozaik.MozaikLayout
 import dev.ragnarok.fenrir.view.zoomhelper.ZoomHelper.Companion.addZoomableView
 import java.util.*
 
-class PhotosViewHelper internal constructor(private val context: Context, private val attachmentsActionCallback: OnAttachmentsActionCallback) {
+class PhotosViewHelper internal constructor(
+    private val context: Context,
+    private val attachmentsActionCallback: OnAttachmentsActionCallback
+) {
     @PhotoSize
     private val mPhotoPreviewSize = Settings.get().main().prefPreviewImageSize
     private val mIconColorActive = CurrentTheme.getColorPrimary(context)
@@ -41,7 +44,8 @@ class PhotosViewHelper internal constructor(private val context: Context, privat
         }
         val i = videos.size - container.childCount
         for (j in 0 until i) {
-            val root = LayoutInflater.from(context).inflate(R.layout.item_video_attachment, container, false)
+            val root = LayoutInflater.from(context)
+                .inflate(R.layout.item_video_attachment, container, false)
             val holder = VideoHolder(root)
             root.tag = holder
             Utils.setColorFilter(holder.ivPlay.background, mIconColorActive)
@@ -66,10 +70,10 @@ class PhotosViewHelper internal constructor(private val context: Context, privat
                 }
                 if (Utils.nonEmpty(url)) {
                     PicassoInstance.with()
-                            .load(url)
-                            .placeholder(R.drawable.background_gray)
-                            .tag(Constants.PICASSO_TAG)
-                            .into(holder.vgPhoto)
+                        .load(url)
+                        .placeholder(R.drawable.background_gray)
+                        .tag(Constants.PICASSO_TAG)
+                        .into(holder.vgPhoto)
                     tmpV.visibility = View.VISIBLE
                 } else {
                     PicassoInstance.with().cancelRequest(holder.vgPhoto)
@@ -91,9 +95,16 @@ class PhotosViewHelper internal constructor(private val context: Context, privat
         val i = photos.size - container.childCount
         for (j in 0 until i) {
             val root: View = when (roundedMode) {
-                1 -> if (photos.size > 1) LayoutInflater.from(context).inflate(R.layout.item_photo_gif_not_round, container, false) else LayoutInflater.from(context).inflate(R.layout.item_photo_gif, container, false)
-                2 -> LayoutInflater.from(context).inflate(R.layout.item_photo_gif_not_round, container, false)
-                else -> LayoutInflater.from(context).inflate(R.layout.item_photo_gif, container, false)
+                1 -> if (photos.size > 1) LayoutInflater.from(context).inflate(
+                    R.layout.item_photo_gif_not_round,
+                    container,
+                    false
+                ) else LayoutInflater.from(context)
+                    .inflate(R.layout.item_photo_gif, container, false)
+                2 -> LayoutInflater.from(context)
+                    .inflate(R.layout.item_photo_gif_not_round, container, false)
+                else -> LayoutInflater.from(context)
+                    .inflate(R.layout.item_photo_gif, container, false)
             }
             val holder = Holder(root)
             root.tag = holder
@@ -115,10 +126,15 @@ class PhotosViewHelper internal constructor(private val context: Context, privat
                 if (isUseCoil) {
                     holder.ivPlay.visibility = View.GONE
                 } else {
-                    holder.ivPlay.visibility = if (image.type == PostImage.TYPE_IMAGE) View.GONE else View.VISIBLE
-                    if (image.type != PostImage.TYPE_IMAGE) Utils.setColorFilter(holder.ivPlay.background, mIconColorActive)
+                    holder.ivPlay.visibility =
+                        if (image.type == PostImage.TYPE_IMAGE) View.GONE else View.VISIBLE
+                    if (image.type != PostImage.TYPE_IMAGE) Utils.setColorFilter(
+                        holder.ivPlay.background,
+                        mIconColorActive
+                    )
                 }
-                holder.tvTitle.visibility = if (image.type == PostImage.TYPE_IMAGE) View.GONE else View.VISIBLE
+                holder.tvTitle.visibility =
+                    if (image.type == PostImage.TYPE_IMAGE) View.GONE else View.VISIBLE
                 holder.vgPhoto.setOnClickListener {
                     when (image.type) {
                         PostImage.TYPE_IMAGE -> openImages(photos, g)
@@ -140,7 +156,10 @@ class PhotosViewHelper internal constructor(private val context: Context, privat
                     }
                     PostImage.TYPE_GIF -> {
                         val document = image.attachment as Document
-                        holder.tvTitle.text = context.getString(R.string.gif, AppTextUtils.getSizeString(document.size))
+                        holder.tvTitle.text = context.getString(
+                            R.string.gif,
+                            AppTextUtils.getSizeString(document.size)
+                        )
                     }
                 }
                 if (isUseCoil) {
@@ -148,13 +167,16 @@ class PhotosViewHelper internal constructor(private val context: Context, privat
                         if (Utils.nonEmpty(url)) {
                             holder.vgPhoto.load((image.attachment as Document).url) {
                                 listener(
-                                        onError = { _, _ ->
-                                            run {
-                                                Utils.setColorFilter(holder.ivPlay.background, mIconColorActive)
-                                                holder.ivPlay.visibility = View.VISIBLE
-                                                if (!Utils.isEmpty(url)) holder.vgPhoto.load(url)
-                                            }
+                                    onError = { _, _ ->
+                                        run {
+                                            Utils.setColorFilter(
+                                                holder.ivPlay.background,
+                                                mIconColorActive
+                                            )
+                                            holder.ivPlay.visibility = View.VISIBLE
+                                            if (!Utils.isEmpty(url)) holder.vgPhoto.load(url)
                                         }
+                                    }
                                 )
                             }
                         } else {
@@ -175,10 +197,10 @@ class PhotosViewHelper internal constructor(private val context: Context, privat
                 } else {
                     if (Utils.nonEmpty(url)) {
                         PicassoInstance.with()
-                                .load(url)
-                                .placeholder(R.drawable.background_gray)
-                                .tag(Constants.PICASSO_TAG)
-                                .into(holder.vgPhoto)
+                            .load(url)
+                            .placeholder(R.drawable.background_gray)
+                            .tag(Constants.PICASSO_TAG)
+                            .into(holder.vgPhoto)
                         tmpV.visibility = View.VISIBLE
                     } else {
                         PicassoInstance.with().cancelRequest(holder.vgPhoto)

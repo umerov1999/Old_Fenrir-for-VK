@@ -5,8 +5,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.List;
 
@@ -15,10 +16,12 @@ import dev.ragnarok.fenrir.adapter.base.RecyclerBindableAdapter;
 import dev.ragnarok.fenrir.fragment.search.options.BaseOption;
 import dev.ragnarok.fenrir.fragment.search.options.DatabaseOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleBooleanOption;
+import dev.ragnarok.fenrir.fragment.search.options.SimpleDateOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleGPSOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleNumberOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleTextOption;
 import dev.ragnarok.fenrir.fragment.search.options.SpinnerOption;
+import dev.ragnarok.fenrir.util.AppTextUtils;
 
 public class SearchOptionsAdapter extends RecyclerBindableAdapter<BaseOption, RecyclerView.ViewHolder> {
 
@@ -58,12 +61,38 @@ public class SearchOptionsAdapter extends RecyclerBindableAdapter<BaseOption, Re
                     bindSimpleGpsHolder((SimpleGPSOption) option, normalHolder);
                 }
 
+                if (option instanceof SimpleDateOption) {
+                    bindSimpleDateHolder((SimpleDateOption) option, normalHolder);
+                }
+
                 break;
             case TYPE_BOOLEAN:
                 SimpleBooleanHolder simpleBooleanHolder = (SimpleBooleanHolder) viewHolder;
                 bindSimpleBooleanHolder((SimpleBooleanOption) option, simpleBooleanHolder);
                 break;
         }
+    }
+
+    private void bindSimpleDateHolder(SimpleDateOption option, NormalHolder holder) {
+        holder.title.setText(option.title);
+        holder.value.setText(option.timeUnix == 0 ? null : AppTextUtils.getDateFromUnixTime(holder.itemView.getContext(), option.timeUnix));
+        holder.delete.setVisibility(option.timeUnix == 0 ? View.INVISIBLE : View.VISIBLE);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (mOptionClickListener != null) {
+                mOptionClickListener.onDateOptionClick(option);
+            }
+        });
+
+        holder.delete.setOnClickListener(v -> {
+            holder.value.setText(null);
+            holder.delete.setVisibility(View.INVISIBLE);
+            option.timeUnix = 0;
+
+            if (mOptionClickListener != null) {
+                mOptionClickListener.onOptionCleared(option);
+            }
+        });
     }
 
     private void bindSimpleGpsHolder(SimpleGPSOption option, NormalHolder holder) {
@@ -74,6 +103,7 @@ public class SearchOptionsAdapter extends RecyclerBindableAdapter<BaseOption, Re
         holder.itemView.setOnClickListener(v -> {
             if (mOptionClickListener != null) {
                 mOptionClickListener.onGPSOptionClick(option);
+                holder.value.setText(holder.value.getContext().getString(R.string.please_wait));
             }
         });
 
@@ -229,7 +259,8 @@ public class SearchOptionsAdapter extends RecyclerBindableAdapter<BaseOption, Re
                 || option instanceof SimpleTextOption
                 || option instanceof SpinnerOption
                 || option instanceof DatabaseOption
-                || option instanceof SimpleGPSOption) {
+                || option instanceof SimpleGPSOption
+                || option instanceof SimpleDateOption) {
             return TYPE_NORMAL;
         }
 
@@ -258,6 +289,8 @@ public class SearchOptionsAdapter extends RecyclerBindableAdapter<BaseOption, Re
         void onOptionCleared(BaseOption option);
 
         void onGPSOptionClick(SimpleGPSOption gpsOption);
+
+        void onDateOptionClick(SimpleDateOption dateOption);
     }
 
     public static class NormalHolder extends RecyclerView.ViewHolder {
@@ -276,7 +309,7 @@ public class SearchOptionsAdapter extends RecyclerBindableAdapter<BaseOption, Re
 
     public static class SimpleBooleanHolder extends RecyclerView.ViewHolder {
 
-        final SwitchCompat checkableView;
+        final SwitchMaterial checkableView;
 
         SimpleBooleanHolder(View itemView) {
             super(itemView);

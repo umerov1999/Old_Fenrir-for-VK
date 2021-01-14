@@ -21,7 +21,8 @@ class ImageAdapter : RecyclerView.Adapter<ImageAdapter.ImageVewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageVewHolder {
         mContext = parent.context
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_preview_image, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_preview_image, parent, false)
         return ImageVewHolder(view)
     }
 
@@ -33,9 +34,15 @@ class ImageAdapter : RecyclerView.Adapter<ImageAdapter.ImageVewHolder>() {
         holder.bind(mData[position], position)
     }
 
+    fun getSize(): Int {
+        return mData.size
+    }
+
     fun setData(data: List<Photo>) {
-        if (data.isNotEmpty())
-            mCurrentSelectedIndex = 0
+        mCurrentSelectedIndex = if (data.isNotEmpty())
+            0
+        else
+            -1
         mData = data
         notifyDataSetChanged()
     }
@@ -67,8 +74,8 @@ class ImageAdapter : RecyclerView.Adapter<ImageAdapter.ImageVewHolder>() {
             val previewUrl: String? = pData.getUrlForSize(PhotoSize.M, false)
             if (!Utils.isEmpty(previewUrl)) {
                 PicassoInstance.with()
-                        .load(previewUrl)
-                        .into(item_image_iv)
+                    .load(previewUrl)
+                    .into(item_image_iv)
             } else {
                 item_image_iv?.let { PicassoInstance.with().cancelRequest(it) }
             }

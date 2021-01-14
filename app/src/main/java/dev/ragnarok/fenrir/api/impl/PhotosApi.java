@@ -297,8 +297,8 @@ class PhotosApi extends AbsApi implements IPhotosApi {
     }
 
     @Override
-    public Single<Items<VKApiPhoto>> search(String q, Double lat_gps, Double long_gps, Integer sort, Integer radius, Integer offset, Integer count) {
+    public Single<Items<VKApiPhoto>> search(String q, Double lat_gps, Double long_gps, Integer sort, Integer radius, Long startTime, Long endTime, Integer offset, Integer count) {
         return provideService(IPhotosService.class, TokenType.USER)
-                .flatMap(service -> service.search(q, lat_gps, long_gps, sort, radius, offset, count).map(extractResponseWithErrorHandling()));
+                .flatMap(service -> service.search(q, lat_gps, long_gps, sort, radius, startTime, endTime, offset, count).map(extractResponseWithErrorHandling()));
     }
 }

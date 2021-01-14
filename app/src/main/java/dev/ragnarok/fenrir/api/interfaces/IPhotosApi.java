@@ -125,6 +125,6 @@ public interface IPhotosApi {
     Single<Items<VKApiComment>> getAllComments(Integer ownerId, Integer album_id, Integer need_likes, Integer offset, Integer count);
 
     @CheckResult
-    Single<Items<VKApiPhoto>> search(String q, Double lat_gps, Double long_gps, Integer sort, Integer radius, Integer offset, Integer count);
+    Single<Items<VKApiPhoto>> search(String q, Double lat_gps, Double long_gps, Integer sort, Integer radius, Long startTime, Long endTime, Integer offset, Integer count);
 
 }

@@ -17,7 +17,11 @@ import dev.ragnarok.fenrir.util.Utils
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import java.util.*
 
-class LocalJsonToChatPresenter(accountId: Int, private val context: Context, savedInstanceState: Bundle?) : PlaceSupportPresenter<ILocalJsonToChatView>(accountId, savedInstanceState) {
+class LocalJsonToChatPresenter(
+    accountId: Int,
+    private val context: Context,
+    savedInstanceState: Bundle?
+) : PlaceSupportPresenter<ILocalJsonToChatView>(accountId, savedInstanceState) {
     private val mPost: ArrayList<Message> = ArrayList()
     private val mCached: ArrayList<Message> = ArrayList()
     private var AttachmentType: Int
@@ -125,8 +129,8 @@ class LocalJsonToChatPresenter(accountId: Int, private val context: Context, sav
         resolveRefreshingView(true)
         val accountId = super.getAccountId()
         actualDataDisposable.add(fInteractor.getMessagesFromLocalJSon(accountId, context)
-                .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe({ onActualDataReceived(it) }) { onActualDataGetError(it) })
+            .compose(RxUtils.applySingleIOToMainSchedulers())
+            .subscribe({ onActualDataReceived(it) }) { onActualDataGetError(it) })
     }
 
     private fun onActualDataGetError(t: Throwable) {
@@ -161,7 +165,12 @@ class LocalJsonToChatPresenter(accountId: Int, private val context: Context, sav
     private fun resolveToolbar() {
         if (isGuiReady) {
             view!!.setToolbarTitle(peer.title)
-            view!!.setToolbarSubtitle(getString(R.string.messages_in_json, Utils.safeCountOf(mPost)))
+            view!!.setToolbarSubtitle(
+                getString(
+                    R.string.messages_in_json,
+                    Utils.safeCountOf(mPost)
+                )
+            )
             view!!.displayToolbarAvatar(peer)
         }
     }

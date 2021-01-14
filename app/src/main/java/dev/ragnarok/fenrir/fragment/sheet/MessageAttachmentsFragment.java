@@ -325,7 +325,7 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
                             Text.append("\r\n");
                         }
                         MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(requireActivity());
-                        dlgAlert.setIcon(R.drawable.crash_ic_error);
+                        dlgAlert.setIcon(R.drawable.ic_error);
                         dlgAlert.setMessage(Text);
                         dlgAlert.setTitle(R.string.more_info);
 

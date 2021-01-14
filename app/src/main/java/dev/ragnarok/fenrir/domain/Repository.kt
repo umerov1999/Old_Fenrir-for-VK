@@ -17,10 +17,12 @@ object Repository {
     }
 
     val messages: IMessagesRepository by lazy {
-        MessagesRepository(Settings.get().accounts(),
-                Injection.provideNetworkInterfaces(),
-                owners,
-                Injection.provideStores(),
-                Injection.provideUploadManager())
+        MessagesRepository(
+            Settings.get().accounts(),
+            Injection.provideNetworkInterfaces(),
+            owners,
+            Injection.provideStores(),
+            Injection.provideUploadManager()
+        )
     }
 }

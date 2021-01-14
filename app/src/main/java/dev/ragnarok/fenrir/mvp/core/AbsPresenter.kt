@@ -66,7 +66,8 @@ abstract class AbsPresenter<V : IMvpView>(savedInstanceState: Bundle?) : IPresen
     }
 
     private fun executeAllResolveViewMethods() {
-        val resolveMethodHandlers = AnnotatedHandlerFinder.findAllOnGuiCreatedHandlers(this, AbsPresenter::class.java)
+        val resolveMethodHandlers =
+            AnnotatedHandlerFinder.findAllOnGuiCreatedHandlers(this, AbsPresenter::class.java)
 
         for (handler in resolveMethodHandlers) {
             try {

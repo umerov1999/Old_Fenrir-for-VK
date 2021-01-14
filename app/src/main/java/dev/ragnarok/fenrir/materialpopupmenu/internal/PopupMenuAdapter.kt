@@ -14,8 +14,8 @@ import dev.ragnarok.fenrir.materialpopupmenu.MaterialPopupMenu
 
 
 internal class PopupMenuAdapter(
-        private val sections: List<MaterialPopupMenu.PopupMenuSection>,
-        private val dismissPopupCallback: () -> Unit
+    private val sections: List<MaterialPopupMenu.PopupMenuSection>,
+    private val dismissPopupCallback: () -> Unit
 ) : SectionedRecyclerViewAdapter<PopupMenuAdapter.SectionHeaderViewHolder, PopupMenuAdapter.AbstractItemViewHolder>() {
 
     init {
@@ -29,8 +29,12 @@ internal class PopupMenuAdapter(
     override val sectionCount: Int
         get() = sections.size
 
-    override fun onCreateSectionHeaderViewHolder(parent: ViewGroup, viewType: Int): SectionHeaderViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.mpm_popup_menu_section_header, parent, false)
+    override fun onCreateSectionHeaderViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): SectionHeaderViewHolder {
+        val v = LayoutInflater.from(parent.context)
+            .inflate(R.layout.mpm_popup_menu_section_header, parent, false)
         return SectionHeaderViewHolder(v)
     }
 
@@ -43,7 +47,8 @@ internal class PopupMenuAdapter(
 
     override fun onCreateItemViewHolder(parent: ViewGroup, viewType: Int): AbstractItemViewHolder {
         return if (viewType == TYPE_ITEM) {
-            val v = LayoutInflater.from(parent.context).inflate(R.layout.mpm_popup_menu_item, parent, false)
+            val v = LayoutInflater.from(parent.context)
+                .inflate(R.layout.mpm_popup_menu_item, parent, false)
             ItemViewHolder(v, dismissPopupCallback)
         } else {
             val v = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -51,7 +56,10 @@ internal class PopupMenuAdapter(
         }
     }
 
-    override fun onBindSectionHeaderViewHolder(holder: SectionHeaderViewHolder, sectionPosition: Int) {
+    override fun onBindSectionHeaderViewHolder(
+        holder: SectionHeaderViewHolder,
+        sectionPosition: Int
+    ) {
         val title = sections[sectionPosition].title
         if (title != null) {
             holder.label.visibility = View.VISIBLE
@@ -75,8 +83,8 @@ internal class PopupMenuAdapter(
     }
 
     internal abstract class AbstractItemViewHolder(
-            itemView: View,
-            private val dismissPopupCallback: () -> Unit
+        itemView: View,
+        private val dismissPopupCallback: () -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
 
         @CallSuper
@@ -86,13 +94,15 @@ internal class PopupMenuAdapter(
         }
     }
 
-    internal class ItemViewHolder(itemView: View, dismissPopupCallback: () -> Unit) : AbstractItemViewHolder(itemView, dismissPopupCallback) {
+    internal class ItemViewHolder(itemView: View, dismissPopupCallback: () -> Unit) :
+        AbstractItemViewHolder(itemView, dismissPopupCallback) {
 
         private var label: TextView = itemView.findViewById(R.id.mpm_popup_menu_item_label)
 
         private var icon: AppCompatImageView = itemView.findViewById(R.id.mpm_popup_menu_item_icon)
 
-        private var nestedIcon: AppCompatImageView = itemView.findViewById(R.id.mpm_popup_menu_item_nested_icon)
+        private var nestedIcon: AppCompatImageView =
+            itemView.findViewById(R.id.mpm_popup_menu_item_nested_icon)
 
         @SuppressLint("RestrictedApi")
         override fun bindItem(popupMenuItem: MaterialPopupMenu.AbstractPopupMenuItem) {
@@ -117,12 +127,14 @@ internal class PopupMenuAdapter(
             if (castedPopupMenuItem.labelColor != 0) {
                 label.setTextColor(castedPopupMenuItem.labelColor)
             }
-            nestedIcon.visibility = if (castedPopupMenuItem.hasNestedItems) View.VISIBLE else View.GONE
+            nestedIcon.visibility =
+                if (castedPopupMenuItem.hasNestedItems) View.VISIBLE else View.GONE
             super.bindItem(popupMenuItem)
         }
     }
 
-    internal class CustomItemViewHolder(itemView: View, dismissPopupCallback: () -> Unit) : AbstractItemViewHolder(itemView, dismissPopupCallback)
+    internal class CustomItemViewHolder(itemView: View, dismissPopupCallback: () -> Unit) :
+        AbstractItemViewHolder(itemView, dismissPopupCallback)
 
     internal class SectionHeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

@@ -21,14 +21,21 @@ class NotificationHelper(private val mService: MusicPlaybackService) {
     private var mNotificationBuilder: NotificationCompat.Builder? = null
 
     @Suppress("DEPRECATION")
-    fun buildNotification(context: Context, artistName: String?, trackName: String?,
-                          isPlaying: Boolean, cover: Bitmap?, mediaSessionToken: MediaSessionCompat.Token?) {
+    fun buildNotification(
+        context: Context, artistName: String?, trackName: String?,
+        isPlaying: Boolean, cover: Bitmap?, mediaSessionToken: MediaSessionCompat.Token?
+    ) {
         if (Utils.hasOreo()) {
-            mNotificationManager!!.createNotificationChannel(AppNotificationChannels.getAudioChannel(context))
+            mNotificationManager!!.createNotificationChannel(
+                AppNotificationChannels.getAudioChannel(
+                    context
+                )
+            )
         }
 
         // Notification Builder
-        mNotificationBuilder = NotificationCompat.Builder(mService, AppNotificationChannels.AUDIO_CHANNEL_ID)
+        mNotificationBuilder =
+            NotificationCompat.Builder(mService, AppNotificationChannels.AUDIO_CHANNEL_ID)
                 .setShowWhen(false)
                 .setSmallIcon(R.drawable.song)
                 .setContentTitle(artistName)
@@ -36,20 +43,34 @@ class NotificationHelper(private val mService: MusicPlaybackService) {
                 .setContentIntent(getOpenIntent(context))
                 .setLargeIcon(cover)
                 .setDeleteIntent(retreivePlaybackActions(5))
-                .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
+                .setStyle(
+                    androidx.media.app.NotificationCompat.MediaStyle()
                         .setMediaSession(mediaSessionToken)
                         .setShowCancelButton(true)
                         .setShowActionsInCompactView(0, 1, 2)
-                        .setCancelButtonIntent(retreivePlaybackActions(4)))
-                .addAction(NotificationCompat.Action(R.drawable.skip_previous,
+                        .setCancelButtonIntent(retreivePlaybackActions(4))
+                )
+                .addAction(
+                    NotificationCompat.Action(
+                        R.drawable.skip_previous,
                         context.resources.getString(R.string.previous),
-                        retreivePlaybackActions(ACTION_PREV)))
-                .addAction(NotificationCompat.Action(if (isPlaying) R.drawable.pause_notification else R.drawable.play_notification,
+                        retreivePlaybackActions(ACTION_PREV)
+                    )
+                )
+                .addAction(
+                    NotificationCompat.Action(
+                        if (isPlaying) R.drawable.pause_notification else R.drawable.play_notification,
                         context.resources.getString(if (isPlaying) R.string.pause else R.string.play),
-                        retreivePlaybackActions(ACTION_PLAY_PAUSE)))
-                .addAction(NotificationCompat.Action(R.drawable.skip_next,
+                        retreivePlaybackActions(ACTION_PLAY_PAUSE)
+                    )
+                )
+                .addAction(
+                    NotificationCompat.Action(
+                        R.drawable.skip_next,
                         context.resources.getString(R.string.next),
-                        retreivePlaybackActions(ACTION_NEXT)))
+                        retreivePlaybackActions(ACTION_NEXT)
+                    )
+                )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             mNotificationBuilder?.priority = NotificationManager.IMPORTANCE_HIGH
         else
@@ -74,10 +95,13 @@ class NotificationHelper(private val mService: MusicPlaybackService) {
         }
         //Remove pause action
         mNotificationBuilder!!.mActions.removeAt(1)
-        mNotificationBuilder!!.mActions.add(1, NotificationCompat.Action(
+        mNotificationBuilder!!.mActions.add(
+            1, NotificationCompat.Action(
                 if (isPlaying) R.drawable.pause_notification else R.drawable.play_notification,
                 null,
-                retreivePlaybackActions(1)))
+                retreivePlaybackActions(1)
+            )
+        )
         mNotificationManager.notify(FENRIR_MUSIC_SERVICE, mNotificationBuilder!!.build())
     }
 
@@ -144,6 +168,6 @@ class NotificationHelper(private val mService: MusicPlaybackService) {
 
     init {
         mNotificationManager = mService
-                .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     }
 }

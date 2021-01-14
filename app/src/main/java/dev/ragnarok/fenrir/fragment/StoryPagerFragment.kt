@@ -56,7 +56,8 @@ import java.lang.ref.WeakReference
 import java.util.*
 
 
-class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>(), IStoryPagerView, GoBackCallback, BackPressCallback {
+class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>(), IStoryPagerView,
+    GoBackCallback, BackPressCallback {
     private val mHolderSparseArray = SparseArray<WeakReference<MultiHolder>>()
     private val mGoBackAnimationAdapter = WeakGoBackAnimationAdapter(this)
     private var mViewPager: ViewPager2? = null
@@ -75,7 +76,13 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         transformation = CurrentTheme.createTransformationForAvatar(requireActivity())
     }
 
-    private val requestWritePermission = AppPerms.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+    private val requestWritePermission = AppPerms.requestPermissions(
+        this,
+        arrayOf(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+    ) {
         if (isPresenterPrepared) {
             presenter?.fireWritePermissionResolved()
         }
@@ -85,7 +92,11 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         requestWritePermission.launch()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val root = inflater.inflate(R.layout.fragment_story_pager, container, false)
         mToolbar = root.findViewById(R.id.toolbar)
         (requireActivity() as AppCompatActivity).setSupportActionBar(mToolbar)
@@ -135,11 +146,11 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
     override fun onResume() {
         super.onResume()
         ActivityFeatures.Builder()
-                .begin()
-                .setHideNavigationMenu(true)
-                .setBarsColored(false, false)
-                .build()
-                .apply(requireActivity())
+            .begin()
+            .setHideNavigationMenu(true)
+            .setBarsColored(false, false)
+            .build()
+            .apply(requireActivity())
     }
 
     private fun toggleFullscreen() {
@@ -156,14 +167,22 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         }
     }
 
-    override fun getPresenterFactory(saveInstanceState: Bundle?): IPresenterFactory<StoryPagerPresenter> = object : IPresenterFactory<StoryPagerPresenter> {
-        override fun create(): StoryPagerPresenter {
-            val aid = requireArguments().getInt(Extra.ACCOUNT_ID)
-            val index = requireArguments().getInt(Extra.INDEX)
-            val stories: ArrayList<Story> = requireArguments().getParcelableArrayList(Extra.STORY)!!
-            return StoryPagerPresenter(aid, stories, index, requireActivity(), saveInstanceState)
+    override fun getPresenterFactory(saveInstanceState: Bundle?): IPresenterFactory<StoryPagerPresenter> =
+        object : IPresenterFactory<StoryPagerPresenter> {
+            override fun create(): StoryPagerPresenter {
+                val aid = requireArguments().getInt(Extra.ACCOUNT_ID)
+                val index = requireArguments().getInt(Extra.INDEX)
+                val stories: ArrayList<Story> =
+                    requireArguments().getParcelableArrayList(Extra.STORY)!!
+                return StoryPagerPresenter(
+                    aid,
+                    stories,
+                    index,
+                    requireActivity(),
+                    saveInstanceState
+                )
+            }
         }
-    }
 
     override fun displayData(pageCount: Int, selectedIndex: Int) {
         if (Objects.nonNull(mViewPager)) {
@@ -213,14 +232,31 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
             actionBar!!.subtitle = story.owner.fullName
         }
         if (Objects.nonNull(Avatar)) {
-            Avatar!!.setOnClickListener { PlaceFactory.getOwnerWallPlace(account_id, story.owner).tryOpenWith(requireActivity()) }
-            ViewUtils.displayAvatar(Avatar!!, transformation, story.owner.maxSquareAvatar, Constants.PICASSO_TAG)
+            Avatar!!.setOnClickListener {
+                PlaceFactory.getOwnerWallPlace(account_id, story.owner)
+                    .tryOpenWith(requireActivity())
+            }
+            ViewUtils.displayAvatar(
+                Avatar!!,
+                transformation,
+                story.owner.maxSquareAvatar,
+                Constants.PICASSO_TAG
+            )
         }
         if (Objects.nonNull(mExp)) {
             if (story.expires <= 0) mExp!!.visibility = View.GONE else {
                 mExp!!.visibility = View.VISIBLE
                 val exp = (story.expires - Calendar.getInstance().time.time / 1000) / 3600
-                mExp!!.text = getString(R.string.expires, exp.toString(), getString(Utils.declOfNum(exp, intArrayOf(R.string.hour, R.string.hour_sec, R.string.hours))))
+                mExp!!.text = getString(
+                    R.string.expires,
+                    exp.toString(),
+                    getString(
+                        Utils.declOfNum(
+                            exp,
+                            intArrayOf(R.string.hour, R.string.hour_sec, R.string.hours)
+                        )
+                    )
+                )
             }
         }
         if (Objects.nonNull(mLink)) {
@@ -228,12 +264,23 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
                 mLink!!.visibility = View.GONE
             } else {
                 mLink!!.visibility = View.VISIBLE
-                mLink!!.setOnClickListener { LinkHelper.openUrl(requireActivity(), account_id, story.target_url) }
+                mLink!!.setOnClickListener {
+                    LinkHelper.openUrl(
+                        requireActivity(),
+                        account_id,
+                        story.target_url
+                    )
+                }
             }
         }
     }
 
-    override fun configHolder(adapterPosition: Int, progress: Boolean, aspectRatioW: Int, aspectRatioH: Int) {
+    override fun configHolder(
+        adapterPosition: Int,
+        progress: Boolean,
+        aspectRatioW: Int,
+        aspectRatioH: Int
+    ) {
         val holder = findByPosition(adapterPosition)
         if (Objects.nonNull(holder)) {
             holder!!.setProgressVisible(progress)
@@ -251,7 +298,8 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         return if (Objects.isNull(weak)) null else weak.get()
     }
 
-    open class MultiHolder internal constructor(rootView: View) : RecyclerView.ViewHolder(rootView) {
+    open class MultiHolder internal constructor(rootView: View) :
+        RecyclerView.ViewHolder(rootView) {
         lateinit var mSurfaceHolder: SurfaceHolder
         open val isSurfaceReady: Boolean
             get() = false
@@ -282,7 +330,12 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         override fun setProgressVisible(visible: Boolean) {
             mProgressBar.visibility = if (visible) View.VISIBLE else View.GONE
             if (visible) {
-                mProgressBar.setAnimation(R.raw.loading, Utils.dp(100F), Utils.dp(40F), intArrayOf(0xffffff, CurrentTheme.getColorControlNormal(requireActivity())))
+                mProgressBar.setAnimation(
+                    R.raw.loading,
+                    Utils.dp(100F),
+                    Utils.dp(40F),
+                    intArrayOf(0xffffff, CurrentTheme.getColorControlNormal(requireActivity()))
+                )
                 mProgressBar.playAnimation()
             } else {
                 mProgressBar.stopAnimation()
@@ -298,13 +351,15 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         }
 
         init {
-            val flingRelativeLayout: FlingRelativeLayout = rootView.findViewById(R.id.fling_root_view)
+            val flingRelativeLayout: FlingRelativeLayout =
+                rootView.findViewById(R.id.fling_root_view)
             flingRelativeLayout.setOnClickListener { toggleFullscreen() }
             flingRelativeLayout.setOnLongClickListener {
                 if (isPresenterPrepared) presenter?.fireDownloadButtonClick()
                 true
             }
-            flingRelativeLayout.setOnSingleFlingListener(object : CloseOnFlingListener(rootView.context) {
+            flingRelativeLayout.setOnSingleFlingListener(object :
+                CloseOnFlingListener(rootView.context) {
                 override fun onVerticalFling(distanceByY: Float): Boolean {
                     goBack()
                     return true
@@ -351,7 +406,12 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         private fun resolveProgressVisibility() {
             progress.visibility = if (mLoadingNow) View.VISIBLE else View.GONE
             if (mLoadingNow) {
-                progress.setAnimation(R.raw.loading, Utils.dp(100F), Utils.dp(40F), intArrayOf(0xffffff, CurrentTheme.getColorControlNormal(requireActivity())))
+                progress.setAnimation(
+                    R.raw.loading,
+                    Utils.dp(100F),
+                    Utils.dp(40F),
+                    intArrayOf(0xffffff, CurrentTheme.getColorControlNormal(requireActivity()))
+                )
                 progress.playAnimation()
             } else {
                 progress.stopAnimation()
@@ -362,8 +422,8 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
             mLoadingNow = true
             resolveProgressVisibility()
             PicassoInstance.with()
-                    .load(url)
-                    .into(photo, mPicassoLoadCallback)
+                .load(url)
+                .into(photo, mPicassoLoadCallback)
         }
 
         @IdRes
@@ -403,12 +463,18 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
     private inner class Adapter(val mPageCount: Int) : RecyclerView.Adapter<MultiHolder>() {
         @SuppressLint("ClickableViewAccessibility")
         override fun onCreateViewHolder(container: ViewGroup, viewType: Int): MultiHolder {
-            if (viewType == 0) return Holder(LayoutInflater.from(container.context).inflate(R.layout.content_gif_page, container, false))
-            val ret = PhotoViewHolder(LayoutInflater.from(container.context)
-                    .inflate(R.layout.content_photo_page, container, false))
+            if (viewType == 0) return Holder(
+                LayoutInflater.from(container.context)
+                    .inflate(R.layout.content_gif_page, container, false)
+            )
+            val ret = PhotoViewHolder(
+                LayoutInflater.from(container.context)
+                    .inflate(R.layout.content_photo_page, container, false)
+            )
             val ui = from(ret.photo)
             ui.settle = SettleOnTopAction()
-            ui.sideEffect = VerticalSwipeBehavior.PropertySideEffect(View.ALPHA, View.SCALE_X, View.SCALE_Y)
+            ui.sideEffect =
+                VerticalSwipeBehavior.PropertySideEffect(View.ALPHA, View.SCALE_X, View.SCALE_Y)
             val clampDelegate = VerticalSwipeBehavior.BelowFractionalClamp(3f, 3f)
             ui.clamp = VerticalSwipeBehavior.SensitivityClamp(0.5f, clampDelegate, 0.5f)
             ui.listener = object : VerticalSwipeBehavior.SwipeListener {
@@ -432,7 +498,10 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
                 true
             }
             ret.photo.setOnTouchListener { view: View, event: MotionEvent ->
-                if (event.pointerCount >= 2 || view.canScrollHorizontally(1) && view.canScrollHorizontally(-1)) {
+                if (event.pointerCount >= 2 || view.canScrollHorizontally(1) && view.canScrollHorizontally(
+                        -1
+                    )
+                ) {
                     when (event.action) {
                         MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
                             ui.canSwipe = false

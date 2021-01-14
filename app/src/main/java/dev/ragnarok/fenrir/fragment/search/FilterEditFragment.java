@@ -30,6 +30,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -46,6 +47,7 @@ import dev.ragnarok.fenrir.dialog.SelectUniversityDialog;
 import dev.ragnarok.fenrir.fragment.search.options.BaseOption;
 import dev.ragnarok.fenrir.fragment.search.options.DatabaseOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleBooleanOption;
+import dev.ragnarok.fenrir.fragment.search.options.SimpleDateOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleGPSOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleNumberOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleTextOption;
@@ -56,6 +58,7 @@ import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.InputTextDialog;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
+import dev.ragnarok.fenrir.view.DateTimePicker;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class FilterEditFragment extends BottomSheetDialogFragment implements SearchOptionsAdapter.OptionClickListener {
@@ -174,6 +177,17 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
                 SimpleGPSOption gpsOption = (SimpleGPSOption) option;
                 gpsOption.lat_gps = value.lat_gps;
                 gpsOption.long_gps = value.long_gps;
+                mAdapter.notifyDataSetChanged();
+                break;
+            }
+        }
+    }
+
+    private void mergeDateOptionValue(SimpleDateOption value) {
+        for (BaseOption option : mData) {
+            if (option.key == value.key && option instanceof SimpleDateOption) {
+                SimpleDateOption dateOption = (SimpleDateOption) option;
+                dateOption.timeUnix = value.timeUnix;
                 mAdapter.notifyDataSetChanged();
                 break;
             }
@@ -346,6 +360,17 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         });
     }
 
+    @Override
+    public void onDateOptionClick(SimpleDateOption dateOption) {
+        new DateTimePicker.Builder(requireActivity())
+                .setTime(dateOption.timeUnix == 0 ? Calendar.getInstance().getTime().getTime() / 1000 : dateOption.timeUnix)
+                .setCallback(unixtime -> {
+                    dateOption.timeUnix = unixtime;
+                    mergeDateOptionValue(dateOption);
+                })
+                .show();
+    }
+
     private void showCitiesDialog(DatabaseOption databaseOption, int countryId) {
         Bundle args = new Bundle();
         args.putInt(Extra.KEY, databaseOption.key);
@@ -430,12 +455,12 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         LocationResult locationResult;
         boolean gps_enabled;
         boolean network_enabled;
-        LocationListener locationListenerNetwork = new LocationListener() {
+        LocationListener locationListenerGps = new LocationListener() {
             public void onLocationChanged(Location location) {
                 timer1.cancel();
                 locationResult.gotLocation(location);
                 lm.removeUpdates(this);
-                lm.removeUpdates(locationListenerGps);
+                lm.removeUpdates(locationListenerNetwork);
             }
 
             public void onProviderDisabled(String provider) {
@@ -447,12 +472,12 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
             public void onStatusChanged(String provider, int status, Bundle extras) {
             }
         };
-        LocationListener locationListenerGps = new LocationListener() {
+        LocationListener locationListenerNetwork = new LocationListener() {
             public void onLocationChanged(Location location) {
                 timer1.cancel();
                 locationResult.gotLocation(location);
                 lm.removeUpdates(this);
-                lm.removeUpdates(locationListenerNetwork);
+                lm.removeUpdates(locationListenerGps);
             }
 
             public void onProviderDisabled(String provider) {

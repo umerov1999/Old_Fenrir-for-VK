@@ -58,7 +58,8 @@ import dev.ragnarok.fenrir.view.swipehelper.VerticalSwipeBehavior.SettleOnTopAct
 import java.util.*
 
 
-class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>(), IPhotoPagerView, GoBackCallback, BackPressCallback {
+class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>(), IPhotoPagerView,
+    GoBackCallback, BackPressCallback {
     companion object {
         private const val EXTRA_PHOTOS = "photos"
         private const val EXTRA_NEED_UPDATE = "need_update"
@@ -66,8 +67,10 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
         private const val DEFAULT_PHOTO_SIZE = PhotoSize.W
 
         @JvmStatic
-        fun buildArgsForSimpleGallery(aid: Int, index: Int, photos: ArrayList<Photo?>?,
-                                      needUpdate: Boolean): Bundle {
+        fun buildArgsForSimpleGallery(
+            aid: Int, index: Int, photos: ArrayList<Photo?>?,
+            needUpdate: Boolean
+        ): Bundle {
             val args = Bundle()
             args.putInt(Extra.ACCOUNT_ID, aid)
             if (Settings.get().other().isNative_parcel) {
@@ -81,7 +84,13 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
         }
 
         @JvmStatic
-        fun buildArgsForAlbum(aid: Int, albumId: Int, ownerId: Int, photos: ArrayList<Photo?>?, position: Int): Bundle {
+        fun buildArgsForAlbum(
+            aid: Int,
+            albumId: Int,
+            ownerId: Int,
+            photos: ArrayList<Photo?>?,
+            position: Int
+        ): Bundle {
             val args = Bundle()
             args.putInt(Extra.ACCOUNT_ID, aid)
             args.putInt(Extra.OWNER_ID, ownerId)
@@ -120,7 +129,7 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
 
         private fun addPhotoSizeToMenu(menu: PopupMenu, id: Int, size: Int, selectedItem: Int) {
             menu.menu
-                    .add(0, id, 0, getTitleForPhotoSize(size)).isChecked = selectedItem == size
+                .add(0, id, 0, getTitleForPhotoSize(size)).isChecked = selectedItem == size
         }
 
         private fun getTitleForPhotoSize(size: Int): String {
@@ -141,7 +150,13 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
         }
     }
 
-    private val requestWritePermission = AppPerms.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+    private val requestWritePermission = AppPerms.requestPermissions(
+        this,
+        arrayOf(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+    ) {
         if (isPresenterPrepared) {
             presenter?.fireWriteExternalStoragePermissionResolved()
         }
@@ -168,7 +183,11 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val root = inflater.inflate(R.layout.fragment_photo_pager_new, container, false)
         mLoadingProgressBar = root.findViewById(R.id.loading_progress_bar)
         mButtonRestore = root.findViewById(R.id.button_restore)
@@ -214,7 +233,8 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
         mButtonRestore?.setOnClickListener { presenter?.fireButtonRestoreClick() }
 
         if (bShowPhotosLine) {
-            mPreviewsRecycler?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            mPreviewsRecycler?.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             mAdapterRecycler.setListener(object : ImageAdapter.OnRecyclerImageClickListener {
                 override fun onRecyclerImageClick(index: Int) {
                     mViewPager?.currentItem = index
@@ -249,7 +269,13 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
     }
 
     override fun goToLikesList(accountId: Int, ownerId: Int, photoId: Int) {
-        PlaceFactory.getLikesCopiesPlace(accountId, "photo", ownerId, photoId, ILikesInteractor.FILTER_LIKES).tryOpenWith(requireActivity())
+        PlaceFactory.getLikesCopiesPlace(
+            accountId,
+            "photo",
+            ownerId,
+            photoId,
+            ILikesInteractor.FILTER_LIKES
+        ).tryOpenWith(requireActivity())
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -278,8 +304,8 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
         popupMenu.setOnMenuItemClickListener { item: MenuItem ->
             val key = item.itemId
             Settings.get()
-                    .main()
-                    .setPrefDisplayImageSize(SIZES[key])
+                .main()
+                .setPrefDisplayImageSize(SIZES[key])
             requireActivity().invalidateOptionsMenu()
             true
         }
@@ -288,37 +314,83 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
 
     override fun displayAccountNotSupported() {}
 
-    override fun getPresenterFactory(saveInstanceState: Bundle?): IPresenterFactory<PhotoPagerPresenter> = object : IPresenterFactory<PhotoPagerPresenter> {
-        override fun create(): PhotoPagerPresenter {
-            val placeType = requireArguments().getInt(Extra.PLACE_TYPE)
-            val aid = requireArguments().getInt(Extra.ACCOUNT_ID)
-            when (placeType) {
-                Place.SIMPLE_PHOTO_GALLERY -> {
-                    val index = requireArguments().getInt(Extra.INDEX)
-                    val needUpdate = requireArguments().getBoolean(EXTRA_NEED_UPDATE)
-                    val photos: ArrayList<Photo> = if (Settings.get().other().isNative_parcel) ParcelNative.loadParcelableArrayList(requireArguments().getLong(EXTRA_PHOTOS), Photo.NativeCreator) else requireArguments().getParcelableArrayList(EXTRA_PHOTOS)!!
-                    return SimplePhotoPresenter(photos, index, needUpdate, aid, requireActivity(), saveInstanceState)
+    override fun getPresenterFactory(saveInstanceState: Bundle?): IPresenterFactory<PhotoPagerPresenter> =
+        object : IPresenterFactory<PhotoPagerPresenter> {
+            override fun create(): PhotoPagerPresenter {
+                val placeType = requireArguments().getInt(Extra.PLACE_TYPE)
+                val aid = requireArguments().getInt(Extra.ACCOUNT_ID)
+                when (placeType) {
+                    Place.SIMPLE_PHOTO_GALLERY -> {
+                        val index = requireArguments().getInt(Extra.INDEX)
+                        val needUpdate = requireArguments().getBoolean(EXTRA_NEED_UPDATE)
+                        val photos: ArrayList<Photo> = if (Settings.get()
+                                .other().isNative_parcel
+                        ) ParcelNative.loadParcelableArrayList(
+                            requireArguments().getLong(
+                                EXTRA_PHOTOS
+                            ), Photo.NativeCreator
+                        ) else requireArguments().getParcelableArrayList(EXTRA_PHOTOS)!!
+                        return SimplePhotoPresenter(
+                            photos,
+                            index,
+                            needUpdate,
+                            aid,
+                            requireActivity(),
+                            saveInstanceState
+                        )
+                    }
+                    Place.VK_PHOTO_ALBUM_GALLERY -> {
+                        val indexx = requireArguments().getInt(Extra.INDEX)
+                        val ownerId = requireArguments().getInt(Extra.OWNER_ID)
+                        val albumId = requireArguments().getInt(Extra.ALBUM_ID)
+                        val photos_album: ArrayList<Photo> = if (Settings.get()
+                                .other().isNative_parcel
+                        ) ParcelNative.loadParcelableArrayList(
+                            requireArguments().getLong(
+                                EXTRA_PHOTOS
+                            ), Photo.NativeCreator
+                        ) else requireArguments().getParcelableArrayList(EXTRA_PHOTOS)!!
+                        return PhotoAlbumPagerPresenter(
+                            indexx,
+                            aid,
+                            ownerId,
+                            albumId,
+                            photos_album,
+                            requireActivity(),
+                            saveInstanceState
+                        )
+                    }
+                    Place.FAVE_PHOTOS_GALLERY -> {
+                        val findex = requireArguments().getInt(Extra.INDEX)
+                        val favePhotos: ArrayList<Photo> = if (Settings.get()
+                                .other().isNative_parcel
+                        ) ParcelNative.loadParcelableArrayList(
+                            requireArguments().getLong(
+                                EXTRA_PHOTOS
+                            ), Photo.NativeCreator
+                        ) else requireArguments().getParcelableArrayList(EXTRA_PHOTOS)!!
+                        return FavePhotoPagerPresenter(
+                            favePhotos,
+                            findex,
+                            aid,
+                            requireActivity(),
+                            saveInstanceState
+                        )
+                    }
+                    Place.VK_PHOTO_TMP_SOURCE -> {
+                        val source: TmpSource = requireArguments().getParcelable(Extra.SOURCE)!!
+                        return TmpGalleryPagerPresenter(
+                            aid,
+                            source,
+                            requireArguments().getInt(Extra.INDEX),
+                            requireActivity(),
+                            saveInstanceState
+                        )
+                    }
                 }
-                Place.VK_PHOTO_ALBUM_GALLERY -> {
-                    val indexx = requireArguments().getInt(Extra.INDEX)
-                    val ownerId = requireArguments().getInt(Extra.OWNER_ID)
-                    val albumId = requireArguments().getInt(Extra.ALBUM_ID)
-                    val photos_album: ArrayList<Photo> = if (Settings.get().other().isNative_parcel) ParcelNative.loadParcelableArrayList(requireArguments().getLong(EXTRA_PHOTOS), Photo.NativeCreator) else requireArguments().getParcelableArrayList(EXTRA_PHOTOS)!!
-                    return PhotoAlbumPagerPresenter(indexx, aid, ownerId, albumId, photos_album, requireActivity(), saveInstanceState)
-                }
-                Place.FAVE_PHOTOS_GALLERY -> {
-                    val findex = requireArguments().getInt(Extra.INDEX)
-                    val favePhotos: ArrayList<Photo> = if (Settings.get().other().isNative_parcel) ParcelNative.loadParcelableArrayList(requireArguments().getLong(EXTRA_PHOTOS), Photo.NativeCreator) else requireArguments().getParcelableArrayList(EXTRA_PHOTOS)!!
-                    return FavePhotoPagerPresenter(favePhotos, findex, aid, requireActivity(), saveInstanceState)
-                }
-                Place.VK_PHOTO_TMP_SOURCE -> {
-                    val source: TmpSource = requireArguments().getParcelable(Extra.SOURCE)!!
-                    return TmpGalleryPagerPresenter(aid, source, requireArguments().getInt(Extra.INDEX), requireActivity(), saveInstanceState)
-                }
+                throw UnsupportedOperationException()
             }
-            throw UnsupportedOperationException()
         }
-    }
 
     override fun setupLikeButton(visible: Boolean, like: Boolean, likes: Int) {
         if (Objects.nonNull(mButtonLike)) {
@@ -352,9 +424,14 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
     override fun displayPhotos(photos: List<Photo>, initialIndex: Int) {
         if (Objects.nonNull(mViewPager)) {
             if (bShowPhotosLine) {
-                mAdapterRecycler.setData(photos)
-                mAdapterRecycler.notifyDataSetChanged()
-                mAdapterRecycler.selectPosition(initialIndex)
+                if (photos.size <= 1) {
+                    mAdapterRecycler.setData(Collections.emptyList())
+                    mAdapterRecycler.notifyDataSetChanged()
+                } else {
+                    mAdapterRecycler.setData(photos)
+                    mAdapterRecycler.notifyDataSetChanged()
+                    mAdapterRecycler.selectPosition(initialIndex)
+                }
             }
             mPagerAdapter = Adapter(photos)
             mViewPager!!.adapter = mPagerAdapter
@@ -378,25 +455,35 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
 
     override fun sharePhoto(accountId: Int, photo: Photo) {
         val items = arrayOf(
-                getString(R.string.share_link),
-                getString(R.string.repost_send_message),
-                getString(R.string.repost_to_wall)
+            getString(R.string.share_link),
+            getString(R.string.repost_send_message),
+            getString(R.string.repost_to_wall)
         )
         MaterialAlertDialogBuilder(requireActivity())
-                .setItems(items) { _: DialogInterface?, i: Int ->
-                    when (i) {
-                        0 -> Utils.shareLink(requireActivity(), photo.generateWebLink(), photo.text)
-                        1 -> SendAttachmentsActivity.startForSendAttachments(requireActivity(), accountId, photo)
-                        2 -> presenter?.firePostToMyWallClick()
-                    }
+            .setItems(items) { _: DialogInterface?, i: Int ->
+                when (i) {
+                    0 -> Utils.shareLink(requireActivity(), photo.generateWebLink(), photo.text)
+                    1 -> SendAttachmentsActivity.startForSendAttachments(
+                        requireActivity(),
+                        accountId,
+                        photo
+                    )
+                    2 -> presenter?.firePostToMyWallClick()
                 }
-                .setCancelable(true)
-                .setTitle(R.string.share_photo_title)
-                .show()
+            }
+            .setCancelable(true)
+            .setTitle(R.string.share_photo_title)
+            .show()
     }
 
     override fun postToMyWall(photo: Photo, accountId: Int) {
-        PlaceUtil.goToPostCreation(requireActivity(), accountId, accountId, EditingPostType.TEMP, listOf(photo))
+        PlaceUtil.goToPostCreation(
+            requireActivity(),
+            accountId,
+            accountId,
+            EditingPostType.TEMP,
+            listOf(photo)
+        )
     }
 
     override fun requestWriteToExternalStoragePermission() {
@@ -422,7 +509,12 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
     override fun displayPhotoListLoading(loading: Boolean) {
         mLoadingProgressBar?.visibility = if (loading) View.VISIBLE else View.GONE
         if (loading) {
-            mLoadingProgressBar?.setAnimation(R.raw.loading, Utils.dp(100F), Utils.dp(40F), intArrayOf(0xffffff, CurrentTheme.getColorControlNormal(requireActivity())))
+            mLoadingProgressBar?.setAnimation(
+                R.raw.loading,
+                Utils.dp(100F),
+                Utils.dp(40F),
+                intArrayOf(0xffffff, CurrentTheme.getColorControlNormal(requireActivity()))
+            )
             mLoadingProgressBar?.playAnimation()
         } else {
             mLoadingProgressBar?.stopAnimation()
@@ -441,8 +533,9 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
     }
 
     override fun rebindPhotoAt(position: Int) {
-        if (Objects.nonNull(mPagerAdapter)) {
-            mPagerAdapter!!.notifyItemChanged(position)
+        mPagerAdapter?.notifyItemChanged(position)
+        if (bShowPhotosLine && mAdapterRecycler.getSize() > 1) {
+            mAdapterRecycler.notifyItemChanged(position)
         }
     }
 
@@ -455,11 +548,11 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
     override fun onResume() {
         super.onResume()
         ActivityFeatures.Builder()
-                .begin()
-                .setHideNavigationMenu(true)
-                .setBarsColored(false, false)
-                .build()
-                .apply(requireActivity())
+            .begin()
+            .setHideNavigationMenu(true)
+            .setBarsColored(false, false)
+            .build()
+            .apply(requireActivity())
     }
 
     private fun canGoBack(): Boolean {
@@ -469,8 +562,8 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
     @get:PhotoSize
     val photoSizeFromPrefs: Int
         get() = Settings.get()
-                .main()
-                .getPrefDisplayImageSize(DEFAULT_PHOTO_SIZE)
+            .main()
+            .getPrefDisplayImageSize(DEFAULT_PHOTO_SIZE)
 
     override fun onBackPressed(): Boolean {
         val objectAnimatorPosition = ObjectAnimator.ofFloat(view, "translationY", -600f)
@@ -510,7 +603,12 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
         private fun resolveProgressVisibility() {
             progress.visibility = if (mLoadingNow) View.VISIBLE else View.GONE
             if (mLoadingNow) {
-                progress.setAnimation(R.raw.loading, Utils.dp(100F), Utils.dp(40F), intArrayOf(0xffffff, CurrentTheme.getColorControlNormal(requireActivity())))
+                progress.setAnimation(
+                    R.raw.loading,
+                    Utils.dp(100F),
+                    Utils.dp(40F),
+                    intArrayOf(0xffffff, CurrentTheme.getColorControlNormal(requireActivity()))
+                )
                 progress.playAnimation()
             } else {
                 progress.stopAnimation()
@@ -521,8 +619,8 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
             mLoadingNow = true
             resolveProgressVisibility()
             PicassoInstance.with()
-                    .load(url)
-                    .into(photo, mPicassoLoadCallback)
+                .load(url)
+                .into(photo, mPicassoLoadCallback)
         }
 
         @IdRes
@@ -559,14 +657,18 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
         }
     }
 
-    private inner class Adapter(val mPhotos: List<Photo>) : RecyclerView.Adapter<PhotoViewHolder>() {
+    private inner class Adapter(val mPhotos: List<Photo>) :
+        RecyclerView.Adapter<PhotoViewHolder>() {
         @SuppressLint("ClickableViewAccessibility")
         override fun onCreateViewHolder(container: ViewGroup, viewType: Int): PhotoViewHolder {
-            val ret = PhotoViewHolder(LayoutInflater.from(container.context)
-                    .inflate(R.layout.content_photo_page, container, false))
+            val ret = PhotoViewHolder(
+                LayoutInflater.from(container.context)
+                    .inflate(R.layout.content_photo_page, container, false)
+            )
             val ui = from(ret.photo)
             ui.settle = SettleOnTopAction()
-            ui.sideEffect = VerticalSwipeBehavior.PropertySideEffect(View.ALPHA, View.SCALE_X, View.SCALE_Y)
+            ui.sideEffect =
+                VerticalSwipeBehavior.PropertySideEffect(View.ALPHA, View.SCALE_X, View.SCALE_Y)
             val clampDelegate = VerticalSwipeBehavior.BelowFractionalClamp(3f, 3f)
             ui.clamp = VerticalSwipeBehavior.SensitivityClamp(0.5f, clampDelegate, 0.5f)
             ui.listener = object : VerticalSwipeBehavior.SwipeListener {
@@ -592,7 +694,10 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
                 }
             }
             ret.photo.setOnTouchListener { view: View, event: MotionEvent ->
-                if (event.pointerCount >= 2 || view.canScrollHorizontally(1) && view.canScrollHorizontally(-1)) {
+                if (event.pointerCount >= 2 || view.canScrollHorizontally(1) && view.canScrollHorizontally(
+                        -1
+                    )
+                ) {
                     when (event.action) {
                         MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
                             ui.canSwipe = false

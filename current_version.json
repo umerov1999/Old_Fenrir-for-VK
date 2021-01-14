@@ -1,7 +1,7 @@
 {
   "app_id": "dev.ragnarok.fenrir_open",
   "apk_version": 24,
-  "changes": "Версия 1.24: Добавлено: распознание QR с картинки, сохранение паролей, зелёная тема, трекбар с фотками, natave parcel, копирование текста комментариев",
+  "changes": "DEPRECATED",
   "donates": [
     164736208,
     87731802,

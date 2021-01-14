@@ -5,7 +5,10 @@ import dev.ragnarok.fenrir.mvp.core.IMvpView
 import dev.ragnarok.fenrir.mvp.core.IPresenter
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory
 
-class SimplePresenterLoader<P : IPresenter<V>, V : IMvpView> constructor(context: Context, var factory: IPresenterFactory<P>) : androidx.loader.content.Loader<P>(context) {
+class SimplePresenterLoader<P : IPresenter<V>, V : IMvpView> constructor(
+    context: Context,
+    var factory: IPresenterFactory<P>
+) : androidx.loader.content.Loader<P>(context) {
 
     private var f: IPresenterFactory<P>? = factory
 

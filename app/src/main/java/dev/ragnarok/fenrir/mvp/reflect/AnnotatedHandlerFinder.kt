@@ -10,7 +10,11 @@ object AnnotatedHandlerFinder {
      */
     private val cache = HashMap<Class<*>, MutableSet<Method>>()
 
-    private fun loadAnnotatedSubscriberMethods(listenerClass: Class<*>, methods: MutableSet<Method>, includeSuperclass: Class<*>) {
+    private fun loadAnnotatedSubscriberMethods(
+        listenerClass: Class<*>,
+        methods: MutableSet<Method>,
+        includeSuperclass: Class<*>
+    ) {
         loadAnnotatedMethods(listenerClass, methods)
 
         if (listenerClass != includeSuperclass) {
@@ -36,8 +40,10 @@ object AnnotatedHandlerFinder {
                 val parameterTypes = method.parameterTypes
 
                 if (parameterTypes.isNotEmpty()) {
-                    throw IllegalArgumentException("Method $method has @OnGuiCreated annotation " +
-                            "but requires ${parameterTypes.size} arguments.  Methods must require zero arguments.")
+                    throw IllegalArgumentException(
+                        "Method $method has @OnGuiCreated annotation " +
+                                "but requires ${parameterTypes.size} arguments.  Methods must require zero arguments."
+                    )
                 }
 
                 methods.add(method)

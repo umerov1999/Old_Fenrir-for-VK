@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dev.ragnarok.fenrir.Account_Types;
-import dev.ragnarok.fenrir.CheckUpdate;
+import dev.ragnarok.fenrir.CheckDonate;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.Injection;
@@ -382,14 +382,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         Preference is_donated = findPreference("is_donated");
         if (is_donated != null) {
             is_donated.setOnPreferenceClickListener(preference -> {
-                CheckUpdate.isDonated(requireActivity(), getAccountId());
+                CheckDonate.isDonated(requireActivity(), getAccountId());
                 return true;
             });
-        }
-
-        Preference auto_update = findPreference("auto_update");
-        if (auto_update != null) {
-            auto_update.setVisible(Constants.IS_DONATE == 2);
         }
 
         ListPreference chat_background = findPreference("chat_background");
@@ -603,11 +598,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     return true;
                 });
 
-        findPreference("test_crash")
-                .setOnPreferenceClickListener(preference -> {
-                    throw new RuntimeException("###TEST_CRASHED###");
-                });
-
         SwitchPreference keepLongpoll = findPreference("keep_longpoll");
         keepLongpoll.setOnPreferenceChangeListener((preference, newValue) -> {
             boolean keep = (boolean) newValue;
@@ -699,7 +689,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void ShowSelectIcon() {
-        if (!CheckUpdate.isFullVersionPropriety(requireActivity())) {
+        if (!CheckDonate.isFullVersion(requireActivity())) {
             return;
         }
         View view = View.inflate(requireActivity(), R.layout.icon_select_alert, null);

@@ -24,6 +24,7 @@ import dev.ragnarok.fenrir.domain.mappers.Dto2Model;
 import dev.ragnarok.fenrir.domain.mappers.Entity2Model;
 import dev.ragnarok.fenrir.exception.NotFoundException;
 import dev.ragnarok.fenrir.fragment.search.criteria.PhotoSearchCriteria;
+import dev.ragnarok.fenrir.fragment.search.options.SimpleDateOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleGPSOption;
 import dev.ragnarok.fenrir.fragment.search.options.SpinnerOption;
 import dev.ragnarok.fenrir.model.AccessIdPair;
@@ -112,9 +113,12 @@ public class PhotosInteractor implements IPhotosInteractor {
         Integer sort = (sortOption == null || sortOption.value == null) ? null : sortOption.value.id;
         Integer radius = criteria.extractNumberValueFromOption(PhotoSearchCriteria.KEY_RADIUS);
         SimpleGPSOption gpsOption = criteria.findOptionByKey(PhotoSearchCriteria.KEY_GPS);
+        SimpleDateOption startDateOption = criteria.findOptionByKey(PhotoSearchCriteria.KEY_START_TIME);
+        SimpleDateOption endDateOption = criteria.findOptionByKey(PhotoSearchCriteria.KEY_END_TIME);
         return networker.vkDefault(accountId)
                 .photos()
-                .search(criteria.getQuery(), gpsOption.lat_gps < 0.1 ? null : gpsOption.lat_gps, gpsOption.long_gps < 0.1 ? null : gpsOption.long_gps, sort, radius, offset, count)
+                .search(criteria.getQuery(), gpsOption.lat_gps < 0.1 ? null : gpsOption.lat_gps, gpsOption.long_gps < 0.1 ? null : gpsOption.long_gps,
+                        sort, radius, startDateOption.timeUnix == 0 ? null : startDateOption.timeUnix, endDateOption.timeUnix == 0 ? null : endDateOption.timeUnix, offset, count)
                 .map(items -> Utils.listEmptyIfNull(items.getItems()))
                 .flatMap(dtos -> {
                     List<Photo> photos = new ArrayList<>(dtos.size());

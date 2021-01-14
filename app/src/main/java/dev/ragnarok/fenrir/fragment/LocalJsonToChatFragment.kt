@@ -35,7 +35,9 @@ import dev.ragnarok.fenrir.util.Objects
 import dev.ragnarok.fenrir.util.Utils
 import dev.ragnarok.fenrir.util.ViewUtils
 
-class LocalJsonToChatFragment : PlaceSupportMvpFragment<LocalJsonToChatPresenter, ILocalJsonToChatView>(), ILocalJsonToChatView, OnMessageActionListener {
+class LocalJsonToChatFragment :
+    PlaceSupportMvpFragment<LocalJsonToChatPresenter, ILocalJsonToChatView>(), ILocalJsonToChatView,
+    OnMessageActionListener {
     private var mEmpty: TextView? = null
     private var mSwipeRefreshLayout: SwipeRefreshLayout? = null
     private var mAdapter: MessagesAdapter? = null
@@ -46,7 +48,11 @@ class LocalJsonToChatFragment : PlaceSupportMvpFragment<LocalJsonToChatPresenter
     private var Avatar: ImageView? = null
     private var EmptyAvatar: TextView? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val root = inflater.inflate(R.layout.fragment_json_chat, container, false)
         (requireActivity() as AppCompatActivity).setSupportActionBar(root.findViewById(R.id.toolbar))
         mEmpty = root.findViewById(R.id.empty)
@@ -64,7 +70,8 @@ class LocalJsonToChatFragment : PlaceSupportMvpFragment<LocalJsonToChatPresenter
         EmptyAvatar = root.findViewById(R.id.empty_avatar_text)
 
         recyclerView = root.findViewById(android.R.id.list)
-        recyclerView?.layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, true)
+        recyclerView?.layoutManager =
+            LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, true)
         recyclerView?.addOnScrollListener(PicassoPauseOnScrollListener(Constants.PICASSO_TAG))
         mSwipeRefreshLayout = root.findViewById(R.id.refresh)
         mSwipeRefreshLayout?.isEnabled = false
@@ -85,25 +92,91 @@ class LocalJsonToChatFragment : PlaceSupportMvpFragment<LocalJsonToChatPresenter
 
     override fun attachments_mode(accountId: Int, last_selected: Int) {
         val menus = ModalBottomSheetDialogFragment.Builder()
-        menus.add(OptionRequest(0, getString(R.string.json_all_messages), is_select(R.drawable.close, 0, last_selected)))
-        menus.add(OptionRequest(1, getString(R.string.photos), is_select(R.drawable.photo_album, 1, last_selected)))
-        menus.add(OptionRequest(2, getString(R.string.videos), is_select(R.drawable.video, 2, last_selected)))
-        menus.add(OptionRequest(3, getString(R.string.documents), is_select(R.drawable.book, 3, last_selected)))
-        menus.add(OptionRequest(4, getString(R.string.music), is_select(R.drawable.song, 4, last_selected)))
-        menus.add(OptionRequest(5, getString(R.string.links), is_select(R.drawable.web, 5, last_selected)))
-        menus.add(OptionRequest(6, getString(R.string.photo_album), is_select(R.drawable.album_photo, 6, last_selected)))
-        menus.add(OptionRequest(7, getString(R.string.playlist), is_select(R.drawable.audio_player, 7, last_selected)))
-        menus.add(OptionRequest(8, getString(R.string.json_attachments_forward), is_select(R.drawable.ic_outline_forward, 8, last_selected)))
-        menus.add(OptionRequest(9, getString(R.string.posts), is_select(R.drawable.about_writed, 9, last_selected)))
-        menus.add(OptionRequest(10, getString(R.string.json_all_attachments), is_select(R.drawable.attachment, 10, last_selected)))
+        menus.add(
+            OptionRequest(
+                0,
+                getString(R.string.json_all_messages),
+                is_select(R.drawable.close, 0, last_selected)
+            )
+        )
+        menus.add(
+            OptionRequest(
+                1,
+                getString(R.string.photos),
+                is_select(R.drawable.photo_album, 1, last_selected)
+            )
+        )
+        menus.add(
+            OptionRequest(
+                2,
+                getString(R.string.videos),
+                is_select(R.drawable.video, 2, last_selected)
+            )
+        )
+        menus.add(
+            OptionRequest(
+                3,
+                getString(R.string.documents),
+                is_select(R.drawable.book, 3, last_selected)
+            )
+        )
+        menus.add(
+            OptionRequest(
+                4,
+                getString(R.string.music),
+                is_select(R.drawable.song, 4, last_selected)
+            )
+        )
+        menus.add(
+            OptionRequest(
+                5,
+                getString(R.string.links),
+                is_select(R.drawable.web, 5, last_selected)
+            )
+        )
+        menus.add(
+            OptionRequest(
+                6,
+                getString(R.string.photo_album),
+                is_select(R.drawable.album_photo, 6, last_selected)
+            )
+        )
+        menus.add(
+            OptionRequest(
+                7,
+                getString(R.string.playlist),
+                is_select(R.drawable.audio_player, 7, last_selected)
+            )
+        )
+        menus.add(
+            OptionRequest(
+                8,
+                getString(R.string.json_attachments_forward),
+                is_select(R.drawable.ic_outline_forward, 8, last_selected)
+            )
+        )
+        menus.add(
+            OptionRequest(
+                9,
+                getString(R.string.posts),
+                is_select(R.drawable.about_writed, 9, last_selected)
+            )
+        )
+        menus.add(
+            OptionRequest(
+                10,
+                getString(R.string.json_all_attachments),
+                is_select(R.drawable.attachment, 10, last_selected)
+            )
+        )
 
         menus.show(childFragmentManager, "json_attachments_select",
-                object : ModalBottomSheetDialogFragment.Listener {
-                    override fun onModalOptionSelected(option: Option) {
-                        presenter?.uAttachmentType = option.id
-                        presenter?.updateMessages(false)
-                    }
-                })
+            object : ModalBottomSheetDialogFragment.Listener {
+                override fun onModalOptionSelected(option: Option) {
+                    presenter?.uAttachmentType = option.id
+                    presenter?.updateMessages(false)
+                }
+            })
     }
 
     override fun scroll_pos(pos: Int) {
@@ -145,14 +218,16 @@ class LocalJsonToChatFragment : PlaceSupportMvpFragment<LocalJsonToChatPresenter
         }
     }
 
-    override fun getPresenterFactory(saveInstanceState: Bundle?): IPresenterFactory<LocalJsonToChatPresenter> = object : IPresenterFactory<LocalJsonToChatPresenter> {
-        override fun create(): LocalJsonToChatPresenter {
-            return LocalJsonToChatPresenter(
+    override fun getPresenterFactory(saveInstanceState: Bundle?): IPresenterFactory<LocalJsonToChatPresenter> =
+        object : IPresenterFactory<LocalJsonToChatPresenter> {
+            override fun create(): LocalJsonToChatPresenter {
+                return LocalJsonToChatPresenter(
                     requireArguments().getInt(Extra.ACCOUNT_ID),
                     requireActivity(),
-                    saveInstanceState)
+                    saveInstanceState
+                )
+            }
         }
-    }
 
     override fun displayToolbarAvatar(peer: Peer) {
         Avatar?.setOnClickListener {
@@ -161,9 +236,9 @@ class LocalJsonToChatFragment : PlaceSupportMvpFragment<LocalJsonToChatPresenter
         if (Utils.nonEmpty(peer.avaUrl)) {
             EmptyAvatar?.visibility = View.GONE
             PicassoInstance.with()
-                    .load(peer.avaUrl)
-                    .transform(RoundTransformation())
-                    .into(Avatar!!)
+                .load(peer.avaUrl)
+                .transform(RoundTransformation())
+                .into(Avatar!!)
         } else {
             PicassoInstance.with().cancelRequest(Avatar!!)
             EmptyAvatar?.visibility = View.VISIBLE
@@ -171,7 +246,15 @@ class LocalJsonToChatFragment : PlaceSupportMvpFragment<LocalJsonToChatPresenter
             if (name.length > 2) name = name.substring(0, 2)
             name = name.trim { it <= ' ' }
             EmptyAvatar?.text = name
-            Avatar?.setImageBitmap(RoundTransformation().transform(Utils.createGradientChatImage(200, 200, peer.id)))
+            Avatar?.setImageBitmap(
+                RoundTransformation().transform(
+                    Utils.createGradientChatImage(
+                        200,
+                        200,
+                        peer.id
+                    )
+                )
+            )
         }
     }
 
@@ -194,11 +277,11 @@ class LocalJsonToChatFragment : PlaceSupportMvpFragment<LocalJsonToChatPresenter
     override fun onResume() {
         super.onResume()
         ActivityFeatures.Builder()
-                .begin()
-                .setHideNavigationMenu(false)
-                .setBarsColored(requireActivity(), true)
-                .build()
-                .apply(requireActivity())
+            .begin()
+            .setHideNavigationMenu(false)
+            .setBarsColored(requireActivity(), true)
+            .build()
+            .apply(requireActivity())
     }
 
     override fun onAvatarClick(message: Message, userId: Int) {

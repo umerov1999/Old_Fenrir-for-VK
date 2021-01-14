@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import dev.ragnarok.fenrir.CheckUpdate;
+import dev.ragnarok.fenrir.CheckDonate;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.HelperSimple;
 import dev.ragnarok.fenrir.R;
@@ -368,7 +368,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
                     } else if (selected.equals(addToShortcuts)) {
                         getPresenter().fireAddToLauncherShortcuts(dialog);
                     } else if (selected.equals(setHide)) {
-                        if (!CheckUpdate.isFullVersionPropriety(requireActivity())) {
+                        if (!CheckDonate.isFullVersion(requireActivity())) {
                             return;
                         }
                         if (!Settings.get().security().isUsePinForSecurity()) {

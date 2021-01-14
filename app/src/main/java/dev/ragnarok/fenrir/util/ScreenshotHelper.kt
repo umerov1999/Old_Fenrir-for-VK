@@ -19,26 +19,48 @@ object ScreenshotHelper {
             saveDir.mkdirs()
         }
         if (!saveDir.exists()) {
-            Toast.makeText(activity, activity.getText(R.string.error).toString() + " " + saveDir.absolutePath, Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                activity,
+                activity.getText(R.string.error).toString() + " " + saveDir.absolutePath,
+                Toast.LENGTH_LONG
+            ).show()
             return
         }
-        val file = File(saveDir, "screenshot_" + java.lang.Long.valueOf(System.currentTimeMillis() / 1000) + ".jpg")
+        val file = File(
+            saveDir,
+            "screenshot_" + java.lang.Long.valueOf(System.currentTimeMillis() / 1000) + ".jpg"
+        )
         val decorView = activity.window.decorView
         decorView.isDrawingCacheEnabled = true
         val drawingCache = decorView.drawingCache
         val statusBarHeight = getStatusBarHeight(activity)
-        val createBitmap = Bitmap.createBitmap(drawingCache, 0, statusBarHeight, drawingCache.width, drawingCache.height - statusBarHeight, null, true)
+        val createBitmap = Bitmap.createBitmap(
+            drawingCache,
+            0,
+            statusBarHeight,
+            drawingCache.width,
+            drawingCache.height - statusBarHeight,
+            null,
+            true
+        )
         decorView.isDrawingCacheEnabled = false
         try {
             val fileOutputStream = FileOutputStream(file)
             try {
                 createBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
                 fileOutputStream.flush()
-                Toast.makeText(activity, """
+                Toast.makeText(
+                    activity, """
      ${activity.getText(R.string.success)}
      ${file.absolutePath}
-     """.trimIndent(), Toast.LENGTH_LONG).show()
-                activity.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)))
+     """.trimIndent(), Toast.LENGTH_LONG
+                ).show()
+                activity.sendBroadcast(
+                    Intent(
+                        Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                        Uri.fromFile(file)
+                    )
+                )
                 fileOutputStream.close()
             } catch (e: Exception) {
                 try {

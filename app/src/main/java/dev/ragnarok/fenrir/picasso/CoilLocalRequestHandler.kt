@@ -35,14 +35,19 @@ class CoilLocalRequestHandler : Fetcher<Uri> {
 
     private fun isSizeValid(bitmap: Bitmap, options: Options, size: Size): Boolean {
         return options.allowInexactSize || size is OriginalSize ||
-                size == DecodeUtils.computePixelSize(bitmap.width, bitmap.height, size, options.scale)
+                size == DecodeUtils.computePixelSize(
+            bitmap.width,
+            bitmap.height,
+            size,
+            options.scale
+        )
     }
 
     private fun normalizeBitmap(
-            pool: BitmapPool,
-            inBitmap: Bitmap,
-            size: Size,
-            options: Options
+        pool: BitmapPool,
+        inBitmap: Bitmap,
+        size: Size,
+        options: Options
     ): Bitmap {
         // Fast path: if the input bitmap is valid, return it.
         if (isConfigValid(inBitmap, options) && isSizeValid(inBitmap, options, size)) {
@@ -56,11 +61,11 @@ class CoilLocalRequestHandler : Fetcher<Uri> {
         when (size) {
             is PixelSize -> {
                 scale = DecodeUtils.computeSizeMultiplier(
-                        srcWidth = inBitmap.width,
-                        srcHeight = inBitmap.height,
-                        dstWidth = size.width,
-                        dstHeight = size.height,
-                        scale = options.scale
+                    srcWidth = inBitmap.width,
+                    srcHeight = inBitmap.height,
+                    dstWidth = size.width,
+                    dstHeight = size.height,
+                    scale = options.scale
                 ).toFloat()
                 dstWidth = (scale * inBitmap.width).roundToInt()
                 dstHeight = (scale * inBitmap.height).roundToInt()
@@ -87,7 +92,12 @@ class CoilLocalRequestHandler : Fetcher<Uri> {
     }
 
     @Throws(IOException::class)
-    override suspend fun fetch(pool: BitmapPool, data: Uri, size: Size, options: Options): FetchResult {
+    override suspend fun fetch(
+        pool: BitmapPool,
+        data: Uri,
+        size: Size,
+        options: Options
+    ): FetchResult {
         val out: Bitmap?
         if (SDK_INT >= Build.VERSION_CODES.Q) {
             val width: Int
@@ -123,9 +133,14 @@ class CoilLocalRequestHandler : Fetcher<Uri> {
         }
         checkNotNull(out) { "Failed to decode Thumbnail" }
         return DrawableResult(
-                drawable = normalizeBitmap(pool, out, size, options).toDrawable(options.context.resources),
-                isSampled = false,
-                dataSource = DataSource.MEMORY
+            drawable = normalizeBitmap(
+                pool,
+                out,
+                size,
+                options
+            ).toDrawable(options.context.resources),
+            isSampled = false,
+            dataSource = DataSource.MEMORY
         )
     }
 }

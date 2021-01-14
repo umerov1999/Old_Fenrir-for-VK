@@ -33,7 +33,10 @@ class ModalBottomSheetDialogFragment(listener: Listener) : BottomSheetDialogFrag
         private const val KEY_DRAWABLE_RES = "resource"
         private const val KEY_IMAGE_URL = "url"
 
-        private fun newInstance(listener: Listener, builder: Builder): ModalBottomSheetDialogFragment {
+        private fun newInstance(
+            listener: Listener,
+            builder: Builder
+        ): ModalBottomSheetDialogFragment {
             val fragment = ModalBottomSheetDialogFragment(listener)
             val args = Bundle()
             args.putParcelableArrayList(KEY_OPTIONS, builder.options)
@@ -55,7 +58,11 @@ class ModalBottomSheetDialogFragment(listener: Listener) : BottomSheetDialogFrag
         MenuInflater(context)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.modal_bottom_sheet_dialog_fragment, container, false)
     }
 
@@ -68,7 +75,7 @@ class ModalBottomSheetDialogFragment(listener: Listener) : BottomSheetDialogFrag
         super.onViewCreated(view, savedInstanceState)
         list = view.findViewById(R.id.list)
         val arguments = arguments
-                ?: throw IllegalStateException("You need to create this via the builder")
+            ?: throw IllegalStateException("You need to create this via the builder")
 
         val optionHolders = arguments.getParcelableArrayList<OptionHolder>(KEY_OPTIONS)!!
         val excludes = arguments.getIntegerArrayList(KEY_EXCLUDES)!!
@@ -196,7 +203,11 @@ class ModalBottomSheetDialogFragment(listener: Listener) : BottomSheetDialogFrag
         /**
          * Build and show the [ModalBottomSheetDialogFragment]
          */
-        fun show(fragmentManager: FragmentManager, tag: String, listener: Listener): ModalBottomSheetDialogFragment {
+        fun show(
+            fragmentManager: FragmentManager,
+            tag: String,
+            listener: Listener
+        ): ModalBottomSheetDialogFragment {
             val dialog = build(listener)
             dialog.show(fragmentManager, tag)
             return dialog
@@ -213,7 +224,8 @@ class ModalBottomSheetDialogFragment(listener: Listener) : BottomSheetDialogFrag
         fun onModalOptionSelected(option: Option)
     }
 
-    internal class Adapter(private val callback: (option: Option) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    internal class Adapter(private val callback: (option: Option) -> Unit) :
+        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         companion object {
             const val VIEW_TYPE_HEADER = 0
@@ -234,7 +246,8 @@ class ModalBottomSheetDialogFragment(listener: Listener) : BottomSheetDialogFrag
             when (viewType) {
 
                 VIEW_TYPE_HEADER -> {
-                    val view = LayoutInflater.from(parent.context).inflate(headerLayoutRes, parent, false)
+                    val view =
+                        LayoutInflater.from(parent.context).inflate(headerLayoutRes, parent, false)
                     return HeaderViewHolder(view)
                 }
                 VIEW_TYPE_ITEM -> {
@@ -308,9 +321,9 @@ class ModalBottomSheetDialogFragment(listener: Listener) : BottomSheetDialogFrag
             av.setImageResource(res)
             if (!Utils.isEmpty(url)) {
                 PicassoInstance.with()
-                        .load(url)
-                        .transform(PolyTransformation())
-                        .into(av)
+                    .load(url)
+                    .transform(PolyTransformation())
+                    .into(av)
             } else {
                 Utils.setColorFilter(av, CurrentTheme.getColorPrimary(av.context))
             }

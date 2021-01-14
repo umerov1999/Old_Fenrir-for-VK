@@ -12,7 +12,7 @@ import android.view.View
  * @param callback block of the callback in which you can bind the given view
  */
 class ViewBoundCallback(
-        private val callback: ViewBoundCallback.(View) -> Unit
+    private val callback: ViewBoundCallback.(View) -> Unit
 ) : (View) -> Unit {
     internal var dismissPopupAction: () -> Unit = {
         throw IllegalStateException("Dismiss popup action has not been initialized. Make sure that you invoke dismissPopup function only after the popup has been shown.")

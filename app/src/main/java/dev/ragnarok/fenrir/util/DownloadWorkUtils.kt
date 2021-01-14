@@ -13,7 +13,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.FileProvider
 import androidx.work.*
 import com.google.gson.Gson
-import dev.ragnarok.fenrir.CheckUpdate
+import dev.ragnarok.fenrir.CheckDonate
 import dev.ragnarok.fenrir.Constants
 import dev.ragnarok.fenrir.R
 import dev.ragnarok.fenrir.domain.InteractorFactory
@@ -40,26 +40,60 @@ import java.util.*
 
 object DownloadWorkUtils {
     @SuppressLint("ConstantLocale")
-    private val DOWNLOAD_DATE_FORMAT: DateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
-    private fun createNotification(context: Context, Title: String?, Text: String?, icon: Int, fin: Boolean): NotificationCompat.Builder {
-        return NotificationCompat.Builder(context, AppNotificationChannels.DOWNLOAD_CHANNEL_ID).setContentTitle(Title)
-                .setContentText(Text)
-                .setSmallIcon(icon)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(fin)
-                .setOngoing(!fin)
-                .setOnlyAlertOnce(true)
+    private val DOWNLOAD_DATE_FORMAT: DateFormat =
+        SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+
+    private fun createNotification(
+        context: Context,
+        Title: String?,
+        Text: String?,
+        icon: Int,
+        fin: Boolean
+    ): NotificationCompat.Builder {
+        return NotificationCompat.Builder(context, AppNotificationChannels.DOWNLOAD_CHANNEL_ID)
+            .setContentTitle(Title)
+            .setContentText(Text)
+            .setSmallIcon(icon)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(fin)
+            .setOngoing(!fin)
+            .setOnlyAlertOnce(true)
     }
 
     private fun createNotificationManager(context: Context): NotificationManagerCompat {
         val mNotifyManager = NotificationManagerCompat.from(context)
         if (Utils.hasOreo()) {
-            mNotifyManager.createNotificationChannel(AppNotificationChannels.getDownloadChannel(context))
+            mNotifyManager.createNotificationChannel(
+                AppNotificationChannels.getDownloadChannel(
+                    context
+                )
+            )
         }
         return mNotifyManager
     }
 
-    private val ILLEGAL_FILENAME_CHARS = charArrayOf('#', '%', '&', '{', '}', '\\', '<', '>', '*', '?', '/', '$', '\'', '\"', ':', '@', '`', '|', '=')
+    private val ILLEGAL_FILENAME_CHARS = charArrayOf(
+        '#',
+        '%',
+        '&',
+        '{',
+        '}',
+        '\\',
+        '<',
+        '>',
+        '*',
+        '?',
+        '/',
+        '$',
+        '\'',
+        '\"',
+        ':',
+        '@',
+        '`',
+        '|',
+        '='
+    )
+
     private fun makeLegalFilenameNTV(filename: String): String {
         var filename_temp = filename.trim { it <= ' ' }
 
@@ -122,7 +156,12 @@ object DownloadWorkUtils {
         val Temp = File(file.build())
         if (Temp.exists()) {
             if (Temp.setLastModified(Calendar.getInstance().time.time)) {
-                context.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(Temp)))
+                context.sendBroadcast(
+                    Intent(
+                        Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                        Uri.fromFile(Temp)
+                    )
+                )
             }
             CustomToast.CreateCustomToast(context).showToastError(R.string.exist_audio)
             return true
@@ -136,7 +175,12 @@ object DownloadWorkUtils {
         val Temp = File(file.build())
         if (Temp.exists()) {
             if (Temp.setLastModified(Calendar.getInstance().time.time)) {
-                context.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(Temp)))
+                context.sendBroadcast(
+                    Intent(
+                        Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                        Uri.fromFile(Temp)
+                    )
+                )
             }
             return 1
         }
@@ -165,16 +209,21 @@ object DownloadWorkUtils {
     fun GetLocalTrackLink(audio: Audio): String {
         if (audio.url.contains("file://") || audio.url.contains("content://"))
             return audio.url
-        return "file://" + Settings.get().other().musicDir + "/" + makeLegalFilename(audio.artist + " - " + audio.title, "mp3")
+        return "file://" + Settings.get()
+            .other().musicDir + "/" + makeLegalFilename(audio.artist + " - " + audio.title, "mp3")
     }
 
     @JvmStatic
     fun doDownloadVideo(context: Context, video: Video, url: String, Res: String) {
-        if (!CheckUpdate.isFullVersion(context)) {
+        if (!CheckDonate.isFullVersion(context)) {
             return
         }
-        val result_filename = DownloadInfo(makeLegalFilename(optString(video.title) +
-                " - " + video.ownerId + "_" + video.id + "_" + Res + "P", null), Settings.get().other().videoDir, "mp4")
+        val result_filename = DownloadInfo(
+            makeLegalFilename(
+                optString(video.title) +
+                        " - " + video.ownerId + "_" + video.id + "_" + Res + "P", null
+            ), Settings.get().other().videoDir, "mp4"
+        )
         CheckDirectory(result_filename.path)
         if (default_file_exist(context, result_filename)) {
             return
@@ -193,12 +242,16 @@ object DownloadWorkUtils {
 
     @JvmStatic
     fun doDownloadVoice(context: Context, doc: VoiceMessage) {
-        if (!CheckUpdate.isFullVersion(context)) {
+        if (!CheckDonate.isFullVersion(context)) {
             return
         }
         if (Utils.isEmpty(doc.linkMp3))
             return
-        val result_filename = DownloadInfo(makeLegalFilename("Голосовуха " + doc.ownerId + "_" + doc.id, null), Settings.get().other().docDir, "mp3")
+        val result_filename = DownloadInfo(
+            makeLegalFilename("Голосовуха " + doc.ownerId + "_" + doc.id, null),
+            Settings.get().other().docDir,
+            "mp3"
+        )
         CheckDirectory(result_filename.path)
         if (default_file_exist(context, result_filename)) {
             return
@@ -217,7 +270,7 @@ object DownloadWorkUtils {
 
     @JvmStatic
     fun doDownloadSticker(context: Context, sticker: Sticker) {
-        if (!CheckUpdate.isFullVersionPropriety(context)) {
+        if (!CheckDonate.isFullVersion(context)) {
             return
         }
         val link: String? = if (sticker.isAnimated) {
@@ -227,7 +280,11 @@ object DownloadWorkUtils {
         }
         if (Utils.isEmpty(link))
             return
-        val result_filename = DownloadInfo(makeLegalFilename(sticker.id.toString(), null), Settings.get().other().stickerDir, if (sticker.isAnimated) "json" else "png")
+        val result_filename = DownloadInfo(
+            makeLegalFilename(sticker.id.toString(), null),
+            Settings.get().other().stickerDir,
+            if (sticker.isAnimated) "json" else "png"
+        )
         CheckDirectory(result_filename.path)
         if (default_file_exist(context, result_filename)) {
             return
@@ -238,7 +295,8 @@ object DownloadWorkUtils {
             } else {
                 toDefaultInternalDownloader(context, link!!, result_filename)
             }
-            Utils.getCachedMyStickers().add(Sticker.LocalSticker(result_filename.build(), sticker.isAnimated))
+            Utils.getCachedMyStickers()
+                .add(Sticker.LocalSticker(result_filename.build(), sticker.isAnimated))
         } catch (e: Exception) {
             CustomToast.CreateCustomToast(context).showToastError("Sticker Error: " + e.message)
             return
@@ -260,11 +318,16 @@ object DownloadWorkUtils {
     fun doDownloadDoc(context: Context, doc: Document, force: Boolean): Int {
         if (Utils.isEmpty(doc.url))
             return 2
-        val result_filename = makeDoc(makeLegalFilename(doc.title, null), Settings.get().other().docDir, doc.ext)
+        val result_filename =
+            makeDoc(makeLegalFilename(doc.title, null), Settings.get().other().docDir, doc.ext)
         CheckDirectory(result_filename.path)
         if (default_file_exist(context, result_filename)) {
             if (force) {
-                result_filename.setFile(result_filename.file + ("." + DOWNLOAD_DATE_FORMAT.format(Date())))
+                result_filename.setFile(
+                    result_filename.file + ("." + DOWNLOAD_DATE_FORMAT.format(
+                        Date()
+                    ))
+                )
             } else {
                 return 1
             }
@@ -302,13 +365,17 @@ object DownloadWorkUtils {
 
     @JvmStatic
     fun doDownloadAudio(context: Context, audio: Audio, account_id: Int, Force: Boolean): Int {
-        if (!CheckUpdate.isFullVersion(context)) {
+        if (!CheckDonate.isFullVersion(context)) {
             return 3
         }
         if (!Utils.isEmpty(audio.url) && (audio.url.contains("file://") || audio.url.contains("content://")))
             return 3
 
-        val result_filename = DownloadInfo(makeLegalFilename(audio.artist + " - " + audio.title, null), Settings.get().other().musicDir, "mp3")
+        val result_filename = DownloadInfo(
+            makeLegalFilename(audio.artist + " - " + audio.title, null),
+            Settings.get().other().musicDir,
+            "mp3"
+        )
         CheckDirectory(result_filename.path)
         val download_status = track_file_exist(context, result_filename)
         if (download_status != 0 && !Force) {
@@ -336,7 +403,11 @@ object DownloadWorkUtils {
 
     @JvmStatic
     fun makeDownloadRequestAudio(audio: Audio, account_id: Int): OneTimeWorkRequest {
-        val result_filename = DownloadInfo(makeLegalFilename(audio.artist + " - " + audio.title, null), Settings.get().other().musicDir, "mp3")
+        val result_filename = DownloadInfo(
+            makeLegalFilename(audio.artist + " - " + audio.title, null),
+            Settings.get().other().musicDir,
+            "mp3"
+        )
         val downloadWork = OneTimeWorkRequest.Builder(TrackDownloadWorker::class.java)
         val data = Data.Builder()
         data.putString(ExtraDwn.URL, Gson().toJson(audio))
@@ -349,8 +420,13 @@ object DownloadWorkUtils {
         return downloadWork.build()
     }
 
-    open class DefaultDownloadWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
-        protected fun show_notification(notification: NotificationCompat.Builder, id: Int, cancel_id: Int?) {
+    open class DefaultDownloadWorker(context: Context, workerParams: WorkerParameters) :
+        Worker(context, workerParams) {
+        protected fun show_notification(
+            notification: NotificationCompat.Builder,
+            id: Int,
+            cancel_id: Int?
+        ) {
             if (cancel_id != null) {
                 mNotifyManager.cancel(getId().toString(), cancel_id)
             }
@@ -358,11 +434,24 @@ object DownloadWorkUtils {
         }
 
         @Suppress("DEPRECATION")
-        protected fun doDownload(url: String, file_v: DownloadInfo, UseMediaScanner: Boolean): Boolean {
-            var mBuilder = createNotification(applicationContext,
-                    applicationContext.getString(R.string.downloading), applicationContext.getString(R.string.downloading) + " "
-                    + file_v.build_filename(), R.drawable.save, false)
-            mBuilder.addAction(R.drawable.close, applicationContext.getString(R.string.cancel), WorkManager.getInstance(applicationContext).createCancelPendingIntent(id))
+        protected fun doDownload(
+            url: String,
+            file_v: DownloadInfo,
+            UseMediaScanner: Boolean
+        ): Boolean {
+            var mBuilder = createNotification(
+                applicationContext,
+                applicationContext.getString(R.string.downloading),
+                applicationContext.getString(R.string.downloading) + " "
+                        + file_v.build_filename(),
+                R.drawable.save,
+                false
+            )
+            mBuilder.addAction(
+                R.drawable.close,
+                applicationContext.getString(R.string.cancel),
+                WorkManager.getInstance(applicationContext).createCancelPendingIntent(id)
+            )
 
             show_notification(mBuilder, NotificationHelper.NOTIFICATION_DOWNLOADING, null)
 
@@ -372,12 +461,14 @@ object DownloadWorkUtils {
                     if (Utils.isEmpty(url)) throw Exception(applicationContext.getString(R.string.null_image_link))
                     val builder = Utils.createOkHttp(60)
                     val request: Request = Request.Builder()
-                            .url(url)
-                            .build()
+                        .url(url)
+                        .build()
                     val response = builder.build().newCall(request).execute()
                     if (!response.isSuccessful) {
-                        throw java.lang.Exception("Server return " + response.code +
-                                " " + response.message)
+                        throw java.lang.Exception(
+                            "Server return " + response.code +
+                                    " " + response.message
+                        )
                     }
                     val bfr = response.body!!.byteStream()
                     val input = BufferedInputStream(bfr)
@@ -393,35 +484,59 @@ object DownloadWorkUtils {
                             output.close()
                             input.close()
                             File(file).delete()
-                            mNotifyManager.cancel(id.toString(), NotificationHelper.NOTIFICATION_DOWNLOADING)
+                            mNotifyManager.cancel(
+                                id.toString(),
+                                NotificationHelper.NOTIFICATION_DOWNLOADING
+                            )
                             return false
                         }
                         output.write(data, 0, bufferLength)
                         downloadedSize += bufferLength.toDouble()
                         mBuilder.setProgress(100, (downloadedSize / totalSize * 100).toInt(), false)
-                        show_notification(mBuilder, NotificationHelper.NOTIFICATION_DOWNLOADING, null)
+                        show_notification(
+                            mBuilder,
+                            NotificationHelper.NOTIFICATION_DOWNLOADING,
+                            null
+                        )
                     }
                     output.flush()
                     output.close()
                     input.close()
                     if (UseMediaScanner) {
-                        applicationContext.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(File(file))))
+                        applicationContext.sendBroadcast(
+                            Intent(
+                                Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                                Uri.fromFile(File(file))
+                            )
+                        )
                     }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
 
-                mBuilder = createNotification(applicationContext,
-                        applicationContext.getString(R.string.downloading), applicationContext.getString(R.string.error)
-                        + " " + e.localizedMessage + ". " + file_v.build_filename(), R.drawable.ic_error_toast_vector, true)
+                mBuilder = createNotification(
+                    applicationContext,
+                    applicationContext.getString(R.string.downloading),
+                    applicationContext.getString(R.string.error)
+                            + " " + e.localizedMessage + ". " + file_v.build_filename(),
+                    R.drawable.ic_error_toast_vector,
+                    true
+                )
                 mBuilder.color = Color.parseColor("#ff0000")
-                show_notification(mBuilder, NotificationHelper.NOTIFICATION_DOWNLOAD, NotificationHelper.NOTIFICATION_DOWNLOADING)
+                show_notification(
+                    mBuilder,
+                    NotificationHelper.NOTIFICATION_DOWNLOAD,
+                    NotificationHelper.NOTIFICATION_DOWNLOADING
+                )
                 val result = File(file_v.build())
                 if (result.exists()) {
                     file_v.setFile(file_v.file + "." + file_v.ext)
                     result.renameTo(File(file_v.setExt("error").build()))
                 }
-                Utils.inMainThread { CustomToast.CreateCustomToast(applicationContext).showToastError(R.string.error_with_message, e.localizedMessage) }
+                Utils.inMainThread {
+                    CustomToast.CreateCustomToast(applicationContext)
+                        .showToastError(R.string.error_with_message, e.localizedMessage)
+                }
                 return false
             }
             return true
@@ -431,69 +546,123 @@ object DownloadWorkUtils {
         private fun createForeground() {
             val builder: NotificationCompat.Builder
             builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val channel = NotificationChannel("worker_channel", applicationContext.getString(R.string.channel_keep_work_manager),
-                        NotificationManager.IMPORTANCE_NONE)
+                val channel = NotificationChannel(
+                    "worker_channel",
+                    applicationContext.getString(R.string.channel_keep_work_manager),
+                    NotificationManager.IMPORTANCE_NONE
+                )
                 mNotifyManager.createNotificationChannel(channel)
                 NotificationCompat.Builder(applicationContext, channel.id)
             } else {
-                NotificationCompat.Builder(applicationContext, "worker_channel").setPriority(Notification.PRIORITY_MIN)
+                NotificationCompat.Builder(applicationContext, "worker_channel")
+                    .setPriority(Notification.PRIORITY_MIN)
             }
             builder.setContentTitle(applicationContext.getString(R.string.work_manager))
-                    .setContentText(applicationContext.getString(R.string.may_down_charge))
-                    .setSmallIcon(R.drawable.web)
-                    .setColor(Color.parseColor("#dd0000"))
-                    .setOngoing(true)
+                .setContentText(applicationContext.getString(R.string.may_down_charge))
+                .setSmallIcon(R.drawable.web)
+                .setColor(Color.parseColor("#dd0000"))
+                .setOngoing(true)
 
-            setForegroundAsync(ForegroundInfo(NotificationHelper.NOTIFICATION_DOWNLOAD_MANAGER, builder.build()))
+            setForegroundAsync(
+                ForegroundInfo(
+                    NotificationHelper.NOTIFICATION_DOWNLOAD_MANAGER,
+                    builder.build()
+                )
+            )
         }
 
         override fun doWork(): Result {
             createForeground()
 
-            val file_v = DownloadInfo(inputData.getString(ExtraDwn.FILE)!!,
-                    inputData.getString(ExtraDwn.DIR)!!, inputData.getString(ExtraDwn.EXT)!!)
+            val file_v = DownloadInfo(
+                inputData.getString(ExtraDwn.FILE)!!,
+                inputData.getString(ExtraDwn.DIR)!!, inputData.getString(ExtraDwn.EXT)!!
+            )
 
             val ret = doDownload(inputData.getString(ExtraDwn.URL)!!, file_v, true)
             if (ret) {
-                val mBuilder = createNotification(applicationContext,
-                        applicationContext.getString(R.string.downloading), applicationContext.getString(R.string.success)
-                        + " " + file_v.build_filename(), R.drawable.save, true)
+                val mBuilder = createNotification(
+                    applicationContext,
+                    applicationContext.getString(R.string.downloading),
+                    applicationContext.getString(R.string.success)
+                            + " " + file_v.build_filename(),
+                    R.drawable.save,
+                    true
+                )
                 mBuilder.color = Utils.getThemeColor(false)
 
                 val intent_open = Intent(Intent.ACTION_VIEW)
-                intent_open.setDataAndType(FileProvider.getUriForFile(applicationContext, Constants.FILE_PROVIDER_AUTHORITY, File(file_v.build())), MimeTypeMap.getSingleton()
-                        .getMimeTypeFromExtension(file_v.ext)).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                val ReadPendingIntent = PendingIntent.getActivity(applicationContext, id.hashCode(), intent_open, PendingIntent.FLAG_UPDATE_CURRENT)
+                intent_open.setDataAndType(
+                    FileProvider.getUriForFile(
+                        applicationContext,
+                        Constants.FILE_PROVIDER_AUTHORITY,
+                        File(file_v.build())
+                    ), MimeTypeMap.getSingleton()
+                        .getMimeTypeFromExtension(file_v.ext)
+                ).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                val ReadPendingIntent = PendingIntent.getActivity(
+                    applicationContext,
+                    id.hashCode(),
+                    intent_open,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
                 mBuilder.setContentIntent(ReadPendingIntent)
 
                 if (Settings.get().other().isDeveloper_mode) {
-                    val DeleteIntent = QuickReplyService.intentForDeleteFile(applicationContext, file_v.build(), NotificationHelper.NOTIFICATION_DOWNLOAD, id.toString())
-                    val DeletePendingIntent = PendingIntent.getService(applicationContext, id.hashCode(), DeleteIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-                    val actionDelete = NotificationCompat.Action.Builder(R.drawable.ic_outline_delete,
-                            applicationContext.resources.getString(R.string.delete), DeletePendingIntent)
-                            .build()
+                    val DeleteIntent = QuickReplyService.intentForDeleteFile(
+                        applicationContext,
+                        file_v.build(),
+                        NotificationHelper.NOTIFICATION_DOWNLOAD,
+                        id.toString()
+                    )
+                    val DeletePendingIntent = PendingIntent.getService(
+                        applicationContext,
+                        id.hashCode(),
+                        DeleteIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                    val actionDelete = NotificationCompat.Action.Builder(
+                        R.drawable.ic_outline_delete,
+                        applicationContext.resources.getString(R.string.delete), DeletePendingIntent
+                    )
+                        .build()
                     mBuilder.addAction(actionDelete)
                 }
 
-                show_notification(mBuilder, NotificationHelper.NOTIFICATION_DOWNLOAD, NotificationHelper.NOTIFICATION_DOWNLOADING)
-                Utils.inMainThread { CustomToast.CreateCustomToast(applicationContext).showToastBottom(R.string.saved) }
+                show_notification(
+                    mBuilder,
+                    NotificationHelper.NOTIFICATION_DOWNLOAD,
+                    NotificationHelper.NOTIFICATION_DOWNLOADING
+                )
+                Utils.inMainThread {
+                    CustomToast.CreateCustomToast(applicationContext)
+                        .showToastBottom(R.string.saved)
+                }
             }
             return if (ret) Result.success() else Result.failure()
         }
 
-        private val mNotifyManager: NotificationManagerCompat = createNotificationManager(applicationContext)
+        private val mNotifyManager: NotificationManagerCompat =
+            createNotificationManager(applicationContext)
 
     }
 
-    class TrackDownloadWorker(context: Context, workerParams: WorkerParameters) : DefaultDownloadWorker(context, workerParams) {
+    class TrackDownloadWorker(context: Context, workerParams: WorkerParameters) :
+        DefaultDownloadWorker(context, workerParams) {
         override fun doWork(): Result {
-            val file_v = DownloadInfo(inputData.getString(ExtraDwn.FILE)!!,
-                    inputData.getString(ExtraDwn.DIR)!!, inputData.getString(ExtraDwn.EXT)!!)
+            val file_v = DownloadInfo(
+                inputData.getString(ExtraDwn.FILE)!!,
+                inputData.getString(ExtraDwn.DIR)!!, inputData.getString(ExtraDwn.EXT)!!
+            )
             val audio = Gson().fromJson(inputData.getString(ExtraDwn.URL)!!, Audio::class.java)
-            val account_id = inputData.getInt(ExtraDwn.ACCOUNT, ISettings.IAccountsSettings.INVALID_ID)
+            val account_id =
+                inputData.getInt(ExtraDwn.ACCOUNT, ISettings.IAccountsSettings.INVALID_ID)
             if (Utils.isEmpty(audio.url) || audio.isHLS) {
                 val link = RxUtils.BlockingGetSingle(InteractorFactory
-                        .createAudioInteractor().getByIdOld(account_id, listOf(IdPair(audio.id, audio.ownerId))).map { e: List<Audio> -> e[0].url }, audio.url)
+                    .createAudioInteractor()
+                    .getByIdOld(account_id, listOf(IdPair(audio.id, audio.ownerId)))
+                    .map { e: List<Audio> -> e[0].url }, audio.url
+                )
                 if (!Utils.isEmpty(link)) {
                     audio.url = link
                 }
@@ -507,7 +676,8 @@ object DownloadWorkUtils {
             val ret = doDownload(final_url, file_v, true)
             if (ret) {
 
-                val cover = Utils.firstNonEmptyString(audio.thumb_image_very_big, audio.thumb_image_little)
+                val cover =
+                    Utils.firstNonEmptyString(audio.thumb_image_very_big, audio.thumb_image_little)
                 var updated_tag = false
                 if (!Utils.isEmpty(cover)) {
                     val cover_file = DownloadInfo(file_v.file, file_v.path, "jpg")
@@ -528,48 +698,98 @@ object DownloadWorkUtils {
                             if (!Utils.isEmpty(audio.album_title))
                                 tag.setField(FieldKey.ALBUM, audio.album_title)
                             if (audio.lyricsId != 0) {
-                                val LyricString: String? = RxUtils.BlockingGetSingle(InteractorFactory.createAudioInteractor().getLyrics(account_id, audio.lyricsId), null)
+                                val LyricString: String? = RxUtils.BlockingGetSingle(
+                                    InteractorFactory.createAudioInteractor()
+                                        .getLyrics(account_id, audio.lyricsId), null
+                                )
                                 if (Utils.isEmpty(LyricString)) {
-                                    tag.setField(FieldKey.COMMENT, "{owner_id=" + audio.ownerId + "_id=" + audio.id + "}")
+                                    tag.setField(
+                                        FieldKey.COMMENT,
+                                        "{owner_id=" + audio.ownerId + "_id=" + audio.id + "}"
+                                    )
                                 } else {
-                                    tag.setField(FieldKey.COMMENT, "{owner_id=" + audio.ownerId + "_id=" + audio.id + "} " + LyricString)
+                                    tag.setField(
+                                        FieldKey.COMMENT,
+                                        "{owner_id=" + audio.ownerId + "_id=" + audio.id + "} " + LyricString
+                                    )
                                 }
                             } else {
-                                tag.setField(FieldKey.COMMENT, "{owner_id=" + audio.ownerId + "_id=" + audio.id + "}")
+                                tag.setField(
+                                    FieldKey.COMMENT,
+                                    "{owner_id=" + audio.ownerId + "_id=" + audio.id + "}"
+                                )
                             }
                             audioFile.save()
                             Cover.delete()
                             updated_tag = true
                         } catch (e: Throwable) {
-                            Utils.inMainThread { CustomToast.CreateCustomToast(applicationContext).showToastError(R.string.error_with_message, e.localizedMessage) }
+                            Utils.inMainThread {
+                                CustomToast.CreateCustomToast(applicationContext)
+                                    .showToastError(R.string.error_with_message, e.localizedMessage)
+                            }
                             e.printStackTrace()
                         }
                     }
                 }
 
-                val mBuilder = createNotification(applicationContext,
-                        applicationContext.getString(if (updated_tag) R.string.tag_modified else R.string.downloading), applicationContext.getString(R.string.success)
-                        + " " + file_v.build_filename(), R.drawable.save, true)
+                val mBuilder = createNotification(
+                    applicationContext,
+                    applicationContext.getString(if (updated_tag) R.string.tag_modified else R.string.downloading),
+                    applicationContext.getString(R.string.success)
+                            + " " + file_v.build_filename(),
+                    R.drawable.save,
+                    true
+                )
                 mBuilder.color = Utils.getThemeColor(false)
 
                 val intent_open = Intent(Intent.ACTION_VIEW)
-                intent_open.setDataAndType(FileProvider.getUriForFile(applicationContext, Constants.FILE_PROVIDER_AUTHORITY, File(file_v.build())), MimeTypeMap.getSingleton()
-                        .getMimeTypeFromExtension(file_v.ext)).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                val ReadPendingIntent = PendingIntent.getActivity(applicationContext, id.hashCode(), intent_open, PendingIntent.FLAG_UPDATE_CURRENT)
+                intent_open.setDataAndType(
+                    FileProvider.getUriForFile(
+                        applicationContext,
+                        Constants.FILE_PROVIDER_AUTHORITY,
+                        File(file_v.build())
+                    ), MimeTypeMap.getSingleton()
+                        .getMimeTypeFromExtension(file_v.ext)
+                ).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                val ReadPendingIntent = PendingIntent.getActivity(
+                    applicationContext,
+                    id.hashCode(),
+                    intent_open,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
                 mBuilder.setContentIntent(ReadPendingIntent)
 
                 if (Settings.get().other().isDeveloper_mode) {
-                    val DeleteIntent = QuickReplyService.intentForDeleteFile(applicationContext, file_v.build(), NotificationHelper.NOTIFICATION_DOWNLOAD, id.toString())
-                    val DeletePendingIntent = PendingIntent.getService(applicationContext, id.hashCode(), DeleteIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-                    val actionDelete = NotificationCompat.Action.Builder(R.drawable.ic_outline_delete,
-                            applicationContext.resources.getString(R.string.delete), DeletePendingIntent)
-                            .build()
+                    val DeleteIntent = QuickReplyService.intentForDeleteFile(
+                        applicationContext,
+                        file_v.build(),
+                        NotificationHelper.NOTIFICATION_DOWNLOAD,
+                        id.toString()
+                    )
+                    val DeletePendingIntent = PendingIntent.getService(
+                        applicationContext,
+                        id.hashCode(),
+                        DeleteIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                    val actionDelete = NotificationCompat.Action.Builder(
+                        R.drawable.ic_outline_delete,
+                        applicationContext.resources.getString(R.string.delete), DeletePendingIntent
+                    )
+                        .build()
                     mBuilder.addAction(actionDelete)
                 }
 
-                show_notification(mBuilder, NotificationHelper.NOTIFICATION_DOWNLOAD, NotificationHelper.NOTIFICATION_DOWNLOADING)
+                show_notification(
+                    mBuilder,
+                    NotificationHelper.NOTIFICATION_DOWNLOAD,
+                    NotificationHelper.NOTIFICATION_DOWNLOADING
+                )
                 MusicUtils.CachedAudios.add(file_v.build_filename())
-                Utils.inMainThread { CustomToast.CreateCustomToast(applicationContext).showToastBottom(if (updated_tag) R.string.tag_modified else R.string.saved) }
+                Utils.inMainThread {
+                    CustomToast.CreateCustomToast(applicationContext)
+                        .showToastBottom(if (updated_tag) R.string.tag_modified else R.string.saved)
+                }
             }
             return if (ret) Result.success() else Result.failure()
         }

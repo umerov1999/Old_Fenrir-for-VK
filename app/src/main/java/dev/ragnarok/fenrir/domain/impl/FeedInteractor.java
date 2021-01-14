@@ -19,6 +19,8 @@ import dev.ragnarok.fenrir.domain.mappers.Dto2Entity;
 import dev.ragnarok.fenrir.domain.mappers.Dto2Model;
 import dev.ragnarok.fenrir.domain.mappers.Entity2Model;
 import dev.ragnarok.fenrir.fragment.search.criteria.NewsFeedCriteria;
+import dev.ragnarok.fenrir.fragment.search.options.SimpleDateOption;
+import dev.ragnarok.fenrir.fragment.search.options.SimpleGPSOption;
 import dev.ragnarok.fenrir.model.FeedList;
 import dev.ragnarok.fenrir.model.FeedSourceCriteria;
 import dev.ragnarok.fenrir.model.News;
@@ -168,9 +170,12 @@ public class FeedInteractor implements IFeedInteractor {
 
     @Override
     public Single<Pair<List<Post>, String>> search(int accountId, NewsFeedCriteria criteria, int count, String startFrom) {
+        SimpleGPSOption gpsOption = criteria.findOptionByKey(NewsFeedCriteria.KEY_GPS);
+        SimpleDateOption startDateOption = criteria.findOptionByKey(NewsFeedCriteria.KEY_START_TIME);
+        SimpleDateOption endDateOption = criteria.findOptionByKey(NewsFeedCriteria.KEY_END_TIME);
         return networker.vkDefault(accountId)
                 .newsfeed()
-                .search(criteria.getQuery(), true, count, null, null, null, null, startFrom, Constants.MAIN_OWNER_FIELDS)
+                .search(criteria.getQuery(), true, count, gpsOption.lat_gps < 0.1 ? null : gpsOption.lat_gps, gpsOption.long_gps < 0.1 ? null : gpsOption.long_gps, startDateOption.timeUnix == 0 ? null : startDateOption.timeUnix, endDateOption.timeUnix == 0 ? null : endDateOption.timeUnix, startFrom, Constants.MAIN_OWNER_FIELDS)
                 .flatMap(response -> {
                     List<VKApiPost> dtos = listEmptyIfNull(response.items);
                     List<Owner> owners = Dto2Model.transformOwners(response.profiles, response.groups);

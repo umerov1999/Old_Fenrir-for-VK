@@ -6,7 +6,6 @@ import android.os.Handler
 import androidx.appcompat.app.AppCompatDelegate
 import coil.ImageLoader
 import coil.ImageLoaderFactory
-import com.developer.crashx.config.CrashConfig
 import com.umerov.rlottie.RLottieDrawable
 import dev.ragnarok.fenrir.domain.Repository.messages
 import dev.ragnarok.fenrir.longpoll.NotificationHelper
@@ -39,8 +38,7 @@ class App : Application(), ImageLoaderFactory {
         sInstanse = this
         AppCompatDelegate.setDefaultNightMode(Settings.get().ui().nightMode)
 
-        CrashConfig.Builder.create()
-                .apply()
+        //CrashConfig.Builder.create().apply()
         RLottieDrawable.init(this)
         TagOptionSingleton.getInstance().isAndroid = true
         Security.addProvider(Conscrypt.newProvider())
@@ -51,22 +49,48 @@ class App : Application(), ImageLoaderFactory {
             KeepLongpollService.start(this)
         }
         compositeDisposable.add(messages
-                .observePeerUpdates()
-                .flatMap { source: List<PeerUpdate> -> Flowable.fromIterable(source) }
-                .subscribe({ update: PeerUpdate ->
-                    if (update.readIn != null) {
-                        NotificationHelper.tryCancelNotificationForPeer(this, update.accountId, update.peerId)
-                    }
-                }, RxUtils.ignore()))
+            .observePeerUpdates()
+            .flatMap { source: List<PeerUpdate> -> Flowable.fromIterable(source) }
+            .subscribe({ update: PeerUpdate ->
+                if (update.readIn != null) {
+                    NotificationHelper.tryCancelNotificationForPeer(
+                        this,
+                        update.accountId,
+                        update.peerId
+                    )
+                }
+            }, RxUtils.ignore())
+        )
         compositeDisposable.add(messages
-                .observeSentMessages()
-                .subscribe({ sentMsg: SentMsg -> NotificationHelper.tryCancelNotificationForPeer(this, sentMsg.accountId, sentMsg.peerId) }, RxUtils.ignore()))
+            .observeSentMessages()
+            .subscribe({ sentMsg: SentMsg ->
+                NotificationHelper.tryCancelNotificationForPeer(
+                    this,
+                    sentMsg.accountId,
+                    sentMsg.peerId
+                )
+            }, RxUtils.ignore())
+        )
         compositeDisposable.add(messages
-                .observeMessagesSendErrors()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ throwable: Throwable -> run { CreateCustomToast(this).showToastError(ErrorLocalizer.localizeThrowable(this, throwable)); throwable.printStackTrace(); } }, RxUtils.ignore()))
+            .observeMessagesSendErrors()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ throwable: Throwable ->
+                run {
+                    CreateCustomToast(this).showToastError(
+                        ErrorLocalizer.localizeThrowable(this, throwable)
+                    ); throwable.printStackTrace();
+                }
+            }, RxUtils.ignore())
+        )
         RxJavaPlugins.setErrorHandler {
-            Handler(mainLooper).post { CreateCustomToast(this).showToastError(ErrorLocalizer.localizeThrowable(this, it)) }
+            Handler(mainLooper).post {
+                CreateCustomToast(this).showToastError(
+                    ErrorLocalizer.localizeThrowable(
+                        this,
+                        it
+                    )
+                )
+            }
         }
     }
 

@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import dev.ragnarok.fenrir.CheckUpdate;
+import dev.ragnarok.fenrir.CheckDonate;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
@@ -436,7 +436,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
                     .setOnClickListener(v -> getPresenter().fireHeaderArticlesClick());
             root.findViewById(R.id.header_group_products_container)
                     .setOnClickListener(v -> {
-                        if (CheckUpdate.isFullVersionPropriety(requireActivity())) {
+                        if (CheckDonate.isFullVersion(requireActivity())) {
                             getPresenter().fireHeaderProductsClick();
                         }
                     });

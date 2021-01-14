@@ -106,7 +106,11 @@ class HorizontalSwipeBehavior<V : View> : CoordinatorLayout.Behavior<V> {
         }
     }
 
-    override fun onInterceptTouchEvent(parent: CoordinatorLayout, child: V, ev: MotionEvent): Boolean {
+    override fun onInterceptTouchEvent(
+        parent: CoordinatorLayout,
+        child: V,
+        ev: MotionEvent
+    ): Boolean {
         var isIntercept = interceptingEvents
         when (ev.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
@@ -124,7 +128,12 @@ class HorizontalSwipeBehavior<V : View> : CoordinatorLayout.Behavior<V> {
 
     override fun onTouchEvent(parent: CoordinatorLayout, child: V, ev: MotionEvent): Boolean {
         val helper = helper(parent)
-        return if (helper.capturedView == child || helper.isViewUnder(child, ev.x.toInt(), ev.y.toInt())) {
+        return if (helper.capturedView == child || helper.isViewUnder(
+                child,
+                ev.x.toInt(),
+                ev.y.toInt()
+            )
+        ) {
             helper.processTouchEvent(ev)
             true
         } else {
@@ -198,8 +207,8 @@ class HorizontalSwipeBehavior<V : View> : CoordinatorLayout.Behavior<V> {
      *  @param minFraction upward progress factor
      */
     class BelowFractionalClamp(
-            private val maxFraction: Float = 1f,
-            private val minFraction: Float = 1f
+        private val maxFraction: Float = 1f,
+        private val minFraction: Float = 1f
     ) : HorizontalClamp {
 
         init {
@@ -232,8 +241,8 @@ class HorizontalSwipeBehavior<V : View> : CoordinatorLayout.Behavior<V> {
      * @param minFraction minimum position limit factor
      */
     class FractionClamp(
-            private val maxFraction: Float = 1f,
-            private val minFraction: Float = 1f
+        private val maxFraction: Float = 1f,
+        private val minFraction: Float = 1f
     ) : HorizontalClamp {
 
         init {
@@ -265,7 +274,8 @@ class HorizontalSwipeBehavior<V : View> : CoordinatorLayout.Behavior<V> {
      * Applies the [delegate] only if view moves upwards
      */
     @Suppress("unused")
-    class NegativeFactorFilterSideEffect(private val delegate: SideEffect) : SideEffect by delegate {
+    class NegativeFactorFilterSideEffect(private val delegate: SideEffect) :
+        SideEffect by delegate {
 
         override fun apply(child: View, factor: Float) {
             if (factor < 0) {
@@ -351,9 +361,9 @@ class HorizontalSwipeBehavior<V : View> : CoordinatorLayout.Behavior<V> {
      */
 
     class SensitivityClamp(
-            private val upSensitivity: Float = 1f,
-            private val delegate: HorizontalClamp,
-            private val downSensitivity: Float = 1f
+        private val upSensitivity: Float = 1f,
+        private val delegate: HorizontalClamp,
+        private val downSensitivity: Float = 1f
     ) : HorizontalClamp by delegate {
 
         override fun constraint(width: Int, left: Int, dx: Int): Int {
@@ -382,7 +392,10 @@ class HorizontalSwipeBehavior<V : View> : CoordinatorLayout.Behavior<V> {
         }
 
         override fun releasedAbove(helper: ViewDragHelper, diff: Int, child: View): Boolean {
-            return helper.settleCapturedViewAt(if (diff < 0) -child.width else child.width, child.top)
+            return helper.settleCapturedViewAt(
+                if (diff < 0) -child.width else child.width,
+                child.top
+            )
         }
     }
 

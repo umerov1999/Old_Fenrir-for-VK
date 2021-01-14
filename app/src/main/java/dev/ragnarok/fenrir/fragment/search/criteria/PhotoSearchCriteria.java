@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 import dev.ragnarok.fenrir.R;
+import dev.ragnarok.fenrir.fragment.search.options.SimpleDateOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleGPSOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleNumberOption;
 import dev.ragnarok.fenrir.fragment.search.options.SpinnerOption;
@@ -16,6 +17,8 @@ public final class PhotoSearchCriteria extends BaseSearchCriteria {
     public static final int KEY_SORT = 1;
     public static final int KEY_RADIUS = 2;
     public static final int KEY_GPS = 3;
+    public static final int KEY_START_TIME = 4;
+    public static final int KEY_END_TIME = 5;
 
     public static final Creator<PhotoSearchCriteria> CREATOR = new Creator<PhotoSearchCriteria>() {
         @Override
@@ -40,6 +43,8 @@ public final class PhotoSearchCriteria extends BaseSearchCriteria {
 
         appendOption(new SimpleNumberOption(KEY_RADIUS, R.string.radius, true, 5000));
         appendOption(new SimpleGPSOption(KEY_GPS, R.string.gps, true));
+        appendOption(new SimpleDateOption(KEY_START_TIME, R.string.date_start, true));
+        appendOption(new SimpleDateOption(KEY_END_TIME, R.string.date_to, true));
     }
 
     private PhotoSearchCriteria(Parcel in) {

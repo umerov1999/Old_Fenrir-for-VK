@@ -13,6 +13,7 @@ public class BaseOption implements Parcelable, Cloneable {
     public static final int SIMPLE_NUMBER = 47;
     public static final int SPINNER = 48;
     public static final int GPS = 49;
+    public static final int DATE_TIME = 50;
 
     public static final int NO_DEPENDENCY = -1;
     public static final Creator<BaseOption> CREATOR = new Creator<BaseOption>() {

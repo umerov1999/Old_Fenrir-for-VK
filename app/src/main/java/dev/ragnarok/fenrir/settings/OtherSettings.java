@@ -397,11 +397,6 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
-    public boolean isAuto_update() {
-        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("auto_update", true);
-    }
-
-    @Override
     public void registerDonatesId(List<Integer> Ids) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(app);
         Set<String> uids = new HashSet<>(Ids.size());

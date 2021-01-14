@@ -6,6 +6,7 @@ import dev.ragnarok.fenrir.domain.impl.AudioInteractor;
 import dev.ragnarok.fenrir.domain.impl.BoardInteractor;
 import dev.ragnarok.fenrir.domain.impl.CommunitiesInteractor;
 import dev.ragnarok.fenrir.domain.impl.DatabaseInteractor;
+import dev.ragnarok.fenrir.domain.impl.DebugToolInteractor;
 import dev.ragnarok.fenrir.domain.impl.DialogsInteractor;
 import dev.ragnarok.fenrir.domain.impl.DocsInteractor;
 import dev.ragnarok.fenrir.domain.impl.FaveInteractor;
@@ -18,7 +19,6 @@ import dev.ragnarok.fenrir.domain.impl.PhotosInteractor;
 import dev.ragnarok.fenrir.domain.impl.PollInteractor;
 import dev.ragnarok.fenrir.domain.impl.RelationshipInteractor;
 import dev.ragnarok.fenrir.domain.impl.StickersInteractor;
-import dev.ragnarok.fenrir.domain.impl.UpdateToolInteractor;
 import dev.ragnarok.fenrir.domain.impl.UtilsInteractor;
 import dev.ragnarok.fenrir.domain.impl.VideosInteractor;
 import dev.ragnarok.fenrir.settings.Settings;
@@ -102,8 +102,8 @@ public class InteractorFactory {
         return new FaveInteractor(Injection.provideNetworkInterfaces(), Injection.provideStores(), Repository.INSTANCE.getOwners());
     }
 
-    public static IUpdateToolInteractor createUpdateToolInteractor() {
-        return new UpdateToolInteractor(Injection.provideNetworkInterfaces());
+    public static IDebugToolInteractor createDebugToolInteractor() {
+        return new DebugToolInteractor(Injection.provideNetworkInterfaces());
     }
 
     public static IAudioInteractor createAudioInteractor() {

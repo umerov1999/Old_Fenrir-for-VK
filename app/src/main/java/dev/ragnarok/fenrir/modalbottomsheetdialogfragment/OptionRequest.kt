@@ -22,9 +22,9 @@ class OptionRequest(val id: Int, val title: String?, @DrawableRes val icon: Int?
     }
 
     constructor(source: Parcel) : this(
-            source.readInt(),
-            source.readString(),
-            source.readValue(Int::class.java.classLoader) as Int?
+        source.readInt(),
+        source.readString(),
+        source.readValue(Int::class.java.classLoader) as Int?
     )
 
     override fun describeContents() = 0
@@ -37,9 +37,10 @@ class OptionRequest(val id: Int, val title: String?, @DrawableRes val icon: Int?
 
     companion object {
         @JvmField
-        val CREATOR: Parcelable.Creator<OptionRequest> = object : Parcelable.Creator<OptionRequest> {
-            override fun createFromParcel(source: Parcel): OptionRequest = OptionRequest(source)
-            override fun newArray(size: Int): Array<OptionRequest?> = arrayOfNulls(size)
-        }
+        val CREATOR: Parcelable.Creator<OptionRequest> =
+            object : Parcelable.Creator<OptionRequest> {
+                override fun createFromParcel(source: Parcel): OptionRequest = OptionRequest(source)
+                override fun newArray(size: Int): Array<OptionRequest?> = arrayOfNulls(size)
+            }
     }
 }

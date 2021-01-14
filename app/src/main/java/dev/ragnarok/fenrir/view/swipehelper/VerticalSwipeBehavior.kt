@@ -106,7 +106,11 @@ class VerticalSwipeBehavior<V : View> : CoordinatorLayout.Behavior<V> {
         }
     }
 
-    override fun onInterceptTouchEvent(parent: CoordinatorLayout, child: V, ev: MotionEvent): Boolean {
+    override fun onInterceptTouchEvent(
+        parent: CoordinatorLayout,
+        child: V,
+        ev: MotionEvent
+    ): Boolean {
         var isIntercept = interceptingEvents
         when (ev.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
@@ -124,7 +128,12 @@ class VerticalSwipeBehavior<V : View> : CoordinatorLayout.Behavior<V> {
 
     override fun onTouchEvent(parent: CoordinatorLayout, child: V, ev: MotionEvent): Boolean {
         val helper = helper(parent)
-        return if (helper.capturedView == child || helper.isViewUnder(child, ev.x.toInt(), ev.y.toInt())) {
+        return if (helper.capturedView == child || helper.isViewUnder(
+                child,
+                ev.x.toInt(),
+                ev.y.toInt()
+            )
+        ) {
             helper.processTouchEvent(ev)
             true
         } else {
@@ -196,8 +205,8 @@ class VerticalSwipeBehavior<V : View> : CoordinatorLayout.Behavior<V> {
      *  @param minFraction upward progress factor
      */
     class BelowFractionalClamp(
-            private val maxFraction: Float = 1f,
-            private val minFraction: Float = 1f
+        private val maxFraction: Float = 1f,
+        private val minFraction: Float = 1f
     ) : VerticalClamp {
 
         init {
@@ -230,8 +239,8 @@ class VerticalSwipeBehavior<V : View> : CoordinatorLayout.Behavior<V> {
      * @param minFraction minimum position limit factor
      */
     class FractionClamp(
-            private val maxFraction: Float = 1f,
-            private val minFraction: Float = 1f
+        private val maxFraction: Float = 1f,
+        private val minFraction: Float = 1f
     ) : VerticalClamp {
 
         init {
@@ -263,7 +272,8 @@ class VerticalSwipeBehavior<V : View> : CoordinatorLayout.Behavior<V> {
      * Applies the [delegate] only if view moves upwards
      */
     @Suppress("unused")
-    class NegativeFactorFilterSideEffect(private val delegate: SideEffect) : SideEffect by delegate {
+    class NegativeFactorFilterSideEffect(private val delegate: SideEffect) :
+        SideEffect by delegate {
 
         override fun apply(child: View, factor: Float) {
             if (factor < 0) {
@@ -349,9 +359,9 @@ class VerticalSwipeBehavior<V : View> : CoordinatorLayout.Behavior<V> {
      */
 
     class SensitivityClamp(
-            private val upSensitivity: Float = 1f,
-            private val delegate: VerticalClamp,
-            private val downSensitivity: Float = 1f
+        private val upSensitivity: Float = 1f,
+        private val delegate: VerticalClamp,
+        private val downSensitivity: Float = 1f
     ) : VerticalClamp by delegate {
 
         override fun constraint(height: Int, top: Int, dy: Int): Int {
@@ -379,7 +389,10 @@ class VerticalSwipeBehavior<V : View> : CoordinatorLayout.Behavior<V> {
         }
 
         override fun releasedAbove(helper: ViewDragHelper, diff: Int, child: View): Boolean {
-            return helper.settleCapturedViewAt(child.left, if (diff < 0) -child.height else child.height)
+            return helper.settleCapturedViewAt(
+                child.left,
+                if (diff < 0) -child.height else child.height
+            )
         }
     }
 

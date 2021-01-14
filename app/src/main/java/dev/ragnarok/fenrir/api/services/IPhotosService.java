@@ -301,6 +301,8 @@ public interface IPhotosService {
                                                    @Field("long") Double long_gps,
                                                    @Field("sort") Integer sort,
                                                    @Field("radius") Integer radius,
+                                                   @Field("start_time") Long start_time,
+                                                   @Field("end_time") Long end_time,
                                                    @Field("offset") Integer offset,
                                                    @Field("count") Integer count);
 

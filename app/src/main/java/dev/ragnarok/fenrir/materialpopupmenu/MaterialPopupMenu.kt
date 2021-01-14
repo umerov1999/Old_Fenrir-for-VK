@@ -20,12 +20,12 @@ import dev.ragnarok.fenrir.materialpopupmenu.internal.PopupMenuAdapter
  */
 class MaterialPopupMenu
 internal constructor(
-        @StyleRes internal val style: Int,
-        internal val dropdownGravity: Int,
-        internal val sections: List<PopupMenuSection>,
-        internal val fixedContentWidthInPx: Int,
-        internal val dropDownVerticalOffset: Int?,
-        internal val dropDownHorizontalOffset: Int?
+    @StyleRes internal val style: Int,
+    internal val dropdownGravity: Int,
+    internal val sections: List<PopupMenuSection>,
+    internal val fixedContentWidthInPx: Int,
+    internal val dropDownVerticalOffset: Int?,
+    internal val dropDownHorizontalOffset: Int?
 ) {
 
     private var popupWindow: MaterialRecyclerViewPopupWindow? = null
@@ -44,11 +44,11 @@ internal constructor(
         val style = resolvePopupStyle(context)
         val styledContext = ContextThemeWrapper(context, style)
         val popupWindow = MaterialRecyclerViewPopupWindow(
-                context = styledContext,
-                dropDownGravity = dropdownGravity,
-                fixedContentWidthInPx = fixedContentWidthInPx,
-                dropDownVerticalOffset = dropDownVerticalOffset,
-                dropDownHorizontalOffset = dropDownHorizontalOffset
+            context = styledContext,
+            dropDownGravity = dropdownGravity,
+            fixedContentWidthInPx = fixedContentWidthInPx,
+            dropDownVerticalOffset = dropDownVerticalOffset,
+            dropDownHorizontalOffset = dropDownHorizontalOffset
         )
         val adapter = PopupMenuAdapter(sections) { popupWindow.dismiss() }
 
@@ -91,33 +91,33 @@ internal constructor(
     }
 
     internal data class PopupMenuSection(
-            val title: CharSequence?,
-            val items: List<AbstractPopupMenuItem>
+        val title: CharSequence?,
+        val items: List<AbstractPopupMenuItem>
     )
 
     internal data class PopupMenuItem(
-            val label: CharSequence?,
-            @StringRes val labelRes: Int,
-            @ColorInt val labelColor: Int,
-            @DrawableRes val icon: Int,
-            val iconDrawable: Drawable?,
-            @ColorInt val iconColor: Int,
-            val hasNestedItems: Boolean,
-            override val viewBoundCallback: ViewBoundCallback,
-            override val callback: () -> Unit,
-            override val dismissOnSelect: Boolean
+        val label: CharSequence?,
+        @StringRes val labelRes: Int,
+        @ColorInt val labelColor: Int,
+        @DrawableRes val icon: Int,
+        val iconDrawable: Drawable?,
+        @ColorInt val iconColor: Int,
+        val hasNestedItems: Boolean,
+        override val viewBoundCallback: ViewBoundCallback,
+        override val callback: () -> Unit,
+        override val dismissOnSelect: Boolean
     ) : AbstractPopupMenuItem(callback, dismissOnSelect, viewBoundCallback)
 
     internal data class PopupMenuCustomItem(
-            @LayoutRes val layoutResId: Int,
-            override val viewBoundCallback: ViewBoundCallback,
-            override val callback: () -> Unit,
-            override val dismissOnSelect: Boolean
+        @LayoutRes val layoutResId: Int,
+        override val viewBoundCallback: ViewBoundCallback,
+        override val callback: () -> Unit,
+        override val dismissOnSelect: Boolean
     ) : AbstractPopupMenuItem(callback, dismissOnSelect, viewBoundCallback)
 
     internal abstract class AbstractPopupMenuItem(
-            open val callback: () -> Unit,
-            open val dismissOnSelect: Boolean,
-            open val viewBoundCallback: ViewBoundCallback
+        open val callback: () -> Unit,
+        open val dismissOnSelect: Boolean,
+        open val viewBoundCallback: ViewBoundCallback
     )
 }

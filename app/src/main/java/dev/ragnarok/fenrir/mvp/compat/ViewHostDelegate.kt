@@ -24,11 +24,13 @@ class ViewHostDelegate<P : IPresenter<V>, V : IMvpView> {
     val isPresenterPrepared: Boolean
         get() = presenter != null
 
-    fun onCreate(context: Context,
-                 view: V,
-                 factoryProvider: IFactoryProvider<P, V>,
-                 loaderManager: androidx.loader.app.LoaderManager,
-                 savedInstanceState: Bundle?) {
+    fun onCreate(
+        context: Context,
+        view: V,
+        factoryProvider: IFactoryProvider<P, V>,
+        loaderManager: androidx.loader.app.LoaderManager,
+        savedInstanceState: Bundle?
+    ) {
         this.viewReference = WeakReference(view)
 
         if (savedInstanceState != null) {
@@ -36,19 +38,25 @@ class ViewHostDelegate<P : IPresenter<V>, V : IMvpView> {
         }
 
         val app = context.applicationContext
-        val loader = loaderManager.initLoader(LOADER_ID, lastKnownPresenterState, object : androidx.loader.app.LoaderManager.LoaderCallbacks<P> {
-            override fun onCreateLoader(id: Int, args: Bundle?): androidx.loader.content.Loader<P> {
-                return SimplePresenterLoader(app, factoryProvider.getPresenterFactory(args))
-            }
+        val loader = loaderManager.initLoader(
+            LOADER_ID,
+            lastKnownPresenterState,
+            object : androidx.loader.app.LoaderManager.LoaderCallbacks<P> {
+                override fun onCreateLoader(
+                    id: Int,
+                    args: Bundle?
+                ): androidx.loader.content.Loader<P> {
+                    return SimplePresenterLoader(app, factoryProvider.getPresenterFactory(args))
+                }
 
-            override fun onLoadFinished(loader: androidx.loader.content.Loader<P>, data: P) {
+                override fun onLoadFinished(loader: androidx.loader.content.Loader<P>, data: P) {
 
-            }
+                }
 
-            override fun onLoaderReset(loader: androidx.loader.content.Loader<P>) {
-                presenter = null
-            }
-        })
+                override fun onLoaderReset(loader: androidx.loader.content.Loader<P>) {
+                    presenter = null
+                }
+            })
 
         @Suppress("UNCHECKED_CAST")
         @SuppressWarnings("unchecked")

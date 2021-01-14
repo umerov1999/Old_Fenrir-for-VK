@@ -27,7 +27,10 @@ import okhttp3.OkHttpClient
 import java.io.File
 import java.io.IOException
 
-class PicassoInstance @SuppressLint("CheckResult") private constructor(private val app: Context, private val proxySettings: IProxySettings) {
+class PicassoInstance @SuppressLint("CheckResult") private constructor(
+    private val app: Context,
+    private val proxySettings: IProxySettings
+) {
     private var cache_data: Cache? = null
 
     @Volatile
@@ -68,16 +71,17 @@ class PicassoInstance @SuppressLint("CheckResult") private constructor(private v
         Logger.d(TAG, "Picasso singleton creation")
         getCache_data()
         val builder: OkHttpClient.Builder = OkHttpClient.Builder()
-                .cache(cache_data) //.addNetworkInterceptor(chain -> chain.proceed(chain.request()).newBuilder().header("Cache-Control", "max-age=31536000,public").build())
-                .addInterceptor(Interceptor { chain: Interceptor.Chain ->
-                    val request = chain.request().newBuilder().addHeader("User-Agent", Constants.USER_AGENT(Account_Types.BY_TYPE)).build()
-                    chain.proceed(request)
-                })
+            .cache(cache_data) //.addNetworkInterceptor(chain -> chain.proceed(chain.request()).newBuilder().header("Cache-Control", "max-age=31536000,public").build())
+            .addInterceptor(Interceptor { chain: Interceptor.Chain ->
+                val request = chain.request().newBuilder()
+                    .addHeader("User-Agent", Constants.USER_AGENT(Account_Types.BY_TYPE)).build()
+                chain.proceed(request)
+            })
         ProxyUtil.applyProxyConfig(builder, proxySettings.activeProxy)
         return Picasso.Builder(app)
-                .downloader(OkHttp3Downloader(builder.build()))
-                .addRequestHandler(PicassoLocalRequestHandler())
-                .build()
+            .downloader(OkHttp3Downloader(builder.build()))
+            .addRequestHandler(PicassoLocalRequestHandler())
+            .build()
     }
 
     companion object {
@@ -92,19 +96,40 @@ class PicassoInstance @SuppressLint("CheckResult") private constructor(private v
                 return buildUriForPicassoNew(type, id)
             }
             when (type) {
-                Content_Local.PHOTO -> return ContentUris.withAppendedId(Uri.parse("content://media/external/images/media/"), id)
-                Content_Local.VIDEO -> return ContentUris.withAppendedId(Uri.parse("content://media/external/videos/media/"), id)
-                Content_Local.AUDIO -> return ContentUris.withAppendedId(Uri.parse("content://media/external/audios/media/"), id)
+                Content_Local.PHOTO -> return ContentUris.withAppendedId(
+                    Uri.parse("content://media/external/images/media/"),
+                    id
+                )
+                Content_Local.VIDEO -> return ContentUris.withAppendedId(
+                    Uri.parse("content://media/external/videos/media/"),
+                    id
+                )
+                Content_Local.AUDIO -> return ContentUris.withAppendedId(
+                    Uri.parse("content://media/external/audios/media/"),
+                    id
+                )
             }
-            return ContentUris.withAppendedId(Uri.parse("content://media/external/images/media/"), id)
+            return ContentUris.withAppendedId(
+                Uri.parse("content://media/external/images/media/"),
+                id
+            )
         }
 
         @JvmStatic
         fun buildUriForPicassoNew(@Content_Local type: Int, id: Long): Uri {
             when (type) {
-                Content_Local.PHOTO -> return ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                Content_Local.VIDEO -> return ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
-                Content_Local.AUDIO -> return ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
+                Content_Local.PHOTO -> return ContentUris.withAppendedId(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    id
+                )
+                Content_Local.VIDEO -> return ContentUris.withAppendedId(
+                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                    id
+                )
+                Content_Local.AUDIO -> return ContentUris.withAppendedId(
+                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                    id
+                )
             }
             return ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
         }
@@ -154,25 +179,29 @@ class PicassoInstance @SuppressLint("CheckResult") private constructor(private v
                 cache.mkdirs()
             }
             val builder: OkHttpClient.Builder = OkHttpClient.Builder()
-                    .cache(buildCoilCache(context)) //.addNetworkInterceptor(chain -> chain.proceed(chain.request()).newBuilder().header("Cache-Control", "max-age=31536000,public").build())
-                    .addInterceptor(Interceptor { chain: Interceptor.Chain ->
-                        val request = chain.request().newBuilder().addHeader("User-Agent", Constants.USER_AGENT(Account_Types.BY_TYPE)).build()
-                        chain.proceed(request)
-                    })
+                .cache(buildCoilCache(context)) //.addNetworkInterceptor(chain -> chain.proceed(chain.request()).newBuilder().header("Cache-Control", "max-age=31536000,public").build())
+                .addInterceptor(Interceptor { chain: Interceptor.Chain ->
+                    val request = chain.request().newBuilder()
+                        .addHeader("User-Agent", Constants.USER_AGENT(Account_Types.BY_TYPE))
+                        .build()
+                    chain.proceed(request)
+                })
             ProxyUtil.applyProxyConfig(builder, proxySettings.activeProxy)
             return ImageLoader.Builder(context)
-                    .availableMemoryPercentage(0.25)
-                    .crossfade(true).componentRegistry(ComponentRegistry().newBuilder()
-                            .add(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) ImageDecoderDecoder() else GifDecoder())
-                            .add(CoilLocalRequestHandler())
-                            .build())
-                    .okHttpClient(builder.build())
-                    .build()
+                .availableMemoryPercentage(0.25)
+                .crossfade(true).componentRegistry(
+                    ComponentRegistry().newBuilder()
+                        .add(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) ImageDecoderDecoder() else GifDecoder())
+                        .add(CoilLocalRequestHandler())
+                        .build()
+                )
+                .okHttpClient(builder.build())
+                .build()
         }
     }
 
     init {
         proxySettings.observeActive()
-                .subscribe { onProxyChanged() }
+            .subscribe { onProxyChanged() }
     }
 }

@@ -83,12 +83,12 @@ class MaterialPopupMenuBuilder {
         val sections = sectionHolderList.map { it.convertToPopupMenuSection() }
 
         return MaterialPopupMenu(
-                style = style,
-                dropdownGravity = dropdownGravity,
-                sections = sections,
-                fixedContentWidthInPx = fixedContentWidthInPx,
-                dropDownVerticalOffset = dropDownVerticalOffset,
-                dropDownHorizontalOffset = dropDownHorizontalOffset
+            style = style,
+            dropdownGravity = dropdownGravity,
+            sections = sections,
+            fixedContentWidthInPx = fixedContentWidthInPx,
+            dropDownVerticalOffset = dropDownVerticalOffset,
+            dropDownHorizontalOffset = dropDownHorizontalOffset
         )
     }
 
@@ -133,8 +133,8 @@ class MaterialPopupMenuBuilder {
         internal fun convertToPopupMenuSection(): MaterialPopupMenu.PopupMenuSection {
             require(itemsHolderList.isNotEmpty()) { "Section '$this' has no items!" }
             return MaterialPopupMenu.PopupMenuSection(
-                    title = title,
-                    items = itemsHolderList.map { it.convertToPopupMenuItem() }
+                title = title,
+                items = itemsHolderList.map { it.convertToPopupMenuItem() }
             )
         }
     }
@@ -219,16 +219,16 @@ class MaterialPopupMenuBuilder {
         override fun convertToPopupMenuItem(): MaterialPopupMenu.PopupMenuItem {
             require(label != null || labelRes != 0) { "Item '$this' does not have a label" }
             return MaterialPopupMenu.PopupMenuItem(
-                    label = label,
-                    labelRes = labelRes,
-                    labelColor = labelColor,
-                    icon = icon,
-                    iconDrawable = iconDrawable,
-                    iconColor = iconColor,
-                    hasNestedItems = hasNestedItems,
-                    viewBoundCallback = resolveViewBoundCallback(),
-                    callback = callback,
-                    dismissOnSelect = dismissOnSelect
+                label = label,
+                labelRes = labelRes,
+                labelColor = labelColor,
+                icon = icon,
+                iconDrawable = iconDrawable,
+                iconColor = iconColor,
+                hasNestedItems = hasNestedItems,
+                viewBoundCallback = resolveViewBoundCallback(),
+                callback = callback,
+                dismissOnSelect = dismissOnSelect
             )
         }
     }
@@ -252,10 +252,10 @@ class MaterialPopupMenuBuilder {
         override fun convertToPopupMenuItem(): MaterialPopupMenu.PopupMenuCustomItem {
             require(layoutResId != 0) { "Layout resource ID must be set for a custom item!" }
             return MaterialPopupMenu.PopupMenuCustomItem(
-                    layoutResId = layoutResId,
-                    viewBoundCallback = resolveViewBoundCallback(),
-                    callback = callback,
-                    dismissOnSelect = dismissOnSelect
+                layoutResId = layoutResId,
+                viewBoundCallback = resolveViewBoundCallback(),
+                callback = callback,
+                dismissOnSelect = dismissOnSelect
             )
         }
     }
@@ -288,7 +288,7 @@ class MaterialPopupMenuBuilder {
         internal abstract fun convertToPopupMenuItem(): MaterialPopupMenu.AbstractPopupMenuItem
 
         protected fun resolveViewBoundCallback() = (viewBoundCallback as? ViewBoundCallback
-                ?: ViewBoundCallback { viewBoundCallback(it) })
+            ?: ViewBoundCallback { viewBoundCallback(it) })
     }
 }
 

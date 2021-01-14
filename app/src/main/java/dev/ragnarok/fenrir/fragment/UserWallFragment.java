@@ -37,7 +37,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import dev.ragnarok.fenrir.CheckUpdate;
+import dev.ragnarok.fenrir.CheckDonate;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
@@ -469,7 +469,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             return true;
         });
         menu.add(R.string.mentions).setOnMenuItemClickListener(item -> {
-            if (!CheckUpdate.isFullVersion(requireActivity())) {
+            if (!CheckDonate.isFullVersion(requireActivity())) {
                 return true;
             }
             getPresenter().fireMentions();
@@ -552,7 +552,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             root.findViewById(R.id.header_user_profile_audios_container).setOnClickListener(v -> getPresenter().fireHeaderAudiosClick());
             root.findViewById(R.id.header_user_profile_articles_container).setOnClickListener(v -> getPresenter().fireHeaderArticlesClick());
             root.findViewById(R.id.header_user_profile_products_container).setOnClickListener(v -> {
-                if (CheckUpdate.isFullVersionPropriety(requireActivity())) {
+                if (CheckDonate.isFullVersion(requireActivity())) {
                     getPresenter().fireHeaderProductsClick();
                 }
             });

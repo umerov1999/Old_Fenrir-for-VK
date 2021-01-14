@@ -18,11 +18,11 @@ import kotlin.math.ceil
 
 
 internal class MaterialRecyclerViewPopupWindow(
-        private val context: Context,
-        private var dropDownGravity: Int,
-        private val fixedContentWidthInPx: Int,
-        dropDownVerticalOffset: Int?,
-        dropDownHorizontalOffset: Int?
+    private val context: Context,
+    private var dropDownGravity: Int,
+    private val fixedContentWidthInPx: Int,
+    dropDownVerticalOffset: Int?,
+    dropDownHorizontalOffset: Int?
 ) {
 
     companion object {
@@ -89,15 +89,33 @@ internal class MaterialRecyclerViewPopupWindow(
         val a = context.obtainStyledAttributes(null, R.styleable.MaterialRecyclerViewPopupWindow)
 
         this.dropDownHorizontalOffset = dropDownHorizontalOffset
-                ?: a.getDimensionPixelOffset(R.styleable.MaterialRecyclerViewPopupWindow_android_dropDownHorizontalOffset, 0)
+            ?: a.getDimensionPixelOffset(
+                R.styleable.MaterialRecyclerViewPopupWindow_android_dropDownHorizontalOffset,
+                0
+            )
         this.dropDownVerticalOffset = dropDownVerticalOffset
-                ?: a.getDimensionPixelOffset(R.styleable.MaterialRecyclerViewPopupWindow_android_dropDownVerticalOffset, 0)
-        backgroundDimEnabled = a.getBoolean(R.styleable.MaterialRecyclerViewPopupWindow_android_backgroundDimEnabled, false)
-        backgroundDimAmount = a.getFloat(R.styleable.MaterialRecyclerViewPopupWindow_android_backgroundDimAmount, DEFAULT_BACKGROUND_DIM_AMOUNT)
-        popupPaddingBottom = a.getDimensionPixelSize(R.styleable.MaterialRecyclerViewPopupWindow_mpm_paddingBottom, 0)
-        popupPaddingStart = a.getDimensionPixelSize(R.styleable.MaterialRecyclerViewPopupWindow_mpm_paddingStart, 0)
-        popupPaddingEnd = a.getDimensionPixelSize(R.styleable.MaterialRecyclerViewPopupWindow_mpm_paddingEnd, 0)
-        popupPaddingTop = a.getDimensionPixelSize(R.styleable.MaterialRecyclerViewPopupWindow_mpm_paddingTop, 0)
+            ?: a.getDimensionPixelOffset(
+                R.styleable.MaterialRecyclerViewPopupWindow_android_dropDownVerticalOffset,
+                0
+            )
+        backgroundDimEnabled = a.getBoolean(
+            R.styleable.MaterialRecyclerViewPopupWindow_android_backgroundDimEnabled,
+            false
+        )
+        backgroundDimAmount = a.getFloat(
+            R.styleable.MaterialRecyclerViewPopupWindow_android_backgroundDimAmount,
+            DEFAULT_BACKGROUND_DIM_AMOUNT
+        )
+        popupPaddingBottom = a.getDimensionPixelSize(
+            R.styleable.MaterialRecyclerViewPopupWindow_mpm_paddingBottom,
+            0
+        )
+        popupPaddingStart =
+            a.getDimensionPixelSize(R.styleable.MaterialRecyclerViewPopupWindow_mpm_paddingStart, 0)
+        popupPaddingEnd =
+            a.getDimensionPixelSize(R.styleable.MaterialRecyclerViewPopupWindow_mpm_paddingEnd, 0)
+        popupPaddingTop =
+            a.getDimensionPixelSize(R.styleable.MaterialRecyclerViewPopupWindow_mpm_paddingTop, 0)
 
         a.recycle()
 
@@ -130,7 +148,10 @@ internal class MaterialRecyclerViewPopupWindow(
         checkNotNull(anchorView) { "Anchor view must be set!" }
         val height = buildDropDown()
 
-        PopupWindowCompat.setWindowLayoutType(popup, WindowManager.LayoutParams.TYPE_APPLICATION_SUB_PANEL)
+        PopupWindowCompat.setWindowLayoutType(
+            popup,
+            WindowManager.LayoutParams.TYPE_APPLICATION_SUB_PANEL
+        )
 
         val widthSpec = dropDownWidth
         if (popup.isShowing) {
@@ -138,9 +159,9 @@ internal class MaterialRecyclerViewPopupWindow(
             popup.isOutsideTouchable = true
 
             popup.update(
-                    anchorView, dropDownHorizontalOffset,
-                    dropDownVerticalOffset, widthSpec,
-                    if (height < 0) -1 else height
+                anchorView, dropDownHorizontalOffset,
+                dropDownVerticalOffset, widthSpec,
+                if (height < 0) -1 else height
             )
         } else {
             popup.width = widthSpec
@@ -150,8 +171,8 @@ internal class MaterialRecyclerViewPopupWindow(
             // only set this if the dropdown is not always visible
             popup.isOutsideTouchable = true
             PopupWindowCompat.showAsDropDown(
-                    popup, anchorView!!, dropDownHorizontalOffset,
-                    dropDownVerticalOffset, dropDownGravity
+                popup, anchorView!!, dropDownHorizontalOffset,
+                dropDownVerticalOffset, dropDownGravity
             )
         }
 
@@ -197,7 +218,12 @@ internal class MaterialRecyclerViewPopupWindow(
             it.layoutManager = LinearLayoutManager(context)
             it.isFocusable = true
             it.isFocusableInTouchMode = true
-            it.setPaddingRelative(popupPaddingStart, popupPaddingTop, popupPaddingEnd, popupPaddingBottom)
+            it.setPaddingRelative(
+                popupPaddingStart,
+                popupPaddingTop,
+                popupPaddingEnd,
+                popupPaddingBottom
+            )
         }
 
         val background = popup.background
@@ -235,7 +261,7 @@ internal class MaterialRecyclerViewPopupWindow(
         }
 
         val maxHeight = getMaxAvailableHeight(
-                anchorView!!, dropDownVerticalOffset
+            anchorView!!, dropDownVerticalOffset
         )
 
         val listContent = measureHeightOfChildrenCompat(maxHeight - otherHeights)
@@ -263,7 +289,8 @@ internal class MaterialRecyclerViewPopupWindow(
     private fun measureHeightOfChildrenCompat(maxHeight: Int): Int {
 
         val parent = FrameLayout(context)
-        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(dropDownWidth, View.MeasureSpec.EXACTLY)
+        val widthMeasureSpec =
+            View.MeasureSpec.makeMeasureSpec(dropDownWidth, View.MeasureSpec.EXACTLY)
 
         // Include the padding of the list
         var returnedHeight = 0
@@ -287,8 +314,8 @@ internal class MaterialRecyclerViewPopupWindow(
 
             heightMeasureSpec = if (childLp.height > 0) {
                 View.MeasureSpec.makeMeasureSpec(
-                        childLp.height,
-                        View.MeasureSpec.EXACTLY
+                    childLp.height,
+                    View.MeasureSpec.EXACTLY
                 )
             } else {
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
@@ -319,8 +346,8 @@ internal class MaterialRecyclerViewPopupWindow(
 
     private fun generateDefaultLayoutParams(): RecyclerView.LayoutParams {
         return RecyclerView.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
 

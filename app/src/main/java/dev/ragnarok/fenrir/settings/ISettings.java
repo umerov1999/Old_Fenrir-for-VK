@@ -166,8 +166,6 @@ public interface ISettings {
 
         boolean isHint_stickers();
 
-        boolean isAuto_update();
-
         void registerDonatesId(List<Integer> Ids);
 
         @NonNull

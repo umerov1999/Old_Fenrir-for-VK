@@ -9,8 +9,8 @@ import android.os.Parcelable
 internal class OptionHolder(val resource: Int?, val optionRequest: OptionRequest?) : Parcelable {
 
     constructor(source: Parcel) : this(
-            source.readValue(Int::class.java.classLoader) as Int?,
-            source.readParcelable(OptionRequest::class.java.classLoader)
+        source.readValue(Int::class.java.classLoader) as Int?,
+        source.readParcelable(OptionRequest::class.java.classLoader)
     )
 
     override fun describeContents() = 0

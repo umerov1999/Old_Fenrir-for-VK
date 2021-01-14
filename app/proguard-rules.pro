@@ -133,6 +133,7 @@ public void onClickButton(android.view.View);
 # Application classes that will be serialized/deserialized over Gson
 -keep class dev.ragnarok.fenrir.model.** { *; }
 -keep class dev.ragnarok.fenrir.api.model.** { *; }
+-keep class dev.ragnarok.fenrir.db.model.entity.** { *; }
 
 # Prevent proguard from stripping interface information from TypeAdapterFactory,
 # JsonSerializer, JsonDeserializer instances (so they can be used in @JsonAdapter)
@@ -147,13 +148,3 @@ public void onClickButton(android.view.View);
 
 -keep class ealvatag.tag.id3.framebody.** { *; }
 -keep class ealvatag.tag.datatype.** { *; }
-
--keep public class com.umerov.parcel.ParcelNative {
-  private void updateNative*(...);
-}
-
--keep public interface com.umerov.rlottie.RLottie2Gif$Lottie2GifListener {
-  void onStarted();
-  void onProgress*(...);
-  void onFinished();
-}

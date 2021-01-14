@@ -10,13 +10,13 @@ import dev.ragnarok.fenrir.api.VkRetrofitProvider;
 import dev.ragnarok.fenrir.api.interfaces.IAccountApis;
 import dev.ragnarok.fenrir.api.interfaces.IAudioCoverApi;
 import dev.ragnarok.fenrir.api.interfaces.IAuthApi;
+import dev.ragnarok.fenrir.api.interfaces.IDebugToolApi;
 import dev.ragnarok.fenrir.api.interfaces.ILongpollApi;
 import dev.ragnarok.fenrir.api.interfaces.INetworker;
-import dev.ragnarok.fenrir.api.interfaces.IUpdateToolApi;
 import dev.ragnarok.fenrir.api.interfaces.IUploadApi;
 import dev.ragnarok.fenrir.api.services.IAudioCoverService;
 import dev.ragnarok.fenrir.api.services.IAuthService;
-import dev.ragnarok.fenrir.api.services.IUpdateToolService;
+import dev.ragnarok.fenrir.api.services.IDebugToolService;
 import dev.ragnarok.fenrir.settings.IProxySettings;
 
 public class Networker implements INetworker {
@@ -57,8 +57,8 @@ public class Networker implements INetworker {
     }
 
     @Override
-    public IUpdateToolApi updateToolApi() {
-        return new UpdateToolApi(() -> otherVkRetrofitProvider.provideUpdateToolRetrofit().map(wrapper -> wrapper.create(IUpdateToolService.class)));
+    public IDebugToolApi debugToolApi() {
+        return new DebugToolApi(() -> otherVkRetrofitProvider.provideDebugToolRetrofit().map(wrapper -> wrapper.create(IDebugToolService.class)));
     }
 
     @Override

@@ -6,7 +6,8 @@ import androidx.activity.ComponentActivity
 import dev.ragnarok.fenrir.mvp.core.IMvpView
 import dev.ragnarok.fenrir.mvp.core.IPresenter
 
-abstract class AbsMvpActivity<P : IPresenter<V>, V : IMvpView> : ComponentActivity(), ViewHostDelegate.IFactoryProvider<P, V> {
+abstract class AbsMvpActivity<P : IPresenter<V>, V : IMvpView> : ComponentActivity(),
+    ViewHostDelegate.IFactoryProvider<P, V> {
 
     private val delegate = ViewHostDelegate<P, V>()
 

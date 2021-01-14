@@ -15,7 +15,7 @@ import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
 
 public class Constants {
-    public static final int IS_DONATE = BuildConfig.IS_DONATE;
+    public static final boolean IS_DONATE = BuildConfig.IS_DONATE;
 
     public static final String API_VERSION = "5.126";
     public static final String AUTH_VERSION = "5.122";
@@ -27,10 +27,8 @@ public class Constants {
     public static final boolean IS_HAS_LOGIN_WEB = false;
     public static final String FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".fileprovider";
 
-    public static final int VERSION_APK = BuildConfig.VERSION_CODE;
-    public static final String APK_ID = BuildConfig.APPLICATION_ID;
-    public static final String VK_ANDROID_APP_VERSION_NAME = "6.19.4";
-    public static final String VK_ANDROID_APP_VERSION_CODE = "6703";
+    public static final String VK_ANDROID_APP_VERSION_NAME = "6.20";
+    public static final String VK_ANDROID_APP_VERSION_CODE = "6743";
     public static final String KATE_APP_VERSION_NAME = "68 lite";
     public static final String KATE_APP_VERSION_CODE = "484";
     public static final String KATE_RECEIPT_GMS_TOKEN = BuildConfig.KATE_RECEIPT_GMS_TOKEN.replaceAll("[\\w%\\-]+:", ":");

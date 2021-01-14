@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-import dev.ragnarok.fenrir.CheckUpdate;
+import dev.ragnarok.fenrir.CheckDonate;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
@@ -284,7 +284,7 @@ public class VKPhotoAlbumsFragment extends BaseMvpFragment<PhotoAlbumsPresenter,
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_photo_comments) {
-            if (!CheckUpdate.isFullVersionPropriety(requireActivity())) {
+            if (!CheckDonate.isFullVersion(requireActivity())) {
                 return false;
             }
             getPresenter().fireAllComments();

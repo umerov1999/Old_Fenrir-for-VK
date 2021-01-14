@@ -34,7 +34,8 @@ import dev.ragnarok.fenrir.util.Objects
 import java.util.*
 
 
-class PlaylistFragment : BottomSheetDialogFragment(), AudioRecyclerAdapter.ClickListener, BackPressCallback {
+class PlaylistFragment : BottomSheetDialogFragment(), AudioRecyclerAdapter.ClickListener,
+    BackPressCallback {
     private var mRecyclerView: RecyclerView? = null
     private var mAdapter: AudioRecyclerAdapter? = null
     private var mData: ArrayList<Audio>? = null
@@ -65,7 +66,11 @@ class PlaylistFragment : BottomSheetDialogFragment(), AudioRecyclerAdapter.Click
         return dialog
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val root = inflater.inflate(R.layout.fragment_playlist, container, false)
         mRecyclerView = root.findViewById(R.id.list)
         val manager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
@@ -74,7 +79,8 @@ class PlaylistFragment : BottomSheetDialogFragment(), AudioRecyclerAdapter.Click
         Goto.setOnLongClickListener {
             val curr = MusicUtils.getCurrentAudio()
             if (curr != null) {
-                PlaceFactory.getPlayerPlace(Settings.get().accounts().current).tryOpenWith(requireActivity())
+                PlaceFactory.getPlayerPlace(Settings.get().accounts().current)
+                    .tryOpenWith(requireActivity())
             } else CreateCustomToast(requireActivity()).showToastError(R.string.null_audio)
             false
         }
@@ -83,7 +89,9 @@ class PlaylistFragment : BottomSheetDialogFragment(), AudioRecyclerAdapter.Click
             if (curr != null) {
                 val index = getAudioPos(curr)
                 if (index >= 0) {
-                    if (Settings.get().other().isShow_audio_cover) mRecyclerView?.scrollToPosition(index) else mRecyclerView?.smoothScrollToPosition(index)
+                    if (Settings.get().other().isShow_audio_cover) mRecyclerView?.scrollToPosition(
+                        index
+                    ) else mRecyclerView?.smoothScrollToPosition(index)
                 } else CreateCustomToast(requireActivity()).showToast(R.string.audio_not_found)
             } else CreateCustomToast(requireActivity()).showToastError(R.string.null_audio)
         }
@@ -91,22 +99,30 @@ class PlaylistFragment : BottomSheetDialogFragment(), AudioRecyclerAdapter.Click
         return root
     }
 
-    private var simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-        override fun onMove(recyclerView: RecyclerView,
-                            viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-            return false
-        }
+    private var simpleItemTouchCallback: ItemTouchHelper.SimpleCallback =
+        object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
 
-        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-            viewHolder.itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-            mAdapter?.notifyItemChanged(viewHolder.bindingAdapterPosition)
-            startForPlayList(requireActivity(), mData!!, mAdapter!!.getItemRawPosition(viewHolder.bindingAdapterPosition), false)
-        }
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
+                viewHolder.itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                mAdapter?.notifyItemChanged(viewHolder.bindingAdapterPosition)
+                startForPlayList(
+                    requireActivity(),
+                    mData!!,
+                    mAdapter!!.getItemRawPosition(viewHolder.bindingAdapterPosition),
+                    false
+                )
+            }
 
-        override fun isLongPressDragEnabled(): Boolean {
-            return false
+            override fun isLongPressDragEnabled(): Boolean {
+                return false
+            }
         }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -141,10 +157,16 @@ class PlaylistFragment : BottomSheetDialogFragment(), AudioRecyclerAdapter.Click
     }
 
     override fun onUrlPhotoOpen(url: String, prefix: String, photo_prefix: String) {
-        PlaceFactory.getSingleURLPhotoPlace(url, prefix, photo_prefix).tryOpenWith(requireActivity())
+        PlaceFactory.getSingleURLPhotoPlace(url, prefix, photo_prefix)
+            .tryOpenWith(requireActivity())
     }
 
-    private val requestWritePermission = AppPerms.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+    private val requestWritePermission = AppPerms.requestPermissions(
+        this,
+        arrayOf(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
     ) { CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text) }
 
     override fun onRequestWritePermissions() {

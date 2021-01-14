@@ -2,6 +2,7 @@ package dev.ragnarok.fenrir.model;
 
 import android.os.Parcel;
 
+import dev.ragnarok.fenrir.CheckDonate;
 import dev.ragnarok.fenrir.api.model.Identificable;
 import dev.ragnarok.fenrir.util.Utils;
 
@@ -265,7 +266,7 @@ public class User extends Owner implements Identificable {
     }
 
     public boolean isDonated() {
-        return getId() == 572488303 || getId() == 365089125 || Utils.isValueAssigned(getId(), Utils.donate_users);
+        return Utils.isValueAssigned(getId(), CheckDonate.donatedUsers) || Utils.isValueAssigned(getId(), Utils.donate_users);
     }
 
     public boolean isVerified() {

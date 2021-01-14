@@ -31,10 +31,10 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
     private final IProxySettings proxySettings;
     private final Object longpollRetrofitLock = new Object();
     private final Object amazonaudiocoverRetrofitLock = new Object();
-    private final Object updateToolRetrofitLock = new Object();
+    private final Object debugToolRetrofitLock = new Object();
     private RetrofitWrapper longpollRetrofitInstance;
     private RetrofitWrapper amazonaudiocoverRetrofitInstance;
-    private RetrofitWrapper updateToolRetrofitInstance;
+    private RetrofitWrapper debugToolRetrofitInstance;
 
     @SuppressLint("CheckResult")
     public OtherVkRetrofitProvider(IProxySettings proxySettings) {
@@ -50,10 +50,10 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
                 longpollRetrofitInstance = null;
             }
         }
-        synchronized (updateToolRetrofitLock) {
-            if (nonNull(updateToolRetrofitInstance)) {
-                updateToolRetrofitInstance.cleanup();
-                updateToolRetrofitInstance = null;
+        synchronized (debugToolRetrofitLock) {
+            if (nonNull(debugToolRetrofitInstance)) {
+                debugToolRetrofitInstance.cleanup();
+                debugToolRetrofitInstance = null;
             }
         }
         synchronized (amazonaudiocoverRetrofitLock) {
@@ -132,7 +132,7 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
                 .build();
     }
 
-    private Retrofit createUpdateToolRetrofit() {
+    private Retrofit createDebugToolRetrofit() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .readTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor(HttpLogger.DEFAULT_LOGGING_INTERCEPTOR).addInterceptor(chain -> {
@@ -190,18 +190,18 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
     }
 
     @Override
-    public Single<RetrofitWrapper> provideUpdateToolRetrofit() {
+    public Single<RetrofitWrapper> provideDebugToolRetrofit() {
         return Single.fromCallable(() -> {
 
-            if (Objects.isNull(updateToolRetrofitInstance)) {
-                synchronized (updateToolRetrofitLock) {
-                    if (Objects.isNull(updateToolRetrofitInstance)) {
-                        updateToolRetrofitInstance = RetrofitWrapper.wrap(createUpdateToolRetrofit());
+            if (Objects.isNull(debugToolRetrofitInstance)) {
+                synchronized (debugToolRetrofitLock) {
+                    if (Objects.isNull(debugToolRetrofitInstance)) {
+                        debugToolRetrofitInstance = RetrofitWrapper.wrap(createDebugToolRetrofit());
                     }
                 }
             }
 
-            return updateToolRetrofitInstance;
+            return debugToolRetrofitInstance;
         });
     }
 

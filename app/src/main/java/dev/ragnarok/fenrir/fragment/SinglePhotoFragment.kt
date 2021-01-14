@@ -55,20 +55,32 @@ class SinglePhotoFragment : BaseFragment(), GoBackCallback, BackPressCallback {
         photo_prefix = makeLegalFilename(requireArguments().getString(Extra.KEY)!!, null)
     }
 
-    private val requestWritePermission = AppPerms.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+    private val requestWritePermission = AppPerms.requestPermissions(
+        this,
+        arrayOf(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+    ) {
         doSaveOnDrive(false)
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val root = inflater.inflate(R.layout.fragment_single_url_photo, container, false)
         val mDownload: CircleCounterButton = root.findViewById(R.id.button_download)
-        mDownload.visibility = if (url!!.contains("content://") || url!!.contains("file://")) View.GONE else View.VISIBLE
+        mDownload.visibility =
+            if (url!!.contains("content://") || url!!.contains("file://")) View.GONE else View.VISIBLE
         val ret = PhotoViewHolder(root)
         ret.bindTo(url!!)
         val ui = from(ret.photo)
         ui.settle = SettleOnTopAction()
-        ui.sideEffect = VerticalSwipeBehavior.PropertySideEffect(View.ALPHA, View.SCALE_X, View.SCALE_Y)
+        ui.sideEffect =
+            VerticalSwipeBehavior.PropertySideEffect(View.ALPHA, View.SCALE_X, View.SCALE_Y)
         val clampDelegate = VerticalSwipeBehavior.BelowFractionalClamp(3f, 3f)
         ui.clamp = VerticalSwipeBehavior.SensitivityClamp(0.5f, clampDelegate, 0.5f)
         ui.listener = object : VerticalSwipeBehavior.SwipeListener {
@@ -86,7 +98,10 @@ class SinglePhotoFragment : BaseFragment(), GoBackCallback, BackPressCallback {
             true
         }
         ret.photo.setOnTouchListener { view: View, event: MotionEvent ->
-            if (event.pointerCount >= 2 || view.canScrollHorizontally(1) && view.canScrollHorizontally(-1)) {
+            if (event.pointerCount >= 2 || view.canScrollHorizontally(1) && view.canScrollHorizontally(
+                    -1
+                )
+            ) {
                 when (event.action) {
                     MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
                         ui.canSwipe = false
@@ -131,8 +146,14 @@ class SinglePhotoFragment : BaseFragment(), GoBackCallback, BackPressCallback {
             } else dir_final.setLastModified(Calendar.getInstance().time.time)
             dir = dir_final
         }
-        val DOWNLOAD_DATE_FORMAT: DateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
-        doDownloadPhoto(requireActivity(), url!!, dir.absolutePath, prefix + "." + photo_prefix + ".profile." + DOWNLOAD_DATE_FORMAT.format(Date()))
+        val DOWNLOAD_DATE_FORMAT: DateFormat =
+            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+        doDownloadPhoto(
+            requireActivity(),
+            url!!,
+            dir.absolutePath,
+            prefix + "." + photo_prefix + ".profile." + DOWNLOAD_DATE_FORMAT.format(Date())
+        )
     }
 
     override fun goBack() {
@@ -159,11 +180,11 @@ class SinglePhotoFragment : BaseFragment(), GoBackCallback, BackPressCallback {
     override fun onResume() {
         super.onResume()
         ActivityFeatures.Builder()
-                .begin()
-                .setHideNavigationMenu(true)
-                .setBarsColored(false, false)
-                .build()
-                .apply(requireActivity())
+            .begin()
+            .setHideNavigationMenu(true)
+            .setBarsColored(false, false)
+            .build()
+            .apply(requireActivity())
     }
 
     private inner class PhotoViewHolder(view: View) : Callback {
@@ -190,7 +211,12 @@ class SinglePhotoFragment : BaseFragment(), GoBackCallback, BackPressCallback {
         private fun resolveProgressVisibility() {
             progress.visibility = if (mLoadingNow) View.VISIBLE else View.GONE
             if (mLoadingNow) {
-                progress.setAnimation(R.raw.loading, Utils.dp(100F), Utils.dp(40F), intArrayOf(0xffffff, CurrentTheme.getColorControlNormal(requireActivity())))
+                progress.setAnimation(
+                    R.raw.loading,
+                    Utils.dp(100F),
+                    Utils.dp(40F),
+                    intArrayOf(0xffffff, CurrentTheme.getColorControlNormal(requireActivity()))
+                )
                 progress.playAnimation()
             } else {
                 progress.stopAnimation()
@@ -201,8 +227,8 @@ class SinglePhotoFragment : BaseFragment(), GoBackCallback, BackPressCallback {
             mLoadingNow = true
             resolveProgressVisibility()
             PicassoInstance.with()
-                    .load(url)
-                    .into(photo, mPicassoLoadCallback)
+                .load(url)
+                .into(photo, mPicassoLoadCallback)
         }
 
         @IdRes

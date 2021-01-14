@@ -126,7 +126,8 @@ class ZoomHelper {
 
     private fun init(context: Context) {
         if (dismissDuration < 0)
-            dismissDuration = context.resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+            dismissDuration =
+                context.resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
     }
 
     /**
@@ -175,14 +176,20 @@ class ZoomHelper {
                 shadowView?.setBackgroundColor(shadowColor)
                 shadowView?.alpha = 0f
 
-                frameLayout.addView(shadowView, FrameLayout.LayoutParams(
+                frameLayout.addView(
+                    shadowView, FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.MATCH_PARENT,
-                        FrameLayout.LayoutParams.MATCH_PARENT))
+                        FrameLayout.LayoutParams.MATCH_PARENT
+                    )
+                )
 
                 dialog = Dialog(context, layoutTheme)
-                dialog?.addContentView(frameLayout, ViewGroup.LayoutParams(
+                dialog?.addContentView(
+                    frameLayout, ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT))
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                )
                 dialogCreated(frameLayout)
                 dialog?.show()
 
@@ -214,8 +221,14 @@ class ZoomHelper {
                 val p2 = MotionEvent.PointerCoords()
                 ev.getPointerCoords(1, p2)
 
-                originalDistance = Utils.getDistance(p1.x.toDouble(), p1.y.toDouble(), p2.x.toDouble(), p2.y.toDouble())
-                twoPointerCenter = intArrayOf(((p2.x + p1.x) / 2).toInt(), ((p2.y + p1.y) / 2).toInt())
+                originalDistance = Utils.getDistance(
+                    p1.x.toDouble(),
+                    p1.y.toDouble(),
+                    p2.x.toDouble(),
+                    p2.y.toDouble()
+                )
+                twoPointerCenter =
+                    intArrayOf(((p2.x + p1.x) / 2).toInt(), ((p2.y + p1.y) / 2).toInt())
 
                 pivotX = (ev.rawX - originalXY!![0])
                 pivotY = (ev.rawY - originalXY!![1])
@@ -229,8 +242,14 @@ class ZoomHelper {
                 ev.getPointerCoords(1, p2)
 
                 val newCenter = intArrayOf(((p2.x + p1.x) / 2).toInt(), ((p2.y + p1.y) / 2).toInt())
-                val currentDistance = Utils.getDistance(p1.x.toDouble(), p1.y.toDouble(), p2.x.toDouble(), p2.y.toDouble())
-                val pctIncrease = (currentDistance.toDouble() - originalDistance.toDouble()) / originalDistance.toDouble()
+                val currentDistance = Utils.getDistance(
+                    p1.x.toDouble(),
+                    p1.y.toDouble(),
+                    p2.x.toDouble(),
+                    p2.y.toDouble()
+                )
+                val pctIncrease =
+                    (currentDistance.toDouble() - originalDistance.toDouble()) / originalDistance.toDouble()
 
                 zoomableView!!.pivotX = pivotX
                 zoomableView!!.pivotY = pivotY
@@ -245,14 +264,17 @@ class ZoomHelper {
                 zoomableView!!.scaleY = scale
 
                 if (twoPointerCenter != null && originalXY != null) {
-                    updateZoomableViewMargins((newCenter[0] - twoPointerCenter!![0] + originalXY!![0]).toFloat(),
-                            (newCenter[1] - twoPointerCenter!![1] + originalXY!![1].toFloat()))
+                    updateZoomableViewMargins(
+                        (newCenter[0] - twoPointerCenter!![0] + originalXY!![0]).toFloat(),
+                        (newCenter[1] - twoPointerCenter!![1] + originalXY!![1].toFloat())
+                    )
                 }
 
                 scaleChanged(scale, ev)
                 if (lastScale != -10f && lastScale == scale) return true
                 lastScale = scale
-                shadowView?.alpha = max(min(maxShadowAlpha, abs(pctIncrease / shadowAlphaFactory).toFloat()), 0f)
+                shadowView?.alpha =
+                    max(min(maxShadowAlpha, abs(pctIncrease / shadowAlphaFactory).toFloat()), 0f)
             }
             return true
         } else {
@@ -292,10 +314,25 @@ class ZoomHelper {
         valueAnimator.addUpdateListener {
             val animatedFraction = it.animatedFraction
             if (zoomableView != null) {
-                updateZoomableView(animatedFraction, scaleYStart, scaleXStart, leftMarginStart, topMarginStart, scaleXEnd, scaleYEnd, leftMarginEnd, topMarginEnd)
+                updateZoomableView(
+                    animatedFraction,
+                    scaleYStart,
+                    scaleXStart,
+                    leftMarginStart,
+                    topMarginStart,
+                    scaleXEnd,
+                    scaleYEnd,
+                    leftMarginEnd,
+                    topMarginEnd
+                )
             }
             if (shadowView != null) {
-                shadowView?.alpha = max(min(maxShadowAlpha, ((alphaEnd - alphaStart) * animatedFraction) + alphaStart), 0f)
+                shadowView?.alpha = max(
+                    min(
+                        maxShadowAlpha,
+                        ((alphaEnd - alphaStart) * animatedFraction) + alphaStart
+                    ), 0f
+                )
             }
         }
         valueAnimator.addListener(object : Animator.AnimatorListener {
@@ -309,7 +346,17 @@ class ZoomHelper {
 
             private fun end() {
                 if (zoomableView != null) {
-                    updateZoomableView(1f, scaleYStart, scaleXStart, leftMarginStart, topMarginStart, scaleXEnd, scaleYEnd, leftMarginEnd, topMarginEnd)
+                    updateZoomableView(
+                        1f,
+                        scaleYStart,
+                        scaleXStart,
+                        leftMarginStart,
+                        topMarginStart,
+                        scaleXEnd,
+                        scaleYEnd,
+                        leftMarginEnd,
+                        topMarginEnd
+                    )
                 }
                 dismissDialogAndViews()
                 valueAnimator.removeAllListeners()
@@ -323,15 +370,19 @@ class ZoomHelper {
 
     }
 
-    private fun updateZoomableView(animatedFraction: Float, scaleYStart: Float, scaleXStart: Float,
-                                   leftMarginStart: Int, topMarginStart: Int, scaleXEnd: Float, scaleYEnd: Float,
-                                   leftMarginEnd: Int, topMarginEnd: Int) {
+    private fun updateZoomableView(
+        animatedFraction: Float, scaleYStart: Float, scaleXStart: Float,
+        leftMarginStart: Int, topMarginStart: Int, scaleXEnd: Float, scaleYEnd: Float,
+        leftMarginEnd: Int, topMarginEnd: Int
+    ) {
         zoomableView?.scaleX = ((scaleXEnd - scaleXStart) * animatedFraction) + scaleXStart
         zoomableView?.scaleY = ((scaleYEnd - scaleYStart) * animatedFraction) + scaleYStart
         scaleChanged(zoomableView!!.scaleX, null)
 
-        updateZoomableViewMargins(((leftMarginEnd - leftMarginStart) * animatedFraction) + leftMarginStart,
-                ((topMarginEnd - topMarginStart) * animatedFraction) + topMarginStart)
+        updateZoomableViewMargins(
+            ((leftMarginEnd - leftMarginStart) * animatedFraction) + leftMarginStart,
+            ((topMarginEnd - topMarginStart) * animatedFraction) + topMarginStart
+        )
     }
 
     private fun updateZoomableViewMargins(left: Float, top: Float) {
@@ -352,7 +403,13 @@ class ZoomHelper {
                         val parent = zoomableView?.parent as ViewGroup
                         parent.removeView(zoomableView)
                     }
-                    viewIndex?.let { zoomableViewParent?.addView(zoomableView, it, viewLayoutParams) }
+                    viewIndex?.let {
+                        zoomableViewParent?.addView(
+                            zoomableView,
+                            it,
+                            viewLayoutParams
+                        )
+                    }
                     zoomableViewParent?.removeView(placeHolderView)
                     dismissDialog()
                 }, placeHolderDismissDelay)
@@ -443,7 +500,12 @@ class ZoomHelper {
     }
 
     interface OnZoomScaleChangedListener {
-        fun onZoomScaleChanged(zoomHelper: ZoomHelper, zoomableView: View, scale: Float, event: MotionEvent?)
+        fun onZoomScaleChanged(
+            zoomHelper: ZoomHelper,
+            zoomableView: View,
+            scale: Float,
+            event: MotionEvent?
+        )
     }
 
     interface OnZoomLayoutCreatorListener {
@@ -512,7 +574,8 @@ class ZoomHelper {
         /**
          * skip layout and all layout's zoomable children
          */
-        fun skipLayout(view: View, skip: Boolean) = view.setTag(R.id.skip_zoom_layout, if (skip) Object() else null)
+        fun skipLayout(view: View, skip: Boolean) =
+            view.setTag(R.id.skip_zoom_layout, if (skip) Object() else null)
     }
 
 }

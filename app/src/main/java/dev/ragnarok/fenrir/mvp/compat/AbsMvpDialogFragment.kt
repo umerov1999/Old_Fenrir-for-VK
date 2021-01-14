@@ -7,7 +7,8 @@ import dev.ragnarok.fenrir.mvp.core.IMvpView
 import dev.ragnarok.fenrir.mvp.core.IPresenter
 import dev.ragnarok.fenrir.mvp.core.PresenterAction
 
-abstract class AbsMvpDialogFragment<P : IPresenter<V>, V : IMvpView> : androidx.fragment.app.DialogFragment(), ViewHostDelegate.IFactoryProvider<P, V> {
+abstract class AbsMvpDialogFragment<P : IPresenter<V>, V : IMvpView> :
+    androidx.fragment.app.DialogFragment(), ViewHostDelegate.IFactoryProvider<P, V> {
 
     private val delegate = ViewHostDelegate<P, V>()
 
@@ -19,7 +20,13 @@ abstract class AbsMvpDialogFragment<P : IPresenter<V>, V : IMvpView> : androidx.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        delegate.onCreate(requireActivity(), getViewHost(), this, LoaderManager.getInstance(this), savedInstanceState)
+        delegate.onCreate(
+            requireActivity(),
+            getViewHost(),
+            this,
+            LoaderManager.getInstance(this),
+            savedInstanceState
+        )
     }
 
     // Override in case of fragment not implementing IPresenter<View> interface

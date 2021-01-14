@@ -86,7 +86,10 @@ class MusicPlaybackService : Service() {
     override fun onUnbind(intent: Intent): Boolean {
         if (D) Logger.d(TAG, "Service unbound")
         if (isPlaying || mAnyActivityInForeground) {
-            Logger.d(TAG, "onUnbind, mIsSupposedToBePlaying || mPausedByTransientLossOfFocus || isPreparing()")
+            Logger.d(
+                TAG,
+                "onUnbind, mIsSupposedToBePlaying || mPausedByTransientLossOfFocus || isPreparing()"
+            )
             return true
         }
         stopSelf()
@@ -129,18 +132,23 @@ class MusicPlaybackService : Service() {
 
     @Suppress("DEPRECATION")
     private fun setUpRemoteControlClient() {
-        mMediaSession = MediaSessionCompat(application, resources.getString(R.string.app_name), null, null)
+        mMediaSession =
+            MediaSessionCompat(application, resources.getString(R.string.app_name), null, null)
         val playbackStateCompat = PlaybackStateCompat.Builder()
-                .setActions(
-                        PlaybackStateCompat.ACTION_SEEK_TO or
-                                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-                                PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-                                PlaybackStateCompat.ACTION_PLAY or
-                                PlaybackStateCompat.ACTION_PAUSE or
-                                PlaybackStateCompat.ACTION_STOP
-                )
-                .setState(if (isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED, position(), 1.0f)
-                .build()
+            .setActions(
+                PlaybackStateCompat.ACTION_SEEK_TO or
+                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                        PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                        PlaybackStateCompat.ACTION_PLAY or
+                        PlaybackStateCompat.ACTION_PAUSE or
+                        PlaybackStateCompat.ACTION_STOP
+            )
+            .setState(
+                if (isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED,
+                position(),
+                1.0f
+            )
+            .build()
         mMediaSession!!.setPlaybackState(playbackStateCompat)
         mMediaSession!!.setCallback(mMediaSessionCallback)
         mMediaSession!!.isActive = true
@@ -148,39 +156,40 @@ class MusicPlaybackService : Service() {
         mTransportController = mMediaSession!!.controller.transportControls
     }
 
-    private val mMediaSessionCallback: MediaSessionCompat.Callback = object : MediaSessionCompat.Callback() {
-        override fun onPlay() {
-            super.onPlay()
-            play()
-        }
+    private val mMediaSessionCallback: MediaSessionCompat.Callback =
+        object : MediaSessionCompat.Callback() {
+            override fun onPlay() {
+                super.onPlay()
+                play()
+            }
 
-        override fun onPause() {
-            super.onPause()
-            pause()
-        }
+            override fun onPause() {
+                super.onPause()
+                pause()
+            }
 
-        override fun onSkipToNext() {
-            super.onSkipToNext()
-            gotoNext(true)
-        }
+            override fun onSkipToNext() {
+                super.onSkipToNext()
+                gotoNext(true)
+            }
 
-        override fun onSkipToPrevious() {
-            super.onSkipToPrevious()
-            prev()
-        }
+            override fun onSkipToPrevious() {
+                super.onSkipToPrevious()
+                prev()
+            }
 
-        override fun onStop() {
-            super.onStop()
-            pause()
-            Logger.d(javaClass.simpleName, "Stopping services. onStop()")
-            stopSelf()
-        }
+            override fun onStop() {
+                super.onStop()
+                pause()
+                Logger.d(javaClass.simpleName, "Stopping services. onStop()")
+                stopSelf()
+            }
 
-        override fun onSeekTo(pos: Long) {
-            super.onSeekTo(pos)
-            seek(pos)
+            override fun onSeekTo(pos: Long) {
+                super.onSeekTo(pos)
+                seek(pos)
+            }
         }
-    }
 
     @Suppress("DEPRECATION")
     override fun onDestroy() {
@@ -284,13 +293,23 @@ class MusicPlaybackService : Service() {
      * Updates the notification, considering the current play and activity state
      */
     private fun updateNotification() {
-        mNotificationHelper!!.buildNotification(this, artistName,
-                trackName, isPlaying, Utils.firstNonNull(CoverBitmap, BitmapFactory.decodeResource(resources, R.drawable.generic_audio_nowplaying_service)), mMediaSession!!.sessionToken)
+        mNotificationHelper!!.buildNotification(
+            this,
+            artistName,
+            trackName,
+            isPlaying,
+            Utils.firstNonNull(
+                CoverBitmap,
+                BitmapFactory.decodeResource(resources, R.drawable.generic_audio_nowplaying_service)
+            ),
+            mMediaSession!!.sessionToken
+        )
     }
 
     private fun scheduleDelayedShutdown() {
         if (D) Log.v(TAG, "Scheduling shutdown in $IDLE_DELAY ms")
-        mAlarmManager!![AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + IDLE_DELAY] = mShutdownIntent
+        mAlarmManager!![AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + IDLE_DELAY] =
+            mShutdownIntent
         mShutdownScheduled = true
     }
 
@@ -409,18 +428,19 @@ class MusicPlaybackService : Service() {
     private fun updateRemoteControlClient(what: String) {
         when (what) {
             PLAYSTATE_CHANGED, POSITION_CHANGED -> {
-                val playState = if (isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
+                val playState =
+                    if (isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
                 val pmc = PlaybackStateCompat.Builder()
-                        .setState(playState, position(), 1.0f)
-                        .setActions(
-                                PlaybackStateCompat.ACTION_SEEK_TO or
-                                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-                                        PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-                                        PlaybackStateCompat.ACTION_PLAY or
-                                        PlaybackStateCompat.ACTION_PAUSE or
-                                        PlaybackStateCompat.ACTION_STOP
-                        )
-                        .build()
+                    .setState(playState, position(), 1.0f)
+                    .setActions(
+                        PlaybackStateCompat.ACTION_SEEK_TO or
+                                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                                PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                                PlaybackStateCompat.ACTION_PLAY or
+                                PlaybackStateCompat.ACTION_PAUSE or
+                                PlaybackStateCompat.ACTION_STOP
+                    )
+                    .build()
                 mMediaSession!!.setPlaybackState(pmc)
             }
             META_CHANGED -> fetchCoverAndUpdateMetadata()
@@ -433,43 +453,49 @@ class MusicPlaybackService : Service() {
             return
         }
         PicassoInstance.with()
-                .load(albumCover)
-                .into(object : Target {
-                    override fun onBitmapLoaded(bitmap: Bitmap, from: LoadedFrom) {
-                        CoverBitmap = bitmap
-                        updateMetadata()
-                    }
+            .load(albumCover)
+            .into(object : Target {
+                override fun onBitmapLoaded(bitmap: Bitmap, from: LoadedFrom) {
+                    CoverBitmap = bitmap
+                    updateMetadata()
+                }
 
-                    override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-                    }
+                override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+                }
 
-                    override fun onBitmapFailed(e: Exception, errorDrawable: Drawable?) {
-                    }
+                override fun onBitmapFailed(e: Exception, errorDrawable: Drawable?) {
+                }
 
-                })
+            })
     }
 
     private fun updateMetadata() {
         updateNotification()
         mMediaMetadataCompat = MediaMetadataCompat.Builder()
-                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artistName)
-                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, albumName)
-                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, trackName)
-                //.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, Utils.firstNonNull(CoverBitmap, BitmapFactory.decodeResource(getResources(), R.drawable.generic_audio_nowplaying_service)))
-                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration())
-                .build()
+            .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artistName)
+            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, albumName)
+            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, trackName)
+            //.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, Utils.firstNonNull(CoverBitmap, BitmapFactory.decodeResource(getResources(), R.drawable.generic_audio_nowplaying_service)))
+            .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration())
+            .build()
         mMediaSession!!.setMetadata(mMediaMetadataCompat)
     }
 
     private fun GetCoverURL(audio: Audio) {
-        serviceDisposable.add(Injection.provideNetworkInterfaces().amazonAudioCover().getAudioCover(audio.title, audio.artist)
-                .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe({ remote ->
-                    run {
-                        CoverAudio = remote.image; audio.thumb_image_big = remote.image; audio.thumb_image_very_big = remote.image; audio.thumb_image_little = remote.image
-                        AlbumTitle = remote.album; fetchCoverAndUpdateMetadata(); notifyChange(META_CHANGED)
-                    }
-                }, {}))
+        serviceDisposable.add(Injection.provideNetworkInterfaces().amazonAudioCover()
+            .getAudioCover(audio.title, audio.artist)
+            .compose(RxUtils.applySingleIOToMainSchedulers())
+            .subscribe({ remote ->
+                run {
+                    CoverAudio = remote.image; audio.thumb_image_big =
+                    remote.image; audio.thumb_image_very_big =
+                    remote.image; audio.thumb_image_little = remote.image
+                    AlbumTitle = remote.album; fetchCoverAndUpdateMetadata(); notifyChange(
+                    META_CHANGED
+                )
+                }
+            }, {})
+        )
     }
 
     /**
@@ -494,7 +520,10 @@ class MusicPlaybackService : Service() {
                 OnceCloseMiniPlayer = false
             }
             mPlayer!!.setDataSource(audio.ownerId, audio.id, audio.url)
-            if (UpdateMeta && (Utils.isKateType(Settings.get().accounts().getType(Settings.get().accounts().current)) || audio.isLocal)) {
+            if (UpdateMeta && (Utils.isKateType(
+                    Settings.get().accounts().getType(Settings.get().accounts().current)
+                ) || audio.isLocal)
+            ) {
                 try {
                     GetCoverURL(audio)
                 } catch (e: Exception) {
@@ -806,8 +835,10 @@ class MusicPlaybackService : Service() {
 
     private class MultiPlayer(service: MusicPlaybackService) {
         val mService: WeakReference<MusicPlaybackService> = WeakReference(service)
-        var mCurrentMediaPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(service, DefaultRenderersFactory(service)
-                .setExtensionRendererMode(EXTENSION_RENDERER_MODE_PREFER)).build()
+        var mCurrentMediaPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(
+            service, DefaultRenderersFactory(service)
+                .setExtensionRendererMode(EXTENSION_RENDERER_MODE_PREFER)
+        ).build()
         var isInitialized = false
         var isPreparing = false
         val audioInteractor: IAudioInteractor = InteractorFactory.createAudioInteractor()
@@ -825,18 +856,36 @@ class MusicPlaybackService : Service() {
             if ("https://vk.com/mp3/audio_api_unavailable.mp3" == res) {
                 res = null
             }
-            val url = Utils.firstNonEmptyString(res, RawResourceDataSource.buildRawResourceUri(R.raw.audio_error).toString())
+            val url = Utils.firstNonEmptyString(
+                res,
+                RawResourceDataSource.buildRawResourceUri(R.raw.audio_error).toString()
+            )
             val userAgent = Constants.USER_AGENT(Account_Types.BY_TYPE)
-            val factory = Utils.getExoPlayerFactory(userAgent, Injection.provideProxySettings().activeProxy)
+            val factory =
+                Utils.getExoPlayerFactory(userAgent, Injection.provideProxySettings().activeProxy)
             val mediaSource: MediaSource
-            mediaSource = if (url.contains("file://") || url.contains("content://") || url.contains(RawResourceDataSource.RAW_RESOURCE_SCHEME)) {
-                ProgressiveMediaSource.Factory(DefaultDataSourceFactory(mService.get()!!, userAgent)).createMediaSource(makeMediaItem(url))
+            mediaSource = if (url.contains("file://") || url.contains("content://") || url.contains(
+                    RawResourceDataSource.RAW_RESOURCE_SCHEME
+                )
+            ) {
+                ProgressiveMediaSource.Factory(
+                    DefaultDataSourceFactory(
+                        mService.get()!!,
+                        userAgent
+                    )
+                ).createMediaSource(makeMediaItem(url))
             } else {
-                if (url.contains("index.m3u8")) HlsMediaSource.Factory(factory).createMediaSource(makeMediaItem(url)) else ProgressiveMediaSource.Factory(factory).createMediaSource(makeMediaItem(url))
+                if (url.contains("index.m3u8")) HlsMediaSource.Factory(factory)
+                    .createMediaSource(makeMediaItem(url)) else ProgressiveMediaSource.Factory(
+                    factory
+                ).createMediaSource(makeMediaItem(url))
             }
             mCurrentMediaPlayer.setMediaSource(mediaSource)
             mCurrentMediaPlayer.prepare()
-            mCurrentMediaPlayer.setAudioAttributes(AudioAttributes.Builder().setContentType(C.CONTENT_TYPE_MUSIC).setUsage(C.USAGE_MEDIA).build(), true)
+            mCurrentMediaPlayer.setAudioAttributes(
+                AudioAttributes.Builder().setContentType(C.CONTENT_TYPE_MUSIC)
+                    .setUsage(C.USAGE_MEDIA).build(), true
+            )
             val intent = Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
             intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
             intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mService.get()!!.packageName)
@@ -846,10 +895,17 @@ class MusicPlaybackService : Service() {
 
         fun setDataSource(ownerId: Int, audioId: Int, url: String) {
             if (Utils.isEmpty(url) || "https://vk.com/mp3/audio_api_unavailable.mp3" == url) {
-                compositeDisposable.add(audioInteractor.getById(Settings.get().accounts().current, listOf(IdPair(audioId, ownerId)))
-                        .compose(RxUtils.applySingleIOToMainSchedulers())
-                        .map { e: List<Audio> -> e[0].url }
-                        .subscribe({ remoteUrl: String? -> this.setDataSource(remoteUrl) }) { setDataSource(url) })
+                compositeDisposable.add(audioInteractor.getById(
+                    Settings.get().accounts().current,
+                    listOf(IdPair(audioId, ownerId))
+                )
+                    .compose(RxUtils.applySingleIOToMainSchedulers())
+                    .map { e: List<Audio> -> e[0].url }
+                    .subscribe({ remoteUrl: String? -> this.setDataSource(remoteUrl) }) {
+                        setDataSource(
+                            url
+                        )
+                    })
             } else {
                 setDataSource(url)
             }
@@ -922,7 +978,10 @@ class MusicPlaybackService : Service() {
                     }
                 }
 
-                override fun onPlayWhenReadyChanged(playWhenReady: Boolean, @PlayWhenReadyChangeReason reason: Int) {
+                override fun onPlayWhenReadyChanged(
+                    playWhenReady: Boolean,
+                    @PlayWhenReadyChangeReason reason: Int
+                ) {
                     if (mService.get()!!.isPlaying != playWhenReady) {
                         mService.get()!!.isPlaying = playWhenReady
                         mService.get()!!.notifyChange(PLAYSTATE_CHANGED)
@@ -1072,7 +1131,7 @@ class MusicPlaybackService : Service() {
 
     companion object {
         private const val TAG = "MusicPlaybackService"
-        private const val D = Constants.IS_DEBUG
+        private val D = Constants.IS_DEBUG
         const val PLAYSTATE_CHANGED = "dev.ragnarok.fenrir.player.playstatechanged"
         const val POSITION_CHANGED = "dev.ragnarok.fenrir.player.positionchanged"
         const val META_CHANGED = "dev.ragnarok.fenrir.player.metachanged"
@@ -1128,16 +1187,21 @@ class MusicPlaybackService : Service() {
         }
 
         @JvmStatic
-        fun startForPlayList(context: Context, audios_private: ArrayList<Audio>, position: Int, forceShuffle: Boolean) {
+        fun startForPlayList(
+            context: Context,
+            audios_private: ArrayList<Audio>,
+            position: Int,
+            forceShuffle: Boolean
+        ) {
             var audios = audios_private
             val url = audios[0].url
             val interactor = InteractorFactory.createAudioInteractor()
             if (Utils.isEmpty(url) || "https://vk.com/mp3/audio_api_unavailable.mp3" == url) {
                 try {
                     audios = interactor
-                            .getById(Settings.get().accounts().current, listToIdPair(audios))
-                            .subscribeOn(Schedulers.io())
-                            .blockingGet() as ArrayList<Audio>
+                        .getById(Settings.get().accounts().current, listToIdPair(audios))
+                        .subscribeOn(Schedulers.io())
+                        .blockingGet() as ArrayList<Audio>
                 } catch (ignore: Throwable) {
                 }
             }

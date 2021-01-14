@@ -5,7 +5,8 @@ import dev.ragnarok.fenrir.model.Peer
 import dev.ragnarok.fenrir.mvp.core.IMvpView
 import dev.ragnarok.fenrir.mvp.view.base.IAccountDependencyView
 
-interface ILocalJsonToChatView : IAccountDependencyView, IMvpView, IErrorView, IAttachmentsPlacesView {
+interface ILocalJsonToChatView : IAccountDependencyView, IMvpView, IErrorView,
+    IAttachmentsPlacesView {
     fun displayData(posts: List<Message>)
     fun notifyDataSetChanged()
     fun notifyDataAdded(position: Int, count: Int)

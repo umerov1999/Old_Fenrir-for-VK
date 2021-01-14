@@ -22,7 +22,8 @@ internal object Utils {
             if (!ZoomHelper.isSkippingLayout(parent)) {
 
                 if (isViewInArea(parent, p1.x, p1.y, p2.x, p2.y)
-                        && ZoomHelper.isZoomableView(parent)) return parent
+                    && ZoomHelper.isZoomableView(parent)
+                ) return parent
 
                 if (parent is ViewGroup) {
                     val v = checkChild(parent, p1.x, p1.y, p2.x, p2.y)

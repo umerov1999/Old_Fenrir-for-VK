@@ -21,7 +21,11 @@ open class LandscapeExpandBottomSheetDialog : BottomSheetDialog {
         }
     }
 
-    protected constructor(context: Context, cancelable: Boolean, cancelListener: DialogInterface.OnCancelListener?) : super(context, cancelable, cancelListener) {
+    protected constructor(
+        context: Context,
+        cancelable: Boolean,
+        cancelListener: DialogInterface.OnCancelListener?
+    ) : super(context, cancelable, cancelListener) {
         if (Utils.isLandscape(context)) {
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
             behavior.skipCollapsed = true
