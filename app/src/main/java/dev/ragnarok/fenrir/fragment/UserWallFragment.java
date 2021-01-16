@@ -547,6 +547,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             bPrimaryAction.setOnClickListener(v -> getPresenter().firePrimaryActionsClick());
             fabMessage.setOnClickListener(v -> getPresenter().fireChatClick());
 
+            root.findViewById(R.id.horiz_scroll).setClipToOutline(true);
             root.findViewById(R.id.header_user_profile_photos_container).setOnClickListener(v -> getPresenter().fireHeaderPhotosClick());
             root.findViewById(R.id.header_user_profile_friends_container).setOnClickListener(v -> getPresenter().fireHeaderFriendsClick());
             root.findViewById(R.id.header_user_profile_audios_container).setOnClickListener(v -> getPresenter().fireHeaderAudiosClick());

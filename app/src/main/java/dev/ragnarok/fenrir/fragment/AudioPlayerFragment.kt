@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.fragment
 
+import android.annotation.SuppressLint
 import android.Manifest
 import android.app.Dialog
 import android.content.*
@@ -421,6 +422,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
             .other()
             .isAudioBroadcastActive
 
+    @SuppressLint("ShowToast")
     private fun onSaveButtonClick(v: View) {
         val audio = MusicUtils.getCurrentAudio() ?: return
         when (doDownloadAudio(requireActivity(), audio, mAccountId, false)) {

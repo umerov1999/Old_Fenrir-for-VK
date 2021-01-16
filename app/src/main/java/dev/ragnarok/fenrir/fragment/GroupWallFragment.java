@@ -426,6 +426,8 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
                     .setOnClickListener(v -> getPresenter().fireHeaderVideosClick());
             root.findViewById(R.id.header_group_members_container)
                     .setOnClickListener(v -> getPresenter().fireHeaderMembersClick());
+            root.findViewById(R.id.horiz_scroll)
+                    .setClipToOutline(true);
             root.findViewById(R.id.header_group_topics_container)
                     .setOnClickListener(v -> getPresenter().fireHeaderTopicsClick());
             root.findViewById(R.id.header_group_documents_container)

@@ -21,6 +21,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -248,22 +249,27 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         buttonUnpin = pinnedView?.findViewById(R.id.buttonUnpin)
         buttonUnpin?.setOnClickListener { presenter?.fireUnpinClick() }
 
-        pinnedView?.setOnLongClickListener { pinnedView?.visibility = View.GONE; true }
+        pinnedView?.setOnLongClickListener {
+            it.isVisible = false
+            true
+        }
 
         goto_button = root.findViewById(R.id.goto_button)
+        goto_button?.let {
         if (Utils.isHiddenCurrent()) {
-            goto_button?.setImageResource(R.drawable.attachment)
-            goto_button?.setOnClickListener { presenter?.fireDialogAttachmentsClick() }
+            it.setImageResource(R.drawable.attachment)
+            it.setOnClickListener { presenter?.fireDialogAttachmentsClick() }
         } else {
-            goto_button?.setImageResource(R.drawable.ic_outline_keyboard_arrow_up)
-            goto_button?.setOnClickListener { recyclerView?.smoothScrollToPosition(presenter?.getConversation()!!.unreadCount) }
-            goto_button?.setOnLongClickListener { presenter?.fireDialogAttachmentsClick(); true; }
+            it.setImageResource(R.drawable.ic_outline_keyboard_arrow_up)
+            it.setOnClickListener { recyclerView?.smoothScrollToPosition(presenter?.getConversation()!!.unreadCount) }
+            it.setOnLongClickListener { presenter?.fireDialogAttachmentsClick(); true; }
         }
 
         if (!Settings.get().other().isEnable_last_read)
-            goto_button?.visibility = View.GONE
+            it.visibility = View.GONE
         else
-            goto_button?.visibility = View.VISIBLE
+            it.visibility = View.VISIBLE
+        }
 
         editMessageGroup = root.findViewById(R.id.editMessageGroup)
         editMessageText = editMessageGroup?.findViewById(R.id.editMessageText)
@@ -590,8 +596,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
 
     override fun displayPinnedMessage(pinned: Message?, canChange: Boolean) {
         pinnedView?.run {
-            visibility = if (pinned == null) View.GONE else View.VISIBLE
-
+            isVisible = pinned != null
             pinned?.run {
                 ViewUtils.displayAvatar(
                     pinnedAvatar!!, CurrentTheme.createTransformationForAvatar(requireContext()),
@@ -657,11 +662,11 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
                 }
             }
         } else {
-            downMenuGroup?.visibility = View.VISIBLE
             inputViewController?.closeBotKeyboard()
             inputViewController?.showEmoji(false)
             InputView?.visibility = View.INVISIBLE
             downMenuGroup?.run {
+                visibility = View.VISIBLE
                 if (childCount == 0) {
                     val v =
                         LayoutInflater.from(context).inflate(R.layout.view_action_mode, this, false)
@@ -672,13 +677,15 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
             }
         }
 
-        actionModeHolder?.show()
-        actionModeHolder?.titleView?.text = title
-        actionModeHolder?.buttonEdit?.visibility = if (canEdit) View.VISIBLE else View.GONE
-        actionModeHolder?.buttonPin?.visibility = if (canPin) View.VISIBLE else View.GONE
-        actionModeHolder?.buttonStar?.visibility = if (canStar) View.VISIBLE else View.GONE
-        actionModeHolder?.buttonStar?.setImageResource(if (doStar) R.drawable.star_add else R.drawable.star_none)
-    }
+        actionModeHolder?.run {
+            show()
+            titleView.text = title
+            buttonEdit.visibility = if (canEdit) View.VISIBLE else View.GONE
+            buttonPin.visibility = if (canPin) View.VISIBLE else View.GONE
+            buttonStar.visibility = if (canStar) View.VISIBLE else View.GONE
+            buttonStar.setImageResource(if (doStar) R.drawable.star_add else R.drawable.star_none)
+        }
+       }
 
     override fun finishActionMode() {
         actionModeHolder?.rootView?.visibility = View.GONE
@@ -896,6 +903,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         }.show()
     }
 
+    @SuppressLint("ShowToast")
     override fun showSnackbar(@StringRes res: Int, isLong: Boolean) {
         val view = super.getView()
         if (Objects.nonNull(view)) {
@@ -1053,16 +1061,18 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         ProfileVisible: Boolean,
         InviteLink: Boolean
     ) {
-        optionMenuSettings.put(LEAVE_CHAT_VISIBLE, canLeaveChat)
-        optionMenuSettings.put(CHANGE_CHAT_TITLE_VISIBLE, canChangeTitle)
-        optionMenuSettings.put(CHAT_MEMBERS_VISIBLE, canShowMembers)
-        optionMenuSettings.put(ENCRYPTION_STATUS_VISIBLE, encryptionStatusVisible)
-        optionMenuSettings.put(ENCRYPTION_ENABLED, encryprionEnabled)
-        optionMenuSettings.put(ENCRYPTION_PLUS_ENABLED, encryptionPlusEnabled)
-        optionMenuSettings.put(KEY_EXCHANGE_VISIBLE, keyExchangeVisible)
-        optionMenuSettings.put(HRONO_VISIBLE, HronoVisible)
-        optionMenuSettings.put(PROFILE_VISIBLE, ProfileVisible)
-        optionMenuSettings.put(CAN_GENERATE_INVITE_LINK, InviteLink)
+        optionMenuSettings.apply {
+            put(LEAVE_CHAT_VISIBLE, canLeaveChat)
+            put(CHANGE_CHAT_TITLE_VISIBLE, canChangeTitle)
+            put(CHAT_MEMBERS_VISIBLE, canShowMembers)
+            put(ENCRYPTION_STATUS_VISIBLE, encryptionStatusVisible)
+            put(ENCRYPTION_ENABLED, encryprionEnabled)
+            put(ENCRYPTION_PLUS_ENABLED, encryptionPlusEnabled)
+            put(KEY_EXCHANGE_VISIBLE, keyExchangeVisible)
+            put(HRONO_VISIBLE, HronoVisible)
+            put(PROFILE_VISIBLE, ProfileVisible)
+            put(CAN_GENERATE_INVITE_LINK, InviteLink)
+        }
 
         try {
             PrepareOptionsMenu(toolbar?.menu!!)
@@ -1182,13 +1192,14 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
             FindAttachmentType.TYPE_POST
         )
 
-        val menus = ModalBottomSheetDialogFragment.Builder()
-        menus.add(OptionRequest(0, getString(R.string.photos), R.drawable.photo_album))
-        menus.add(OptionRequest(1, getString(R.string.videos), R.drawable.video))
-        menus.add(OptionRequest(2, getString(R.string.documents), R.drawable.book))
-        menus.add(OptionRequest(3, getString(R.string.music), R.drawable.song))
-        menus.add(OptionRequest(4, getString(R.string.links), R.drawable.web))
-        menus.add(OptionRequest(5, getString(R.string.posts), R.drawable.pencil))
+        val menus = ModalBottomSheetDialogFragment.Builder().apply {
+            add(OptionRequest(0, getString(R.string.photos), R.drawable.photo_album))
+            add(OptionRequest(1, getString(R.string.videos), R.drawable.video))
+            add(OptionRequest(2, getString(R.string.documents), R.drawable.book))
+            add(OptionRequest(3, getString(R.string.music), R.drawable.song))
+            add(OptionRequest(4, getString(R.string.links), R.drawable.web))
+            add(OptionRequest(5, getString(R.string.posts), R.drawable.pencil))
+        }
 
         menus.show(childFragmentManager, "attachments_select",
             object : ModalBottomSheetDialogFragment.Listener {
@@ -1292,7 +1303,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
     }
 
     override fun setEmptyTextVisible(visible: Boolean) {
-        emptyText?.visibility = if (visible) View.VISIBLE else View.GONE
+        emptyText?.isVisible = visible
     }
 
     override fun setupRecordPauseButton(available: Boolean, isPlaying: Boolean) {
@@ -1360,20 +1371,21 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
     @SuppressLint("ResourceType")
     fun PrepareOptionsMenu(menu: Menu) {
 
-        menu.findItem(R.id.action_leave_chat).isVisible =
-            optionMenuSettings.get(LEAVE_CHAT_VISIBLE, false)
-        menu.findItem(R.id.action_edit_chat).isVisible =
-            optionMenuSettings.get(CHANGE_CHAT_TITLE_VISIBLE, false)
-        menu.findItem(R.id.action_chat_members).isVisible =
-            optionMenuSettings.get(CHAT_MEMBERS_VISIBLE, false)
-        menu.findItem(R.id.action_key_exchange).isVisible =
-            optionMenuSettings.get(KEY_EXCHANGE_VISIBLE, false)
-        menu.findItem(R.id.change_hrono_history).isVisible =
-            optionMenuSettings.get(HRONO_VISIBLE, false)
-        menu.findItem(R.id.show_profile).isVisible = optionMenuSettings.get(PROFILE_VISIBLE, false)
-        menu.findItem(R.id.action_invite_link).isVisible =
-            optionMenuSettings.get(CAN_GENERATE_INVITE_LINK, false)
-
+        menu.run {
+            findItem(R.id.action_leave_chat).isVisible =
+                    optionMenuSettings.get(LEAVE_CHAT_VISIBLE, false)
+            findItem(R.id.action_edit_chat).isVisible =
+                    optionMenuSettings.get(CHANGE_CHAT_TITLE_VISIBLE, false)
+            findItem(R.id.action_chat_members).isVisible =
+                    optionMenuSettings.get(CHAT_MEMBERS_VISIBLE, false)
+            findItem(R.id.action_key_exchange).isVisible =
+                    optionMenuSettings.get(KEY_EXCHANGE_VISIBLE, false)
+            findItem(R.id.change_hrono_history).isVisible =
+                    optionMenuSettings.get(HRONO_VISIBLE, false)
+            findItem(R.id.show_profile).isVisible = optionMenuSettings.get(PROFILE_VISIBLE, false)
+            findItem(R.id.action_invite_link).isVisible =
+                    optionMenuSettings.get(CAN_GENERATE_INVITE_LINK, false)
+        }
         val encryptionStatusItem = menu.findItem(R.id.crypt_state)
         val encryptionStatusVisible = optionMenuSettings.get(ENCRYPTION_STATUS_VISIBLE, false)
 
