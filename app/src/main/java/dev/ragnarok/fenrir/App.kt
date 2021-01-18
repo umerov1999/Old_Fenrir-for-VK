@@ -61,26 +61,28 @@ class App : Application(), ImageLoaderFactory {
                 }
             }, RxUtils.ignore())
         )
-        compositeDisposable.add(messages
-            .observeSentMessages()
-            .subscribe({ sentMsg: SentMsg ->
-                NotificationHelper.tryCancelNotificationForPeer(
-                    this,
-                    sentMsg.accountId,
-                    sentMsg.peerId
-                )
-            }, RxUtils.ignore())
+        compositeDisposable.add(
+            messages
+                .observeSentMessages()
+                .subscribe({ sentMsg: SentMsg ->
+                    NotificationHelper.tryCancelNotificationForPeer(
+                        this,
+                        sentMsg.accountId,
+                        sentMsg.peerId
+                    )
+                }, RxUtils.ignore())
         )
-        compositeDisposable.add(messages
-            .observeMessagesSendErrors()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ throwable: Throwable ->
-                run {
-                    CreateCustomToast(this).showToastError(
-                        ErrorLocalizer.localizeThrowable(this, throwable)
-                    ); throwable.printStackTrace();
-                }
-            }, RxUtils.ignore())
+        compositeDisposable.add(
+            messages
+                .observeMessagesSendErrors()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ throwable: Throwable ->
+                    run {
+                        CreateCustomToast(this).showToastError(
+                            ErrorLocalizer.localizeThrowable(this, throwable)
+                        ); throwable.printStackTrace()
+                    }
+                }, RxUtils.ignore())
         )
         RxJavaPlugins.setErrorHandler {
             Handler(mainLooper).post {

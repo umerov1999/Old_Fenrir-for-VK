@@ -403,7 +403,7 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
     }
 
     @Override
-    public void doVideoLongClick(int accountId, boolean isMy, int position, @NotNull Video video) {
+    public void doVideoLongClick(int accountId, int ownerId, boolean isMy, int position, @NotNull Video video) {
         ModalBottomSheetDialogFragment.Builder menus = new ModalBottomSheetDialogFragment.Builder();
         if (!isMy) {
             if (video.isCanAdd()) {
@@ -418,6 +418,8 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
         menus.add(new OptionRequest(R.id.action_copy_url, getString(R.string.copy_url), R.drawable.content_copy));
         menus.add(new OptionRequest(R.id.share_button, getString(R.string.share), R.drawable.share));
         menus.add(new OptionRequest(R.id.check_show_author, getString(R.string.author), R.drawable.person));
+        menus.add(new OptionRequest(R.id.album_container, getString(R.string.videos_albums), R.drawable.album_photo));
+
         menus.header(video.getTitle(), R.drawable.video, video.getImage());
         menus.columns(2);
         menus.show(requireActivity().getSupportFragmentManager(), "video_options", option -> {
@@ -428,6 +430,8 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
                 CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.copied_url);
             } else if (option.getId() == R.id.check_show_author) {
                 PlaceFactory.getOwnerWallPlace(accountId, video.getOwnerId(), null).tryOpenWith(requireActivity());
+            } else if (option.getId() == R.id.album_container) {
+                PlaceFactory.getAlbumsByVideoPlace(accountId, ownerId, video.getOwnerId(), video.getId()).tryOpenWith(requireActivity());
             } else {
                 getPresenter().fireVideoOption(option.getId(), video, position, requireActivity());
             }

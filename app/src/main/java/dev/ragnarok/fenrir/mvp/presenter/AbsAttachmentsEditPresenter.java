@@ -29,8 +29,8 @@ import dev.ragnarok.fenrir.util.FileUtil;
 import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.Predicate;
 
-import static dev.ragnarok.fenrir.util.AppPerms.hasCameraPermision;
-import static dev.ragnarok.fenrir.util.AppPerms.hasReadStoragePermision;
+import static dev.ragnarok.fenrir.util.AppPerms.hasCameraPermission;
+import static dev.ragnarok.fenrir.util.AppPerms.hasReadStoragePermission;
 import static dev.ragnarok.fenrir.util.Objects.isNull;
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 import static dev.ragnarok.fenrir.util.Utils.findInfoByPredicate;
@@ -267,7 +267,7 @@ public abstract class AbsAttachmentsEditPresenter<V extends IBaseAttachmentsEdit
     }
 
     public final void firePhotoFromLocalGalleryChoose() {
-        if (!hasReadStoragePermision(getApplicationContext())) {
+        if (!hasReadStoragePermission(getApplicationContext())) {
             getView().requestReadExternalStoragePermission();
             return;
         }
@@ -276,7 +276,7 @@ public abstract class AbsAttachmentsEditPresenter<V extends IBaseAttachmentsEdit
     }
 
     public final void firePhotoFromCameraChoose() {
-        if (!hasCameraPermision(getApplicationContext())) {
+        if (!hasCameraPermission(getApplicationContext())) {
             getView().requestCameraPermission();
             return;
         }
@@ -397,13 +397,13 @@ public abstract class AbsAttachmentsEditPresenter<V extends IBaseAttachmentsEdit
     }
 
     public void fireCameraPermissionResolved() {
-        if (hasCameraPermision(getApplicationContext())) {
+        if (hasCameraPermission(getApplicationContext())) {
             createImageFromCamera();
         }
     }
 
     public void fireReadStoragePermissionResolved() {
-        if (hasReadStoragePermision(getApplicationContext())) {
+        if (hasReadStoragePermission(getApplicationContext())) {
             getView().openAddPhotoFromGalleryWindow(getMaxFutureAttachmentCount());
         }
     }

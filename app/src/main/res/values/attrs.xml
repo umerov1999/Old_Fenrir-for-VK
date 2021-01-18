@@ -42,6 +42,7 @@
     <attr name="navi_header_image" format="reference" />
 
     <attr name="message_bubble_color" format="color" />
+    <attr name="sticker_hint_color" format="color" />
     <attr name="dialogs_unread_color" format="color" />
     <attr name="toast_background" format="color" />
     <attr name="icon_color_active" format="color" />
@@ -163,6 +164,10 @@
         <attr name="radius" format="dimension" />
         <attr name="first_color" format="color" />
         <attr name="second_color" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="BotKeyboardView">
+        <attr name="track_keyboard_height" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="TouchImageView">

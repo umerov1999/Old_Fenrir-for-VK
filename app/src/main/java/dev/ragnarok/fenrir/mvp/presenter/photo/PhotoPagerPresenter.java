@@ -370,7 +370,7 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
     }
 
     public void fireSaveOnDriveClick() {
-        if (!AppPerms.hasWriteStoragePermision(App.getInstance())) {
+        if (!AppPerms.hasWriteStoragePermission(App.getInstance())) {
             getView().requestWriteToExternalStoragePermission();
             return;
         }
@@ -471,7 +471,7 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
     }
 
     public void fireWriteExternalStoragePermissionResolved() {
-        if (AppPerms.hasWriteStoragePermision(App.getInstance())) {
+        if (AppPerms.hasWriteStoragePermission(App.getInstance())) {
             doSaveOnDrive();
         }
     }

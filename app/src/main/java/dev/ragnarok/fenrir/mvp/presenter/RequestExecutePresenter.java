@@ -107,7 +107,7 @@ public class RequestExecutePresenter extends AccountDependencyPresenter<IRequest
     }
 
     private boolean hasWritePermission() {
-        return AppPerms.hasWriteStoragePermision(getApplicationContext());
+        return AppPerms.hasWriteStoragePermission(getApplicationContext());
     }
 
     private void saveToFile() {

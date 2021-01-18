@@ -511,9 +511,14 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
         if (loading) {
             mLoadingProgressBar?.setAnimation(
                 R.raw.loading,
-                Utils.dp(100F),
-                Utils.dp(40F),
-                intArrayOf(0xffffff, CurrentTheme.getColorControlNormal(requireActivity()))
+                Utils.dp(80F),
+                Utils.dp(80F),
+                intArrayOf(
+                    0xffffff,
+                    CurrentTheme.getColorPrimary(requireActivity()),
+                    0x000000,
+                    CurrentTheme.getColorSecondary(requireActivity())
+                )
             )
             mLoadingProgressBar?.playAnimation()
         } else {
@@ -605,9 +610,14 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
             if (mLoadingNow) {
                 progress.setAnimation(
                     R.raw.loading,
-                    Utils.dp(100F),
-                    Utils.dp(40F),
-                    intArrayOf(0xffffff, CurrentTheme.getColorControlNormal(requireActivity()))
+                    Utils.dp(80F),
+                    Utils.dp(80F),
+                    intArrayOf(
+                        0xffffff,
+                        CurrentTheme.getColorPrimary(requireActivity()),
+                        0x000000,
+                        CurrentTheme.getColorSecondary(requireActivity())
+                    )
                 )
                 progress.playAnimation()
             } else {

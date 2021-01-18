@@ -31,6 +31,7 @@ import dev.ragnarok.fenrir.link.internal.LinkActionAdapter;
 import dev.ragnarok.fenrir.link.internal.OwnerLinkSpanFactory;
 import dev.ragnarok.fenrir.model.CryptStatus;
 import dev.ragnarok.fenrir.model.GiftItem;
+import dev.ragnarok.fenrir.model.Keyboard;
 import dev.ragnarok.fenrir.model.LastReadId;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.MessageStatus;
@@ -44,6 +45,7 @@ import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.MessageView;
 import dev.ragnarok.fenrir.view.OnlineView;
+import dev.ragnarok.fenrir.view.emoji.BotKeyboardView;
 import dev.ragnarok.fenrir.view.emoji.EmojiconTextView;
 
 import static dev.ragnarok.fenrir.util.AppTextUtils.getDateFromUnixTime;
@@ -152,7 +154,7 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
         }
 
         holder.sticker.setOnLongClickListener(v -> {
-            if (!AppPerms.hasReadWriteStoragePermision(context)) {
+            if (!AppPerms.hasReadWriteStoragePermission(context)) {
                 if (attachmentsActionCallback != null) {
                     attachmentsActionCallback.onRequestWritePermissions();
                 }
@@ -289,6 +291,21 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
     private void bindNormalMessage(MessageHolder holder, Message message) {
         bindBaseMessageHolder(holder, message);
 
+        if (nonNull(holder.botKeyboardView)) {
+            if (nonNull(message.getKeyboard()) && message.getKeyboard().getInline() && message.getKeyboard().getButtons().size() > 0) {
+                holder.botKeyboardView.setVisibility(View.VISIBLE);
+                holder.botKeyboardView.setButtons(message.getKeyboard().getButtons());
+            } else {
+                holder.botKeyboardView.setVisibility(View.GONE);
+            }
+
+            holder.botKeyboardView.setDelegate(button -> {
+                if (onMessageActionListener != null) {
+                    onMessageActionListener.onBotKeyboardClick(button);
+                }
+            });
+        }
+
         if (message.isDeleted()) {
             holder.root.setAlpha(0.6f);
             holder.Restore.setVisibility(View.VISIBLE);
@@ -365,6 +382,21 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
         } else {
             holder.root.setAlpha(1);
             holder.Restore.setVisibility(View.GONE);
+        }
+
+        if (nonNull(holder.botKeyboardView)) {
+            if (nonNull(message.getKeyboard()) && message.getKeyboard().getInline() && message.getKeyboard().getButtons().size() > 0) {
+                holder.botKeyboardView.setVisibility(View.VISIBLE);
+                holder.botKeyboardView.setButtons(message.getKeyboard().getButtons());
+            } else {
+                holder.botKeyboardView.setVisibility(View.GONE);
+            }
+
+            holder.botKeyboardView.setDelegate(button -> {
+                if (onMessageActionListener != null) {
+                    onMessageActionListener.onBotKeyboardClick(button);
+                }
+            });
         }
 
         boolean read = message.isOut() ? lastReadId.getOutgoing() >= message.getId() : lastReadId.getIncoming() >= message.getId();
@@ -488,6 +520,8 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
 
         void onRestoreClick(@NonNull Message message, int position);
 
+        void onBotKeyboardClick(@NonNull Keyboard.Button button);
+
         boolean onMessageLongClick(@NonNull Message message);
 
         void onMessageClicked(@NonNull Message message);
@@ -501,6 +535,7 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
         final TextView tvAction;
         final View attachmentsRoot;
         final AttachmentsHolder mAttachmentsHolder;
+        final BotKeyboardView botKeyboardView;
         final Button Restore;
 
         ServiceMessageHolder(View itemView) {
@@ -508,6 +543,7 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
             tvAction = itemView.findViewById(R.id.item_service_message_text);
             root = itemView.findViewById(R.id.item_message_bubble);
             Restore = itemView.findViewById(R.id.item_message_restore);
+            botKeyboardView = itemView.findViewById(R.id.input_keyboard_container);
 
             attachmentsRoot = itemView.findViewById(R.id.item_message_attachment_container);
             mAttachmentsHolder = new AttachmentsHolder();
@@ -587,10 +623,12 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
         final View attachmentsRoot;
         final AttachmentsHolder attachmentsHolder;
         final View encryptedView;
+        final BotKeyboardView botKeyboardView;
 
         MessageHolder(View itemView) {
             super(itemView);
             encryptedView = itemView.findViewById(R.id.item_message_encrypted);
+            botKeyboardView = itemView.findViewById(R.id.input_keyboard_container);
 
             body = itemView.findViewById(R.id.item_message_text);
             body.setMovementMethod(LinkMovementMethod.getInstance());

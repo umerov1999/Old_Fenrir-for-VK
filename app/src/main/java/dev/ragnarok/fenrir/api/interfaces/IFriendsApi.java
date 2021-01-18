@@ -23,6 +23,9 @@ public interface IFriendsApi {
                                  String fields, String nameCase);
 
     @CheckResult
+    Single<List<VKApiUser>> getByPhones(String phones, String fields);
+
+    @CheckResult
     Single<Items<VKApiUser>> getRecommendations(Integer count, String fields, String nameCase);
 
     @CheckResult

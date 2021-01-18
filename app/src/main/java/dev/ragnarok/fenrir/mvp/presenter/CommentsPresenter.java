@@ -42,7 +42,6 @@ import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.Poll;
 import dev.ragnarok.fenrir.model.Sticker;
-import dev.ragnarok.fenrir.model.StickersKeywords;
 import dev.ragnarok.fenrir.model.User;
 import dev.ragnarok.fenrir.model.WallReply;
 import dev.ragnarok.fenrir.mvp.presenter.base.PlaceSupportPresenter;
@@ -75,15 +74,14 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
     private final Commented commented;
     private final IOwnersRepository ownersRepository;
     private final ICommentsInteractor interactor;
+    private final IStickersInteractor stickersInteractor;
     private final List<Comment> data;
     private final Integer CommentThread;
     private final Context context;
-    private final CompositeDisposable stickersWordsLoadingDisposable = new CompositeDisposable();
     private final DisposableHolder<Void> stickersWordsDisplayDisposable = new DisposableHolder<>();
     private final CompositeDisposable actualLoadingDisposable = new CompositeDisposable();
     private final DisposableHolder<Void> deepLookingHolder = new DisposableHolder<>();
     private final CompositeDisposable cacheLoadingDisposable = new CompositeDisposable();
-    private final ArrayList<StickersKeywords> words = new ArrayList<>();
     private Integer focusToComment;
     private CommentedState commentedState;
     private int authorId;
@@ -104,6 +102,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
         authorId = accountId;
         ownersRepository = Repository.INSTANCE.getOwners();
         interactor = new CommentsInteractor(Injection.provideNetworkInterfaces(), Injection.provideStores(), Repository.INSTANCE.getOwners());
+        stickersInteractor = InteractorFactory.createStickersInteractor();
         this.commented = commented;
         this.focusToComment = focusToComment;
         this.context = context;
@@ -140,13 +139,6 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
         restoreDraftCommentSync();
         requestInitialData();
         loadAuthorData();
-
-        if (Settings.get().other().isHint_stickers()) {
-            IStickersInteractor stickersInteractor = InteractorFactory.createStickersInteractor();
-            stickersWordsLoadingDisposable.add(stickersInteractor.getKeywordsStickers(accountId)
-                    .compose(RxUtils.applySingleIOToMainSchedulers())
-                    .subscribe(words::addAll, ignore()));
-        }
     }
 
     private static String buildReplyTextFor(Comment comment) {
@@ -222,25 +214,14 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
             return;
         }
         stickersWordsDisplayDisposable.dispose();
-        if (Utils.isEmpty(s) || Utils.isEmpty(words)) {
+        if (Utils.isEmpty(s)) {
             callView(view -> view.updateStickers(Collections.emptyList()));
             return;
         }
-        stickersWordsDisplayDisposable.append(findStickerByWord(s.trim())
+        stickersWordsDisplayDisposable.append(stickersInteractor.getKeywordsStickers(getAccountId(), s.trim())
                 .delay(500, TimeUnit.MILLISECONDS)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(stickers -> callView(view -> view.updateStickers(stickers)), u -> showError(getView(), u)));
-    }
-
-    private Single<List<Sticker>> findStickerByWord(String s) {
-        for (StickersKeywords i : words) {
-            for (String v : i.getKeywords()) {
-                if (s.equalsIgnoreCase(v)) {
-                    return Single.just(i.getStickers());
-                }
-            }
-        }
-        return Single.just(Collections.emptyList());
     }
 
     @SuppressWarnings("unused")
@@ -880,7 +861,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
                 break;
 
             case CommentedType.VIDEO:
-                getView().goToVideoPreview(getAccountId(), commented.getSourceId(), commented.getSourceId());
+                getView().goToVideoPreview(getAccountId(), commented.getSourceId(), commented.getSourceOwnerId());
                 break;
 
             case CommentedType.TOPIC:
@@ -1111,7 +1092,6 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
         cacheLoadingDisposable.dispose();
         actualLoadingDisposable.dispose();
         deepLookingHolder.dispose();
-        stickersWordsLoadingDisposable.dispose();
         stickersWordsDisplayDisposable.dispose();
 
         // save draft async

@@ -14,9 +14,12 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.domain.IFaveInteractor;
+import dev.ragnarok.fenrir.domain.IOwnersRepository;
 import dev.ragnarok.fenrir.domain.IVideosInteractor;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
+import dev.ragnarok.fenrir.domain.Repository;
 import dev.ragnarok.fenrir.model.Commented;
+import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.Video;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
@@ -37,7 +40,9 @@ public class VideoPreviewPresenter extends AccountDependencyPresenter<IVideoPrev
     private final String accessKey;
     private final IVideosInteractor interactor;
     private final IFaveInteractor faveInteractor;
+    private final IOwnersRepository ownerInteractor;
     private Video video;
+    private Owner owner;
     private boolean refreshingNow;
 
     public VideoPreviewPresenter(int accountId, int videoId, int ownerId, @Nullable Video video, @Nullable Bundle savedInstanceState) {
@@ -47,6 +52,7 @@ public class VideoPreviewPresenter extends AccountDependencyPresenter<IVideoPrev
         this.ownerId = ownerId;
         accessKey = nonNull(video) ? video.getAccessKey() : null;
         faveInteractor = InteractorFactory.createFaveInteractor();
+        ownerInteractor = Repository.INSTANCE.getOwners();
 
         if (isNull(savedInstanceState)) {
             this.video = video;
@@ -117,6 +123,24 @@ public class VideoPreviewPresenter extends AccountDependencyPresenter<IVideoPrev
         view.displayCommentCount(video.getCommentsCount());
         view.setCommentButtonVisible(video.isCanComment() || video.getCommentsCount() > 0 || isMy());
         view.displayLikes(video.getLikesCount(), video.isUserLikes());
+        if (isNull(owner)) {
+            appendDisposable(ownerInteractor.getBaseOwnerInfo(getAccountId(), ownerId, IOwnersRepository.MODE_ANY)
+                    .compose(RxUtils.applySingleIOToMainSchedulers())
+                    .subscribe(this::onOwnerReceived, e -> showError(getView(), e)));
+        } else {
+            callView(v -> v.displayOwner(owner));
+        }
+    }
+
+    private void onOwnerReceived(Owner info) {
+        owner = info;
+        if (!isNull(owner)) {
+            callView(v -> v.displayOwner(owner));
+        }
+    }
+
+    public void fireOpenOwnerClicked() {
+        callView(v -> v.showOwnerWall(getAccountId(), ownerId));
     }
 
     private void onVideoInfoGetError(Throwable throwable) {
@@ -131,6 +155,12 @@ public class VideoPreviewPresenter extends AccountDependencyPresenter<IVideoPrev
     private void onActualInfoReceived(Video video) {
         setRefreshingNow(false);
 
+        if (nonNull(video) && video.getDate() == 0 && this.video.getDate() != 0) {
+            video.setDate(this.video.getDate());
+        }
+        if (nonNull(video) && video.getAddingDate() == 0 && this.video.getAddingDate() != 0) {
+            video.setAddingDate(this.video.getAddingDate());
+        }
         this.video = video;
 
         resolveSubtitle();
@@ -229,6 +259,12 @@ public class VideoPreviewPresenter extends AccountDependencyPresenter<IVideoPrev
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(pair -> onLikesResponse(pair.getFirst(), pair.getSecond()),
                         throwable -> onLikeError(getCauseIfRuntime(throwable))));
+    }
+
+    public void fireLikeLongClick() {
+        AssertUtils.requireNonNull(video);
+
+        getView().goToLikes(getAccountId(), "video", video.getOwnerId(), video.getId());
     }
 
     public void firePlayClick() {

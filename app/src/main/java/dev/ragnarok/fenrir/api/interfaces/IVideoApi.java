@@ -31,6 +31,9 @@ public interface IVideoApi {
     Single<Items<VKApiVideoAlbum>> getAlbums(Integer ownerId, Integer offset, Integer count, Boolean needSystem);
 
     @CheckResult
+    Single<Items<VKApiVideoAlbum>> getAlbumsByVideo(Integer target_id, Integer owner_id, Integer video_id);
+
+    @CheckResult
     Single<SearchVideoResponse> search(String query, Integer sort, Boolean hd, Boolean adult, String filters,
                                        Boolean searchOwn, Integer offset, Integer longer, Integer shorter,
                                        Integer count, Boolean extended);

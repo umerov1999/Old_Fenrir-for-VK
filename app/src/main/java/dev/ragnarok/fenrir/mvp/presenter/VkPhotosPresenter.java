@@ -372,6 +372,10 @@ public class VkPhotosPresenter extends AccountDependencyPresenter<IVkPhotosView>
         callView(IVkPhotosView::notifyDataSetChanged);
         resolveToolbarView();
 
+        if (isGuiReady()) {
+            callView(IVkPhotosView::needHelp);
+        }
+
         requestActualData(0);
     }
 

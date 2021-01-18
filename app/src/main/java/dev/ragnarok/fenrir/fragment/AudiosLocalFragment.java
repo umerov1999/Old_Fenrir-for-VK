@@ -132,7 +132,7 @@ public class AudiosLocalFragment extends BaseMvpFragment<AudiosLocalPresenter, I
         super.onResume();
         if (!doAudioLoadTabs) {
             doAudioLoadTabs = true;
-            if (!AppPerms.hasReadStoragePermision(getActivity())) {
+            if (!AppPerms.hasReadStoragePermission(getActivity())) {
                 requestReadPermission.launch();
             } else {
                 getPresenter().LoadAudiosTool();

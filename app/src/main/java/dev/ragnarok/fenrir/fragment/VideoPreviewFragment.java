@@ -28,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
+import com.squareup.picasso.Transformation;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -35,12 +36,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
 import dev.ragnarok.fenrir.activity.SendAttachmentsActivity;
 import dev.ragnarok.fenrir.adapter.MenuAdapter;
+import dev.ragnarok.fenrir.domain.ILikesInteractor;
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
 import dev.ragnarok.fenrir.link.internal.LinkActionAdapter;
 import dev.ragnarok.fenrir.link.internal.OwnerLinkSpanFactory;
@@ -48,6 +51,7 @@ import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.model.Commented;
 import dev.ragnarok.fenrir.model.EditingPostType;
 import dev.ragnarok.fenrir.model.InternalVideoSize;
+import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.Text;
 import dev.ragnarok.fenrir.model.Video;
 import dev.ragnarok.fenrir.model.menu.Item;
@@ -59,11 +63,14 @@ import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.place.PlaceUtil;
 import dev.ragnarok.fenrir.settings.AppPrefs;
+import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppPerms;
+import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.DownloadWorkUtils;
 import dev.ragnarok.fenrir.util.Utils;
+import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.util.YoutubeDeveloperKey;
 import dev.ragnarok.fenrir.view.CircleCounterButton;
 
@@ -73,7 +80,7 @@ import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
 import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
-public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter, IVideoPreviewView> implements View.OnClickListener, IVideoPreviewView {
+public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter, IVideoPreviewView> implements View.OnClickListener, View.OnLongClickListener, IVideoPreviewView {
 
     private static final String EXTRA_VIDEO_ID = "video_id";
     private static final Section SECTION_PLAY = new Section(new Text(R.string.section_play_title));
@@ -93,6 +100,13 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
     private TextView mTitleText;
     private TextView mSubtitleText;
     private ImageView mPreviewImage;
+
+    private ImageView mOwnerAvatar;
+    private TextView mOwnerText;
+    private TextView mUploadDate;
+    private TextView mAddedDate;
+    private Transformation mTransformation;
+    private ViewGroup mOwnerGroup;
 
     public static Bundle buildArgs(int accountId, int ownerId, int videoId, @Nullable Video video) {
         Bundle bundle = new Bundle();
@@ -174,9 +188,20 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
         commentsButton.setOnClickListener(this);
         shareButton.setOnClickListener(this);
         likeButton.setOnClickListener(this);
+        likeButton.setOnLongClickListener(this);
 
         mTitleText = mRootView.findViewById(R.id.fragment_video_title);
         mSubtitleText = mRootView.findViewById(R.id.fragment_video_subtitle);
+
+        mOwnerAvatar = mRootView.findViewById(R.id.item_owner_avatar);
+        mOwnerText = mRootView.findViewById(R.id.item_owner_name);
+        mUploadDate = mRootView.findViewById(R.id.item_upload_time);
+        mAddedDate = mRootView.findViewById(R.id.item_added_time);
+
+        mOwnerGroup = mRootView.findViewById(R.id.item_owner);
+        mOwnerGroup.setOnClickListener(v -> getPresenter().fireOpenOwnerClicked());
+
+        mTransformation = CurrentTheme.createTransformationForAvatar(requireActivity());
 
         if (Settings.get().other().isDo_auto_play_video()) {
             mRootView.findViewById(R.id.cover_cardview).setOnClickListener(v -> getPresenter().fireAutoPlayClick());
@@ -253,6 +278,16 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
         if (nonNull(mRootView)) {
             mRootView.findViewById(R.id.content).setVisibility(View.VISIBLE);
             mRootView.findViewById(R.id.loading_root).setVisibility(View.GONE);
+        }
+
+        if (video.getDate() != 0 && nonNull(mUploadDate)) {
+            mUploadDate.setVisibility(View.VISIBLE);
+            mUploadDate.setText(requireActivity().getString(R.string.uploaded_video, AppTextUtils.getDateFromUnixTime(requireActivity(), video.getDate())));
+        }
+
+        if (video.getAddingDate() != 0 && nonNull(mAddedDate)) {
+            mAddedDate.setVisibility(View.VISIBLE);
+            mAddedDate.setText(requireActivity().getString(R.string.added_video, AppTextUtils.getDateFromUnixTime(requireActivity(), video.getAddingDate())));
         }
 
         safelySetText(mTitleText, video.getTitle());
@@ -522,6 +557,27 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
         }
     }
 
+    @Override
+    public void goToLikes(int accountId, String type, int ownerId, int id) {
+        PlaceFactory.getLikesCopiesPlace(accountId, type, ownerId, id, ILikesInteractor.FILTER_LIKES)
+                .tryOpenWith(requireActivity());
+    }
+
+    @Override
+    public void displayOwner(@NotNull Owner owner) {
+        if (nonNull(mOwnerGroup)) {
+            mOwnerGroup.setVisibility(View.VISIBLE);
+        }
+        if (nonNull(mOwnerAvatar)) {
+            mOwnerAvatar.setVisibility(View.VISIBLE);
+            ViewUtils.displayAvatar(mOwnerAvatar, mTransformation, owner.getMaxSquareAvatar(), Constants.PICASSO_TAG);
+        }
+        if (nonNull(mOwnerText)) {
+            mOwnerText.setVisibility(View.VISIBLE);
+            mOwnerText.setText(owner.getFullName());
+        }
+    }
+
     private void onPlayMenuItemClick(Video video, Item item) {
         switch (item.getKey()) {
             case Menu.P_240:
@@ -577,7 +633,7 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
                 break;
 
             case Menu.DOWNLOAD:
-                if (!AppPerms.hasReadWriteStoragePermision(requireActivity())) {
+                if (!AppPerms.hasReadWriteStoragePermission(requireActivity())) {
                     requestWritePermission.launch();
                 } else {
                     showDownloadPlayerMenu(video);
@@ -734,6 +790,15 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
                 getPresenter().fireShareClick();
                 break;
         }
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        if (v.getId() == R.id.like_button) {
+            getPresenter().fireLikeLongClick();
+            return true;
+        }
+        return false;
     }
 
     private static final class OptionView implements IVideoPreviewView.IOptionView {

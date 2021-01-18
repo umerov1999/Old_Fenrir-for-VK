@@ -292,7 +292,7 @@ public class GifPagerFragment extends AbsDocumentPreviewFragment<GifPagerPresent
         void setProgressVisible(boolean visible) {
             mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
             if (visible) {
-                mProgressBar.setAnimation(R.raw.loading, Utils.dp(100F), Utils.dp(40F), new int[]{0xffffff, CurrentTheme.getColorControlNormal(requireActivity())});
+                mProgressBar.setAnimation(R.raw.loading, Utils.dp(80F), Utils.dp(80F), new int[]{0xffffff, CurrentTheme.getColorPrimary(requireActivity()), 0x000000, CurrentTheme.getColorSecondary(requireActivity())});
                 mProgressBar.playAnimation();
             } else {
                 mProgressBar.stopAnimation();

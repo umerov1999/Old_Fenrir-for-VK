@@ -26,6 +26,7 @@ import dev.ragnarok.fenrir.adapter.AttachmentsViewBinder;
 import dev.ragnarok.fenrir.adapter.MessagesAdapter;
 import dev.ragnarok.fenrir.fragment.base.PlaceSupportMvpFragment;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
+import dev.ragnarok.fenrir.model.Keyboard;
 import dev.ragnarok.fenrir.model.LastReadId;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.VoiceMessage;
@@ -101,6 +102,11 @@ public class FwdsFragment extends PlaceSupportMvpFragment<FwdsPresenter, IFwdsVi
 
     @Override
     public void onRestoreClick(@NonNull Message message, int position) {
+        // not supported
+    }
+
+    @Override
+    public void onBotKeyboardClick(@NonNull @NotNull Keyboard.Button button) {
         // not supported
     }
 

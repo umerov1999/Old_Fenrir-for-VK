@@ -39,7 +39,7 @@ public class LocalPhotosPresenter extends RxSupportPresenter<ILocalPhotosView> {
 
         mLocalPhotos = Collections.emptyList();
         /*
-        if(mLocalImageAlbum == null && !AppPerms.hasReadStoragePermision(getApplicationContext())){
+        if(mLocalImageAlbum == null && !AppPerms.hasReadStoragePermission(getApplicationContext())){
             if(!permissionRequestedOnce){
                 permissionRequestedOnce = true;
                 getView().requestReadExternalStoragePermission();
@@ -177,7 +177,7 @@ public class LocalPhotosPresenter extends RxSupportPresenter<ILocalPhotosView> {
     }
 
     public void fireReadExternalStoregePermissionResolved() {
-        if (AppPerms.hasReadStoragePermision(getApplicationContext())) {
+        if (AppPerms.hasReadStoragePermission(getApplicationContext())) {
             loadData();
         }
     }

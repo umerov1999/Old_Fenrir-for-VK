@@ -38,7 +38,7 @@ public class LoginActivity extends Activity {
     private static final String EXTRA_VALIDATE = "validate";
     private static final String EXTRA_LOGIN = "login";
     private static final String EXTRA_PASSWORD = "password";
-    private static final String EXTRA_TWO_FA = "twofa";
+    private static final String EXTRA_TWO_FA = "two_fa";
     private static final String EXTRA_SAVE = "save";
     private static final String EXTRA_GROUP_IDS = "group_ids";
     private String TLogin;
@@ -162,7 +162,7 @@ public class LoginActivity extends Activity {
                         intent.putExtra(Extra.USER_ID, Integer.parseInt(userId));
                         intent.putExtra(Extra.LOGIN, TLogin);
                         intent.putExtra(Extra.PASSWORD, TPassword);
-                        intent.putExtra(Extra.TWOFA, TwoFA);
+                        intent.putExtra(Extra.TWO_FA, TwoFA);
                         intent.putExtra(Extra.SAVE, isSave);
                     }
 

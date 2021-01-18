@@ -238,7 +238,7 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
     }
 
     public void doUpload() {
-        if (AppPerms.hasReadStoragePermision(getApplicationContext())) {
+        if (AppPerms.hasReadStoragePermission(getApplicationContext())) {
             getView().startSelectUploadFileActivity(getAccountId());
         } else {
             getView().requestReadExternalStoragePermission();
@@ -250,7 +250,7 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
     }
 
     public void fireReadPermissionResolved() {
-        if (AppPerms.hasReadStoragePermision(getApplicationContext())) {
+        if (AppPerms.hasReadStoragePermission(getApplicationContext())) {
             getView().startSelectUploadFileActivity(getAccountId());
         }
     }
@@ -400,7 +400,7 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
     }
 
     public void fireOnVideoLongClick(int position, @NonNull Video video) {
-        callView(v -> v.doVideoLongClick(getAccountId(), ownerId == getAccountId(), position, video));
+        callView(v -> v.doVideoLongClick(getAccountId(), ownerId, ownerId == getAccountId(), position, video));
     }
 
     private boolean canLoadMore() {

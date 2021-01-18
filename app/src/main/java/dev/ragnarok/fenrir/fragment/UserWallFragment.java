@@ -461,7 +461,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             }
         }
         menu.add(R.string.show_qr).setOnMenuItemClickListener(item -> {
-            if (!AppPerms.hasReadWriteStoragePermision(requireActivity())) {
+            if (!AppPerms.hasReadWriteStoragePermission(requireActivity())) {
                 requestWritePermission.launch();
             } else {
                 getPresenter().fireShowQR(requireActivity());

@@ -265,7 +265,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
         }
 
         if (item.getItemId() == R.id.action_show_qr) {
-            if (!AppPerms.hasReadWriteStoragePermision(requireActivity())) {
+            if (!AppPerms.hasReadWriteStoragePermission(requireActivity())) {
                 requestWritePermission.launch();
             } else {
                 getPresenter().fireShowQR(requireActivity());

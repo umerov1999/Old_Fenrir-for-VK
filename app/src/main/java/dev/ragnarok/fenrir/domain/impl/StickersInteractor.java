@@ -21,7 +21,6 @@ import dev.ragnarok.fenrir.domain.mappers.Dto2Entity;
 import dev.ragnarok.fenrir.domain.mappers.Entity2Model;
 import dev.ragnarok.fenrir.model.Sticker;
 import dev.ragnarok.fenrir.model.StickerSet;
-import dev.ragnarok.fenrir.model.StickersKeywords;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.Utils;
@@ -44,7 +43,7 @@ public class StickersInteractor implements IStickersInteractor {
 
     @Override
     public Completable getAndStore(int accountId) {
-        return networker.vkDefault(accountId)
+        Completable stickerSet = networker.vkDefault(accountId)
                 .store()
                 .getStickers()
                 .flatMapCompletable(items -> {
@@ -58,12 +57,15 @@ public class StickersInteractor implements IStickersInteractor {
                             .setStickers(mapAll(listEmptyIfNull(listEmptyIfNull(items.recent.items)), Dto2Entity::mapSticker)).setActive(true).setPurchased(true);
                     List<StickerSetEntity> ret = mapAll(list, Dto2Entity::mapStikerSet);
                     ret.add(temp);
-                    if (Settings.get().other().isHint_stickers()) {
-                        return storage.store(accountId, ret).andThen(getStickersKeywordsAndStore(accountId, items));
-                    } else {
-                        return storage.store(accountId, ret);
-                    }
+                    return storage.store(accountId, ret);
                 });
+        if (Settings.get().other().isHint_stickers()) {
+            return stickerSet.andThen(networker.vkDefault(accountId)
+                    .store()
+                    .getStickerKeywords()
+                    .flatMapCompletable(hint -> getStickersKeywordsAndStore(accountId, hint)));
+        }
+        return stickerSet;
     }
 
     private List<StickersKeywordsEntity> generateKeywords(@NonNull List<List<VKApiSticker>> s, @NonNull List<List<String>> w) {
@@ -96,14 +98,14 @@ public class StickersInteractor implements IStickersInteractor {
     }
 
     @Override
-    public Single<List<StickersKeywords>> getKeywordsStickers(int accountId) {
-        return storage.getKeywordsStickers(accountId)
-                .map(entities -> mapAll(entities, Entity2Model::map));
+    public Single<List<Sticker>> getKeywordsStickers(int accountId, String s) {
+        return storage.getKeywordsStickers(accountId, s)
+                .map(entities -> mapAll(entities, Entity2Model::buildStickerFromDbo));
     }
 
     @Override
     public Completable PlaceToStickerCache(Context context) {
-        if (!AppPerms.hasReadWriteStoragePermision(context))
+        if (!AppPerms.hasReadWriteStoragePermission(context))
             return Completable.complete();
         return Completable.create(t -> {
             File temp = new File(Settings.get().other().getStickerDir());

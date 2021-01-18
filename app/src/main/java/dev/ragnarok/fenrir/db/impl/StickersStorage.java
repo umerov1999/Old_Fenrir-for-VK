@@ -186,22 +186,28 @@ class StickersStorage extends AbsStorage implements IStickersStorage {
     }
 
     @Override
-    public Single<List<StickersKeywordsEntity>> getKeywordsStickers(int accountId) {
+    public Single<List<StickerEntity>> getKeywordsStickers(int accountId, String s) {
         return Single.create(e -> {
-            long start = System.currentTimeMillis();
             Cursor cursor = helper(accountId).getReadableDatabase().query(StickersKeywordsColumns.TABLENAME, KEYWORDS_STICKER_COLUMNS, null, null, null, null, null);
 
-            List<StickersKeywordsEntity> stickers = new ArrayList<>(cursor.getCount());
+            List<StickerEntity> stickers = new ArrayList<>(cursor.getCount());
             while (cursor.moveToNext()) {
                 if (e.isDisposed()) {
                     break;
                 }
-                stickers.add(mapStickersKeywords(cursor));
+                StickersKeywordsEntity entity = mapStickersKeywords(cursor);
+                for (String v : entity.getKeywords()) {
+                    if (s.equalsIgnoreCase(v)) {
+                        stickers.addAll(entity.getStickers());
+                        cursor.close();
+                        e.onSuccess(stickers);
+                        return;
+                    }
+                }
             }
 
             cursor.close();
             e.onSuccess(stickers);
-            Exestime.log("StickersStorage.get", start, "count: " + stickers.size());
         });
     }
 }

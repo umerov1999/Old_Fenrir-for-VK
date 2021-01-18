@@ -189,7 +189,7 @@ public class StoryPagerPresenter extends AccountDependencyPresenter<IStoryPagerV
     }
 
     public void fireDownloadButtonClick() {
-        if (!AppPerms.hasWriteStoragePermision(App.getInstance())) {
+        if (!AppPerms.hasWriteStoragePermission(App.getInstance())) {
             getView().requestWriteExternalStoragePermission();
             return;
         }
@@ -198,7 +198,7 @@ public class StoryPagerPresenter extends AccountDependencyPresenter<IStoryPagerV
     }
 
     private void onWritePermissionResolved() {
-        if (AppPerms.hasWriteStoragePermision(App.getInstance())) {
+        if (AppPerms.hasWriteStoragePermission(App.getInstance())) {
             downloadImpl();
         }
     }

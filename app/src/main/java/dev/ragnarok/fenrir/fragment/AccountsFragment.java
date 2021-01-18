@@ -153,7 +153,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                     String token = result.getData().getStringExtra(Extra.TOKEN);
                     String Login = result.getData().getStringExtra(Extra.LOGIN);
                     String Password = result.getData().getStringExtra(Extra.PASSWORD);
-                    String TwoFA = result.getData().getStringExtra(Extra.TWOFA);
+                    String TwoFA = result.getData().getStringExtra(Extra.TWO_FA);
                     boolean isSave = result.getData().getBooleanExtra(Extra.SAVE, false);
                     processNewAccount(uid, token, Constants.DEFAULT_ACCOUNT_TYPE, Login, Password, TwoFA, true, true, isSave);
                 }
@@ -368,7 +368,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
             String url = result.getString(Extra.URL);
             String Login = result.getString(Extra.LOGIN);
             String Password = result.getString(Extra.PASSWORD);
-            String TwoFA = result.getString(Extra.TWOFA);
+            String TwoFA = result.getString(Extra.TWO_FA);
             boolean isSave = result.getBoolean(Extra.SAVE);
             startValidateViaWeb(url, Login, Password, TwoFA, isSave);
         });
@@ -377,7 +377,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
             String token = result.getString(Extra.TOKEN);
             String Login = result.getString(Extra.LOGIN);
             String Password = result.getString(Extra.PASSWORD);
-            String TwoFA = result.getString(Extra.TWOFA);
+            String TwoFA = result.getString(Extra.TWO_FA);
             boolean isSave = result.getBoolean(Extra.SAVE);
             processNewAccount(uid, token, Constants.DEFAULT_ACCOUNT_TYPE, Login, Password, TwoFA, true, true, isSave);
         });
@@ -576,7 +576,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
         if (item.getItemId() == R.id.export_accounts) {
             if (Settings.get().accounts() == null || Settings.get().accounts().getRegistered() == null || Settings.get().accounts().getRegistered().size() <= 0)
                 return true;
-            if (!AppPerms.hasReadWriteStoragePermision(getActivity())) {
+            if (!AppPerms.hasReadWriteStoragePermission(getActivity())) {
                 requestWritePermission.launch();
                 return true;
             }
@@ -588,7 +588,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
         }
 
         if (item.getItemId() == R.id.import_accounts) {
-            if (!AppPerms.hasReadStoragePermision(getActivity())) {
+            if (!AppPerms.hasReadStoragePermission(getActivity())) {
                 requestReadPermission.launch();
                 return true;
             }

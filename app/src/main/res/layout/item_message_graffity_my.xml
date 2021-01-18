@@ -133,7 +133,5 @@
             </LinearLayout>
 
         </dev.ragnarok.fenrir.view.MessageView>
-
-
     </RelativeLayout>
 </LinearLayout>

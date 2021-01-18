@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.api.services;
 
+import java.util.List;
+
 import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiUser;
 import dev.ragnarok.fenrir.api.model.VkApiFriendList;
@@ -70,4 +72,9 @@ public interface IFriendsService {
     @POST("execute")
     Single<BaseResponse<MutualFriendsResponse>> getMutual(@Field("code") String code);
 
+    //https://vk.com/dev/friends.getByPhones
+    @FormUrlEncoded
+    @POST("friends.getByPhones")
+    Single<BaseResponse<List<VKApiUser>>> getByPhones(@Field("phones") String phones,
+                                                      @Field("fields") String fields);
 }

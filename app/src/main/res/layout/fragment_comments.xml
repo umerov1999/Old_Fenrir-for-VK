@@ -42,6 +42,14 @@
                 android:clipToPadding="false"
                 android:scrollbars="vertical" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/stickers"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_gravity="bottom"
+                android:background="?sticker_hint_color"
+                android:visibility="gone" />
+
         </FrameLayout>
 
         <LinearLayout
@@ -62,7 +70,7 @@
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 android:textColor="?colorPrimary"
                 android:textIsSelectable="false"
-                tools:text="Ruslan Kolbasa" />
+                tools:text="Fenrir" />
 
             <ImageView
                 android:id="@+id/fragment_comments_delete_reply"
@@ -80,13 +88,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:orientation="vertical">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/stickers"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:background="?message_bubble_color"
-                android:visibility="gone" />
 
             <include
                 layout="@layout/content_comment_input"

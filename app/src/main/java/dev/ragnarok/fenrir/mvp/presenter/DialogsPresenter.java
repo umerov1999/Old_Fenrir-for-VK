@@ -148,20 +148,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
         safeNotifyDataSetChanged();
 
         if (Utils.needReloadStickers(getAccountId())) {
-            try {
-                appendDisposable(InteractorFactory.createStickersInteractor()
-                        .getAndStore(getAccountId())
-                        .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                        .subscribe(dummy(), this::onDebugError));
-            } catch (Exception ignored) {
-                /*ignore*/
-            }
-        }
-    }
-
-    private void onDebugError(Throwable throwable) {
-        if (Settings.get().other().isDeveloper_mode()) {
-            showError(getView(), throwable);
+            receiveStickers();
         }
     }
 
@@ -324,6 +311,18 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
                 .subscribe(t -> callView(v -> v.showSnackbar(R.string.success, false)), this::onDialogsGetError));
     }
 
+    private void receiveStickers() {
+        try {
+            //noinspection ResultOfMethodCallIgnored
+            InteractorFactory.createStickersInteractor()
+                    .getAndStore(getAccountId())
+                    .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                    .subscribe(dummy(), ignore());
+        } catch (Exception ignored) {
+            /*ignore*/
+        }
+    }
+
     private void onCachedDataReceived(List<Dialog> data) {
         cacheNowLoading = false;
 
@@ -336,14 +335,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
 
         if (Settings.get().other().isNot_update_dialogs() || Utils.isHiddenCurrent()) {
             if (Utils.needReloadStickers(getAccountId())) {
-                try {
-                    appendDisposable(InteractorFactory.createStickersInteractor()
-                            .getAndStore(getAccountId())
-                            .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                            .subscribe(dummy(), this::onDebugError));
-                } catch (Exception ignored) {
-                    /*ignore*/
-                }
+                receiveStickers();
             }
             if (isGuiReady() && Utils.needReloadDialogs(getAccountId())) {
                 getView().askToReload();

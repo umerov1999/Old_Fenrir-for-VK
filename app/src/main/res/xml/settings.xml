@@ -32,6 +32,11 @@
             app:iconSpaceReserved="false" />
 
         <Preference
+            android:key="friends_by_phone"
+            android:title="@string/friends_by_phone"
+            app:iconSpaceReserved="false" />
+
+        <Preference
             android:key="notifications"
             android:title="@string/notif_setting_title"
             app:iconSpaceReserved="false" />
@@ -711,7 +716,6 @@
 
         <SwitchPreference
             android:defaultValue="false"
-            android:dependency="developer_mode"
             android:key="native_parcel"
             android:summary="@string/native_parcel_summary"
             android:title="@string/native_parcel"

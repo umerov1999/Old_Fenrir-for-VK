@@ -184,7 +184,7 @@ public class GifPagerPresenter extends BaseDocumentPresenter<IGifPagerView> impl
     }
 
     public void fireDownloadButtonClick(Context context, View view) {
-        if (!AppPerms.hasWriteStoragePermision(context)) {
+        if (!AppPerms.hasWriteStoragePermission(context)) {
             getView().requestWriteExternalStoragePermission();
             return;
         }
@@ -194,7 +194,7 @@ public class GifPagerPresenter extends BaseDocumentPresenter<IGifPagerView> impl
 
     @Override
     public void onWritePermissionResolved(Context context, View view) {
-        if (AppPerms.hasWriteStoragePermision(context)) {
+        if (AppPerms.hasWriteStoragePermission(context)) {
             downloadImpl(context, view);
         }
     }

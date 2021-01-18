@@ -501,7 +501,7 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
             dlgAlert.setCancelable(true);
             dlgAlert.setNegativeButton(R.string.button_cancel, null);
             dlgAlert.setPositiveButton(R.string.save, (dialogInterface, i) -> {
-                if (!AppPerms.hasReadWriteStoragePermision(context)) {
+                if (!AppPerms.hasReadWriteStoragePermission(context)) {
                     AppPerms.requestReadWriteStoragePermission((Activity) context);
                 } else {
                     String path = Environment.getExternalStorageDirectory().getAbsolutePath();

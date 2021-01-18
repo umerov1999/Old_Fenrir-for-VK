@@ -137,7 +137,7 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
             }
             return Single.error(new Throwable("Can't receipt bitrate "));
         } catch (RuntimeException e) {
-            return Single.error(new Throwable(e.getLocalizedMessage()));
+            return Single.error(e);
         }
     }
 
@@ -371,7 +371,7 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
         if (!iSSelectMode) {
             if (isLongPressDownload) {
                 holder.Track.setOnLongClickListener(v -> {
-                    if (!AppPerms.hasReadWriteStoragePermision(mContext)) {
+                    if (!AppPerms.hasReadWriteStoragePermission(mContext)) {
                         if (mClickListener != null) {
                             mClickListener.onRequestWritePermissions();
                         }
@@ -475,7 +475,7 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
                         case AudioItem.add_and_download_button:
                             addTrack(Settings.get().accounts().getCurrent(), audio);
                         case AudioItem.save_item_audio:
-                            if (!AppPerms.hasReadWriteStoragePermision(mContext)) {
+                            if (!AppPerms.hasReadWriteStoragePermission(mContext)) {
                                 if (mClickListener != null) {
                                     mClickListener.onRequestWritePermissions();
                                 }

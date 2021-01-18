@@ -11,11 +11,14 @@ import android.webkit.MimeTypeMap
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.FileProvider
+import androidx.fragment.app.FragmentActivity
 import androidx.work.*
 import com.google.gson.Gson
 import dev.ragnarok.fenrir.CheckDonate
 import dev.ragnarok.fenrir.Constants
+import dev.ragnarok.fenrir.Extra
 import dev.ragnarok.fenrir.R
+import dev.ragnarok.fenrir.dialog.AudioDuplicateDialog
 import dev.ragnarok.fenrir.domain.InteractorFactory
 import dev.ragnarok.fenrir.longpoll.AppNotificationChannels
 import dev.ragnarok.fenrir.longpoll.NotificationHelper
@@ -379,7 +382,32 @@ object DownloadWorkUtils {
         CheckDirectory(result_filename.path)
         val download_status = track_file_exist(context, result_filename)
         if (download_status != 0 && !Force) {
-            return download_status
+            if (context !is FragmentActivity) {
+                return download_status
+            }
+            val dialog =
+                AudioDuplicateDialog.newInstance(
+                    context,
+                    account_id,
+                    audio,
+                    result_filename.build()
+                )
+                    ?: return download_status
+            context.supportFragmentManager.setFragmentResultListener(
+                AudioDuplicateDialog.REQUEST_CODE_AUDIO_DUPLICATE,
+                dialog
+            ) { _, result ->
+                if (!result.getBoolean(Extra.TYPE)) {
+                    if (File(result_filename.build()).delete()) {
+                        doDownloadAudio(context, audio, account_id, false)
+                    }
+                } else {
+                    doDownloadAudio(context, audio, account_id, true)
+                }
+            }
+
+            dialog.show(context.supportFragmentManager, "audio_duplicates")
+            return 0
         }
         if (download_status == 1) {
             result_filename.setFile(result_filename.file + ("." + DOWNLOAD_DATE_FORMAT.format(Date())))
@@ -658,10 +686,11 @@ object DownloadWorkUtils {
             val account_id =
                 inputData.getInt(ExtraDwn.ACCOUNT, ISettings.IAccountsSettings.INVALID_ID)
             if (Utils.isEmpty(audio.url) || audio.isHLS) {
-                val link = RxUtils.BlockingGetSingle(InteractorFactory
-                    .createAudioInteractor()
-                    .getByIdOld(account_id, listOf(IdPair(audio.id, audio.ownerId)))
-                    .map { e: List<Audio> -> e[0].url }, audio.url
+                val link = RxUtils.BlockingGetSingle(
+                    InteractorFactory
+                        .createAudioInteractor()
+                        .getByIdOld(account_id, listOf(IdPair(audio.id, audio.ownerId)))
+                        .map { e: List<Audio> -> e[0].url }, audio.url
                 )
                 if (!Utils.isEmpty(link)) {
                     audio.url = link

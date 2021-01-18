@@ -59,7 +59,7 @@
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
                     android:layout_toStartOf="@id/avatar_root"
                     android:orientation="vertical">
 
@@ -173,6 +173,14 @@
             android:clipToPadding="false"
             android:paddingTop="8dp"
             android:scrollbars="vertical" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/stickers"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_gravity="bottom"
+            android:background="?sticker_hint_color"
+            android:visibility="gone" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/goto_button"
@@ -288,13 +296,6 @@
                 app:tint="?attr/colorOnSurface" />
 
         </RelativeLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/stickers"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:background="?message_bubble_color"
-            android:visibility="gone" />
 
         <include
             layout="@layout/fragment_input"

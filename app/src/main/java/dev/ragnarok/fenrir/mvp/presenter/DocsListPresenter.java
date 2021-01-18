@@ -314,7 +314,7 @@ public class DocsListPresenter extends AccountDependencyPresenter<IDocListView> 
     }
 
     public void fireButtonAddClick() {
-        if (AppPerms.hasReadStoragePermision(getApplicationContext())) {
+        if (AppPerms.hasReadStoragePermission(getApplicationContext())) {
             getView().startSelectUploadFileActivity(getAccountId());
         } else {
             getView().requestReadExternalStoragePermission();
@@ -351,7 +351,7 @@ public class DocsListPresenter extends AccountDependencyPresenter<IDocListView> 
     }
 
     public void fireReadPermissionResolved() {
-        if (AppPerms.hasReadStoragePermision(getApplicationContext())) {
+        if (AppPerms.hasReadStoragePermission(getApplicationContext())) {
             getView().startSelectUploadFileActivity(getAccountId());
         }
     }

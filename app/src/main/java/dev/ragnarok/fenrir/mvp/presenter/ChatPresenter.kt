@@ -70,7 +70,9 @@ class ChatPresenter(
 
     private var peer: Peer
     private var subtitle: String? = null
-    private val audioRecordWrapper: AudioRecordWrapper
+    private val audioRecordWrapper: AudioRecordWrapper = AudioRecordWrapper.Builder(App.instance)
+        .setFileExt(RECORD_EXT_MP3)
+        .build()
     private var endOfContent: Boolean = false
     private var outConfig: ChatConfig
     private var draftMessageText: String? = null
@@ -87,9 +89,6 @@ class ChatPresenter(
     private val longpollManager: ILongpollManager = LongpollInstance.get()
     private val uploadManager: IUploadManager = Injection.provideUploadManager()
 
-    private val words: ArrayList<StickersKeywords> = ArrayList()
-
-    private var stickersWordsLoadingDisposable = Disposable.disposed()
     private var stickersWordsDisplayDisposable = Disposable.disposed()
     private var cacheLoadingDisposable = Disposable.disposed()
     private var netLoadingDisposable = Disposable.disposed()
@@ -136,9 +135,6 @@ class ChatPresenter(
     private var currentPhotoCameraUri: Uri? = null
 
     init {
-        audioRecordWrapper = AudioRecordWrapper.Builder(App.instance)
-            .setFileExt(RECORD_EXT_MP3)
-            .build()
 
         if (savedInstanceState == null) {
             peer = initialPeer
@@ -195,9 +191,10 @@ class ChatPresenter(
                 }
             }
 
-        appendDisposable(longpollManager.observeKeepAlive()
-            .toMainThread()
-            .subscribe({ onLongpollKeepAliveRequest() }, ignore())
+        appendDisposable(
+            longpollManager.observeKeepAlive()
+                .toMainThread()
+                .subscribe({ onLongpollKeepAliveRequest() }, ignore())
         )
 
         appendDisposable(Processors.realtimeMessages()
@@ -214,34 +211,40 @@ class ChatPresenter(
                 }
             })
 
-        appendDisposable(uploadManager.observeAdding()
-            .toMainThread()
-            .subscribe({ onUploadAdded(it) }, ignore())
+        appendDisposable(
+            uploadManager.observeAdding()
+                .toMainThread()
+                .subscribe({ onUploadAdded(it) }, ignore())
         )
 
-        appendDisposable(uploadManager.observeDeleting(true)
-            .toMainThread()
-            .subscribe({ onUploadRemoved(it) }, ignore())
+        appendDisposable(
+            uploadManager.observeDeleting(true)
+                .toMainThread()
+                .subscribe({ onUploadRemoved(it) }, ignore())
         )
 
-        appendDisposable(uploadManager.observeResults()
-            .toMainThread()
-            .subscribe({ onUploadResult(it) }, ignore())
+        appendDisposable(
+            uploadManager.observeResults()
+                .toMainThread()
+                .subscribe({ onUploadResult(it) }, ignore())
         )
 
-        appendDisposable(uploadManager.obseveStatus()
-            .toMainThread()
-            .subscribe({ onUploadStatusChange(it) }, ignore())
+        appendDisposable(
+            uploadManager.obseveStatus()
+                .toMainThread()
+                .subscribe({ onUploadStatusChange(it) }, ignore())
         )
 
-        appendDisposable(uploadManager.observeProgress()
-            .toMainThread()
-            .subscribe({ onUploadProgressUpdate(it) }, ignore())
+        appendDisposable(
+            uploadManager.observeProgress()
+                .toMainThread()
+                .subscribe({ onUploadProgressUpdate(it) }, ignore())
         )
 
-        appendDisposable(messagesRepository.observePeerUpdates()
-            .toMainThread()
-            .subscribe({ onPeerUpdate(it) }, ignore())
+        appendDisposable(
+            messagesRepository.observePeerUpdates()
+                .toMainThread()
+                .subscribe({ onPeerUpdate(it) }, ignore())
         )
 
         appendDisposable(Repository.owners.observeUpdates()
@@ -316,13 +319,14 @@ class ChatPresenter(
     }
 
     fun fireTranscript(voiceMessageId: String, messageId: Int) {
-        appendDisposable(messagesRepository.recogniseAudioMessage(
-            accountId,
-            messageId,
-            voiceMessageId
-        )
-            .compose(applySingleIOToMainSchedulers())
-            .subscribe({ }, { t: Throwable? -> showError(view, t) })
+        appendDisposable(
+            messagesRepository.recogniseAudioMessage(
+                accountId,
+                messageId,
+                voiceMessageId
+            )
+                .compose(applySingleIOToMainSchedulers())
+                .subscribe({ }, { t: Throwable? -> showError(view, t) })
         )
     }
 
@@ -412,16 +416,6 @@ class ChatPresenter(
             loadAllCachedData()
         }
         requestAtStart()
-
-        if (!refresh) {
-            if (Settings.get().other().isHint_stickers) {
-                stickersWordsLoadingDisposable = stickersInteractor.getKeywordsStickers(accountId)
-                    .fromIOToMain()
-                    .subscribe({
-                        words.addAll(it)
-                    }, ignore())
-            }
-        }
     }
 
     private fun onUploadProgressUpdate(data: List<IUploadManager.IProgressUpdate>) {
@@ -727,32 +721,22 @@ class ChatPresenter(
             return
         }
         stickersWordsDisplayDisposable.dispose()
-        if (isEmpty(s) || isEmpty(words)) {
+        if (isEmpty(s)) {
             if (isGuiReady) {
                 view?.updateStickers(Collections.emptyList())
             }
             return
         }
-        stickersWordsDisplayDisposable = findStickerByWord(s!!.trim())
-            .delay(500, TimeUnit.MILLISECONDS)
-            .fromIOToMain()
-            .subscribe({ stickers -> if (isGuiReady) view?.updateStickers(stickers) }, ignore())
-    }
-
-    private fun findStickerByWord(s: String): Single<List<Sticker>> {
-        for (i in words) {
-            for (v in i.keywords) {
-                if (s.equals(v, true)) {
-                    return Single.just(i.stickers)
-                }
-            }
-        }
-        return Single.just(Collections.emptyList())
+        stickersWordsDisplayDisposable =
+            stickersInteractor.getKeywordsStickers(accountId, s!!.trim())
+                .delay(500, TimeUnit.MILLISECONDS)
+                .fromIOToMain()
+                .subscribe({ stickers -> if (isGuiReady) view?.updateStickers(stickers) }, ignore())
     }
 
     fun fireDraftMessageTextEdited(s: String) {
         if (Peer.isGroupChat(peerId)) {
-            if (!Utils.isEmpty(s) && s.length == 1 && s[0] == '@') {
+            if (!isEmpty(s) && s.length == 1 && s[0] == '@') {
                 view?.showChatMembers(accountId, Peer.toChatId(peerId))
             }
         }
@@ -1055,6 +1039,7 @@ class ChatPresenter(
     }
 
     private fun hasAudioRecordPermissions(): Boolean {
+        if (!hasMarshmallow()) return true
         val app = applicationContext
 
         val recordPermission =
@@ -1182,9 +1167,10 @@ class ChatPresenter(
     }
 
     fun ResolveWritingInfo(context: Context, owner_id: Int) {
-        appendDisposable(OwnerInfo.getRx(context, Settings.get().accounts().current, owner_id)
-            .compose(applySingleIOToMainSchedulers())
-            .subscribe({ t -> view?.displayWriting(t.owner) }, { run {} })
+        appendDisposable(
+            OwnerInfo.getRx(context, Settings.get().accounts().current, owner_id)
+                .compose(applySingleIOToMainSchedulers())
+                .subscribe({ t -> view?.displayWriting(t.owner) }, { run {} })
         )
     }
 
@@ -1197,28 +1183,30 @@ class ChatPresenter(
                 resolveToolbarSubtitle()
             }
 
-            Peer.CHAT -> appendDisposable(messagesRepository.getChatUsers(
-                accountId,
-                Peer.toChatId(peerId)
+            Peer.CHAT -> appendDisposable(
+                messagesRepository.getChatUsers(
+                    accountId,
+                    Peer.toChatId(peerId)
+                )
+                    .compose(applySingleIOToMainSchedulers())
+                    .subscribe({ t ->
+                        run {
+                            subtitle = getString(R.string.chat_users_count, t.size)
+                            resolveToolbarSubtitle()
+                        }
+                    }, { run { resolveToolbarSubtitle() } })
             )
-                .compose(applySingleIOToMainSchedulers())
-                .subscribe({ t ->
-                    run {
-                        subtitle = getString(R.string.chat_users_count, t.size)
+
+
+            Peer.USER -> appendDisposable(
+                Stores.getInstance()
+                    .owners()
+                    .getLocalizedUserActivity(messagesOwnerId, Peer.toUserId(peerId))
+                    .compose(applyMaybeIOToMainSchedulers())
+                    .subscribe({ s ->
+                        subtitle = s
                         resolveToolbarSubtitle()
-                    }
-                }, { run { resolveToolbarSubtitle() } })
-            )
-
-
-            Peer.USER -> appendDisposable(Stores.getInstance()
-                .owners()
-                .getLocalizedUserActivity(messagesOwnerId, Peer.toUserId(peerId))
-                .compose(applyMaybeIOToMainSchedulers())
-                .subscribe({ s ->
-                    subtitle = s
-                    resolveToolbarSubtitle()
-                }, { Analytics.logUnexpectedError(it) }, { this.resolveToolbarSubtitle() })
+                    }, { Analytics.logUnexpectedError(it) }, { this.resolveToolbarSubtitle() })
             )
         }
     }
@@ -1390,7 +1378,6 @@ class ChatPresenter(
 
     override fun onDestroyed() {
         stickersWordsDisplayDisposable.dispose()
-        stickersWordsLoadingDisposable.dispose()
         cacheLoadingDisposable.dispose()
         netLoadingDisposable.dispose()
         fetchConversationDisposable.dispose()
@@ -1430,9 +1417,10 @@ class ChatPresenter(
 
             view?.notifyDataChanged()
 
-            appendDisposable(messagesRepository.markAsRead(messagesOwnerId, peer.id, last.id)
-                .fromIOToMain()
-                .subscribe(dummy(), { t -> showError(view, t) })
+            appendDisposable(
+                messagesRepository.markAsRead(messagesOwnerId, peer.id, last.id)
+                    .fromIOToMain()
+                    .subscribe(dummy(), { t -> showError(view, t) })
             )
         }
     }
@@ -1480,14 +1468,15 @@ class ChatPresenter(
             sent.add(message.id)
         }
         if (sent.nonEmpty()) {
-            appendDisposable(messagesRepository.markAsImportant(
-                messagesOwnerId,
-                peer.id,
-                sent,
-                if (!isImportant) 1 else 0
-            )
-                .fromIOToMain()
-                .subscribe(dummy(), { t -> showError(view, t) })
+            appendDisposable(
+                messagesRepository.markAsImportant(
+                    messagesOwnerId,
+                    peer.id,
+                    sent,
+                    if (!isImportant) 1 else 0
+                )
+                    .fromIOToMain()
+                    .subscribe(dummy(), { t -> showError(view, t) })
             )
         }
     }
@@ -1552,9 +1541,10 @@ class ChatPresenter(
     }
 
     private fun normalDelete(ids: Collection<Int>, forAll: Boolean) {
-        appendDisposable(messagesRepository.deleteMessages(messagesOwnerId, peerId, ids, forAll)
-            .fromIOToMain()
-            .subscribe(dummy(), { t -> showError(view, t) })
+        appendDisposable(
+            messagesRepository.deleteMessages(messagesOwnerId, peerId, ids, forAll)
+                .fromIOToMain()
+                .subscribe(dummy(), { t -> showError(view, t) })
         )
     }
 
@@ -1573,24 +1563,25 @@ class ChatPresenter(
 
     private fun superDeleteEditRecursive(messages: ArrayList<Message>, result: ArrayList<Int>) {
         if (messages.isEmpty()) {
-            if (!Utils.isEmpty(result)) {
+            if (!isEmpty(result)) {
                 normalDelete(result, true)
             }
             return
         }
         val message = messages.removeAt(0)
-        appendDisposable(messagesRepository.edit(
-            messagesOwnerId, message, "Ragnarök",
-            Collections.emptyList(), false
-        )
-            .fromIOToMain()
-            .subscribe({
-                run {
-                    result.add(it.id)
-                    onMessageEdited(it)
-                    superDeleteEditRecursive(messages, result)
-                }
-            }, { onMessageEditFail(it) })
+        appendDisposable(
+            messagesRepository.edit(
+                messagesOwnerId, message, "Ragnarök",
+                Collections.emptyList(), false
+            )
+                .fromIOToMain()
+                .subscribe({
+                    run {
+                        result.add(it.id)
+                        onMessageEdited(it)
+                        superDeleteEditRecursive(messages, result)
+                    }
+                }, { onMessageEditFail(it) })
         )
     }
 
@@ -1610,9 +1601,10 @@ class ChatPresenter(
     }
 
     fun fireSendAgainClick(message: Message) {
-        appendDisposable(messagesRepository.enqueueAgain(messagesOwnerId, message.id)
-            .fromIOToMain()
-            .subscribe({ this.startSendService() }, { Analytics.logUnexpectedError(it) })
+        appendDisposable(
+            messagesRepository.enqueueAgain(messagesOwnerId, message.id)
+                .fromIOToMain()
+                .subscribe({ this.startSendService() }, { Analytics.logUnexpectedError(it) })
         )
     }
 
@@ -1650,9 +1642,10 @@ class ChatPresenter(
         val chatId = Peer.toChatId(peerId)
         val accountId = super.getAccountId()
 
-        appendDisposable(messagesRepository.removeChatMember(accountId, chatId, accountId)
-            .fromIOToMain()
-            .subscribe(dummy(), { t -> showError(view, t) })
+        appendDisposable(
+            messagesRepository.removeChatMember(accountId, chatId, accountId)
+                .fromIOToMain()
+                .subscribe(dummy(), { t -> showError(view, t) })
         )
     }
 
@@ -1771,9 +1764,10 @@ class ChatPresenter(
     fun fireChatTitleTyped(newValue: String) {
         val chatId = Peer.toChatId(peerId)
 
-        appendDisposable(messagesRepository.editChat(messagesOwnerId, chatId, newValue)
-            .fromIOToMain()
-            .subscribe(dummy(), { t -> showError(view, t) })
+        appendDisposable(
+            messagesRepository.editChat(messagesOwnerId, chatId, newValue)
+                .fromIOToMain()
+                .subscribe(dummy(), { t -> showError(view, t) })
         )
     }
 
@@ -2104,9 +2098,10 @@ class ChatPresenter(
                 }
             }
 
-            appendDisposable(messagesRepository.edit(accountId, message, body, models, keepForward)
-                .fromIOToMain()
-                .subscribe({ onMessageEdited(it) }, { t -> onMessageEditFail(t) })
+            appendDisposable(
+                messagesRepository.edit(accountId, message, body, models, keepForward)
+                    .fromIOToMain()
+                    .subscribe({ onMessageEdited(it) }, { t -> onMessageEditFail(t) })
             )
         }
     }
@@ -2262,9 +2257,10 @@ class ChatPresenter(
     }
 
     private fun doPin(message: Message?) {
-        appendDisposable(messagesRepository.pin(accountId, peerId, message)
-            .fromIOToMain()
-            .subscribe(dummy(), { onPinFail(it) })
+        appendDisposable(
+            messagesRepository.pin(accountId, peerId, message)
+                .fromIOToMain()
+                .subscribe(dummy(), { onPinFail(it) })
         )
     }
 

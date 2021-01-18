@@ -51,7 +51,7 @@ public interface IVideosListView extends IAccountDependencyView, IMvpView, ITool
 
     void onUploaded(Video upload);
 
-    void doVideoLongClick(int accountId, boolean isMy, int position, @NonNull Video video);
+    void doVideoLongClick(int accountId, int ownerId, boolean isMy, int position, @NonNull Video video);
 
     void displayShareDialog(int accountId, @NonNull Video video, boolean canPostToMyWall);
 

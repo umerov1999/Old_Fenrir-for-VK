@@ -120,6 +120,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 }
             });
 
+    private final AppPerms.doRequestPermissions requestContactsPermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.READ_CONTACTS},
+            () -> PlaceFactory.getFriendsByPhonesPlace(getAccountId()).tryOpenWith(requireActivity()));
+
     private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
             () -> CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text));
@@ -169,7 +173,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void selectLocalImage(boolean isDark) {
-        if (!AppPerms.hasReadStoragePermision(getActivity())) {
+        if (!AppPerms.hasReadStoragePermission(getActivity())) {
             requestReadPermission.launch();
             return;
         }
@@ -458,7 +462,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         findPreference("music_dir")
                 .setOnPreferenceClickListener(preference -> {
-                    if (!AppPerms.hasReadStoragePermision(getActivity())) {
+                    if (!AppPerms.hasReadStoragePermission(getActivity())) {
                         requestReadPermission.launch();
                         return true;
                     }
@@ -479,7 +483,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         findPreference("photo_dir")
                 .setOnPreferenceClickListener(preference -> {
-                    if (!AppPerms.hasReadStoragePermision(getActivity())) {
+                    if (!AppPerms.hasReadStoragePermission(getActivity())) {
                         requestReadPermission.launch();
                         return true;
                     }
@@ -500,7 +504,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         findPreference("video_dir")
                 .setOnPreferenceClickListener(preference -> {
-                    if (!AppPerms.hasReadStoragePermision(getActivity())) {
+                    if (!AppPerms.hasReadStoragePermission(getActivity())) {
                         requestReadPermission.launch();
                         return true;
                     }
@@ -521,7 +525,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         findPreference("docs_dir")
                 .setOnPreferenceClickListener(preference -> {
-                    if (!AppPerms.hasReadStoragePermision(getActivity())) {
+                    if (!AppPerms.hasReadStoragePermission(getActivity())) {
                         requestReadPermission.launch();
                         return true;
                     }
@@ -542,7 +546,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         findPreference("sticker_dir")
                 .setOnPreferenceClickListener(preference -> {
-                    if (!AppPerms.hasReadStoragePermision(getActivity())) {
+                    if (!AppPerms.hasReadStoragePermission(getActivity())) {
                         requestReadPermission.launch();
                         return true;
                     }
@@ -589,6 +593,16 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         findPreference("blacklist")
                 .setOnPreferenceClickListener(preference -> {
                     PlaceFactory.getUserBlackListPlace(getAccountId()).tryOpenWith(requireActivity());
+                    return true;
+                });
+
+        findPreference("friends_by_phone")
+                .setOnPreferenceClickListener(preference -> {
+                    if (!AppPerms.hasContactsPermission(requireActivity())) {
+                        requestContactsPermission.launch();
+                    } else {
+                        PlaceFactory.getFriendsByPhonesPlace(getAccountId()).tryOpenWith(requireActivity());
+                    }
                     return true;
                 });
 

@@ -360,7 +360,7 @@ public class DocPreviewFragment extends BaseFragment implements View.OnClickList
     }
 
     private void download() {
-        if (!AppPerms.hasWriteStoragePermision(requireActivity())) {
+        if (!AppPerms.hasWriteStoragePermission(requireActivity())) {
             requestWritePermission.launch();
             return;
         }

@@ -1,5 +1,9 @@
 package dev.ragnarok.fenrir.domain;
 
+import android.content.Context;
+
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
 import dev.ragnarok.fenrir.model.FriendsCounters;
@@ -23,6 +27,8 @@ public interface IRelationshipInteractor {
     Single<List<User>> getOnlineFriends(int accountId, int objectId, int count, int offset);
 
     Single<List<User>> getRecommendations(int accountId, Integer count);
+
+    Single<List<User>> getByPhones(int accountId, @NonNull Context context);
 
     Single<List<User>> getFollowers(int accountId, int objectId, int count, int offset);
 

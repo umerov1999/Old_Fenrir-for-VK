@@ -53,6 +53,13 @@ class VideoApi extends AbsApi implements IVideoApi {
     }
 
     @Override
+    public Single<Items<VKApiVideoAlbum>> getAlbumsByVideo(Integer target_id, Integer owner_id, Integer video_id) {
+        return provideService(IVideoService.class, TokenType.USER)
+                .flatMap(service -> service.getAlbumsByVideo(target_id, owner_id, video_id, 1)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
     public Single<SearchVideoResponse> search(String query, Integer sort, Boolean hd, Boolean adult,
                                               String filters, Boolean searchOwn, Integer offset,
                                               Integer longer, Integer shorter, Integer count, Boolean extended) {

@@ -178,6 +178,11 @@ public class OkHttpDataSource extends BaseDataSource implements HttpDataSource {
             responseBody = Assertions.checkNotNull(response.body());
             responseByteStream = responseBody.byteStream();
         } catch (IOException e) {
+            @Nullable String message = e.getMessage();
+            if (message != null
+                    && Util.toLowerInvariant(message).matches("cleartext communication.*not permitted.*")) {
+                throw new CleartextNotPermittedException(e, dataSpec);
+            }
             throw new HttpDataSourceException(
                     "Unable to connect", e, dataSpec, HttpDataSourceException.TYPE_OPEN);
         }
@@ -243,7 +248,7 @@ public class OkHttpDataSource extends BaseDataSource implements HttpDataSource {
     }
 
     @Override
-    public void close() throws HttpDataSourceException {
+    public void close() {
         if (opened) {
             opened = false;
             transferEnded();
@@ -269,18 +274,6 @@ public class OkHttpDataSource extends BaseDataSource implements HttpDataSource {
      */
     protected final long bytesRead() {
         return bytesRead;
-    }
-
-    /**
-     * Returns the number of bytes that are still to be read for the current {@link DataSpec}.
-     * <p>
-     * If the total length of the data being read is known, then this length minus {@code bytesRead()}
-     * is returned. If the total length is unknown, {@link C#LENGTH_UNSET} is returned.
-     *
-     * @return The remaining length, or {@link C#LENGTH_UNSET}.
-     */
-    protected final long bytesRemaining() {
-        return bytesToRead == C.LENGTH_UNSET ? bytesToRead : bytesToRead - bytesRead;
     }
 
     /**

@@ -256,19 +256,19 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
 
         goto_button = root.findViewById(R.id.goto_button)
         goto_button?.let {
-        if (Utils.isHiddenCurrent()) {
-            it.setImageResource(R.drawable.attachment)
-            it.setOnClickListener { presenter?.fireDialogAttachmentsClick() }
-        } else {
-            it.setImageResource(R.drawable.ic_outline_keyboard_arrow_up)
-            it.setOnClickListener { recyclerView?.smoothScrollToPosition(presenter?.getConversation()!!.unreadCount) }
-            it.setOnLongClickListener { presenter?.fireDialogAttachmentsClick(); true; }
-        }
+            if (Utils.isHiddenCurrent()) {
+                it.setImageResource(R.drawable.attachment)
+                it.setOnClickListener { presenter?.fireDialogAttachmentsClick() }
+            } else {
+                it.setImageResource(R.drawable.ic_outline_keyboard_arrow_up)
+                it.setOnClickListener { recyclerView?.smoothScrollToPosition(presenter?.getConversation()!!.unreadCount) }
+                it.setOnLongClickListener { presenter?.fireDialogAttachmentsClick(); true; }
+            }
 
-        if (!Settings.get().other().isEnable_last_read)
-            it.visibility = View.GONE
-        else
-            it.visibility = View.VISIBLE
+            if (!Settings.get().other().isEnable_last_read)
+                it.visibility = View.GONE
+            else
+                it.visibility = View.VISIBLE
         }
 
         editMessageGroup = root.findViewById(R.id.editMessageGroup)
@@ -685,7 +685,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
             buttonStar.visibility = if (canStar) View.VISIBLE else View.GONE
             buttonStar.setImageResource(if (doStar) R.drawable.star_add else R.drawable.star_none)
         }
-       }
+    }
 
     override fun finishActionMode() {
         actionModeHolder?.rootView?.visibility = View.GONE
@@ -877,7 +877,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
     }
 
     private fun onEditCameraClick() {
-        if (AppPerms.hasCameraPermision(requireContext())) {
+        if (AppPerms.hasCameraPermission(requireContext())) {
             presenter?.fireEditCameraClick()
         } else {
             requestCameraEditPermission.launch()
@@ -1373,18 +1373,18 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
 
         menu.run {
             findItem(R.id.action_leave_chat).isVisible =
-                    optionMenuSettings.get(LEAVE_CHAT_VISIBLE, false)
+                optionMenuSettings.get(LEAVE_CHAT_VISIBLE, false)
             findItem(R.id.action_edit_chat).isVisible =
-                    optionMenuSettings.get(CHANGE_CHAT_TITLE_VISIBLE, false)
+                optionMenuSettings.get(CHANGE_CHAT_TITLE_VISIBLE, false)
             findItem(R.id.action_chat_members).isVisible =
-                    optionMenuSettings.get(CHAT_MEMBERS_VISIBLE, false)
+                optionMenuSettings.get(CHAT_MEMBERS_VISIBLE, false)
             findItem(R.id.action_key_exchange).isVisible =
-                    optionMenuSettings.get(KEY_EXCHANGE_VISIBLE, false)
+                optionMenuSettings.get(KEY_EXCHANGE_VISIBLE, false)
             findItem(R.id.change_hrono_history).isVisible =
-                    optionMenuSettings.get(HRONO_VISIBLE, false)
+                optionMenuSettings.get(HRONO_VISIBLE, false)
             findItem(R.id.show_profile).isVisible = optionMenuSettings.get(PROFILE_VISIBLE, false)
             findItem(R.id.action_invite_link).isVisible =
-                    optionMenuSettings.get(CAN_GENERATE_INVITE_LINK, false)
+                optionMenuSettings.get(CAN_GENERATE_INVITE_LINK, false)
         }
         val encryptionStatusItem = menu.findItem(R.id.crypt_state)
         val encryptionStatusVisible = optionMenuSettings.get(ENCRYPTION_STATUS_VISIBLE, false)
@@ -1503,7 +1503,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
             }
 
             R.id.make_screenshot -> {
-                if (!AppPerms.hasReadWriteStoragePermision(requireActivity())) {
+                if (!AppPerms.hasReadWriteStoragePermission(requireActivity())) {
                     requestWriteScreenshotPermission.launch()
                     return true
                 }
@@ -1511,7 +1511,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
             }
 
             R.id.download_peer_to -> {
-                if (!AppPerms.hasReadWriteStoragePermision(requireActivity())) {
+                if (!AppPerms.hasReadWriteStoragePermission(requireActivity())) {
                     requestWriteChatPermission.launch()
                     return true
                 }
@@ -1595,6 +1595,10 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
 
     override fun onRestoreClick(message: Message, position: Int) {
         presenter?.fireMessageRestoreClick(message)
+    }
+
+    override fun onBotKeyboardClick(button: Keyboard.Button) {
+        presenter?.fireBotSendClick(button, requireActivity())
     }
 
     override fun onMessageLongClick(message: Message): Boolean {

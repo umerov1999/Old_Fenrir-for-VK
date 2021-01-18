@@ -1486,4 +1486,12 @@
     <string name="disable_likes">Отключить лайки (фото, стена)</string>
     <string name="date_start">Дата от:</string>
     <string name="date_to">Дата до:</string>
+    <string name="uploaded_video">Загружено: %1$s</string>
+    <string name="added_video">Добавлено: %1$s</string>
+    <string name="friends_by_phone">Друзья по номерам телефонов</string>
+    <string name="old_track">Старый</string>
+    <string name="new_track">Новый</string>
+    <string name="dual_track">Оба</string>
+    <string name="parcel_native_helper">Если при открытии фото будет вылет, включите пункт Нативный Parcel</string>
+    <string name="runic">Руны</string>
 </resources>

@@ -31,7 +31,6 @@
         android:id="@+id/track_option"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/item_audio_play"
         android:layout_alignParentTop="true"
         android:layout_marginStart="8dp"
         android:layout_toStartOf="@id/info_block"

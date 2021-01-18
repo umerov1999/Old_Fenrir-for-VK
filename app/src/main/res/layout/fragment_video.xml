@@ -29,6 +29,37 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <LinearLayout
+                        android:id="@+id/item_owner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/item_owner_avatar"
+                            android:layout_width="@dimen/avatar_size_usual"
+                            android:layout_height="@dimen/avatar_size_usual"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/item_owner_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                            android:visibility="gone"
+                            tools:text="Name" />
+                    </LinearLayout>
+
                     <dev.ragnarok.fenrir.view.emoji.EmojiconTextView
                         android:id="@+id/fragment_video_title"
                         android:layout_width="match_parent"
@@ -86,6 +117,29 @@
                         android:paddingEnd="16dp"
                         android:textSize="14sp"
                         tools:text="Subvideo" />
+
+                    <TextView
+                        android:id="@+id/item_upload_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:maxLines="1"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:textSize="14sp"
+                        android:visibility="gone"
+                        tools:text="Uploaded Date" />
+
+                    <TextView
+                        android:id="@+id/item_added_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:textSize="14sp"
+                        android:visibility="gone"
+                        tools:text="Uploaded Date" />
 
                 </LinearLayout>
 

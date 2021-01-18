@@ -46,6 +46,13 @@ public interface IVideoService {
                                                            @Field("need_system") Integer needSystem);
 
     @FormUrlEncoded
+    @POST("video.getAlbumsByVideo")
+    Single<BaseResponse<Items<VKApiVideoAlbum>>> getAlbumsByVideo(@Field("target_id") Integer target_id,
+                                                                  @Field("owner_id") Integer owner_id,
+                                                                  @Field("video_id") Integer video_id,
+                                                                  @Field("extended") Integer extended);
+
+    @FormUrlEncoded
     @POST("video.search")
     Single<BaseResponse<SearchVideoResponse>> search(@Field("q") String query,
                                                      @Field("sort") Integer sort,

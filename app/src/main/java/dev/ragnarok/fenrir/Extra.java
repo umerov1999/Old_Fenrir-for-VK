@@ -12,7 +12,7 @@ public class Extra {
     public static final String TOKEN = "token";
     public static final String LOGIN = "login";
     public static final String PASSWORD = "password";
-    public static final String TWOFA = "twofa";
+    public static final String TWO_FA = "two_fa";
     public static final String TIMEOUT = "timeout";
     public static final String ACCOUNT_ID = "account_id";
     public static final String CAPTCHA_URL = "captcha_url";
@@ -107,4 +107,6 @@ public class Extra {
     public static final String STORY = "story";
     public static final String MARKET = "market";
     public static final String SAVE = "save";
+    public static final String NEW = "new";
+    public static final String OLD = "old";
 }

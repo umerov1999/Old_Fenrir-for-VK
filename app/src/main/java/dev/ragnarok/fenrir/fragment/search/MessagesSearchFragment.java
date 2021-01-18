@@ -15,6 +15,7 @@ import java.util.List;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.adapter.MessagesAdapter;
 import dev.ragnarok.fenrir.fragment.search.criteria.MessageSeachCriteria;
+import dev.ragnarok.fenrir.model.Keyboard;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.search.MessagesSearchPresenter;
@@ -69,6 +70,11 @@ public class MessagesSearchFragment extends AbsSearchFragment<MessagesSearchPres
     @Override
     public void onRestoreClick(@NonNull Message message, int position) {
         // delete is not supported
+    }
+
+    @Override
+    public void onBotKeyboardClick(@NonNull @NotNull Keyboard.Button button) {
+        // is not supported
     }
 
     @Override

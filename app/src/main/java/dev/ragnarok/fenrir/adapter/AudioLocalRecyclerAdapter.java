@@ -2,9 +2,14 @@ package dev.ragnarok.fenrir.adapter;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.provider.BaseColumns;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +51,7 @@ import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.WeakViewAnimatorAdapter;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.Disposable;
 
 import static dev.ragnarok.fenrir.player.util.MusicUtils.observeServiceBinding;
@@ -55,6 +61,7 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
     private final Context mContext;
     private ClickListener mClickListener;
     private Disposable mPlayerDisposable = Disposable.disposed();
+    private Disposable audioListDisposable = Disposable.disposed();
     private List<Audio> data;
     private Audio currAudio;
 
@@ -67,6 +74,39 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
     public void setItems(List<Audio> data) {
         this.data = data;
         notifyDataSetChanged();
+    }
+
+    private Single<Long> doLocalBitrate(String url) {
+        try {
+            Cursor cursor = mContext.getContentResolver().query(
+                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                    new String[]{MediaStore.MediaColumns.DATA},
+                    BaseColumns._ID + "=? ",
+                    new String[]{Uri.parse(url).getLastPathSegment()}, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                String fl = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+                retriever.setDataSource(fl);
+                cursor.close();
+                String bitrate = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
+                if (bitrate != null) {
+                    return Single.just(Long.parseLong(bitrate) / 1000);
+                }
+                return Single.error(new Throwable("Can't receipt bitrate "));
+            }
+            return Single.error(new Throwable("Can't receipt bitrate "));
+        } catch (RuntimeException e) {
+            return Single.error(e);
+        }
+    }
+
+    private void getLocalBitrate(String url) {
+        if (Utils.isEmpty(url)) {
+            return;
+        }
+        audioListDisposable = doLocalBitrate(url).compose(RxUtils.applySingleIOToMainSchedulers())
+                .subscribe(r -> CustomToast.CreateCustomToast(mContext).showToast(mContext.getResources().getString(R.string.bitrate) + " " + r + " bit"),
+                        e -> Utils.showErrorInAdapter((Activity) mContext, e));
     }
 
     @DrawableRes
@@ -163,6 +203,7 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
 
             menus.add(new OptionRequest(AudioItem.save_item_audio, mContext.getString(R.string.upload), R.drawable.web));
             menus.add(new OptionRequest(AudioItem.play_item_audio, mContext.getString(R.string.play), R.drawable.play));
+            menus.add(new OptionRequest(AudioItem.bitrate_item_audio, mContext.getString(R.string.get_bitrate), R.drawable.high_quality));
             menus.add(new OptionRequest(AudioItem.add_item_audio, mContext.getString(R.string.delete), R.drawable.ic_outline_delete));
 
 
@@ -181,6 +222,9 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
                             if (Settings.get().other().isShow_mini_player())
                                 PlaceFactory.getPlayerPlace(Settings.get().accounts().getCurrent()).tryOpenWith(mContext);
                         }
+                        break;
+                    case AudioItem.bitrate_item_audio:
+                        getLocalBitrate(audio.getUrl());
                         break;
                     case AudioItem.add_item_audio:
                         try {
@@ -218,6 +262,7 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
     public void onDetachedFromRecyclerView(@NotNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         mPlayerDisposable.dispose();
+        audioListDisposable.dispose();
     }
 
     private void onServiceBindEvent(@MusicUtils.PlayerStatus int status) {

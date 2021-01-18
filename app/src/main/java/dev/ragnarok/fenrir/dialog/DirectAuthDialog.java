@@ -232,7 +232,7 @@ public class DirectAuthDialog extends BaseMvpDialogFragment<DirectAuthPresenter,
         data.putInt(Extra.USER_ID, userId);
         data.putString(Extra.LOGIN, Login);
         data.putString(Extra.PASSWORD, Password);
-        data.putString(Extra.TWOFA, twoFA);
+        data.putString(Extra.TWO_FA, twoFA);
         data.putBoolean(Extra.SAVE, isSave);
         returnResultAndDismiss(ACTION_LOGIN_COMPLETE, data);
     }
@@ -243,7 +243,7 @@ public class DirectAuthDialog extends BaseMvpDialogFragment<DirectAuthPresenter,
         data.putString(Extra.URL, url);
         data.putString(Extra.LOGIN, Login);
         data.putString(Extra.PASSWORD, Password);
-        data.putString(Extra.TWOFA, twoFA);
+        data.putString(Extra.TWO_FA, twoFA);
         data.putBoolean(Extra.SAVE, isSave);
         returnResultAndDismiss(ACTION_VALIDATE_VIA_WEB, data);
     }

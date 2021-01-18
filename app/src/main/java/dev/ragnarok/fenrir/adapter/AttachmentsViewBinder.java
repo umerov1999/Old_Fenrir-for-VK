@@ -260,7 +260,7 @@ public class AttachmentsViewBinder {
         }
 
         holder.mWaveFormView.setOnLongClickListener(v -> {
-            if (!AppPerms.hasReadWriteStoragePermision(mContext)) {
+            if (!AppPerms.hasReadWriteStoragePermission(mContext)) {
                 if (mAttachmentsActionCallback != null) {
                     mAttachmentsActionCallback.onRequestWritePermissions();
                 }

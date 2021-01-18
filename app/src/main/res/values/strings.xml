@@ -539,7 +539,7 @@
     <string name="play_1080" translatable="false">1080p</string>
 
     <string name="play">Play</string>
-    <string name="upload">Download</string>
+    <string name="upload">Upload</string>
     <string name="for_video">to the video</string>
 
     <string name="more_info">More details</string>
@@ -1274,7 +1274,7 @@
     <string name="action_add">Add</string>
     <string name="action_add_audios">Add tracks</string>
     <string name="to_gif_converter">Convert to Gif</string>
-    <string name="get_bitrate">Find out bitrate</string>
+    <string name="get_bitrate">Show bitrate</string>
     <string name="use_internal_downloader">Use internal bootloader</string>
     <string name="use_internal_downloader_summary">For videos and documents</string>
     <string name="bitrate">Bitrate:</string>
@@ -1639,4 +1639,12 @@
     <string name="disable_likes">Disable likes (photos, walls)</string>
     <string name="date_start">Date from:</string>
     <string name="date_to">Date to:</string>
+    <string name="uploaded_video">Uploaded: %1$s</string>
+    <string name="added_video">Added: %1$s</string>
+    <string name="friends_by_phone">Friends by phone numbers</string>
+    <string name="old_track">Old</string>
+    <string name="new_track">New</string>
+    <string name="dual_track">Both</string>
+    <string name="parcel_native_helper">If there is a crash when opening a photo, enable the Native Parcel item</string>
+    <string name="runic">Runic</string>
 </resources>

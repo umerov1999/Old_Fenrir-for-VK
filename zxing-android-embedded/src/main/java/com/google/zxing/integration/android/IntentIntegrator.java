@@ -118,7 +118,7 @@ public class IntentIntegrator {
     }
 
     public static String decodeFromBitmap(@Nullable Bitmap generatedQRCode) {
-        if(generatedQRCode == null) {
+        if (generatedQRCode == null) {
             return "error";
         }
         int width = generatedQRCode.getWidth();
@@ -134,7 +134,7 @@ public class IntentIntegrator {
         } catch (NotFoundException | ChecksumException | FormatException e) {
             return e.getLocalizedMessage();
         }
-        if(result == null) {
+        if (result == null) {
             return "error";
         }
         return result.getText();

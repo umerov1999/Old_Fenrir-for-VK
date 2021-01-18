@@ -1,6 +1,7 @@
 package dev.ragnarok.fenrir.view.emoji;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -27,14 +28,13 @@ import dev.ragnarok.fenrir.util.Utils;
 
 public class BotKeyboardView extends ScrollView {
 
-    private final LinearLayout container;
     private final ArrayList<View> buttonViews = new ArrayList<>();
     private final boolean isFullSize = Settings.get().ui().isEmojis_full_screen();
+    private LinearLayout container;
     private List<List<Keyboard.Button>> botButtons;
     private BotKeyboardViewDelegate delegate;
     private int panelHeight;
     private int buttonHeight;
-
     private final ViewTreeObserver.OnGlobalLayoutListener onGlobalLayoutListener = () -> {
         Rect r = new Rect();
         getWindowVisibleDisplayFrame(r);
@@ -57,41 +57,34 @@ public class BotKeyboardView extends ScrollView {
             setPanelHeight(heightDifference);
         }
     };
+    private boolean needKeyboardListen;
+    private boolean needTrackKeyboard = true;
 
     public BotKeyboardView(Context context) {
         super(context);
 
-        container = new LinearLayout(context);
-        container.setOrientation(LinearLayout.VERTICAL);
-        addView(container);
-        listenKeyboardSize();
+        init(context);
     }
 
     public BotKeyboardView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        container = new LinearLayout(context);
-        container.setOrientation(LinearLayout.VERTICAL);
-        addView(container);
-        listenKeyboardSize();
+        initializeAttributes(context, attrs);
+        init(context);
     }
 
     public BotKeyboardView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        container = new LinearLayout(context);
-        container.setOrientation(LinearLayout.VERTICAL);
-        addView(container);
-        listenKeyboardSize();
+        initializeAttributes(context, attrs);
+        init(context);
     }
 
     public BotKeyboardView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
-        container = new LinearLayout(context);
-        container.setOrientation(LinearLayout.VERTICAL);
-        addView(container);
-        listenKeyboardSize();
+        initializeAttributes(context, attrs);
+        init(context);
     }
 
     private static int getSize(float size) {
@@ -108,6 +101,23 @@ public class BotKeyboardView extends ScrollView {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(getSize(width), getSize(height), weight);
         layoutParams.setMargins(Utils.dp(leftMargin), Utils.dp(topMargin), Utils.dp(rightMargin), Utils.dp(bottomMargin));
         return layoutParams;
+    }
+
+    private void init(Context context) {
+        container = new LinearLayout(context);
+        container.setOrientation(LinearLayout.VERTICAL);
+        addView(container);
+        if (needTrackKeyboard) {
+            listenKeyboardSize();
+        }
+    }
+
+    private void initializeAttributes(Context context, AttributeSet attrs) {
+        if (attrs != null) {
+            TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.BotKeyboardView);
+            needTrackKeyboard = array.getBoolean(R.styleable.BotKeyboardView_track_keyboard_height, true);
+            array.recycle();
+        }
     }
 
     public void setDelegate(BotKeyboardViewDelegate botKeyboardViewDelegate) {
@@ -197,10 +207,13 @@ public class BotKeyboardView extends ScrollView {
 
     private void listenKeyboardSize() {
         getViewTreeObserver().addOnGlobalLayoutListener(onGlobalLayoutListener);
+        needKeyboardListen = true;
     }
 
     public void destroy() {
-        getViewTreeObserver().removeOnGlobalLayoutListener(onGlobalLayoutListener);
+        if (needKeyboardListen) {
+            getViewTreeObserver().removeOnGlobalLayoutListener(onGlobalLayoutListener);
+        }
         container.removeAllViews();
         buttonViews.clear();
     }

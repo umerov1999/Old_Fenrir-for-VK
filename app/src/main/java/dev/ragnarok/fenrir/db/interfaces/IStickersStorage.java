@@ -2,6 +2,7 @@ package dev.ragnarok.fenrir.db.interfaces;
 
 import java.util.List;
 
+import dev.ragnarok.fenrir.db.model.entity.StickerEntity;
 import dev.ragnarok.fenrir.db.model.entity.StickerSetEntity;
 import dev.ragnarok.fenrir.db.model.entity.StickersKeywordsEntity;
 import io.reactivex.rxjava3.core.Completable;
@@ -16,5 +17,5 @@ public interface IStickersStorage extends IStorage {
 
     Single<List<StickerSetEntity>> getPurchasedAndActive(int accountId);
 
-    Single<List<StickersKeywordsEntity>> getKeywordsStickers(int accountId);
+    Single<List<StickerEntity>> getKeywordsStickers(int accountId, String s);
 }

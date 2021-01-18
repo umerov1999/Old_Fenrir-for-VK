@@ -1,11 +1,16 @@
 package dev.ragnarok.fenrir.domain.impl;
 
+import android.content.Context;
+
+import androidx.annotation.NonNull;
+
 import java.util.Collections;
 import java.util.List;
 
 import dev.ragnarok.fenrir.api.interfaces.INetworker;
 import dev.ragnarok.fenrir.api.model.VKApiUser;
 import dev.ragnarok.fenrir.db.column.UserColumns;
+import dev.ragnarok.fenrir.db.impl.ContactsUtils;
 import dev.ragnarok.fenrir.db.interfaces.IStorages;
 import dev.ragnarok.fenrir.db.model.entity.UserEntity;
 import dev.ragnarok.fenrir.domain.IRelationshipInteractor;
@@ -90,6 +95,15 @@ public class RelationshipInteractor implements IRelationshipInteractor {
                 .map(response -> Utils.listEmptyIfNull(response.items))
                 .map(Dto2Model::transformUsers);
 
+    }
+
+    @Override
+    public Single<List<User>> getByPhones(int accountId, @NonNull Context context) {
+        return ContactsUtils.getAllContacts(context).flatMap(t -> networker.vkDefault(accountId)
+                .friends()
+                .getByPhones(t, UserColumns.API_FIELDS)
+                .map(Utils::listEmptyIfNull)
+                .map(Dto2Model::transformUsers));
     }
 
     @Override

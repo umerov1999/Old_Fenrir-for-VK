@@ -24,6 +24,7 @@ import dev.ragnarok.fenrir.listener.PicassoPauseOnScrollListener
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.ModalBottomSheetDialogFragment
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.Option
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.OptionRequest
+import dev.ragnarok.fenrir.model.Keyboard
 import dev.ragnarok.fenrir.model.Message
 import dev.ragnarok.fenrir.model.Peer
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory
@@ -290,6 +291,8 @@ class LocalJsonToChatFragment :
 
     override fun onLongAvatarClick(message: Message, userId: Int) {}
     override fun onRestoreClick(message: Message, position: Int) {}
+    override fun onBotKeyboardClick(button: Keyboard.Button) {}
+
     override fun onMessageLongClick(message: Message): Boolean {
         return false
     }

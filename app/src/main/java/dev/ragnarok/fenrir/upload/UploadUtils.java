@@ -3,7 +3,13 @@ package dev.ragnarok.fenrir.upload;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
+import android.text.TextUtils;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.exifinterface.media.ExifInterface;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +29,76 @@ public final class UploadUtils {
 
     }
 
+    private static void copyExif(ExifInterface originalExif, int width, int height, File imageOutputPath) {
+        String[] attributes = {
+                ExifInterface.TAG_F_NUMBER,
+                ExifInterface.TAG_DATETIME,
+                ExifInterface.TAG_DATETIME_DIGITIZED,
+                ExifInterface.TAG_EXPOSURE_TIME,
+                ExifInterface.TAG_FLASH,
+                ExifInterface.TAG_FOCAL_LENGTH,
+                ExifInterface.TAG_GPS_ALTITUDE,
+                ExifInterface.TAG_GPS_ALTITUDE_REF,
+                ExifInterface.TAG_GPS_DATESTAMP,
+                ExifInterface.TAG_GPS_LATITUDE,
+                ExifInterface.TAG_GPS_LATITUDE_REF,
+                ExifInterface.TAG_GPS_LONGITUDE,
+                ExifInterface.TAG_GPS_LONGITUDE_REF,
+                ExifInterface.TAG_GPS_PROCESSING_METHOD,
+                ExifInterface.TAG_GPS_TIMESTAMP,
+                ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY,
+                ExifInterface.TAG_MAKE,
+                ExifInterface.TAG_MODEL,
+                ExifInterface.TAG_SUBSEC_TIME,
+                ExifInterface.TAG_SUBSEC_TIME_DIGITIZED,
+                ExifInterface.TAG_SUBSEC_TIME_ORIGINAL,
+                ExifInterface.TAG_WHITE_BALANCE
+        };
+
+        try {
+            ExifInterface newExif = new ExifInterface(imageOutputPath);
+            String value;
+            for (String attribute : attributes) {
+                value = originalExif.getAttribute(attribute);
+                if (!TextUtils.isEmpty(value)) {
+                    newExif.setAttribute(attribute, value);
+                }
+            }
+            newExif.setAttribute(ExifInterface.TAG_IMAGE_WIDTH, String.valueOf(width));
+            newExif.setAttribute(ExifInterface.TAG_IMAGE_LENGTH, String.valueOf(height));
+            newExif.setAttribute(ExifInterface.TAG_ORIENTATION, "0");
+
+            newExif.saveAttributes();
+
+        } catch (IOException e) {
+            Log.d("Exif upload resize", e.getMessage());
+        }
+    }
+
+    private static Bitmap transformBitmap(@NonNull Bitmap bitmap, @NonNull Matrix transformMatrix) {
+        try {
+            Bitmap converted = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), transformMatrix, true);
+            if (!bitmap.sameAs(converted)) {
+                bitmap = converted;
+            }
+        } catch (OutOfMemoryError error) {
+            Log.e("Exif upload resize", "transformBitmap: ", error);
+        }
+        return bitmap;
+    }
+
+    public static InputStream createStream(Context context, Uri uri) throws IOException {
+        InputStream originalStream;
+
+        File filef = new File(uri.getPath());
+        if (filef.isFile()) {
+            originalStream = new FileInputStream(filef);
+        } else {
+            originalStream = context.getContentResolver().openInputStream(uri);
+        }
+        return originalStream;
+    }
+
     public static InputStream openStream(Context context, Uri uri, int size) throws IOException {
         InputStream originalStream;
 
@@ -38,8 +114,23 @@ public final class UploadUtils {
         }
 
         Bitmap bitmap = BitmapFactory.decodeStream(originalStream);
-        File tempFile = new File(context.getExternalCacheDir() + File.separator + "scale.jpg");
 
+        ExifInterface originalExif = null;
+        Matrix matrix = new Matrix();
+        boolean bApply = false;
+        try {
+            originalExif = new ExifInterface(createStream(context, uri));
+            if (originalExif.getRotationDegrees() != 0) {
+                matrix.preRotate(originalExif.getRotationDegrees());
+                bApply = true;
+            }
+        } catch (Exception ignored) {
+        }
+        if (bApply) {
+            bitmap = transformBitmap(bitmap, matrix);
+        }
+
+        File tempFile = new File(context.getExternalCacheDir() + File.separator + "scale.jpg");
         Bitmap target = null;
 
         try {
@@ -57,6 +148,10 @@ public final class UploadUtils {
             target.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
             ostream.flush();
             ostream.close();
+
+            if (originalExif != null) {
+                copyExif(originalExif, bitmap.getWidth(), bitmap.getHeight(), tempFile);
+            }
             return new FileInputStream(tempFile);
         } finally {
             IOUtils.recycleBitmapQuietly(bitmap);

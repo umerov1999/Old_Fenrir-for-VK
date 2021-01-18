@@ -47,4 +47,6 @@ public interface IVkPhotosView extends IMvpView, IAccountDependencyView, IErrorV
     void startLocalPhotosSelectionIfHasPermission();
 
     void onToggleShowDate(boolean isShow);
+
+    void needHelp();
 }

@@ -23,6 +23,7 @@ import dev.ragnarok.fenrir.fragment.DocPreviewFragment;
 import dev.ragnarok.fenrir.fragment.DocsFragment;
 import dev.ragnarok.fenrir.fragment.FeedFragment;
 import dev.ragnarok.fenrir.fragment.FeedbackFragment;
+import dev.ragnarok.fenrir.fragment.FriendsByPhonesFragment;
 import dev.ragnarok.fenrir.fragment.FwdsFragment;
 import dev.ragnarok.fenrir.fragment.GifPagerFragment;
 import dev.ragnarok.fenrir.fragment.LikesFragment;
@@ -35,6 +36,7 @@ import dev.ragnarok.fenrir.fragment.SinglePhotoFragment;
 import dev.ragnarok.fenrir.fragment.StoryPagerFragment;
 import dev.ragnarok.fenrir.fragment.TopicsFragment;
 import dev.ragnarok.fenrir.fragment.VKPhotosFragment;
+import dev.ragnarok.fenrir.fragment.VideoAlbumsByVideoFragment;
 import dev.ragnarok.fenrir.fragment.VideoPreviewFragment;
 import dev.ragnarok.fenrir.fragment.VideosFragment;
 import dev.ragnarok.fenrir.fragment.VideosTabsFragment;
@@ -504,6 +506,11 @@ public class PlaceFactory {
                 .setArguments(WallPostFragment.buildArgs(accountId, postId, ownerId, post));
     }
 
+    public static Place getAlbumsByVideoPlace(int accountId, int ownerId, int video_ownerId, int video_Id) {
+        return new Place(Place.ALBUMS_BY_VIDEO)
+                .setArguments(VideoAlbumsByVideoFragment.buildArgs(accountId, ownerId, video_ownerId, video_Id));
+    }
+
     public static Place getDocPreviewPlace(int accountId, int docId, int ownerId, @Nullable Document document) {
         Place place = new Place(Place.DOC_PREVIEW);
         place.setArguments(DocPreviewFragment.buildArgs(accountId, docId, ownerId, document));
@@ -532,6 +539,11 @@ public class PlaceFactory {
     public static Place getArtistPlace(int accountId, String id, boolean isHideToolbar) {
         return new Place(Place.ARTIST)
                 .setArguments(AudioCatalogFragment.buildArgs(accountId, id, isHideToolbar));
+    }
+
+    public static Place getFriendsByPhonesPlace(int accountId) {
+        return new Place(Place.FRIENDS_BY_PHONES)
+                .setArguments(FriendsByPhonesFragment.buildArgs(accountId));
     }
 
     public static Place getGiftsPlace(int accountId, int ownerId) {

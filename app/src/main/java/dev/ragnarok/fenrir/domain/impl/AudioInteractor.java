@@ -346,7 +346,7 @@ public class AudioInteractor implements IAudioInteractor {
 
     @Override
     public Completable PlaceToAudioCache(Context context) {
-        if (!AppPerms.hasReadWriteStoragePermision(context))
+        if (!AppPerms.hasReadWriteStoragePermission(context))
             return Completable.complete();
         return Completable.create(t -> {
             File temp = new File(Settings.get().other().getMusicDir());

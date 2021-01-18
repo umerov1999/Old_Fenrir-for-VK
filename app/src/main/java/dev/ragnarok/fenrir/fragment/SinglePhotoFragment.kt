@@ -123,7 +123,7 @@ class SinglePhotoFragment : BaseFragment(), GoBackCallback, BackPressCallback {
 
     private fun doSaveOnDrive(Request: Boolean) {
         if (Request) {
-            if (!AppPerms.hasWriteStoragePermision(instance)) {
+            if (!AppPerms.hasWriteStoragePermission(instance)) {
                 requestWritePermission.launch()
             }
         }
@@ -213,9 +213,14 @@ class SinglePhotoFragment : BaseFragment(), GoBackCallback, BackPressCallback {
             if (mLoadingNow) {
                 progress.setAnimation(
                     R.raw.loading,
-                    Utils.dp(100F),
-                    Utils.dp(40F),
-                    intArrayOf(0xffffff, CurrentTheme.getColorControlNormal(requireActivity()))
+                    Utils.dp(80F),
+                    Utils.dp(80F),
+                    intArrayOf(
+                        0xffffff,
+                        CurrentTheme.getColorPrimary(requireActivity()),
+                        0x000000,
+                        CurrentTheme.getColorSecondary(requireActivity())
+                    )
                 )
                 progress.playAnimation()
             } else {

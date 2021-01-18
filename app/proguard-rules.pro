@@ -145,6 +145,7 @@ public void onClickButton(android.view.View);
 
 -keep class org.springframework.**
 -dontwarn org.springframework.**
+-keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
 
 -keep class ealvatag.tag.id3.framebody.** { *; }
 -keep class ealvatag.tag.datatype.** { *; }

@@ -32,6 +32,7 @@ import dev.ragnarok.fenrir.adapter.MessagesAdapter;
 import dev.ragnarok.fenrir.fragment.base.PlaceSupportMvpFragment;
 import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener;
 import dev.ragnarok.fenrir.model.FwdMessages;
+import dev.ragnarok.fenrir.model.Keyboard;
 import dev.ragnarok.fenrir.model.LastReadId;
 import dev.ragnarok.fenrir.model.LoadMoreState;
 import dev.ragnarok.fenrir.model.Message;
@@ -242,6 +243,11 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
     @Override
     public void onRestoreClick(@NonNull Message message, int position) {
         getPresenter().fireMessageRestoreClick(message, position);
+    }
+
+    @Override
+    public void onBotKeyboardClick(@NonNull @NotNull Keyboard.Button button) {
+
     }
 
     @Override

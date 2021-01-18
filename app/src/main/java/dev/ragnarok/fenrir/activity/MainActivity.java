@@ -86,6 +86,7 @@ import dev.ragnarok.fenrir.fragment.DocsFragment;
 import dev.ragnarok.fenrir.fragment.DrawerEditFragment;
 import dev.ragnarok.fenrir.fragment.FeedFragment;
 import dev.ragnarok.fenrir.fragment.FeedbackFragment;
+import dev.ragnarok.fenrir.fragment.FriendsByPhonesFragment;
 import dev.ragnarok.fenrir.fragment.FwdsFragment;
 import dev.ragnarok.fenrir.fragment.GifPagerFragment;
 import dev.ragnarok.fenrir.fragment.GiftsFragment;
@@ -117,6 +118,7 @@ import dev.ragnarok.fenrir.fragment.UserBannedFragment;
 import dev.ragnarok.fenrir.fragment.UserDetailsFragment;
 import dev.ragnarok.fenrir.fragment.VKPhotoAlbumsFragment;
 import dev.ragnarok.fenrir.fragment.VKPhotosFragment;
+import dev.ragnarok.fenrir.fragment.VideoAlbumsByVideoFragment;
 import dev.ragnarok.fenrir.fragment.VideoPreviewFragment;
 import dev.ragnarok.fenrir.fragment.VideosFragment;
 import dev.ragnarok.fenrir.fragment.VideosInCatalogFragment;
@@ -390,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
     }
 
     private void CheckMusicInPC() {
-        if (!AppPerms.hasReadWriteStoragePermision(this))
+        if (!AppPerms.hasReadWriteStoragePermission(this))
             return;
         File audios = new File(Settings.get().other().getMusicDir(), "audio_downloads.json");
         if (!audios.exists())
@@ -1427,6 +1429,14 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
 
             case Place.MARKET_VIEW:
                 attachToFront(MarketViewFragment.newInstance(args));
+                break;
+
+            case Place.ALBUMS_BY_VIDEO:
+                attachToFront(VideoAlbumsByVideoFragment.newInstance(args));
+                break;
+
+            case Place.FRIENDS_BY_PHONES:
+                attachToFront(FriendsByPhonesFragment.newInstance(args));
                 break;
             default:
                 throw new IllegalArgumentException("Main activity can't open this place, type: " + place.type);

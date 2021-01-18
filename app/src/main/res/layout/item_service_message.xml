@@ -63,6 +63,13 @@
 
         </LinearLayout>
 
+        <dev.ragnarok.fenrir.view.emoji.BotKeyboardView
+            android:id="@+id/input_keyboard_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:visibility="gone"
+            app:track_keyboard_height="false" />
 
     </dev.ragnarok.fenrir.view.MessageView>
 

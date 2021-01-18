@@ -395,13 +395,13 @@ public class MessageAttachmentsPresenter extends RxSupportPresenter<IMessageAtta
     }
 
     public void fireCameraPermissionResolved() {
-        if (AppPerms.hasCameraPermision(getApplicationContext())) {
+        if (AppPerms.hasCameraPermission(getApplicationContext())) {
             makePhotoInternal();
         }
     }
 
     public void fireButtonCameraClick() {
-        if (AppPerms.hasCameraPermision(getApplicationContext())) {
+        if (AppPerms.hasCameraPermission(getApplicationContext())) {
             makePhotoInternal();
         } else {
             getView().requestCameraPermission();

@@ -1,7 +1,7 @@
 package dev.ragnarok.fenrir.fragment
 
-import android.annotation.SuppressLint
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.*
 import android.graphics.Bitmap
@@ -201,7 +201,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         dlgAlert.setCancelable(true)
         dlgAlert.setNegativeButton(R.string.button_cancel, null)
         dlgAlert.setPositiveButton(R.string.save) { _, _ ->
-            if (!AppPerms.hasReadWriteStoragePermision(requireActivity())) {
+            if (!AppPerms.hasReadWriteStoragePermission(requireActivity())) {
                 requestWriteQRPermission.launch()
             } else {
                 val path = Environment.getExternalStorageDirectory().absolutePath
@@ -373,7 +373,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         ivSave = root.findViewById(R.id.audio_save)
         ivSave?.setOnClickListener {
             run {
-                if (!AppPerms.hasReadWriteStoragePermision(requireActivity())) {
+                if (!AppPerms.hasReadWriteStoragePermission(requireActivity())) {
                     requestWriteAudioPermission.launch()
                 } else {
                     onSaveButtonClick(it)
@@ -450,8 +450,8 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
             2 -> {
                 Snackbar.make(v, R.string.audio_force_download_pc, Snackbar.LENGTH_LONG)
                     .setAnchorView(mPlayPauseButton).setAction(
-                    R.string.button_yes
-                ) { doDownloadAudio(requireActivity(), audio, mAccountId, true) }
+                        R.string.button_yes
+                    ) { doDownloadAudio(requireActivity(), audio, mAccountId, true) }
                     .setBackgroundTint(CurrentTheme.getColorPrimary(requireActivity()))
                     .setActionTextColor(
                         if (Utils.isColorDark(

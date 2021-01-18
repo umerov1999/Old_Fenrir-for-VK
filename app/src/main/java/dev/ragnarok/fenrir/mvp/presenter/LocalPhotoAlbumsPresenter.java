@@ -62,7 +62,7 @@ public class LocalPhotoAlbumsPresenter extends RxSupportPresenter<ILocalPhotoAlb
     public void onGuiCreated(@NonNull ILocalPhotoAlbumsView viewHost) {
         super.onGuiCreated(viewHost);
 
-        if (!AppPerms.hasReadStoragePermision(getApplicationContext())) {
+        if (!AppPerms.hasReadStoragePermission(getApplicationContext())) {
             if (!permissionRequestedOnce) {
                 permissionRequestedOnce = true;
                 getView().requestReadExternalStoragePermission();
@@ -126,7 +126,7 @@ public class LocalPhotoAlbumsPresenter extends RxSupportPresenter<ILocalPhotoAlb
     }
 
     public void fireReadExternalStoregePermissionResolved() {
-        if (AppPerms.hasReadStoragePermision(getApplicationContext())) {
+        if (AppPerms.hasReadStoragePermission(getApplicationContext())) {
             loadData();
         }
     }

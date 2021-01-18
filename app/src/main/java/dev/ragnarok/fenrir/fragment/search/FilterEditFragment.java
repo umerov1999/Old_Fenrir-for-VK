@@ -455,23 +455,6 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         LocationResult locationResult;
         boolean gps_enabled;
         boolean network_enabled;
-        LocationListener locationListenerGps = new LocationListener() {
-            public void onLocationChanged(Location location) {
-                timer1.cancel();
-                locationResult.gotLocation(location);
-                lm.removeUpdates(this);
-                lm.removeUpdates(locationListenerNetwork);
-            }
-
-            public void onProviderDisabled(String provider) {
-            }
-
-            public void onProviderEnabled(String provider) {
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-        };
         LocationListener locationListenerNetwork = new LocationListener() {
             public void onLocationChanged(Location location) {
                 timer1.cancel();
@@ -489,9 +472,26 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
             public void onStatusChanged(String provider, int status, Bundle extras) {
             }
         };
+        LocationListener locationListenerGps = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                timer1.cancel();
+                locationResult.gotLocation(location);
+                lm.removeUpdates(this);
+                lm.removeUpdates(locationListenerNetwork);
+            }
+
+            public void onProviderDisabled(String provider) {
+            }
+
+            public void onProviderEnabled(String provider) {
+            }
+
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+        };
 
         public boolean getLocation(Context context, LocationResult result) {
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (Utils.hasMarshmallow() && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 requestGPSPermission.launch();
                 return false;
             }
@@ -531,7 +531,7 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         class GetLastLocation extends TimerTask {
             @Override
             public void run() {
-                if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (Utils.hasMarshmallow() && ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     requestGPSPermission.launch();
                     return;
                 }

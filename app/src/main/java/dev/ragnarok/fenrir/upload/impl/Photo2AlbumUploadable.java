@@ -71,7 +71,7 @@ public class Photo2AlbumUploadable implements IUploadable<Photo> {
                             Double longitude = null;
 
                             try {
-                                ExifInterface exif = new ExifInterface(upload.getFileUri().getPath());
+                                ExifInterface exif = new ExifInterface(UploadUtils.createStream(context, upload.getFileUri()));
                                 ExifGeoDegree exifGeoDegree = new ExifGeoDegree(exif);
                                 if (exifGeoDegree.isValid()) {
                                     latitude = exifGeoDegree.getLatitude();

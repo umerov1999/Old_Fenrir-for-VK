@@ -38,8 +38,6 @@ class LocalMediaStorage extends AbsStorage implements ILocalMediaStorage {
 
     private static final String[] PROJECTION = {BaseColumns._ID, MediaStore.MediaColumns.DATA};
     private static final String[] VIDEO_PROJECTION = {BaseColumns._ID, MediaStore.MediaColumns.DURATION, MediaStore.MediaColumns.SIZE, MediaStore.MediaColumns.DISPLAY_NAME};
-
-    @RequiresApi(api = Build.VERSION_CODES.Q)
     private static final String[] AUDIO_PROJECTION = {BaseColumns._ID, MediaStore.MediaColumns.DURATION, MediaStore.MediaColumns.DISPLAY_NAME};
 
     LocalMediaStorage(@NonNull AppStorages mRepositoryContext) {
@@ -102,7 +100,6 @@ class LocalMediaStorage extends AbsStorage implements ILocalMediaStorage {
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public Single<List<Audio>> getAudios(int accountId) {
         return Single.create(e -> {

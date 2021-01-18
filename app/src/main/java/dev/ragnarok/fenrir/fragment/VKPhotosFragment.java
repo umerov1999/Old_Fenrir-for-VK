@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -31,6 +33,7 @@ import java.util.Collections;
 import java.util.List;
 
 import dev.ragnarok.fenrir.Extra;
+import dev.ragnarok.fenrir.HelperSimple;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.PhotosActivity;
@@ -327,7 +330,7 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
 
     @Override
     public void startLocalPhotosSelection() {
-        if (!AppPerms.hasReadStoragePermision(requireActivity())) {
+        if (!AppPerms.hasReadStoragePermission(requireActivity())) {
             requestReadPermission.launch();
             return;
         }
@@ -347,9 +350,17 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
     }
 
     @Override
+    public void needHelp() {
+        View view = getView();
+        if (nonNull(view) && HelperSimple.INSTANCE.needHelp(HelperSimple.NATIVE_PARCEL_HELPER, 2)) {
+            Snackbar.make(view, R.string.parcel_native_helper, BaseTransientBottomBar.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_get_downloaded) {
-            if (!AppPerms.hasReadWriteStoragePermision(requireActivity())) {
+            if (!AppPerms.hasReadWriteStoragePermission(requireActivity())) {
                 requestReadPermissionForLoadDownload.launch();
                 return true;
             }
@@ -368,7 +379,7 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
 
     @Override
     public void startLocalPhotosSelectionIfHasPermission() {
-        if (AppPerms.hasReadStoragePermision(requireActivity())) {
+        if (AppPerms.hasReadStoragePermission(requireActivity())) {
             startLocalPhotosSelectionActibity();
         }
     }

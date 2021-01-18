@@ -34,6 +34,7 @@ import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.listener.PicassoPauseOnScrollListener;
 import dev.ragnarok.fenrir.model.FwdMessages;
+import dev.ragnarok.fenrir.model.Keyboard;
 import dev.ragnarok.fenrir.model.LastReadId;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.VoiceMessage;
@@ -138,6 +139,10 @@ public class ImportantMessagesFragment extends PlaceSupportMvpFragment<Important
 
     @Override
     public void onRestoreClick(@NonNull Message message, int position) {
+    }
+
+    @Override
+    public void onBotKeyboardClick(@NonNull @NotNull Keyboard.Button button) {
     }
 
     @Override

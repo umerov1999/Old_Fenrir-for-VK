@@ -482,19 +482,20 @@ class MusicPlaybackService : Service() {
     }
 
     private fun GetCoverURL(audio: Audio) {
-        serviceDisposable.add(Injection.provideNetworkInterfaces().amazonAudioCover()
-            .getAudioCover(audio.title, audio.artist)
-            .compose(RxUtils.applySingleIOToMainSchedulers())
-            .subscribe({ remote ->
-                run {
-                    CoverAudio = remote.image; audio.thumb_image_big =
-                    remote.image; audio.thumb_image_very_big =
-                    remote.image; audio.thumb_image_little = remote.image
-                    AlbumTitle = remote.album; fetchCoverAndUpdateMetadata(); notifyChange(
-                    META_CHANGED
-                )
-                }
-            }, {})
+        serviceDisposable.add(
+            Injection.provideNetworkInterfaces().amazonAudioCover()
+                .getAudioCover(audio.title, audio.artist)
+                .compose(RxUtils.applySingleIOToMainSchedulers())
+                .subscribe({ remote ->
+                    run {
+                        CoverAudio = remote.image; audio.thumb_image_big =
+                        remote.image; audio.thumb_image_very_big =
+                        remote.image; audio.thumb_image_little = remote.image
+                        AlbumTitle = remote.album; fetchCoverAndUpdateMetadata(); notifyChange(
+                        META_CHANGED
+                    )
+                    }
+                }, {})
         )
     }
 

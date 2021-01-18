@@ -227,6 +227,24 @@ public class VideosInteractor implements IVideosInteractor {
     }
 
     @Override
+    public Single<List<VideoAlbum>> getAlbumsByVideo(int accountId, int target_id, int owner_id, int video_id) {
+        return networker.vkDefault(accountId)
+                .video()
+                .getAlbumsByVideo(target_id, owner_id, video_id)
+                .flatMap(items -> {
+                    List<VKApiVideoAlbum> dtos = listEmptyIfNull(items.getItems());
+                    List<VideoAlbum> albums = new ArrayList<>(dtos.size());
+
+                    for (VKApiVideoAlbum dto : dtos) {
+                        VideoAlbumEntity dbo = Dto2Entity.buildVideoAlbumDbo(dto);
+                        albums.add(Entity2Model.buildVideoAlbumFromDbo(dbo));
+                    }
+
+                    return Single.just(albums);
+                });
+    }
+
+    @Override
     public Single<List<VideoAlbum>> getActualAlbums(int accountId, int ownerId, int count, int offset) {
         return networker.vkDefault(accountId)
                 .video()
