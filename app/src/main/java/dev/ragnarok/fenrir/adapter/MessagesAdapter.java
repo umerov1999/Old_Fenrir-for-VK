@@ -294,12 +294,12 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
         if (nonNull(holder.botKeyboardView)) {
             if (nonNull(message.getKeyboard()) && message.getKeyboard().getInline() && message.getKeyboard().getButtons().size() > 0) {
                 holder.botKeyboardView.setVisibility(View.VISIBLE);
-                holder.botKeyboardView.setButtons(message.getKeyboard().getButtons());
+                holder.botKeyboardView.setButtons(message.getKeyboard().getButtons(), false);
             } else {
                 holder.botKeyboardView.setVisibility(View.GONE);
             }
 
-            holder.botKeyboardView.setDelegate(button -> {
+            holder.botKeyboardView.setDelegate((button, needClose) -> {
                 if (onMessageActionListener != null) {
                     onMessageActionListener.onBotKeyboardClick(button);
                 }
@@ -387,12 +387,12 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
         if (nonNull(holder.botKeyboardView)) {
             if (nonNull(message.getKeyboard()) && message.getKeyboard().getInline() && message.getKeyboard().getButtons().size() > 0) {
                 holder.botKeyboardView.setVisibility(View.VISIBLE);
-                holder.botKeyboardView.setButtons(message.getKeyboard().getButtons());
+                holder.botKeyboardView.setButtons(message.getKeyboard().getButtons(), false);
             } else {
                 holder.botKeyboardView.setVisibility(View.GONE);
             }
 
-            holder.botKeyboardView.setDelegate(button -> {
+            holder.botKeyboardView.setDelegate((button, need_close) -> {
                 if (onMessageActionListener != null) {
                     onMessageActionListener.onBotKeyboardClick(button);
                 }

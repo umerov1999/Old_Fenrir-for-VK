@@ -395,6 +395,7 @@ public class Dto2Model {
         message.random_id = update.random_id;
         message.keyboard = update.keyboard;
         message.payload = update.payload;
+        message.update_time = update.edit_time;
         return message;
     }
 

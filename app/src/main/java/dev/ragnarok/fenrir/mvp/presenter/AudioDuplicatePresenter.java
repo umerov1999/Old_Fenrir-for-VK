@@ -40,6 +40,7 @@ public class AudioDuplicatePresenter extends RxSupportPresenter<IAudioDuplicateV
     private final Disposable mPlayerDisposable;
     private Long oldBitrate;
     private Long newBitrate;
+    private boolean needShowBitrateButton = true;
     private Disposable audioListDisposable = Disposable.disposed();
 
     public AudioDuplicatePresenter(int accountId, Audio new_audio, Audio old_audio, @Nullable Bundle savedInstanceState) {
@@ -110,10 +111,12 @@ public class AudioDuplicatePresenter extends RxSupportPresenter<IAudioDuplicateV
         }
     }
 
-    public void getBitrateAll(Context context) {
+    public void getBitrateAll(@NonNull Context context) {
         if (Utils.isEmpty(old_audio.getUrl())) {
             return;
         }
+        needShowBitrateButton = false;
+        callView(v -> v.updateShowBitrate(needShowBitrateButton));
         audioListDisposable = doLocalBitrate(context, old_audio.getUrl()).compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(r -> {
                             oldBitrate = r;
@@ -149,6 +152,7 @@ public class AudioDuplicatePresenter extends RxSupportPresenter<IAudioDuplicateV
         viewHost.displayData(new_audio, old_audio);
         viewHost.setNewBitrate(newBitrate);
         viewHost.setOldBitrate(oldBitrate);
+        viewHost.updateShowBitrate(needShowBitrateButton);
     }
 
     private void onDataGetError(Throwable t) {

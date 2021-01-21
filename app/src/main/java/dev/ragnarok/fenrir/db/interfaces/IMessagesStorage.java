@@ -47,6 +47,9 @@ public interface IMessagesStorage extends IStorage {
     @CheckResult
     Completable changeMessageStatus(int accountId, int messageId, @MessageStatus int status, @Nullable Integer vkid);
 
+    @CheckResult
+    Completable changeMessagesStatus(int accountId, Collection<Integer> ids, @MessageStatus int status);
+
     //@CheckResult
     //Completable updateMessageFlag(int accountId, int messageId, Collection<Pair<Integer, Boolean>> values);
 
@@ -81,4 +84,7 @@ public interface IMessagesStorage extends IStorage {
     //Observable<MessageUpdate> observeMessageUpdates();
 
     Single<List<Integer>> getMissingMessages(int accountId, Collection<Integer> ids);
+
+    @CheckResult
+    Single<Boolean> deleteMessages(int accountId, Collection<Integer> ids);
 }

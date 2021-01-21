@@ -119,6 +119,8 @@
     <string name="attachment_documents">Документы</string>
     <string name="attachment_link">Ссылка</string>
     <string name="user_type_message">набирает сообщение</string>
+    <string name="user_type_voice">записывает голосовую</string>
+    <string name="many_users_typed">%1$s, и ещё %2$d</string>
 
     <string name="load_more">Загрузить ещё</string>
     <string name="last_seen_sex_man">был: %1$s</string>
@@ -631,9 +633,8 @@
     <string name="developer">Разработчики:</string>
     <string name="first_developer">Умеров Артём</string>
     <string name="second_developer">Данилюк Дмитрий</string>
-    <string name="fork_phoenix">Форк Phoenix</string>
+    <string name="first_pagan">Первый языческий</string>
     <string name="repo">Репозиторий: https://github.com/umerov1999/Fenrir-for-VK</string>
-    <string name="telegram">Телеграм-канал: https://t.me/phoenixvk_mod</string>
     <string name="is_donated">Проверка доната</string>
     <string name="comment">Комментарий</string>
     <string name="search">Поиск</string>

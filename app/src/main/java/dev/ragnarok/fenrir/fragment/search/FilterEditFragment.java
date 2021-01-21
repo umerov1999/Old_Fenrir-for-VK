@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,7 +19,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -52,7 +50,6 @@ import dev.ragnarok.fenrir.fragment.search.options.SimpleGPSOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleNumberOption;
 import dev.ragnarok.fenrir.fragment.search.options.SimpleTextOption;
 import dev.ragnarok.fenrir.fragment.search.options.SpinnerOption;
-import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.InputTextDialog;
@@ -114,9 +111,7 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         Toolbar toolbar = root.findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.search_options);
 
-        Drawable dr = ResourcesCompat.getDrawable(getResources(), R.drawable.check, requireActivity().getTheme());
-        Utils.setColorFilter(dr, CurrentTheme.getColorPrimary(requireActivity()));
-        toolbar.setNavigationIcon(dr);
+        toolbar.setNavigationIcon(R.drawable.check);
         toolbar.setNavigationOnClickListener(menuItem ->
                 onSaveClick());
 
@@ -455,12 +450,12 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         LocationResult locationResult;
         boolean gps_enabled;
         boolean network_enabled;
-        LocationListener locationListenerNetwork = new LocationListener() {
+        LocationListener locationListenerGps = new LocationListener() {
             public void onLocationChanged(Location location) {
                 timer1.cancel();
                 locationResult.gotLocation(location);
                 lm.removeUpdates(this);
-                lm.removeUpdates(locationListenerGps);
+                lm.removeUpdates(locationListenerNetwork);
             }
 
             public void onProviderDisabled(String provider) {
@@ -472,12 +467,12 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
             public void onStatusChanged(String provider, int status, Bundle extras) {
             }
         };
-        LocationListener locationListenerGps = new LocationListener() {
+        LocationListener locationListenerNetwork = new LocationListener() {
             public void onLocationChanged(Location location) {
                 timer1.cancel();
                 locationResult.gotLocation(location);
                 lm.removeUpdates(this);
-                lm.removeUpdates(locationListenerNetwork);
+                lm.removeUpdates(locationListenerGps);
             }
 
             public void onProviderDisabled(String provider) {

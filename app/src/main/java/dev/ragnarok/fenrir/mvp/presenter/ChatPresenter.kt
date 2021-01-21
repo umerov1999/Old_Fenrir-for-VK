@@ -270,8 +270,9 @@ class ChatPresenter(
     }
 
     private fun onUserWriteInDialog(writeText: WriteText) {
-        if (peerId == writeText.peerId)
-            displayUserTextingInToolbar(writeText.userId)
+        if (peerId == writeText.peerId) {
+            displayUserTextingInToolbar(writeText)
+        }
     }
 
     private fun onUserUpdates(updates: List<UserUpdate>) {
@@ -300,8 +301,12 @@ class ChatPresenter(
         val message = data[position]
         when (message.status) {
             MessageStatus.SENDING, MessageStatus.QUEUE, MessageStatus.WAITING_FOR_UPLOAD -> {
+                val index = indexOf(message.id)
+                if (index != -1) {
+                    data.removeAt(index)
+                    view?.notifyItemRemoved(index)
+                }
                 deleteMessageFromDbAsync(message)
-                view?.notifyItemRemoved(position)
                 return
             }
             MessageStatus.ERROR -> {
@@ -562,6 +567,27 @@ class ChatPresenter(
     private fun loadAllCachedData() {
         setCacheLoadingNow(true)
         cacheLoadingDisposable = messagesRepository.getCachedPeerMessages(messagesOwnerId, peer.id)
+            .flatMap { t: List<Message> ->
+                run {
+                    val list = t.toMutableList()
+                    val iterator = list.iterator()
+                    val delete: ArrayList<Int> = ArrayList()
+                    while (iterator.hasNext()) {
+                        val kk = iterator.next()
+                        if (kk.status == MessageStatus.SENDING) {
+                            delete.add(kk.id)
+                            iterator.remove()
+                        }
+                    }
+                    if (delete.isNotEmpty()) {
+                        Stores.getInstance()
+                            .messages()
+                            .deleteMessages(messagesOwnerId, delete)
+                            .blockingSubscribe(ignore(), ignore())
+                    }
+                    Single.just(list)
+                }
+            }
             .fromIOToMain()
             .subscribe(
                 { onCachedDataReceived(it) },
@@ -628,22 +654,25 @@ class ChatPresenter(
         resolveEmptyTextVisibility()
         if (Settings.get().other().isAuto_read && !isCache) {
             appendDisposable(
-                CheckMessages().compose(applySingleIOToMainSchedulers())
+                checkErrorMessages().compose(applySingleIOToMainSchedulers())
                     .subscribe({ t -> if (t) startSendService() else readAllUnreadMessagesIfExists() }) { })
         }
     }
 
     @SuppressLint("CheckResult")
-    private fun CheckMessages(): Single<Boolean> {
+    private fun checkErrorMessages(): Single<Boolean> {
         if (isHiddenAccount(accountId)) return Single.just(false)
-        var need = false
+        val list: ArrayList<Int> = ArrayList()
         for (i: Message in data) {
             if (i.status == MessageStatus.ERROR) {
-                need = true
-                messagesRepository.enqueueAgain(messagesOwnerId, i.id).blockingAwait()
+                list.add(i.id)
             }
         }
-        return Single.just(need)
+        if (list.isNotEmpty()) {
+            messagesRepository.enqueueAgainList(messagesOwnerId, list)
+                .blockingSubscribe(dummy(), ignore())
+        }
+        return Single.just(list.isNotEmpty())
     }
 
     private fun setCacheLoadingNow(cacheLoadingNow: Boolean) {
@@ -1158,19 +1187,25 @@ class ChatPresenter(
         return !isGroupChat && Peer.toUserId(peerId) == userId
     }
 
-    private fun displayUserTextingInToolbar(ownerId: Int) {
+    private fun displayUserTextingInToolbar(writeText: WriteText) {
         if (!Settings.get().ui().isDisplay_writing)
             return
 
-        view?.displayWriting(ownerId)
+        view?.displayWriting(writeText)
         toolbarSubtitleHandler.restoreToolbarWithDelay()
     }
 
-    fun ResolveWritingInfo(context: Context, owner_id: Int) {
+    fun ResolveWritingInfo(context: Context, writeText: WriteText) {
         appendDisposable(
-            OwnerInfo.getRx(context, Settings.get().accounts().current, owner_id)
+            OwnerInfo.getRx(context, accountId, writeText.from_ids[0])
                 .compose(applySingleIOToMainSchedulers())
-                .subscribe({ t -> view?.displayWriting(t.owner) }, { run {} })
+                .subscribe({ t ->
+                    view?.displayWriting(
+                        t.owner,
+                        writeText.from_ids.size,
+                        writeText.isText
+                    )
+                }, { run {} })
         )
     }
 
@@ -1548,7 +1583,7 @@ class ChatPresenter(
         )
     }
 
-    private fun deleteSentImpl(ids: Collection<Message>, forAll: Int) {
+    private fun deleteSentImpl(ids: MutableCollection<Message>, forAll: Int) {
         if (forAll == 2) {
             superDeleteSentImpl(ids)
             return
@@ -1585,7 +1620,7 @@ class ChatPresenter(
         )
     }
 
-    private fun superDeleteSentImpl(messages: Collection<Message>) {
+    private fun superDeleteSentImpl(messages: MutableCollection<Message>) {
         val tmp = ArrayList(messages)
         val result = ArrayList<Int>()
         superDeleteEditRecursive(tmp, result)

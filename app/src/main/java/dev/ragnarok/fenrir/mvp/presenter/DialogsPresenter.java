@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
-import android.app.Activity;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -22,10 +20,8 @@ import dev.ragnarok.fenrir.domain.IMessagesRepository;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
 import dev.ragnarok.fenrir.domain.Repository;
 import dev.ragnarok.fenrir.exception.UnauthorizedException;
-import dev.ragnarok.fenrir.link.LinkHelper;
 import dev.ragnarok.fenrir.longpoll.ILongpollManager;
 import dev.ragnarok.fenrir.longpoll.LongpollInstance;
-import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.Option;
 import dev.ragnarok.fenrir.model.AbsModel;
 import dev.ragnarok.fenrir.model.Dialog;
 import dev.ragnarok.fenrir.model.FwdMessages;
@@ -42,7 +38,6 @@ import dev.ragnarok.fenrir.settings.ISettings;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Analytics;
 import dev.ragnarok.fenrir.util.AssertUtils;
-import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Optional;
 import dev.ragnarok.fenrir.util.PersistentLogger;
 import dev.ragnarok.fenrir.util.RxUtils;
@@ -150,33 +145,6 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
         if (Utils.needReloadStickers(getAccountId())) {
             receiveStickers();
         }
-    }
-
-    public void fireDialogOptions(Context context, Option option) {
-        switch (option.getId()) {
-            case R.id.button_ok:
-                appendDisposable(accountsInteractor.setOffline(getAccountId())
-                        .compose(RxUtils.applySingleIOToMainSchedulers())
-                        .subscribe(e -> OnSetOffline(context, e), t -> OnSetOffline(context, false)));
-                break;
-            case R.id.button_cancel:
-                ClipboardManager clipBoard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                if (clipBoard != null && clipBoard.getPrimaryClip() != null && clipBoard.getPrimaryClip().getItemCount() > 0 && clipBoard.getPrimaryClip().getItemAt(0).getText() != null) {
-                    String temp = clipBoard.getPrimaryClip().getItemAt(0).getText().toString();
-                    LinkHelper.openUrl((Activity) context, getAccountId(), temp);
-                }
-                break;
-            case R.id.button_camera:
-                getView().startQRScanner();
-                break;
-        }
-    }
-
-    private void OnSetOffline(Context context, boolean succ) {
-        if (succ)
-            CustomToast.CreateCustomToast(context).showToast(R.string.succ_offline);
-        else
-            CustomToast.CreateCustomToast(context).showToastError(R.string.err_offline);
     }
 
     private void onDialogsGetError(Throwable t) {
@@ -476,23 +444,23 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
         getView().goToImportant(getAccountId());
     }
 
-    public void fireDialogClick(Dialog dialog, int offset) {
-        openChat(dialog, offset);
+    public void fireDialogClick(Dialog dialog) {
+        openChat(dialog);
     }
 
-    private void openChat(Dialog dialog, int offset) {
+    private void openChat(Dialog dialog) {
         getView().goToChat(getAccountId(),
                 dialogsOwnerId,
                 dialog.getPeerId(),
                 dialog.getDisplayTitle(getApplicationContext()),
-                dialog.getImageUrl(), offset);
+                dialog.getImageUrl());
     }
 
-    public void fireDialogAvatarClick(Dialog dialog, int offset) {
+    public void fireDialogAvatarClick(Dialog dialog) {
         if (Peer.isUser(dialog.getPeerId()) || Peer.isGroup(dialog.getPeerId())) {
             getView().goToOwnerWall(getAccountId(), Peer.toOwnerId(dialog.getPeerId()), dialog.getInterlocutor());
         } else {
-            openChat(dialog, offset);
+            openChat(dialog);
         }
     }
 
@@ -524,7 +492,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
     }
 
     private void onGroupChatCreated(int chatId, String title) {
-        callView(view -> view.goToChat(getAccountId(), dialogsOwnerId, Peer.fromChatId(chatId), title, null, 0));
+        callView(view -> view.goToChat(getAccountId(), dialogsOwnerId, Peer.fromChatId(chatId), title, null));
     }
 
     public void fireUsersForChatSelected(@NonNull ArrayList<Owner> owners) {
@@ -537,7 +505,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
         if (users.size() == 1) {
             User user = users.get(0);
             // Post?
-            getView().goToChat(getAccountId(), dialogsOwnerId, Peer.fromUserId(user.getId()), user.getFullName(), user.getMaxSquareAvatar(), 0);
+            getView().goToChat(getAccountId(), dialogsOwnerId, Peer.fromUserId(user.getId()), user.getFullName(), user.getMaxSquareAvatar());
         } else if (users.size() > 1) {
             getView().showEnterNewGroupChatTitle(users);
         }
@@ -614,10 +582,6 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
         contextView.setCanAddToShortcuts(dialogsOwnerId > 0 && !isHide);
         contextView.setCanConfigNotifications(dialogsOwnerId > 0);
         contextView.setIsHidden(isHide);
-    }
-
-    public void fireQrScanned(@NonNull String result) {
-        getView().onQRScanned(getAccountId(), result);
     }
 
     public void fireOptionViewCreated(IDialogsView.IOptionView view) {

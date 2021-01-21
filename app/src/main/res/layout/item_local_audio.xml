@@ -45,7 +45,6 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-            android:textColor="?attr/colorSecondary"
             android:textSize="15sp"
             tools:text="Name" />
 
@@ -54,12 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:marqueeRepeatLimit="marquee_forever"
             android:maxLines="1"
-            android:scrollHorizontally="true"
-            android:singleLine="true"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             android:textSize="12sp"
             tools:text="Artist" />

@@ -130,7 +130,7 @@ public class BotKeyboardView extends ScrollView {
         }
     }
 
-    public boolean setButtons(@Nullable List<List<Keyboard.Button>> buttons) {
+    public boolean setButtons(@Nullable List<List<Keyboard.Button>> buttons, boolean needClose) {
         if (Objects.equals(botButtons, buttons)) {
             return false;
         }
@@ -173,7 +173,7 @@ public class BotKeyboardView extends ScrollView {
                     }
 
                     layout.addView(holder.itemView, createLinear(0, ViewGroup.LayoutParams.MATCH_PARENT, weight, 0, 0, b != row.size() - 1 ? 10 : 0, 0));
-                    holder.button.setOnClickListener(v -> delegate.didPressedButton((Keyboard.Button) v.getTag()));
+                    holder.button.setOnClickListener(v -> delegate.didPressedButton((Keyboard.Button) v.getTag(), needClose));
                     buttonViews.add(holder.itemView);
                 }
             }
@@ -219,7 +219,7 @@ public class BotKeyboardView extends ScrollView {
     }
 
     public interface BotKeyboardViewDelegate {
-        void didPressedButton(Keyboard.Button button);
+        void didPressedButton(Keyboard.Button button, boolean needClose);
     }
 
     private static class ButtonHolder extends RecyclerView.ViewHolder {

@@ -59,9 +59,9 @@ import dev.ragnarok.fenrir.activity.alias.BlueFenrirAlias;
 import dev.ragnarok.fenrir.activity.alias.DefaultFenrirAlias;
 import dev.ragnarok.fenrir.activity.alias.GreenFenrirAlias;
 import dev.ragnarok.fenrir.activity.alias.RedFenrirAlias;
-import dev.ragnarok.fenrir.activity.alias.UrinaFenrirAlias;
 import dev.ragnarok.fenrir.activity.alias.VKFenrirAlias;
 import dev.ragnarok.fenrir.activity.alias.VioletFenrirAlias;
+import dev.ragnarok.fenrir.activity.alias.WhiteFenrirAlias;
 import dev.ragnarok.fenrir.activity.alias.YellowFenrirAlias;
 import dev.ragnarok.fenrir.db.DBHelper;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
@@ -716,7 +716,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), YellowFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), BlackFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), VKFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-            requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), UrinaFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+            requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), WhiteFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
         });
         view.findViewById(R.id.blue_icon).setOnClickListener(v -> {
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), DefaultFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
@@ -727,7 +727,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), YellowFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), BlackFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), VKFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-            requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), UrinaFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+            requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), WhiteFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
         });
         view.findViewById(R.id.green_icon).setOnClickListener(v -> {
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), DefaultFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
@@ -738,7 +738,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), YellowFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), BlackFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), VKFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-            requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), UrinaFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+            requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), WhiteFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
         });
         view.findViewById(R.id.violet_icon).setOnClickListener(v -> {
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), DefaultFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
@@ -749,7 +749,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), YellowFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), BlackFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), VKFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-            requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), UrinaFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+            requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), WhiteFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
         });
         view.findViewById(R.id.red_icon).setOnClickListener(v -> {
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), DefaultFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
@@ -760,7 +760,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), YellowFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), BlackFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), VKFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-            requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), UrinaFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+            requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), WhiteFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
         });
         view.findViewById(R.id.yellow_icon).setOnClickListener(v -> {
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), DefaultFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
@@ -771,7 +771,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), YellowFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), BlackFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), VKFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-            requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), UrinaFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+            requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), WhiteFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
         });
         view.findViewById(R.id.black_icon).setOnClickListener(v -> {
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), DefaultFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
@@ -782,7 +782,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), YellowFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), BlackFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), VKFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-            requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), UrinaFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+            requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), WhiteFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
         });
         view.findViewById(R.id.vk_official).setOnClickListener(v -> {
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), DefaultFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
@@ -793,9 +793,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), YellowFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), BlackFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), VKFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
-            requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), UrinaFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+            requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), WhiteFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
         });
-        view.findViewById(R.id.urina_icon).setOnClickListener(v -> {
+        view.findViewById(R.id.white_icon).setOnClickListener(v -> {
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), DefaultFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), BlueFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), GreenFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
@@ -804,7 +804,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), YellowFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), BlackFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
             requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), VKFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-            requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), UrinaFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+            requireActivity().getPackageManager().setComponentEnabledSetting(new ComponentName(requireActivity(), WhiteFenrirAlias.class), PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
         });
         new MaterialAlertDialogBuilder(requireActivity())
                 .setView(view)

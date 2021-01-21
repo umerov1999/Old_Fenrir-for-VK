@@ -45,13 +45,13 @@ import dev.ragnarok.fenrir.longpoll.AppNotificationChannels;
 import dev.ragnarok.fenrir.model.Peer;
 import dev.ragnarok.fenrir.push.OwnerInfo;
 import dev.ragnarok.fenrir.util.Logger;
-import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Unixtime;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class KeyExchangeService extends Service {
@@ -81,6 +81,9 @@ public class KeyExchangeService extends Service {
     });
 
     public static boolean intercept(@NonNull Context context, int accountId, VKApiMessage dto) {
+        if (isNull(dto)) {
+            return false;
+        }
         return intercept(context, accountId, dto.peer_id, dto.id, dto.body, dto.out);
     }
 
@@ -346,7 +349,7 @@ public class KeyExchangeService extends Service {
 
     private void notifyAboutKeyExchange(long sessionId, @NonNull OwnerInfo info) {
         KeyExchangeSession session = mCurrentActiveSessions.get(sessionId);
-        if (Objects.isNull(session)) {
+        if (isNull(session)) {
             //сессия уже неактивна
             return;
         }
@@ -417,7 +420,7 @@ public class KeyExchangeService extends Service {
         @SessionState
         int opponentSessionState = message.getSenderSessionState();
 
-        if (Objects.isNull(session)) {
+        if (isNull(session)) {
             if (opponentSessionState != SessionState.INITIATOR_STATE_1) {
                 notifyOpponentAboutSessionFail(accountId, peerId, message.getSessionId(), ErrorCodes.SESSION_EXPIRED);
                 return;

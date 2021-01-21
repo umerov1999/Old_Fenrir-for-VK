@@ -358,10 +358,7 @@ public class MessagesRepository implements IMessagesRepository {
         return Completable.fromAction(() -> {
             List<WriteText> list = new ArrayList<>();
             for (WriteTextInDialogUpdate update : updates) {
-                if (update.chat_id != -1)
-                    list.add(new WriteText(accountId, update.user_id, VKApiMessage.CHAT_PEER + update.chat_id));
-                else
-                    list.add(new WriteText(accountId, update.user_id, update.user_id));
+                list.add(new WriteText(accountId, update.peer_id, update.from_ids, update.is_text));
             }
             writeTextPublisher.onNext(list);
         });
@@ -1026,6 +1023,20 @@ public class MessagesRepository implements IMessagesRepository {
                 .changeMessageStatus(accountId, messageId, status, vkid)
                 .onErrorComplete()
                 .doOnComplete(() -> messageUpdatesPublisher.onNext(Collections.singletonList(update)));
+    }
+
+    @Override
+    public Completable enqueueAgainList(int accountId, Collection<Integer> ids) {
+        ArrayList<MessageUpdate> updates = new ArrayList<>(ids.size());
+        for (Integer i : ids) {
+            MessageUpdate update = new MessageUpdate(accountId, i);
+            update.setStatusUpdate(new MessageUpdate.StatusUpdate(MessageStatus.QUEUE, null));
+            updates.add(update);
+        }
+        return storages.messages()
+                .changeMessagesStatus(accountId, ids, MessageStatus.QUEUE)
+                .onErrorComplete()
+                .doOnComplete(() -> messageUpdatesPublisher.onNext(updates));
     }
 
     @Override

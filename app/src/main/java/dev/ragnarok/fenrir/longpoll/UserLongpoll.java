@@ -20,7 +20,7 @@ class UserLongpoll implements ILongpoll {
 
     private static final String TAG = "Longpoll_TAG";
     private static final int DELAY_ON_ERROR = 10 * 1000;
-    private static final int V = 3;
+    private static final int V = 10;
     private static final int MODE =
             2 + //получать вложения;
                     8 + // возвращать расширенный набор событий;

@@ -199,6 +199,8 @@
     <string name="attachment_documents">Documents</string>
     <string name="attachment_link">Link</string>
     <string name="user_type_message">typing message</string>
+    <string name="user_type_voice">typing voice</string>
+    <string name="many_users_typed">%1$s, and %2$d persons</string>
 
     <string name="load_more">Load more</string>
     <string name="last_seen_sex_man">was: %1$s</string>
@@ -741,9 +743,8 @@
     <string name="developer">Developers:</string>
     <string name="first_developer">Umerov Artyom</string>
     <string name="second_developer">Danilyuk Dmitry</string>
-    <string name="fork_phoenix">Fork Phoenix</string>
+    <string name="first_pagan">First pagan</string>
     <string name="repo">Repository: https://github.com/umerov1999/Fenrir-for-VK</string>
-    <string name="telegram">Telegram channel: https://t.me/phoenixvk_mod</string>
     <string name="is_donated">Donate check</string>
     <string name="comment">Comment</string>
     <string name="search">Search</string>

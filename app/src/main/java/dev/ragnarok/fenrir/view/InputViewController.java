@@ -158,12 +158,12 @@ public class InputViewController {
         boolean ret = false;
         if (Objects.isNull(currentKeyboard) || currentKeyboard.getButtons().size() <= 0) {
             botKeyboard.setVisibility(View.GONE);
-            ret = botKeyboard.setButtons(null);
+            ret = botKeyboard.setButtons(null, false);
             keyboardOnScreen = false;
             currentKeyboardShow.setVisibility(View.GONE);
         } else {
             botKeyboard.setVisibility(show ? (Settings.get().main().isShow_bot_keyboard() ? View.VISIBLE : View.GONE) : View.GONE);
-            ret = botKeyboard.setButtons(currentKeyboard.getButtons());
+            ret = botKeyboard.setButtons(currentKeyboard.getButtons(), currentKeyboard.getOne_time() && !currentKeyboard.getInline());
             keyboardOnScreen = show;
             currentKeyboardShow.setVisibility(Settings.get().main().isShow_bot_keyboard() ? View.VISIBLE : View.GONE);
             if (show) {

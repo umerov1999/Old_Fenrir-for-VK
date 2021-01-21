@@ -12,7 +12,6 @@ public class AddMessageUpdate extends AbsLongpollEvent {
 
     public int message_id;
     public long timestamp;
-    public String subject;
     public String text;
     public int from;
     public boolean outbox;
@@ -29,6 +28,7 @@ public class AddMessageUpdate extends AbsLongpollEvent {
     public String reply;
     public int peer_id;
     public String random_id;
+    public long edit_time;
 
     public AddMessageUpdate() {
         super(ACTION_MESSAGE_ADDED);

@@ -59,6 +59,7 @@ public class AudioDuplicateDialog extends BaseMvpDialogFragment<AudioDuplicatePr
     private AudioHolder oldAudio;
     private TextView newBitrate;
     private TextView oldBitrate;
+    private MaterialButton bBitrate;
 
     private static Audio getAudioContent(Context context, String filePath, int accountId) {
         String[] AUDIO_PROJECTION = {BaseColumns._ID, MediaStore.MediaColumns.DURATION, MediaStore.MediaColumns.DISPLAY_NAME};
@@ -134,7 +135,7 @@ public class AudioDuplicateDialog extends BaseMvpDialogFragment<AudioDuplicatePr
         oldAudio = new AudioHolder(view.findViewById(R.id.item_old_audio));
         newBitrate = view.findViewById(R.id.item_new_bitrate);
         oldBitrate = view.findViewById(R.id.item_old_bitrate);
-        MaterialButton bBitrate = view.findViewById(R.id.item_get_bitrate);
+        bBitrate = view.findViewById(R.id.item_get_bitrate);
         bBitrate.setOnClickListener(v -> {
             getPresenter().getBitrateAll(requireActivity());
             bBitrate.setVisibility(View.GONE);
@@ -240,6 +241,11 @@ public class AudioDuplicateDialog extends BaseMvpDialogFragment<AudioDuplicatePr
         } else {
             newBitrate.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void updateShowBitrate(boolean needShow) {
+        bBitrate.setVisibility(needShow ? View.VISIBLE : View.GONE);
     }
 
     private void returnSelection(boolean type) {

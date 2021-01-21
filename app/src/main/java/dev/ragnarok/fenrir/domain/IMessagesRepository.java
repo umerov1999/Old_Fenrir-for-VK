@@ -117,6 +117,8 @@ public interface IMessagesRepository {
 
     Completable enqueueAgain(int accountId, int messageId);
 
+    Completable enqueueAgainList(int accountId, Collection<Integer> ids);
+
     /**
      * Поиск диалогов
      *

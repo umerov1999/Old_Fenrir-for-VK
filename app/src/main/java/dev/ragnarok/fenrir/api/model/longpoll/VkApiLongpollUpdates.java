@@ -7,12 +7,14 @@ import static dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent.ACTION_COU
 import static dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent.ACTION_MESSAGES_FLAGS_RESET;
 import static dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent.ACTION_MESSAGES_FLAGS_SET;
 import static dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent.ACTION_MESSAGE_ADDED;
+import static dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent.ACTION_MESSAGE_CHANGED;
 import static dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent.ACTION_MESSAGE_EDITED;
 import static dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent.ACTION_SET_INPUT_MESSAGES_AS_READ;
 import static dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent.ACTION_SET_OUTPUT_MESSAGES_AS_READ;
 import static dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent.ACTION_USER_IS_OFFLINE;
 import static dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent.ACTION_USER_IS_ONLINE;
 import static dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent.ACTION_USER_WRITE_TEXT_IN_DIALOG;
+import static dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent.ACTION_USER_WRITE_VOICE_IN_DIALOG;
 import static dev.ragnarok.fenrir.util.Utils.safeCountOfMultiple;
 
 public final class VkApiLongpollUpdates {
@@ -67,6 +69,7 @@ public final class VkApiLongpollUpdates {
                 break;
 
             case ACTION_MESSAGE_EDITED:
+            case ACTION_MESSAGE_CHANGED:
             case ACTION_MESSAGE_ADDED:
                 add_message_updates = addAndReturn(add_message_updates, (AddMessageUpdate) update);
                 break;
@@ -80,6 +83,7 @@ public final class VkApiLongpollUpdates {
                 break;
 
             case ACTION_USER_WRITE_TEXT_IN_DIALOG:
+            case ACTION_USER_WRITE_VOICE_IN_DIALOG:
                 write_text_in_dialog_updates = addAndReturn(write_text_in_dialog_updates, (WriteTextInDialogUpdate) update);
                 break;
 

@@ -12,10 +12,13 @@ import java.util.List;
 
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.api.model.VKApiUser;
+import dev.ragnarok.fenrir.domain.InteractorFactory;
 import dev.ragnarok.fenrir.model.Career;
 import dev.ragnarok.fenrir.model.Icon;
 import dev.ragnarok.fenrir.model.Military;
 import dev.ragnarok.fenrir.model.Owner;
+import dev.ragnarok.fenrir.model.Peer;
+import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.School;
 import dev.ragnarok.fenrir.model.Sex;
 import dev.ragnarok.fenrir.model.Text;
@@ -27,6 +30,7 @@ import dev.ragnarok.fenrir.model.menu.Section;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IUserDetailsView;
 import dev.ragnarok.fenrir.util.AppTextUtils;
+import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 
 import static dev.ragnarok.fenrir.util.Objects.isNull;
@@ -39,11 +43,17 @@ public class UserDetailsPresenter extends AccountDependencyPresenter<IUserDetail
 
     private final User user;
     private final UserDetails details;
+    private List<Photo> photos_profile;
+    private int current_select;
 
     public UserDetailsPresenter(int accountId, @NonNull User user, @NonNull UserDetails details, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
         this.user = user;
         this.details = details;
+
+        appendDisposable(InteractorFactory.createPhotosInteractor().get(accountId, user.getOwnerId(), -6, 50, 0, true)
+                .compose(RxUtils.applySingleIOToMainSchedulers())
+                .subscribe(this::DisplayUserProfileAlbum, RxUtils.ignore()));
     }
 
     private static void addPersonalInfo(List<AdvancedItem> items, @DrawableRes int icon, int key, Section section, @StringRes int title, String v) {
@@ -139,6 +149,47 @@ public class UserDetailsPresenter extends AccountDependencyPresenter<IUserDetail
         }
     }
 
+    public void fireChatClick() {
+        int accountId = getAccountId();
+        Peer peer = new Peer(Peer.fromUserId(user.getId()))
+                .setAvaUrl(user.getMaxSquareAvatar())
+                .setTitle(user.getFullName());
+
+        callView(view -> view.openChatWith(accountId, accountId, peer));
+    }
+
+    public void firePhotoClick() {
+        if (isEmpty(photos_profile) || current_select < 0 || current_select > photos_profile.size() - 1) {
+            callView(view -> view.openPhotoUser(user));
+            return;
+        }
+        callView(view -> view.openPhotoAlbum(getAccountId(), user.getOwnerId(), -6, new ArrayList<>(photos_profile), current_select));
+    }
+
+    private void DisplayUserProfileAlbum(List<Photo> photos) {
+        if (photos.isEmpty()) {
+            return;
+        }
+        Integer currentAvatarPhotoId = nonNull(details) && nonNull(details.getPhotoId()) ? details.getPhotoId().getId() : null;
+        Integer currentAvatarOwner_id = nonNull(details) && nonNull(details.getPhotoId()) ? details.getPhotoId().getOwnerId() : null;
+        int sel = 0;
+        if (currentAvatarPhotoId != null && currentAvatarOwner_id != null) {
+            int ut = 0;
+            for (Photo i : photos) {
+                if (i.getOwnerId() == currentAvatarOwner_id && i.getId() == currentAvatarPhotoId) {
+                    sel = ut;
+                    break;
+                }
+                ut++;
+            }
+        }
+
+        current_select = sel;
+        photos_profile = photos;
+        int finalSel = sel;
+        callView(view -> view.onPhotosLoaded(photos.get(finalSel)));
+    }
+
     private List<AdvancedItem> createData() {
         List<AdvancedItem> items = new ArrayList<>();
 
@@ -188,28 +239,28 @@ public class UserDetailsPresenter extends AccountDependencyPresenter<IUserDetail
         }
 
         if (nonEmpty(details.getSkype())) {
-            items.add(new AdvancedItem(7, new Text(R.string.skype))
+            items.add(new AdvancedItem(7, AdvancedItem.TYPE_COPY_DETAILS_ONLY, new Text(R.string.skype))
                     .setSubtitle(new Text(details.getSkype()))
                     .setIcon(R.drawable.ic_skype)
                     .setSection(mainSection));
         }
 
         if (nonEmpty(details.getInstagram())) {
-            items.add(new AdvancedItem(8, new Text(R.string.instagram))
+            items.add(new AdvancedItem(8, AdvancedItem.TYPE_COPY_DETAILS_ONLY, new Text(R.string.instagram))
                     .setSubtitle(new Text(details.getInstagram()))
                     .setIcon(R.drawable.instagram)
                     .setSection(mainSection));
         }
 
         if (nonEmpty(details.getTwitter())) {
-            items.add(new AdvancedItem(9, new Text(R.string.twitter))
+            items.add(new AdvancedItem(9, AdvancedItem.TYPE_COPY_DETAILS_ONLY, new Text(R.string.twitter))
                     .setSubtitle(new Text(details.getTwitter()))
                     .setIcon(R.drawable.twitter)
                     .setSection(mainSection));
         }
 
         if (nonEmpty(details.getFacebook())) {
-            items.add(new AdvancedItem(10, new Text(R.string.facebook))
+            items.add(new AdvancedItem(10, AdvancedItem.TYPE_COPY_DETAILS_ONLY, new Text(R.string.facebook))
                     .setSubtitle(new Text(details.getFacebook()))
                     .setIcon(R.drawable.facebook)
                     .setSection(mainSection));
@@ -476,8 +527,11 @@ public class UserDetailsPresenter extends AccountDependencyPresenter<IUserDetail
     @Override
     public void onGuiCreated(@NonNull IUserDetailsView view) {
         super.onGuiCreated(view);
-        view.displayToolbarTitle(user.getFullName());
+        view.displayToolbarTitle(user);
         view.displayData(createData());
+        if (!isEmpty(photos_profile) && current_select >= 0 && current_select < photos_profile.size() - 1) {
+            view.onPhotosLoaded(photos_profile.get(current_select));
+        }
     }
 
     public void fireItemClick(AdvancedItem item) {

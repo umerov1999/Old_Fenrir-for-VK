@@ -38,14 +38,13 @@ import dev.ragnarok.fenrir.model.User;
 import dev.ragnarok.fenrir.model.UserPlatform;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
-import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.OnlineView;
 
-public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.DialogViewHolder> {
+public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static final String PICASSO_TAG = "dialogs.adapter.tag";
     private static final Date DATE = new Date();
@@ -54,6 +53,8 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.DialogVi
     private static final int DIV_YESTERDAY = 2;
     private static final int DIV_THIS_WEEK = 3;
     private static final int DIV_OLD = 4;
+    private static final int DATA_TYPE_NORMAL = 0;
+    private static final int DATA_TYPE_HIDDEN = 1;
     @SuppressLint("ConstantLocale")
     private static final SimpleDateFormat DF_TODAY = new SimpleDateFormat("HH:mm", Locale.getDefault());
     @SuppressLint("ConstantLocale")
@@ -63,6 +64,7 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.DialogVi
     private final ForegroundColorSpan mForegroundColorSpan;
     private final RecyclerView.AdapterDataObserver mDataObserver;
     private final Set<Integer> hidden;
+    private boolean showHidden;
     private List<Dialog> mDialogs;
     private long mStartOfToday;
     private ClickListener mClickListener;
@@ -84,6 +86,10 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.DialogVi
         initStartOfTodayDate();
     }
 
+    public void updateShowHidden(boolean showHidden) {
+        this.showHidden = showHidden;
+    }
+
     private void initStartOfTodayDate() {
         // А - Аптемезация
         mStartOfToday = Utils.startOfTodayMillis();
@@ -98,11 +104,17 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.DialogVi
         unregisterAdapterDataObserver(mDataObserver);
     }
 
-    @NonNull
+    @NotNull
     @Override
-    public DialogViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new DialogViewHolder(LayoutInflater.from(mContext)
-                .inflate(R.layout.item_dialog, parent, false));
+    public RecyclerView.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+        switch (viewType) {
+            case DATA_TYPE_HIDDEN:
+                return new HiddenViewHolder(LayoutInflater.from(mContext).inflate(R.layout.line_divider, parent, false));
+            case DATA_TYPE_NORMAL:
+                return new DialogViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_dialog, parent, false));
+        }
+
+        throw new UnsupportedOperationException();
     }
 
     public void updateHidden(Set<Integer> hidden) {
@@ -110,18 +122,34 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.DialogVi
         this.hidden.addAll(hidden);
     }
 
+    protected int getDataTypeByAdapterPosition(int adapterPosition) {
+        if (hidden.contains(getByPosition(adapterPosition).getId()) && !showHidden) {
+            return DATA_TYPE_HIDDEN;
+        } else return DATA_TYPE_NORMAL;
+    }
+
     @Override
-    public void onBindViewHolder(@NotNull DialogViewHolder holder, int position) {
-        Dialog dialog = mDialogs.get(position);
+    public int getItemViewType(int adapterPosition) {
+        return getDataTypeByAdapterPosition(adapterPosition);
+    }
 
-        boolean isHide = hidden.contains(dialog.getId()) && !Settings.get().security().getShowHiddenDialogs();
+    private Dialog findPreviousUnhidden(int pos) {
+        for (int i = pos; i >= 0; i--) {
+            if (getDataTypeByAdapterPosition(i) == DATA_TYPE_NORMAL) {
+                return getByPosition(i);
+            }
+        }
+        return null;
+    }
 
-        if (isHide)
-            holder.mDialogContentRoot.setVisibility(View.INVISIBLE);
-        else
-            holder.mDialogContentRoot.setVisibility(View.VISIBLE);
-
-        Dialog previous = position == 0 ? null : mDialogs.get(position - 1);
+    @Override
+    public void onBindViewHolder(@NotNull RecyclerView.ViewHolder dualHolder, int position) {
+        if (getDataTypeByAdapterPosition(position) == DATA_TYPE_HIDDEN) {
+            return;
+        }
+        DialogViewHolder holder = (DialogViewHolder) dualHolder;
+        Dialog dialog = getByPosition(position);
+        Dialog previous = position == 0 ? null : findPreviousUnhidden(position - 1);
 
         holder.mDialogTitle.setText(dialog.getDisplayTitle(mContext));
 
@@ -290,36 +318,28 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.DialogVi
             holder.tvDate.setText(DF_TODAY.format(DATE));
             holder.tvDate.setTextColor(CurrentTheme.getColorPrimary(mContext));
         }
-
-        if (isHide) {
+        if (dialog.getImageUrl() != null) {
+            holder.EmptyAvatar.setVisibility(View.INVISIBLE);
+            ViewUtils.displayAvatar(holder.ivAvatar, mTransformation, dialog.getImageUrl(), PICASSO_TAG);
+        } else {
             PicassoInstance.with().cancelRequest(holder.ivAvatar);
             holder.EmptyAvatar.setVisibility(View.VISIBLE);
-            holder.EmptyAvatar.setText("@");
+            String name = dialog.getTitle();
+            if (name.length() > 2)
+                name = name.substring(0, 2);
+            name = name.trim();
+            holder.EmptyAvatar.setText(name);
             holder.ivAvatar.setImageBitmap(mTransformation.transform(Utils.createGradientChatImage(200, 200, dialog.getId())));
-        } else {
-            if (dialog.getImageUrl() != null) {
-                holder.EmptyAvatar.setVisibility(View.INVISIBLE);
-                ViewUtils.displayAvatar(holder.ivAvatar, mTransformation, dialog.getImageUrl(), PICASSO_TAG);
-            } else {
-                PicassoInstance.with().cancelRequest(holder.ivAvatar);
-                holder.EmptyAvatar.setVisibility(View.VISIBLE);
-                String name = dialog.getTitle();
-                if (name.length() > 2)
-                    name = name.substring(0, 2);
-                name = name.trim();
-                holder.EmptyAvatar.setText(name);
-                holder.ivAvatar.setImageBitmap(mTransformation.transform(Utils.createGradientChatImage(200, 200, dialog.getId())));
-            }
         }
 
         holder.mContentRoot.setOnClickListener(v -> {
-            if (mClickListener != null && !isHide) {
-                mClickListener.onDialogClick(dialog, position);
+            if (mClickListener != null) {
+                mClickListener.onDialogClick(dialog);
             }
         });
         holder.ivAvatar.setOnClickListener(view -> {
-            if (Objects.nonNull(mClickListener) && !isHide) {
-                mClickListener.onAvatarClick(dialog, position);
+            if (Objects.nonNull(mClickListener)) {
+                mClickListener.onAvatarClick(dialog);
             }
         });
 
@@ -376,14 +396,20 @@ public class DialogsAdapter extends RecyclerView.Adapter<DialogsAdapter.DialogVi
     }
 
     public interface ClickListener extends EventListener {
-        void onDialogClick(Dialog dialog, int offset);
+        void onDialogClick(Dialog dialog);
 
         boolean onDialogLongClick(Dialog dialog);
 
-        void onAvatarClick(Dialog dialog, int offset);
+        void onAvatarClick(Dialog dialog);
     }
 
-    static class DialogViewHolder extends RecyclerView.ViewHolder {
+    private static class HiddenViewHolder extends RecyclerView.ViewHolder {
+        HiddenViewHolder(View view) {
+            super(view);
+        }
+    }
+
+    private static class DialogViewHolder extends RecyclerView.ViewHolder {
 
         final View mContentRoot;
         final TextView mDialogTitle;

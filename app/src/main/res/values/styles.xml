@@ -357,7 +357,7 @@
     </style>
 
     <style name="Toolbar.Button.Navigation.Tinted" parent="Widget.AppCompat.Toolbar.Button.Navigation">
-        <item name="tint">?colorOnSurface</item>
+        <item name="tint">?colorPrimary</item>
     </style>
 
     <style name="TextAppearance.Toolbar.Title" parent="@style/TextAppearance.MaterialComponents.Caption">
@@ -367,11 +367,13 @@
     </style>
 
     <style name="Theme.Toolbar.Photo" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+        <item name="toolbarNavigationButtonStyle">@style/Toolbar.Button.Navigation.Tinted</item>
         <item name="android:textColor">?android:textColorSecondary</item>
         <item name="android:textColorPrimary">@android:color/white</item>
     </style>
 
     <style name="Theme.Toolbar.Video" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+        <item name="toolbarNavigationButtonStyle">@style/Toolbar.Button.Navigation.Tinted</item>
         <item name="android:textColor">?android:textColorSecondary</item>
         <item name="android:textColorPrimary">@android:color/white</item>
     </style>

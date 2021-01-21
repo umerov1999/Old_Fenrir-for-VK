@@ -1,6 +1,5 @@
 package dev.ragnarok.fenrir.mvp.view;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
@@ -23,7 +22,7 @@ public interface IDialogsView extends IAccountDependencyView, IMvpView, IErrorVi
 
     void showRefreshing(boolean refreshing);
 
-    void goToChat(int accountId, int messagesOwnerId, int peerId, String title, String avaurl, int offset);
+    void goToChat(int accountId, int messagesOwnerId, int peerId, String title, String ava_url);
 
     void goToSearch(int accountId);
 
@@ -40,10 +39,6 @@ public interface IDialogsView extends IAccountDependencyView, IMvpView, IErrorVi
     void goToOwnerWall(int accountId, int ownerId, @Nullable Owner owner);
 
     void setCreateGroupChatButtonVisible(boolean visible);
-
-    void startQRScanner();
-
-    void onQRScanned(int accountId, @NonNull String result);
 
     void notifyHasAttachments(boolean has);
 

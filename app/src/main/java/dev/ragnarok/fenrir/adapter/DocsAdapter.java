@@ -38,7 +38,7 @@ public class DocsAdapter extends RecyclerBindableAdapter<Document, DocsAdapter.D
     protected void onBindItemViewHolder(DocViewHolder holder, int position, int type) {
         Document item = getItem(position);
 
-        String targetExt = "." + item.getExt().toUpperCase();
+        String targetExt = item.getExt().toUpperCase();
 
         holder.tvExt.setText(targetExt);
         holder.tvTitle.setText(item.getTitle());

@@ -57,32 +57,38 @@ public class LongpollUpdateAdapter extends AbsAdapter implements JsonDeserialize
     private AbsLongpollEvent deserialize(int action, JsonArray array, JsonDeserializationContext context) {
         switch (action) {
             case AbsLongpollEvent.ACTION_MESSAGE_EDITED:
+            case AbsLongpollEvent.ACTION_MESSAGE_CHANGED:
             case AbsLongpollEvent.ACTION_MESSAGE_ADDED:
                 return deserializeAddMessageUpdate(array, context);
 
             case AbsLongpollEvent.ACTION_USER_WRITE_TEXT_IN_DIALOG:
-                WriteTextInDialogUpdate w = new WriteTextInDialogUpdate();
-                w.user_id = optInt(array, 1);
-                w.chat_id = -1;
-                w.flags = optInt(array, 2);
+                WriteTextInDialogUpdate w = new WriteTextInDialogUpdate(true);
+                w.peer_id = optInt(array, 1);
+                w.from_ids = optIntArray(array, 2, new int[]{});
+                w.from_ids_count = optInt(array, 3);
                 return w;
 
-            case AbsLongpollEvent.ACTION_USER_WRITE_TEXT_IN_CHAT:
-                WriteTextInDialogUpdate wc = new WriteTextInDialogUpdate();
-                wc.chat_id = optInt(array, 2);
-                wc.user_id = optInt(array, 1);
-                return wc;
+            case AbsLongpollEvent.ACTION_USER_WRITE_VOICE_IN_DIALOG:
+                WriteTextInDialogUpdate v = new WriteTextInDialogUpdate(false);
+                v.peer_id = optInt(array, 1);
+                v.from_ids = optIntArray(array, 2, new int[]{});
+                v.from_ids_count = optInt(array, 3);
+                return v;
 
             case AbsLongpollEvent.ACTION_USER_IS_ONLINE:
                 UserIsOnlineUpdate u = new UserIsOnlineUpdate();
                 u.user_id = -optInt(array, 1);
-                u.extra = optInt(array, 2);
+                u.platform = optInt(array, 2);
+                u.timestamp = optInt(array, 3);
+                u.app_id = optInt(array, 4);
                 return u;
 
             case AbsLongpollEvent.ACTION_USER_IS_OFFLINE:
                 UserIsOfflineUpdate u1 = new UserIsOfflineUpdate();
                 u1.user_id = -optInt(array, 1);
-                u1.flags = optInt(array, 2);
+                u1.isTimeout = optInt(array, 2) != 0;
+                u1.timestamp = optInt(array, 3);
+                u1.app_id = optInt(array, 4);
                 return u1;
 
             case AbsLongpollEvent.ACTION_MESSAGES_FLAGS_RESET: {
@@ -142,7 +148,6 @@ public class LongpollUpdateAdapter extends AbsAdapter implements JsonDeserialize
         JsonObject extra = (JsonObject) opt(array, 6);
         if (nonNull(extra)) {
             update.from = optInt(extra, "from");
-            update.subject = optString(extra, "title");
             update.sourceText = optString(extra, "source_text");
             update.sourceAct = optString(extra, "source_act");
             update.sourceMid = optInt(extra, "source_mid");
@@ -166,6 +171,7 @@ public class LongpollUpdateAdapter extends AbsAdapter implements JsonDeserialize
         }
 
         update.random_id = optString(array, 8); // ok
+        update.edit_time = optLong(array, 10);
 
         if (update.from == 0 && !Peer.isGroupChat(update.peer_id) && !update.outbox) {
             update.from = update.peer_id;

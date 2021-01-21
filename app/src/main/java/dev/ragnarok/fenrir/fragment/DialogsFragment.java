@@ -1,16 +1,15 @@
 package dev.ragnarok.fenrir.fragment;
 
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -19,9 +18,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentManager;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,8 +29,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -45,6 +41,7 @@ import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.HelperSimple;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
+import dev.ragnarok.fenrir.activity.ActivityUtils;
 import dev.ragnarok.fenrir.activity.EnterPinActivity;
 import dev.ragnarok.fenrir.activity.MainActivity;
 import dev.ragnarok.fenrir.activity.SelectProfilesActivity;
@@ -54,12 +51,9 @@ import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
 import dev.ragnarok.fenrir.fragment.search.SearchContentType;
 import dev.ragnarok.fenrir.fragment.search.criteria.DialogsSearchCriteria;
 import dev.ragnarok.fenrir.fragment.search.criteria.MessageSeachCriteria;
-import dev.ragnarok.fenrir.link.LinkHelper;
 import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.listener.PicassoPauseOnScrollListener;
-import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.ModalBottomSheetDialogFragment;
-import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.OptionRequest;
 import dev.ragnarok.fenrir.model.Dialog;
 import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.Peer;
@@ -69,7 +63,6 @@ import dev.ragnarok.fenrir.mvp.presenter.DialogsPresenter;
 import dev.ragnarok.fenrir.mvp.view.IDialogsView;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
-import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.CustomToast;
@@ -77,7 +70,6 @@ import dev.ragnarok.fenrir.util.InputTextDialog;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsView>
@@ -90,13 +82,6 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
                     AssertUtils.requireNonNull(users);
 
                     getPresenter().fireUsersForChatSelected(users);
-                }
-            });
-    private final ActivityResultLauncher<Intent> requestQRScan = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                IntentResult scanner = IntentIntegrator.parseActivityResult(result);
-                if (!Utils.isEmpty(scanner.getContents())) {
-                    getPresenter().fireQrScanned(scanner.getContents());
                 }
             });
     private RecyclerView mRecyclerView;
@@ -124,7 +109,6 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         }
     };
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private Toolbar toolbar;
     private boolean isCreateChat = true;
     private FloatingActionButton mFab;
     private final RecyclerView.OnScrollListener mFabScrollListener = new RecyclerView.OnScrollListener() {
@@ -154,7 +138,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Settings.get().security().setShowHiddenDialogs(true);
-                    ReconfigureOptionsHide();
+                    ReconfigureOptionsHide(true);
                     notifyDataSetChanged();
                 }
             });
@@ -181,13 +165,13 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
             requestEnterPin.launch(new Intent(requireActivity(), EnterPinActivity.class));
         } else {
             Settings.get().security().setShowHiddenDialogs(true);
-            ReconfigureOptionsHide();
+            ReconfigureOptionsHide(true);
             notifyDataSetChanged();
         }
     }
 
-    private void ReconfigureOptionsHide() {
-        boolean isShowHidden = Settings.get().security().getShowHiddenDialogs();
+    private void ReconfigureOptionsHide(boolean isShowHidden) {
+        mAdapter.updateShowHidden(isShowHidden);
         if (Settings.get().security().getSetSize("hidden_dialogs") <= 0) {
             mFab.setImageResource(R.drawable.pencil);
             Settings.get().security().setShowHiddenDialogs(false);
@@ -198,30 +182,48 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_dialogs, container, false);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
-        toolbar = root.findViewById(R.id.toolbar);
-        toolbar.inflateMenu(R.menu.menu_dialogs);
+    @Override
+    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_dialogs, menu);
+    }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
         OptionView optionView = new OptionView();
         getPresenter().fireOptionViewCreated(optionView);
-        toolbar.getMenu().findItem(R.id.action_search).setVisible(optionView.canSearch);
-        toolbar.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.action_search) {
+        menu.findItem(R.id.action_search).setVisible(optionView.canSearch);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_search:
                 getPresenter().fireSearchClick();
-            } else if (item.getItemId() == R.id.action_star) {
+                break;
+            case R.id.action_star:
                 getPresenter().fireImportantClick();
-            }
-            return true;
-        });
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_dialogs, container, false);
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(root.findViewById(R.id.toolbar));
 
         mFab = root.findViewById(R.id.fab);
-        ReconfigureOptionsHide();
         mFab.setOnClickListener(v -> {
             if (Settings.get().security().getShowHiddenDialogs()) {
                 Settings.get().security().setShowHiddenDialogs(false);
-                ReconfigureOptionsHide();
+                ReconfigureOptionsHide(false);
                 notifyDataSetChanged();
             } else {
                 if (isCreateChat) {
@@ -259,6 +261,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         mAdapter.setClickListener(this);
 
         mRecyclerView.setAdapter(mAdapter);
+        ReconfigureOptionsHide(Settings.get().security().getShowHiddenDialogs());
         return root;
     }
 
@@ -275,32 +278,6 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
     }
 
     @Override
-    public void startQRScanner() {
-        IntentIntegrator integrator = new IntentIntegrator(requireActivity());
-        integrator.setCameraId(0);
-        integrator.setBeepEnabled(true);
-        integrator.setBarcodeImageEnabled(false);
-        requestQRScan.launch(integrator.createScanIntent());
-    }
-
-    @Override
-    public void onQRScanned(int accountId, @NonNull String result) {
-        MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(requireActivity());
-        dlgAlert.setIcon(R.drawable.qr_code);
-        dlgAlert.setMessage(result);
-        dlgAlert.setTitle(getString(R.string.scan_qr));
-        dlgAlert.setPositiveButton(R.string.open, (dialog, which) -> LinkHelper.openUrl(requireActivity(), accountId, result));
-        dlgAlert.setNeutralButton(R.string.copy_text, (dialog, which) -> {
-            ClipboardManager clipboard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("response", result);
-            clipboard.setPrimaryClip(clip);
-            CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.copied_to_clipboard);
-        });
-        dlgAlert.setCancelable(true);
-        dlgAlert.create().show();
-    }
-
-    @Override
     public void notifyHasAttachments(boolean has) {
         if (has) {
             new ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(mRecyclerView);
@@ -311,8 +288,8 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
     }
 
     @Override
-    public void onDialogClick(Dialog dialog, int offset) {
-        getPresenter().fireDialogClick(dialog, offset);
+    public void onDialogClick(Dialog dialog) {
+        getPresenter().fireDialogClick(dialog);
     }
 
     @Override
@@ -376,12 +353,12 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
                             PlaceFactory.getSecuritySettingsPlace().tryOpenWith(requireActivity());
                         } else {
                             Settings.get().security().AddValueToSet(dialog.getId(), "hidden_dialogs");
-                            ReconfigureOptionsHide();
+                            ReconfigureOptionsHide(Settings.get().security().getShowHiddenDialogs());
                             notifyDataSetChanged();
                         }
                     } else if (selected.equals(setShow)) {
                         Settings.get().security().RemoveValueFromSet(dialog.getId(), "hidden_dialogs");
-                        ReconfigureOptionsHide();
+                        ReconfigureOptionsHide(Settings.get().security().getShowHiddenDialogs());
                         notifyDataSetChanged();
                     }
                 })
@@ -402,35 +379,12 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
     }
 
     @Override
-    public void onAvatarClick(Dialog dialog, int offset) {
-        getPresenter().fireDialogAvatarClick(dialog, offset);
+    public void onAvatarClick(Dialog dialog) {
+        getPresenter().fireDialogAvatarClick(dialog);
     }
 
     private void createGroupChat() {
         requestSelectProfile.launch(SelectProfilesActivity.startFriendsSelection(requireActivity()));
-    }
-
-    private void resolveToolbarNavigationIcon() {
-        if (isNull(toolbar)) return;
-
-        FragmentManager manager = requireActivity().getSupportFragmentManager();
-        if (manager.getBackStackEntryCount() > 1) {
-            Drawable tr = AppCompatResources.getDrawable(requireActivity(), R.drawable.arrow_left);
-            Utils.setColorFilter(tr, CurrentTheme.getColorPrimary(requireActivity()));
-            toolbar.setNavigationIcon(tr);
-            toolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
-        } else {
-            Drawable tr = AppCompatResources.getDrawable(requireActivity(), R.drawable.client_round);
-            Utils.setColorFilter(tr, CurrentTheme.getColorPrimary(requireActivity()));
-            toolbar.setNavigationIcon(tr);
-            toolbar.setNavigationOnClickListener(v -> {
-                ModalBottomSheetDialogFragment.Builder menus = new ModalBottomSheetDialogFragment.Builder();
-                menus.add(new OptionRequest(R.id.button_ok, getString(R.string.set_offline), R.drawable.offline));
-                menus.add(new OptionRequest(R.id.button_cancel, getString(R.string.open_clipboard_url), R.drawable.web));
-                menus.add(new OptionRequest(R.id.button_camera, getString(R.string.scan_qr), R.drawable.qr_code));
-                menus.show(getChildFragmentManager(), "left_options", option -> getPresenter().fireDialogOptions(requireActivity(), option));
-            });
-        }
     }
 
     @Override
@@ -438,10 +392,10 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         super.onResume();
         Settings.get().ui().notifyPlaceResumed(Place.DIALOGS);
 
-        if (toolbar != null) {
-            toolbar.setTitle(R.string.dialogs);
-            toolbar.setSubtitle(requireArguments().getString(Extra.SUBTITLE));
-            resolveToolbarNavigationIcon();
+        ActionBar actionBar = ActivityUtils.supportToolbarFor(this);
+        if (actionBar != null) {
+            actionBar.setTitle(R.string.dialogs);
+            actionBar.setSubtitle(requireArguments().getString(Extra.SUBTITLE));
         }
 
         if (requireActivity() instanceof OnSectionResumeCallback) {
@@ -504,8 +458,8 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
     }
 
     @Override
-    public void goToChat(int accountId, int messagesOwnerId, int peerId, String title, String avaurl, int offset) {
-        PlaceFactory.getChatPlace(accountId, messagesOwnerId, new Peer(peerId).setTitle(title).setAvaUrl(avaurl)).tryOpenWith(requireActivity());
+    public void goToChat(int accountId, int messagesOwnerId, int peerId, String title, String ava_url) {
+        PlaceFactory.getChatPlace(accountId, messagesOwnerId, new Peer(peerId).setTitle(title).setAvaUrl(ava_url)).tryOpenWith(requireActivity());
     }
 
     @Override

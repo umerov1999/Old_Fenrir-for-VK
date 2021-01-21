@@ -224,6 +224,7 @@
             tools:text="@string/user_type_message" />
 
         <ImageView
+            android:id="@+id/writing_type"
             android:layout_width="@dimen/avatar_size_small"
             android:layout_height="@dimen/avatar_size_small"
             android:layout_centerInParent="true"

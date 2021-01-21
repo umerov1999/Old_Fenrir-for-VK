@@ -204,6 +204,25 @@ public class AbsAdapter {
         }
     }
 
+    protected static int[] optIntArray(JsonArray array, int index, int[] fallback) {
+        try {
+            if (index < 0 || index >= array.size()) {
+                return fallback;
+            }
+
+            JsonArray array_r = array.get(index).getAsJsonArray();
+            if (array_r == null) {
+                return fallback;
+            }
+            return parseIntArray(array_r);
+        } catch (ClassCastException | IllegalStateException | NumberFormatException e) {
+            if (Constants.IS_DEBUG) {
+                e.printStackTrace();
+            }
+            return fallback;
+        }
+    }
+
     private static int[] parseIntArray(JsonArray array) {
         int[] list = new int[array.size()];
         for (int i = 0; i < array.size(); i++) {

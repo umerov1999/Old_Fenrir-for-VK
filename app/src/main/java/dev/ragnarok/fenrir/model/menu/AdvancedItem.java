@@ -7,7 +7,8 @@ import dev.ragnarok.fenrir.model.Text;
 
 public class AdvancedItem {
 
-    private static final int TYPE_DEFAULT = 0;
+    public static final int TYPE_DEFAULT = 0;
+    public static final int TYPE_COPY_DETAILS_ONLY = 1;
     private final int key;
     private final int type;
     private final Text title;

@@ -111,6 +111,15 @@
             android:stateListAnimator="@animator/clicked" />
 
         <ImageView
+            android:id="@+id/white_icon"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="25"
+            android:padding="8dp"
+            android:src="@mipmap/fenrir_white"
+            android:stateListAnimator="@animator/clicked" />
+
+        <ImageView
             android:id="@+id/black_icon"
             android:layout_width="0dp"
             android:layout_height="60dp"
@@ -126,15 +135,6 @@
             android:layout_weight="25"
             android:padding="8dp"
             android:src="@mipmap/vk_official"
-            android:stateListAnimator="@animator/clicked" />
-
-        <ImageView
-            android:id="@+id/urina_icon"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:layout_weight="25"
-            android:padding="8dp"
-            android:src="@mipmap/fenrir_urina"
             android:stateListAnimator="@animator/clicked" />
 
     </LinearLayout>

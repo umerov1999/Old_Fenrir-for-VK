@@ -348,13 +348,13 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
         }
     }
 
-    private void openAvatarPhotoAlbum() {
-        appendDisposable(photosInteractor.get(getAccountId(), ownerId, -6, 200, 0, true)
-                .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(this::DisplayUserProfileAlbum, tt -> showError(getView(), getCauseIfRuntime(tt))));
-    }
-
     private void DisplayUserProfileAlbum(List<Photo> photos) {
+        setLoadingAvatarPhotosNow(false);
+
+        if (photos.isEmpty()) {
+            callView(view -> view.showSnackbar(R.string.no_photos_found, true));
+            return;
+        }
         Integer currentAvatarPhotoId = nonNull(details) && nonNull(details.getPhotoId()) ? details.getPhotoId().getId() : null;
         Integer currentAvatarOwner_id = nonNull(details) && nonNull(details.getPhotoId()) ? details.getPhotoId().getOwnerId() : null;
         int sel = 0;
@@ -528,24 +528,14 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
 
         int accountId = getAccountId();
 
-        appendDisposable(photosInteractor.get(accountId, ownerId, -6, 50, 0, true)
+        appendDisposable(photosInteractor.get(accountId, ownerId, -6, 100, 0, true)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(photos -> onAvatarsAlbumPrepared(photos.size()), this::onAvatarAlbumPrepareFailed));
+                .subscribe(this::DisplayUserProfileAlbum, this::onAvatarAlbumPrepareFailed));
     }
 
     private void onAvatarAlbumPrepareFailed(Throwable t) {
         setLoadingAvatarPhotosNow(false);
         showError(getView(), getCauseIfRuntime(t));
-    }
-
-    private void onAvatarsAlbumPrepared(int count) {
-        setLoadingAvatarPhotosNow(false);
-
-        if (count == 0) {
-            callView(view -> view.showSnackbar(R.string.no_photos_found, true));
-        } else {
-            openAvatarPhotoAlbum();
-        }
     }
 
     @OnGuiCreated

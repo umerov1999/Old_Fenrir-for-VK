@@ -116,6 +116,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
     private var Writing_msg_Group: View? = null
     private var Writing_msg: TextView? = null
     private var Writing_msg_Ava: ImageView? = null
+    private var Writing_msg_Type: ImageView? = null
 
     private var Title: TextView? = null
     private var SubTitle: TextView? = null
@@ -191,6 +192,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         Writing_msg_Group = root.findViewById(R.id.writingGroup)
         Writing_msg = root.findViewById(R.id.writing)
         Writing_msg_Ava = root.findViewById(R.id.writingava)
+        Writing_msg_Type = root.findViewById(R.id.writing_type)
         InputView = root.findViewById(R.id.input_view)
 
         Writing_msg_Group?.visibility = View.GONE
@@ -290,18 +292,27 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         }
     }
 
-    override fun displayWriting(owner_id: Int) {
+    override fun displayWriting(writeText: WriteText) {
+        if (writeText.from_ids.size < 1) {
+            return
+        }
         Writing_msg_Group?.visibility = View.VISIBLE
         Writing_msg_Group?.alpha = 0.0f
         ObjectAnimator.ofFloat(Writing_msg_Group, View.ALPHA, 1f).setDuration(200).start()
-        Writing_msg?.setText(R.string.user_type_message)
+        Writing_msg?.setText(if (writeText.isText) R.string.user_type_message else R.string.user_type_voice)
+        Writing_msg_Type?.setImageResource(if (writeText.isText) R.drawable.pencil else R.drawable.voice)
         Writing_msg_Ava?.setImageResource(R.drawable.background_gray_round)
-        presenter?.ResolveWritingInfo(requireActivity(), owner_id)
+        presenter?.ResolveWritingInfo(requireActivity(), writeText)
     }
 
     @SuppressLint("SetTextI18n")
-    override fun displayWriting(owner: Owner) {
-        Writing_msg?.text = owner.fullName + " "
+    override fun displayWriting(owner: Owner, count: Int, is_text: Boolean) {
+        if (count > 1) {
+            Writing_msg?.text = getString(R.string.many_users_typed, owner.fullName, count - 1)
+        } else {
+            Writing_msg?.text = owner.fullName
+        }
+        Writing_msg_Type?.setImageResource(if (is_text) R.drawable.pencil else R.drawable.voice)
         ViewUtils.displayAvatar(
             Writing_msg_Ava!!, CurrentTheme.createTransformationForAvatar(requireContext()),
             owner.get100photoOrSmaller(), null
@@ -1614,8 +1625,11 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         presenter?.fireLongAvatarClick(userId)
     }
 
-    override fun didPressedButton(button: Keyboard.Button) {
+    override fun didPressedButton(button: Keyboard.Button, needClose: Boolean) {
         presenter?.fireBotSendClick(button, requireActivity())
+        if (needClose) {
+            inputViewController?.closeBotKeyboard()
+        }
     }
 
     override fun copyToClipBoard(link: String) {

@@ -630,6 +630,38 @@ class MessagesStorage extends AbsStorage implements IMessagesStorage {
     }
 
     @Override
+    public Single<Boolean> deleteMessages(int accountId, Collection<Integer> ids) {
+        return Single.create(e -> {
+            Set<Integer> copy = new HashSet<>(ids);
+            Uri uri = MessengerContentProvider.getMessageContentUriFor(accountId);
+            String where = MessageColumns.FULL_ID + " IN(" + TextUtils.join(",", copy) + ")";
+            int count = getContext().getContentResolver().delete(uri, where, null);
+
+            e.onSuccess(count > 0);
+        });
+    }
+
+    @Override
+    public Completable changeMessagesStatus(int accountId, Collection<Integer> ids, @MessageStatus int status) {
+        return Completable.create(e -> {
+            Set<Integer> copy = new HashSet<>(ids);
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MessageColumns.STATUS, status);
+
+            Uri uri = MessengerContentProvider.getMessageContentUriFor(accountId);
+            String where = MessageColumns.FULL_ID + " IN(" + TextUtils.join(",", copy) + ")";
+            int count = getContext().getContentResolver().update(uri, contentValues,
+                    where, null);
+
+            if (count > 0) {
+                e.onComplete();
+            } else {
+                e.onError(new NotFoundException());
+            }
+        });
+    }
+
+    @Override
     public Single<List<Integer>> getMissingMessages(int accountId, Collection<Integer> ids) {
         return Single.create(e -> {
             Set<Integer> copy = new HashSet<>(ids);

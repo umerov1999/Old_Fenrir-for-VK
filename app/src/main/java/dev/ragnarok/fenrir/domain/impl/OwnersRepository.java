@@ -412,14 +412,14 @@ public class OwnersRepository implements IOwnersRepository {
 
         if (nonEmpty(offlineUpdates)) {
             for (UserIsOfflineUpdate update : offlineUpdates) {
-                long lastSeeenUnixtime = update.getFlags() != 0 ? Unixtime.now() - 15 * 60 : Unixtime.now();
+                long lastSeeenUnixtime = update.isTimeout ? Unixtime.now() - 5 * 60 : update.timestamp;
                 patches.add(new UserPatch(update.user_id).setOnlineUpdate(new UserPatch.Online(false, lastSeeenUnixtime, 0)));
             }
         }
 
         if (nonEmpty(onlineUpdates)) {
             for (UserIsOnlineUpdate update : onlineUpdates) {
-                patches.add(new UserPatch(update.user_id).setOnlineUpdate(new UserPatch.Online(true, Unixtime.now(), update.extra)));
+                patches.add(new UserPatch(update.user_id).setOnlineUpdate(new UserPatch.Online(true, Unixtime.now(), update.platform)));
             }
         }
 

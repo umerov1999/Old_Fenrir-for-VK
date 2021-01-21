@@ -10,4 +10,6 @@ public interface IAudioDuplicateView extends IMvpView, IErrorView {
     void setOldBitrate(Long bitrate);
 
     void setNewBitrate(Long bitrate);
+
+    void updateShowBitrate(boolean needShow);
 }

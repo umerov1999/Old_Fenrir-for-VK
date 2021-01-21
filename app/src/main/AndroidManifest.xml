@@ -268,10 +268,10 @@
         </activity-alias>
 
         <activity-alias
-            android:name=".activity.alias.UrinaFenrirAlias"
+            android:name=".activity.alias.WhiteFenrirAlias"
             android:enabled="false"
-            android:icon="@mipmap/fenrir_urina"
-            android:roundIcon="@mipmap/fenrir_urina"
+            android:icon="@mipmap/fenrir_white"
+            android:roundIcon="@mipmap/fenrir_white"
             android:targetActivity=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
