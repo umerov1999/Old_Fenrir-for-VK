@@ -18,7 +18,7 @@ import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
-import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import coil.clear
 import coil.load
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -105,6 +105,26 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
     private var mLastSeekEventTime: Long = 0
     private var mFromTouch = false
     private lateinit var mPlayerProgressStrings: Array<String>
+
+    private val requestEqualizer = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        view?.let { it1 ->
+            Snackbar.make(it1, R.string.equalizer_closed, Snackbar.LENGTH_LONG)
+                .setBackgroundTint(CurrentTheme.getColorPrimary(requireActivity()))
+                .setAnchorView(mPlayPauseButton).setActionTextColor(
+                    if (Utils.isColorDark(
+                            CurrentTheme.getColorPrimary(requireActivity())
+                        )
+                    ) Color.parseColor("#ffffff") else Color.parseColor("#000000")
+                )
+                .setTextColor(
+                    if (Utils.isColorDark(CurrentTheme.getColorPrimary(requireActivity()))) Color.parseColor(
+                        "#ffffff"
+                    ) else Color.parseColor("#000000")
+                ).show()
+        }
+    }
 
     /**
      * Used to scan backwards through the track
@@ -797,10 +817,13 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
             effects.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, requireActivity().packageName)
             effects.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, MusicUtils.getAudioSessionId())
             effects.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-            startActivity(effects)
+            requestEqualizer.launch(effects)
         } catch (ignored: ActivityNotFoundException) {
-            Toast.makeText(requireActivity(), "No system equalizer found", Toast.LENGTH_SHORT)
-                .show()
+            view?.let {
+                Snackbar.make(it, R.string.no_system_equalizer, BaseTransientBottomBar.LENGTH_LONG)
+                    .setTextColor(Color.WHITE).setBackgroundTint(Color.parseColor("#eeff0000"))
+                    .setActionTextColor(Color.WHITE).show()
+            }
         }
     }
 

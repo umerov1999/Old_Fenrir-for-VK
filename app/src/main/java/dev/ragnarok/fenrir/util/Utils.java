@@ -105,7 +105,6 @@ import okhttp3.Response;
 import static dev.ragnarok.fenrir.util.Objects.isNull;
 
 public class Utils {
-    public static final List<Integer> donate_users = new ArrayList<>();
     private static final List<Integer> reload_news = new ArrayList<>();
     private static final List<Integer> reload_dialogs = new ArrayList<>();
     private static final List<Integer> reload_stickers = new ArrayList<>();

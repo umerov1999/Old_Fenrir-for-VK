@@ -27,8 +27,8 @@ public class Constants {
     public static final boolean IS_HAS_LOGIN_WEB = false;
     public static final String FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".fileprovider";
 
-    public static final String VK_ANDROID_APP_VERSION_NAME = "6.20";
-    public static final String VK_ANDROID_APP_VERSION_CODE = "6773";
+    public static final String VK_ANDROID_APP_VERSION_NAME = "6.21.2";
+    public static final String VK_ANDROID_APP_VERSION_CODE = "6819";
     public static final String KATE_APP_VERSION_NAME = "69 lite";
     public static final String KATE_APP_VERSION_CODE = "485";
     public static final String KATE_RECEIPT_GMS_TOKEN = BuildConfig.KATE_RECEIPT_GMS_TOKEN.replaceAll("[\\w%\\-]+:", ":");

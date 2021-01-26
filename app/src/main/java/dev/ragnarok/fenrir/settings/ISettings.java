@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import dev.ragnarok.fenrir.Account_Types;
+import dev.ragnarok.fenrir.api.model.LocalServerSettings;
 import dev.ragnarok.fenrir.crypt.KeyLocationPolicy;
 import dev.ragnarok.fenrir.model.Lang;
 import dev.ragnarok.fenrir.model.PhotoSize;
@@ -166,11 +167,6 @@ public interface ISettings {
 
         boolean isHint_stickers();
 
-        void registerDonatesId(List<Integer> Ids);
-
-        @NonNull
-        List<Integer> getDonates();
-
         int getPaganSymbol();
 
         boolean isRunes_show();
@@ -183,6 +179,11 @@ public interface ISettings {
         int getEndListAnimation();
 
         void setSymbolSelectShow(boolean show);
+
+        @NonNull
+        LocalServerSettings getLocalServer();
+
+        void setLocalServer(@NonNull LocalServerSettings settings);
     }
 
     interface IAccountsSettings {

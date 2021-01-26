@@ -11,14 +11,18 @@ import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.api.adapters.LongpollUpdateAdapter;
 import dev.ragnarok.fenrir.api.adapters.LongpollUpdatesAdapter;
+import dev.ragnarok.fenrir.api.model.LocalServerSettings;
 import dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent;
 import dev.ragnarok.fenrir.api.model.longpoll.VkApiLongpollUpdates;
 import dev.ragnarok.fenrir.settings.IProxySettings;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Objects;
+import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -31,10 +35,10 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
     private final IProxySettings proxySettings;
     private final Object longpollRetrofitLock = new Object();
     private final Object amazonaudiocoverRetrofitLock = new Object();
-    private final Object debugToolRetrofitLock = new Object();
+    private final Object localServerRetrofitLock = new Object();
     private RetrofitWrapper longpollRetrofitInstance;
     private RetrofitWrapper amazonaudiocoverRetrofitInstance;
-    private RetrofitWrapper debugToolRetrofitInstance;
+    private RetrofitWrapper localServerRetrofitInstance;
 
     @SuppressLint("CheckResult")
     public OtherVkRetrofitProvider(IProxySettings proxySettings) {
@@ -50,10 +54,10 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
                 longpollRetrofitInstance = null;
             }
         }
-        synchronized (debugToolRetrofitLock) {
-            if (nonNull(debugToolRetrofitInstance)) {
-                debugToolRetrofitInstance.cleanup();
-                debugToolRetrofitInstance = null;
+        synchronized (localServerRetrofitLock) {
+            if (nonNull(localServerRetrofitInstance)) {
+                localServerRetrofitInstance.cleanup();
+                localServerRetrofitInstance = null;
             }
         }
         synchronized (amazonaudiocoverRetrofitLock) {
@@ -132,19 +136,36 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
                 .build();
     }
 
-    private Retrofit createDebugToolRetrofit() {
+    private Retrofit createLocalServerRetrofit() {
+        LocalServerSettings local_settings = Settings.get().other().getLocalServer();
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .readTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor(HttpLogger.DEFAULT_LOGGING_INTERCEPTOR).addInterceptor(chain -> {
                     Request request = chain.request().newBuilder().addHeader("User-Agent", Constants.USER_AGENT(Account_Types.BY_TYPE)).build();
                     return chain.proceed(request);
+                }).addInterceptor(chain -> {
+                    Request original = chain.request();
+                    FormBody.Builder formBuilder = new FormBody.Builder();
+                    RequestBody body = original.body();
+                    if (body instanceof FormBody) {
+                        FormBody formBody = (FormBody) body;
+                        for (int i = 0; i < formBody.size(); i++) {
+                            formBuilder.add(formBody.name(i), formBody.value(i));
+                        }
+                    }
+                    if (local_settings.password != null) {
+                        formBuilder.add("password", local_settings.password);
+                    }
+                    Request request = original.newBuilder()
+                            .method("POST", formBuilder.build())
+                            .build();
+                    return chain.proceed(request);
                 });
-
-        ProxyUtil.applyProxyConfig(builder, proxySettings.getActiveProxy());
-
+        String url = Utils.firstNonEmptyString(local_settings.url, "https://debug.dev");
+        assert url != null;
         return new Retrofit.Builder()
-                .baseUrl("https://raw.githubusercontent.com/umerov1999/Fenrir-for-VK/main/")
-                .addConverterFactory(GsonConverterFactory.create(new Gson()))
+                .baseUrl(url + "/method/")
+                .addConverterFactory(GsonConverterFactory.create(VkRetrofitProvider.getVkgson()))
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .client(builder.build())
                 .build();
@@ -190,18 +211,18 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
     }
 
     @Override
-    public Single<RetrofitWrapper> provideDebugToolRetrofit() {
+    public Single<RetrofitWrapper> provideLocalServerRetrofit() {
         return Single.fromCallable(() -> {
 
-            if (Objects.isNull(debugToolRetrofitInstance)) {
-                synchronized (debugToolRetrofitLock) {
-                    if (Objects.isNull(debugToolRetrofitInstance)) {
-                        debugToolRetrofitInstance = RetrofitWrapper.wrap(createDebugToolRetrofit());
+            if (Objects.isNull(localServerRetrofitInstance)) {
+                synchronized (localServerRetrofitLock) {
+                    if (Objects.isNull(localServerRetrofitInstance)) {
+                        localServerRetrofitInstance = RetrofitWrapper.wrap(createLocalServerRetrofit());
                     }
                 }
             }
 
-            return debugToolRetrofitInstance;
+            return localServerRetrofitInstance;
         });
     }
 

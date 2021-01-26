@@ -19,6 +19,9 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
@@ -28,11 +31,16 @@ import dev.ragnarok.fenrir.fragment.base.BaseFragment;
 import dev.ragnarok.fenrir.fragment.search.SearchContentType;
 import dev.ragnarok.fenrir.fragment.search.criteria.VideoSearchCriteria;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
+import dev.ragnarok.fenrir.mvp.view.IVideosListView;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.settings.Settings;
 
 public class VideosTabsFragment extends BaseFragment {
+
+    public static final int LOCAL_SERVER = -1;
+    public static final int VIDEOS = 0;
+    public static final int ALBUMS = 1;
 
     private int accountId;
     private int ownerId;
@@ -78,13 +86,23 @@ public class VideosTabsFragment extends BaseFragment {
         viewPager.setOffscreenPageLimit(1);
         Adapter adapter = new Adapter(this);
         viewPager.setAdapter(adapter);
+        adapter.addFragment(VIDEOS);
+        adapter.addFragment(ALBUMS);
+
+        if (accountId == ownerId && Settings.get().other().getLocalServer().enabled && !IVideosListView.ACTION_SELECT.equalsIgnoreCase(action)) {
+            adapter.addFragment(LOCAL_SERVER);
+        }
 
         new TabLayoutMediator(view.findViewById(R.id.fragment_videos_tabs), viewPager, (tab, position) -> {
-            switch (position) {
-                case 0:
+            Integer fid = adapter.mFragments.get(position);
+            switch (fid) {
+                case LOCAL_SERVER:
+                    tab.setText(R.string.on_server);
+                    break;
+                case VIDEOS:
                     tab.setText(R.string.videos_my);
                     break;
-                case 1:
+                case ALBUMS:
                     tab.setText(R.string.videos_albums);
                     break;
             }
@@ -137,6 +155,20 @@ public class VideosTabsFragment extends BaseFragment {
         return super.onOptionsItemSelected(item);
     }
 
+    private Fragment CreateVideosFragment(int option_menu) {
+        switch (option_menu) {
+            case LOCAL_SERVER:
+                return VideosLocalServerFragment.newInstance(getAccountId());
+            case VIDEOS:
+                VideosFragment fragment = VideosFragment.newInstance(getAccountId(), ownerId, 0, action, null);
+                fragment.requireArguments().putBoolean(VideosFragment.EXTRA_IN_TABS_CONTAINER, true);
+                return fragment;
+            case ALBUMS:
+                return VideoAlbumsFragment.newInstance(getAccountId(), ownerId, action);
+        }
+        throw new UnsupportedOperationException();
+    }
+
     @Override
     public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -144,27 +176,25 @@ public class VideosTabsFragment extends BaseFragment {
     }
 
     class Adapter extends FragmentStateAdapter {
+        private final List<Integer> mFragments = new ArrayList<>();
+
         public Adapter(@NonNull Fragment fm) {
             super(fm);
+        }
+
+        void addFragment(Integer fragment) {
+            mFragments.add(fragment);
         }
 
         @NonNull
         @Override
         public Fragment createFragment(int position) {
-            switch (position) {
-                case 0:
-                    VideosFragment fragment = VideosFragment.newInstance(getAccountId(), ownerId, 0, action, null);
-                    fragment.requireArguments().putBoolean(VideosFragment.EXTRA_IN_TABS_CONTAINER, true);
-                    return fragment;
-                case 1:
-                    return VideoAlbumsFragment.newInstance(getAccountId(), ownerId, action);
-            }
-            throw new UnsupportedOperationException();
+            return CreateVideosFragment(mFragments.get(position));
         }
 
         @Override
         public int getItemCount() {
-            return 2;
+            return mFragments.size();
         }
     }
 }

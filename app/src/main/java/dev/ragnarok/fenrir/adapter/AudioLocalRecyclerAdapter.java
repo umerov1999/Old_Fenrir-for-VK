@@ -153,7 +153,11 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
             audio.setAnimationNow(false);
         }
 
-        holder.artist.setText(audio.getArtist());
+        if (!Utils.isEmpty(audio.getArtist())) {
+            holder.artist.setText(audio.getArtist());
+        } else {
+            holder.artist.setText(mContext.getString(R.string.not_set));
+        }
         holder.title.setText(audio.getTitle());
 
         if (audio.getDuration() <= 0)

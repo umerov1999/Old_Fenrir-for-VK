@@ -108,7 +108,7 @@ abstract class AbsVkApiInterceptor implements Interceptor {
             throw new UnauthorizedException("No authorization! Please, login and retry");
         }
 
-        FormBody.Builder formBuiler = new FormBody.Builder();
+        FormBody.Builder formBuilder = new FormBody.Builder();
 
         RequestBody body = original.body();
 
@@ -123,20 +123,20 @@ abstract class AbsVkApiInterceptor implements Interceptor {
                 else if (name.equals("device_id"))
                     HasDeviceId = true;
                 String value = formBody.value(i);
-                formBuiler.add(name, value);
+                formBuilder.add(name, value);
             }
         }
         if (!HasVersion)
-            formBuiler.add("v", version);
+            formBuilder.add("v", version);
 
-        formBuiler.add("access_token", token)
+        formBuilder.add("access_token", token)
                 .add("lang", Constants.DEVICE_COUNTRY_CODE)
                 .add("https", "1");
         if (!HasDeviceId)
-            formBuiler.add("device_id", Utils.getDeviceId(Injection.provideApplicationContext()));
+            formBuilder.add("device_id", Utils.getDeviceId(Injection.provideApplicationContext()));
 
         Request request = original.newBuilder()
-                .method("POST", formBuiler.build())
+                .method("POST", formBuilder.build())
                 .build();
 
         Response response;
@@ -186,10 +186,10 @@ abstract class AbsVkApiInterceptor implements Interceptor {
                     if (error.errorCode == ApiErrorCodes.REFRESH_TOKEN) {
                         if (upgradeToken()) {
                             token = getToken();
-                            formBuiler.add("access_token", token);
+                            formBuilder.add("access_token", token);
 
                             request = original.newBuilder()
-                                    .method("POST", formBuiler.build())
+                                    .method("POST", formBuilder.build())
                                     .build();
                             continue;
                         }
@@ -225,11 +225,11 @@ abstract class AbsVkApiInterceptor implements Interceptor {
                         PersistentLogger.logThrowable("Captcha answer", new Exception("URL: " + request.url() + ", code: " + code + ", sid: " + captcha.getSid()));
                     }
                     if (nonNull(code)) {
-                        formBuiler.add("captcha_sid", captcha.getSid());
-                        formBuiler.add("captcha_key", code);
+                        formBuilder.add("captcha_sid", captcha.getSid());
+                        formBuilder.add("captcha_key", code);
 
                         request = original.newBuilder()
-                                .method("POST", formBuiler.build())
+                                .method("POST", formBuilder.build())
                                 .build();
                         continue;
                     }

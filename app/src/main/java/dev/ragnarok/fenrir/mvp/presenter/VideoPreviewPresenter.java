@@ -155,10 +155,10 @@ public class VideoPreviewPresenter extends AccountDependencyPresenter<IVideoPrev
     private void onActualInfoReceived(Video video) {
         setRefreshingNow(false);
 
-        if (nonNull(video) && video.getDate() == 0 && this.video.getDate() != 0) {
+        if (nonNull(this.video) && video.getDate() == 0 && this.video.getDate() != 0) {
             video.setDate(this.video.getDate());
         }
-        if (nonNull(video) && video.getAddingDate() == 0 && this.video.getAddingDate() != 0) {
+        if (nonNull(this.video) && video.getAddingDate() == 0 && this.video.getAddingDate() != 0) {
             video.setAddingDate(this.video.getAddingDate());
         }
         this.video = video;

@@ -46,7 +46,7 @@
         <item name="message_unread_color">#f564b5f6</item>
 
         <item name="message_bubble_color">#313131</item>
-        <item name="sticker_hint_color">#99313131</item>
+        <item name="sticker_hint_color">#DD313131</item>
 
         <item name="chat_background_cookies">@drawable/cookies_dark</item>
         <item name="chat_background_lines">@drawable/lines_dark</item>
@@ -91,7 +91,7 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
@@ -107,7 +107,7 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
@@ -123,7 +123,7 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
@@ -139,7 +139,7 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
@@ -155,7 +155,7 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
@@ -171,7 +171,7 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
@@ -187,7 +187,7 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
@@ -203,7 +203,7 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
@@ -219,7 +219,7 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
@@ -235,7 +235,7 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
@@ -251,7 +251,7 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
@@ -267,7 +267,7 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
@@ -283,7 +283,7 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
@@ -299,7 +299,7 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
@@ -315,7 +315,7 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
@@ -331,7 +331,7 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
@@ -347,7 +347,7 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
@@ -363,7 +363,7 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
@@ -379,7 +379,7 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
@@ -395,7 +395,7 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
@@ -411,13 +411,13 @@
         <item name="colorOnBackground">#000000</item>
         <item name="colorSurface">#F20B0B0B</item>
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
     </style>
 
     <style name="QuickReply.Amoled" parent="QuickReply">
         <item name="message_bubble_color">#0B0B0B</item>
-        <item name="sticker_hint_color">#990B0B0B</item>
+        <item name="sticker_hint_color">#DD0B0B0B</item>
     </style>
 
     <style name="CardViewMD2" parent="Widget.MaterialComponents.CardView">
@@ -436,7 +436,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="message_bubble_color">#F01E1E1E</item>
-        <item name="sticker_hint_color">#991E1E1E</item>
+        <item name="sticker_hint_color">#DD1E1E1E</item>
         <item name="quick_reply_icon_color">#FFF</item>
         <item name="dividerColor">#313131</item>
     </style>

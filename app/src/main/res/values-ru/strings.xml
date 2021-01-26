@@ -50,6 +50,7 @@
         <item>Мьёльнир</item>
         <item>Вегвизир</item>
         <item>Кельтский узел</item>
+        <item>Иггдрасиль v2</item>
     </string-array>
 
     <string-array name="array_accounts_input">
@@ -1495,4 +1496,9 @@
     <string name="dual_track">Оба</string>
     <string name="parcel_native_helper">Если при открытии фото будет вылет, включите пункт Нативный Parcel</string>
     <string name="runic">Руны</string>
+    <string name="local_media_server">Локальный медиа сервер</string>
+    <string name="enabled">Включен</string>
+    <string name="on_server">На сервере</string>
+    <string name="no_system_equalizer">Нет системного эквалайзера</string>
+    <string name="equalizer_closed">Эквалайзер закрыт</string>
 </resources>

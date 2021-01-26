@@ -1,19 +1,17 @@
 package dev.ragnarok.fenrir.settings;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Environment;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.google.gson.Gson;
 
+import java.io.File;
+
+import dev.ragnarok.fenrir.api.model.LocalServerSettings;
 import dev.ragnarok.fenrir.model.Lang;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
@@ -21,8 +19,6 @@ import dev.ragnarok.fenrir.util.Utils;
 class OtherSettings implements ISettings.IOtherSettings {
 
     private static final String KEY_JSON_STATE = "json_list_state";
-
-    private static final String KEY_DONATE = "donates";
 
     private final Context app;
 
@@ -397,28 +393,19 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
-    public void registerDonatesId(List<Integer> Ids) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(app);
-        Set<String> uids = new HashSet<>(Ids.size());
-        for (int i : Ids) {
-            uids.add(String.valueOf(i));
+    public @NonNull
+    LocalServerSettings getLocalServer() {
+        String ret = PreferenceManager.getDefaultSharedPreferences(app).getString("local_media_server", null);
+        if (ret == null) {
+            return new LocalServerSettings();
+        } else {
+            return new Gson().fromJson(ret, LocalServerSettings.class);
         }
-        preferences.edit().putStringSet(KEY_DONATE, uids).apply();
     }
 
-    @NonNull
     @Override
-    public List<Integer> getDonates() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(app);
-        Set<String> uids = preferences.getStringSet(KEY_DONATE, new HashSet<>(0));
-
-        List<Integer> ids = new ArrayList<>(uids.size());
-        for (String stringuid : uids) {
-            int uid = Integer.parseInt(stringuid);
-            ids.add(uid);
-        }
-
-        return ids;
+    public void setLocalServer(@NonNull LocalServerSettings settings) {
+        PreferenceManager.getDefaultSharedPreferences(app).edit().putString("local_media_server", new Gson().toJson(settings)).apply();
     }
 
     @Override

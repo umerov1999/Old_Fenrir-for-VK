@@ -39,6 +39,7 @@ import dev.ragnarok.fenrir.settings.Settings;
 
 public class AudiosTabsFragment extends BaseFragment {
 
+    public static final int LOCAL_SERVER = -6;
     public static final int LOCAL = -5;
     public static final int CATALOG = -4;
     public static final int PLAYLISTS = -3;
@@ -101,6 +102,8 @@ public class AudiosTabsFragment extends BaseFragment {
                 tab.setText(getString(R.string.audio_catalog));
             else if (fid == LOCAL)
                 tab.setText(getString(R.string.local_audios));
+            else if (fid == LOCAL_SERVER)
+                tab.setText(getString(R.string.on_server));
             else
                 tab.setText(VKApiAudio.Genre.getTitleByGenre(requireActivity(), fid));
         }).attach();
@@ -127,6 +130,8 @@ public class AudiosTabsFragment extends BaseFragment {
             return AudioCatalogFragment.newInstance(getAccountId(), null, true);
         else if (option_menu == LOCAL) {
             return AudiosLocalFragment.newInstance(getAccountId());
+        } else if (option_menu == LOCAL_SERVER) {
+            return AudiosLocalServerFragment.newInstance(getAccountId());
         } else {
             AudiosFragment fragment = AudiosFragment.newInstance(getAccountId(), ownerId, option_menu, 0, null);
             fragment.requireArguments().putBoolean(AudiosFragment.EXTRA_IN_TABS_CONTAINER, true);
@@ -140,6 +145,9 @@ public class AudiosTabsFragment extends BaseFragment {
         if (ownerId >= 0) {
             if (getAccountId() == ownerId) {
                 adapter.addFragment(LOCAL);
+                if (Settings.get().other().getLocalServer().enabled) {
+                    adapter.addFragment(LOCAL_SERVER);
+                }
                 adapter.addFragment(CATALOG);
             }
             adapter.addFragment(MY_RECOMMENDATIONS);

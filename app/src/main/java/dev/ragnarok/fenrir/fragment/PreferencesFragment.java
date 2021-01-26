@@ -33,7 +33,9 @@ import androidx.preference.SwitchPreference;
 import com.developer.filepicker.model.DialogConfigs;
 import com.developer.filepicker.model.DialogProperties;
 import com.developer.filepicker.view.FilePickerDialog;
+import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -63,6 +65,7 @@ import dev.ragnarok.fenrir.activity.alias.VKFenrirAlias;
 import dev.ragnarok.fenrir.activity.alias.VioletFenrirAlias;
 import dev.ragnarok.fenrir.activity.alias.WhiteFenrirAlias;
 import dev.ragnarok.fenrir.activity.alias.YellowFenrirAlias;
+import dev.ragnarok.fenrir.api.model.LocalServerSettings;
 import dev.ragnarok.fenrir.db.DBHelper;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.model.LocalPhoto;
@@ -250,6 +253,48 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         SwitchPreference prefMiniplayer = findPreference("show_mini_player");
         prefMiniplayer.setOnPreferenceChangeListener((preference, newValue) -> {
             requireActivity().recreate();
+            return true;
+        });
+
+        findPreference("vk_auth_domain").setOnPreferenceChangeListener((preference, newValue) -> {
+            Injection.provideProxySettings().setActive(Injection.provideProxySettings().getActiveProxy());
+            return true;
+        });
+
+        findPreference("vk_api_domain").setOnPreferenceChangeListener((preference, newValue) -> {
+            Injection.provideProxySettings().setActive(Injection.provideProxySettings().getActiveProxy());
+            return true;
+        });
+
+        findPreference("local_media_server").setOnPreferenceClickListener((newValue) -> {
+            View view = View.inflate(requireActivity(), R.layout.entry_local_server, null);
+            TextInputEditText url = view.findViewById(R.id.edit_url);
+            TextInputEditText password = view.findViewById(R.id.edit_password);
+            MaterialCheckBox enabled = view.findViewById(R.id.edit_enabled);
+            LocalServerSettings settings = Settings.get().other().getLocalServer();
+            url.setText(settings.url);
+            password.setText(settings.password);
+            enabled.setChecked(settings.enabled);
+
+            new MaterialAlertDialogBuilder(requireActivity())
+                    .setView(view)
+                    .setCancelable(true)
+                    .setNegativeButton(R.string.button_cancel, null)
+                    .setPositiveButton(R.string.button_ok, (dialog, which) -> {
+                        boolean en_vl = enabled.isChecked();
+                        String url_vl = url.getEditableText().toString();
+                        String psv_vl = password.getEditableText().toString();
+                        if (en_vl && (isEmpty(url_vl) || isEmpty(psv_vl))) {
+                            return;
+                        }
+                        LocalServerSettings srv = new LocalServerSettings();
+                        srv.enabled = en_vl;
+                        srv.password = psv_vl;
+                        srv.url = url_vl;
+                        Settings.get().other().setLocalServer(srv);
+                        Injection.provideProxySettings().setActive(Injection.provideProxySettings().getActiveProxy());
+                    })
+                    .show();
             return true;
         });
 

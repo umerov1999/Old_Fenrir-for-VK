@@ -272,6 +272,9 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             case 4:
                 mHeaderHolder.paganSymbol.setImageResource(R.drawable.ic_celtic_knot);
                 break;
+            case 5:
+                mHeaderHolder.paganSymbol.setImageResource(R.drawable.ic_igdr2);
+                break;
             default:
                 mHeaderHolder.paganSymbol.setImageResource(R.drawable.ic_igdr);
                 break;

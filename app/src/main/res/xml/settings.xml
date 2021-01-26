@@ -783,6 +783,11 @@
             app:iconSpaceReserved="false" />
 
         <Preference
+            android:key="local_media_server"
+            android:title="@string/local_media_server"
+            app:iconSpaceReserved="false" />
+
+        <Preference
             android:key="select_custom_icon"
             android:title="@string/select_custom_icon"
             app:iconSpaceReserved="false" />

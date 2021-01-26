@@ -112,6 +112,7 @@
         <item>Mjolnir</item>
         <item>Vegvisir</item>
         <item>Celtic knot</item>
+        <item>Yggdrasil v2</item>
     </string-array>
 
     <string-array name="array_pagan_symbol_items" translatable="false">
@@ -120,6 +121,7 @@
         <item>2</item>
         <item>3</item>
         <item>4</item>
+        <item>5</item>
     </string-array>
 
     <string-array name="array_accounts_input">
@@ -1648,4 +1650,9 @@
     <string name="dual_track">Both</string>
     <string name="parcel_native_helper">If there is a crash when opening a photo, enable the Native Parcel item</string>
     <string name="runic">Runic</string>
+    <string name="local_media_server">Local Media Server</string>
+    <string name="enabled">Enabled</string>
+    <string name="on_server">On Server</string>
+    <string name="no_system_equalizer">No system equalizer found</string>
+    <string name="equalizer_closed">equalizer closed</string>
 </resources>
