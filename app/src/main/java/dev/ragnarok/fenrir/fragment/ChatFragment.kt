@@ -105,7 +105,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
 
     private val optionMenuSettings = SparseBooleanArray()
 
-    private var toolbarRootView: ViewGroup? = null
+    private var toolbarRootView: FrameLayout? = null
     private var actionModeHolder: ActionModeHolder? = null
 
     private var editMessageGroup: ViewGroup? = null
@@ -157,10 +157,10 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View {
         val root = inflater.inflate(R.layout.fragment_chat, container, false) as ViewGroup
         root.background = CurrentTheme.getChatBackground(activity)
 
@@ -174,10 +174,12 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         stickersKeywordsView = root.findViewById(R.id.stickers)
         stickersAdapter = StickersKeyWordsAdapter(requireActivity(), Collections.emptyList())
         stickersAdapter?.setStickerClickedListener { presenter?.fireStickerSendClick(it); presenter?.resetDraftMessage() }
-        stickersKeywordsView?.layoutManager =
-            LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
-        stickersKeywordsView?.adapter = stickersAdapter
-        stickersKeywordsView?.visibility = View.GONE
+        stickersKeywordsView?.let {
+            it.layoutManager =
+                    LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
+            it.adapter = stickersAdapter
+            it.visibility = View.GONE
+        }
 
         downMenuGroup = root.findViewById(R.id.down_menu)
 
@@ -245,10 +247,12 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
             }
 
         pinnedView = root.findViewById(R.id.pinned_root_view)
-        pinnedAvatar = pinnedView?.findViewById(R.id.pinned_avatar)
-        pinnedTitle = pinnedView?.findViewById(R.id.pinned_title)
-        pinnedSubtitle = pinnedView?.findViewById(R.id.pinned_subtitle)
-        buttonUnpin = pinnedView?.findViewById(R.id.buttonUnpin)
+        pinnedView?.let {
+            pinnedAvatar = it.findViewById(R.id.pinned_avatar)
+            pinnedTitle = it.findViewById(R.id.pinned_title)
+            pinnedSubtitle = it.findViewById(R.id.pinned_subtitle)
+            buttonUnpin = it.findViewById(R.id.buttonUnpin)
+        }
         buttonUnpin?.setOnClickListener { presenter?.fireUnpinClick() }
 
         pinnedView?.setOnLongClickListener {
@@ -329,19 +333,18 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
     }
 
     override fun hideWriting() {
-        val animator: ObjectAnimator? = ObjectAnimator.ofFloat(Writing_msg_Group, View.ALPHA, 0.0f)
-        animator?.addListener(object : WeakViewAnimatorAdapter<View>(Writing_msg_Group) {
-            override fun onAnimationEnd(view: View) {
-                Writing_msg_Group?.visibility = View.GONE
-            }
+        val animator: ObjectAnimator? = ObjectAnimator.ofFloat(Writing_msg_Group, View.ALPHA, 0.0f).apply {
+            addListener(object : WeakViewAnimatorAdapter<View>(Writing_msg_Group) {
+                override fun onAnimationEnd(view: View) {
+                    Writing_msg_Group?.visibility = View.GONE
+                }
 
-            override fun onAnimationStart(view: View) {
-            }
-
-            override fun onAnimationCancel(view: View) {
-            }
-        })
-        animator?.setDuration(200)?.start()
+                override fun onAnimationStart(view: View) = Unit
+                override fun onAnimationCancel(view: View) = Unit
+            })
+            duration = 200
+        }
+        animator?.start()
     }
 
     private class ActionModeHolder(val rootView: View, fragment: ChatFragment) :
@@ -1654,10 +1657,11 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
 
     companion object {
         fun newInstance(accountId: Int, messagesOwnerId: Int, peer: Peer): ChatFragment {
-            val args = Bundle()
-            args.putInt(Extra.ACCOUNT_ID, accountId)
-            args.putInt(Extra.OWNER_ID, messagesOwnerId)
-            args.putParcelable(Extra.PEER, peer)
+            val args = Bundle().apply {
+                putInt(Extra.ACCOUNT_ID, accountId)
+                putInt(Extra.OWNER_ID, messagesOwnerId)
+                putParcelable(Extra.PEER, peer)
+            }
 
             val fragment = ChatFragment()
             fragment.arguments = args

@@ -5,17 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:colorBackground"
-        app:elevation="0dp">
-
-        <RelativeLayout
+        <FrameLayout
             android:id="@+id/toolbar_root"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?android:colorBackground"
             android:animateLayoutChanges="true">
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -88,16 +82,19 @@
 
             </com.google.android.material.appbar.MaterialToolbar>
 
-        </RelativeLayout>
+            <include
+                layout="@layout/line_divider"
+                android:layout_gravity="bottom"
+                android:layout_height="1dp"
+                android:layout_width="match_parent" />
+        </FrameLayout>
 
-        <include layout="@layout/line_divider" />
-    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:id="@+id/pinned_root_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/appbar"
+        android:layout_below="@+id/toolbar_root"
         android:orientation="vertical"
         android:stateListAnimator="@animator/clicked">
 
@@ -136,7 +133,7 @@
                 android:layout_toStartOf="@+id/buttonUnpin"
                 android:layout_toEndOf="@+id/pinned_avatar"
                 android:ellipsize="end"
-                android:maxLines="2"
+                android:maxLines="1"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 tools:text="Hi! How are you?" />
 
@@ -239,6 +236,7 @@
         android:id="@+id/input_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?attr/colorSurface"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 

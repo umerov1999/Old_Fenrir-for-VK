@@ -121,7 +121,7 @@
     <string name="attachment_link">Ссылка</string>
     <string name="user_type_message">набирает сообщение</string>
     <string name="user_type_voice">записывает голосовую</string>
-    <string name="many_users_typed">%1$s, и ещё %2$d</string>
+    <string name="many_users_typed">%1$s и ещё %2$d</string>
 
     <string name="load_more">Загрузить ещё</string>
     <string name="last_seen_sex_man">был: %1$s</string>
@@ -810,7 +810,7 @@
     <string name="post_is_pinned">Запись закреплена</string>
     <string name="will_be_posted_at">Будет опубликован %1$s</string>
     <string name="date_is_invalid">Вы ввели неверную дату</string>
-    <string name="this_device_does_not_support_fcm">Для работы FCM требуются Гугл сервисы, либо включите удержание Longpoll</string>
+    <string name="this_device_does_not_support_fcm">Для работы FCM требуются Google сервисы, включите удержание Longpoll</string>
     <string name="double_press_to_exit">Двойное нажатие для выхода из приложения</string>
     <string name="from_list">Из списка</string>
     <string name="photo_size">Размер фото</string>
@@ -1371,7 +1371,7 @@
     <string name="local_audios">На устройстве</string>
     <string name="not_supported">Не поддерживается"</string>
     <string name="crypt_version">Версия шифрования"</string>
-    <string name="not_supported_hide">Установите пин-код в настройках!!!"</string>
+    <string name="not_supported_hide">Установите пин-код в настройках!"</string>
     <string name="disable_encryption">Отключить шифрование"</string>
     <string name="is_expired">Истекло"</string>
     <string name="story">История"</string>
