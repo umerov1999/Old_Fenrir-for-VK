@@ -472,6 +472,13 @@
 
         <SwitchPreference
             android:defaultValue="true"
+            android:key="not_read_show"
+            android:summary="@string/not_read_show_summary"
+            android:title="@string/not_read_show"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="true"
             android:key="info_reading"
             android:title="@string/info_reading"
             app:iconSpaceReserved="false" />

@@ -100,7 +100,7 @@ class ChatPresenter(
         return conversation
     }
 
-    private var HronoType = false
+    private var chronologyInvert = false
 
     private var isLoadingFromDbNow = false
     private var isLoadingFromNetNow = false
@@ -120,8 +120,8 @@ class ChatPresenter(
     private val peerId: Int
         get() = peer.id
 
-    val inInverHrono: Boolean
-        get() = HronoType
+    val isChronologyInverted: Boolean
+        get() = chronologyInvert
 
     private val isEncryptionSupport: Boolean
         get() = Peer.isUser(peerId) && peerId != messagesOwnerId && !Settings.get()
@@ -259,13 +259,13 @@ class ChatPresenter(
         updateSubtitle()
     }
 
-    fun invert_Hrono() {
-        HronoType = true
+    fun invertChronology() {
+        chronologyInvert = true
         resolveOptionMenu()
     }
 
-    fun reset_Hrono() {
-        HronoType = false
+    fun resetChronology() {
+        chronologyInvert = false
         resolveOptionMenu()
     }
 
@@ -604,11 +604,15 @@ class ChatPresenter(
 
         isLoadingFromDbNow = false
         endOfContent = messages.isEmpty()
-        if (HronoType && startMessageId == null)
+        if (chronologyInvert && startMessageId == null)
             endOfContent = true
 
         setNetLoadingNow(false)
         onAllDataLoaded(messages, startMessageId != null, isCache = false)
+    }
+
+    fun fireScrollToUnread() {
+        conversation?.unreadCount?.let { view?.scrollToUnread(it, false) }
     }
 
     fun fireDeleteChatPhoto() {
@@ -640,11 +644,28 @@ class ChatPresenter(
                 }
             }
         }
-
+        var requestLookMessage = false
         if (all && data.isNotEmpty()) {
             data.clear()
             data.addAll(messages)
             view?.notifyDataChanged()
+            if (!chronologyInvert && !isCache) {
+                conversation?.unreadCount?.let {
+                    if (conversation!!.unreadCount <= messages.size) {
+                        view?.scrollToUnread(it, true)
+                    } else {
+                        view?.goToUnreadMessages(
+                            accountId,
+                            peerId,
+                            conversation!!.inRead,
+                            lastReadId.incoming,
+                            lastReadId.outgoing,
+                            conversation!!.unreadCount
+                        )
+                        requestLookMessage = true
+                    }
+                }
+            }
         } else {
             val startSize = data.size
             data.addAll(messages)
@@ -652,7 +673,28 @@ class ChatPresenter(
         }
 
         resolveEmptyTextVisibility()
-        if (Settings.get().other().isAuto_read && !isCache) {
+        if (!requestLookMessage && all && data.isNotEmpty() && !chronologyInvert && !isCache) {
+            fireCheckMessages()
+        }
+    }
+
+    private fun fireCheckMessages() {
+        if (Settings.get().other().isAuto_read) {
+            appendDisposable(
+                checkErrorMessages().compose(applySingleIOToMainSchedulers())
+                    .subscribe({ t -> if (t) startSendService() else readAllUnreadMessagesIfExists() }) { })
+        }
+    }
+
+    fun fireCheckMessages(incoming: Int, outgoing: Int) {
+        if (incoming != -1 && outgoing != -1) {
+            lastReadId.incoming = incoming
+            lastReadId.outgoing = outgoing
+            if (isGuiReady) {
+                view?.notifyDataChanged()
+            }
+        }
+        if (Settings.get().other().isAuto_read) {
             appendDisposable(
                 checkErrorMessages().compose(applySingleIOToMainSchedulers())
                     .subscribe({ t -> if (t) startSendService() else readAllUnreadMessagesIfExists() }) { })
@@ -687,7 +729,7 @@ class ChatPresenter(
     }
 
     private fun canLoadMore(): Boolean {
-        return data.isNotEmpty() && !isLoadingFromDbNow && !isLoadingFromNetNow && !HronoType && !endOfContent
+        return data.isNotEmpty() && !isLoadingFromDbNow && !isLoadingFromNetNow && !chronologyInvert && !endOfContent
     }
 
     @OnGuiCreated
@@ -715,8 +757,8 @@ class ChatPresenter(
             COUNT,
             null,
             startMessageId,
-            !HronoType,
-            HronoType
+            !chronologyInvert,
+            chronologyInvert
         )
             .fromIOToMain()
             .subscribe(
@@ -1143,8 +1185,6 @@ class ChatPresenter(
         }
 
         view?.notifyDataChanged()
-        if (Settings.get().other().isAuto_read)
-            readAllUnreadMessagesIfExists()
     }
 
     private fun onRealtimeMessageReceived(message: Message) {
@@ -1180,6 +1220,9 @@ class ChatPresenter(
         if (!message.isOut) {
             conversation?.currentKeyboard = message.keyboard
             view?.convert_to_keyboard(message.keyboard)
+        }
+        if (Settings.get().other().isAuto_read) {
+            readAllUnreadMessagesIfExists()
         }
     }
 
@@ -1439,7 +1482,23 @@ class ChatPresenter(
         if (message.status == MessageStatus.ERROR) {
             view?.showErrorSendDialog(message)
         } else {
-            readAllUnreadMessagesIfExists()
+            readUnreadMessagesUpIfExists(message)
+        }
+    }
+
+    private fun readUnreadMessagesUpIfExists(message: Message) {
+        if (isHiddenAccount(accountId)) return
+
+        if (!message.isOut && message.originalId > lastReadId.incoming) {
+            lastReadId.incoming = message.originalId
+
+            view?.notifyDataChanged()
+
+            appendDisposable(
+                messagesRepository.markAsRead(messagesOwnerId, peer.id, message.originalId)
+                    .fromIOToMain()
+                    .subscribe(dummy(), { t -> showError(view, t) })
+            )
         }
     }
 
@@ -1447,13 +1506,13 @@ class ChatPresenter(
         if (isHiddenAccount(accountId)) return
         val last = if (data.nonEmpty()) data[0] else return
 
-        if (!last.isOut && last.id > lastReadId.incoming) {
-            lastReadId.incoming = last.id
+        if (!last.isOut && last.originalId > lastReadId.incoming) {
+            lastReadId.incoming = last.originalId
 
             view?.notifyDataChanged()
 
             appendDisposable(
-                messagesRepository.markAsRead(messagesOwnerId, peer.id, last.id)
+                messagesRepository.markAsRead(messagesOwnerId, peer.id, last.originalId)
                     .fromIOToMain()
                     .subscribe(dummy(), { t -> showError(view, t) })
             )
@@ -1856,7 +1915,7 @@ class ChatPresenter(
             isEncryptionEnabled,
             isPlusEncryption,
             isEncryptionSupport,
-            !HronoType,
+            !chronologyInvert,
             peerId < VKApiMessage.CHAT_PEER,
             chat
         )

@@ -3,13 +3,13 @@
 buildscript {
     ext.kotlin_version = '1.4.30-RC'
     ext.retrofitLibraryVersion = '2.9.0'
-    ext.okhttpLibraryVersion = '4.10.0-RC1'
+    ext.okhttpLibraryVersion = '4.9.1'
     repositories {
         jcenter()
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0-beta03'
+        classpath 'com.android.tools.build:gradle:4.2.0-beta04'
         classpath 'com.google.gms:google-services:4.3.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 

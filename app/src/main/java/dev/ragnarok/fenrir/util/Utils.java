@@ -105,6 +105,7 @@ import okhttp3.Response;
 import static dev.ragnarok.fenrir.util.Objects.isNull;
 
 public class Utils {
+    public static final List<Integer> donate_users = new ArrayList<>();
     private static final List<Integer> reload_news = new ArrayList<>();
     private static final List<Integer> reload_dialogs = new ArrayList<>();
     private static final List<Integer> reload_stickers = new ArrayList<>();
@@ -882,11 +883,11 @@ public class Utils {
     }
 
     public static boolean isHiddenCurrent() {
-        return isHiddenType(Injection.provideSettings().accounts().getType(Injection.provideSettings().accounts().getCurrent()));
+        return isHiddenType(dev.ragnarok.fenrir.settings.Settings.get().accounts().getType(dev.ragnarok.fenrir.settings.Settings.get().accounts().getCurrent()));
     }
 
     public static boolean isHiddenAccount(int account_id) {
-        return isHiddenType(Injection.provideSettings().accounts().getType(account_id));
+        return isHiddenType(dev.ragnarok.fenrir.settings.Settings.get().accounts().getType(account_id));
     }
 
     @SuppressLint("HardwareIds")

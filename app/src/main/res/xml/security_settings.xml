@@ -97,4 +97,10 @@
         android:title="@string/disable_encryption"
         app:iconSpaceReserved="false" />
 
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="show_hidden_accounts"
+        android:title="@string/show_hidden_accounts"
+        app:iconSpaceReserved="false" />
+
 </PreferenceScreen>

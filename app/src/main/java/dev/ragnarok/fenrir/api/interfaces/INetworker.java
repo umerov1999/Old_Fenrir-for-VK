@@ -14,6 +14,8 @@ public interface INetworker {
 
     ILocalServerApi localServerApi();
 
+    IDebugToolApi debugToolApi();
+
     ILongpollApi longpoll();
 
     IUploadApi uploads();

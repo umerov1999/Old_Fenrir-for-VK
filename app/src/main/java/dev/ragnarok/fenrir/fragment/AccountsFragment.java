@@ -406,6 +406,10 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
 
         Settings.get()
                 .accounts()
+                .removeDevice(account.getId());
+
+        Settings.get()
+                .accounts()
                 .remove(account.getId());
 
         DBHelper.removeDatabaseFor(requireActivity(), account.getId());
@@ -441,8 +445,12 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
             if (!idCurrent) {
                 menus.add(new OptionRequest(2, getString(R.string.set_as_active), R.drawable.account_circle));
             }
-        } else
+        } else {
             menus.add(new OptionRequest(0, getString(R.string.delete), R.drawable.ic_outline_delete));
+        }
+        if (Utils.isHiddenAccount(account.getId())) {
+            menus.add(new OptionRequest(4, getString(R.string.set_device), R.drawable.ic_smartphone));
+        }
         menus.header(account.getDisplayName(), R.drawable.account_circle, account.getOwner() != null ? account.getOwner().getMaxSquareAvatar() : null);
         menus.show(getChildFragmentManager(), "account_options", option -> {
             switch (option.getId()) {
@@ -463,6 +471,17 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                         requestEnterPin.launch(new Intent(requireActivity(), EnterPinActivity.class));
                     }
                     break;
+                case 4:
+                    View root = View.inflate(requireActivity(), R.layout.dialog_enter_text, null);
+                    ((TextInputEditText) root.findViewById(R.id.editText)).setText(Settings.get().accounts().getDevice(account.getId()));
+                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity())
+                            .setTitle(R.string.set_device)
+                            .setCancelable(true)
+                            .setView(root)
+                            .setPositiveButton(R.string.button_ok, (dialog, which) -> Settings.get().accounts().storeDevice(account.getId(), ((TextInputEditText) root.findViewById(R.id.editText)).getEditableText().toString()))
+                            .setNegativeButton(R.string.button_cancel, null);
+                    builder.create().show();
+                    break;
             }
         });
     }
@@ -482,6 +501,15 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                 temp.addProperty("domain", owner.getDomain());
                 temp.addProperty("access_token", Settings.get().accounts().getAccessToken(i));
                 temp.addProperty("avatar", owner.getMaxSquareAvatar());
+
+                String login = Settings.get().accounts().getLogin(i);
+                String device = Settings.get().accounts().getDevice(i);
+                if (!Utils.isEmpty(login)) {
+                    temp.addProperty("login", login);
+                }
+                if (!Utils.isEmpty(device)) {
+                    temp.addProperty("device", device);
+                }
                 arr.add(temp);
             }
             root.add("fenrir_accounts", arr);
@@ -528,6 +556,12 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                         String token = elem.get("access_token").getAsString();
                         int Type = elem.get("type").getAsInt();
                         processNewAccount(id, token, Type, null, null, "fenrir_app", true, false, false);
+                        if (elem.has("login")) {
+                            Settings.get().accounts().storeLogin(id, elem.get("login").getAsString());
+                        }
+                        if (elem.has("device")) {
+                            Settings.get().accounts().storeDevice(id, elem.get("device").getAsString());
+                        }
                     }
                 }
                 CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.accounts_restored, file.getAbsolutePath());

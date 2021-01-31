@@ -105,8 +105,8 @@ public class LocalVideosFragment extends BaseMvpFragment<LocalVideosPresenter, I
     public void onVideoLongClick(LocalVideosAdapter.ViewHolder holder, LocalVideo video) {
 
         Video target = new Video().setOwnerId(Settings.get().accounts().getCurrent()).setId((int) video.getId())
-                .setMp4link1080(video.getData().toString());
-        PlaceFactory.getVkInternalPlayerPlace(target, InternalVideoSize.SIZE_1080).tryOpenWith(requireActivity());
+                .setMp4link1080(video.getData().toString()).setTitle(video.getTitle());
+        PlaceFactory.getVkInternalPlayerPlace(target, InternalVideoSize.SIZE_1080, true).tryOpenWith(requireActivity());
     }
 
     @Override

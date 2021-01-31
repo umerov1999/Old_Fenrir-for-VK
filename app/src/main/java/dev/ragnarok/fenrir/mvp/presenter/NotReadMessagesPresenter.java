@@ -6,6 +6,8 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ import dev.ragnarok.fenrir.domain.IMessagesRepository;
 import dev.ragnarok.fenrir.domain.Repository;
 import dev.ragnarok.fenrir.model.LoadMoreState;
 import dev.ragnarok.fenrir.model.Message;
-import dev.ragnarok.fenrir.mvp.view.IMessagesLookView;
+import dev.ragnarok.fenrir.mvp.view.INotReadMessagesView;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
@@ -27,18 +29,20 @@ import static dev.ragnarok.fenrir.util.Utils.getSelected;
 import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
-public class MessagesLookPresenter extends AbsMessageListPresenter<IMessagesLookView> {
+public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMessagesView> {
 
-    private static final int COUNT = 40;
+    private static final int COUNT = 30;
     private final IMessagesRepository messagesInteractor;
     private final int mPeerId;
     private final LOADING_STATE loadingState;
     private Integer mFocusMessageId;
 
-    public MessagesLookPresenter(int accountId, int peerId, Integer focusTo, @Nullable Bundle savedInstanceState) {
+    public NotReadMessagesPresenter(int accountId, int peerId, Integer focusTo, int incoming, int outgoing, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
         messagesInteractor = Repository.INSTANCE.getMessages();
         mPeerId = peerId;
+        lastReadId.setIncoming(incoming);
+        lastReadId.setOutgoing(outgoing);
         loadingState = new LOADING_STATE((Header, Footer) -> {
             if (isGuiReady()) {
                 @LoadMoreState int header;
@@ -79,7 +83,7 @@ public class MessagesLookPresenter extends AbsMessageListPresenter<IMessagesLook
     }
 
     @Override
-    public void onGuiCreated(@NonNull IMessagesLookView viewHost) {
+    public void onGuiCreated(@NonNull INotReadMessagesView viewHost) {
         super.onGuiCreated(viewHost);
         viewHost.displayMessages(getData(), lastReadId);
         loadingState.updateState();
@@ -259,6 +263,27 @@ public class MessagesLookPresenter extends AbsMessageListPresenter<IMessagesLook
         }
     }
 
+    @Override
+    public void onMessageClick(@NotNull Message message) {
+        readUnreadMessagesUpIfExists(message);
+    }
+
+    private void readUnreadMessagesUpIfExists(Message message) {
+        if (Utils.isHiddenAccount(getAccountId())) return;
+
+        if (!message.isOut() && message.getOriginalId() > lastReadId.getIncoming()) {
+            lastReadId.setIncoming(message.getOriginalId());
+
+            if (isGuiReady()) {
+                getView().notifyDataChanged();
+            }
+
+            appendDisposable(messagesInteractor.markAsRead(getAccountId(), mPeerId, message.getOriginalId())
+                    .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                    .subscribe(RxUtils.dummy(), t -> showError(getView(), t)));
+        }
+    }
+
     private void onUpDataLoaded(List<Message> messages) {
         if (isEmpty(messages)) {
             loadingState.FooterDisable();
@@ -274,8 +299,17 @@ public class MessagesLookPresenter extends AbsMessageListPresenter<IMessagesLook
         }
     }
 
+    public void fireFinish() {
+        if (isGuiReady()) {
+            getView().doFinish(lastReadId.getIncoming(), lastReadId.getOutgoing(), true);
+        }
+    }
+
     private void onDownDataLoaded(List<Message> messages) {
         if (isEmpty(messages)) {
+            if (isGuiReady()) {
+                getView().doFinish(lastReadId.getIncoming(), lastReadId.getOutgoing(), false);
+            }
             loadingState.HeaderDisable();
         } else {
             loadingState.HeaderEnable();

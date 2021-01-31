@@ -40,6 +40,7 @@ public class DirectAuthDialog extends BaseMvpDialogFragment<DirectAuthPresenter,
     private TextInputEditText mPassword;
     private TextInputEditText mCaptcha;
     private TextInputEditText mSmsCode;
+    private MaterialCheckBox mSavePassword;
     private View mSmsCodeRoot;
     private View mContentRoot;
     private View mLoadingRoot;
@@ -110,7 +111,7 @@ public class DirectAuthDialog extends BaseMvpDialogFragment<DirectAuthPresenter,
         });
         mCaptchaImage = view.findViewById(R.id.captcha_img);
 
-        MaterialCheckBox mSavePassword = view.findViewById(R.id.save_password);
+        mSavePassword = view.findViewById(R.id.save_password);
         mSavePassword.setOnCheckedChangeListener((buttonView, isChecked) -> getPresenter().fireSaveEdit(isChecked));
 
         builder.setView(view);
@@ -147,6 +148,9 @@ public class DirectAuthDialog extends BaseMvpDialogFragment<DirectAuthPresenter,
 
         if (nonNull(buttonLogin)) {
             buttonLogin.setEnabled(enabled);
+        }
+        if (nonNull(mSavePassword)) {
+            mSavePassword.setVisibility(enabled ? View.VISIBLE : View.GONE);
         }
     }
 

@@ -24,31 +24,55 @@
             tools:text="Name" />
 
         <TextView
-            android:id="@+id/last_name"
+            android:id="@+id/domain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            tools:text="Domain" />
+
+        <TextView
+            android:id="@+id/last_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             tools:text="Time" />
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/avatar"
+    <FrameLayout
+        android:id="@+id/item_user_avatar_container"
         android:layout_width="@dimen/avatar_size_usual"
         android:layout_height="@dimen/avatar_size_usual"
         android:layout_centerVertical="true"
-        android:layout_marginStart="16dp" />
+        android:layout_marginStart="16dp">
 
-    <ImageView
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="@dimen/avatar_size_usual"
+            android:layout_height="@dimen/avatar_size_usual" />
+
+        <dev.ragnarok.fenrir.view.OnlineView
+            android:id="@+id/item_user_online"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="bottom"
+            android:padding="3dp"
+            app:circle_color="?icon_color_active"
+            app:stroke_color="?android:colorBackground" />
+    </FrameLayout>
+
+    <com.umerov.rlottie.RLottieImageView
         android:id="@+id/active"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="16dp"
         android:padding="2dp"
-        android:src="@drawable/check"
-        app:tint="?colorPrimary" />
+        android:visibility="gone"
+        app:loopAnimation="true" />
 
 </RelativeLayout>
 

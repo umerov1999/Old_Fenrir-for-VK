@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.push.IPushRegistrationResolver;
 import dev.ragnarok.fenrir.util.RxUtils;
+import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.processors.PublishProcessor;
 
@@ -37,6 +39,7 @@ class AccountsSettings implements ISettings.IAccountsSettings {
     private final SharedPreferences preferences;
     private final Map<Integer, String> tokens;
     private final Map<Integer, Integer> types;
+    private final Map<Integer, String> devices;
     private final PublishProcessor<Integer> currentPublisher = PublishProcessor.create();
 
     @SuppressLint("UseSparseArrays")
@@ -44,6 +47,7 @@ class AccountsSettings implements ISettings.IAccountsSettings {
         app = context.getApplicationContext();
         tokens = Collections.synchronizedMap(new HashMap<>(1));
         types = Collections.synchronizedMap(new HashMap<>(1));
+        devices = Collections.synchronizedMap(new HashMap<>(1));
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         Collection<Integer> aids = getRegistered();
@@ -53,7 +57,12 @@ class AccountsSettings implements ISettings.IAccountsSettings {
             if (nonEmpty(token)) {
                 tokens.put(aid, token);
             }
+            String device = preferences.getString(deviceKeyFor(aid), null);
+            if (nonEmpty(device)) {
+                devices.put(aid, device);
+            }
             types.put(aid, preferences.getInt(typeAccKeyFor(aid), Constants.DEFAULT_ACCOUNT_TYPE));
+
         }
 
     }
@@ -64,6 +73,10 @@ class AccountsSettings implements ISettings.IAccountsSettings {
 
     private static String loginKeyFor(int uid) {
         return "login" + uid;
+    }
+
+    private static String deviceKeyFor(int uid) {
+        return "device" + uid;
     }
 
     private static String typeAccKeyFor(int uid) {
@@ -209,6 +222,18 @@ class AccountsSettings implements ISettings.IAccountsSettings {
     }
 
     @Override
+    public void storeDevice(int accountId, String deviceName) {
+        if (Utils.isEmpty(deviceName)) {
+            removeDevice(accountId);
+            return;
+        }
+        devices.put(accountId, deviceName);
+        preferences.edit()
+                .putString(deviceKeyFor(accountId), deviceName)
+                .apply();
+    }
+
+    @Override
     public String getLogin(int accountId) {
         return preferences.getString(loginKeyFor(accountId), null);
     }
@@ -230,9 +255,21 @@ class AccountsSettings implements ISettings.IAccountsSettings {
     public @Account_Types
     int getType(int accountId) {
         if (types.containsKey(accountId)) {
-            return types.get(accountId);
+            Integer ret = types.get(accountId);
+            if (nonNull(ret)) {
+                return ret;
+            }
         }
         return Constants.DEFAULT_ACCOUNT_TYPE;
+    }
+
+    @Override
+    @Nullable
+    public String getDevice(int accountId) {
+        if (devices.containsKey(accountId)) {
+            return devices.get(accountId);
+        }
+        return null;
     }
 
     @Override
@@ -255,6 +292,14 @@ class AccountsSettings implements ISettings.IAccountsSettings {
     public void removeLogin(int accountId) {
         preferences.edit()
                 .remove(loginKeyFor(accountId))
+                .apply();
+    }
+
+    @Override
+    public void removeDevice(int accountId) {
+        devices.remove(accountId);
+        preferences.edit()
+                .remove(deviceKeyFor(accountId))
                 .apply();
     }
 }

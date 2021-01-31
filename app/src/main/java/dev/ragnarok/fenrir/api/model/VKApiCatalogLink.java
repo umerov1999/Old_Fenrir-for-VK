@@ -16,6 +16,6 @@ public class VKApiCatalogLink implements VKApiAttachment {
 
     @Override
     public String getType() {
-        return VkApiAttachments.TYPE_LINK;
+        return VKApiAttachment.TYPE_LINK;
     }
 }

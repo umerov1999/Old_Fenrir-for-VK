@@ -17,6 +17,6 @@ public class VKApiArticle implements VKApiAttachment {
 
     @Override
     public String getType() {
-        return VkApiAttachments.TYPE_ARTICLE;
+        return VKApiAttachment.TYPE_ARTICLE;
     }
 }

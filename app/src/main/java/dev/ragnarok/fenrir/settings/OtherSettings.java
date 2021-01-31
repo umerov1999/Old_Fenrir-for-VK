@@ -1,6 +1,7 @@
 package dev.ragnarok.fenrir.settings;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Environment;
 
@@ -10,6 +11,10 @@ import androidx.preference.PreferenceManager;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import dev.ragnarok.fenrir.api.model.LocalServerSettings;
 import dev.ragnarok.fenrir.model.Lang;
@@ -19,6 +24,8 @@ import dev.ragnarok.fenrir.util.Utils;
 class OtherSettings implements ISettings.IOtherSettings {
 
     private static final String KEY_JSON_STATE = "json_list_state";
+
+    private static final String KEY_DONATE = "donates";
 
     private final Context app;
 
@@ -248,6 +255,11 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public boolean isNot_read_show() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("not_read_show", true);
+    }
+
+    @Override
     public boolean isEnable_show_recent_dialogs() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("show_recent_dialogs", true);
     }
@@ -406,6 +418,31 @@ class OtherSettings implements ISettings.IOtherSettings {
     @Override
     public void setLocalServer(@NonNull LocalServerSettings settings) {
         PreferenceManager.getDefaultSharedPreferences(app).edit().putString("local_media_server", new Gson().toJson(settings)).apply();
+    }
+
+    @Override
+    public void registerDonatesId(List<Integer> Ids) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(app);
+        Set<String> uids = new HashSet<>(Ids.size());
+        for (int i : Ids) {
+            uids.add(String.valueOf(i));
+        }
+        preferences.edit().putStringSet(KEY_DONATE, uids).apply();
+    }
+
+    @NonNull
+    @Override
+    public List<Integer> getDonates() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(app);
+        Set<String> uids = preferences.getStringSet(KEY_DONATE, new HashSet<>(0));
+
+        List<Integer> ids = new ArrayList<>(uids.size());
+        for (String stringuid : uids) {
+            int uid = Integer.parseInt(stringuid);
+            ids.add(uid);
+        }
+
+        return ids;
     }
 
     @Override

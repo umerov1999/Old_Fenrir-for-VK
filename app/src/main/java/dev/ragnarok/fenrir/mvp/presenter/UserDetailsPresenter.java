@@ -195,6 +195,12 @@ public class UserDetailsPresenter extends AccountDependencyPresenter<IUserDetail
 
         Section mainSection = new Section(new Text(R.string.mail_information));
 
+        String domain = nonEmpty(user.getDomain()) ? "@" + user.getDomain() : "@" + user.getId();
+        items.add(new AdvancedItem(1, AdvancedItem.TYPE_COPY_DETAILS_ONLY, new Text(R.string.id))
+                .setSubtitle(new Text(domain))
+                .setIcon(Icon.fromResources(R.drawable.person))
+                .setSection(mainSection));
+
         if (nonEmpty(details.getBdate())) {
             String formatted = AppTextUtils.getDateWithZeros(details.getBdate());
             items.add(new AdvancedItem(1, new Text(R.string.birthday))

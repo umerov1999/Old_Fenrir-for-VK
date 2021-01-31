@@ -23,6 +23,6 @@ public class VKApiAudioPlaylist implements VKApiAttachment {
 
     @Override
     public String getType() {
-        return VkApiAttachments.TYPE_AUDIO_PLAYLIST;
+        return VKApiAttachment.TYPE_AUDIO_PLAYLIST;
     }
 }

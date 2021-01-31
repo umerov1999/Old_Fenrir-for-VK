@@ -10,8 +10,8 @@ public interface VKApiAttachment {
     String TYPE_AUDIO = "audio";
     String TYPE_DOC = "doc";
     String TYPE_POST = "wall";
+    String TYPE_FAVE_POST = "post";
     String TYPE_WALL_REPLY = "wall_reply";
-    String TYPE_POSTED_PHOTO = "posted_photo";
     String TYPE_LINK = "link";
     String TYPE_ARTICLE = "article";
     String TYPE_STORY = "story";
@@ -32,7 +32,7 @@ public interface VKApiAttachment {
     String TYPE_PRODUCT = "product";
     String TYPE_MARKET_ALBUM = "market_album";
     String TYPE_ARTIST = "artist";
-    String[] IGNORE_ATTACHMENTS = {"mini_app", "photos_list"};
+    String[] IGNORE_ATTACHMENTS = {"mini_app", "photos_list", "podcast"};
 
     /**
      * @return type of this attachment

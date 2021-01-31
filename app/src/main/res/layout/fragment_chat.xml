@@ -5,89 +5,89 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/toolbar_root"
+    <FrameLayout
+        android:id="@+id/toolbar_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:background="?android:colorBackground">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?android:colorBackground"
-            android:animateLayoutChanges="true">
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:clipToPadding="true"
+            android:theme="@style/Theme.Toolbar.Surface"
+            app:subtitleTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            app:titleTextAppearance="@style/TextAppearance.Toolbar.Title">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
+            <FrameLayout
+                android:id="@+id/avatar_root"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:clipToPadding="true"
-                android:theme="@style/Theme.Toolbar.Surface"
-                app:subtitleTextAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                app:titleTextAppearance="@style/TextAppearance.Toolbar.Title">
+                android:layout_gravity="start"
+                android:layout_marginEnd="8dp">
 
-                <FrameLayout
-                    android:id="@+id/avatar_root"
+                <ImageView
+                    android:id="@+id/toolbar_avatar"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:stateListAnimator="@animator/clicked" />
+
+                <TextView
+                    android:id="@+id/empty_avatar_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:layout_marginEnd="8dp">
+                    android:layout_gravity="center"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:text="@string/voice_click"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:textAllCaps="true" />
+            </FrameLayout>
 
-                    <ImageView
-                        android:id="@+id/toolbar_avatar"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:stateListAnimator="@animator/clicked" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/avatar_root"
+                android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/empty_avatar_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="4dp"
-                        android:layout_marginEnd="4dp"
-                        android:text="@string/voice_click"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        app:textAllCaps="true" />
-                </FrameLayout>
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/dialog_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toStartOf="@id/avatar_root"
-                    android:orientation="vertical">
+                    android:ellipsize="end"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    android:textSize="16sp"
+                    tools:text="Name" />
 
-                    <TextView
-                        android:id="@+id/dialog_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:marqueeRepeatLimit="marquee_forever"
-                        android:singleLine="true"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                        android:textSize="16sp"
-                        tools:text="Name" />
+                <TextView
+                    android:id="@+id/dialog_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
+                    android:textSize="12sp"
+                    tools:text="SubTitle" />
 
-                    <TextView
-                        android:id="@+id/dialog_subtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:marqueeRepeatLimit="marquee_forever"
-                        android:singleLine="true"
-                        android:textSize="12sp"
-                        tools:text="SubTitle" />
+            </LinearLayout>
 
-                </LinearLayout>
+        </com.google.android.material.appbar.MaterialToolbar>
 
-            </com.google.android.material.appbar.MaterialToolbar>
-
-            <include
-                layout="@layout/line_divider"
-                android:layout_gravity="bottom"
-                android:layout_height="1dp"
-                android:layout_width="match_parent" />
-        </FrameLayout>
+        <include
+            layout="@layout/line_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_gravity="bottom" />
+    </FrameLayout>
 
 
     <LinearLayout
@@ -122,7 +122,7 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                tools:text="Artem Kolbasa" />
+                tools:text="User Name" />
 
             <TextView
                 android:id="@+id/pinned_subtitle"
@@ -236,8 +236,8 @@
         android:id="@+id/input_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorSurface"
         android:layout_alignParentBottom="true"
+        android:background="?attr/colorSurface"
         android:orientation="vertical">
 
         <RelativeLayout

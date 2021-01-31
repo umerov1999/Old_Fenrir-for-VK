@@ -8,7 +8,7 @@
 
 <b>Инструкция по сборке:</b>
 Требуется:
-  1) Android Studio 4.2 Beta 3 или выше. Kotlin 1.4.*
+  1) Android Studio 4.2 Beta 4 или выше. Kotlin 1.4.*
   2) Android SDK 28,30
   
   Если не работает музыка в Fenrir Kate, обновите kate_receipt_gms_token в app.build_config.

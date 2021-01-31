@@ -127,6 +127,8 @@ public interface ISettings {
 
         boolean isEnable_last_read();
 
+        boolean isNot_read_show();
+
         String getMusicDir();
 
         String getPhotoDir();
@@ -167,6 +169,11 @@ public interface ISettings {
 
         boolean isHint_stickers();
 
+        void registerDonatesId(List<Integer> Ids);
+
+        @NonNull
+        List<Integer> getDonates();
+
         int getPaganSymbol();
 
         boolean isRunes_show();
@@ -206,6 +213,13 @@ public interface ISettings {
         void storeAccessToken(int accountId, String accessToken);
 
         void storeLogin(int accountId, String loginCombo);
+
+        void removeDevice(int accountId);
+
+        void storeDevice(int accountId, String deviceName);
+
+        @Nullable
+        String getDevice(int accountId);
 
         String getLogin(int accountId);
 
@@ -402,6 +416,8 @@ public interface ISettings {
         boolean getShowHiddenDialogs();
 
         void setShowHiddenDialogs(boolean showHiddenDialogs);
+
+        boolean IsShow_hidden_accounts();
     }
 
     interface IUISettings {

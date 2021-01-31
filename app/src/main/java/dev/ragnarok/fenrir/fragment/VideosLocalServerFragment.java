@@ -146,6 +146,6 @@ public class VideosLocalServerFragment extends BaseMvpFragment<VideosLocalServer
 
     @Override
     public void onVideoClick(int position, Video video) {
-        PlaceFactory.getVkInternalPlayerPlace(video, InternalVideoSize.SIZE_720).tryOpenWith(requireActivity());
+        PlaceFactory.getVkInternalPlayerPlace(video, InternalVideoSize.SIZE_720, true).tryOpenWith(requireActivity());
     }
 }

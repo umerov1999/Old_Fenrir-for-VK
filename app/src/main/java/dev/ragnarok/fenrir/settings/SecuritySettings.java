@@ -82,6 +82,12 @@ public class SecuritySettings implements ISettings.ISecuritySettings {
         isShowHiddenDialogs = showHiddenDialogs;
     }
 
+    @Override
+    public boolean IsShow_hidden_accounts() {
+        return PreferenceManager.getDefaultSharedPreferences(mApplication)
+                .getBoolean("show_hidden_accounts", true);
+    }
+
     private String getPinHash() {
         return mPinHash;
     }

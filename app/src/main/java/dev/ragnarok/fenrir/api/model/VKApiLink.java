@@ -44,6 +44,6 @@ public class VKApiLink implements VKApiAttachment {
 
     @Override
     public String getType() {
-        return VkApiAttachments.TYPE_LINK;
+        return VKApiAttachment.TYPE_LINK;
     }
 }

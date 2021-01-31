@@ -6,6 +6,7 @@ import dev.ragnarok.fenrir.domain.impl.AudioInteractor;
 import dev.ragnarok.fenrir.domain.impl.BoardInteractor;
 import dev.ragnarok.fenrir.domain.impl.CommunitiesInteractor;
 import dev.ragnarok.fenrir.domain.impl.DatabaseInteractor;
+import dev.ragnarok.fenrir.domain.impl.DebugToolInteractor;
 import dev.ragnarok.fenrir.domain.impl.DialogsInteractor;
 import dev.ragnarok.fenrir.domain.impl.DocsInteractor;
 import dev.ragnarok.fenrir.domain.impl.FaveInteractor;
@@ -104,6 +105,10 @@ public class InteractorFactory {
 
     public static ILocalServerInteractor createLocalServerInteractor() {
         return new LocalServerInteractor(Injection.provideNetworkInterfaces());
+    }
+
+    public static IDebugToolInteractor createDebugToolInteractor() {
+        return new DebugToolInteractor(Injection.provideNetworkInterfaces());
     }
 
     public static IAudioInteractor createAudioInteractor() {

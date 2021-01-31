@@ -24,11 +24,11 @@ public class Constants {
     public static final @Account_Types
     int DEFAULT_ACCOUNT_TYPE = BuildConfig.DEFAULT_ACCOUNT_TYPE;
 
-    public static final boolean IS_HAS_LOGIN_WEB = false;
+    public static final boolean IS_HAS_LOGIN_WEB = BuildConfig.DEFAULT_ACCOUNT_TYPE == Account_Types.KATE;
     public static final String FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".fileprovider";
 
-    public static final String VK_ANDROID_APP_VERSION_NAME = "6.21.2";
-    public static final String VK_ANDROID_APP_VERSION_CODE = "6819";
+    public static final String VK_ANDROID_APP_VERSION_NAME = "6.22";
+    public static final String VK_ANDROID_APP_VERSION_CODE = "6853";
     public static final String KATE_APP_VERSION_NAME = "69 lite";
     public static final String KATE_APP_VERSION_CODE = "485";
     public static final String KATE_RECEIPT_GMS_TOKEN = BuildConfig.KATE_RECEIPT_GMS_TOKEN.replaceAll("[\\w%\\-]+:", ":");
@@ -37,6 +37,8 @@ public class Constants {
     public static final String MAIN_OWNER_FIELDS = UserColumns.API_FIELDS + "," + GroupColumns.API_FIELDS;
     public static final String PHOTOS_PATH = "DCIM/Fenrir";
     public static final int PIN_DIGITS_COUNT = 4;
+    public static final int FRAGMENT_CHAT_APP_BAR_VIEW_COUNT = 2;
+    public static final int FRAGMENT_CHAT_DOWN_MENU_VIEW_COUNT = 0;
     public static final String PICASSO_TAG = "picasso_tag";
     public static final boolean IS_DEBUG = BuildConfig.DEBUG;
     public static String DEVICE_COUNTRY_CODE = "ru";
@@ -55,6 +57,12 @@ public class Constants {
 
     @NotNull
     private static String getTypedUserAgent(@Account_Types int type) {
+        if (type == Account_Types.VK_ANDROID_HIDDEN || type == Account_Types.KATE_HIDDEN) {
+            String device = Settings.get().accounts().getDevice(Settings.get().accounts().getCurrent());
+            if (!Utils.isEmpty(device)) {
+                return type == Account_Types.KATE_HIDDEN ? String.format(Locale.US, "KateMobileAndroid/%s-%s (Android %s; SDK %d; %s; %s; %s; %s)", KATE_APP_VERSION_NAME, KATE_APP_VERSION_CODE, Build.VERSION.RELEASE, Build.VERSION.SDK_INT, BuildConfig.FAKE_ABI, device, DEVICE_COUNTRY_CODE, SCREEN_RESOLUTION()) : String.format(Locale.US, "VKAndroidApp/%s-%s (Android %s; SDK %d; %s; %s; %s; %s)", VK_ANDROID_APP_VERSION_NAME, VK_ANDROID_APP_VERSION_CODE, Build.VERSION.RELEASE, Build.VERSION.SDK_INT, BuildConfig.FAKE_ABI, device, DEVICE_COUNTRY_CODE, SCREEN_RESOLUTION());
+            }
+        }
         switch (type) {
             case Account_Types.BY_TYPE:
             case Account_Types.VK_ANDROID:

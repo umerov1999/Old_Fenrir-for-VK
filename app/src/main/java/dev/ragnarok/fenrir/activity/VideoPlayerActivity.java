@@ -47,6 +47,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
 
     public static final String EXTRA_VIDEO = "video";
     public static final String EXTRA_SIZE = "size";
+    public static final String EXTRA_LOCAL = "local";
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private View mDecorView;
     private VideoControllerView mControllerView;
@@ -83,26 +84,12 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
 
         video = getIntent().getParcelableExtra(EXTRA_VIDEO);
         size = getIntent().getIntExtra(EXTRA_SIZE, InternalVideoSize.SIZE_240);
+        boolean isLocal = getIntent().getBooleanExtra(EXTRA_LOCAL, false);
 
         mDecorView = getWindow().getDecorView();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        if (toolbar != null) {
-            mCompositeDisposable.add(OwnerInfo.getRx(this, Settings.get().accounts().getCurrent(), video.getOwnerId())
-                    .compose(RxUtils.applySingleIOToMainSchedulers())
-                    .subscribe(userInfo -> {
-                        ImageView av = findViewById(R.id.toolbar_avatar);
-                        av.setImageBitmap(userInfo.getAvatar());
-                        av.setOnClickListener(v -> onOpen());
-                        if (Utils.isEmpty(video.getDescription()))
-                            toolbar.setSubtitle(userInfo.getOwner().getFullName());
-                    }, throwable -> {
-                    }));
-            toolbar.setNavigationIcon(R.drawable.arrow_left);
-            toolbar.setNavigationOnClickListener(v -> finish());
-        }
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -110,8 +97,27 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
             actionBar.setSubtitle(video.getDescription());
         }
 
+        if (toolbar != null) {
+            if (!isLocal) {
+                mCompositeDisposable.add(OwnerInfo.getRx(this, Settings.get().accounts().getCurrent(), video.getOwnerId())
+                        .compose(RxUtils.applySingleIOToMainSchedulers())
+                        .subscribe(userInfo -> {
+                            ImageView av = findViewById(R.id.toolbar_avatar);
+                            av.setImageBitmap(userInfo.getAvatar());
+                            av.setOnClickListener(v -> onOpen());
+                            if (Utils.isEmpty(video.getDescription()) && actionBar != null) {
+                                actionBar.setSubtitle(userInfo.getOwner().getFullName());
+                            }
+                        }, throwable -> {
+                        }));
+            } else {
+                findViewById(R.id.toolbar_avatar).setVisibility(View.GONE);
+            }
+            toolbar.setNavigationIcon(R.drawable.arrow_left);
+            toolbar.setNavigationOnClickListener(v -> finish());
+        }
+
         mControllerView = new VideoControllerView(this);
-        mControllerView.updateComment(video.isCanComment());
 
         ViewGroup surfaceContainer = findViewById(R.id.videoSurfaceContainer);
         SurfaceView mSurfaceView = findViewById(R.id.videoSurface);
@@ -129,6 +135,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
 
         mControllerView.setMediaPlayer(this);
         mControllerView.setAnchorView((ViewGroup) mDecorView);
+        mControllerView.updateComment(!isLocal && video.isCanComment());
     }
 
     private IVideoPlayer createPlayer() {

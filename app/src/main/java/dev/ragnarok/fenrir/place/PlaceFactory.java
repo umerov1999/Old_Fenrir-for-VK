@@ -29,6 +29,7 @@ import dev.ragnarok.fenrir.fragment.GifPagerFragment;
 import dev.ragnarok.fenrir.fragment.LikesFragment;
 import dev.ragnarok.fenrir.fragment.MarketViewFragment;
 import dev.ragnarok.fenrir.fragment.MessagesLookFragment;
+import dev.ragnarok.fenrir.fragment.NotReadMessagesFragment;
 import dev.ragnarok.fenrir.fragment.PhotoPagerFragment;
 import dev.ragnarok.fenrir.fragment.PollFragment;
 import dev.ragnarok.fenrir.fragment.PreferencesFragment;
@@ -241,6 +242,11 @@ public class PlaceFactory {
                 .setArguments(MessagesLookFragment.buildArgs(aid, peerId, focusMessageId));
     }
 
+    public static Place getUnreadMessagesPlace(int aid, int peerId, int focusMessageId, int incoming, int outgoing, int unreadCount) {
+        return new Place(Place.UNREAD_MESSAGES)
+                .setArguments(NotReadMessagesFragment.buildArgs(aid, peerId, focusMessageId, incoming, outgoing, unreadCount));
+    }
+
     public static Place getEditPhotoAlbumPlace(int aid, @NonNull PhotoAlbum album, @NonNull PhotoAlbumEditor editor) {
         return new Place(Place.EDIT_PHOTO_ALBUM)
                 .setArguments(CreatePhotoAlbumFragment.buildArgsForEdit(aid, album, editor));
@@ -282,10 +288,11 @@ public class PlaceFactory {
         return new Place(Place.SECURITY);
     }
 
-    public static Place getVkInternalPlayerPlace(Video video, int size) {
+    public static Place getVkInternalPlayerPlace(Video video, int size, boolean isLocal) {
         Place place = new Place(Place.VK_INTERNAL_PLAYER);
         place.prepareArguments().putParcelable(VideoPlayerActivity.EXTRA_VIDEO, video);
         place.prepareArguments().putInt(VideoPlayerActivity.EXTRA_SIZE, size);
+        place.prepareArguments().putBoolean(VideoPlayerActivity.EXTRA_LOCAL, isLocal);
         return place;
     }
 

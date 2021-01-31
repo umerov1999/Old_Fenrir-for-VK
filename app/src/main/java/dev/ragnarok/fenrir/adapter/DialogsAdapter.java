@@ -109,7 +109,7 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public RecyclerView.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         switch (viewType) {
             case DATA_TYPE_HIDDEN:
-                return new HiddenViewHolder(LayoutInflater.from(mContext).inflate(R.layout.line_divider, parent, false));
+                return new HiddenViewHolder(LayoutInflater.from(mContext).inflate(R.layout.line_hidden, parent, false));
             case DATA_TYPE_NORMAL:
                 return new DialogViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_dialog, parent, false));
         }

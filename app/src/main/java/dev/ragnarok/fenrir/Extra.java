@@ -109,4 +109,6 @@ public class Extra {
     public static final String SAVE = "save";
     public static final String NEW = "new";
     public static final String OLD = "old";
+    public static final String INCOMING = "incoming";
+    public static final String OUTGOING = "outgoing";
 }

@@ -508,13 +508,17 @@ public final class MusicUtils {
         }
 
         if (old == 0 || sForegroundActivities == 0) {
-            boolean nowInForeground = sForegroundActivities != 0;
-            Logger.d(TAG, "notifyForegroundStateChanged, nowInForeground: " + nowInForeground);
+            try {
+                boolean nowInForeground = sForegroundActivities != 0;
+                Logger.d(TAG, "notifyForegroundStateChanged, nowInForeground: " + nowInForeground);
 
-            Intent intent = new Intent(context, MusicPlaybackService.class);
-            intent.setAction(MusicPlaybackService.FOREGROUND_STATE_CHANGED);
-            intent.putExtra(MusicPlaybackService.NOW_IN_FOREGROUND, nowInForeground);
-            context.startService(intent);
+                Intent intent = new Intent(context, MusicPlaybackService.class);
+                intent.setAction(MusicPlaybackService.FOREGROUND_STATE_CHANGED);
+                intent.putExtra(MusicPlaybackService.NOW_IN_FOREGROUND, nowInForeground);
+                context.startService(intent);
+            } catch (IllegalStateException | SecurityException e) {
+                e.printStackTrace();
+            }
         }
     }
 

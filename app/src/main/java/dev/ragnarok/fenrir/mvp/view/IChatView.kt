@@ -21,6 +21,7 @@ interface IChatView : IBasicMessageListView, IErrorView {
     fun requestRecordPermissions()
     fun displayRecordingDuration(time: Long)
     fun doCloseAfterSend()
+    fun scrollToUnread(position: Int, loading: Boolean)
 
     fun setupPrimaryButtonAsEditing(canSave: Boolean)
     fun setupPrimaryButtonAsRecording()
@@ -85,6 +86,15 @@ interface IChatView : IBasicMessageListView, IErrorView {
     fun ScrollTo(position: Int)
     fun showSnackbar(@StringRes res: Int, isLong: Boolean)
     fun goToMessagesLookup(accountId: Int, peerId: Int, messageId: Int)
+    fun goToUnreadMessages(
+        accountId: Int,
+        peerId: Int,
+        messageId: Int,
+        incoming: Int,
+        outgoing: Int,
+        unreadCount: Int
+    )
+
     fun convert_to_keyboard(keyboard: Keyboard?)
 
     fun updateStickers(items: List<Sticker>)

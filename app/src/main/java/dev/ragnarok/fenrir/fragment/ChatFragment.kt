@@ -16,7 +16,9 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.TextView
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
@@ -157,9 +159,9 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         val root = inflater.inflate(R.layout.fragment_chat, container, false) as ViewGroup
         root.background = CurrentTheme.getChatBackground(activity)
@@ -176,7 +178,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         stickersAdapter?.setStickerClickedListener { presenter?.fireStickerSendClick(it); presenter?.resetDraftMessage() }
         stickersKeywordsView?.let {
             it.layoutManager =
-                    LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
+                LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
             it.adapter = stickersAdapter
             it.visibility = View.GONE
         }
@@ -240,7 +242,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
                 it.setKeyboardBotLongClickListener {
                     run {
                         recyclerView?.scrollToPosition(0)
-                        presenter?.reset_Hrono()
+                        presenter?.resetChronology()
                         presenter?.fireRefreshClick()
                     }; true
                 }
@@ -267,7 +269,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
                 it.setOnClickListener { presenter?.fireDialogAttachmentsClick() }
             } else {
                 it.setImageResource(R.drawable.ic_outline_keyboard_arrow_up)
-                it.setOnClickListener { recyclerView?.smoothScrollToPosition(presenter?.getConversation()!!.unreadCount) }
+                it.setOnClickListener { presenter?.fireScrollToUnread() }
                 it.setOnLongClickListener { presenter?.fireDialogAttachmentsClick(); true; }
             }
 
@@ -333,17 +335,18 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
     }
 
     override fun hideWriting() {
-        val animator: ObjectAnimator? = ObjectAnimator.ofFloat(Writing_msg_Group, View.ALPHA, 0.0f).apply {
-            addListener(object : WeakViewAnimatorAdapter<View>(Writing_msg_Group) {
-                override fun onAnimationEnd(view: View) {
-                    Writing_msg_Group?.visibility = View.GONE
-                }
+        val animator: ObjectAnimator? =
+            ObjectAnimator.ofFloat(Writing_msg_Group, View.ALPHA, 0.0f).apply {
+                addListener(object : WeakViewAnimatorAdapter<View>(Writing_msg_Group) {
+                    override fun onAnimationEnd(view: View) {
+                        Writing_msg_Group?.visibility = View.GONE
+                    }
 
-                override fun onAnimationStart(view: View) = Unit
-                override fun onAnimationCancel(view: View) = Unit
-            })
-            duration = 200
-        }
+                    override fun onAnimationStart(view: View) = Unit
+                    override fun onAnimationCancel(view: View) = Unit
+                })
+                duration = 200
+            }
         animator?.start()
     }
 
@@ -603,9 +606,54 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         }
     }
 
+    override fun scrollToUnread(position: Int, loading: Boolean) {
+        if (!loading || position > 2) recyclerView?.smoothScrollToPosition(position)
+    }
+
     override fun goToMessagesLookup(accountId: Int, peerId: Int, messageId: Int) {
         PlaceFactory.getMessagesLookupPlace(accountId, peerId, messageId)
             .tryOpenWith(requireActivity())
+    }
+
+    private val requestMessagesUnread = registerForActivityResult(
+        StartActivityForResult()
+    ) { result: ActivityResult ->
+        if (result.resultCode == RESULT_OK) {
+            val incoming = result.data?.extras?.getInt(Extra.INCOMING) ?: -1
+            val outgoing = result.data?.extras?.getInt(Extra.OUTGOING) ?: -1
+            presenter?.fireCheckMessages(incoming, outgoing)
+        }
+    }
+
+    override fun goToUnreadMessages(
+        accountId: Int,
+        peerId: Int,
+        messageId: Int,
+        incoming: Int,
+        outgoing: Int,
+        unreadCount: Int
+    ) {
+        if (!Settings.get()
+                .other().isNot_read_show || requireActivity() is SwipebleActivity || requireActivity() is SendAttachmentsActivity
+            || requireActivity() is SelectProfilesActivity || requireActivity() is AttachmentsActivity
+        ) {
+            return
+        }
+        val intent = Intent(requireActivity(), MessagesLookActivity::class.java)
+        intent.action = MessagesLookActivity.ACTION_OPEN_PLACE
+        intent.putExtra(
+            Extra.PLACE,
+            PlaceFactory.getUnreadMessagesPlace(
+                accountId,
+                peerId,
+                messageId,
+                incoming,
+                outgoing,
+                unreadCount
+            )
+        )
+        requestMessagesUnread.launch(intent)
+        requireActivity().overridePendingTransition(0, 0)
     }
 
     override fun displayPinnedMessage(pinned: Message?, canChange: Boolean) {
@@ -667,7 +715,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
     ) {
         if (!Settings.get().main().isMessages_menu_down) {
             toolbarRootView?.run {
-                if (childCount == 1) {
+                if (childCount == Constants.FRAGMENT_CHAT_APP_BAR_VIEW_COUNT) {
                     val v =
                         LayoutInflater.from(context).inflate(R.layout.view_action_mode, this, false)
                     actionModeHolder = ActionModeHolder(v, this@ChatFragment)
@@ -681,7 +729,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
             InputView?.visibility = View.INVISIBLE
             downMenuGroup?.run {
                 visibility = View.VISIBLE
-                if (childCount == 0) {
+                if (childCount == Constants.FRAGMENT_CHAT_DOWN_MENU_VIEW_COUNT) {
                     val v =
                         LayoutInflater.from(context).inflate(R.layout.view_action_mode, this, false)
                     actionModeHolder = ActionModeHolder(v, this@ChatFragment)
@@ -1469,7 +1517,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
             }
             R.id.action_refresh -> {
                 recyclerView?.scrollToPosition(0)
-                presenter?.reset_Hrono()
+                presenter?.resetChronology()
                 presenter?.fireRefreshClick()
                 return true
             }
@@ -1483,7 +1531,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
             }
             R.id.change_hrono_history -> {
                 recyclerView?.scrollToPosition(0)
-                presenter?.invert_Hrono()
+                presenter?.invertChronology()
                 presenter?.fireRefreshClick()
                 return true
             }
@@ -1580,8 +1628,8 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
             return false
         }
 
-        if (presenter!!.inInverHrono) {
-            presenter?.reset_Hrono()
+        if (presenter?.isChronologyInverted == true) {
+            presenter?.resetChronology()
             presenter?.fireRefreshClick()
             return false
         }

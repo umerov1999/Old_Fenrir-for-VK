@@ -8,12 +8,12 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/detect_qr"
-        android:title="@string/detect_qr" />
-
-    <item
         android:id="@+id/info"
         android:title="@string/more_info" />
+
+    <item
+        android:id="@+id/detect_qr"
+        android:title="@string/detect_qr" />
 
     <item
         android:id="@+id/save_yourself"

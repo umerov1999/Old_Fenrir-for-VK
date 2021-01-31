@@ -30,7 +30,7 @@ public class VkApiDoc implements VKApiAttachment {
 
     @Override
     public String getType() {
-        return VkApiAttachments.TYPE_DOC;
+        return VKApiAttachment.TYPE_DOC;
     }
 
     public static class Entry {
