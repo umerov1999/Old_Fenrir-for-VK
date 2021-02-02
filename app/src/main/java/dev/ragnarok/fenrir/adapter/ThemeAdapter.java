@@ -33,16 +33,17 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NotNull ViewHolder holder, int position) {
         ThemeValue category = data.get(position);
+        boolean isDark = Settings.get().ui().isDarkModeEnabled(holder.itemView.getContext());
 
         holder.title.setText(category.name);
-        holder.primary.setBackgroundColor(category.color_primary);
-        holder.secondary.setBackgroundColor(category.color_secondary);
+        holder.primary.setBackgroundColor(isDark ? category.color_night_primary : category.color_day_primary);
+        holder.secondary.setBackgroundColor(isDark ? category.color_night_secondary : category.color_day_secondary);
         holder.selected.setVisibility(Settings.get().ui().getMainThemeKey().equals(category.id) ? View.VISIBLE : View.GONE);
         holder.clicked.setOnClickListener(v -> clickListener.onClick(position, category));
         holder.gradient.setBackground(new GradientDrawable(GradientDrawable.Orientation.TL_BR,
-                new int[]{category.color_primary, category.color_secondary}));
+                new int[]{isDark ? category.color_night_primary : category.color_day_primary, isDark ? category.color_night_secondary : category.color_day_secondary}));
     }
 
     public void setClickListener(ClickListener clickListener) {

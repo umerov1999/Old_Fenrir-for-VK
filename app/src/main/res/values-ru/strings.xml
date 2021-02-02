@@ -1506,4 +1506,7 @@
     <string name="not_read">Непрочитанные</string>
     <string name="not_read_show">Быстрые непрочитанные</string>
     <string name="not_read_show_summary">Если непрочитанных > 30</string>
+    <string name="rotate_video">Поворот</string>
+    <string name="popup">В окне</string>
+    <string name="not_read_count">Непрочитанные: %1$d</string>
 </resources>

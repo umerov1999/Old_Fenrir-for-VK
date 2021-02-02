@@ -37,9 +37,9 @@ import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 
 
-public class MessagesLookActivity extends NoMainActivity implements PlaceProvider, AppStyleable {
+public class NotReadMessagesActivity extends NoMainActivity implements PlaceProvider, AppStyleable {
 
-    public static final String ACTION_OPEN_PLACE = "dev.ragnarok.fenrir.activity.MessagesLookActivity.openPlace";
+    public static final String ACTION_OPEN_PLACE = "dev.ragnarok.fenrir.activity.NotReadMessagesActivity.openPlace";
     //resolveToolbarNavigationIcon();
     private final FragmentManager.OnBackStackChangedListener mOnBackStackChangedListener = this::keyboardHide;
 

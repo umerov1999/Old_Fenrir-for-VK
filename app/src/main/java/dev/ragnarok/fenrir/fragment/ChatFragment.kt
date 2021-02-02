@@ -627,11 +627,11 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
 
     override fun goToUnreadMessages(
         accountId: Int,
-        peerId: Int,
         messageId: Int,
         incoming: Int,
         outgoing: Int,
-        unreadCount: Int
+        unreadCount: Int,
+        peer: Peer
     ) {
         if (!Settings.get()
                 .other().isNot_read_show || requireActivity() is SwipebleActivity || requireActivity() is SendAttachmentsActivity
@@ -639,17 +639,17 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         ) {
             return
         }
-        val intent = Intent(requireActivity(), MessagesLookActivity::class.java)
-        intent.action = MessagesLookActivity.ACTION_OPEN_PLACE
+        val intent = Intent(requireActivity(), NotReadMessagesActivity::class.java)
+        intent.action = NotReadMessagesActivity.ACTION_OPEN_PLACE
         intent.putExtra(
             Extra.PLACE,
             PlaceFactory.getUnreadMessagesPlace(
                 accountId,
-                peerId,
                 messageId,
                 incoming,
                 outgoing,
-                unreadCount
+                unreadCount,
+                peer
             )
         )
         requestMessagesUnread.launch(intent)

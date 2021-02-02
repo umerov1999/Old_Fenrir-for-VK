@@ -16,7 +16,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -172,7 +171,8 @@ public class VideoControllerView extends FrameLayout {
             show(sDefaultTimeout);
         }
     };
-    private ImageView mComment;
+    private TextView mComment;
+    private TextView mPopup;
     private ImageButton mNextButton;
     private ImageButton mPrevButton;
 
@@ -253,7 +253,7 @@ public class VideoControllerView extends FrameLayout {
             mPauseButton.setOnClickListener(mPauseListener);
         }
 
-        ImageView mFullscreenButton = v.findViewById(R.id.fullscreen);
+        TextView mFullscreenButton = v.findViewById(R.id.fullscreen);
         if (mFullscreenButton != null) {
             mFullscreenButton.requestFocus();
             mFullscreenButton.setOnClickListener(mFullscreenListener);
@@ -278,6 +278,11 @@ public class VideoControllerView extends FrameLayout {
         mComment = v.findViewById(R.id.comment);
         if (mComment != null) {
             mComment.setOnClickListener(v1 -> mPlayer.commentClick());
+        }
+
+        mPopup = v.findViewById(R.id.pip_screen);
+        if (mPopup != null) {
+            mPopup.setOnClickListener(v1 -> mPlayer.toPIPScreen());
         }
 
         // By default these are hidden. They will be enabled when setPrevNextListeners() is called
@@ -527,6 +532,13 @@ public class VideoControllerView extends FrameLayout {
         mComment.setVisibility(can ? VISIBLE : GONE);
     }
 
+    public void updatePip(boolean can) {
+        if (mRoot == null || mPopup == null || mPlayer == null) {
+            return;
+        }
+        mPopup.setVisibility(can ? VISIBLE : GONE);
+    }
+
     private void doPauseResume() {
         if (mPlayer == null) {
             return;
@@ -538,6 +550,14 @@ public class VideoControllerView extends FrameLayout {
             mPlayer.start();
         }
         updatePausePlay();
+    }
+
+    private void doPipMode() {
+        if (mPlayer == null) {
+            return;
+        }
+
+        mPlayer.toPIPScreen();
     }
 
     private void doToggleFullscreen() {
@@ -639,6 +659,8 @@ public class VideoControllerView extends FrameLayout {
         void commentClick();
 
         void toggleFullScreen();
+
+        void toPIPScreen();
     }
 
     private static class MessageHandler extends Handler {

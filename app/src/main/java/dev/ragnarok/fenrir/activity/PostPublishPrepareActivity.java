@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -27,6 +28,7 @@ import dev.ragnarok.fenrir.settings.ISettings;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.RxUtils;
+import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
@@ -46,8 +48,14 @@ public class PostPublishPrepareActivity extends AppCompatActivity implements Rec
     private boolean loading;
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(Utils.updateActivityContext(newBase));
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setTheme(Settings.get().ui().getMainTheme());
+        Utils.prepareDensity(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_publish_prepare);
 

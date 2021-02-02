@@ -12,9 +12,9 @@ public interface INetworker {
 
     IAudioCoverApi amazonAudioCover();
 
-    ILocalServerApi localServerApi();
-
     IDebugToolApi debugToolApi();
+
+    ILocalServerApi localServerApi();
 
     ILongpollApi longpoll();
 

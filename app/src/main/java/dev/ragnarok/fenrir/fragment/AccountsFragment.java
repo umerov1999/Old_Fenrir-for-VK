@@ -29,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.developer.filepicker.model.DialogConfigs;
 import com.developer.filepicker.model.DialogProperties;
@@ -87,6 +88,7 @@ import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.ShortcutUtils;
 import dev.ragnarok.fenrir.util.Utils;
+import dev.ragnarok.fenrir.util.ViewUtils;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
@@ -96,6 +98,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private TextView empty;
     private RecyclerView mRecyclerView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private AccountAdapter mAdapter;
     private final ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         @Override
@@ -199,6 +202,11 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
         empty = root.findViewById(R.id.empty);
         mRecyclerView = root.findViewById(R.id.list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false));
+
+        mSwipeRefreshLayout = root.findViewById(R.id.refresh);
+        mSwipeRefreshLayout.setOnRefreshListener(() -> load(true));
+        ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
+
         new ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(mRecyclerView);
 
         root.findViewById(R.id.fab).setOnClickListener(this);
@@ -219,7 +227,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
         mRecyclerView.setAdapter(mAdapter);
 
         if (firstRun) {
-            load();
+            load(false);
         }
 
         resolveEmptyText();
@@ -252,11 +260,15 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
         super.onDestroy();
     }
 
-    private void load() {
+    private void load(boolean refresh) {
+        if (!refresh) {
+            mSwipeRefreshLayout.setRefreshing(true);
+        }
         mCompositeDisposable.add(accountsInteractor
-                .getAll()
+                .getAll(refresh)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(appAccounts -> {
+                    mSwipeRefreshLayout.setRefreshing(false);
                     mData.clear();
                     mData.addAll(appAccounts);
 
@@ -269,7 +281,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                         requireActivity().invalidateOptionsMenu();
                         startDirectLogin();
                     }
-                }));
+                }, e -> mSwipeRefreshLayout.setRefreshing(false)));
     }
 
     private void startExportAccounts() {

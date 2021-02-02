@@ -1096,6 +1096,7 @@ public class Utils {
             case "blue_violet":
             case "ice":
             case "ice_green":
+            case "contrast":
             case "green":
                 if (isOfReadToast) {
                     return Color.parseColor("#448AFF");
@@ -1117,8 +1118,6 @@ public class Utils {
                 return Color.parseColor("#268000");
             case "gray":
                 return Color.parseColor("#444444");
-            case "yellow_red":
-                return Color.parseColor("#F8DF00");
             default:
                 return 0xff11acfa;
         }

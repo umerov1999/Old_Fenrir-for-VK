@@ -656,11 +656,11 @@ class ChatPresenter(
                     } else {
                         view?.goToUnreadMessages(
                             accountId,
-                            peerId,
                             conversation!!.inRead,
                             lastReadId.incoming,
                             lastReadId.outgoing,
-                            conversation!!.unreadCount
+                            conversation!!.unreadCount,
+                            peer
                         )
                         requestLookMessage = true
                     }

@@ -17,6 +17,7 @@ import dev.ragnarok.fenrir.crypt.KeyExchangeService;
 import dev.ragnarok.fenrir.model.User;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 
 public class KeyExchangeCommitActivity extends AppCompatActivity {
@@ -29,6 +30,11 @@ public class KeyExchangeCommitActivity extends AppCompatActivity {
         intent.putExtra(Extra.MESSAGE_ID, messageId);
         intent.putExtra(Extra.MESSAGE, message);
         return intent;
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(Utils.updateActivityContext(newBase));
     }
 
     @Override

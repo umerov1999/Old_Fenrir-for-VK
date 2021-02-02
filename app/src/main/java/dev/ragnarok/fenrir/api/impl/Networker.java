@@ -59,13 +59,13 @@ public class Networker implements INetworker {
     }
 
     @Override
-    public ILocalServerApi localServerApi() {
-        return new LocalServerApi(() -> otherVkRetrofitProvider.provideLocalServerRetrofit().map(wrapper -> wrapper.create(ILocalServerService.class)));
+    public IDebugToolApi debugToolApi() {
+        return new DebugToolApi(() -> otherVkRetrofitProvider.provideDebugToolRetrofit().map(wrapper -> wrapper.create(IDebugToolService.class)));
     }
 
     @Override
-    public IDebugToolApi debugToolApi() {
-        return new DebugToolApi(() -> otherVkRetrofitProvider.provideDebugToolRetrofit().map(wrapper -> wrapper.create(IDebugToolService.class)));
+    public ILocalServerApi localServerApi() {
+        return new LocalServerApi(() -> otherVkRetrofitProvider.provideLocalServerRetrofit().map(wrapper -> wrapper.create(ILocalServerService.class)));
     }
 
     @Override

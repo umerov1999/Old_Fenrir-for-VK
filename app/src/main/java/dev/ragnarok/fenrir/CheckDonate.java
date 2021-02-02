@@ -1,16 +1,30 @@
 package dev.ragnarok.fenrir;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.preference.PreferenceManager;
+
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.umerov.rlottie.RLottieImageView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
+import dev.ragnarok.fenrir.api.model.VKApiUser;
+import dev.ragnarok.fenrir.domain.IOwnersRepository;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
+import dev.ragnarok.fenrir.domain.Repository;
 import dev.ragnarok.fenrir.link.LinkHelper;
+import dev.ragnarok.fenrir.model.Sex;
+import dev.ragnarok.fenrir.place.PlaceFactory;
+import dev.ragnarok.fenrir.settings.ISettings;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
@@ -107,10 +121,22 @@ public class CheckDonate {
             430552,
             171784546,
             206220691,
-            233160174};
+            233160174,
+            581662705,
+            236637770,
+            102082127,
+            556649342,
+            371502136,
+            481394236,
+            377667803,
+            580434998,
+            634164155,
+            231369103,
+            84980911
+    };
 
     public static boolean isFullVersion(Context context) {
-        if (!Utils.isValueAssigned(Settings.get().accounts().getCurrent(), donatedUsers) && !Utils.isValueAssigned(Settings.get().accounts().getCurrent(), Utils.donate_users) && !Constants.IS_DONATE) {
+        if (!Constants.IS_DONATE && !Utils.isValueAssigned(Settings.get().accounts().getCurrent(), donatedUsers) && !Utils.isValueAssigned(Settings.get().accounts().getCurrent(), Utils.donate_users)) {
             MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(context);
 
             View view = LayoutInflater.from(context).inflate(R.layout.donate_alert, null);
@@ -160,7 +186,7 @@ public class CheckDonate {
                 }, e -> Utils.showErrorInAdapter(context, e));
     }
 
-    public static void UpdateDonateList(Activity context) {
+    public static void UpdateDonateList(Activity context, int mAccountId) {
         Utils.donate_users.clear();
         Utils.donate_users.addAll(Settings.get().other().getDonates());
 
@@ -172,7 +198,57 @@ public class CheckDonate {
                         Utils.donate_users.clear();
                         Utils.donate_users.addAll(t.donates);
                         Settings.get().other().registerDonatesId(Utils.donate_users);
+                        query(context, mAccountId);
                     }
                 }, e -> Utils.showErrorInAdapter(context, e));
+    }
+
+    @SuppressLint("SetTextI18n")
+    private static void query(Activity context, int mAccountId) {
+        if (mAccountId == ISettings.IAccountsSettings.INVALID_ID || Constants.IS_DONATE || Utils.isValueAssigned(mAccountId, donatedUsers) || Utils.isValueAssigned(mAccountId, Utils.donate_users) || !HelperSimple.INSTANCE.needHelp("need_love_help" + mAccountId, 3)) {
+            return;
+        }
+
+        //noinspection ResultOfMethodCallIgnored
+        Repository.INSTANCE.getOwners().getFullUserInfo(mAccountId, mAccountId, IOwnersRepository.MODE_NET)
+                .compose(RxUtils.applySingleIOToMainSchedulers())
+                .subscribe(pair -> {
+                    if (pair.getFirst().getSex() == Sex.WOMAN && pair.getSecond().getCountry() != null && pair.getSecond().getCity() != null && pair.getSecond().getCountry().getId() == 1
+                            && (pair.getSecond().getCity().getId() == 1 || pair.getSecond().getCity().getId() == 36 || pair.getSecond().getCity().getId() == 270 || pair.getSecond().getCity().getId() == 1054308)) {
+                        SimpleDateFormat SHORT_DATE = new SimpleDateFormat("d.M.yyyy", Locale.getDefault());
+                        if (!Utils.isEmpty(pair.getSecond().getBdate())) {
+                            try {
+                                SHORT_DATE.parse(pair.getSecond().getBdate());
+                                int y = SHORT_DATE.getCalendar().get(Calendar.YEAR);
+                                if (y < 1996 || y > 2002) {
+                                    return;
+                                }
+                            } catch (ParseException ignore) {
+                            }
+                        }
+                        if (pair.getSecond().getRelation() != VKApiUser.Relation.SINGLE && pair.getSecond().getRelation() != VKApiUser.Relation.SEARCHING && pair.getSecond().getRelation() != VKApiUser.Relation.COMPLICATED && pair.getSecond().getRelation() != 0 || pair.getSecond().getAlcohol() >= 4) {
+                            return;
+                        }
+                        MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(context);
+                        View view = LayoutInflater.from(context).inflate(R.layout.a_is_love_alert, null);
+                        ((TextView) view.findViewById(R.id.item_status)).setText("Разработчик клиента ищет себе девушку для серьёзных отношений. Желательно - Очень худенькая (Эктоморф), Фенотип - восточный балтид. Рост - высокий либо средний. Обо мне: 22 года, служил в армии, учусь в МГТУ им. Н.Э. Баумана, программист, люблю языческую мифологию");
+                        RLottieImageView anim = view.findViewById(R.id.lottie_animation);
+                        anim.setAutoRepeat(true);
+                        anim.setAnimation(R.raw.heart, Utils.dp(200), Utils.dp(200));
+                        anim.playAnimation();
+
+                        dlgAlert.setTitle(R.string.info);
+                        dlgAlert.setIcon(R.drawable.client_round);
+                        dlgAlert.setCancelable(false);
+                        dlgAlert.setNegativeButton(R.string.button_cancel, null);
+                        dlgAlert.setPositiveButton("Открыть профиль", (dialog, which) -> {
+                                    PlaceFactory.getOwnerWallPlace(mAccountId, 572488303, null).tryOpenWith(context);
+                                    dialog.dismiss();
+                                }
+                        );
+                        dlgAlert.setView(view);
+                        dlgAlert.show();
+                    }
+                }, e -> PreferenceManager.getDefaultSharedPreferences(context).edit().putInt("need_love_help" + mAccountId, 0).apply());
     }
 }

@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
@@ -13,12 +14,19 @@ import dev.ragnarok.fenrir.fragment.FileManagerFragment;
 import dev.ragnarok.fenrir.listener.BackPressCallback;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.Utils;
 
 public class FileManagerActivity extends AppCompatActivity {
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(Utils.updateActivityContext(newBase));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(Settings.get().ui().getMainTheme());
+        Utils.prepareDensity(this);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_no_main);

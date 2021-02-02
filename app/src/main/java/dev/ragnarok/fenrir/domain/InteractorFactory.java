@@ -103,12 +103,12 @@ public class InteractorFactory {
         return new FaveInteractor(Injection.provideNetworkInterfaces(), Injection.provideStores(), Repository.INSTANCE.getOwners());
     }
 
-    public static ILocalServerInteractor createLocalServerInteractor() {
-        return new LocalServerInteractor(Injection.provideNetworkInterfaces());
-    }
-
     public static IDebugToolInteractor createDebugToolInteractor() {
         return new DebugToolInteractor(Injection.provideNetworkInterfaces());
+    }
+
+    public static ILocalServerInteractor createLocalServerInteractor() {
+        return new LocalServerInteractor(Injection.provideNetworkInterfaces());
     }
 
     public static IAudioInteractor createAudioInteractor() {

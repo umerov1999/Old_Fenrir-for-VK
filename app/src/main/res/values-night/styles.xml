@@ -79,6 +79,18 @@
         <item name="my_messages_secondary_bubble_color">#886C42DF</item>
     </style>
 
+    <style name="App.DayNight.Contrast" parent="App.DayNight">
+        <item name="colorPrimary">#ffffff</item>
+        <item name="colorControlNormal">#777777</item>
+        <item name="colorSecondary">#777777</item>
+        <item name="colorOnPrimary">#000000</item>
+        <item name="colorOnSecondary">#FFF</item>
+        <item name="my_messages_bubble_color">#D4505050</item>
+        <item name="my_messages_secondary_bubble_color">#D4303030</item>
+        <item name="icon_color_active">#AA448AFF</item>
+        <item name="icon_color_inactive">#AAFF0000</item>
+    </style>
+
     <style name="App.DayNight.Ice.Amoled" parent="App.DayNight.Ice">
         <item name="dividerColor">#151515</item>
         <item name="floatingActionButtonStyle">@style/Theme.FloatingActionButtonAmoled</item>
@@ -207,7 +219,7 @@
         <item name="messages_background_color">#000000</item>
     </style>
 
-    <style name="App.DayNight.YellowRed.Amoled" parent="App.DayNight.YellowRed">
+    <style name="App.DayNight.Contrast.Amoled" parent="App.DayNight.Contrast">
         <item name="dividerColor">#151515</item>
         <item name="floatingActionButtonStyle">@style/Theme.FloatingActionButtonAmoled</item>
         <item name="fab_secondary">@style/Theme.FloatingActionButtonSecondaryAmoled</item>

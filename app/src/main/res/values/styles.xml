@@ -145,14 +145,16 @@
         <item name="icon_color_inactive">#AA151515</item>
     </style>
 
-    <style name="App.DayNight.YellowRed" parent="App.DayNight">
-        <item name="colorPrimary">#F8DF00</item>
-        <item name="colorControlNormal">#F8DF00</item>
-        <item name="colorSecondary">#F44336</item>
+    <style name="App.DayNight.Contrast" parent="App.DayNight">
+        <item name="colorPrimary">#000000</item>
+        <item name="colorControlNormal">#000000</item>
+        <item name="colorSecondary">#444444</item>
         <item name="colorOnPrimary">#FFF</item>
         <item name="colorOnSecondary">#FFF</item>
-        <item name="icon_color_active">#F8DF00</item>
-        <item name="icon_color_inactive">#AA151515</item>
+        <item name="icon_color_active">#AA448AFF</item>
+        <item name="my_messages_bubble_color">#D4BCBCBC</item>
+        <item name="my_messages_secondary_bubble_color">#D4BCBCBC</item>
+        <item name="icon_color_inactive">#AAFF0000</item>
     </style>
 
     <style name="App.DayNight.RedViolet" parent="App.DayNight">
@@ -293,7 +295,7 @@
 
     <style name="App.DayNight.VioletRed.Amoled" parent="App.DayNight.VioletRed" />
 
-    <style name="App.DayNight.YellowRed.Amoled" parent="App.DayNight.YellowRed" />
+    <style name="App.DayNight.Contrast.Amoled" parent="App.DayNight.Contrast" />
 
     <style name="App.DayNight.RedViolet.Amoled" parent="App.DayNight.RedViolet" />
 

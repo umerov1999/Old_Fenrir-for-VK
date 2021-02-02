@@ -25,5 +25,5 @@ public interface IAccountsInteractor {
 
     Single<Integer> saveProfileInfo(int accountId, String first_name, String last_name, String maiden_name, String screen_name, String bdate, String home_town, Integer sex);
 
-    Single<List<Account>> getAll();
+    Single<List<Account>> getAll(boolean refresh);
 }

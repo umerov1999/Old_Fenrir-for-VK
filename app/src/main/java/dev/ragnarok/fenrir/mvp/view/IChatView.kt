@@ -88,11 +88,11 @@ interface IChatView : IBasicMessageListView, IErrorView {
     fun goToMessagesLookup(accountId: Int, peerId: Int, messageId: Int)
     fun goToUnreadMessages(
         accountId: Int,
-        peerId: Int,
         messageId: Int,
         incoming: Int,
         outgoing: Int,
-        unreadCount: Int
+        unreadCount: Int,
+        peer: Peer
     )
 
     fun convert_to_keyboard(keyboard: Keyboard?)

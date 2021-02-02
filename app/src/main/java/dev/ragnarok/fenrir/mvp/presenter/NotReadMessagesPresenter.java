@@ -15,9 +15,12 @@ import java.util.Collection;
 import java.util.List;
 
 import dev.ragnarok.fenrir.domain.IMessagesRepository;
+import dev.ragnarok.fenrir.domain.Mode;
 import dev.ragnarok.fenrir.domain.Repository;
 import dev.ragnarok.fenrir.model.LoadMoreState;
 import dev.ragnarok.fenrir.model.Message;
+import dev.ragnarok.fenrir.model.Peer;
+import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.INotReadMessagesView;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.RxUtils;
@@ -33,16 +36,18 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
 
     private static final int COUNT = 30;
     private final IMessagesRepository messagesInteractor;
-    private final int mPeerId;
     private final LOADING_STATE loadingState;
+    private final Peer peer;
     private Integer mFocusMessageId;
+    private int unreadCount;
 
-    public NotReadMessagesPresenter(int accountId, int peerId, Integer focusTo, int incoming, int outgoing, @Nullable Bundle savedInstanceState) {
+    public NotReadMessagesPresenter(int accountId, Integer focusTo, int incoming, int outgoing, int unreadCount, @NonNull Peer peer, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
         messagesInteractor = Repository.INSTANCE.getMessages();
-        mPeerId = peerId;
         lastReadId.setIncoming(incoming);
         lastReadId.setOutgoing(outgoing);
+        this.peer = peer;
+        this.unreadCount = unreadCount;
         loadingState = new LOADING_STATE((Header, Footer) -> {
             if (isGuiReady()) {
                 @LoadMoreState int header;
@@ -92,7 +97,7 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
     private void initRequest() {
         int accountId = getAccountId();
 
-        appendDisposable(messagesInteractor.getPeerMessages(accountId, mPeerId, COUNT, -COUNT / 2, mFocusMessageId, false, false)
+        appendDisposable(messagesInteractor.getPeerMessages(accountId, peer.getId(), COUNT, -COUNT / 2, mFocusMessageId, false, false)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(this::onInitDataLoaded, this::onDataGetError));
     }
@@ -123,7 +128,7 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
     }
 
     private void deleteSentImpl(Collection<Integer> ids, boolean forAll) {
-        appendDisposable(messagesInteractor.deleteMessages(getAccountId(), mPeerId, ids, forAll)
+        appendDisposable(messagesInteractor.deleteMessages(getAccountId(), peer.getId(), ids, forAll)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
                 .subscribe(RxUtils.dummy(), t -> showError(getView(), t)));
     }
@@ -150,7 +155,7 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
 
         int targetMessageId = firstMessageId;
 
-        appendDisposable(messagesInteractor.getPeerMessages(accountId, mPeerId, COUNT, -COUNT, targetMessageId, false, false)
+        appendDisposable(messagesInteractor.getPeerMessages(accountId, peer.getId(), COUNT, -COUNT, targetMessageId, false, false)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(this::onDownDataLoaded, this::onDownDataGetError));
     }
@@ -167,7 +172,7 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
                 .blockingGet();
 
         if (nonEmpty(ids)) {
-            appendDisposable(messagesInteractor.deleteMessages(accountId, mPeerId, ids, false)
+            appendDisposable(messagesInteractor.deleteMessages(accountId, peer.getId(), ids, false)
                     .compose(RxUtils.applyCompletableIOToMainSchedulers())
                     .subscribe(() -> onMessagesDeleteSuccessfully(ids), t -> showError(getView(), getCauseIfRuntime(t))));
         }
@@ -186,7 +191,7 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
         int targetLastMessageId = lastMessageId;
         int accountId = getAccountId();
 
-        appendDisposable(messagesInteractor.getPeerMessages(accountId, mPeerId, COUNT, 0, targetLastMessageId, false, false)
+        appendDisposable(messagesInteractor.getPeerMessages(accountId, peer.getId(), COUNT, 0, targetLastMessageId, false, false)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(this::onUpDataLoaded, this::onUpDataGetError));
     }
@@ -214,7 +219,7 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
         int accountId = getAccountId();
         int id = message.getId();
 
-        appendDisposable(messagesInteractor.restoreMessage(accountId, mPeerId, id)
+        appendDisposable(messagesInteractor.restoreMessage(accountId, peer.getId(), id)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
                 .subscribe(() -> onMessageRestoredSuccessfully(id), t -> showError(getView(), getCauseIfRuntime(t))));
     }
@@ -263,6 +268,20 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
         }
     }
 
+    @OnGuiCreated
+    private void resolveToolbar() {
+        if (isGuiReady()) {
+            getView().displayToolbarAvatar(peer);
+        }
+    }
+
+    @OnGuiCreated
+    private void resolveUnreadCount() {
+        if (isGuiReady()) {
+            getView().displayUnreadCount(unreadCount);
+        }
+    }
+
     @Override
     public void onMessageClick(@NotNull Message message) {
         readUnreadMessagesUpIfExists(message);
@@ -278,9 +297,16 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
                 getView().notifyDataChanged();
             }
 
-            appendDisposable(messagesInteractor.markAsRead(getAccountId(), mPeerId, message.getOriginalId())
+            appendDisposable(messagesInteractor.markAsRead(getAccountId(), peer.getId(), message.getOriginalId())
                     .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                    .subscribe(RxUtils.dummy(), t -> showError(getView(), t)));
+                    .subscribe(() -> appendDisposable(messagesInteractor.getConversationSingle(
+                            getAccountId(),
+                            peer.getId(), Mode.NET)
+                            .compose(RxUtils.applySingleIOToMainSchedulers())
+                            .subscribe(e -> {
+                                unreadCount = e.getUnreadCount();
+                                resolveUnreadCount();
+                            }, s -> showError(getView(), s))), t -> showError(getView(), t)));
         }
     }
 

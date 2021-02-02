@@ -89,7 +89,6 @@
             android:layout_gravity="bottom" />
     </FrameLayout>
 
-
     <LinearLayout
         android:id="@+id/pinned_root_view"
         android:layout_width="match_parent"

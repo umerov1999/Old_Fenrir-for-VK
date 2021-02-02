@@ -109,7 +109,7 @@ public class AccountsInteractor implements IAccountsInteractor {
     }
 
     @Override
-    public Single<List<Account>> getAll() {
+    public Single<List<Account>> getAll(boolean refresh) {
         return Single.create(emitter -> {
             Collection<Integer> ids = settings.getRegistered();
 
@@ -120,7 +120,7 @@ public class AccountsInteractor implements IAccountsInteractor {
                     break;
                 }
 
-                Owner owner = ownersRepository.getBaseOwnerInfo(id, id, IOwnersRepository.MODE_ANY)
+                Owner owner = ownersRepository.getBaseOwnerInfo(id, id, refresh ? IOwnersRepository.MODE_NET : IOwnersRepository.MODE_ANY)
                         .onErrorReturn(ignored -> id > 0 ? new User(id) : new Community(-id))
                         .blockingGet();
 

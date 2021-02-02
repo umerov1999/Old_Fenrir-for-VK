@@ -166,6 +166,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     new File(cache, child).delete();
                 }
             }
+            cache = context.getExternalFilesDir(Environment.DIRECTORY_RINGTONES);
+            if (cache.exists() && cache.isDirectory()) {
+                String[] children = cache.list();
+                assert children != null;
+                for (String child : children) {
+                    new File(cache, child).delete();
+                }
+            }
             if (notify)
                 CustomToast.CreateCustomToast(context).showToast(R.string.success);
         } catch (IOException e) {

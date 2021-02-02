@@ -1,6 +1,7 @@
 package dev.ragnarok.fenrir.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -36,6 +37,11 @@ public class LottieActivity extends AppCompatActivity {
 
     private void log(String log) {
         lg.post(() -> lg.setText(log.trim()));
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(Utils.updateActivityContext(newBase));
     }
 
     @Override

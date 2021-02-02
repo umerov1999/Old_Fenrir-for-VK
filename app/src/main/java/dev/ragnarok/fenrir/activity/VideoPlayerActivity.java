@@ -1,11 +1,16 @@
 package dev.ragnarok.fenrir.activity;
 
+import android.app.AppOpsManager;
+import android.app.PictureInPictureParams;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Rational;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -19,6 +24,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import com.r0adkll.slidr.Slidr;
+import com.r0adkll.slidr.model.SlidrConfig;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -34,8 +42,11 @@ import dev.ragnarok.fenrir.model.Video;
 import dev.ragnarok.fenrir.model.VideoSize;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.push.OwnerInfo;
+import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.IProxySettings;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.Logger;
+import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.AlternativeAspectRatioFrameLayout;
@@ -54,11 +65,13 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
     private AlternativeAspectRatioFrameLayout Frame;
     private IVideoPlayer mPlayer;
     private Video video;
+    private boolean onStopCalled;
     private @InternalVideoSize
     int size;
     private boolean doNotPause;
     private final ActivityResultLauncher<Intent> requestSwipeble = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> doNotPause = false);
+    private boolean isLocal;
     private boolean isLandscape;
 
     private void onOpen() {
@@ -71,25 +84,31 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        setTheme(Settings.get().ui().getMainTheme());
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_video);
+    protected void onStop() {
+        onStopCalled = true;
+        super.onStop();
+    }
 
-        if (Utils.hasLollipop()) {
-            getWindow().setStatusBarColor(Color.BLACK);
+    @Override
+    public void finish() {
+        finishAndRemoveTask();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Logger.d(VideoPlayerActivity.class.getName(), "onNewIntent, intent: " + intent);
+        handleIntent(intent, true);
+    }
+
+    private void handleIntent(Intent intent, boolean update) {
+        if (intent == null) {
+            return;
         }
-
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-        video = getIntent().getParcelableExtra(EXTRA_VIDEO);
-        size = getIntent().getIntExtra(EXTRA_SIZE, InternalVideoSize.SIZE_240);
-        boolean isLocal = getIntent().getBooleanExtra(EXTRA_LOCAL, false);
-
-        mDecorView = getWindow().getDecorView();
-
+        video = intent.getParcelableExtra(EXTRA_VIDEO);
+        size = intent.getIntExtra(EXTRA_SIZE, InternalVideoSize.SIZE_240);
+        isLocal = intent.getBooleanExtra(EXTRA_LOCAL, false);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -113,8 +132,51 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
             } else {
                 findViewById(R.id.toolbar_avatar).setVisibility(View.GONE);
             }
+        }
+        if (update) {
+            IProxySettings settings = Injection.provideProxySettings();
+            ProxyConfig config = settings.getActiveProxy();
+
+            String url = getFileUrl();
+
+            mPlayer.updateSource(this, url, config, size);
+            mPlayer.play();
+            mControllerView.updateComment(!isLocal && video.isCanComment());
+        }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(Utils.updateActivityContext(newBase));
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        Slidr.attach(this, new SlidrConfig.Builder().scrimColor(CurrentTheme.getColorBackground(this)).build());
+
+        setTheme(Settings.get().ui().getMainTheme());
+        Utils.prepareDensity(this);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_video);
+
+        if (Utils.hasLollipop()) {
+            getWindow().setStatusBarColor(Color.BLACK);
+        }
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        mDecorView = getWindow().getDecorView();
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (toolbar != null) {
             toolbar.setNavigationIcon(R.drawable.arrow_left);
             toolbar.setNavigationOnClickListener(v -> finish());
+        }
+
+        if (Objects.isNull(savedInstanceState)) {
+            handleIntent(getIntent(), false);
         }
 
         mControllerView = new VideoControllerView(this);
@@ -136,6 +198,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
         mControllerView.setMediaPlayer(this);
         mControllerView.setAnchorView((ViewGroup) mDecorView);
         mControllerView.updateComment(!isLocal && video.isCanComment());
+        mControllerView.updatePip(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && hasPipPermission());
     }
 
     private IVideoPlayer createPlayer() {
@@ -180,6 +243,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
     @Override
     protected void onResume() {
         super.onResume();
+        onStopCalled = false;
         mDecorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -192,11 +256,37 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
     }
 
     @Override
-    protected void onPause() {
-        if (!doNotPause) {
-            mPlayer.pause();
+    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, Configuration newConfig) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar == null)
+            return;
+        if (isInPictureInPictureMode) {
+            actionBar.hide();
+            mControllerView.hide();
+        } else {
+            if (onStopCalled) {
+                finish();
+            } else {
+                actionBar.show();
+                mControllerView.show();
+            }
         }
-        mControllerView.updatePausePlay();
+    }
+
+    private boolean canVideoPause() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return !isInPictureInPictureMode();
+        } else return true;
+    }
+
+    @Override
+    protected void onPause() {
+        if (canVideoPause()) {
+            if (!doNotPause) {
+                mPlayer.pause();
+            }
+            mControllerView.updatePausePlay();
+        }
         super.onPause();
     }
 
@@ -284,6 +374,37 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
     @Override
     public void toggleFullScreen() {
         setRequestedOrientation(isLandscape ? ActivityInfo.SCREEN_ORIENTATION_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }
+
+    private boolean hasPipPermission() {
+        AppOpsManager appsOps = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return appsOps.unsafeCheckOpNoThrow(
+                    AppOpsManager.OPSTR_PICTURE_IN_PICTURE,
+                    android.os.Process.myUid(),
+                    getPackageName()
+            ) == AppOpsManager.MODE_ALLOWED;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return appsOps.checkOpNoThrow(
+                    AppOpsManager.OPSTR_PICTURE_IN_PICTURE,
+                    android.os.Process.myUid(),
+                    getPackageName()
+            ) == AppOpsManager.MODE_ALLOWED;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void toPIPScreen() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+                    && hasPipPermission())
+                if (!isInPictureInPictureMode()) {
+                    Rational aspectRatio = new Rational(Frame.getWidth(), Frame.getHeight());
+                    enterPictureInPictureMode(new PictureInPictureParams.Builder().setAspectRatio(aspectRatio).build());
+                }
+        }
     }
 
     private String getFileUrl() {

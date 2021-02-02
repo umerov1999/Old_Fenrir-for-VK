@@ -1660,4 +1660,7 @@
     <string name="not_read">Not read</string>
     <string name="not_read_show">Fast Unread</string>
     <string name="not_read_show_summary">If Unread > 30</string>
+    <string name="rotate_video">Rotate</string>
+    <string name="popup">Popup</string>
+    <string name="not_read_count">Not read: %1$d</string>
 </resources>

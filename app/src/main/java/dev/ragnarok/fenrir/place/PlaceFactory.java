@@ -242,9 +242,9 @@ public class PlaceFactory {
                 .setArguments(MessagesLookFragment.buildArgs(aid, peerId, focusMessageId));
     }
 
-    public static Place getUnreadMessagesPlace(int aid, int peerId, int focusMessageId, int incoming, int outgoing, int unreadCount) {
+    public static Place getUnreadMessagesPlace(int aid, int focusMessageId, int incoming, int outgoing, int unreadCount, @NonNull Peer peer) {
         return new Place(Place.UNREAD_MESSAGES)
-                .setArguments(NotReadMessagesFragment.buildArgs(aid, peerId, focusMessageId, incoming, outgoing, unreadCount));
+                .setArguments(NotReadMessagesFragment.buildArgs(aid, focusMessageId, incoming, outgoing, unreadCount, peer));
     }
 
     public static Place getEditPhotoAlbumPlace(int aid, @NonNull PhotoAlbum album, @NonNull PhotoAlbumEditor editor) {

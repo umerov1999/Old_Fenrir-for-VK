@@ -12,7 +12,7 @@ public interface IOtherVkRetrofitProvider {
 
     Single<RetrofitWrapper> provideAmazonAudioCoverRetrofit();
 
-    Single<RetrofitWrapper> provideLocalServerRetrofit();
-
     Single<RetrofitWrapper> provideDebugToolRetrofit();
+
+    Single<RetrofitWrapper> provideLocalServerRetrofit();
 }

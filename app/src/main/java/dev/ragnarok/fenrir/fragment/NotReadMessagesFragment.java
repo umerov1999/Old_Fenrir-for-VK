@@ -9,10 +9,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,7 +29,6 @@ import java.util.List;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
-import dev.ragnarok.fenrir.activity.ActivityUtils;
 import dev.ragnarok.fenrir.activity.SendAttachmentsActivity;
 import dev.ragnarok.fenrir.adapter.MessagesAdapter;
 import dev.ragnarok.fenrir.fragment.base.PlaceSupportMvpFragment;
@@ -38,11 +38,18 @@ import dev.ragnarok.fenrir.model.Keyboard;
 import dev.ragnarok.fenrir.model.LastReadId;
 import dev.ragnarok.fenrir.model.LoadMoreState;
 import dev.ragnarok.fenrir.model.Message;
+import dev.ragnarok.fenrir.model.Peer;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.NotReadMessagesPresenter;
 import dev.ragnarok.fenrir.mvp.view.INotReadMessagesView;
+import dev.ragnarok.fenrir.picasso.PicassoInstance;
+import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation;
 import dev.ragnarok.fenrir.util.Objects;
+import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.LoadMoreFooterHelper;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMessagesPresenter, INotReadMessagesView>
         implements INotReadMessagesView, MessagesAdapter.OnMessageActionListener {
@@ -57,16 +64,19 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
     private LoadMoreFooterHelper mFooterHelper;
     private EndlessRecyclerOnScrollListener mEndlessRecyclerOnScrollListener;
     private ActionMode mActionMode;
-    private int unreadCount;
+    private TextView EmptyAvatar;
+    private TextView Title;
+    private TextView SubTitle;
+    private ImageView Avatar;
 
-    public static Bundle buildArgs(int accountId, int peerId, int focusMessageId, int incoming, int outgoing, int unreadCount) {
+    public static Bundle buildArgs(int accountId, int focusMessageId, int incoming, int outgoing, int unreadCount, @NonNull Peer peer) {
         Bundle args = new Bundle();
         args.putInt(Extra.ACCOUNT_ID, accountId);
-        args.putInt(Extra.PEER_ID, peerId);
         args.putInt(Extra.FOCUS_TO, focusMessageId);
         args.putInt(Extra.INCOMING, incoming);
         args.putInt(Extra.OUTGOING, outgoing);
         args.putInt(Extra.COUNT, unreadCount);
+        args.putParcelable(Extra.PEER, peer);
         return args;
     }
 
@@ -76,22 +86,19 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle s) {
-        super.onCreate(s);
-        unreadCount = requireArguments().getInt(Extra.COUNT);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_messages_lookup, container, false);
-        ((AppCompatActivity) requireActivity()).setSupportActionBar(root.findViewById(R.id.toolbar));
-
+        View root = inflater.inflate(R.layout.fragment_not_read_messages, container, false);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, true);
 
         mRecyclerView = root.findViewById(R.id.recycleView);
         mRecyclerView.setLayoutManager(layoutManager);
+
+        Title = root.findViewById(R.id.dialog_title);
+        SubTitle = root.findViewById(R.id.dialog_subtitle);
+        Avatar = root.findViewById(R.id.toolbar_avatar);
+        EmptyAvatar = root.findViewById(R.id.empty_avatar_text);
 
         mHeaderView = inflater.inflate(R.layout.footer_load_more, mRecyclerView, false);
         mFooterView = inflater.inflate(R.layout.footer_load_more, mRecyclerView, false);
@@ -181,7 +188,7 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
 
     @Override
     public void showActionMode(String title, Boolean canEdit, Boolean canPin, Boolean canStar, Boolean doStar) {
-        if (Objects.isNull(mActionMode)) {
+        if (isNull(mActionMode)) {
             mActionMode = ((AppCompatActivity) requireActivity()).startSupportActionMode(mActionModeCallback);
         }
 
@@ -243,11 +250,12 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
     public IPresenterFactory<NotReadMessagesPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {
             int aid = requireArguments().getInt(Extra.ACCOUNT_ID);
-            int peerId = requireArguments().getInt(Extra.PEER_ID);
             Integer focusTo = requireArguments().containsKey(Extra.FOCUS_TO) ? requireArguments().getInt(Extra.FOCUS_TO) : null;
             int incoming = requireArguments().getInt(Extra.INCOMING);
             int outgoing = requireArguments().getInt(Extra.OUTGOING);
-            return new NotReadMessagesPresenter(aid, peerId, focusTo, incoming, outgoing, saveInstanceState);
+            Peer peer = requireArguments().getParcelable(Extra.PEER);
+            int unreadCount = requireArguments().getInt(Extra.COUNT);
+            return new NotReadMessagesPresenter(aid, focusTo, incoming, outgoing, unreadCount, peer, saveInstanceState);
         };
     }
 
@@ -298,13 +306,46 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
     }
 
     @Override
+    public void displayUnreadCount(int unreadCount) {
+        if (Objects.nonNull(SubTitle)) {
+            SubTitle.setText(getString(R.string.not_read_count, unreadCount));
+        }
+    }
+
+    @Override
+    public void displayToolbarAvatar(Peer peer) {
+        if (isNull(EmptyAvatar) || isNull(Avatar) || isNull(Title)) {
+            return;
+        }
+        Title.setText(peer.getTitle());
+        if (nonEmpty(peer.getAvaUrl())) {
+            EmptyAvatar.setVisibility(View.GONE);
+            PicassoInstance.with()
+                    .load(peer.getAvaUrl())
+                    .transform(new RoundTransformation())
+                    .into(Avatar);
+        } else {
+            PicassoInstance.with().cancelRequest(Avatar);
+            EmptyAvatar.setVisibility(View.VISIBLE);
+            String name = peer.getTitle();
+            if (name.length() > 2) name = name.substring(0, 2);
+            name = name.trim();
+            EmptyAvatar.setText(name);
+            Avatar.setImageBitmap(
+                    new RoundTransformation().transform(
+                            Utils.createGradientChatImage(
+                                    200,
+                                    200,
+                                    peer.getId()
+                            )
+                    )
+            );
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        ActionBar actionBar = ActivityUtils.supportToolbarFor(this);
-        if (Objects.nonNull(actionBar)) {
-            actionBar.setTitle(R.string.not_read);
-            actionBar.setSubtitle(String.valueOf(unreadCount));
-        }
 
         new ActivityFeatures.Builder()
                 .begin()

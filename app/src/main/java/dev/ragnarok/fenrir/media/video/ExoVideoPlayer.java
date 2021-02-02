@@ -28,11 +28,9 @@ import dev.ragnarok.fenrir.util.Utils;
 public class ExoVideoPlayer implements IVideoPlayer {
 
     private final SimpleExoPlayer player;
-
-    private final MediaSource source;
-
     private final OnVideoSizeChangedListener onVideoSizeChangedListener = new OnVideoSizeChangedListener(this);
     private final List<IVideoSizeChangeListener> videoSizeChangeListeners = new ArrayList<>(1);
+    private MediaSource source;
     private boolean supposedToBePlaying;
     private boolean prepareCalled;
 
@@ -52,6 +50,14 @@ public class ExoVideoPlayer implements IVideoPlayer {
         } else {
             return new HlsMediaSource.Factory(Utils.getExoPlayerFactory(userAgent, proxyConfig)).createMediaSource(Utils.makeMediaItem(url));
         }
+    }
+
+    @Override
+    public void updateSource(Context context, String url, ProxyConfig config, @InternalVideoSize int size) {
+        source = createMediaSource(context, url, config, size == InternalVideoSize.SIZE_HLS || size == InternalVideoSize.SIZE_LIVE);
+        player.setMediaSource(source);
+        player.prepare();
+        ExoUtil.startPlayer(player);
     }
 
     private SimpleExoPlayer createPlayer(Context context) {
