@@ -1509,4 +1509,9 @@
     <string name="rotate_video">Поворот</string>
     <string name="popup">В окне</string>
     <string name="not_read_count">Непрочитанные: %1$d</string>
+    <string name="choose_button_label">Выбрать</string>
+    <string name="label_parent_directory">Родительский каталог</string>
+    <string name="last_edit">Модификация: %1$s, %2$s</string>
+    <string name="error_dir_access">Каталог недоступен</string>
+    <string name="show_donate_anim">Донатная анимация</string>
 </resources>

@@ -8,7 +8,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/card_margin"
     android:layout_marginEnd="@dimen/card_margin"
-    android:layout_marginBottom="@dimen/card_margin"
+    android:layout_marginBottom="@dimen/card_margin_bottom"
     android:foreground="?android:attr/selectableItemBackground"
     tools:ignore="UnusedAttribute">
 
@@ -102,7 +102,9 @@
             android:id="@+id/item_post_attachments"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/feed_card_content_margin_start"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/feed_card_content_margin_end"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

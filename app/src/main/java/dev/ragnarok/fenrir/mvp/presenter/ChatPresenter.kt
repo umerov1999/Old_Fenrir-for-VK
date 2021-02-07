@@ -1221,7 +1221,9 @@ class ChatPresenter(
             conversation?.currentKeyboard = message.keyboard
             view?.convert_to_keyboard(message.keyboard)
         }
-        if (Settings.get().other().isAuto_read) {
+        if (Settings.get().other().isAuto_read && !Processors.realtimeMessages()
+                .isNotificationIntercepted(accountId, peerId)
+        ) {
             readAllUnreadMessagesIfExists()
         }
     }

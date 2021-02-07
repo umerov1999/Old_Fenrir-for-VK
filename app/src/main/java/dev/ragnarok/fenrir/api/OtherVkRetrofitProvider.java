@@ -155,7 +155,7 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
         ProxyUtil.applyProxyConfig(builder, proxySettings.getActiveProxy());
 
         return new Retrofit.Builder()
-                .baseUrl("https://raw.githubusercontent.com/umerov1999/Fenrir-for-VK/main/")
+                .baseUrl("https://umerov1999.github.io/Fenrir-for-VK-Donates/")
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .client(builder.build())

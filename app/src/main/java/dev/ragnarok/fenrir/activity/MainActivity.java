@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
             }
             checkFCMRegistration();
 
-            CheckDonate.UpdateDonateList(this, mAccountId);
+            CheckDonate.UpdateDonateList(this);
 
             if (!isAuthValid()) {
                 startAccountsActivity();

@@ -25,6 +25,7 @@ import dev.ragnarok.fenrir.fragment.ChatFragment;
 import dev.ragnarok.fenrir.fragment.GifPagerFragment;
 import dev.ragnarok.fenrir.fragment.NotReadMessagesFragment;
 import dev.ragnarok.fenrir.fragment.PhotoPagerFragment;
+import dev.ragnarok.fenrir.fragment.SinglePhotoFragment;
 import dev.ragnarok.fenrir.fragment.StoryPagerFragment;
 import dev.ragnarok.fenrir.listener.AppStyleable;
 import dev.ragnarok.fenrir.model.Peer;
@@ -125,6 +126,10 @@ public class NotReadMessagesActivity extends NoMainActivity implements PlaceProv
             case Place.SIMPLE_PHOTO_GALLERY:
             case Place.VK_PHOTO_TMP_SOURCE:
                 attachToFront(PhotoPagerFragment.newInstance(place.type, args));
+                break;
+
+            case Place.SINGLE_PHOTO:
+                attachToFront(SinglePhotoFragment.newInstance(args));
                 break;
 
             case Place.GIF_PAGER:

@@ -17,4 +17,6 @@ public interface IRealtimeMessagesProcessor {
     void registerNotificationsInterceptor(int interceptorId, Pair<Integer, Integer> aidPeerPair);
 
     void unregisterNotificationsInterceptor(int interceptorId);
+
+    boolean isNotificationIntercepted(int accountId, int peerId);
 }

@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/item_audio_margin_start"
+    android:layout_marginEnd="@dimen/item_audio_margin_end"
     android:paddingStart="6dp"
     android:paddingTop="4dp"
     android:paddingEnd="6dp"

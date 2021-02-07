@@ -27,10 +27,10 @@ public class Constants {
     public static final boolean IS_HAS_LOGIN_WEB = BuildConfig.DEFAULT_ACCOUNT_TYPE == Account_Types.KATE;
     public static final String FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".fileprovider";
 
-    public static final String VK_ANDROID_APP_VERSION_NAME = "6.22";
-    public static final String VK_ANDROID_APP_VERSION_CODE = "6853";
-    public static final String KATE_APP_VERSION_NAME = "69 lite";
-    public static final String KATE_APP_VERSION_CODE = "485";
+    public static final String VK_ANDROID_APP_VERSION_NAME = "6.23";
+    public static final String VK_ANDROID_APP_VERSION_CODE = "6923";
+    public static final String KATE_APP_VERSION_NAME = "70 lite";
+    public static final String KATE_APP_VERSION_CODE = "486";
     public static final String KATE_RECEIPT_GMS_TOKEN = BuildConfig.KATE_RECEIPT_GMS_TOKEN.replaceAll("[\\w%\\-]+:", ":");
     public static final int API_ID = BuildConfig.VK_API_APP_ID;
     public static final String SECRET = BuildConfig.VK_CLIENT_SECRET;

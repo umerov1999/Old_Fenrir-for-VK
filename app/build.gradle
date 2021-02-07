@@ -17,8 +17,8 @@ android {
         minSdkVersion 21
         //noinspection ExpiredTargetSdkVersion,OldTargetApi
         targetSdkVersion 29
-        versionCode 41
-        versionName '1.41'
+        versionCode 42
+        versionName '1.42'
 
         buildConfigField 'String', 'SERVICE_TOKEN', getProps("vk_service_token")
         buildConfigField 'String', 'YOUTUBE_DEV_KEY', getProps("youtube_dev_key")
@@ -121,7 +121,7 @@ def getProps(String propName) {
 }
 
 ext {
-    exoLibraryVersion = '2.12.3'
+    exoLibraryVersion = '2.13.0'
 }
 
 dependencies {
@@ -131,7 +131,7 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.2.0-beta01'
     implementation 'androidx.recyclerview:recyclerview:1.2.0-beta01'
     implementation 'androidx.viewpager2:viewpager2:1.1.0-alpha01'
-    implementation 'com.google.android.material:material:1.3.0-rc01'
+    implementation 'com.google.android.material:material:1.3.0'
     implementation 'com.squareup.picasso:picasso:2.8'
     implementation 'io.coil-kt:coil:1.1.1'
     implementation 'io.coil-kt:coil-gif:1.1.1'
@@ -173,7 +173,6 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer-hls:$exoLibraryVersion"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.biometric:biometric:1.2.0-alpha02'
-    implementation 'com.github.TutorialsAndroid:FilePicker:v8.0.19'
     implementation 'androidx.media:media:1.2.1'
     implementation 'androidx.activity:activity-ktx:1.2.0-rc01'
     implementation 'androidx.fragment:fragment-ktx:1.3.0-rc02'

@@ -31,8 +31,8 @@
 
             <ImageView
                 android:id="@+id/toolbar_avatar"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_gravity="center"
                 android:alpha="0.8"
                 android:stateListAnimator="@animator/clicked" />

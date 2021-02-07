@@ -235,6 +235,11 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public boolean isShow_donate_anim() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("show_donate_anim", true);
+    }
+
+    @Override
     public boolean isUse_stop_audio() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("use_stop_audio", false);
     }

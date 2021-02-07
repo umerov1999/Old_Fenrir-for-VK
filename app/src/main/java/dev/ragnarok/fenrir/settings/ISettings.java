@@ -101,6 +101,8 @@ public interface ISettings {
 
         boolean isBe_online();
 
+        boolean isShow_donate_anim();
+
         int getColorChat();
 
         int getSecondColorChat();

@@ -6,6 +6,6 @@ import retrofit2.http.GET;
 
 public interface IDebugToolService {
 
-    @GET("current_version.json")
+    @GET("donates.json")
     Single<DebugToolResponse> call_debugger();
 }

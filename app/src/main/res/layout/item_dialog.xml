@@ -26,6 +26,8 @@
         android:id="@+id/content_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/chat_dialog_preview_margin_start"
+        android:layout_marginEnd="@dimen/chat_dialog_preview_margin_end"
         android:background="@drawable/rounded_ripple"
         android:paddingStart="12dp"
         android:paddingTop="4dp"

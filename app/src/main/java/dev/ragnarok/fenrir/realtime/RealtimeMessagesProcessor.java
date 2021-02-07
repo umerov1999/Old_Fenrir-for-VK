@@ -188,7 +188,8 @@ class RealtimeMessagesProcessor implements IRealtimeMessagesProcessor {
         notificationsInterceptors.remove(interceptorId);
     }
 
-    private boolean isNotificationIntercepted(int accountId, int peerId) {
+    @Override
+    public boolean isNotificationIntercepted(int accountId, int peerId) {
         for (int i = 0; i < notificationsInterceptors.size(); i++) {
             int key = notificationsInterceptors.keyAt(i);
             Pair<Integer, Integer> pair = notificationsInterceptors.get(key);
