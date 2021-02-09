@@ -76,7 +76,6 @@ class MusicPlaybackService : Service() {
     private var mPlayList: List<Audio>? = null
     private var mNotificationHelper: NotificationHelper? = null
     private var mMediaMetadataCompat: MediaMetadataCompat? = null
-    private val serviceDisposable = CompositeDisposable()
     override fun onBind(intent: Intent): IBinder {
         if (D) Logger.d(TAG, "Service bound, intent = $intent")
         cancelShutdown()
@@ -202,7 +201,6 @@ class MusicPlaybackService : Service() {
         mAlarmManager!!.cancel(mShutdownIntent)
         mPlayer!!.release()
         mMediaSession!!.release()
-        serviceDisposable.dispose()
         mNotificationHelper!!.killNotification()
         unregisterReceiver(mIntentReceiver)
     }
@@ -481,24 +479,6 @@ class MusicPlaybackService : Service() {
         mMediaSession!!.setMetadata(mMediaMetadataCompat)
     }
 
-    private fun GetCoverURL(audio: Audio) {
-        serviceDisposable.add(
-            Injection.provideNetworkInterfaces().amazonAudioCover()
-                .getAudioCover(audio.title, audio.artist)
-                .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe({ remote ->
-                    run {
-                        CoverAudio = remote.image; audio.thumb_image_big =
-                        remote.image; audio.thumb_image_very_big =
-                        remote.image; audio.thumb_image_little = remote.image
-                        AlbumTitle = remote.album; fetchCoverAndUpdateMetadata(); notifyChange(
-                        META_CHANGED
-                    )
-                    }
-                }, {})
-        )
-    }
-
     /**
      * Opens a file and prepares it for playback
      *
@@ -521,16 +501,7 @@ class MusicPlaybackService : Service() {
                 OnceCloseMiniPlayer = false
             }
             mPlayer!!.setDataSource(audio.ownerId, audio.id, audio.url)
-            if (UpdateMeta && (Utils.isKateType(
-                    Settings.get().accounts().getType(Settings.get().accounts().current)
-                ) || audio.isLocal)
-            ) {
-                try {
-                    GetCoverURL(audio)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            } else if (audio.thumb_image_big != null && UpdateMeta) {
+            if (audio.thumb_image_big != null && UpdateMeta) {
                 CoverAudio = audio.thumb_image_big
                 AlbumTitle = audio.album_title
                 fetchCoverAndUpdateMetadata()

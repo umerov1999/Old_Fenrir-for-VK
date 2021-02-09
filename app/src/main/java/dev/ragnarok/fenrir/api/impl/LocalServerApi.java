@@ -46,6 +46,13 @@ class LocalServerApi implements ILocalServerApi {
     }
 
     @Override
+    public Single<Items<VKApiAudio>> getDiscography(Integer offset, Integer count) {
+        return service.provideLocalServerService()
+                .flatMap(service -> service.getDiscography(offset, count)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
     public Single<Items<VKApiVideo>> searchVideos(String query, Integer offset, Integer count) {
         return service.provideLocalServerService()
                 .flatMap(service -> service.searchVideos(query, offset, count)
@@ -56,6 +63,20 @@ class LocalServerApi implements ILocalServerApi {
     public Single<Items<VKApiAudio>> searchAudios(String query, Integer offset, Integer count) {
         return service.provideLocalServerService()
                 .flatMap(service -> service.searchAudios(query, offset, count)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<Items<VKApiAudio>> searchDiscography(String query, Integer offset, Integer count) {
+        return service.provideLocalServerService()
+                .flatMap(service -> service.searchDiscography(query, offset, count)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<Integer> update_time(String hash) {
+        return service.provideLocalServerService()
+                .flatMap(service -> service.update_time(hash)
                         .map(extractResponseWithErrorHandling()));
     }
 }

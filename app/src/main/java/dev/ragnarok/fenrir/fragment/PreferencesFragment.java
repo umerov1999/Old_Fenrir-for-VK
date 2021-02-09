@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -33,6 +34,7 @@ import androidx.preference.SwitchPreference;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
+import com.squareup.picasso.BitmapSafeResize;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -275,6 +277,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         });
 
         findPreference("local_media_server").setOnPreferenceClickListener((newValue) -> {
+            if (!CheckDonate.isFullVersion(requireActivity())) {
+                return false;
+            }
             View view = View.inflate(requireActivity(), R.layout.entry_local_server, null);
             TextInputEditText url = view.findViewById(R.id.edit_url);
             TextInputEditText password = view.findViewById(R.id.edit_password);
@@ -303,6 +308,22 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         Injection.provideProxySettings().setActive(Injection.provideProxySettings().getActiveProxy());
                     })
                     .show();
+            return true;
+        });
+
+        EditTextPreference prefMaxResolution = findPreference("max_bitmap_resolution");
+        prefMaxResolution.setOnPreferenceChangeListener((preference, newValue) -> {
+            int sz = -1;
+            try {
+                sz = Integer.parseInt(newValue.toString().trim());
+            } catch (NumberFormatException ignored) {
+            }
+            if (BitmapSafeResize.isOverflowCanvas(sz) || sz < 100 && sz >= 0) {
+                return false;
+            } else {
+                BitmapSafeResize.setMaxResolution(sz);
+            }
+            requireActivity().recreate();
             return true;
         });
 

@@ -10,8 +10,6 @@ public interface INetworker {
 
     IAuthApi vkAuth();
 
-    IAudioCoverApi amazonAudioCover();
-
     IDebugToolApi debugToolApi();
 
     ILocalServerApi localServerApi();

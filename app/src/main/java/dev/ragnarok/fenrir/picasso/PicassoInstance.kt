@@ -12,6 +12,7 @@ import coil.ComponentRegistry
 import coil.ImageLoader
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import com.squareup.picasso.BitmapSafeResize
 import com.squareup.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import dev.ragnarok.fenrir.Account_Types
@@ -19,6 +20,7 @@ import dev.ragnarok.fenrir.Constants
 import dev.ragnarok.fenrir.api.ProxyUtil
 import dev.ragnarok.fenrir.picasso.PicassoInstance
 import dev.ragnarok.fenrir.settings.IProxySettings
+import dev.ragnarok.fenrir.settings.Settings
 import dev.ragnarok.fenrir.util.Logger
 import dev.ragnarok.fenrir.util.Objects
 import okhttp3.Cache
@@ -78,6 +80,7 @@ class PicassoInstance @SuppressLint("CheckResult") private constructor(
                 chain.proceed(request)
             })
         ProxyUtil.applyProxyConfig(builder, proxySettings.activeProxy)
+        BitmapSafeResize.setMaxResolution(Settings.get().other().maxBitmapResolution)
         return Picasso.Builder(app)
             .downloader(OkHttp3Downloader(builder.build()))
             .addRequestHandler(PicassoLocalRequestHandler())

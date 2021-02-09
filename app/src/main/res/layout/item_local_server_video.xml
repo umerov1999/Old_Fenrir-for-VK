@@ -55,7 +55,21 @@
             android:paddingEnd="6dp"
             android:paddingBottom="4dp"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-            tools:text="Take Me To Church - Hozier Cover Sofia Karlberg" />
+            tools:text="Title" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="start|top"
+            android:maxLines="2"
+            android:paddingStart="6dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="6dp"
+            android:paddingBottom="4dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            tools:text="Description" />
 
     </LinearLayout>
 

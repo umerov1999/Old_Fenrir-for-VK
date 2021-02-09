@@ -741,6 +741,14 @@
             android:title="@string/show_audio_cover"
             app:iconSpaceReserved="false" />
 
+        <EditTextPreference
+            android:defaultValue="-1"
+            android:inputType="number"
+            android:key="max_bitmap_resolution"
+            android:title="@string/max_bitmap_resolution"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
         <SwitchPreference
             android:key="use_old_vk_api"
             android:summary="@string/mp3_friendly"

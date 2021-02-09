@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,24 +11,35 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.Locale;
 
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
+import dev.ragnarok.fenrir.domain.ILocalServerInteractor;
+import dev.ragnarok.fenrir.domain.InteractorFactory;
+import dev.ragnarok.fenrir.link.VkLinkParser;
 import dev.ragnarok.fenrir.model.Video;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
+import dev.ragnarok.fenrir.util.CustomToast;
+import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 public class LocalServerVideosAdapter extends RecyclerView.Adapter<LocalServerVideosAdapter.Holder> {
 
     private final Context context;
+    private final ILocalServerInteractor mVideoInteractor;
     private List<Video> data;
     private VideoOnClickListener videoOnClickListener;
+    private Disposable listDisposable = Disposable.disposed();
 
     public LocalServerVideosAdapter(@NonNull Context context, @NonNull List<Video> data) {
         this.context = context;
         this.data = data;
+        mVideoInteractor = InteractorFactory.createLocalServerInteractor();
     }
 
     private static String BytesToSize(long Bytes) {
@@ -45,7 +57,7 @@ public class LocalServerVideosAdapter extends RecyclerView.Adapter<LocalServerVi
             returnSize = String.format(Locale.getDefault(), "%.2f MB", (double) Bytes / mb);
         else if (Bytes >= kb)
             returnSize = String.format(Locale.getDefault(), "%.2f KB", (double) Bytes / kb);
-        else returnSize = String.format(Locale.getDefault(), "%.2d Bytes", Bytes);
+        else returnSize = String.format(Locale.getDefault(), "%d Bytes", Bytes);
         return returnSize;
     }
 
@@ -60,6 +72,7 @@ public class LocalServerVideosAdapter extends RecyclerView.Adapter<LocalServerVi
         Video video = data.get(position);
 
         holder.title.setText(video.getTitle());
+        holder.description.setText(video.getDescription());
         holder.videoLenght.setText(BytesToSize(video.getDuration()));
 
         String photoUrl = video.getImage();
@@ -78,6 +91,20 @@ public class LocalServerVideosAdapter extends RecyclerView.Adapter<LocalServerVi
                 videoOnClickListener.onVideoClick(position, video);
             }
         });
+        holder.card.setOnLongClickListener(v -> {
+            String hash = VkLinkParser.parseLocalServerURL(video.getMp4link720());
+            if (Utils.isEmpty(hash)) {
+                return false;
+            }
+            listDisposable = mVideoInteractor.update_time(hash).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> CustomToast.CreateCustomToast(context).showToast(R.string.success), t -> Utils.showErrorInAdapter((Activity) context, t));
+            return true;
+        });
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NotNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        listDisposable.dispose();
     }
 
     @Override
@@ -104,6 +131,7 @@ public class LocalServerVideosAdapter extends RecyclerView.Adapter<LocalServerVi
         final ImageView image;
         final TextView videoLenght;
         final TextView title;
+        final TextView description;
 
         public Holder(View itemView) {
             super(itemView);
@@ -111,6 +139,7 @@ public class LocalServerVideosAdapter extends RecyclerView.Adapter<LocalServerVi
             image = itemView.findViewById(R.id.video_image);
             videoLenght = itemView.findViewById(R.id.video_lenght);
             title = itemView.findViewById(R.id.title);
+            description = itemView.findViewById(R.id.description);
         }
     }
 }

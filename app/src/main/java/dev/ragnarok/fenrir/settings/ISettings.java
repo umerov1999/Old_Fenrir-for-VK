@@ -61,6 +61,8 @@ public interface ISettings {
 
         boolean isShow_audio_cover();
 
+        int getMaxBitmapResolution();
+
         boolean isNative_parcel();
 
         boolean isUse_coil();

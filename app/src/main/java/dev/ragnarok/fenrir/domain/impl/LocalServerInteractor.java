@@ -55,6 +55,19 @@ public class LocalServerInteractor implements ILocalServerInteractor {
     }
 
     @Override
+    public Single<List<Audio>> getDiscography(int offset, int count) {
+        return networker.localServerApi()
+                .getDiscography(offset, count)
+                .map(items -> listEmptyIfNull(items.getItems()))
+                .map(out -> {
+                    List<Audio> ret = new ArrayList<>();
+                    for (int i = 0; i < out.size(); i++)
+                        ret.add(Dto2Model.transform(out.get(i)));
+                    return ret;
+                });
+    }
+
+    @Override
     public Single<List<Video>> searchVideos(String q, int offset, int count) {
         return networker.localServerApi()
                 .searchVideos(q, offset, count)
@@ -83,5 +96,25 @@ public class LocalServerInteractor implements ILocalServerInteractor {
                         ret.add(Dto2Model.transform(out.get(i)));
                     return ret;
                 });
+    }
+
+    @Override
+    public Single<List<Audio>> searchDiscography(String q, int offset, int count) {
+        return networker.localServerApi()
+                .searchDiscography(q, offset, count)
+                .map(items -> listEmptyIfNull(items.getItems()))
+                .map(out -> {
+                    List<Audio> ret = new ArrayList<>();
+                    for (int i = 0; i < out.size(); i++)
+                        ret.add(Dto2Model.transform(out.get(i)));
+                    return ret;
+                });
+    }
+
+    @Override
+    public Single<Integer> update_time(String hash) {
+        return networker.localServerApi()
+                .update_time(hash)
+                .map(resultId -> resultId);
     }
 }

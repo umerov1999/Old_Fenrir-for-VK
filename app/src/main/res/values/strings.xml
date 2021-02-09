@@ -747,6 +747,7 @@
     <string name="second_developer">Danilyuk Dmitry</string>
     <string name="first_pagan">First pagan</string>
     <string name="repo">Repository: https://github.com/umerov1999/Fenrir-for-VK</string>
+    <string name="repo_local_server">Repository: https://github.com/umerov1999/FenrirMediaServer/releases</string>
     <string name="is_donated">Donate check</string>
     <string name="comment">Comment</string>
     <string name="search">Search</string>
@@ -1670,4 +1671,7 @@
     <string name="error_dir_access">Directory cannot be accessed</string>
     <string name="label_parent_dir" translatable="false">..</string>
     <string name="show_donate_anim">Show donate animation</string>
+    <string name="discography">Discography</string>
+    <string name="update_time">Set current time</string>
+    <string name="max_bitmap_resolution">Max bitmap Resolution</string>
 </resources>

@@ -34,11 +34,9 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
 
     private final IProxySettings proxySettings;
     private final Object longpollRetrofitLock = new Object();
-    private final Object amazonaudiocoverRetrofitLock = new Object();
     private final Object debugToolRetrofitLock = new Object();
     private final Object localServerRetrofitLock = new Object();
     private RetrofitWrapper longpollRetrofitInstance;
-    private RetrofitWrapper amazonaudiocoverRetrofitInstance;
     private RetrofitWrapper debugToolRetrofitInstance;
     private RetrofitWrapper localServerRetrofitInstance;
 
@@ -66,12 +64,6 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
             if (nonNull(debugToolRetrofitInstance)) {
                 debugToolRetrofitInstance.cleanup();
                 debugToolRetrofitInstance = null;
-            }
-        }
-        synchronized (amazonaudiocoverRetrofitLock) {
-            if (nonNull(amazonaudiocoverRetrofitInstance)) {
-                amazonaudiocoverRetrofitInstance.cleanup();
-                amazonaudiocoverRetrofitInstance = null;
             }
         }
     }
@@ -124,24 +116,6 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
 
             return RetrofitWrapper.wrap(retrofit, false);
         });
-    }
-
-    private Retrofit createAmazonAudioCoverRetrofit() {
-        OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .readTimeout(30, TimeUnit.SECONDS)
-                .addInterceptor(HttpLogger.DEFAULT_LOGGING_INTERCEPTOR).addInterceptor(chain -> {
-                    Request request = chain.request().newBuilder().addHeader("User-Agent", Constants.USER_AGENT(Account_Types.BY_TYPE)).build();
-                    return chain.proceed(request);
-                });
-
-        ProxyUtil.applyProxyConfig(builder, proxySettings.getActiveProxy());
-
-        return new Retrofit.Builder()
-                .baseUrl("https://axzodu785h.execute-api.us-east-1.amazonaws.com/")
-                .addConverterFactory(GsonConverterFactory.create(new Gson()))
-                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-                .client(builder.build())
-                .build();
     }
 
     private Retrofit createDebugToolRetrofit() {
@@ -218,22 +192,6 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .client(builder.build())
                 .build();
-    }
-
-    @Override
-    public Single<RetrofitWrapper> provideAmazonAudioCoverRetrofit() {
-        return Single.fromCallable(() -> {
-
-            if (Objects.isNull(amazonaudiocoverRetrofitInstance)) {
-                synchronized (amazonaudiocoverRetrofitLock) {
-                    if (Objects.isNull(amazonaudiocoverRetrofitInstance)) {
-                        amazonaudiocoverRetrofitInstance = RetrofitWrapper.wrap(createAmazonAudioCoverRetrofit());
-                    }
-                }
-            }
-
-            return amazonaudiocoverRetrofitInstance;
-        });
     }
 
     @Override

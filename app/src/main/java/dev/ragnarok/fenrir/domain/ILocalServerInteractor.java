@@ -11,7 +11,13 @@ public interface ILocalServerInteractor {
 
     Single<List<Audio>> getAudios(int offset, int count);
 
+    Single<List<Audio>> getDiscography(int offset, int count);
+
     Single<List<Video>> searchVideos(String q, int offset, int count);
 
     Single<List<Audio>> searchAudios(String q, int offset, int count);
+
+    Single<List<Audio>> searchDiscography(String q, int offset, int count);
+
+    Single<Integer> update_time(String hash);
 }

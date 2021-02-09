@@ -145,6 +145,15 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public int getMaxBitmapResolution() {
+        try {
+            return Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(app).getString("max_bitmap_resolution", "-1").trim());
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    @Override
     public boolean isUse_coil() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("use_coil_library", false);
     }

@@ -8,14 +8,12 @@ import dev.ragnarok.fenrir.api.UploadRetrofitProvider;
 import dev.ragnarok.fenrir.api.VkMethodHttpClientFactory;
 import dev.ragnarok.fenrir.api.VkRetrofitProvider;
 import dev.ragnarok.fenrir.api.interfaces.IAccountApis;
-import dev.ragnarok.fenrir.api.interfaces.IAudioCoverApi;
 import dev.ragnarok.fenrir.api.interfaces.IAuthApi;
 import dev.ragnarok.fenrir.api.interfaces.IDebugToolApi;
 import dev.ragnarok.fenrir.api.interfaces.ILocalServerApi;
 import dev.ragnarok.fenrir.api.interfaces.ILongpollApi;
 import dev.ragnarok.fenrir.api.interfaces.INetworker;
 import dev.ragnarok.fenrir.api.interfaces.IUploadApi;
-import dev.ragnarok.fenrir.api.services.IAudioCoverService;
 import dev.ragnarok.fenrir.api.services.IAuthService;
 import dev.ragnarok.fenrir.api.services.IDebugToolService;
 import dev.ragnarok.fenrir.api.services.ILocalServerService;
@@ -51,11 +49,6 @@ public class Networker implements INetworker {
     @Override
     public IAuthApi vkAuth() {
         return new AuthApi(() -> otherVkRetrofitProvider.provideAuthServiceRetrofit().map(wrapper -> wrapper.create(IAuthService.class)));
-    }
-
-    @Override
-    public IAudioCoverApi amazonAudioCover() {
-        return new AudioCoverApi(() -> otherVkRetrofitProvider.provideAmazonAudioCoverRetrofit().map(wrapper -> wrapper.create(IAudioCoverService.class)));
     }
 
     @Override

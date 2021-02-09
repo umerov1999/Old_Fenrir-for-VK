@@ -35,6 +35,9 @@ import java.util.Objects;
 
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
+import dev.ragnarok.fenrir.domain.ILocalServerInteractor;
+import dev.ragnarok.fenrir.domain.InteractorFactory;
+import dev.ragnarok.fenrir.link.VkLinkParser;
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.ModalBottomSheetDialogFragment;
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.OptionRequest;
 import dev.ragnarok.fenrir.model.Audio;
@@ -61,6 +64,7 @@ import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
 public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioLocalServerRecyclerAdapter.AudioHolder> {
 
     private final Context mContext;
+    private final ILocalServerInteractor mAudioInteractor;
     private ClickListener mClickListener;
     private Disposable mPlayerDisposable = Disposable.disposed();
     private Disposable audioListDisposable = Disposable.disposed();
@@ -71,6 +75,7 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
         this.data = data;
         mContext = context;
         currAudio = MusicUtils.getCurrentAudio();
+        mAudioInteractor = InteractorFactory.createLocalServerInteractor();
     }
 
     private static String BytesToSize(long Bytes) {
@@ -88,7 +93,7 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
             returnSize = String.format(Locale.getDefault(), "%.2f MB", (double) Bytes / mb);
         else if (Bytes >= kb)
             returnSize = String.format(Locale.getDefault(), "%.2f KB", (double) Bytes / kb);
-        else returnSize = String.format(Locale.getDefault(), "%.2d Bytes", Bytes);
+        else returnSize = String.format(Locale.getDefault(), "%d Bytes", Bytes);
         return returnSize;
     }
 
@@ -265,6 +270,7 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
             menus.add(new OptionRequest(AudioItem.save_item_audio, mContext.getString(R.string.download), R.drawable.save));
             menus.add(new OptionRequest(AudioItem.play_item_audio, mContext.getString(R.string.play), R.drawable.play));
             menus.add(new OptionRequest(AudioItem.bitrate_item_audio, mContext.getString(R.string.get_bitrate), R.drawable.high_quality));
+            menus.add(new OptionRequest(AudioItem.edit_track, mContext.getString(R.string.update_time), R.drawable.ic_recent));
 
 
             menus.header(firstNonEmptyString(audio.getArtist(), " ") + " - " + audio.getTitle(), R.drawable.song, audio.getThumb_image_little());
@@ -300,6 +306,13 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
                         break;
                     case AudioItem.bitrate_item_audio:
                         getLocalBitrate(audio.getUrl());
+                        break;
+                    case AudioItem.edit_track:
+                        String hash = VkLinkParser.parseLocalServerURL(audio.getUrl());
+                        if (Utils.isEmpty(hash)) {
+                            break;
+                        }
+                        audioListDisposable = mAudioInteractor.update_time(hash).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> CustomToast.CreateCustomToast(mContext).showToast(R.string.success), t -> Utils.showErrorInAdapter((Activity) mContext, t));
                         break;
                     default:
                         break;

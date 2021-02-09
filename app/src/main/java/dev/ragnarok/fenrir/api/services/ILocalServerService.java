@@ -17,6 +17,11 @@ public interface ILocalServerService {
                                                       @Field("count") Integer count);
 
     @FormUrlEncoded
+    @POST("discography.get")
+    Single<BaseResponse<Items<VKApiAudio>>> getDiscography(@Field("offset") Integer offset,
+                                                           @Field("count") Integer count);
+
+    @FormUrlEncoded
     @POST("video.get")
     Single<BaseResponse<Items<VKApiVideo>>> getVideos(@Field("offset") Integer offset,
                                                       @Field("count") Integer count);
@@ -28,8 +33,18 @@ public interface ILocalServerService {
                                                          @Field("count") Integer count);
 
     @FormUrlEncoded
+    @POST("discography.search")
+    Single<BaseResponse<Items<VKApiAudio>>> searchDiscography(@Field("q") String query,
+                                                              @Field("offset") Integer offset,
+                                                              @Field("count") Integer count);
+
+    @FormUrlEncoded
     @POST("video.search")
     Single<BaseResponse<Items<VKApiVideo>>> searchVideos(@Field("q") String query,
                                                          @Field("offset") Integer offset,
                                                          @Field("count") Integer count);
+
+    @FormUrlEncoded
+    @POST("update_time")
+    Single<BaseResponse<Integer>> update_time(@Field("hash") String hash);
 }

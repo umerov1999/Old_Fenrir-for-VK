@@ -20,3 +20,5 @@
   2) Выберите тип сборки (fenrir_vk_full) Debug или Release и соберите apk :)
 
 <b>Публикация полной версии запрещена!</b>
+
+Локальный медиа сервер https://github.com/umerov1999/FenrirMediaServer/releases

@@ -15,8 +15,17 @@ public interface ILocalServerApi {
     Single<Items<VKApiAudio>> getAudios(Integer offset, Integer count);
 
     @CheckResult
+    Single<Items<VKApiAudio>> getDiscography(Integer offset, Integer count);
+
+    @CheckResult
     Single<Items<VKApiVideo>> searchVideos(String query, Integer offset, Integer count);
 
     @CheckResult
     Single<Items<VKApiAudio>> searchAudios(String query, Integer offset, Integer count);
+
+    @CheckResult
+    Single<Items<VKApiAudio>> searchDiscography(String query, Integer offset, Integer count);
+
+    @CheckResult
+    Single<Integer> update_time(String hash);
 }

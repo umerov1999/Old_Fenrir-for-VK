@@ -63,6 +63,7 @@ public class VkLinkParser {
     private static final Pattern PATTERN_BOARD = Pattern.compile("vk\\.com/board(\\d+)");
     private static final Pattern PATTERN_FEED_SEARCH = Pattern.compile("vk\\.com/feed\\?q=([^&]*)&section=search");
     private static final Pattern PATTERN_FENRIR_TRACK = Pattern.compile("vk\\.com/audio/(-?\\d*)_(\\d*)"); //+
+    private static final Pattern PATTERN_FENRIR_SERVER_TRACK_HASH = Pattern.compile("hash=([^&]*)");
     private static final List<IParser> PARSERS = new LinkedList<>();
 
     static {
@@ -440,6 +441,18 @@ public class VkLinkParser {
 
         }
 
+        return null;
+    }
+
+    public static String parseLocalServerURL(String string) {
+        Matcher matcher = PATTERN_FENRIR_SERVER_TRACK_HASH.matcher(string);
+        try {
+            if (matcher.find()) {
+                return matcher.group(1);
+            }
+        } catch (NumberFormatException ignored) {
+
+        }
         return null;
     }
 

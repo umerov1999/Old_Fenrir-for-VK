@@ -636,6 +636,7 @@
     <string name="second_developer">Данилюк Дмитрий</string>
     <string name="first_pagan">Первый языческий</string>
     <string name="repo">Репозиторий: https://github.com/umerov1999/Fenrir-for-VK</string>
+    <string name="repo_local_server">Репозиторий: https://github.com/umerov1999/FenrirMediaServer/releases</string>
     <string name="is_donated">Проверка доната</string>
     <string name="comment">Комментарий</string>
     <string name="search">Поиск</string>
@@ -1514,4 +1515,7 @@
     <string name="last_edit">Модификация: %1$s, %2$s</string>
     <string name="error_dir_access">Каталог недоступен</string>
     <string name="show_donate_anim">Донатная анимация</string>
+    <string name="discography">Дискография</string>
+    <string name="update_time">Задать текущее время</string>
+    <string name="max_bitmap_resolution">Максимальное разрешение картинки</string>
 </resources>
