@@ -85,7 +85,7 @@ interface IChatView : IBasicMessageListView, IErrorView {
     fun showDeleteForAllDialog(ids: ArrayList<Message>)
     fun ScrollTo(position: Int)
     fun showSnackbar(@StringRes res: Int, isLong: Boolean)
-    fun goToMessagesLookup(accountId: Int, peerId: Int, messageId: Int)
+    fun goToMessagesLookup(accountId: Int, peerId: Int, messageId: Int, message: Message)
     fun goToUnreadMessages(
         accountId: Int,
         messageId: Int,

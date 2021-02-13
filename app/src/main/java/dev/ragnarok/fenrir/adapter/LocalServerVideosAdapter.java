@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
@@ -21,12 +22,19 @@ import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.domain.ILocalServerInteractor;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
 import dev.ragnarok.fenrir.link.VkLinkParser;
+import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.ModalBottomSheetDialogFragment;
+import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.OptionRequest;
 import dev.ragnarok.fenrir.model.Video;
+import dev.ragnarok.fenrir.model.menu.AudioItem;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
+import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
+import dev.ragnarok.fenrir.util.DownloadWorkUtils;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.disposables.Disposable;
+
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
 
 public class LocalServerVideosAdapter extends RecyclerView.Adapter<LocalServerVideosAdapter.Holder> {
 
@@ -92,11 +100,39 @@ public class LocalServerVideosAdapter extends RecyclerView.Adapter<LocalServerVi
             }
         });
         holder.card.setOnLongClickListener(v -> {
-            String hash = VkLinkParser.parseLocalServerURL(video.getMp4link720());
-            if (Utils.isEmpty(hash)) {
-                return false;
-            }
-            listDisposable = mVideoInteractor.update_time(hash).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> CustomToast.CreateCustomToast(context).showToast(R.string.success), t -> Utils.showErrorInAdapter((Activity) context, t));
+            ModalBottomSheetDialogFragment.Builder menus = new ModalBottomSheetDialogFragment.Builder();
+            menus.add(new OptionRequest(AudioItem.save_item_audio, context.getString(R.string.download), R.drawable.save));
+            menus.add(new OptionRequest(AudioItem.play_item_audio, context.getString(R.string.play), R.drawable.play));
+            menus.add(new OptionRequest(AudioItem.edit_track, context.getString(R.string.update_time), R.drawable.ic_recent));
+            menus.header(firstNonEmptyString(video.getDescription(), " ") + " - " + video.getTitle(), R.drawable.video, null);
+            menus.columns(2);
+            menus.show(((FragmentActivity) context).getSupportFragmentManager(), "server_video_options", option -> {
+                switch (option.getId()) {
+                    case AudioItem.save_item_audio:
+                        if (!AppPerms.hasReadWriteStoragePermission(context)) {
+                            if (videoOnClickListener != null) {
+                                videoOnClickListener.onRequestWritePermissions();
+                            }
+                            break;
+                        }
+                        DownloadWorkUtils.doDownloadVideo(context, video, video.getMp4link720(), "Local");
+                        break;
+                    case AudioItem.play_item_audio:
+                        if (videoOnClickListener != null) {
+                            videoOnClickListener.onVideoClick(position, video);
+                        }
+                        break;
+                    case AudioItem.edit_track:
+                        String hash = VkLinkParser.parseLocalServerURL(video.getMp4link720());
+                        if (Utils.isEmpty(hash)) {
+                            break;
+                        }
+                        listDisposable = mVideoInteractor.update_time(hash).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> CustomToast.CreateCustomToast(context).showToast(R.string.success), t -> Utils.showErrorInAdapter((Activity) context, t));
+                        break;
+                    default:
+                        break;
+                }
+            });
             return true;
         });
     }
@@ -123,6 +159,8 @@ public class LocalServerVideosAdapter extends RecyclerView.Adapter<LocalServerVi
 
     public interface VideoOnClickListener {
         void onVideoClick(int position, Video video);
+
+        void onRequestWritePermissions();
     }
 
     public static class Holder extends RecyclerView.ViewHolder {

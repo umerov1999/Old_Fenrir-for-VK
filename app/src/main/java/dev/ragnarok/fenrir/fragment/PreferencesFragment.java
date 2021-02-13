@@ -457,14 +457,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             }
         }
 
-        Preference is_donated = findPreference("is_donated");
-        if (is_donated != null) {
-            is_donated.setOnPreferenceClickListener(preference -> {
-                CheckDonate.isDonated(requireActivity(), getAccountId());
-                return true;
-            });
-        }
-
         ListPreference chat_background = findPreference("chat_background");
         if (chat_background != null) {
             chat_background.setOnPreferenceChangeListener((preference, newValue) -> {

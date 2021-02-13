@@ -112,10 +112,7 @@ public class AudiosLocalFragment extends BaseMvpFragment<AudiosLocalPresenter, I
             if (curr != null) {
                 int index = getPresenter().getAudioPos(curr);
                 if (index >= 0) {
-                    if (Settings.get().other().isShow_audio_cover())
-                        recyclerView.scrollToPosition(index);
-                    else
-                        recyclerView.smoothScrollToPosition(index);
+                    recyclerView.scrollToPosition(index);
                 } else
                     CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.audio_not_found);
             } else

@@ -89,9 +89,7 @@ class PlaylistFragment : BottomSheetDialogFragment(), AudioRecyclerAdapter.Click
             if (curr != null) {
                 val index = getAudioPos(curr)
                 if (index >= 0) {
-                    if (Settings.get().other().isShow_audio_cover) mRecyclerView?.scrollToPosition(
-                        index
-                    ) else mRecyclerView?.smoothScrollToPosition(index)
+                    mRecyclerView?.scrollToPosition(index)
                 } else CreateCustomToast(requireActivity()).showToast(R.string.audio_not_found)
             } else CreateCustomToast(requireActivity()).showToastError(R.string.null_audio)
         }

@@ -66,8 +66,6 @@
     <integer name="attachments_editor_column_count">3</integer>
 
     <dimen name="card_margin">8dp</dimen>
-    <dimen name="card_margin_bottom">@dimen/card_margin</dimen>
-
     <dimen name="refresher_offset_start">40dp</dimen>
     <dimen name="refresher_offset_end">72dp</dimen>
     <dimen name="recyclerview_toolbar_offset">56dp</dimen>
@@ -100,19 +98,5 @@
     <dimen name="file_picker_checkbox_margin">8dp</dimen>
     <dimen name="file_picker_toolbar_image_margin">16dp</dimen>
     <dimen name="file_picker_checkbox_dimens">24dp</dimen>
-
-    <dimen name="feed_card_content_margin_end">8dp</dimen>
-    <dimen name="feed_card_content_margin_start">8dp</dimen>
-    <dimen name="feed_recycle_padding_start">0dp</dimen>
-    <dimen name="feed_recycle_padding_end">0dp</dimen>
-
-    <dimen name="video_frame_margin_start">8dp</dimen>
-    <dimen name="video_frame_margin_end">8dp</dimen>
-    <dimen name="chat_dialog_preview_margin_start">8dp</dimen>
-    <dimen name="chat_dialog_preview_margin_end">8dp</dimen>
-    <dimen name="item_people_margin_start">0dp</dimen>
-    <dimen name="item_people_margin_end">0dp</dimen>
-    <dimen name="item_audio_margin_start">0dp</dimen>
-    <dimen name="item_audio_margin_end">0dp</dimen>
 
 </resources>

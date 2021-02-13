@@ -748,7 +748,6 @@
     <string name="first_pagan">First pagan</string>
     <string name="repo">Repository: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="repo_local_server">Repository: https://github.com/umerov1999/FenrirMediaServer/releases</string>
-    <string name="is_donated">Donate check</string>
     <string name="comment">Comment</string>
     <string name="search">Search</string>
     <string name="input">Input</string>
@@ -1438,7 +1437,6 @@
     <string name="audio_in_status_summary">The update happens if you open the main player</string>
     <string name="show_audio_top">Show popular tracks</string>
     <string name="my_message_no_color">Disable outgoing message color</string>
-    <string name="show_audio_cover">Show audio covers</string>
     <string name="do_upload_video">Download videos from local storage?</string>
     <string name="null_audio">No playable audio</string>
     <string name="audio_not_found">Audio not found in the list</string>

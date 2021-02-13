@@ -101,7 +101,7 @@ public abstract class PlaceSupportMvpFragment<P extends PlaceSupportPresenter<V>
 
     @Override
     public void goToMessagesLookupFWD(int accountId, int peerId, int messageId) {
-        PlaceFactory.getMessagesLookupPlace(accountId, peerId, messageId).tryOpenWith(requireActivity());
+        PlaceFactory.getMessagesLookupPlace(accountId, peerId, messageId, null).tryOpenWith(requireActivity());
     }
 
     @Override

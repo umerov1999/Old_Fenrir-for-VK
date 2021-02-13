@@ -43,8 +43,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingStart="@dimen/feed_recycle_padding_start"
-            android:paddingEnd="@dimen/feed_recycle_padding_end"
             android:scrollbars="vertical" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

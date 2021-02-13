@@ -156,6 +156,7 @@ public class FeedbackDtoAdapter extends AbsAdapter implements JsonDeserializer<V
 
             case "copy_post":
             case "copy_photo":
+            case "copy_video":
                 return COPY_PARSER;
 
             case "mention_comment_photo":
@@ -164,7 +165,7 @@ public class FeedbackDtoAdapter extends AbsAdapter implements JsonDeserializer<V
                 return MENTION_COMMENT_PARSER;
 
             default:
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("unsupported type " + type);
         }
     }
 

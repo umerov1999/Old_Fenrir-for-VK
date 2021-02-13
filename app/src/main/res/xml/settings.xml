@@ -735,12 +735,6 @@
             app:allowDividerAbove="true"
             app:iconSpaceReserved="false" />
 
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="show_audio_cover"
-            android:title="@string/show_audio_cover"
-            app:iconSpaceReserved="false" />
-
         <EditTextPreference
             android:defaultValue="-1"
             android:inputType="number"
@@ -791,11 +785,6 @@
     <PreferenceCategory
         android:title="@string/about_settings"
         app:iconSpaceReserved="false">
-
-        <Preference
-            android:key="is_donated"
-            android:title="@string/is_donated"
-            app:iconSpaceReserved="false" />
 
         <Preference
             android:dependency="developer_mode"

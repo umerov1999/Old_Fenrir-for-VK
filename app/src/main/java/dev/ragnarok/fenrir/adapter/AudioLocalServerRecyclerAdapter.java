@@ -199,18 +199,13 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
 
         updateAudioStatus(holder, audio);
 
-        if (Settings.get().other().isShow_audio_cover()) {
-            if (!Utils.isEmpty(audio.getThumb_image_little())) {
-                PicassoInstance.with()
-                        .load(audio.getThumb_image_little())
-                        .placeholder(Objects.requireNonNull(ResourcesCompat.getDrawable(mContext.getResources(), getAudioCoverSimple(), mContext.getTheme())))
-                        .transform(TransformCover())
-                        .tag(Constants.PICASSO_TAG)
-                        .into(holder.play_cover);
-            } else {
-                PicassoInstance.with().cancelRequest(holder.play_cover);
-                holder.play_cover.setImageResource(getAudioCoverSimple());
-            }
+        if (!Utils.isEmpty(audio.getThumb_image_little())) {
+            PicassoInstance.with()
+                    .load(audio.getThumb_image_little())
+                    .placeholder(Objects.requireNonNull(ResourcesCompat.getDrawable(mContext.getResources(), getAudioCoverSimple(), mContext.getTheme())))
+                    .transform(TransformCover())
+                    .tag(Constants.PICASSO_TAG)
+                    .into(holder.play_cover);
         } else {
             PicassoInstance.with().cancelRequest(holder.play_cover);
             holder.play_cover.setImageResource(getAudioCoverSimple());
@@ -248,12 +243,12 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
             }
             holder.saved.setVisibility(View.VISIBLE);
             holder.saved.setImageResource(R.drawable.save);
-            int ret = DownloadWorkUtils.doDownloadAudio(mContext, audio, Settings.get().accounts().getCurrent(), false);
+            int ret = DownloadWorkUtils.doDownloadAudio(mContext, audio, Settings.get().accounts().getCurrent(), false, true);
             if (ret == 0)
                 CustomToast.CreateCustomToast(mContext).showToastBottom(R.string.saved_audio);
             else if (ret == 1 || ret == 2) {
                 Utils.ThemedSnack(v, ret == 1 ? R.string.audio_force_download : R.string.audio_force_download_pc, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.button_yes,
-                        v1 -> DownloadWorkUtils.doDownloadAudio(mContext, audio, Settings.get().accounts().getCurrent(), true)).show();
+                        v1 -> DownloadWorkUtils.doDownloadAudio(mContext, audio, Settings.get().accounts().getCurrent(), true, true)).show();
             } else {
                 holder.saved.setVisibility(View.GONE);
                 CustomToast.CreateCustomToast(mContext).showToastBottom(R.string.error_audio);
@@ -286,12 +281,12 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
                         }
                         holder.saved.setVisibility(View.VISIBLE);
                         holder.saved.setImageResource(R.drawable.save);
-                        int ret = DownloadWorkUtils.doDownloadAudio(mContext, audio, Settings.get().accounts().getCurrent(), false);
+                        int ret = DownloadWorkUtils.doDownloadAudio(mContext, audio, Settings.get().accounts().getCurrent(), false, true);
                         if (ret == 0)
                             CustomToast.CreateCustomToast(mContext).showToastBottom(R.string.saved_audio);
                         else if (ret == 1 || ret == 2) {
                             Utils.ThemedSnack(view, ret == 1 ? R.string.audio_force_download : R.string.audio_force_download_pc, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.button_yes,
-                                    v1 -> DownloadWorkUtils.doDownloadAudio(mContext, audio, Settings.get().accounts().getCurrent(), true)).show();
+                                    v1 -> DownloadWorkUtils.doDownloadAudio(mContext, audio, Settings.get().accounts().getCurrent(), true, true)).show();
                         } else {
                             holder.saved.setVisibility(View.GONE);
                             CustomToast.CreateCustomToast(mContext).showToastBottom(R.string.error_audio);

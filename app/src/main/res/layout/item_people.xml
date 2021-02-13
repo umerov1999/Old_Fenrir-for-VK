@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/item_people_margin_start"
-    android:layout_marginEnd="@dimen/item_people_margin_end"
     android:background="?attr/selectableItemBackground"
     android:minHeight="64dp">
 

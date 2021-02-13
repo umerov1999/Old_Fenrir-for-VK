@@ -250,7 +250,7 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
     public IPresenterFactory<NotReadMessagesPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {
             int aid = requireArguments().getInt(Extra.ACCOUNT_ID);
-            Integer focusTo = requireArguments().containsKey(Extra.FOCUS_TO) ? requireArguments().getInt(Extra.FOCUS_TO) : null;
+            int focusTo = requireArguments().getInt(Extra.FOCUS_TO);
             int incoming = requireArguments().getInt(Extra.INCOMING);
             int outgoing = requireArguments().getInt(Extra.OUTGOING);
             Peer peer = requireArguments().getParcelable(Extra.PEER);

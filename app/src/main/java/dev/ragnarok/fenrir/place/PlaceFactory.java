@@ -237,9 +237,9 @@ public class PlaceFactory {
                 .withStringExtra(Extra.TYPE, type);
     }
 
-    public static Place getMessagesLookupPlace(int aid, int peerId, int focusMessageId) {
+    public static Place getMessagesLookupPlace(int aid, int peerId, int focusMessageId, @Nullable Message message) {
         return new Place(Place.MESSAGE_LOOKUP)
-                .setArguments(MessagesLookFragment.buildArgs(aid, peerId, focusMessageId));
+                .setArguments(MessagesLookFragment.buildArgs(aid, peerId, focusMessageId, message));
     }
 
     public static Place getUnreadMessagesPlace(int aid, int focusMessageId, int incoming, int outgoing, int unreadCount, @NonNull Peer peer) {

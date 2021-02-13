@@ -637,7 +637,6 @@
     <string name="first_pagan">Первый языческий</string>
     <string name="repo">Репозиторий: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="repo_local_server">Репозиторий: https://github.com/umerov1999/FenrirMediaServer/releases</string>
-    <string name="is_donated">Проверка доната</string>
     <string name="comment">Комментарий</string>
     <string name="search">Поиск</string>
     <string name="input">Ввод</string>
@@ -1284,7 +1283,6 @@
     <string name="audio_in_status_summary">Обновление происходит, если открыть основной плеер</string>
     <string name="show_audio_top">Показывать популярные треки</string>
     <string name="my_message_no_color">Отключить цвет исходящих сообщений</string>
-    <string name="show_audio_cover">Показывать обложки аудио</string>
     <string name="do_upload_video">Загрузить видео из локального хранилища?</string>
     <string name="null_audio">Нет проигрываемых аудио</string>
     <string name="audio_not_found">Аудио не найдено в списке</string>

@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.fragment;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,8 @@ import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.VideosLocalServerPresenter;
 import dev.ragnarok.fenrir.mvp.view.IVideosLocalServerView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
+import dev.ragnarok.fenrir.util.AppPerms;
+import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.MySearchView;
 
@@ -36,6 +39,9 @@ import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class VideosLocalServerFragment extends BaseMvpFragment<VideosLocalServerPresenter, IVideosLocalServerView>
         implements MySearchView.OnQueryTextListener, LocalServerVideosAdapter.VideoOnClickListener, IVideosLocalServerView {
+    private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+            () -> CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text));
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LocalServerVideosAdapter mAudioRecyclerAdapter;
     private boolean doVideoLoadTabs;
@@ -147,5 +153,10 @@ public class VideosLocalServerFragment extends BaseMvpFragment<VideosLocalServer
     @Override
     public void onVideoClick(int position, Video video) {
         PlaceFactory.getVkInternalPlayerPlace(video, InternalVideoSize.SIZE_720, true).tryOpenWith(requireActivity());
+    }
+
+    @Override
+    public void onRequestWritePermissions() {
+        requestWritePermission.launch();
     }
 }

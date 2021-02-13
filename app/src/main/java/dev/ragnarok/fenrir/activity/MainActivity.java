@@ -50,7 +50,6 @@ import java.util.Collections;
 import java.util.List;
 
 import dev.ragnarok.fenrir.Account_Types;
-import dev.ragnarok.fenrir.CheckDonate;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.R;
@@ -351,8 +350,6 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                 place.tryOpenWith(this);
             }
             checkFCMRegistration();
-
-            CheckDonate.UpdateDonateList(this);
 
             if (!isAuthValid()) {
                 startAccountsActivity();

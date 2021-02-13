@@ -147,7 +147,7 @@ public abstract class AccountDependencyDialogFragment extends BaseDialogFragment
 
     @Override
     public void onGoToMessagesLookup(@NonNull Message message) {
-        PlaceFactory.getMessagesLookupPlace(getAccountId(), message.getPeerId(), message.getId()).tryOpenWith(requireActivity());
+        PlaceFactory.getMessagesLookupPlace(getAccountId(), message.getPeerId(), message.getId(), null).tryOpenWith(requireActivity());
     }
 
     @Override

@@ -169,18 +169,13 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
 
         updateAudioStatus(holder, audio);
 
-        if (Settings.get().other().isShow_audio_cover()) {
-            if (!Utils.isEmpty(audio.getThumb_image_little())) {
-                PicassoInstance.with()
-                        .load(audio.getThumb_image_little())
-                        .placeholder(Objects.requireNonNull(ResourcesCompat.getDrawable(mContext.getResources(), getAudioCoverSimple(), mContext.getTheme())))
-                        .transform(TransformCover())
-                        .tag(Constants.PICASSO_TAG)
-                        .into(holder.play_cover);
-            } else {
-                PicassoInstance.with().cancelRequest(holder.play_cover);
-                holder.play_cover.setImageResource(getAudioCoverSimple());
-            }
+        if (!Utils.isEmpty(audio.getThumb_image_little())) {
+            PicassoInstance.with()
+                    .load(audio.getThumb_image_little())
+                    .placeholder(Objects.requireNonNull(ResourcesCompat.getDrawable(mContext.getResources(), getAudioCoverSimple(), mContext.getTheme())))
+                    .transform(TransformCover())
+                    .tag(Constants.PICASSO_TAG)
+                    .into(holder.play_cover);
         } else {
             PicassoInstance.with().cancelRequest(holder.play_cover);
             holder.play_cover.setImageResource(getAudioCoverSimple());

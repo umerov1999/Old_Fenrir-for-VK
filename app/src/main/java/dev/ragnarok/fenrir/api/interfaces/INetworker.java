@@ -10,8 +10,6 @@ public interface INetworker {
 
     IAuthApi vkAuth();
 
-    IDebugToolApi debugToolApi();
-
     ILocalServerApi localServerApi();
 
     ILongpollApi longpoll();

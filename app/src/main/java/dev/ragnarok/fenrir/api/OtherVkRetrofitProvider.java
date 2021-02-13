@@ -34,10 +34,8 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
 
     private final IProxySettings proxySettings;
     private final Object longpollRetrofitLock = new Object();
-    private final Object debugToolRetrofitLock = new Object();
     private final Object localServerRetrofitLock = new Object();
     private RetrofitWrapper longpollRetrofitInstance;
-    private RetrofitWrapper debugToolRetrofitInstance;
     private RetrofitWrapper localServerRetrofitInstance;
 
     @SuppressLint("CheckResult")
@@ -58,12 +56,6 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
             if (nonNull(localServerRetrofitInstance)) {
                 localServerRetrofitInstance.cleanup();
                 localServerRetrofitInstance = null;
-            }
-        }
-        synchronized (debugToolRetrofitLock) {
-            if (nonNull(debugToolRetrofitInstance)) {
-                debugToolRetrofitInstance.cleanup();
-                debugToolRetrofitInstance = null;
             }
         }
     }
@@ -116,24 +108,6 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
 
             return RetrofitWrapper.wrap(retrofit, false);
         });
-    }
-
-    private Retrofit createDebugToolRetrofit() {
-        OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .readTimeout(30, TimeUnit.SECONDS)
-                .addInterceptor(HttpLogger.DEFAULT_LOGGING_INTERCEPTOR).addInterceptor(chain -> {
-                    Request request = chain.request().newBuilder().addHeader("User-Agent", Constants.USER_AGENT(Account_Types.BY_TYPE)).build();
-                    return chain.proceed(request);
-                });
-
-        ProxyUtil.applyProxyConfig(builder, proxySettings.getActiveProxy());
-
-        return new Retrofit.Builder()
-                .baseUrl("https://umerov1999.github.io/Fenrir-for-VK-Donates/")
-                .addConverterFactory(GsonConverterFactory.create(new Gson()))
-                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-                .client(builder.build())
-                .build();
     }
 
     private Retrofit createLocalServerRetrofit() {
@@ -192,22 +166,6 @@ public class OtherVkRetrofitProvider implements IOtherVkRetrofitProvider {
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .client(builder.build())
                 .build();
-    }
-
-    @Override
-    public Single<RetrofitWrapper> provideDebugToolRetrofit() {
-        return Single.fromCallable(() -> {
-
-            if (Objects.isNull(debugToolRetrofitInstance)) {
-                synchronized (debugToolRetrofitLock) {
-                    if (Objects.isNull(debugToolRetrofitInstance)) {
-                        debugToolRetrofitInstance = RetrofitWrapper.wrap(createDebugToolRetrofit());
-                    }
-                }
-            }
-
-            return debugToolRetrofitInstance;
-        });
     }
 
     @Override

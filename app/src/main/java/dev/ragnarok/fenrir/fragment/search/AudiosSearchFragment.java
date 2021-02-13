@@ -116,10 +116,7 @@ public class AudiosSearchFragment extends AbsSearchFragment<AudiosSearchPresente
                 if (curr != null) {
                     int index = getPresenter().getAudioPos(curr);
                     if (index >= 0) {
-                        if (Settings.get().other().isShow_audio_cover())
-                            recyclerView.scrollToPosition(index + mAdapter.getHeadersCount());
-                        else
-                            recyclerView.smoothScrollToPosition(index + mAdapter.getHeadersCount());
+                        recyclerView.scrollToPosition(index + mAdapter.getHeadersCount());
                     } else
                         CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.audio_not_found);
                 } else

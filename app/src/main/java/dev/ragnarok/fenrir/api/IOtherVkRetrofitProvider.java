@@ -10,7 +10,5 @@ public interface IOtherVkRetrofitProvider {
 
     Single<RetrofitWrapper> provideLongpollRetrofit();
 
-    Single<RetrofitWrapper> provideDebugToolRetrofit();
-
     Single<RetrofitWrapper> provideLocalServerRetrofit();
 }

@@ -104,6 +104,6 @@ public class MessagesSearchFragment extends AbsSearchFragment<MessagesSearchPres
 
     @Override
     public void goToMessagesLookup(int accountId, int peerId, int messageId) {
-        PlaceFactory.getMessagesLookupPlace(accountId, peerId, messageId).tryOpenWith(requireActivity());
+        PlaceFactory.getMessagesLookupPlace(accountId, peerId, messageId, null).tryOpenWith(requireActivity());
     }
 }

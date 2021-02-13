@@ -445,7 +445,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
     @SuppressLint("ShowToast")
     private fun onSaveButtonClick(v: View) {
         val audio = MusicUtils.getCurrentAudio() ?: return
-        when (doDownloadAudio(requireActivity(), audio, mAccountId, false)) {
+        when (doDownloadAudio(requireActivity(), audio, mAccountId, false, isLocal = false)) {
             0 -> {
                 CreateCustomToast(requireActivity()).showToastBottom(R.string.saved_audio)
                 ivSave!!.setImageResource(R.drawable.succ)
@@ -453,7 +453,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
             1 -> {
                 Snackbar.make(v, R.string.audio_force_download, Snackbar.LENGTH_LONG).setAction(
                     R.string.button_yes
-                ) { doDownloadAudio(requireActivity(), audio, mAccountId, true) }
+                ) { doDownloadAudio(requireActivity(), audio, mAccountId, true, isLocal = false) }
                     .setBackgroundTint(CurrentTheme.getColorPrimary(requireActivity()))
                     .setAnchorView(mPlayPauseButton).setActionTextColor(
                         if (Utils.isColorDark(
@@ -471,7 +471,15 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                 Snackbar.make(v, R.string.audio_force_download_pc, Snackbar.LENGTH_LONG)
                     .setAnchorView(mPlayPauseButton).setAction(
                         R.string.button_yes
-                    ) { doDownloadAudio(requireActivity(), audio, mAccountId, true) }
+                    ) {
+                        doDownloadAudio(
+                            requireActivity(),
+                            audio,
+                            mAccountId,
+                            true,
+                            isLocal = false
+                        )
+                    }
                     .setBackgroundTint(CurrentTheme.getColorPrimary(requireActivity()))
                     .setActionTextColor(
                         if (Utils.isColorDark(

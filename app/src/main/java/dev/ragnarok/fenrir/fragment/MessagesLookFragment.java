@@ -42,6 +42,8 @@ import dev.ragnarok.fenrir.mvp.view.IMessagesLookView;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.view.LoadMoreFooterHelper;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPresenter, IMessagesLookView>
         implements IMessagesLookView, MessagesAdapter.OnMessageActionListener {
 
@@ -56,11 +58,14 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
     private EndlessRecyclerOnScrollListener mEndlessRecyclerOnScrollListener;
     private ActionMode mActionMode;
 
-    public static Bundle buildArgs(int accountId, int peerId, int focusMessageId) {
+    public static Bundle buildArgs(int accountId, int peerId, int focusMessageId, @Nullable Message message) {
         Bundle args = new Bundle();
         args.putInt(Extra.ACCOUNT_ID, accountId);
         args.putInt(Extra.PEER_ID, peerId);
         args.putInt(Extra.FOCUS_TO, focusMessageId);
+        if (nonNull(message)) {
+            args.putParcelable(Extra.MESSAGE, message);
+        }
         return args;
     }
 
@@ -139,14 +144,14 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
 
     @Override
     public void notifyMessagesUpAdded(int startPosition, int count) {
-        if (Objects.nonNull(mMessagesAdapter)) {
+        if (nonNull(mMessagesAdapter)) {
             mMessagesAdapter.notifyItemRangeInserted(startPosition + 1, count); //+header
         }
     }
 
     @Override
     public void notifyMessagesDownAdded(int count) {
-        if (Objects.nonNull(mMessagesAdapter)) {
+        if (nonNull(mMessagesAdapter)) {
             mMessagesAdapter.notifyItemRemoved(0);
             mMessagesAdapter.notifyItemRangeInserted(0, count + 1); //+header
         }
@@ -173,7 +178,7 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
             mActionMode = ((AppCompatActivity) requireActivity()).startSupportActionMode(mActionModeCallback);
         }
 
-        if (Objects.nonNull(mActionMode)) {
+        if (nonNull(mActionMode)) {
             mActionMode.setTitle(title);
             mActionMode.invalidate();
         }
@@ -181,7 +186,7 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
 
     @Override
     public void finishActionMode() {
-        if (Objects.nonNull(mActionMode)) {
+        if (nonNull(mActionMode)) {
             mActionMode.finish();
             mActionMode = null;
         }
@@ -189,18 +194,18 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
 
     @Override
     public void notifyDataChanged() {
-        if (Objects.nonNull(mMessagesAdapter)) {
+        if (nonNull(mMessagesAdapter)) {
             mMessagesAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
     public void setupHeaders(@LoadMoreState int upHeaderState, @LoadMoreState int downHeaderState) {
-        if (Objects.nonNull(mFooterHelper)) {
+        if (nonNull(mFooterHelper)) {
             mFooterHelper.switchToState(upHeaderState);
         }
 
-        if (Objects.nonNull(mHeaderHelper)) {
+        if (nonNull(mHeaderHelper)) {
             mHeaderHelper.switchToState(downHeaderState);
         }
     }
@@ -216,14 +221,15 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
         return () -> {
             int aid = requireArguments().getInt(Extra.ACCOUNT_ID);
             int peerId = requireArguments().getInt(Extra.PEER_ID);
-            Integer focusTo = requireArguments().containsKey(Extra.FOCUS_TO) ? requireArguments().getInt(Extra.FOCUS_TO) : null;
-            return new MessagesLookPresenter(aid, peerId, focusTo, saveInstanceState);
+            int focusTo = requireArguments().getInt(Extra.FOCUS_TO);
+            Message message = requireArguments().containsKey(Extra.MESSAGE) ? requireArguments().getParcelable(Extra.MESSAGE) : null;
+            return new MessagesLookPresenter(aid, peerId, focusTo, message, saveInstanceState);
         };
     }
 
     @Override
     public void onAvatarClick(@NonNull Message message, int userId) {
-        if (Objects.nonNull(mActionMode)) {
+        if (nonNull(mActionMode)) {
             getPresenter().fireMessageClick(message);
         } else {
             getPresenter().fireOwnerClick(userId);
@@ -232,7 +238,7 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
 
     @Override
     public void onLongAvatarClick(@NonNull Message message, int userId) {
-        if (Objects.nonNull(mActionMode)) {
+        if (nonNull(mActionMode)) {
             getPresenter().fireMessageClick(message);
         } else {
             getPresenter().fireOwnerClick(userId);
@@ -271,7 +277,7 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
     public void onResume() {
         super.onResume();
         ActionBar actionBar = ActivityUtils.supportToolbarFor(this);
-        if (Objects.nonNull(actionBar)) {
+        if (nonNull(actionBar)) {
             actionBar.setTitle(R.string.viewing_messages);
             actionBar.setSubtitle(null);
         }

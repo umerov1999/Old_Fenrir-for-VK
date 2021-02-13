@@ -105,7 +105,6 @@ import okhttp3.Response;
 import static dev.ragnarok.fenrir.util.Objects.isNull;
 
 public class Utils {
-    public static final List<Integer> donate_users = new ArrayList<>();
     private static final List<Integer> reload_news = new ArrayList<>();
     private static final List<Integer> reload_dialogs = new ArrayList<>();
     private static final List<Integer> reload_stickers = new ArrayList<>();
@@ -1289,6 +1288,16 @@ public class Utils {
 
     public static <T> boolean isValueAssigned(@NonNull T value, @NonNull List<T> args) {
         return args.contains(value);
+    }
+
+    public static <T> boolean isOneElementAssigned(@NonNull List<T> array, @NonNull T[] args) {
+        List<T> temp = Arrays.asList(args);
+        for (T i : array) {
+            if (temp.contains(i)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void safeObjectCall(@Nullable Object object, @NonNull safeCallInt function) {

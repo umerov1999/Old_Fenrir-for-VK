@@ -610,8 +610,8 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         if (!loading || position > 2) recyclerView?.smoothScrollToPosition(position)
     }
 
-    override fun goToMessagesLookup(accountId: Int, peerId: Int, messageId: Int) {
-        PlaceFactory.getMessagesLookupPlace(accountId, peerId, messageId)
+    override fun goToMessagesLookup(accountId: Int, peerId: Int, messageId: Int, message: Message) {
+        PlaceFactory.getMessagesLookupPlace(accountId, peerId, messageId, message)
             .tryOpenWith(requireActivity())
     }
 

@@ -59,8 +59,6 @@ public interface ISettings {
 
         void setAudioBroadcastActive(boolean active);
 
-        boolean isShow_audio_cover();
-
         int getMaxBitmapResolution();
 
         boolean isNative_parcel();
@@ -172,11 +170,6 @@ public interface ISettings {
         boolean isDo_auto_play_video();
 
         boolean isHint_stickers();
-
-        void registerDonatesId(List<Integer> Ids);
-
-        @NonNull
-        List<Integer> getDonates();
 
         int getPaganSymbol();
 

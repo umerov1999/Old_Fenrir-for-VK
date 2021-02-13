@@ -367,7 +367,13 @@ object DownloadWorkUtils {
     }
 
     @JvmStatic
-    fun doDownloadAudio(context: Context, audio: Audio, account_id: Int, Force: Boolean): Int {
+    fun doDownloadAudio(
+        context: Context,
+        audio: Audio,
+        account_id: Int,
+        Force: Boolean,
+        isLocal: Boolean
+    ): Int {
         if (!CheckDonate.isFullVersion(context)) {
             return 3
         }
@@ -399,10 +405,10 @@ object DownloadWorkUtils {
             ) { _, result ->
                 if (!result.getBoolean(Extra.TYPE)) {
                     if (File(result_filename.build()).delete()) {
-                        doDownloadAudio(context, audio, account_id, false)
+                        doDownloadAudio(context, audio, account_id, false, isLocal)
                     }
                 } else {
-                    doDownloadAudio(context, audio, account_id, true)
+                    doDownloadAudio(context, audio, account_id, true, isLocal)
                 }
             }
 
@@ -420,6 +426,7 @@ object DownloadWorkUtils {
             data.putString(ExtraDwn.FILE, result_filename.file)
             data.putString(ExtraDwn.EXT, result_filename.ext)
             data.putInt(ExtraDwn.ACCOUNT, account_id)
+            data.putBoolean(ExtraDwn.NEED_UPDATE_TAG, !isLocal)
             downloadWork.setInputData(data.build())
             WorkManager.getInstance(context).enqueue(downloadWork.build())
         } catch (e: Exception) {
@@ -443,6 +450,7 @@ object DownloadWorkUtils {
         data.putString(ExtraDwn.FILE, result_filename.file)
         data.putString(ExtraDwn.EXT, result_filename.ext)
         data.putInt(ExtraDwn.ACCOUNT, account_id)
+        data.putBoolean(ExtraDwn.NEED_UPDATE_TAG, true)
         downloadWork.setInputData(data.build())
 
         return downloadWork.build()
@@ -682,6 +690,7 @@ object DownloadWorkUtils {
                 inputData.getString(ExtraDwn.FILE)!!,
                 inputData.getString(ExtraDwn.DIR)!!, inputData.getString(ExtraDwn.EXT)!!
             )
+            val needCover = inputData.getBoolean(ExtraDwn.NEED_UPDATE_TAG, true)
             val audio = Gson().fromJson(inputData.getString(ExtraDwn.URL)!!, Audio::class.java)
             val account_id =
                 inputData.getInt(ExtraDwn.ACCOUNT, ISettings.IAccountsSettings.INVALID_ID)
@@ -708,7 +717,7 @@ object DownloadWorkUtils {
                 val cover =
                     Utils.firstNonEmptyString(audio.thumb_image_very_big, audio.thumb_image_little)
                 var updated_tag = false
-                if (!Utils.isEmpty(cover)) {
+                if (needCover && !Utils.isEmpty(cover)) {
                     val cover_file = DownloadInfo(file_v.file, file_v.path, "jpg")
                     if (doDownload(cover, cover_file, false)) {
                         try {
@@ -830,6 +839,7 @@ object DownloadWorkUtils {
         const val FILE = "file"
         const val EXT = "ext"
         const val ACCOUNT = "account"
+        const val NEED_UPDATE_TAG = "need_update_tag"
     }
 
     class DownloadInfo(file: String, path: String, ext: String) {

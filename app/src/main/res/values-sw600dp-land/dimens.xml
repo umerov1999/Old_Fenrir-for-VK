@@ -8,28 +8,4 @@
     <integer name="privacy_entry_column_count">5</integer>
 
     <integer name="attachments_editor_column_count">6</integer>
-
-    <dimen name="content_large_margin">32dp</dimen>
-    <dimen name="content_medium_margin">16dp</dimen>
-
-    <dimen name="card_margin">16dp</dimen>
-    <dimen name="card_margin_bottom">16dp</dimen>
-
-    <dimen name="feed_card_content_margin_end">16dp</dimen>
-    <dimen name="feed_card_content_margin_start">16dp</dimen>
-    <dimen name="feed_recycle_padding_start">90dp</dimen>
-    <dimen name="feed_recycle_padding_end">90dp</dimen>
-
-
-    <dimen name="video_frame_margin_start">200dp</dimen>
-    <dimen name="video_frame_margin_end">200dp</dimen>
-    <dimen name="chat_dialog_preview_margin_start">200dp</dimen>
-    <dimen name="chat_dialog_preview_margin_end">200dp</dimen>
-    <dimen name="item_people_margin_start">200dp</dimen>
-    <dimen name="item_people_margin_end">200dp</dimen>
-    <!-- Recycle padding-->
-
-    <dimen name="item_audio_margin_start">200dp</dimen>
-    <dimen name="item_audio_margin_end">200dp</dimen>
-
 </resources>

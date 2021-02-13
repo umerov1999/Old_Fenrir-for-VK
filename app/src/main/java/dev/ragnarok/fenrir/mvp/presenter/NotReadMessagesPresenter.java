@@ -38,10 +38,10 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
     private final IMessagesRepository messagesInteractor;
     private final LOADING_STATE loadingState;
     private final Peer peer;
-    private Integer mFocusMessageId;
+    private int mFocusMessageId;
     private int unreadCount;
 
-    public NotReadMessagesPresenter(int accountId, Integer focusTo, int incoming, int outgoing, int unreadCount, @NonNull Peer peer, @Nullable Bundle savedInstanceState) {
+    public NotReadMessagesPresenter(int accountId, int focusTo, int incoming, int outgoing, int unreadCount, @NonNull Peer peer, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
         messagesInteractor = Repository.INSTANCE.getMessages();
         lastReadId.setIncoming(incoming);
@@ -254,16 +254,13 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
         }
         loadingState.reset();
 
-        if (mFocusMessageId != null) {
-            int index = Utils.indexOf(messages, mFocusMessageId);
+        int index = Utils.indexOf(messages, mFocusMessageId);
 
-            if (isGuiReady()) {
-                if (index != -1) {
-                    getView().focusTo(index);
-                } else if (mFocusMessageId == 0) {
-                    getView().focusTo(messages.size() - 1);
-                }
-                mFocusMessageId = null;
+        if (isGuiReady()) {
+            if (index != -1) {
+                getView().focusTo(index);
+            } else if (mFocusMessageId == 0) {
+                getView().focusTo(messages.size() - 1);
             }
         }
     }

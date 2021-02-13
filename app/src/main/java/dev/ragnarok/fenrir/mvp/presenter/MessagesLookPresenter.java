@@ -17,11 +17,11 @@ import dev.ragnarok.fenrir.domain.Repository;
 import dev.ragnarok.fenrir.model.LoadMoreState;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.mvp.view.IMessagesLookView;
-import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Observable;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 import static dev.ragnarok.fenrir.util.Utils.getSelected;
 import static dev.ragnarok.fenrir.util.Utils.isEmpty;
@@ -33,9 +33,9 @@ public class MessagesLookPresenter extends AbsMessageListPresenter<IMessagesLook
     private final IMessagesRepository messagesInteractor;
     private final int mPeerId;
     private final LOADING_STATE loadingState;
-    private Integer mFocusMessageId;
+    private int mFocusMessageId;
 
-    public MessagesLookPresenter(int accountId, int peerId, Integer focusTo, @Nullable Bundle savedInstanceState) {
+    public MessagesLookPresenter(int accountId, int peerId, int focusTo, @Nullable Message message, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
         messagesInteractor = Repository.INSTANCE.getMessages();
         mPeerId = peerId;
@@ -73,8 +73,19 @@ public class MessagesLookPresenter extends AbsMessageListPresenter<IMessagesLook
         });
 
         if (savedInstanceState == null) {
-            mFocusMessageId = focusTo;
-            initRequest();
+            if (nonNull(message) && focusTo == 0) {
+                mFocusMessageId = 0;
+                getData().clear();
+                getData().add(message);
+
+                if (isGuiReady()) {
+                    getView().notifyDataChanged();
+                    getView().focusTo(0);
+                }
+            } else {
+                mFocusMessageId = focusTo;
+                initRequest();
+            }
         }
     }
 
@@ -218,7 +229,7 @@ public class MessagesLookPresenter extends AbsMessageListPresenter<IMessagesLook
     private void onMessageRestoredSuccessfully(int id) {
         Message message = findById(id);
 
-        if (Objects.nonNull(message)) {
+        if (nonNull(message)) {
             message.setDeleted(false);
             safeNotifyDataChanged();
         }
@@ -228,7 +239,7 @@ public class MessagesLookPresenter extends AbsMessageListPresenter<IMessagesLook
         for (Integer id : ids) {
             Message message = findById(id);
 
-            if (Objects.nonNull(message)) {
+            if (nonNull(message)) {
                 message.setDeleted(true);
             }
         }
@@ -245,16 +256,13 @@ public class MessagesLookPresenter extends AbsMessageListPresenter<IMessagesLook
         }
         loadingState.reset();
 
-        if (mFocusMessageId != null) {
-            int index = Utils.indexOf(messages, mFocusMessageId);
+        int index = Utils.indexOf(messages, mFocusMessageId);
 
-            if (isGuiReady()) {
-                if (index != -1) {
-                    getView().focusTo(index);
-                } else if (mFocusMessageId == 0) {
-                    getView().focusTo(messages.size() - 1);
-                }
-                mFocusMessageId = null;
+        if (isGuiReady()) {
+            if (index != -1) {
+                getView().focusTo(index);
+            } else if (mFocusMessageId == 0) {
+                getView().focusTo(messages.size() - 1);
             }
         }
     }

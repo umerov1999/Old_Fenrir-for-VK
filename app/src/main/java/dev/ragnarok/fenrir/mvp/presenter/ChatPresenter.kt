@@ -1854,7 +1854,7 @@ class ChatPresenter(
     }
 
     fun fireMessagesLookup(message: Message) {
-        view?.goToMessagesLookup(accountId, message.peerId, message.id)
+        view?.goToMessagesLookup(accountId, message.peerId, message.id, message)
     }
 
     fun fireChatTitleTyped(newValue: String) {
