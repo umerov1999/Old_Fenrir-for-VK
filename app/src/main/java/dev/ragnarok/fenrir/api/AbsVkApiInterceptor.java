@@ -24,7 +24,6 @@ import dev.ragnarok.fenrir.api.model.response.VkReponse;
 import dev.ragnarok.fenrir.exception.UnauthorizedException;
 import dev.ragnarok.fenrir.service.ApiErrorCodes;
 import dev.ragnarok.fenrir.settings.Settings;
-import dev.ragnarok.fenrir.util.PersistentLogger;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Completable;
 import okhttp3.FormBody;
@@ -58,7 +57,7 @@ abstract class AbsVkApiInterceptor implements Interceptor {
     protected abstract int getAccountId();
 
     /*
-    private String getInstanceIdToken() {
+    private String RECEIPT_GMS_TOKEN() {
         try {
             GoogleApiAvailability instance = GoogleApiAvailability.getInstance();
             int isGooglePlayServicesAvailable = instance.isGooglePlayServicesAvailable(Injection.provideApplicationContext());
@@ -160,6 +159,7 @@ abstract class AbsVkApiInterceptor implements Interceptor {
             Error error = isNull(vkReponse) ? null : vkReponse.error;
 
             if (nonNull(error)) {
+                /*
                 switch (error.errorCode) {
                     case ApiErrorCodes.TOO_MANY_REQUESTS_PER_SECOND:
                         break;
@@ -169,9 +169,10 @@ abstract class AbsVkApiInterceptor implements Interceptor {
                         }
                         break;
                     default:
-                        //FirebaseCrash.log("ApiError, method: " + error.method + ", code: " + error.errorCode + ", message: " + error.errorMsg);
+                        PersistentLogger.logThrowable("ApiError", new Exception("Method: " + error.method + ", code: " + error.errorCode + ", message: " + error.errorMsg));
                         break;
                 }
+                 */
 
                 if (error.errorCode == ApiErrorCodes.TOO_MANY_REQUESTS_PER_SECOND) {
                     synchronized (AbsVkApiInterceptor.class) {
@@ -221,9 +222,11 @@ abstract class AbsVkApiInterceptor implements Interceptor {
                             break;
                         }
                     }
+                    /*
                     if (Settings.get().other().isDeveloper_mode()) {
                         PersistentLogger.logThrowable("Captcha answer", new Exception("URL: " + request.url() + ", code: " + code + ", sid: " + captcha.getSid()));
                     }
+                     */
                     if (nonNull(code)) {
                         formBuilder.add("captcha_sid", captcha.getSid());
                         formBuilder.add("captcha_key", code);

@@ -746,6 +746,7 @@
     <string name="first_developer">Umerov Artyom</string>
     <string name="second_developer">Danilyuk Dmitry</string>
     <string name="first_pagan">First pagan</string>
+    <string name="stop_develop">Development stopped!</string>
     <string name="repo">Repository: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="repo_local_server">Repository: https://github.com/umerov1999/FenrirMediaServer/releases</string>
     <string name="comment">Comment</string>
