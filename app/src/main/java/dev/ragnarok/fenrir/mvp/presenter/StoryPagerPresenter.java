@@ -245,7 +245,7 @@ public class StoryPagerPresenter extends AccountDependencyPresenter<IStoryPagerV
                     story.getVideo().getMp4link360(), story.getVideo().getMp4link240());
             story.getVideo().setTitle(story.getOwner().getFullName());
             if (!Utils.isEmpty(url)) {
-                DownloadWorkUtils.doDownloadVideo(App.getInstance(), story.getVideo(), url, "Story");
+                DownloadWorkUtils.doDownloadVideo(context, story.getVideo(), url, "Story");
             }
         }
     }

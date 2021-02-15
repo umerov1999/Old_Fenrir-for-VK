@@ -61,7 +61,7 @@ public class GiftAdapter extends RecyclerView.Adapter<GiftAdapter.Holder> {
         }
         holder.gift_container.setOnClickListener(v -> {
             if (clickListener != null) {
-                clickListener.onOpenClick(holder.getBindingAdapterPosition(), gift);
+                clickListener.onOpenClick(holder.getAdapterPosition(), gift);
             }
         });
     }

@@ -62,10 +62,10 @@ public abstract class AbsSteppersVerticalAdapter<H extends AbsStepsHost<?>> exte
         holder.line.setVisibility(isLast ? View.INVISIBLE : View.VISIBLE);
 
         holder.buttonNext.setText(mHost.getNextButtonText(position));
-        holder.buttonNext.setOnClickListener(v -> mActionListener.onNextButtonClick(holder.getBindingAdapterPosition()));
+        holder.buttonNext.setOnClickListener(v -> mActionListener.onNextButtonClick(holder.getAdapterPosition()));
 
         holder.buttonCancel.setText(mHost.getCancelButtonText(position));
-        holder.buttonCancel.setOnClickListener(v -> mActionListener.onCancelButtonClick(holder.getBindingAdapterPosition()));
+        holder.buttonCancel.setOnClickListener(v -> mActionListener.onCancelButtonClick(holder.getAdapterPosition()));
 
         holder.titleText.setText(mHost.getStepTitle(position));
         holder.titleText.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));

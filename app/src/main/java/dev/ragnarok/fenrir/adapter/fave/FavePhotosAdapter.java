@@ -65,7 +65,7 @@ public class FavePhotosAdapter extends RecyclerView.Adapter<FavePhotosAdapter.Vi
 
         viewHolder.cardView.setOnClickListener(v -> {
             if (photoSelectionListener != null) {
-                photoSelectionListener.onPhotoClicked(viewHolder.getBindingAdapterPosition(), photo);
+                photoSelectionListener.onPhotoClicked(viewHolder.getAdapterPosition(), photo);
             }
         });
     }

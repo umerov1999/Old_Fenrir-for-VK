@@ -67,8 +67,8 @@ public class DrawerEditFragment extends AbsMvpFragment<DrawerEditPresenter, IDra
 
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder h1, RecyclerView.ViewHolder h2) {
-                int fromPosition = h1.getBindingAdapterPosition();
-                int toPosition = h2.getBindingAdapterPosition();
+                int fromPosition = h1.getAdapterPosition();
+                int toPosition = h2.getAdapterPosition();
 
                 getPresenter().fireItemMoved(fromPosition, toPosition);
                 recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);

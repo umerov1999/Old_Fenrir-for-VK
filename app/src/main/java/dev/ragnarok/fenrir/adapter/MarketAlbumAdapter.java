@@ -62,7 +62,7 @@ public class MarketAlbumAdapter extends RecyclerView.Adapter<MarketAlbumAdapter.
         }
         holder.market_container.setOnClickListener(v -> {
             if (clickListener != null) {
-                clickListener.onOpenClick(holder.getBindingAdapterPosition(), market);
+                clickListener.onOpenClick(holder.getAdapterPosition(), market);
             }
         });
     }

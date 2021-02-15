@@ -255,9 +255,9 @@ class ModalBottomSheetDialogFragment(listener: Listener) : BottomSheetDialogFrag
                     val holder = ItemViewHolder(view)
                     view.setOnClickListener {
                         val position = if (header != null) {
-                            holder.bindingAdapterPosition - 1
+                            holder.adapterPosition - 1
                         } else {
-                            holder.bindingAdapterPosition
+                            holder.adapterPosition
                         }
                         val option = options[position]
                         callback.invoke(option)

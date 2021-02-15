@@ -74,14 +74,14 @@ public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView
         @Override
         public boolean onMove(@NotNull RecyclerView recyclerView,
                               @NotNull RecyclerView.ViewHolder viewHolder, @NotNull RecyclerView.ViewHolder target) {
-            return getPresenter().fireItemMoved(mAudioRecyclerAdapter.getItemRawPosition(viewHolder.getBindingAdapterPosition()), mAudioRecyclerAdapter.getItemRawPosition(target.getBindingAdapterPosition()));
+            return getPresenter().fireItemMoved(mAudioRecyclerAdapter.getItemRawPosition(viewHolder.getAdapterPosition()), mAudioRecyclerAdapter.getItemRawPosition(target.getAdapterPosition()));
         }
 
         @Override
         public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
             viewHolder.itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-            mAudioRecyclerAdapter.notifyItemChanged(viewHolder.getBindingAdapterPosition());
-            getPresenter().playAudio(requireActivity(), mAudioRecyclerAdapter.getItemRawPosition(viewHolder.getBindingAdapterPosition()));
+            mAudioRecyclerAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
+            getPresenter().playAudio(requireActivity(), mAudioRecyclerAdapter.getItemRawPosition(viewHolder.getAdapterPosition()));
         }
 
         @Override

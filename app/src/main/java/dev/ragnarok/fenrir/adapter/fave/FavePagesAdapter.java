@@ -80,7 +80,7 @@ public class FavePagesAdapter extends RecyclerView.Adapter<FavePagesAdapter.Hold
 
         holder.itemView.setOnClickListener(v -> {
             if (clickListener != null) {
-                clickListener.onPageClick(holder.getBindingAdapterPosition(), favePage.getOwner());
+                clickListener.onPageClick(holder.getAdapterPosition(), favePage.getOwner());
             }
         });
     }

@@ -74,7 +74,7 @@ public class PhotoAlbumsAdapter extends RecyclerView.Adapter<PhotoAlbumsAdapter.
         holder.update.setText(AppTextUtils.getDateFromUnixTime(context, album.getUpdatedTime()));
         holder.album_container.setOnClickListener(v -> {
             if (clickListener != null) {
-                clickListener.onAlbumClick(holder.getBindingAdapterPosition(), album);
+                clickListener.onAlbumClick(holder.getAdapterPosition(), album);
             }
         });
     }

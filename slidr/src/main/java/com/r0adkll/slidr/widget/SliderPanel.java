@@ -663,10 +663,6 @@ public class SliderPanel extends FrameLayout {
 
         ViewDragHelper.Callback callback;
         switch (config.getPosition()) {
-            case LEFT:
-                callback = leftCallback;
-                edgePosition = ViewDragHelper.EDGE_LEFT;
-                break;
             case RIGHT:
                 callback = rightCallback;
                 edgePosition = ViewDragHelper.EDGE_RIGHT;

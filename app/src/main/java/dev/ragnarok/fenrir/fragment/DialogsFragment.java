@@ -96,8 +96,8 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         @Override
         public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
             viewHolder.itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-            mAdapter.notifyItemChanged(viewHolder.getBindingAdapterPosition());
-            Dialog dialog = mAdapter.getByPosition(viewHolder.getBindingAdapterPosition());
+            mAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
+            Dialog dialog = mAdapter.getByPosition(viewHolder.getAdapterPosition());
             if (isPresenterPrepared()) {
                 getPresenter().fireRepost(dialog);
             }

@@ -82,7 +82,7 @@ public class MarketAdapter extends RecyclerView.Adapter<MarketAdapter.Holder> {
         }
         holder.market_container.setOnClickListener(v -> {
             if (clickListener != null) {
-                clickListener.onOpenClick(holder.getBindingAdapterPosition(), market);
+                clickListener.onOpenClick(holder.getAdapterPosition(), market);
             }
         });
     }

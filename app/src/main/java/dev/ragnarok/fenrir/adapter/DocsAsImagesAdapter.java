@@ -57,12 +57,12 @@ public class DocsAsImagesAdapter extends RecyclerBindableAdapter<Document, DocsA
 
         holder.itemView.setOnClickListener(v -> {
             if (nonNull(mActionListener)) {
-                mActionListener.onDocClick(holder.getBindingAdapterPosition(), item);
+                mActionListener.onDocClick(holder.getAdapterPosition(), item);
             }
         });
 
         holder.itemView.setOnLongClickListener(v -> nonNull(mActionListener)
-                && mActionListener.onDocLongClick(holder.getBindingAdapterPosition(), item));
+                && mActionListener.onDocLongClick(holder.getAdapterPosition(), item));
     }
 
     @Override

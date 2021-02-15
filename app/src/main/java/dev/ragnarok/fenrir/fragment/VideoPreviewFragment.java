@@ -697,19 +697,19 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
                     Item item = items.get(which);
                     switch (item.getKey()) {
                         case Menu.P_240:
-                            DownloadWorkUtils.doDownloadVideo(requireContext(), video, video.getMp4link240(), "240");
+                            DownloadWorkUtils.doDownloadVideo(requireActivity(), video, video.getMp4link240(), "240");
                             break;
                         case Menu.P_360:
-                            DownloadWorkUtils.doDownloadVideo(requireContext(), video, video.getMp4link360(), "360");
+                            DownloadWorkUtils.doDownloadVideo(requireActivity(), video, video.getMp4link360(), "360");
                             break;
                         case Menu.P_480:
-                            DownloadWorkUtils.doDownloadVideo(requireContext(), video, video.getMp4link480(), "480");
+                            DownloadWorkUtils.doDownloadVideo(requireActivity(), video, video.getMp4link480(), "480");
                             break;
                         case Menu.P_720:
-                            DownloadWorkUtils.doDownloadVideo(requireContext(), video, video.getMp4link720(), "720");
+                            DownloadWorkUtils.doDownloadVideo(requireActivity(), video, video.getMp4link720(), "720");
                             break;
                         case Menu.P_1080:
-                            DownloadWorkUtils.doDownloadVideo(requireContext(), video, video.getMp4link1080(), "1080");
+                            DownloadWorkUtils.doDownloadVideo(requireActivity(), video, video.getMp4link1080(), "1080");
                             break;
                     }
                 })
