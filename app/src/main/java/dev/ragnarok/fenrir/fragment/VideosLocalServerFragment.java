@@ -44,7 +44,6 @@ public class VideosLocalServerFragment extends BaseMvpFragment<VideosLocalServer
             () -> CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text));
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LocalServerVideosAdapter mAudioRecyclerAdapter;
-    private boolean doVideoLoadTabs;
 
     public static VideosLocalServerFragment newInstance(int accountId) {
         Bundle args = new Bundle();
@@ -83,15 +82,6 @@ public class VideosLocalServerFragment extends BaseMvpFragment<VideosLocalServer
         mAudioRecyclerAdapter.setVideoOnClickListener(this);
         recyclerView.setAdapter(mAudioRecyclerAdapter);
         return root;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!doVideoLoadTabs) {
-            doVideoLoadTabs = true;
-            getPresenter().LoadVideosTool();
-        }
     }
 
     @NotNull

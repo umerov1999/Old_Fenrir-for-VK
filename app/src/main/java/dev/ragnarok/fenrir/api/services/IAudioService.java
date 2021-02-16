@@ -6,6 +6,7 @@ import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiAudio;
 import dev.ragnarok.fenrir.api.model.VKApiAudioCatalog;
 import dev.ragnarok.fenrir.api.model.VKApiAudioPlaylist;
+import dev.ragnarok.fenrir.api.model.VkApiArtist;
 import dev.ragnarok.fenrir.api.model.VkApiLyrics;
 import dev.ragnarok.fenrir.api.model.response.AddToPlaylistResponse;
 import dev.ragnarok.fenrir.api.model.response.BaseResponse;
@@ -36,6 +37,13 @@ public interface IAudioService {
                                                    @Field("search_own") Integer searchOwn,
                                                    @Field("offset") Integer offset,
                                                    @Field("count") Integer count);
+
+    //https://vk.com/dev/audio.searchArtists
+    @FormUrlEncoded
+    @POST("audio.searchArtists")
+    Single<BaseResponse<Items<VkApiArtist>>> searchArtists(@Field("q") String query,
+                                                           @Field("offset") Integer offset,
+                                                           @Field("count") Integer count);
 
     //https://vk.com/dev/audio.search
     @FormUrlEncoded
@@ -185,11 +193,13 @@ public interface IAudioService {
 
     @FormUrlEncoded
     @POST("audio.getCatalog")
-    Single<BaseResponse<Items<VKApiAudioCatalog>>> getCatalog(@Field("artist_id") String artist_id);
+    Single<BaseResponse<Items<VKApiAudioCatalog>>> getCatalog(@Field("artist_id") String artist_id,
+                                                              @Field("query") String query);
 
     @FormUrlEncoded
     @POST("audio.getCatalog")
     Single<BaseResponse<Items<VKApiAudioCatalog>>> getCatalogOld(@Field("artist_id") String artist_id,
+                                                                 @Field("query") String query,
                                                                  @Field("v") String version);
 
     @FormUrlEncoded

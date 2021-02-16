@@ -45,16 +45,24 @@ import static dev.ragnarok.fenrir.util.Objects.nonNull;
 public class AudiosLocalFragment extends BaseMvpFragment<AudiosLocalPresenter, IAudiosLocalView>
         implements MySearchView.OnQueryTextListener, DocsUploadAdapter.ActionListener, AudioLocalRecyclerAdapter.ClickListener, IAudiosLocalView {
 
-    private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissions(this,
-            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-            () -> {
-                if (isPresenterPrepared()) {
-                    getPresenter().LoadAudiosTool();
+    private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissionsResult(this,
+            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, new AppPerms.onPermissionsResult() {
+                @Override
+                public void granted() {
+                    if (isPresenterPrepared()) {
+                        getPresenter().firePrepared();
+                    }
+                }
+
+                @Override
+                public void not_granted() {
+                    if (isPresenterPrepared()) {
+                        getPresenter().firePermissionsCanceled();
+                    }
                 }
             });
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AudioLocalRecyclerAdapter mAudioRecyclerAdapter;
-    private boolean doAudioLoadTabs;
     private DocsUploadAdapter mUploadAdapter;
     private View mUploadRoot;
 
@@ -124,19 +132,6 @@ public class AudiosLocalFragment extends BaseMvpFragment<AudiosLocalPresenter, I
         return root;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!doAudioLoadTabs) {
-            doAudioLoadTabs = true;
-            if (!AppPerms.hasReadStoragePermission(getActivity())) {
-                requestReadPermission.launch();
-            } else {
-                getPresenter().LoadAudiosTool();
-            }
-        }
-    }
-
     @NotNull
     @Override
     public IPresenterFactory<AudiosLocalPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
@@ -161,9 +156,18 @@ public class AudiosLocalFragment extends BaseMvpFragment<AudiosLocalPresenter, I
     }
 
     @Override
-    public void displayRefreshing(boolean refresing) {
+    public void displayRefreshing(boolean refreshing) {
         if (nonNull(mSwipeRefreshLayout)) {
-            mSwipeRefreshLayout.setRefreshing(refresing);
+            mSwipeRefreshLayout.setRefreshing(refreshing);
+        }
+    }
+
+    @Override
+    public void checkPermission() {
+        if (!AppPerms.hasReadStoragePermission(requireActivity())) {
+            requestReadPermission.launch();
+        } else {
+            getPresenter().firePrepared();
         }
     }
 

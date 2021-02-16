@@ -39,7 +39,6 @@ public class FaveLinksFragment extends BaseMvpFragment<FaveLinksPresenter, IFave
     private TextView mEmpty;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private FaveLinksAdapter mAdapter;
-    private boolean isRequestLast;
 
     public static FaveLinksFragment newInstance(int accountId) {
         Bundle args = new Bundle();
@@ -147,14 +146,4 @@ public class FaveLinksFragment extends BaseMvpFragment<FaveLinksPresenter, IFave
     public IPresenterFactory<FaveLinksPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new FaveLinksPresenter(getArguments().getInt(Extra.ACCOUNT_ID), saveInstanceState);
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!isRequestLast) {
-            isRequestLast = true;
-            getPresenter().LoadTool();
-        }
-    }
-
 }

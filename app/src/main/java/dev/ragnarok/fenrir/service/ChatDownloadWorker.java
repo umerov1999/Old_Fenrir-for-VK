@@ -22,17 +22,10 @@ import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.internal.Streams;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -457,12 +450,24 @@ public class ChatDownloadWorker extends Worker {
             mBuilder.addAction(R.drawable.close, getApplicationContext().getString(R.string.cancel), WorkManager.getInstance(getApplicationContext()).createCancelPendingIntent(getId()));
             mNotifyManager.notify(String.valueOf(getId()), NotificationHelper.NOTIFICATION_DOWNLOADING, mBuilder.build());
 
-            JsonArray mps = new JsonArray();
+            DownloadWorkUtils.CheckDirectory(Settings.get().other().getDocDir());
+            File html = new File(Settings.get().other().getDocDir(), DownloadWorkUtils.makeLegalFilename(peer_title + "_" + DOWNLOAD_DATE_FORMAT.format(new Date()), "json"));
+            OutputStreamWriter output = new OutputStreamWriter(new FileOutputStream(html), StandardCharsets.UTF_8);
 
             int offset = 0;
+            boolean isFirst = true;
+
+            if (owner_id >= VKApiMessage.CHAT_PEER) {
+                output.write("{ \"type\": \"chat\", \"chat\": [");
+            } else {
+                output.write("{ \"type\": \"dialog\", \"dialog\": [");
+            }
             while (true) {
                 if (isStopped()) {
                     mNotifyManager.cancel(String.valueOf(getId()), NotificationHelper.NOTIFICATION_DOWNLOADING);
+                    output.flush();
+                    output.close();
+                    html.delete();
                     return;
                 }
                 try {
@@ -474,7 +479,12 @@ public class ChatDownloadWorker extends Worker {
 
                     for (String i : messages) {
                         try {
-                            mps.add(Streams.parse(new JsonReader(new StringReader(i))));
+                            if (isFirst) {
+                                isFirst = false;
+                            } else {
+                                output.write(',');
+                            }
+                            output.write(i);
                         } catch (Exception ignored) {
                         }
                     }
@@ -483,35 +493,14 @@ public class ChatDownloadWorker extends Worker {
                     break;
                 }
             }
-            JsonObject result = new JsonObject();
+            output.write("], \"vk_api_version\": { \"string\": \"" + Constants.API_VERSION + "\", \"float\": " + Constants.API_VERSION + " }, ");
+            output.write("\"page_id\": " + owner_id + ", \"page_title\": \"" + DownloadWorkUtils.makeLegalFilename(peer_title, null) + "\"");
 
-
-            if (owner_id >= VKApiMessage.CHAT_PEER) {
-                result.addProperty("type", "chat");
-                result.add("chat", mps);
-            } else {
-                result.addProperty("type", "dialog");
-                result.add("dialog", mps);
-            }
-            JsonObject vers = new JsonObject();
-            vers.addProperty("string", Constants.API_VERSION);
-            vers.addProperty("float", Float.parseFloat(Constants.API_VERSION));
-
-            result.add("vk_api_version", vers);
-            result.addProperty("page_id", owner_id);
-            result.addProperty("page_title", peer_title);
             if (owner_id < VKApiMessage.CHAT_PEER && owner_id >= 0) {
                 User own = (User) owner;
-                result.addProperty("page_avatar", own.getMaxSquareAvatar());
+                output.write(", \"page_avatar\": \"" + own.getMaxSquareAvatar() + "\"");
             }
-
-            Utils.inMainThread(() -> CustomToast.CreateCustomToast(getApplicationContext()).showToastBottom(getApplicationContext().getString(R.string.writing_json)));
-
-            DownloadWorkUtils.CheckDirectory(Settings.get().other().getDocDir());
-
-            File html = new File(Settings.get().other().getDocDir(), DownloadWorkUtils.makeLegalFilename(peer_title + "_" + DOWNLOAD_DATE_FORMAT.format(new Date()), "json"));
-            OutputStreamWriter output = new OutputStreamWriter(new FileOutputStream(html), StandardCharsets.UTF_8);
-            Streams.write(result, new JsonWriter(output));
+            output.write(" }");
             output.flush();
             output.close();
 

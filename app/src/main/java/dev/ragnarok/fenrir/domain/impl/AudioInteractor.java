@@ -10,9 +10,11 @@ import java.util.List;
 import dev.ragnarok.fenrir.api.interfaces.INetworker;
 import dev.ragnarok.fenrir.api.model.AccessIdPair;
 import dev.ragnarok.fenrir.api.model.VKApiAudioPlaylist;
+import dev.ragnarok.fenrir.api.model.VkApiArtist;
 import dev.ragnarok.fenrir.api.model.response.AddToPlaylistResponse;
 import dev.ragnarok.fenrir.domain.IAudioInteractor;
 import dev.ragnarok.fenrir.domain.mappers.Dto2Model;
+import dev.ragnarok.fenrir.fragment.search.criteria.ArtistSearchCriteria;
 import dev.ragnarok.fenrir.fragment.search.criteria.AudioPlaylistSearchCriteria;
 import dev.ragnarok.fenrir.fragment.search.criteria.AudioSearchCriteria;
 import dev.ragnarok.fenrir.fragment.search.options.SpinnerOption;
@@ -239,10 +241,10 @@ public class AudioInteractor implements IAudioInteractor {
     }
 
     @Override
-    public Single<List<AudioCatalog>> getCatalog(int accountId, String artist_id) {
+    public Single<List<AudioCatalog>> getCatalog(int accountId, String artist_id, String query) {
         return networker.vkDefault(accountId)
                 .audio()
-                .getCatalog(artist_id)
+                .getCatalog(artist_id, query)
                 .map(items -> listEmptyIfNull(items.getItems()))
                 .map(out -> {
                     List<AudioCatalog> ret = new ArrayList<>();
@@ -319,6 +321,15 @@ public class AudioInteractor implements IAudioInteractor {
                         ret.add(Dto2Model.transform(out.get(i)));
                     return ret;
                 });
+    }
+
+    @Override
+    public Single<List<VkApiArtist>> searchArtists(int accountId, ArtistSearchCriteria criteria, int offset, int count) {
+        return networker.vkDefault(accountId)
+                .audio()
+                .searchArtists(criteria.getQuery(), offset, count)
+                .map(items -> listEmptyIfNull(items.getItems()))
+                .map(out -> out);
     }
 
     @Override

@@ -11,6 +11,7 @@ import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiAudio;
 import dev.ragnarok.fenrir.api.model.VKApiAudioCatalog;
 import dev.ragnarok.fenrir.api.model.VKApiAudioPlaylist;
+import dev.ragnarok.fenrir.api.model.VkApiArtist;
 import dev.ragnarok.fenrir.api.model.VkApiLyrics;
 import dev.ragnarok.fenrir.api.model.response.AddToPlaylistResponse;
 import dev.ragnarok.fenrir.api.model.response.CatalogResponse;
@@ -27,6 +28,9 @@ public interface IAudioApi {
     Single<Items<VKApiAudio>> search(String query, Boolean autoComplete, Boolean lyrics,
                                      Boolean performerOnly, Integer sort, Boolean searchOwn,
                                      Integer offset, Integer count);
+
+    @CheckResult
+    Single<Items<VkApiArtist>> searchArtists(String query, Integer offset, Integer count);
 
     @CheckResult
     Single<Items<VKApiAudioPlaylist>> searchPlaylists(String query, Integer offset, Integer count);
@@ -94,7 +98,7 @@ public interface IAudioApi {
     Single<Items<VKApiAudioPlaylist>> getPlaylists(int owner_id, int offset, int count);
 
     @CheckResult
-    Single<Items<VKApiAudioCatalog>> getCatalog(String artist_id);
+    Single<Items<VKApiAudioCatalog>> getCatalog(String artist_id, String query);
 
     @CheckResult
     Single<CatalogResponse> getCatalogBlockById(String block_id, String start_from);

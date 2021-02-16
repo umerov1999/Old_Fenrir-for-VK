@@ -67,7 +67,6 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
     private TextView mEmpty;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AudioPlaylistsAdapter mAdapter;
-    private boolean doAudioLoadTabs;
     private boolean inTabsContainer;
     private boolean isSelectMode;
 
@@ -186,10 +185,6 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
                     .setBarsColored(requireActivity(), true)
                     .build()
                     .apply(requireActivity());
-        }
-        if (!doAudioLoadTabs) {
-            doAudioLoadTabs = true;
-            getPresenter().LoadAudiosTool();
         }
     }
 

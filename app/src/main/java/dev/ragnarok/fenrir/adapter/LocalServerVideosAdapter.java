@@ -12,10 +12,12 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Locale;
 
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
@@ -50,25 +52,6 @@ public class LocalServerVideosAdapter extends RecyclerView.Adapter<LocalServerVi
         mVideoInteractor = InteractorFactory.createLocalServerInteractor();
     }
 
-    private static String BytesToSize(long Bytes) {
-        long tb = 1099511627776L;
-        long gb = 1073741824;
-        long mb = 1048576;
-        long kb = 1024;
-
-        String returnSize;
-        if (Bytes >= tb)
-            returnSize = String.format(Locale.getDefault(), "%.2f TB", (double) Bytes / tb);
-        else if (Bytes >= gb)
-            returnSize = String.format(Locale.getDefault(), "%.2f GB", (double) Bytes / gb);
-        else if (Bytes >= mb)
-            returnSize = String.format(Locale.getDefault(), "%.2f MB", (double) Bytes / mb);
-        else if (Bytes >= kb)
-            returnSize = String.format(Locale.getDefault(), "%.2f KB", (double) Bytes / kb);
-        else returnSize = String.format(Locale.getDefault(), "%d Bytes", Bytes);
-        return returnSize;
-    }
-
     @NonNull
     @Override
     public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -81,7 +64,7 @@ public class LocalServerVideosAdapter extends RecyclerView.Adapter<LocalServerVi
 
         holder.title.setText(video.getTitle());
         holder.description.setText(video.getDescription());
-        holder.videoLenght.setText(BytesToSize(video.getDuration()));
+        holder.videoLenght.setText(Utils.BytesToSize(video.getDuration()));
 
         String photoUrl = video.getImage();
 
@@ -104,6 +87,8 @@ public class LocalServerVideosAdapter extends RecyclerView.Adapter<LocalServerVi
             menus.add(new OptionRequest(AudioItem.save_item_audio, context.getString(R.string.download), R.drawable.save));
             menus.add(new OptionRequest(AudioItem.play_item_audio, context.getString(R.string.play), R.drawable.play));
             menus.add(new OptionRequest(AudioItem.edit_track, context.getString(R.string.update_time), R.drawable.ic_recent));
+            menus.add(new OptionRequest(AudioItem.add_item_audio, context.getString(R.string.delete), R.drawable.ic_outline_delete));
+            menus.add(new OptionRequest(AudioItem.goto_artist, context.getString(R.string.edit), R.drawable.about_writed));
             menus.header(firstNonEmptyString(video.getDescription(), " ") + " - " + video.getTitle(), R.drawable.video, null);
             menus.columns(2);
             menus.show(((FragmentActivity) context).getSupportFragmentManager(), "server_video_options", option -> {
@@ -128,6 +113,40 @@ public class LocalServerVideosAdapter extends RecyclerView.Adapter<LocalServerVi
                             break;
                         }
                         listDisposable = mVideoInteractor.update_time(hash).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> CustomToast.CreateCustomToast(context).showToast(R.string.success), t -> Utils.showErrorInAdapter((Activity) context, t));
+                        break;
+                    case AudioItem.goto_artist:
+                        String hash2 = VkLinkParser.parseLocalServerURL(video.getMp4link720());
+                        if (Utils.isEmpty(hash2)) {
+                            break;
+                        }
+                        listDisposable = mVideoInteractor.get_file_name(hash2).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> {
+                            View root = View.inflate(context, R.layout.entry_file_name, null);
+                            ((TextInputEditText) root.findViewById(R.id.edit_file_name)).setText(t);
+                            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
+                                    .setTitle(R.string.change_name)
+                                    .setCancelable(true)
+                                    .setView(root)
+                                    .setPositiveButton(R.string.button_ok, (dialog, which) -> listDisposable = mVideoInteractor.update_file_name(hash2, ((TextInputEditText) root.findViewById(R.id.edit_file_name)).getText().toString().trim())
+                                            .compose(RxUtils.applySingleIOToMainSchedulers())
+                                            .subscribe(t1 -> CustomToast.CreateCustomToast(context).showToast(R.string.success), o -> Utils.showErrorInAdapter((Activity) context, o)))
+                                    .setNegativeButton(R.string.button_cancel, null);
+                            builder.create().show();
+                        }, t -> Utils.showErrorInAdapter((Activity) context, t));
+                        break;
+                    case AudioItem.add_item_audio:
+                        new MaterialAlertDialogBuilder(context)
+                                .setMessage(R.string.do_delete)
+                                .setTitle(R.string.confirmation)
+                                .setCancelable(true)
+                                .setPositiveButton(R.string.button_yes, (dialog, which) -> {
+                                    String hash1 = VkLinkParser.parseLocalServerURL(video.getMp4link720());
+                                    if (Utils.isEmpty(hash1)) {
+                                        return;
+                                    }
+                                    listDisposable = mVideoInteractor.delete_media(hash1).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> CustomToast.CreateCustomToast(context).showToast(R.string.success), o -> Utils.showErrorInAdapter((Activity) context, o));
+                                })
+                                .setNegativeButton(R.string.button_cancel, null)
+                                .show();
                         break;
                     default:
                         break;

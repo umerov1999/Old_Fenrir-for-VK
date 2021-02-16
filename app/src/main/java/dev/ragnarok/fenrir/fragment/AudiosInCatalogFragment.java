@@ -57,7 +57,6 @@ public class AudiosInCatalogFragment extends BaseMvpFragment<AudiosInCatalogPres
     private AudioRecyclerAdapter mAudioRecyclerAdapter;
     private String Header;
     private boolean inTabsContainer;
-    private boolean doAudioLoadTabs;
 
     public static AudiosInCatalogFragment newInstance(int accountId, String block_id, String title) {
         Bundle args = new Bundle();
@@ -176,10 +175,6 @@ public class AudiosInCatalogFragment extends BaseMvpFragment<AudiosInCatalogPres
                     .setBarsColored(requireActivity(), true)
                     .build()
                     .apply(requireActivity());
-        }
-        if (!doAudioLoadTabs) {
-            doAudioLoadTabs = true;
-            getPresenter().LoadAudiosTool();
         }
     }
 

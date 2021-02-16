@@ -48,7 +48,6 @@ public class LinksInCatalogFragment extends BaseMvpFragment<LinksInCatalogPresen
     private CatalogLinksAdapter mAdapter;
     private String Header;
     private boolean inTabsContainer;
-    private boolean doAudioLoadTabs;
 
     public static LinksInCatalogFragment newInstance(int accountId, String block_id, String title) {
         Bundle args = new Bundle();
@@ -119,10 +118,6 @@ public class LinksInCatalogFragment extends BaseMvpFragment<LinksInCatalogPresen
                     .setBarsColored(requireActivity(), true)
                     .build()
                     .apply(requireActivity());
-        }
-        if (!doAudioLoadTabs) {
-            doAudioLoadTabs = true;
-            getPresenter().LoadAudiosTool();
         }
     }
 

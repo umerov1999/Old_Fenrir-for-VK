@@ -13,9 +13,6 @@ import dev.ragnarok.fenrir.mvp.presenter.FollowersPresenter;
 import dev.ragnarok.fenrir.mvp.view.ISimpleOwnersView;
 
 public class FollowersFragment extends AbsOwnersListFragment<FollowersPresenter, ISimpleOwnersView> {
-
-    private boolean isRequested;
-
     public static FollowersFragment newInstance(int accountId, int userId) {
         Bundle args = new Bundle();
         args.putInt(Extra.ACCOUNT_ID, accountId);
@@ -23,15 +20,6 @@ public class FollowersFragment extends AbsOwnersListFragment<FollowersPresenter,
         FollowersFragment followersFragment = new FollowersFragment();
         followersFragment.setArguments(args);
         return followersFragment;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!isRequested) {
-            isRequested = true;
-            getPresenter().doLoad();
-        }
     }
 
     @NotNull

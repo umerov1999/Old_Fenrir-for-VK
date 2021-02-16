@@ -137,7 +137,7 @@ object DownloadWorkUtils {
         val downloadRequest = DownloadManager.Request(Uri.parse(url))
         downloadRequest.allowScanningByMediaScanner()
         downloadRequest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-        downloadRequest.setDescription(file.build_filename())
+        downloadRequest.setDescription(file.buildFilename())
         downloadRequest.setDestinationUri(Uri.fromFile(File(file.build())))
         val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         downloadManager.enqueue(downloadRequest)
@@ -174,7 +174,7 @@ object DownloadWorkUtils {
 
     @Suppress("DEPRECATION")
     private fun track_file_exist(context: Context, file: DownloadInfo): Int {
-        val file_name = file.build_filename()
+        val file_name = file.buildFilename()
         val Temp = File(file.build())
         if (Temp.exists()) {
             if (Temp.setLastModified(Calendar.getInstance().time.time)) {
@@ -479,7 +479,7 @@ object DownloadWorkUtils {
                 applicationContext,
                 applicationContext.getString(R.string.downloading),
                 applicationContext.getString(R.string.downloading) + " "
-                        + file_v.build_filename(),
+                        + file_v.buildFilename(),
                 R.drawable.save,
                 false
             )
@@ -510,10 +510,10 @@ object DownloadWorkUtils {
                     val input = BufferedInputStream(bfr)
                     val data = ByteArray(80 * 1024)
                     var bufferLength: Int
-                    var downloadedSize = 0.0
+                    var downloadedSize = 0L
                     val cntlength = response.header("Content-Length")
-                    var totalSize = 1
-                    if (!Utils.isEmpty(cntlength)) totalSize = cntlength!!.toInt()
+                    var totalSize = 1L
+                    if (!Utils.isEmpty(cntlength)) totalSize = cntlength!!.toLong()
                     while (input.read(data).also { bufferLength = it } != -1) {
                         if (isStopped) {
                             output.flush()
@@ -527,8 +527,12 @@ object DownloadWorkUtils {
                             return false
                         }
                         output.write(data, 0, bufferLength)
-                        downloadedSize += bufferLength.toDouble()
-                        mBuilder.setProgress(100, (downloadedSize / totalSize * 100).toInt(), false)
+                        downloadedSize += bufferLength
+                        mBuilder.setProgress(
+                            100,
+                            (downloadedSize.toDouble() / totalSize * 100).toInt(),
+                            false
+                        )
                         show_notification(
                             mBuilder,
                             NotificationHelper.NOTIFICATION_DOWNLOADING,
@@ -554,7 +558,7 @@ object DownloadWorkUtils {
                     applicationContext,
                     applicationContext.getString(R.string.downloading),
                     applicationContext.getString(R.string.error)
-                            + " " + e.localizedMessage + ". " + file_v.build_filename(),
+                            + " " + e.localizedMessage + ". " + file_v.buildFilename(),
                     R.drawable.ic_error_toast_vector,
                     true
                 )
@@ -580,19 +584,19 @@ object DownloadWorkUtils {
 
         @Suppress("DEPRECATION")
         private fun createForeground() {
-            val builder: NotificationCompat.Builder
-            builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val channel = NotificationChannel(
-                    "worker_channel",
-                    applicationContext.getString(R.string.channel_keep_work_manager),
-                    NotificationManager.IMPORTANCE_NONE
-                )
-                mNotifyManager.createNotificationChannel(channel)
-                NotificationCompat.Builder(applicationContext, channel.id)
-            } else {
-                NotificationCompat.Builder(applicationContext, "worker_channel")
-                    .setPriority(Notification.PRIORITY_MIN)
-            }
+            val builder: NotificationCompat.Builder =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val channel = NotificationChannel(
+                        "worker_channel",
+                        applicationContext.getString(R.string.channel_keep_work_manager),
+                        NotificationManager.IMPORTANCE_NONE
+                    )
+                    mNotifyManager.createNotificationChannel(channel)
+                    NotificationCompat.Builder(applicationContext, channel.id)
+                } else {
+                    NotificationCompat.Builder(applicationContext, "worker_channel")
+                        .setPriority(Notification.PRIORITY_MIN)
+                }
             builder.setContentTitle(applicationContext.getString(R.string.work_manager))
                 .setContentText(applicationContext.getString(R.string.may_down_charge))
                 .setSmallIcon(R.drawable.web)
@@ -621,7 +625,7 @@ object DownloadWorkUtils {
                     applicationContext,
                     applicationContext.getString(R.string.downloading),
                     applicationContext.getString(R.string.success)
-                            + " " + file_v.build_filename(),
+                            + " " + file_v.buildFilename(),
                     R.drawable.save,
                     true
                 )
@@ -774,7 +778,7 @@ object DownloadWorkUtils {
                     applicationContext,
                     applicationContext.getString(if (updated_tag) R.string.tag_modified else R.string.downloading),
                     applicationContext.getString(R.string.success)
-                            + " " + file_v.build_filename(),
+                            + " " + file_v.buildFilename(),
                     R.drawable.save,
                     true
                 )
@@ -823,7 +827,7 @@ object DownloadWorkUtils {
                     NotificationHelper.NOTIFICATION_DOWNLOAD,
                     NotificationHelper.NOTIFICATION_DOWNLOADING
                 )
-                MusicUtils.CachedAudios.add(file_v.build_filename())
+                MusicUtils.CachedAudios.add(file_v.buildFilename())
                 Utils.inMainThread {
                     CustomToast.CreateCustomToast(applicationContext)
                         .showToastBottom(if (updated_tag) R.string.tag_modified else R.string.saved)
@@ -854,7 +858,7 @@ object DownloadWorkUtils {
             return this
         }
 
-        fun build_filename(): String {
+        fun buildFilename(): String {
             return "$file.$ext"
         }
 

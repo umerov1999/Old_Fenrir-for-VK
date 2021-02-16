@@ -28,16 +28,13 @@ public class PlaylistsInCatalogPresenter extends AccountDependencyPresenter<IPla
     private String next_from;
     private boolean loadingNow;
     private boolean endOfContent;
+    private boolean doAudioLoadTabs;
 
     public PlaylistsInCatalogPresenter(int accountId, String block_id, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
         audioInteractor = InteractorFactory.createAudioInteractor();
         audios = new ArrayList<>();
         this.block_id = block_id;
-    }
-
-    public void LoadAudiosTool() {
-        fireRefresh();
     }
 
     public void setLoadingNow(boolean loadingNow) {
@@ -49,6 +46,12 @@ public class PlaylistsInCatalogPresenter extends AccountDependencyPresenter<IPla
     public void onGuiResumed() {
         super.onGuiResumed();
         resolveRefreshingView();
+        if (doAudioLoadTabs) {
+            return;
+        } else {
+            doAudioLoadTabs = true;
+        }
+        fireRefresh();
     }
 
     private void resolveRefreshingView() {

@@ -23,15 +23,12 @@ public class OnlineFriendsPresenter extends SimpleOwnersPresenter<ISimpleOwnersV
     private final CompositeDisposable actualDataDisposable = new CompositeDisposable();
     private boolean endOfContent;
     private boolean actualDataLoading;
+    private boolean doLoadTabs;
 
     public OnlineFriendsPresenter(int accountId, int userId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
         this.userId = userId;
         relationshipInteractor = InteractorFactory.createRelationshipInteractor();
-    }
-
-    public void doLoad() {
-        requestActualData(0);
     }
 
     private void resolveRefreshingView() {
@@ -44,6 +41,12 @@ public class OnlineFriendsPresenter extends SimpleOwnersPresenter<ISimpleOwnersV
     public void onGuiResumed() {
         super.onGuiResumed();
         resolveRefreshingView();
+        if (doLoadTabs) {
+            return;
+        } else {
+            doLoadTabs = true;
+        }
+        requestActualData(0);
     }
 
     private void requestActualData(int offset) {

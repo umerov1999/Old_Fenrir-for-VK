@@ -26,7 +26,7 @@ import dev.ragnarok.fenrir.util.FindAt;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
@@ -40,13 +40,14 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
     private final List<AudioPlaylist> playlists;
     private final IAudioInteractor fInteractor;
     private final int owner_id;
-    private final CompositeDisposable actualDataDisposable = new CompositeDisposable();
+    private Disposable actualDataDisposable = Disposable.disposed();
     private AudioPlaylist pending_to_add;
     private int Foffset;
     private boolean actualDataReceived;
     private boolean endOfContent;
     private boolean actualDataLoading;
     private FindAt search_at;
+    private boolean doAudioLoadTabs;
 
     public AudioPlaylistsPresenter(int accountId, int ownerId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
@@ -55,20 +56,6 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
         addon = new ArrayList<>();
         fInteractor = InteractorFactory.createAudioInteractor();
         search_at = new FindAt();
-    }
-
-    public void LoadAudiosTool() {
-        if (getAccountId() == owner_id) {
-            actualDataDisposable.add(fInteractor.getDualPlaylists(getAccountId(), owner_id, -21, -22)
-                    .compose(RxUtils.applySingleIOToMainSchedulers())
-                    .subscribe(pl -> {
-                        addon.clear();
-                        addon.addAll(pl);
-                        loadActualData(0);
-                    }, i -> loadActualData(0)));
-        } else {
-            loadActualData(0);
-        }
     }
 
     public int getOwner_id() {
@@ -87,7 +74,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
         resolveRefreshingView();
 
         int accountId = getAccountId();
-        actualDataDisposable.add(fInteractor.getPlaylists(accountId, owner_id, offset, GET_COUNT)
+        appendDisposable(fInteractor.getPlaylists(accountId, owner_id, offset, GET_COUNT)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(data -> onActualDataReceived(offset, data), this::onActualDataGetError));
 
@@ -124,6 +111,22 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
     public void onGuiResumed() {
         super.onGuiResumed();
         resolveRefreshingView();
+        if (doAudioLoadTabs) {
+            return;
+        } else {
+            doAudioLoadTabs = true;
+        }
+        if (getAccountId() == owner_id) {
+            appendDisposable(fInteractor.getDualPlaylists(getAccountId(), owner_id, -21, -22)
+                    .compose(RxUtils.applySingleIOToMainSchedulers())
+                    .subscribe(pl -> {
+                        addon.clear();
+                        addon.addAll(pl);
+                        loadActualData(0);
+                    }, i -> loadActualData(0)));
+        } else {
+            loadActualData(0);
+        }
     }
 
     private void resolveRefreshingView() {
@@ -140,7 +143,11 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
 
     public boolean fireScrollToEnd() {
         if (!endOfContent && nonEmpty(playlists) && actualDataReceived && !actualDataLoading) {
-            loadActualData(Foffset);
+            if (search_at.isSearchMode()) {
+                search(false);
+            } else {
+                loadActualData(Foffset);
+            }
             return false;
         }
         return true;
@@ -149,7 +156,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
     private void doSearch(int accountId) {
         actualDataLoading = true;
         resolveRefreshingView();
-        actualDataDisposable.add(fInteractor.search_owner_playlist(accountId, search_at.getQuery(), owner_id, SEARCH_COUNT, search_at.getOffset(), 0)
+        appendDisposable(fInteractor.search_owner_playlist(accountId, search_at.getQuery(), owner_id, SEARCH_COUNT, search_at.getOffset(), 0)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(playlist -> onSearched(playlist.getFirst(), playlist.getSecond()), this::onActualDataGetError));
     }
@@ -183,7 +190,8 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
             return;
         }
 
-        actualDataDisposable.add(Single.just(new Object())
+        actualDataDisposable.dispose();
+        actualDataDisposable = (Single.just(new Object())
                 .delay(WEB_SEARCH_DELAY, TimeUnit.MILLISECONDS)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(videos -> doSearch(accountId), this::onActualDataGetError));
@@ -194,7 +202,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
         if (!search_at.do_compare(query)) {
             actualDataLoading = false;
             if (Utils.isEmpty(query)) {
-                actualDataDisposable.clear();
+                actualDataDisposable.dispose();
                 fireRefresh(false);
             } else {
                 fireRefresh(true);
@@ -204,7 +212,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
 
     public void onDelete(int index, AudioPlaylist album) {
         int accountId = getAccountId();
-        actualDataDisposable.add(fInteractor.deletePlaylist(accountId, album.getId(), album.getOwnerId())
+        appendDisposable(fInteractor.deletePlaylist(accountId, album.getId(), album.getOwnerId())
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(data -> {
                     playlists.remove(index);
@@ -221,7 +229,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
                 .setTitle(R.string.edit)
                 .setCancelable(true)
                 .setView(root)
-                .setPositiveButton(R.string.button_ok, (dialog, which) -> actualDataDisposable.add(fInteractor.editPlaylist(getAccountId(), album.getOwnerId(), album.getId(),
+                .setPositiveButton(R.string.button_ok, (dialog, which) -> appendDisposable(fInteractor.editPlaylist(getAccountId(), album.getOwnerId(), album.getId(),
                         ((TextInputEditText) root.findViewById(R.id.edit_title)).getText().toString(),
                         ((TextInputEditText) root.findViewById(R.id.edit_description)).getText().toString()).compose(RxUtils.applySingleIOToMainSchedulers())
                         .subscribe(v -> fireRefresh(false), t -> showError(getView(), getCauseIfRuntime(t)))))
@@ -241,7 +249,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
                 .setTitle(R.string.create_playlist)
                 .setCancelable(true)
                 .setView(root)
-                .setPositiveButton(R.string.button_ok, (dialog, which) -> actualDataDisposable.add(fInteractor.createPlaylist(getAccountId(), owner_id,
+                .setPositiveButton(R.string.button_ok, (dialog, which) -> appendDisposable(fInteractor.createPlaylist(getAccountId(), owner_id,
                         ((TextInputEditText) root.findViewById(R.id.edit_title)).getText().toString(),
                         ((TextInputEditText) root.findViewById(R.id.edit_description)).getText().toString()).compose(RxUtils.applySingleIOToMainSchedulers())
                         .subscribe(this::doInsertPlaylist, t -> showError(getView(), getCauseIfRuntime(t)))))
@@ -251,7 +259,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
 
     public void onAdd(AudioPlaylist album) {
         int accountId = getAccountId();
-        actualDataDisposable.add(fInteractor.followPlaylist(accountId, album.getId(), album.getOwnerId(), album.getAccess_key())
+        appendDisposable(fInteractor.followPlaylist(accountId, album.getId(), album.getOwnerId(), album.getAccess_key())
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(data -> getView().getCustomToast().showToast(R.string.success), throwable ->
                         showError(getView(), throwable)));
@@ -263,7 +271,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
             targets.add(new AccessIdPair(i.getId(), i.getOwnerId(), i.getAccessKey()));
         }
         int accountId = getAccountId();
-        actualDataDisposable.add(fInteractor.addToPlaylist(accountId, pending_to_add.getOwnerId(), pending_to_add.getId(), targets)
+        appendDisposable(fInteractor.addToPlaylist(accountId, pending_to_add.getOwnerId(), pending_to_add.getId(), targets)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(data -> getView().getCustomToast().showToast(R.string.success), throwable ->
                         showError(getView(), throwable)));
@@ -276,9 +284,9 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
     }
 
     public void fireRefresh(boolean sleep_search) {
-
-        actualDataDisposable.clear();
-        actualDataLoading = false;
+        if (actualDataLoading) {
+            return;
+        }
 
         if (search_at.isSearchMode()) {
             search_at.reset();

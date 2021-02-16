@@ -27,16 +27,13 @@ public class LinksInCatalogPresenter extends AccountDependencyPresenter<ILinksIn
     private String next_from;
     private boolean loadingNow;
     private boolean endOfContent;
+    private boolean doAudioLoadTabs;
 
     public LinksInCatalogPresenter(int accountId, String block_id, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
         audioInteractor = InteractorFactory.createAudioInteractor();
         links = new ArrayList<>();
         this.block_id = block_id;
-    }
-
-    public void LoadAudiosTool() {
-        fireRefresh();
     }
 
     public void setLoadingNow(boolean loadingNow) {
@@ -48,6 +45,12 @@ public class LinksInCatalogPresenter extends AccountDependencyPresenter<ILinksIn
     public void onGuiResumed() {
         super.onGuiResumed();
         resolveRefreshingView();
+        if (doAudioLoadTabs) {
+            return;
+        } else {
+            doAudioLoadTabs = true;
+        }
+        fireRefresh();
     }
 
     private void resolveRefreshingView() {

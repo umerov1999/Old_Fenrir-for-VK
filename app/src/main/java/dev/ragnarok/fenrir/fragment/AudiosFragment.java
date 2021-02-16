@@ -94,7 +94,6 @@ public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView
             return !Settings.get().main().isUse_long_click_download() && getPresenter().isMyAudio();
         }
     };
-    private boolean doAudioLoadTabs;
     private boolean isSelectMode;
     private boolean isSaveMode;
     private View headerPlaylist;
@@ -327,10 +326,6 @@ public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView
                     .setBarsColored(requireActivity(), true)
                     .build()
                     .apply(requireActivity());
-        }
-        if (!doAudioLoadTabs) {
-            doAudioLoadTabs = true;
-            getPresenter().LoadAudiosTool();
         }
     }
 

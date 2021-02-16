@@ -4,12 +4,8 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
-import android.net.Uri;
-import android.provider.BaseColumns;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,14 +19,16 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.textfield.TextInputEditText;
 import com.squareup.picasso.Transformation;
 import com.umerov.rlottie.RLottieImageView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import dev.ragnarok.fenrir.Constants;
@@ -78,60 +76,34 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
         mAudioInteractor = InteractorFactory.createLocalServerInteractor();
     }
 
-    private static String BytesToSize(long Bytes) {
-        long tb = 1099511627776L;
-        long gb = 1073741824;
-        long mb = 1048576;
-        long kb = 1024;
-
-        String returnSize;
-        if (Bytes >= tb)
-            returnSize = String.format(Locale.getDefault(), "%.2f TB", (double) Bytes / tb);
-        else if (Bytes >= gb)
-            returnSize = String.format(Locale.getDefault(), "%.2f GB", (double) Bytes / gb);
-        else if (Bytes >= mb)
-            returnSize = String.format(Locale.getDefault(), "%.2f MB", (double) Bytes / mb);
-        else if (Bytes >= kb)
-            returnSize = String.format(Locale.getDefault(), "%.2f KB", (double) Bytes / kb);
-        else returnSize = String.format(Locale.getDefault(), "%d Bytes", Bytes);
-        return returnSize;
-    }
-
     public void setItems(List<Audio> data) {
         this.data = data;
         notifyDataSetChanged();
     }
 
-    private Single<Long> doLocalBitrate(String url) {
-        try {
-            Cursor cursor = mContext.getContentResolver().query(
-                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                    new String[]{MediaStore.MediaColumns.DATA},
-                    BaseColumns._ID + "=? ",
-                    new String[]{Uri.parse(url).getLastPathSegment()}, null);
-            if (cursor != null && cursor.moveToFirst()) {
+    private Single<Integer> doBitrate(String url) {
+        return Single.create(v -> {
+            try {
                 MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-                String fl = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
-                retriever.setDataSource(fl);
-                cursor.close();
+                retriever.setDataSource(url, new HashMap<>());
                 String bitrate = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
                 if (bitrate != null) {
-                    return Single.just(Long.parseLong(bitrate) / 1000);
+                    v.onSuccess((int) (Long.parseLong(bitrate) / 1000));
+                } else {
+                    v.onError(new Throwable("Can't receipt bitrate "));
                 }
-                return Single.error(new Throwable("Can't receipt bitrate "));
+            } catch (RuntimeException e) {
+                v.onError(e);
             }
-            return Single.error(new Throwable("Can't receipt bitrate "));
-        } catch (RuntimeException e) {
-            return Single.error(e);
-        }
+        });
     }
 
-    private void getLocalBitrate(String url) {
+    private void getBitrate(String url, int size) {
         if (Utils.isEmpty(url)) {
             return;
         }
-        audioListDisposable = doLocalBitrate(url).compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(r -> CustomToast.CreateCustomToast(mContext).showToast(mContext.getResources().getString(R.string.bitrate) + " " + r + " bit"),
+        audioListDisposable = doBitrate(url).compose(RxUtils.applySingleIOToMainSchedulers())
+                .subscribe(r -> CustomToast.CreateCustomToast(mContext).showToast(mContext.getResources().getString(R.string.bitrate, r, Utils.BytesToSize(size))),
                         e -> Utils.showErrorInAdapter((Activity) mContext, e));
     }
 
@@ -186,7 +158,7 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
             holder.time.setVisibility(View.INVISIBLE);
         else {
             holder.time.setVisibility(View.VISIBLE);
-            holder.time.setText(BytesToSize(audio.getDuration()));
+            holder.time.setText(Utils.BytesToSize(audio.getDuration()));
         }
 
         int Status = DownloadWorkUtils.TrackIsDownloaded(audio);
@@ -265,8 +237,9 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
             menus.add(new OptionRequest(AudioItem.save_item_audio, mContext.getString(R.string.download), R.drawable.save));
             menus.add(new OptionRequest(AudioItem.play_item_audio, mContext.getString(R.string.play), R.drawable.play));
             menus.add(new OptionRequest(AudioItem.bitrate_item_audio, mContext.getString(R.string.get_bitrate), R.drawable.high_quality));
+            menus.add(new OptionRequest(AudioItem.add_item_audio, mContext.getString(R.string.delete), R.drawable.ic_outline_delete));
             menus.add(new OptionRequest(AudioItem.edit_track, mContext.getString(R.string.update_time), R.drawable.ic_recent));
-
+            menus.add(new OptionRequest(AudioItem.goto_artist, mContext.getString(R.string.edit), R.drawable.about_writed));
 
             menus.header(firstNonEmptyString(audio.getArtist(), " ") + " - " + audio.getTitle(), R.drawable.song, audio.getThumb_image_little());
             menus.columns(2);
@@ -300,7 +273,7 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
                         }
                         break;
                     case AudioItem.bitrate_item_audio:
-                        getLocalBitrate(audio.getUrl());
+                        getBitrate(audio.getUrl(), audio.getDuration());
                         break;
                     case AudioItem.edit_track:
                         String hash = VkLinkParser.parseLocalServerURL(audio.getUrl());
@@ -308,6 +281,40 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
                             break;
                         }
                         audioListDisposable = mAudioInteractor.update_time(hash).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> CustomToast.CreateCustomToast(mContext).showToast(R.string.success), t -> Utils.showErrorInAdapter((Activity) mContext, t));
+                        break;
+                    case AudioItem.goto_artist:
+                        String hash2 = VkLinkParser.parseLocalServerURL(audio.getUrl());
+                        if (Utils.isEmpty(hash2)) {
+                            break;
+                        }
+                        audioListDisposable = mAudioInteractor.get_file_name(hash2).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> {
+                            View root = View.inflate(mContext, R.layout.entry_file_name, null);
+                            ((TextInputEditText) root.findViewById(R.id.edit_file_name)).setText(t);
+                            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(mContext)
+                                    .setTitle(R.string.change_name)
+                                    .setCancelable(true)
+                                    .setView(root)
+                                    .setPositiveButton(R.string.button_ok, (dialog, which) -> audioListDisposable = mAudioInteractor.update_file_name(hash2, ((TextInputEditText) root.findViewById(R.id.edit_file_name)).getText().toString().trim())
+                                            .compose(RxUtils.applySingleIOToMainSchedulers())
+                                            .subscribe(t1 -> CustomToast.CreateCustomToast(mContext).showToast(R.string.success), o -> Utils.showErrorInAdapter((Activity) mContext, o)))
+                                    .setNegativeButton(R.string.button_cancel, null);
+                            builder.create().show();
+                        }, t -> Utils.showErrorInAdapter((Activity) mContext, t));
+                        break;
+                    case AudioItem.add_item_audio:
+                        new MaterialAlertDialogBuilder(mContext)
+                                .setMessage(R.string.do_delete)
+                                .setTitle(R.string.confirmation)
+                                .setCancelable(true)
+                                .setPositiveButton(R.string.button_yes, (dialog, which) -> {
+                                    String hash1 = VkLinkParser.parseLocalServerURL(audio.getUrl());
+                                    if (Utils.isEmpty(hash1)) {
+                                        return;
+                                    }
+                                    audioListDisposable = mAudioInteractor.delete_media(hash1).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> CustomToast.CreateCustomToast(mContext).showToast(R.string.success), o -> Utils.showErrorInAdapter((Activity) mContext, o));
+                                })
+                                .setNegativeButton(R.string.button_cancel, null)
+                                .show();
                         break;
                     default:
                         break;

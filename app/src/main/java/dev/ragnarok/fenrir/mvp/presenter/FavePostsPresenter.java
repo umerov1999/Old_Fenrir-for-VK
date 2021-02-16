@@ -38,6 +38,7 @@ public class FavePostsPresenter extends PlaceSupportPresenter<IFavePostsView> {
     private boolean actualInfoReceived;
     private int nextOffset;
     private boolean endOfContent;
+    private boolean doLoadTabs;
 
     public FavePostsPresenter(int accountId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
@@ -51,10 +52,6 @@ public class FavePostsPresenter extends PlaceSupportPresenter<IFavePostsView> {
                 .subscribe(this::onPostUpdate));
 
         loadCachedData();
-    }
-
-    public void LoadTool() {
-        requestActual(0);
     }
 
     private void onPostUpdate(PostUpdate update) {
@@ -86,6 +83,12 @@ public class FavePostsPresenter extends PlaceSupportPresenter<IFavePostsView> {
     public void onGuiResumed() {
         super.onGuiResumed();
         resolveRefreshingView();
+        if (doLoadTabs) {
+            return;
+        } else {
+            doLoadTabs = true;
+        }
+        requestActual(0);
     }
 
     private void resolveRefreshingView() {

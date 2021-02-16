@@ -12,7 +12,6 @@ import dev.ragnarok.fenrir.domain.IVideosInteractor;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
 import dev.ragnarok.fenrir.model.VideoAlbum;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
-import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.IVideoAlbumsView;
 import dev.ragnarok.fenrir.util.RxUtils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -32,6 +31,7 @@ public class VideoAlbumsPresenter extends AccountDependencyPresenter<IVideoAlbum
     private boolean actualDataReceived;
     private boolean netLoadingNow;
     private boolean cacheNowLoading;
+    private boolean doLoadTabs;
 
     public VideoAlbumsPresenter(int accountId, int ownerId, String action, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
@@ -42,14 +42,24 @@ public class VideoAlbumsPresenter extends AccountDependencyPresenter<IVideoAlbum
         data = new ArrayList<>();
 
         loadAllDataFromDb();
-        requestActualData(0);
     }
 
-    @OnGuiCreated
     private void resolveRefreshingView() {
         if (isGuiReady()) {
             getView().displayLoading(netLoadingNow);
         }
+    }
+
+    @Override
+    public void onGuiResumed() {
+        super.onGuiResumed();
+        resolveRefreshingView();
+        if (doLoadTabs) {
+            return;
+        } else {
+            doLoadTabs = true;
+        }
+        requestActualData(0);
     }
 
     private void requestActualData(int offset) {

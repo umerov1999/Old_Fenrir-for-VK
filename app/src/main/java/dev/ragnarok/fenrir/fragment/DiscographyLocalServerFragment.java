@@ -47,7 +47,6 @@ public class DiscographyLocalServerFragment extends BaseMvpFragment<DiscographyL
             () -> CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text));
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AudioLocalServerRecyclerAdapter mAudioRecyclerAdapter;
-    private boolean doAudioLoadTabs;
 
     public static DiscographyLocalServerFragment newInstance(int accountId) {
         Bundle args = new Bundle();
@@ -107,15 +106,6 @@ public class DiscographyLocalServerFragment extends BaseMvpFragment<DiscographyL
         mAudioRecyclerAdapter.setClickListener(this);
         recyclerView.setAdapter(mAudioRecyclerAdapter);
         return root;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!doAudioLoadTabs) {
-            doAudioLoadTabs = true;
-            getPresenter().LoadAudiosTool();
-        }
     }
 
     @NotNull

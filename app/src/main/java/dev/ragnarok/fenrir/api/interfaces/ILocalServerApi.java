@@ -28,4 +28,13 @@ public interface ILocalServerApi {
 
     @CheckResult
     Single<Integer> update_time(String hash);
+
+    @CheckResult
+    Single<Integer> delete_media(String hash);
+
+    @CheckResult
+    Single<String> get_file_name(String hash);
+
+    @CheckResult
+    Single<Integer> update_file_name(String hash, String name);
 }

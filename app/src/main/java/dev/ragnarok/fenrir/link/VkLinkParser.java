@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import dev.ragnarok.fenrir.link.types.AbsLink;
+import dev.ragnarok.fenrir.link.types.ArtistsLink;
 import dev.ragnarok.fenrir.link.types.AudioPlaylistLink;
 import dev.ragnarok.fenrir.link.types.AudioTrackLink;
 import dev.ragnarok.fenrir.link.types.AudiosLink;
@@ -46,6 +47,7 @@ public class VkLinkParser {
     private static final Pattern PATTERN_DIALOG = Pattern.compile("vk\\.com/im\\?sel=(c?)(-?\\d+)");
     private static final Pattern PATTERN_ALBUMS = Pattern.compile("vk\\.com/albums(-?\\d+)");
     private static final Pattern PATTERN_AUDIOS = Pattern.compile("vk\\.com/audios(-?\\d+)");
+    private static final Pattern PATTERN_ARTIST = Pattern.compile("vk\\.com/artist/([^&]*)");
     private static final Pattern PATTERN_ALBUM = Pattern.compile("vk\\.com/album(-?\\d*)_(-?\\d*)");
     private static final Pattern PATTERN_WALL = Pattern.compile("vk\\.com/wall(-?\\d*)");
     private static final Pattern PATTERN_POLL = Pattern.compile("vk\\.com/poll(-?\\d*)_(\\d*)"); //+
@@ -245,6 +247,11 @@ public class VkLinkParser {
         }
 
         vkLink = parseAudios(string);
+        if (vkLink != null) {
+            return vkLink;
+        }
+
+        vkLink = parseArtists(string);
         if (vkLink != null) {
             return vkLink;
         }
@@ -506,6 +513,15 @@ public class VkLinkParser {
         }
 
         return new AudiosLink(parseInt(matcher.group(1)));
+    }
+
+    private static AbsLink parseArtists(String string) {
+        Matcher matcher = PATTERN_ARTIST.matcher(string);
+        if (!matcher.find()) {
+            return null;
+        }
+
+        return new ArtistsLink(matcher.group(1));
     }
 
     private static AbsLink parseDoc(String string) {

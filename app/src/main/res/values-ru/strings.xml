@@ -1138,7 +1138,7 @@
     <string name="get_bitrate">Узнать Битрейт</string>
     <string name="use_internal_downloader">Использовать внутренний загрузчик</string>
     <string name="use_internal_downloader_summary">Для видео и документов</string>
-    <string name="bitrate">Битрейт:</string>
+    <string name="bitrate">Битрейт: %1$d kbs, Размер: %2$s</string>
     <string name="error_timeout_message">Превышено время ожидание запроса</string>
     <string name="login_sms_code_hint">SMS-код</string>
     <string name="button_proxy">Прокси</string>
@@ -1415,7 +1415,6 @@
     <string name="json_attachments_forward">Пересланные</string>
     <string name="updates">Обновления</string>
     <string name="do_chat_download">Скачивание чата…</string>
-    <string name="writing_json">Формирование JSON…</string>
     <string name="do_delete">Удалить?</string>
     <string name="enter_link">Введите ссылку</string>
     <string name="enter_audio_info">Редактировать аудио</string>
@@ -1517,4 +1516,5 @@
     <string name="discography">Дискография</string>
     <string name="update_time">Задать текущее время</string>
     <string name="max_bitmap_resolution">Максимальное разрешение картинки</string>
+    <string name="artists">Артисты</string>
 </resources>

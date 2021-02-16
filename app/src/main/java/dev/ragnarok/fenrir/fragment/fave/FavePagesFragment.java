@@ -40,7 +40,6 @@ public class FavePagesFragment extends BaseMvpFragment<FavePagesPresenter, IFave
     private TextView mEmpty;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private FavePagesAdapter mAdapter;
-    private boolean isRequestLast;
 
     public static FavePagesFragment newInstance(int accountId, boolean isUser) {
         Bundle args = new Bundle();
@@ -167,14 +166,5 @@ public class FavePagesFragment extends BaseMvpFragment<FavePagesPresenter, IFave
     @Override
     public void onDelete(int index, Owner owner) {
         getPresenter().fireOwnerDelete(owner);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!isRequestLast) {
-            isRequestLast = true;
-            getPresenter().LoadTool();
-        }
     }
 }

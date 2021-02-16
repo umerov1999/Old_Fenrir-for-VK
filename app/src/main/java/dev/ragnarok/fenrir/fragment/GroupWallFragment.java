@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.umerov.rlottie.RLottieImageView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -165,6 +166,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
     @Override
     protected void onHeaderInflated(View headerRootView) {
         mHeaderHolder = new GroupHeaderHolder(headerRootView);
+        setupPaganContent(mHeaderHolder.Runes, mHeaderHolder.paganSymbol);
     }
 
     @Override
@@ -389,6 +391,9 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
         final FloatingActionButton fabMessage;
         final HorizontalOptionsAdapter<PostFilter> mFiltersAdapter;
 
+        final RLottieImageView paganSymbol;
+        final View Runes;
+
         GroupHeaderHolder(@NonNull View root) {
             vgCover = root.findViewById(R.id.cover);
             ivAvatar = root.findViewById(R.id.header_group_avatar);
@@ -407,6 +412,9 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
             primaryActionButton = root.findViewById(R.id.header_group_primary_button);
             secondaryActionButton = root.findViewById(R.id.header_group_secondary_button);
             fabMessage = root.findViewById(R.id.header_group_fab_message);
+
+            paganSymbol = root.findViewById(R.id.pagan_symbol);
+            Runes = root.findViewById(R.id.runes_container);
 
             RecyclerView filterList = root.findViewById(R.id.post_filter_recyclerview);
             filterList.setLayoutManager(new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false));

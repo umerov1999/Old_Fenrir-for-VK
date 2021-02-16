@@ -50,6 +50,7 @@ public class RequestsPresenter extends AccountDependencyPresenter<IRequestsView>
     private boolean actualDataLoadingNow;
     private boolean cacheLoadingNow;
     private boolean searchRunNow;
+    private boolean doLoadTabs;
 
     public RequestsPresenter(int accountId, int userId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
@@ -60,18 +61,14 @@ public class RequestsPresenter extends AccountDependencyPresenter<IRequestsView>
         data.add(ALL, new UsersPart(R.string.all_friends, new ArrayList<>(), true));
         data.add(SEACRH_CACHE, new UsersPart(R.string.results_in_the_cache, new ArrayList<>(), false));
         data.add(SEARCH_WEB, new UsersPart(R.string.results_in_a_network, new ArrayList<>(), false));
+        if (getAccountId() == userId) {
+            loadAllCachedData();
+        }
     }
 
     private static boolean allow(User user, String preparedQ) {
         String full = user.getFullName().toLowerCase();
         return full.contains(preparedQ);
-    }
-
-    public void doLoad() {
-        if (getAccountId() == userId) {
-            loadAllCachedData();
-        }
-        requestActualData(0);
     }
 
     private void requestActualData(int offset) {
@@ -111,6 +108,12 @@ public class RequestsPresenter extends AccountDependencyPresenter<IRequestsView>
     public void onGuiResumed() {
         super.onGuiResumed();
         resolveRefreshingView();
+        if (doLoadTabs) {
+            return;
+        } else {
+            doLoadTabs = true;
+        }
+        requestActualData(0);
     }
 
     private void onActualDataReceived(int offset, List<User> users) {

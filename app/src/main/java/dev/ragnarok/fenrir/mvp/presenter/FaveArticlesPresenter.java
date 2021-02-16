@@ -13,7 +13,6 @@ import dev.ragnarok.fenrir.domain.InteractorFactory;
 import dev.ragnarok.fenrir.model.Article;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
-import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.IFaveArticlesView;
 import dev.ragnarok.fenrir.util.RxUtils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -30,6 +29,7 @@ public class FaveArticlesPresenter extends AccountDependencyPresenter<IFaveArtic
     private boolean mEndOfContent;
     private boolean cacheLoadingNow;
     private boolean netLoadingNow;
+    private boolean doLoadTabs;
 
     public FaveArticlesPresenter(int accountId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
@@ -40,15 +40,22 @@ public class FaveArticlesPresenter extends AccountDependencyPresenter<IFaveArtic
         loadCachedData();
     }
 
-    public void LoadTool() {
-        requestAtLast();
-    }
-
-    @OnGuiCreated
     private void resolveRefreshingView() {
         if (isGuiReady()) {
             getView().showRefreshing(netLoadingNow);
         }
+    }
+
+    @Override
+    public void onGuiResumed() {
+        super.onGuiResumed();
+        resolveRefreshingView();
+        if (doLoadTabs) {
+            return;
+        } else {
+            doLoadTabs = true;
+        }
+        requestAtLast();
     }
 
     private void loadCachedData() {

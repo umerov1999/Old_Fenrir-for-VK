@@ -215,23 +215,25 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
             return;
 
         if (actionBar.isShowing()) {
-            //toolbar_with_elevation.animate().translationY(-toolbar_with_elevation.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
             actionBar.hide();
             mControllerView.hide();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+                mDecorView.setLayoutParams(new WindowManager.LayoutParams(WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES));
+
+            mDecorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE);
         } else {
-            //toolbar_with_elevation.animate().translationY(0).setInterpolator(new DecelerateInterpolator()).start();
             actionBar.show();
             mControllerView.show();
-        }
-        mDecorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_IMMERSIVE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-            mDecorView.setLayoutParams(new WindowManager.LayoutParams(WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+                mDecorView.setLayoutParams(new WindowManager.LayoutParams(WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT));
+            mDecorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        }
     }
 
     @Override
@@ -244,15 +246,22 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
     protected void onResume() {
         super.onResume();
         onStopCalled = false;
+
+        ActionBar actionBar = getSupportActionBar();
+
+        if (actionBar != null && actionBar.isShowing()) {
+            actionBar.hide();
+            mControllerView.hide();
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+            mDecorView.setLayoutParams(new WindowManager.LayoutParams(WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES));
         mDecorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_IMMERSIVE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-            mDecorView.setLayoutParams(new WindowManager.LayoutParams(WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES));
     }
 
     @Override

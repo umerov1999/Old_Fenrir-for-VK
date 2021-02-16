@@ -5,113 +5,21 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-
     <com.umerov.rlottie.RLottieImageView
         android:id="@+id/pagan_symbol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="center_horizontal"
         android:src="@drawable/valknut"
         app:loopAnimation="true" />
 
-    <LinearLayout
+    <include
         android:id="@+id/runes_container"
+        layout="@layout/runes_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/card_margin"
-        android:background="@drawable/background_rectangle_stroke_filled"
-        android:orientation="horizontal"
-        android:padding="4dp">
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="@string/runic"
-            android:src="@drawable/runic_letter_fehu"
-            app:tint="?colorPrimary" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="@string/runic"
-            android:src="@drawable/runic_letter_ehwaz"
-            app:tint="?colorSecondary" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="@string/runic"
-            android:src="@drawable/runic_letter_naudiz"
-            app:tint="?colorPrimary" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="@string/runic"
-            android:src="@drawable/runic_letter_raido"
-            app:tint="?colorSecondary" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="@string/runic"
-            android:src="@drawable/runic_letter_isaz"
-            app:tint="?colorPrimary" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="@string/runic"
-            android:src="@drawable/runic_letter_raido"
-            app:tint="?colorPrimary" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="@string/runic"
-            android:src="@drawable/runic_letter_space"
-            app:tint="?colorSecondary" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="@string/runic"
-            android:src="@drawable/runic_letter_fehu"
-            app:tint="?colorPrimary" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="@string/runic"
-            android:src="@drawable/runic_letter_kauna"
-            app:tint="?colorSecondary" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="@string/runic"
-            android:src="@drawable/runic_letter_manaz"
-            app:tint="?colorPrimary" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="@string/runic"
-            android:src="@drawable/runic_letter_algis"
-            app:tint="?colorSecondary" />
-    </LinearLayout>
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/card_margin" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_view"

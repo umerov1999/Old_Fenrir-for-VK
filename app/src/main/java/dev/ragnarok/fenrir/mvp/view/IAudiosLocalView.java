@@ -30,5 +30,7 @@ public interface IAudiosLocalView extends IMvpView, IErrorView, IAccountDependen
 
     void notifyUploadDataChanged();
 
-    void displayRefreshing(boolean refresing);
+    void displayRefreshing(boolean refreshing);
+
+    void checkPermission();
 }

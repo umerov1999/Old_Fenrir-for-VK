@@ -30,6 +30,7 @@ import com.umerov.rlottie.RLottieImageView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,6 +49,7 @@ import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.CustomToast;
+import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.WeakViewAnimatorAdapter;
@@ -76,28 +78,32 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
         notifyDataSetChanged();
     }
 
-    private Single<Long> doLocalBitrate(String url) {
-        try {
-            Cursor cursor = mContext.getContentResolver().query(
-                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                    new String[]{MediaStore.MediaColumns.DATA},
-                    BaseColumns._ID + "=? ",
-                    new String[]{Uri.parse(url).getLastPathSegment()}, null);
-            if (cursor != null && cursor.moveToFirst()) {
-                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-                String fl = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
-                retriever.setDataSource(fl);
-                cursor.close();
-                String bitrate = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
-                if (bitrate != null) {
-                    return Single.just(Long.parseLong(bitrate) / 1000);
+    private Single<Pair<Integer, Long>> doLocalBitrate(String url) {
+        return Single.create(v -> {
+            try {
+                Cursor cursor = mContext.getContentResolver().query(
+                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                        new String[]{MediaStore.MediaColumns.DATA},
+                        BaseColumns._ID + "=? ",
+                        new String[]{Uri.parse(url).getLastPathSegment()}, null);
+                if (cursor != null && cursor.moveToFirst()) {
+                    MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                    String fl = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+                    retriever.setDataSource(fl);
+                    cursor.close();
+                    String bitrate = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
+                    if (bitrate != null) {
+                        v.onSuccess(new Pair<>((int) (Long.parseLong(bitrate) / 1000), new File(fl).length()));
+                    } else {
+                        v.onError(new Throwable("Can't receipt bitrate "));
+                    }
+                } else {
+                    v.onError(new Throwable("Can't receipt bitrate "));
                 }
-                return Single.error(new Throwable("Can't receipt bitrate "));
+            } catch (RuntimeException e) {
+                v.onError(e);
             }
-            return Single.error(new Throwable("Can't receipt bitrate "));
-        } catch (RuntimeException e) {
-            return Single.error(e);
-        }
+        });
     }
 
     private void getLocalBitrate(String url) {
@@ -105,7 +111,7 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
             return;
         }
         audioListDisposable = doLocalBitrate(url).compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(r -> CustomToast.CreateCustomToast(mContext).showToast(mContext.getResources().getString(R.string.bitrate) + " " + r + " bit"),
+                .subscribe(r -> CustomToast.CreateCustomToast(mContext).showToast(mContext.getResources().getString(R.string.bitrate, r.getFirst(), Utils.BytesToSize(r.getSecond()))),
                         e -> Utils.showErrorInAdapter((Activity) mContext, e));
     }
 

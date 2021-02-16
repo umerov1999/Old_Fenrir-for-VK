@@ -19,14 +19,11 @@ public class RecommendationsFriendsPresenter extends SimpleOwnersPresenter<ISimp
     private final IRelationshipInteractor relationshipInteractor;
     private final CompositeDisposable actualDataDisposable = new CompositeDisposable();
     private boolean actualDataLoading;
+    private boolean doLoadTabs;
 
     public RecommendationsFriendsPresenter(int accountId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
         relationshipInteractor = InteractorFactory.createRelationshipInteractor();
-    }
-
-    public void doLoad() {
-        requestActualData();
     }
 
     private void resolveRefreshingView() {
@@ -39,6 +36,12 @@ public class RecommendationsFriendsPresenter extends SimpleOwnersPresenter<ISimp
     public void onGuiResumed() {
         super.onGuiResumed();
         resolveRefreshingView();
+        if (doLoadTabs) {
+            return;
+        } else {
+            doLoadTabs = true;
+        }
+        requestActualData();
     }
 
     private void requestActualData() {

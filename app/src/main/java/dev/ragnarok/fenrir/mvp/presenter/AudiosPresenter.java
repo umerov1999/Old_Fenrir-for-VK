@@ -51,6 +51,7 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
     private List<AudioPlaylist> Curr;
     private boolean loadingNow;
     private boolean endOfContent;
+    private boolean doAudioLoadTabs;
 
     public AudiosPresenter(int accountId, int ownerId, int option_menu_id, int isAlbum, boolean iSSelectMode, String accessKey, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
@@ -61,18 +62,6 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
         this.isAlbum = isAlbum;
         this.iSSelectMode = iSSelectMode;
         this.accessKey = accessKey;
-    }
-
-    public void LoadAudiosTool() {
-        if (audios.isEmpty()) {
-            if (!iSSelectMode && isAlbum == 0 && option_menu_id == -1 && MusicUtils.Audios.containsKey(ownerId)) {
-                audios.addAll(Objects.requireNonNull(MusicUtils.Audios.get(ownerId)));
-                actualReceived = true;
-                setLoadingNow(false);
-                callView(IAudiosView::notifyListChanged);
-            } else
-                fireRefresh();
-        }
     }
 
     private void loadedPlaylist(AudioPlaylist t) {
@@ -99,6 +88,21 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
     public void onGuiResumed() {
         super.onGuiResumed();
         resolveRefreshingView();
+
+        if (doAudioLoadTabs) {
+            return;
+        } else {
+            doAudioLoadTabs = true;
+        }
+        if (audios.isEmpty()) {
+            if (!iSSelectMode && isAlbum == 0 && option_menu_id == -1 && MusicUtils.Audios.containsKey(ownerId)) {
+                audios.addAll(Objects.requireNonNull(MusicUtils.Audios.get(ownerId)));
+                actualReceived = true;
+                setLoadingNow(false);
+                callView(IAudiosView::notifyListChanged);
+            } else
+                fireRefresh();
+        }
     }
 
     private void resolveRefreshingView() {

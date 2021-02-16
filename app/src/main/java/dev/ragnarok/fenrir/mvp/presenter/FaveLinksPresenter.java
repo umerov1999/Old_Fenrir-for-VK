@@ -36,6 +36,7 @@ public class FaveLinksPresenter extends AccountDependencyPresenter<IFaveLinksVie
     private boolean actualDataReceived;
     private boolean cacheLoading;
     private boolean actualLoading;
+    private boolean doLoadTabs;
 
     public FaveLinksPresenter(int accountId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
@@ -43,10 +44,6 @@ public class FaveLinksPresenter extends AccountDependencyPresenter<IFaveLinksVie
         faveInteractor = InteractorFactory.createFaveInteractor();
 
         loadCachedData();
-    }
-
-    public void LoadTool() {
-        loadActual(0);
     }
 
     private void loadCachedData() {
@@ -98,6 +95,12 @@ public class FaveLinksPresenter extends AccountDependencyPresenter<IFaveLinksVie
     public void onGuiResumed() {
         super.onGuiResumed();
         resolveRefreshingView();
+        if (doLoadTabs) {
+            return;
+        } else {
+            doLoadTabs = true;
+        }
+        loadActual(0);
     }
 
     private void resolveRefreshingView() {

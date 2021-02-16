@@ -7,7 +7,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Color;
-import android.media.MediaMetadataRetriever;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +27,6 @@ import com.umerov.rlottie.RLottieImageView;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import dev.ragnarok.fenrir.Account_Types;
@@ -55,10 +53,10 @@ import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.DownloadWorkUtils;
+import dev.ragnarok.fenrir.util.Mp3InfoHelper;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.WeakViewAnimatorAdapter;
-import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.Disposable;
 
 import static dev.ragnarok.fenrir.player.util.MusicUtils.observeServiceBinding;
@@ -136,42 +134,28 @@ public class AudioContainer extends LinearLayout {
     private void getMp3AndBitrate(int accountId, Audio audio) {
         if (isEmpty(audio.getUrl()) || audio.isHLS()) {
             audioListDisposable = mAudioInteractor.getByIdOld(accountId, Collections.singletonList(new IdPair(audio.getId(), audio.getOwnerId()))).compose(RxUtils.applySingleIOToMainSchedulers())
-                    .subscribe(t -> getBitrate(t.get(0).getUrl()), e -> getBitrate(audio.getUrl()));
+                    .subscribe(t -> getBitrate(t.get(0).getUrl(), t.get(0).getDuration()), e -> getBitrate(audio.getUrl(), audio.getDuration()));
         } else {
-            getBitrate(audio.getUrl());
+            getBitrate(audio.getUrl(), audio.getDuration());
         }
     }
 
-    private Single<Long> doBitrate(String url) {
-        try {
-            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-            retriever.setDataSource(Audio.getMp3FromM3u8(url), new HashMap<>());
-            String bitrate = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
-            if (bitrate != null) {
-                return Single.just(Long.parseLong(bitrate) / 1000);
-            }
-            return Single.error(new Throwable("Can't receipt bitrate "));
-        } catch (RuntimeException e) {
-            return Single.error(new Throwable(e.getLocalizedMessage()));
-        }
-    }
-
-    private void getBitrate(String url) {
+    private void getBitrate(String url, int duration) {
         if (isEmpty(url)) {
             return;
         }
-        audioListDisposable = doBitrate(url).compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(r -> CustomToast.CreateCustomToast(mContext).showToast(mContext.getResources().getString(R.string.bitrate) + " " + r + " bit"),
+        audioListDisposable = Mp3InfoHelper.getLength(Audio.getMp3FromM3u8(url)).compose(RxUtils.applySingleIOToMainSchedulers())
+                .subscribe(r -> CustomToast.CreateCustomToast(mContext).showToast(Mp3InfoHelper.getBitrate(mContext, duration, r)),
                         e -> Utils.showErrorInAdapter((Activity) mContext, e));
     }
 
     private void get_lyrics(Audio audio) {
         audioListDisposable = mAudioInteractor.getLyrics(Settings.get().accounts().getCurrent(), audio.getLyricsId())
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(t -> onAudioLyricsRecived(t, audio), t -> Utils.showErrorInAdapter((Activity) mContext, t));
+                .subscribe(t -> onAudioLyricsReceived(t, audio), t -> Utils.showErrorInAdapter((Activity) mContext, t));
     }
 
-    private void onAudioLyricsRecived(String Text, Audio audio) {
+    private void onAudioLyricsReceived(String Text, Audio audio) {
         String title = audio.getArtistAndTitle();
 
         MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(mContext);

@@ -257,28 +257,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
     protected void onHeaderInflated(View headerRootView) {
         mHeaderHolder = new UserHeaderHolder(headerRootView);
         mHeaderHolder.ivAvatar.setOnClickListener(v -> getPresenter().fireAvatarClick());
-        mHeaderHolder.Runes.setVisibility(Settings.get().other().isRunes_show() ? View.VISIBLE : View.GONE);
-        mHeaderHolder.paganSymbol.setVisibility(Settings.get().other().isShow_pagan_symbol() ? View.VISIBLE : View.GONE);
-        switch (Settings.get().other().getPaganSymbol()) {
-            case 1:
-                mHeaderHolder.paganSymbol.setImageResource(R.drawable.valknut);
-                break;
-            case 2:
-                mHeaderHolder.paganSymbol.setImageResource(R.drawable.ic_mjolnir);
-                break;
-            case 3:
-                mHeaderHolder.paganSymbol.setImageResource(R.drawable.ic_vegvisir);
-                break;
-            case 4:
-                mHeaderHolder.paganSymbol.setImageResource(R.drawable.ic_celtic_knot);
-                break;
-            case 5:
-                mHeaderHolder.paganSymbol.setImageResource(R.drawable.ic_igdr2);
-                break;
-            default:
-                mHeaderHolder.paganSymbol.setImageResource(R.drawable.ic_igdr);
-                break;
-        }
+        setupPaganContent(mHeaderHolder.Runes, mHeaderHolder.paganSymbol);
     }
 
     @NotNull

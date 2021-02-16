@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.Collections;
-import java.util.HashMap;
 
 import dev.ragnarok.fenrir.domain.IAudioInteractor;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
@@ -21,6 +20,7 @@ import dev.ragnarok.fenrir.model.IdPair;
 import dev.ragnarok.fenrir.mvp.presenter.base.RxSupportPresenter;
 import dev.ragnarok.fenrir.mvp.view.IAudioDuplicateView;
 import dev.ragnarok.fenrir.player.util.MusicUtils;
+import dev.ragnarok.fenrir.util.Mp3InfoHelper;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
@@ -38,8 +38,8 @@ public class AudioDuplicatePresenter extends RxSupportPresenter<IAudioDuplicateV
     private final Audio old_audio;
     private final IAudioInteractor mAudioInteractor = InteractorFactory.createAudioInteractor();
     private final Disposable mPlayerDisposable;
-    private Long oldBitrate;
-    private Long newBitrate;
+    private Integer oldBitrate;
+    private Integer newBitrate;
     private boolean needShowBitrateButton = true;
     private Disposable audioListDisposable = Disposable.disposed();
 
@@ -56,59 +56,49 @@ public class AudioDuplicatePresenter extends RxSupportPresenter<IAudioDuplicateV
     private void getMp3AndBitrate() {
         if (Utils.isEmpty(new_audio.getUrl()) || new_audio.isHLS()) {
             audioListDisposable = mAudioInteractor.getByIdOld(accountId, Collections.singletonList(new IdPair(new_audio.getId(), new_audio.getOwnerId()))).compose(RxUtils.applySingleIOToMainSchedulers())
-                    .subscribe(t -> getBitrate(t.get(0).getUrl()), e -> getBitrate(new_audio.getUrl()));
+                    .subscribe(t -> getBitrate(t.get(0).getUrl(), t.get(0).getDuration()), e -> getBitrate(new_audio.getUrl(), new_audio.getDuration()));
         } else {
-            getBitrate(new_audio.getUrl());
+            getBitrate(new_audio.getUrl(), new_audio.getDuration());
         }
     }
 
-    private Single<Long> doBitrate(String url) {
-        try {
-            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-            retriever.setDataSource(Audio.getMp3FromM3u8(url), new HashMap<>());
-            String bitrate = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
-            if (bitrate != null) {
-                return Single.just(Long.parseLong(bitrate) / 1000);
-            }
-            return Single.error(new Throwable("Can't receipt bitrate "));
-        } catch (RuntimeException e) {
-            return Single.error(e);
-        }
-    }
-
-    private void getBitrate(String url) {
+    private void getBitrate(String url, int duration) {
         if (Utils.isEmpty(url)) {
             return;
         }
-        audioListDisposable = doBitrate(url).compose(RxUtils.applySingleIOToMainSchedulers())
+        audioListDisposable = Mp3InfoHelper.getLength(url).compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(r -> {
-                    newBitrate = r;
+                    newBitrate = Mp3InfoHelper.getBitrate(duration, r);
                     callView(o -> o.setNewBitrate(newBitrate));
                 }, this::onDataGetError);
     }
 
-    private Single<Long> doLocalBitrate(Context context, String url) {
-        try {
-            Cursor cursor = context.getContentResolver().query(
-                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                    new String[]{MediaStore.MediaColumns.DATA},
-                    BaseColumns._ID + "=? ",
-                    new String[]{Uri.parse(url).getLastPathSegment()}, null);
-            if (cursor != null && cursor.moveToFirst()) {
-                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-                String fl = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
-                retriever.setDataSource(fl);
-                cursor.close();
-                String bitrate = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
-                if (bitrate != null) {
-                    return Single.just(Long.parseLong(bitrate) / 1000);
+    private Single<Integer> doLocalBitrate(Context context, String url) {
+        return Single.create(v -> {
+            try {
+                Cursor cursor = context.getContentResolver().query(
+                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                        new String[]{MediaStore.MediaColumns.DATA},
+                        BaseColumns._ID + "=? ",
+                        new String[]{Uri.parse(url).getLastPathSegment()}, null);
+                if (cursor != null && cursor.moveToFirst()) {
+                    MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                    String fl = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+                    retriever.setDataSource(fl);
+                    cursor.close();
+                    String bitrate = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE);
+                    if (bitrate != null) {
+                        v.onSuccess((int) (Long.parseLong(bitrate) / 1000));
+                    } else {
+                        v.onError(new Throwable("Can't receipt bitrate "));
+                    }
+                } else {
+                    v.onError(new Throwable("Can't receipt bitrate "));
                 }
-                return Single.error(new Throwable("Can't receipt bitrate "));
+            } catch (RuntimeException e) {
+                v.onError(e);
             }
-            return Single.error(new Throwable("Can't receipt bitrate "));
-        } catch (RuntimeException e) {
-            return Single.error(e);
-        }
+        });
     }
 
     public void getBitrateAll(@NonNull Context context) {

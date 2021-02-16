@@ -53,6 +53,7 @@ public class AllFriendsPresenter extends AccountDependencyPresenter<IAllFriendsV
     private boolean actualDataLoadingNow;
     private boolean cacheLoadingNow;
     private boolean searchRunNow;
+    private boolean doLoadTabs;
 
     public AllFriendsPresenter(int accountId, int userId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
@@ -70,7 +71,15 @@ public class AllFriendsPresenter extends AccountDependencyPresenter<IAllFriendsV
         return full.contains(preparedQ);
     }
 
-    public void doLoad() {
+    @Override
+    public void onGuiResumed() {
+        super.onGuiResumed();
+        resolveRefreshingView();
+        if (doLoadTabs) {
+            return;
+        } else {
+            doLoadTabs = true;
+        }
         loadAllCachedData();
         if (!Settings.get().other().isNot_friend_show()) {
             requestActualData(0, false);
@@ -104,12 +113,6 @@ public class AllFriendsPresenter extends AccountDependencyPresenter<IAllFriendsV
         if (isGuiResumed()) {
             getView().showRefreshing(!isSeacrhNow() && actualDataLoadingNow);
         }
-    }
-
-    @Override
-    public void onGuiResumed() {
-        super.onGuiResumed();
-        resolveRefreshingView();
     }
 
     private void onActualDataReceived(int offset, List<User> users, boolean do_scan) {

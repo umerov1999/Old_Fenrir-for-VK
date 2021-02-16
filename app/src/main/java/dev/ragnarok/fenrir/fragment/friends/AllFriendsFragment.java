@@ -48,7 +48,6 @@ public class AllFriendsFragment extends BaseMvpFragment<AllFriendsPresenter, IAl
 
     private FriendsRecycleAdapter mAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private boolean isRequested;
 
     public static AllFriendsFragment newInstance(int accountId, int userId) {
         Bundle args = new Bundle();
@@ -57,15 +56,6 @@ public class AllFriendsFragment extends BaseMvpFragment<AllFriendsPresenter, IAl
         AllFriendsFragment allFriendsFragment = new AllFriendsFragment();
         allFriendsFragment.setArguments(args);
         return allFriendsFragment;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!isRequested) {
-            isRequested = true;
-            getPresenter().doLoad();
-        }
     }
 
     @Override

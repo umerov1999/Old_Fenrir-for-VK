@@ -56,11 +56,29 @@ public class AppPerms {
         return () -> request.launch(permissions);
     }
 
+    public static doRequestPermissions requestPermissionsResult(@NonNull Fragment fragment, @NonNull String[] permissions, @NonNull onPermissionsResult callback) {
+        ActivityResultLauncher<String[]> request = fragment.registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+            if (Utils.checkValues(result.values())) {
+                callback.granted();
+            } else {
+                Utils.showRedTopToast(fragment.requireActivity(), R.string.not_permitted);
+                callback.not_granted();
+            }
+        });
+        return () -> request.launch(permissions);
+    }
+
     public interface doRequestPermissions {
         void launch();
     }
 
     public interface onPermissionsGranted {
         void granted();
+    }
+
+    public interface onPermissionsResult {
+        void granted();
+
+        void not_granted();
     }
 }

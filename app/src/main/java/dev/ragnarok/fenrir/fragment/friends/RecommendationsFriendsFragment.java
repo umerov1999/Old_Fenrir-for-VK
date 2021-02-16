@@ -14,8 +14,6 @@ import dev.ragnarok.fenrir.mvp.view.ISimpleOwnersView;
 
 public class RecommendationsFriendsFragment extends AbsOwnersListFragment<RecommendationsFriendsPresenter, ISimpleOwnersView> {
 
-    private boolean isRequested;
-
     public static RecommendationsFriendsFragment newInstance(int accountId, int userId) {
         Bundle bundle = new Bundle();
         bundle.putInt(Extra.USER_ID, userId);
@@ -23,15 +21,6 @@ public class RecommendationsFriendsFragment extends AbsOwnersListFragment<Recomm
         RecommendationsFriendsFragment friendsFragment = new RecommendationsFriendsFragment();
         friendsFragment.setArguments(bundle);
         return friendsFragment;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!isRequested) {
-            isRequested = true;
-            getPresenter().doLoad();
-        }
     }
 
     @NotNull

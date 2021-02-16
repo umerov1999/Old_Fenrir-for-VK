@@ -48,7 +48,6 @@ public class VideosInCatalogFragment extends BaseMvpFragment<VideosInCatalogPres
     private VideosAdapter mAdapter;
     private String Header;
     private boolean inTabsContainer;
-    private boolean doAudioLoadTabs;
 
     public static VideosInCatalogFragment newInstance(int accountId, String block_id, String title) {
         Bundle args = new Bundle();
@@ -119,10 +118,6 @@ public class VideosInCatalogFragment extends BaseMvpFragment<VideosInCatalogPres
                     .setBarsColored(requireActivity(), true)
                     .build()
                     .apply(requireActivity());
-        }
-        if (!doAudioLoadTabs) {
-            doAudioLoadTabs = true;
-            getPresenter().LoadAudiosTool();
         }
     }
 

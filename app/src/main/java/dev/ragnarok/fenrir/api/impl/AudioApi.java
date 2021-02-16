@@ -11,6 +11,7 @@ import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiAudio;
 import dev.ragnarok.fenrir.api.model.VKApiAudioCatalog;
 import dev.ragnarok.fenrir.api.model.VKApiAudioPlaylist;
+import dev.ragnarok.fenrir.api.model.VkApiArtist;
 import dev.ragnarok.fenrir.api.model.VkApiLyrics;
 import dev.ragnarok.fenrir.api.model.response.AddToPlaylistResponse;
 import dev.ragnarok.fenrir.api.model.response.CatalogResponse;
@@ -53,6 +54,14 @@ class AudioApi extends AbsApi implements IAudioApi {
                                     integerFromBoolean(performerOnly), sort, integerFromBoolean(searchOwn), offset, count)
                             .map(extractResponseWithErrorHandling()));
         }
+    }
+
+    @Override
+    public Single<Items<VkApiArtist>> searchArtists(String query, Integer offset, Integer count) {
+        return provideService(IAudioService.class)
+                .flatMap(service -> service
+                        .searchArtists(query, offset, count)
+                        .map(extractResponseWithErrorHandling()));
     }
 
     @Override
@@ -170,16 +179,16 @@ class AudioApi extends AbsApi implements IAudioApi {
     }
 
     @Override
-    public Single<Items<VKApiAudioCatalog>> getCatalog(String artist_id) {
+    public Single<Items<VKApiAudioCatalog>> getCatalog(String artist_id, String query) {
         if (Settings.get().other().isUse_old_vk_api()) {
             return provideService(IAudioService.class)
                     .flatMap(service -> service
-                            .getCatalogOld(artist_id, "5.90")
+                            .getCatalogOld(artist_id, query, "5.90")
                             .map(extractResponseWithErrorHandling()));
         } else {
             return provideService(IAudioService.class)
                     .flatMap(service -> service
-                            .getCatalog(artist_id)
+                            .getCatalog(artist_id, query)
                             .map(extractResponseWithErrorHandling()));
         }
     }

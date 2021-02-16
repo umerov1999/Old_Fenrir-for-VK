@@ -45,6 +45,8 @@ public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLoca
     private boolean actualReceived;
     private boolean loadingNow;
     private String query;
+    private boolean errorPermissions;
+    private boolean doAudioLoadTabs;
 
     public AudiosLocalPresenter(int accountId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
@@ -55,8 +57,7 @@ public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLoca
         origin_audios = new ArrayList<>();
     }
 
-    public void LoadAudiosTool() {
-
+    public void firePrepared() {
         appendDisposable(uploadManager.get(getAccountId(), destination)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(this::onUploadsDataReceived));
@@ -121,6 +122,14 @@ public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLoca
     public void onGuiResumed() {
         super.onGuiResumed();
         resolveRefreshingView();
+        if (doAudioLoadTabs) {
+            return;
+        } else {
+            doAudioLoadTabs = true;
+        }
+        if (isGuiReady()) {
+            getView().checkPermission();
+        }
     }
 
     private void resolveRefreshingView() {
@@ -203,7 +212,18 @@ public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLoca
         return -1;
     }
 
+    public void firePermissionsCanceled() {
+        errorPermissions = true;
+    }
+
     public void fireRefresh() {
+        if (errorPermissions) {
+            errorPermissions = false;
+            if (isGuiReady()) {
+                getView().checkPermission();
+            }
+            return;
+        }
         audioListDisposable.clear();
         requestList();
     }

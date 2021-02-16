@@ -43,7 +43,6 @@ public class RequestsFragment extends BaseMvpFragment<RequestsPresenter, IReques
 
     private FriendsRecycleAdapter mAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private boolean isRequested;
 
     public static RequestsFragment newInstance(int accountId, int userId) {
         Bundle args = new Bundle();
@@ -52,15 +51,6 @@ public class RequestsFragment extends BaseMvpFragment<RequestsPresenter, IReques
         RequestsFragment allFriendsFragment = new RequestsFragment();
         allFriendsFragment.setArguments(args);
         return allFriendsFragment;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!isRequested) {
-            isRequested = true;
-            getPresenter().doLoad();
-        }
     }
 
     @Override

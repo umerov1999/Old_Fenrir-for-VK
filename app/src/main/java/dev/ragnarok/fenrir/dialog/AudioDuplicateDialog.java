@@ -217,10 +217,10 @@ public class AudioDuplicateDialog extends BaseMvpDialogFragment<AudioDuplicatePr
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void setOldBitrate(Long bitrate) {
+    public void setOldBitrate(@Nullable Integer bitrate) {
         if (bitrate != null) {
             oldBitrate.setVisibility(View.VISIBLE);
-            oldBitrate.setText(bitrate + " bit");
+            oldBitrate.setText(bitrate + " kbps");
         } else {
             oldBitrate.setVisibility(View.GONE);
         }
@@ -228,10 +228,10 @@ public class AudioDuplicateDialog extends BaseMvpDialogFragment<AudioDuplicatePr
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void setNewBitrate(Long bitrate) {
+    public void setNewBitrate(@Nullable Integer bitrate) {
         if (bitrate != null) {
             newBitrate.setVisibility(View.VISIBLE);
-            newBitrate.setText(bitrate + " bit");
+            newBitrate.setText(bitrate + " kbps");
         } else {
             newBitrate.setVisibility(View.GONE);
         }

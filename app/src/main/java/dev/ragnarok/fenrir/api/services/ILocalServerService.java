@@ -47,4 +47,16 @@ public interface ILocalServerService {
     @FormUrlEncoded
     @POST("update_time")
     Single<BaseResponse<Integer>> update_time(@Field("hash") String hash);
+
+    @FormUrlEncoded
+    @POST("delete_media")
+    Single<BaseResponse<Integer>> delete_media(@Field("hash") String hash);
+
+    @FormUrlEncoded
+    @POST("get_file_name")
+    Single<BaseResponse<String>> get_file_name(@Field("hash") String hash);
+
+    @FormUrlEncoded
+    @POST("update_file_name")
+    Single<BaseResponse<Integer>> update_file_name(@Field("hash") String hash, @Field("name") String name);
 }

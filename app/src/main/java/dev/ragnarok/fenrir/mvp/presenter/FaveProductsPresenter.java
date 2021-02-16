@@ -12,7 +12,6 @@ import dev.ragnarok.fenrir.domain.IFaveInteractor;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
 import dev.ragnarok.fenrir.model.Market;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
-import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.IFaveProductsView;
 import dev.ragnarok.fenrir.util.RxUtils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -29,6 +28,7 @@ public class FaveProductsPresenter extends AccountDependencyPresenter<IFaveProdu
     private boolean mEndOfContent;
     private boolean cacheLoadingNow;
     private boolean netLoadingNow;
+    private boolean doLoadTabs;
 
     public FaveProductsPresenter(int accountId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
@@ -39,15 +39,22 @@ public class FaveProductsPresenter extends AccountDependencyPresenter<IFaveProdu
         loadCachedData();
     }
 
-    public void LoadTool() {
-        requestAtLast();
-    }
-
-    @OnGuiCreated
     private void resolveRefreshingView() {
         if (isGuiReady()) {
             getView().showRefreshing(netLoadingNow);
         }
+    }
+
+    @Override
+    public void onGuiResumed() {
+        super.onGuiResumed();
+        resolveRefreshingView();
+        if (doLoadTabs) {
+            return;
+        } else {
+            doLoadTabs = true;
+        }
+        requestAtLast();
     }
 
     private void loadCachedData() {

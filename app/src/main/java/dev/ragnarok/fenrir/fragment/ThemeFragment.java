@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 import dev.ragnarok.fenrir.R;
+import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
 import dev.ragnarok.fenrir.adapter.ThemeAdapter;
 import dev.ragnarok.fenrir.model.ThemeValue;
@@ -65,6 +66,12 @@ public class ThemeFragment extends AbsMvpFragment<ThemePresenter, IThemeView> im
             actionBar.setTitle(R.string.theme_edit_title);
             actionBar.setSubtitle(null);
         }
+        new ActivityFeatures.Builder()
+                .begin()
+                .setHideNavigationMenu(false)
+                .setBarsColored(requireActivity(), true)
+                .build()
+                .apply(requireActivity());
     }
 
     @NotNull

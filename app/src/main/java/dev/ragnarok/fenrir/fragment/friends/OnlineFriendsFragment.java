@@ -14,8 +14,6 @@ import dev.ragnarok.fenrir.mvp.view.ISimpleOwnersView;
 
 public class OnlineFriendsFragment extends AbsOwnersListFragment<OnlineFriendsPresenter, ISimpleOwnersView> {
 
-    private boolean isRequested;
-
     public static OnlineFriendsFragment newInstance(int accountId, int userId) {
         Bundle bundle = new Bundle();
         bundle.putInt(Extra.USER_ID, userId);
@@ -23,15 +21,6 @@ public class OnlineFriendsFragment extends AbsOwnersListFragment<OnlineFriendsPr
         OnlineFriendsFragment friendsFragment = new OnlineFriendsFragment();
         friendsFragment.setArguments(bundle);
         return friendsFragment;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!isRequested) {
-            isRequested = true;
-            getPresenter().doLoad();
-        }
     }
 
     @NotNull

@@ -20,6 +20,7 @@ import dev.ragnarok.fenrir.fragment.fave.FaveTabsFragment;
 import dev.ragnarok.fenrir.fragment.search.SearchContentType;
 import dev.ragnarok.fenrir.fragment.search.criteria.NewsFeedCriteria;
 import dev.ragnarok.fenrir.link.types.AbsLink;
+import dev.ragnarok.fenrir.link.types.ArtistsLink;
 import dev.ragnarok.fenrir.link.types.AudioPlaylistLink;
 import dev.ragnarok.fenrir.link.types.AudioTrackLink;
 import dev.ragnarok.fenrir.link.types.AudiosLink;
@@ -208,6 +209,11 @@ public class LinkHelper {
                 FeedSearchLink feedSearchLink = (FeedSearchLink) link;
                 NewsFeedCriteria criteria = new NewsFeedCriteria(feedSearchLink.getQ());
                 PlaceFactory.getSingleTabSearchPlace(accountId, SearchContentType.NEWS, criteria).tryOpenWith(activity);
+                break;
+
+            case AbsLink.ARTISTS:
+                ArtistsLink artistSearchLink = (ArtistsLink) link;
+                PlaceFactory.getArtistPlace(accountId, artistSearchLink.Id, false).tryOpenWith(activity);
                 break;
 
             case AbsLink.AUDIO_TRACK:

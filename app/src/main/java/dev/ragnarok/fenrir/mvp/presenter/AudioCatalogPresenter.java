@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.SendAttachmentsActivity;
@@ -20,7 +21,8 @@ import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IAudioCatalogView;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 
@@ -31,7 +33,9 @@ public class AudioCatalogPresenter extends AccountDependencyPresenter<IAudioCata
 
     private final IAudioInteractor fInteractor;
     private final String artist_id;
-    private final CompositeDisposable actualDataDisposable = new CompositeDisposable();
+    private Disposable actualDataDisposable = Disposable.disposed();
+    private String query;
+    private boolean doAudioLoadTabs;
     private boolean actualDataLoading;
 
     public AudioCatalogPresenter(int accountId, String artist_id, @Nullable Bundle savedInstanceState) {
@@ -41,8 +45,27 @@ public class AudioCatalogPresenter extends AccountDependencyPresenter<IAudioCata
         fInteractor = InteractorFactory.createAudioInteractor();
     }
 
-    public void LoadAudiosTool() {
-        loadActualData();
+    private boolean do_compare(String q) {
+        if (Utils.isEmpty(q) && Utils.isEmpty(query)) {
+            return true;
+        } else return !Utils.isEmpty(query) && !Utils.isEmpty(q) && query.equalsIgnoreCase(q);
+    }
+
+    public void fireSearchRequestChanged(String q) {
+        if (do_compare(q)) {
+            return;
+        }
+        query = q == null ? null : q.trim();
+
+        actualDataDisposable.dispose();
+        if (Utils.isEmpty(q)) {
+            fireRefresh();
+            return;
+        }
+        actualDataDisposable = (Single.just(new Object())
+                .delay(1, TimeUnit.SECONDS)
+                .compose(RxUtils.applySingleIOToMainSchedulers())
+                .subscribe(t -> fireRefresh(), this::onActualDataGetError));
     }
 
     @Override
@@ -51,16 +74,27 @@ public class AudioCatalogPresenter extends AccountDependencyPresenter<IAudioCata
         view.displayData(pages);
     }
 
+    @Override
+    public void onGuiResumed() {
+        super.onGuiResumed();
+        resolveRefreshingView();
+        if (doAudioLoadTabs) {
+            return;
+        } else {
+            doAudioLoadTabs = true;
+        }
+        loadActualData();
+    }
+
     private void loadActualData() {
         actualDataLoading = true;
 
         resolveRefreshingView();
 
         int accountId = getAccountId();
-        actualDataDisposable.add(fInteractor.getCatalog(accountId, artist_id)
+        appendDisposable(fInteractor.getCatalog(accountId, artist_id, query)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(this::onActualDataReceived, this::onActualDataGetError));
-
     }
 
     private void onActualDataGetError(Throwable t) {
@@ -81,12 +115,6 @@ public class AudioCatalogPresenter extends AccountDependencyPresenter<IAudioCata
         resolveRefreshingView();
     }
 
-    @Override
-    public void onGuiResumed() {
-        super.onGuiResumed();
-        resolveRefreshingView();
-    }
-
     private void resolveRefreshingView() {
         if (isGuiResumed()) {
             getView().showRefreshing(actualDataLoading);
@@ -95,7 +123,7 @@ public class AudioCatalogPresenter extends AccountDependencyPresenter<IAudioCata
 
     public void onAdd(AudioPlaylist album) {
         int accountId = getAccountId();
-        actualDataDisposable.add(fInteractor.followPlaylist(accountId, album.getId(), album.getOwnerId(), album.getAccess_key())
+        appendDisposable(fInteractor.followPlaylist(accountId, album.getId(), album.getOwnerId(), album.getAccess_key())
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(data -> getView().getCustomToast().showToast(R.string.success), throwable ->
                         showError(getView(), throwable)));
@@ -115,8 +143,9 @@ public class AudioCatalogPresenter extends AccountDependencyPresenter<IAudioCata
     }
 
     public void fireRefresh() {
-        actualDataDisposable.clear();
-        actualDataLoading = false;
+        if (actualDataLoading) {
+            return;
+        }
         loadActualData();
     }
 }

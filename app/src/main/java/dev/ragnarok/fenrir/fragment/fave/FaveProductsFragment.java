@@ -39,7 +39,6 @@ public class FaveProductsFragment extends BaseMvpFragment<FaveProductsPresenter,
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private MarketAdapter mAdapter;
     private TextView mEmpty;
-    private boolean isRequestLast;
 
     public static FaveProductsFragment newInstance(int accountId) {
         Bundle args = new Bundle();
@@ -132,15 +131,6 @@ public class FaveProductsFragment extends BaseMvpFragment<FaveProductsPresenter,
     @Override
     public IPresenterFactory<FaveProductsPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new FaveProductsPresenter(getArguments().getInt(Extra.ACCOUNT_ID), saveInstanceState);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!isRequestLast) {
-            isRequestLast = true;
-            getPresenter().LoadTool();
-        }
     }
 
     @Override

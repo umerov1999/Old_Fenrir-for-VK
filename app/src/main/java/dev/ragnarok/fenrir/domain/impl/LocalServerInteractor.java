@@ -117,4 +117,25 @@ public class LocalServerInteractor implements ILocalServerInteractor {
                 .update_time(hash)
                 .map(resultId -> resultId);
     }
+
+    @Override
+    public Single<Integer> delete_media(String hash) {
+        return networker.localServerApi()
+                .delete_media(hash)
+                .map(resultId -> resultId);
+    }
+
+    @Override
+    public Single<String> get_file_name(String hash) {
+        return networker.localServerApi()
+                .get_file_name(hash)
+                .map(resultId -> resultId);
+    }
+
+    @Override
+    public Single<Integer> update_file_name(String hash, String name) {
+        return networker.localServerApi()
+                .update_file_name(hash, name)
+                .map(resultId -> resultId);
+    }
 }

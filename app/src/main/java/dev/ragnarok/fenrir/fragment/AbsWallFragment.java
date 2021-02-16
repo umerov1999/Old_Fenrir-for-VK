@@ -26,6 +26,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.umerov.rlottie.RLottieImageView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -134,6 +135,34 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
     protected static void setupCounterWith(TextView view, int count, int with) {
         view.setText((count > 0 ? (AppTextUtils.getCounterWithK(count)) : "-") + (with > 0 ? "/" + (AppTextUtils.getCounterWithK(with)) : ""));
         view.setEnabled(count > 0);
+    }
+
+    protected void setupPaganContent(@NonNull View Runes, @NonNull RLottieImageView paganSymbol) {
+        Runes.setVisibility(Settings.get().other().isRunes_show() ? View.VISIBLE : View.GONE);
+        paganSymbol.setVisibility(Settings.get().other().isShow_pagan_symbol() ? View.VISIBLE : View.GONE);
+        if (!Settings.get().other().isShow_pagan_symbol()) {
+            return;
+        }
+        switch (Settings.get().other().getPaganSymbol()) {
+            case 1:
+                paganSymbol.setImageResource(R.drawable.valknut);
+                break;
+            case 2:
+                paganSymbol.setImageResource(R.drawable.ic_mjolnir);
+                break;
+            case 3:
+                paganSymbol.setImageResource(R.drawable.ic_vegvisir);
+                break;
+            case 4:
+                paganSymbol.setImageResource(R.drawable.ic_celtic_knot);
+                break;
+            case 5:
+                paganSymbol.setImageResource(R.drawable.ic_igdr2);
+                break;
+            default:
+                paganSymbol.setImageResource(R.drawable.ic_igdr);
+                break;
+        }
     }
 
     private void ToggleFab(boolean isUp) {

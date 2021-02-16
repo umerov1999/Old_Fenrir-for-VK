@@ -15,7 +15,6 @@ import dev.ragnarok.fenrir.mvp.view.ISimpleOwnersView;
 public class MutualFriendsFragment extends AbsOwnersListFragment<MutualFriendsPresenter, ISimpleOwnersView> {
 
     private static final String EXTRA_TARGET_ID = "targetId";
-    private boolean isRequested;
 
     public static MutualFriendsFragment newInstance(int accountId, int targetId) {
         Bundle bundle = new Bundle();
@@ -24,15 +23,6 @@ public class MutualFriendsFragment extends AbsOwnersListFragment<MutualFriendsPr
         MutualFriendsFragment friendsFragment = new MutualFriendsFragment();
         friendsFragment.setArguments(bundle);
         return friendsFragment;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!isRequested) {
-            isRequested = true;
-            getPresenter().doLoad();
-        }
     }
 
     @NotNull

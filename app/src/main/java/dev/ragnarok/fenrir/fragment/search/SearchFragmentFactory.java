@@ -3,6 +3,7 @@ package dev.ragnarok.fenrir.fragment.search;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import dev.ragnarok.fenrir.fragment.search.criteria.ArtistSearchCriteria;
 import dev.ragnarok.fenrir.fragment.search.criteria.AudioPlaylistSearchCriteria;
 import dev.ragnarok.fenrir.fragment.search.criteria.AudioSearchCriteria;
 import dev.ragnarok.fenrir.fragment.search.criteria.BaseSearchCriteria;
@@ -35,6 +36,10 @@ public class SearchFragmentFactory {
             case SearchContentType.AUDIOS:
                 return AudiosSearchFragment.newInstance(accountId,
                         criteria instanceof AudioSearchCriteria ? (AudioSearchCriteria) criteria : null);
+
+            case SearchContentType.ARTISTS:
+                return ArtistSearchFragment.newInstance(accountId,
+                        criteria instanceof ArtistSearchCriteria ? (ArtistSearchCriteria) criteria : null);
 
             case SearchContentType.AUDIOS_SELECT:
                 return AudiosSearchFragment.newInstanceSelect(accountId,

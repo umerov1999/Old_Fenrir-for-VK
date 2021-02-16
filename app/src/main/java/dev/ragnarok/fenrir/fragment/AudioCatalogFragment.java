@@ -46,6 +46,7 @@ import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
+import dev.ragnarok.fenrir.view.MySearchView;
 
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
@@ -58,8 +59,8 @@ public class AudioCatalogFragment extends BaseMvpFragment<AudioCatalogPresenter,
     private TextView mEmpty;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AudioCatalogAdapter mAdapter;
-    private boolean doAudioLoadTabs;
     private boolean inTabsContainer;
+    private boolean isArtist;
 
     public static AudioCatalogFragment newInstance(int accountId, String artist_id, boolean isHideToolbar) {
         Bundle args = new Bundle();
@@ -90,7 +91,8 @@ public class AudioCatalogFragment extends BaseMvpFragment<AudioCatalogPresenter,
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inTabsContainer = requireArguments().getBoolean(EXTRA_IN_TABS_CONTAINER);
-        setHasOptionsMenu(requireArguments().containsKey(Extra.ARTIST) && requireArguments().getString(Extra.ARTIST) != null);
+        setHasOptionsMenu(requireArguments().containsKey(Extra.ARTIST) && !Utils.isEmpty(requireArguments().getString(Extra.ARTIST)));
+        isArtist = requireArguments().containsKey(Extra.ARTIST) && !Utils.isEmpty(requireArguments().getString(Extra.ARTIST));
     }
 
     @Override
@@ -105,6 +107,27 @@ public class AudioCatalogFragment extends BaseMvpFragment<AudioCatalogPresenter,
             toolbar.setVisibility(View.GONE);
         }
         mEmpty = root.findViewById(R.id.fragment_audio_catalog_empty_text);
+
+        MySearchView mySearchView = root.findViewById(R.id.searchview);
+        mySearchView.setRightButtonVisibility(false);
+        mySearchView.setLeftIcon(R.drawable.magnify);
+        if (!isArtist) {
+            mySearchView.setOnQueryTextListener(new MySearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    getPresenter().fireSearchRequestChanged(query);
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    getPresenter().fireSearchRequestChanged(newText);
+                    return false;
+                }
+            });
+        } else {
+            mySearchView.setVisibility(View.GONE);
+        }
 
         RecyclerView.LayoutManager manager = new LinearLayoutManager(requireActivity());
         RecyclerView recyclerView = root.findViewById(R.id.recycleView);
@@ -133,10 +156,6 @@ public class AudioCatalogFragment extends BaseMvpFragment<AudioCatalogPresenter,
     @Override
     public void onResume() {
         super.onResume();
-        if (!doAudioLoadTabs) {
-            doAudioLoadTabs = true;
-            getPresenter().LoadAudiosTool();
-        }
         if (!inTabsContainer) {
             Settings.get().ui().notifyPlaceResumed(Place.AUDIOS);
             ActionBar actionBar = ActivityUtils.supportToolbarFor(this);

@@ -20,4 +20,10 @@ public interface ILocalServerInteractor {
     Single<List<Audio>> searchDiscography(String q, int offset, int count);
 
     Single<Integer> update_time(String hash);
+
+    Single<Integer> delete_media(String hash);
+
+    Single<String> get_file_name(String hash);
+
+    Single<Integer> update_file_name(String hash, String name);
 }

@@ -79,4 +79,25 @@ class LocalServerApi implements ILocalServerApi {
                 .flatMap(service -> service.update_time(hash)
                         .map(extractResponseWithErrorHandling()));
     }
+
+    @Override
+    public Single<Integer> delete_media(String hash) {
+        return service.provideLocalServerService()
+                .flatMap(service -> service.delete_media(hash)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<String> get_file_name(String hash) {
+        return service.provideLocalServerService()
+                .flatMap(service -> service.get_file_name(hash)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<Integer> update_file_name(String hash, String name) {
+        return service.provideLocalServerService()
+                .flatMap(service -> service.update_file_name(hash, name)
+                        .map(extractResponseWithErrorHandling()));
+    }
 }

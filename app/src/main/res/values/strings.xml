@@ -1281,7 +1281,7 @@
     <string name="get_bitrate">Show bitrate</string>
     <string name="use_internal_downloader">Use internal download manager</string>
     <string name="use_internal_downloader_summary">For videos and documents</string>
-    <string name="bitrate">Bitrate:</string>
+    <string name="bitrate">Bitrate: %1$d kbs, Size: %2$s</string>
     <string name="error_timeout_message">Request timed out</string>
     <string name="login_sms_code_hint">SMS-code</string>
     <string name="login_captcha_hint" translatable="false">Captcha</string>
@@ -1569,7 +1569,6 @@
     <string name="json_attachments_forward">Forwarded</string>
     <string name="updates">Updates</string>
     <string name="do_chat_download">Download chat…</string>
-    <string name="writing_json">Formatting JSON…</string>
     <string name="do_delete">Delete?</string>
     <string name="enter_link">Enter link</string>
     <string name="enter_audio_info">Edit audio</string>
@@ -1673,4 +1672,5 @@
     <string name="discography">Discography</string>
     <string name="update_time">Set current time</string>
     <string name="max_bitmap_resolution">Max bitmap Resolution</string>
+    <string name="artists">Artists</string>
 </resources>

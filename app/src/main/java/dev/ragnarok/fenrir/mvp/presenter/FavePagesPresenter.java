@@ -40,6 +40,7 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
     private String q;
     private boolean cacheLoadingNow;
     private boolean actualDataLoading;
+    private boolean doLoadTabs;
 
     public FavePagesPresenter(int accountId, boolean isUser, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
@@ -51,11 +52,7 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
         loadAllCachedData();
     }
 
-    public void LoadTool() {
-        loadActualData(0);
-    }
-
-    private boolean isSeacrhNow() {
+    private boolean isSearchNow() {
         return nonEmpty(q);
     }
 
@@ -76,7 +73,7 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
             }
         }
 
-        if (isSeacrhNow())
+        if (isSearchNow())
             callView(v -> v.displayData(search_pages));
         else
             callView(v -> v.displayData(pages));
@@ -85,7 +82,11 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
     @Override
     public void onGuiCreated(@NonNull IFaveUsersView view) {
         super.onGuiCreated(view);
-        view.displayData(pages);
+        if (isSearchNow()) {
+            view.displayData(search_pages);
+        } else {
+            view.displayData(pages);
+        }
     }
 
     private void loadActualData(int offset) {
@@ -134,6 +135,12 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
     public void onGuiResumed() {
         super.onGuiResumed();
         resolveRefreshingView();
+        if (doLoadTabs) {
+            return;
+        } else {
+            doLoadTabs = true;
+        }
+        loadActualData(0);
     }
 
     private void resolveRefreshingView() {
@@ -149,8 +156,6 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
         cacheDisposable.add(faveInteractor.getCachedPages(accountId, isUser)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(this::onCachedDataReceived, this::onCachedGetError));
-
-
     }
 
     private void onCachedGetError(Throwable t) {
@@ -173,7 +178,7 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
     }
 
     public boolean fireScrollToEnd() {
-        if (!endOfContent && nonEmpty(pages) && actualDataReceived && !cacheLoadingNow && !actualDataLoading && !isSeacrhNow()) {
+        if (!endOfContent && nonEmpty(pages) && actualDataReceived && !cacheLoadingNow && !actualDataLoading && !isSearchNow()) {
             loadActualData(pages.size());
             return false;
         }

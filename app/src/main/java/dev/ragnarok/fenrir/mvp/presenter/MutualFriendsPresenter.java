@@ -23,17 +23,12 @@ public class MutualFriendsPresenter extends SimpleOwnersPresenter<ISimpleOwnersV
     private final CompositeDisposable actualDataDisposable = new CompositeDisposable();
     private boolean endOfContent;
     private boolean actualDataLoading;
+    private boolean doLoadTabs;
 
     public MutualFriendsPresenter(int accountId, int userId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
         this.userId = userId;
         relationshipInteractor = InteractorFactory.createRelationshipInteractor();
-
-        requestActualData(0);
-    }
-
-    public void doLoad() {
-        requestActualData(0);
     }
 
     private void resolveRefreshingView() {
@@ -46,6 +41,12 @@ public class MutualFriendsPresenter extends SimpleOwnersPresenter<ISimpleOwnersV
     public void onGuiResumed() {
         super.onGuiResumed();
         resolveRefreshingView();
+        if (doLoadTabs) {
+            return;
+        } else {
+            doLoadTabs = true;
+        }
+        requestActualData(0);
     }
 
     private void requestActualData(int offset) {

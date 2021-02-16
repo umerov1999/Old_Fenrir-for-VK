@@ -8,7 +8,9 @@ import java.util.Collection;
 import java.util.List;
 
 import dev.ragnarok.fenrir.api.model.AccessIdPair;
+import dev.ragnarok.fenrir.api.model.VkApiArtist;
 import dev.ragnarok.fenrir.api.model.response.AddToPlaylistResponse;
+import dev.ragnarok.fenrir.fragment.search.criteria.ArtistSearchCriteria;
 import dev.ragnarok.fenrir.fragment.search.criteria.AudioPlaylistSearchCriteria;
 import dev.ragnarok.fenrir.fragment.search.criteria.AudioSearchCriteria;
 import dev.ragnarok.fenrir.model.Audio;
@@ -48,6 +50,8 @@ public interface IAudioInteractor {
 
     Single<List<Audio>> search(int accountId, AudioSearchCriteria criteria, int offset, int count);
 
+    Single<List<VkApiArtist>> searchArtists(int accountId, ArtistSearchCriteria criteria, int offset, int count);
+
     Single<List<AudioPlaylist>> searchPlaylists(int accountId, AudioPlaylistSearchCriteria criteria, int offset, int count);
 
     Single<List<AudioPlaylist>> getPlaylists(int accountId, int owner_id, int offset, int count);
@@ -70,7 +74,7 @@ public interface IAudioInteractor {
 
     Single<Integer> reorder(int accountId, int ownerId, int audio_id, Integer before, Integer after);
 
-    Single<List<AudioCatalog>> getCatalog(int accountId, String artist_id);
+    Single<List<AudioCatalog>> getCatalog(int accountId, String artist_id, String query);
 
     Single<CatalogBlock> getCatalogBlockById(int accountId, String block_id, String start_from);
 

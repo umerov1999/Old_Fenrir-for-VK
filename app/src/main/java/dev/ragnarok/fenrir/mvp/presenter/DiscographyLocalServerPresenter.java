@@ -23,7 +23,7 @@ import dev.ragnarok.fenrir.util.FindAt;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
@@ -35,22 +35,19 @@ public class DiscographyLocalServerPresenter extends AccountDependencyPresenter<
     private static final int WEB_SEARCH_DELAY = 1000;
     private final List<Audio> audios;
     private final ILocalServerInteractor fInteractor;
-    private final CompositeDisposable actualDataDisposable = new CompositeDisposable();
+    private Disposable actualDataDisposable = Disposable.disposed();
     private int Foffset;
     private boolean actualDataReceived;
     private boolean endOfContent;
     private boolean actualDataLoading;
     private FindAt search_at;
+    private boolean doAudioLoadTabs;
 
     public DiscographyLocalServerPresenter(int accountId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
         audios = new ArrayList<>();
         fInteractor = InteractorFactory.createLocalServerInteractor();
         search_at = new FindAt();
-    }
-
-    public void LoadAudiosTool() {
-        loadActualData(0);
     }
 
     @Override
@@ -64,7 +61,7 @@ public class DiscographyLocalServerPresenter extends AccountDependencyPresenter<
 
         resolveRefreshingView();
 
-        actualDataDisposable.add(fInteractor.getDiscography(offset, GET_COUNT)
+        appendDisposable(fInteractor.getDiscography(offset, GET_COUNT)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(data -> onActualDataReceived(offset, data), this::onActualDataGetError));
 
@@ -100,6 +97,12 @@ public class DiscographyLocalServerPresenter extends AccountDependencyPresenter<
     public void onGuiResumed() {
         super.onGuiResumed();
         resolveRefreshingView();
+        if (doAudioLoadTabs) {
+            return;
+        } else {
+            doAudioLoadTabs = true;
+        }
+        loadActualData(0);
     }
 
     private void resolveRefreshingView() {
@@ -116,7 +119,11 @@ public class DiscographyLocalServerPresenter extends AccountDependencyPresenter<
 
     public boolean fireScrollToEnd() {
         if (!endOfContent && nonEmpty(audios) && actualDataReceived && !actualDataLoading) {
-            loadActualData(Foffset);
+            if (search_at.isSearchMode()) {
+                search(false);
+            } else {
+                loadActualData(Foffset);
+            }
             return false;
         }
         return true;
@@ -125,7 +132,7 @@ public class DiscographyLocalServerPresenter extends AccountDependencyPresenter<
     private void doSearch() {
         actualDataLoading = true;
         resolveRefreshingView();
-        actualDataDisposable.add(fInteractor.searchDiscography(search_at.getQuery(), search_at.getOffset(), SEARCH_COUNT)
+        appendDisposable(fInteractor.searchDiscography(search_at.getQuery(), search_at.getOffset(), SEARCH_COUNT)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(data -> onSearched(new FindAt(Objects.requireNonNull(search_at.getQuery()), search_at.getOffset() + SEARCH_COUNT, data.size() < SEARCH_COUNT), data), this::onActualDataGetError));
     }
@@ -158,7 +165,8 @@ public class DiscographyLocalServerPresenter extends AccountDependencyPresenter<
             return;
         }
 
-        actualDataDisposable.add(Single.just(new Object())
+        actualDataDisposable.dispose();
+        actualDataDisposable = (Single.just(new Object())
                 .delay(WEB_SEARCH_DELAY, TimeUnit.MILLISECONDS)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(videos -> doSearch(), this::onActualDataGetError));
@@ -169,7 +177,7 @@ public class DiscographyLocalServerPresenter extends AccountDependencyPresenter<
         if (!search_at.do_compare(query)) {
             actualDataLoading = false;
             if (Utils.isEmpty(query)) {
-                actualDataDisposable.clear();
+                actualDataDisposable.dispose();
                 fireRefresh(false);
             } else {
                 fireRefresh(true);
@@ -200,9 +208,9 @@ public class DiscographyLocalServerPresenter extends AccountDependencyPresenter<
     }
 
     public void fireRefresh(boolean sleep_search) {
-
-        actualDataDisposable.clear();
-        actualDataLoading = false;
+        if (actualDataLoading) {
+            return;
+        }
 
         if (search_at.isSearchMode()) {
             search_at.reset();

@@ -26,16 +26,13 @@ public class FollowersPresenter extends SimpleOwnersPresenter<ISimpleOwnersView>
     private boolean actualDataReceived;
     private boolean endOfContent;
     private boolean cacheLoadingNow;
+    private boolean doLoadTabs;
 
     public FollowersPresenter(int accountId, int userId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
         this.userId = userId;
         relationshipInteractor = InteractorFactory.createRelationshipInteractor();
-    }
-
-    public void doLoad() {
         loadAllCacheData();
-        requestActualData(0);
     }
 
     private void requestActualData(int offset) {
@@ -52,6 +49,12 @@ public class FollowersPresenter extends SimpleOwnersPresenter<ISimpleOwnersView>
     public void onGuiResumed() {
         super.onGuiResumed();
         resolveRefreshingView();
+        if (doLoadTabs) {
+            return;
+        } else {
+            doLoadTabs = true;
+        }
+        requestActualData(0);
     }
 
     private void resolveRefreshingView() {

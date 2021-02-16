@@ -1556,6 +1556,25 @@ public class Utils {
         });
     }
 
+    public static String BytesToSize(long Bytes) {
+        long tb = 1099511627776L;
+        long gb = 1073741824;
+        long mb = 1048576;
+        long kb = 1024;
+
+        String returnSize;
+        if (Bytes >= tb)
+            returnSize = String.format(Locale.getDefault(), "%.2f TB", (double) Bytes / tb);
+        else if (Bytes >= gb)
+            returnSize = String.format(Locale.getDefault(), "%.2f GB", (double) Bytes / gb);
+        else if (Bytes >= mb)
+            returnSize = String.format(Locale.getDefault(), "%.2f MB", (double) Bytes / mb);
+        else if (Bytes >= kb)
+            returnSize = String.format(Locale.getDefault(), "%.2f KB", (double) Bytes / kb);
+        else returnSize = String.format(Locale.getDefault(), "%d Bytes", Bytes);
+        return returnSize;
+    }
+
     public interface safeCallInt {
         void call();
     }

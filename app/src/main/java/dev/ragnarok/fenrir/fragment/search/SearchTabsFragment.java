@@ -35,6 +35,7 @@ public class SearchTabsFragment extends Fragment {
     public static final int TAB_MESSAGES = 6;
     public static final int TAB_DOCUMENTS = 7;
     public static final int TAB_PHOTOS = 8;
+    public static final int TAB_ARTISTS = 9;
     private static final String TAG = SearchTabsFragment.class.getSimpleName();
     private static final String SAVE_CURRENT_TAB = "save_current_tab";
     private int mCurrentTab;
@@ -99,6 +100,9 @@ public class SearchTabsFragment extends Fragment {
                     break;
                 case TAB_AUDIO_PLAYLISTS:
                     tab.setText(R.string.playlists);
+                    break;
+                case TAB_ARTISTS:
+                    tab.setText(R.string.artists);
                     break;
             }
         }).attach();
@@ -188,6 +192,10 @@ public class SearchTabsFragment extends Fragment {
                     fragment = SingleTabSearchFragment.newInstance(accountId, SearchContentType.MESSAGES);
                     break;
 
+                case TAB_ARTISTS:
+                    fragment = SingleTabSearchFragment.newInstance(accountId, SearchContentType.ARTISTS);
+                    break;
+
                 default:
                     throw new IllegalArgumentException();
             }
@@ -198,7 +206,7 @@ public class SearchTabsFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return 9;
+            return 10;
         }
     }
 }
