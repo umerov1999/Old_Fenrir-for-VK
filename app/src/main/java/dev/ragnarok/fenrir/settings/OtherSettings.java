@@ -387,6 +387,11 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public boolean isVideo_controller_to_decor() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("video_controller_to_decor", false);
+    }
+
+    @Override
     public boolean isDisable_likes() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("disable_likes", false);
     }

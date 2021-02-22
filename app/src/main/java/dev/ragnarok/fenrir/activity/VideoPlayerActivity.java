@@ -196,7 +196,11 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
         mPlayer.play();
 
         mControllerView.setMediaPlayer(this);
-        mControllerView.setAnchorView((ViewGroup) mDecorView);
+        if (Settings.get().other().isVideo_controller_to_decor()) {
+            mControllerView.setAnchorView((ViewGroup) mDecorView, true);
+        } else {
+            mControllerView.setAnchorView(findViewById(R.id.panel), false);
+        }
         mControllerView.updateComment(!isLocal && video.isCanComment());
         mControllerView.updatePip(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && hasPipPermission());
     }

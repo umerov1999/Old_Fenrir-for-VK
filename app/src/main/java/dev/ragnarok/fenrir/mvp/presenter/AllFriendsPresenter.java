@@ -123,8 +123,20 @@ public class AllFriendsPresenter extends AccountDependencyPresenter<IAllFriendsV
                     not_friends.add(i);
                 }
             }
-            if (not_friends.size() > 0) {
-                callView(view -> view.showNotFriends(not_friends, getAccountId()));
+            if (userId == getAccountId()) {
+                if (not_friends.size() > 0) {
+                    callView(view -> view.showNotFriends(not_friends, getAccountId()));
+                }
+            } else {
+                List<Owner> add_friends = new ArrayList<>();
+                for (User i : users) {
+                    if (Utils.indexOf(getAllData(), i.getId()) == -1) {
+                        add_friends.add(i);
+                    }
+                }
+                if (add_friends.size() > 0 || not_friends.size() > 0) {
+                    callView(view -> view.showAddFriends(add_friends, not_friends, getAccountId()));
+                }
             }
         }
         // reset cache loading

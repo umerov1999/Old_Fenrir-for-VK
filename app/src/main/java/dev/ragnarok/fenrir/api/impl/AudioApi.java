@@ -202,6 +202,14 @@ class AudioApi extends AbsApi implements IAudioApi {
     }
 
     @Override
+    public Single<Items<VKApiAudio>> getAudiosByArtist(String artist_id, Integer offset, Integer count) {
+        if (Settings.get().other().isUse_old_vk_api())
+            return provideService(IAudioService.class).flatMap(service -> service.getAudiosByArtistOld(artist_id, offset, count, "5.90").map(extractResponseWithErrorHandling()));
+        else
+            return provideService(IAudioService.class).flatMap(service -> service.getAudiosByArtist(artist_id, offset, count).map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
     public Single<List<VKApiAudio>> getPopular(Integer foreign,
                                                Integer genre, Integer count) {
         if (Settings.get().other().isUse_old_vk_api()) {

@@ -169,6 +169,8 @@ public interface ISettings {
 
         boolean isDo_auto_play_video();
 
+        boolean isVideo_controller_to_decor();
+
         boolean isHint_stickers();
 
         int getPaganSymbol();

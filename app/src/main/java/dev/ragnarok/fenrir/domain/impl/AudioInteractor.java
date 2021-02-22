@@ -118,6 +118,20 @@ public class AudioInteractor implements IAudioInteractor {
     }
 
     @Override
+    public Single<List<Audio>> getAudiosByArtist(int accountId, String artist_id, int offset, int count) {
+        return networker.vkDefault(accountId)
+                .audio()
+                .getAudiosByArtist(artist_id, offset, count)
+                .map(items -> listEmptyIfNull(items.getItems()))
+                .map(out -> {
+                    List<Audio> ret = new ArrayList<>();
+                    for (int i = 0; i < out.size(); i++)
+                        ret.add(Dto2Model.transform(out.get(i)));
+                    return ret;
+                });
+    }
+
+    @Override
     public Single<List<Audio>> getById(int accountId, List<IdPair> audios) {
         return networker.vkDefault(accountId)
                 .audio()

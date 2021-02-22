@@ -53,14 +53,19 @@ import com.google.android.exoplayer2.MediaItem;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.stream.JsonReader;
 import com.umerov.rlottie.RLottieDrawable;
 import com.umerov.rlottie.RLottieImageView;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -92,6 +97,7 @@ import dev.ragnarok.fenrir.model.Lang;
 import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.ProxyConfig;
 import dev.ragnarok.fenrir.model.Sticker;
+import dev.ragnarok.fenrir.player.util.MusicUtils;
 import dev.ragnarok.fenrir.service.ErrorLocalizer;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import io.reactivex.rxjava3.core.Completable;
@@ -1554,6 +1560,23 @@ public class Utils {
                 }
             }
         });
+    }
+
+    public static void checkMusicInPC(Context context) {
+        if (!AppPerms.hasReadWriteStoragePermission(context))
+            return;
+        File audios = new File(dev.ragnarok.fenrir.settings.Settings.get().other().getMusicDir(), "local_server_audio_list.json");
+        if (!audios.exists())
+            return;
+        try {
+            JsonReader reader = new JsonReader(new InputStreamReader(new FileInputStream(audios), StandardCharsets.UTF_8));
+            reader.beginArray();
+            while (reader.hasNext()) {
+                MusicUtils.RemoteAudios.add(reader.nextString());
+            }
+        } catch (Throwable ignore) {
+            CustomToast.CreateCustomToast(context).showToastError(R.string.remote_audio_error);
+        }
     }
 
     public static String BytesToSize(long Bytes) {

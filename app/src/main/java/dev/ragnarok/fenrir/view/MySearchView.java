@@ -44,6 +44,7 @@ public class MySearchView extends LinearLayout {
     };
     private OnBackButtonClickListener mOnBackButtonClickListener;
     private OnAdditionalButtonClickListener mOnAdditionalButtonClickListener;
+    private OnAdditionalButtonLongClickListener mOnAdditionalButtonLongClickListener;
 
     public MySearchView(Context context) {
         super(context);
@@ -95,6 +96,13 @@ public class MySearchView extends LinearLayout {
             if (mOnAdditionalButtonClickListener != null) {
                 mOnAdditionalButtonClickListener.onAdditionalButtonClick();
             }
+        });
+
+        mButtonAdditional.setOnLongClickListener(v -> {
+            if (mOnAdditionalButtonLongClickListener != null) {
+                mOnAdditionalButtonLongClickListener.onAdditionalButtonLongClick();
+            }
+            return true;
         });
 
         resolveCloseButton();
@@ -164,6 +172,10 @@ public class MySearchView extends LinearLayout {
         mOnAdditionalButtonClickListener = onAdditionalButtonClickListener;
     }
 
+    public void setOnAdditionalButtonLongClickListener(OnAdditionalButtonLongClickListener onAdditionalButtonLongClickListener) {
+        mOnAdditionalButtonLongClickListener = onAdditionalButtonLongClickListener;
+    }
+
     public void setQuery(String query, boolean quetly) {
         OnQueryTextListener tmp = mOnQueryChangeListener;
         if (quetly) {
@@ -195,6 +207,14 @@ public class MySearchView extends LinearLayout {
 
     public void setLeftIcon(Drawable drawable) {
         mButtonBack.setImageDrawable(drawable);
+    }
+
+    public void setRightIcon(Drawable drawable) {
+        mButtonAdditional.setImageDrawable(drawable);
+    }
+
+    public void setRightIcon(int drawable) {
+        mButtonAdditional.setImageResource(drawable);
     }
 
     /**
@@ -231,5 +251,9 @@ public class MySearchView extends LinearLayout {
 
     public interface OnAdditionalButtonClickListener {
         void onAdditionalButtonClick();
+    }
+
+    public interface OnAdditionalButtonLongClickListener {
+        void onAdditionalButtonLongClick();
     }
 }

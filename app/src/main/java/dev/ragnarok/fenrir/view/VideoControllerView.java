@@ -218,12 +218,12 @@ public class VideoControllerView extends FrameLayout {
      *
      * @param view The view to which to anchor the controller when it is visible.
      */
-    public void setAnchorView(ViewGroup view) {
+    public void setAnchorView(ViewGroup view, boolean matchParent) {
         mAnchor = view;
 
         LayoutParams frameParams = new LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
+                matchParent ? ViewGroup.LayoutParams.MATCH_PARENT : ViewGroup.LayoutParams.WRAP_CONTENT
         );
 
         removeAllViews();

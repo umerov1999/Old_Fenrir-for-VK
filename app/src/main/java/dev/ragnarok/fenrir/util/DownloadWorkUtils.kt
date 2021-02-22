@@ -217,6 +217,33 @@ object DownloadWorkUtils {
     }
 
     @JvmStatic
+    fun doSyncRemoteAudio(context: Context) {
+        val url =
+            Settings.get().other().localServer.url + "/method/audio.list?password=" + Settings.get()
+                .other().localServer.password
+        val result_filename = DownloadInfo(
+            "local_server_audio_list",
+            Settings.get().other().musicDir,
+            "json"
+        )
+        CheckDirectory(result_filename.path)
+        val Temp = File(result_filename.build())
+        if (Temp.exists()) {
+            Temp.delete()
+        }
+        try {
+            if (!Settings.get().other().isUse_internal_downloader) {
+                toExternalDownloader(context, url, result_filename)
+            } else {
+                toDefaultInternalDownloader(context, url, result_filename)
+            }
+        } catch (e: Exception) {
+            CustomToast.CreateCustomToast(context).showToastError("audio.list: " + e.message)
+            return
+        }
+    }
+
+    @JvmStatic
     fun doDownloadVideo(context: Context, video: Video, url: String, Res: String) {
         if (!CheckDonate.isFullVersion(context)) {
             return

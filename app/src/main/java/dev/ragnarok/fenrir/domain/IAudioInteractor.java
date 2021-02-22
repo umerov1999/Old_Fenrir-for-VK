@@ -36,6 +36,8 @@ public interface IAudioInteractor {
 
     Single<List<Audio>> get(int accountId, Integer playlist_id, int ownerId, int offset, int count, String accessKey);
 
+    Single<List<Audio>> getAudiosByArtist(int accountId, String artist_id, int offset, int count);
+
     Single<List<Audio>> getById(int accountId, List<IdPair> audios);
 
     Single<List<Audio>> getByIdOld(int accountId, List<IdPair> audios);

@@ -35,6 +35,8 @@ import dev.ragnarok.fenrir.player.util.MusicUtils;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
+import dev.ragnarok.fenrir.util.DownloadWorkUtils;
+import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.MySearchView;
 
@@ -62,9 +64,12 @@ public class AudiosLocalServerFragment extends BaseMvpFragment<AudiosLocalServer
 
         MySearchView searchView = root.findViewById(R.id.searchview);
         searchView.setOnQueryTextListener(this);
-        searchView.setRightButtonVisibility(false);
+        searchView.setRightButtonVisibility(true);
         searchView.setLeftIcon(R.drawable.magnify);
+        searchView.setRightIcon(R.drawable.refresh);
         searchView.setQuery("", true);
+        searchView.setOnAdditionalButtonClickListener(() -> DownloadWorkUtils.doSyncRemoteAudio(requireActivity()));
+        searchView.setOnAdditionalButtonLongClickListener(() -> Utils.checkMusicInPC(requireActivity()));
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
         mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh(false));

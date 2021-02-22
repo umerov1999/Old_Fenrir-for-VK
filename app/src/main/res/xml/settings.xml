@@ -97,6 +97,12 @@
             android:title="@string/do_auto_play_video"
             app:iconSpaceReserved="false" />
 
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="video_controller_to_decor"
+            android:title="@string/video_controller_to_decor"
+            app:iconSpaceReserved="false" />
+
         <ListPreference
             android:defaultValue="0"
             android:entries="@array/array_end_list_anim_names"

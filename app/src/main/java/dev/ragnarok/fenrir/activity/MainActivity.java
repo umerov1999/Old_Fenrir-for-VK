@@ -37,14 +37,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.stream.JsonReader;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -62,6 +57,7 @@ import dev.ragnarok.fenrir.fragment.AdditionalNavigationFragment;
 import dev.ragnarok.fenrir.fragment.AnswerVKOfficialFragment;
 import dev.ragnarok.fenrir.fragment.AudioCatalogFragment;
 import dev.ragnarok.fenrir.fragment.AudioPlayerFragment;
+import dev.ragnarok.fenrir.fragment.AudiosByArtistFragment;
 import dev.ragnarok.fenrir.fragment.AudiosFragment;
 import dev.ragnarok.fenrir.fragment.AudiosInCatalogFragment;
 import dev.ragnarok.fenrir.fragment.AudiosTabsFragment;
@@ -165,7 +161,6 @@ import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.settings.SwipesChatMode;
 import dev.ragnarok.fenrir.util.Accounts;
 import dev.ragnarok.fenrir.util.Action;
-import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Logger;
@@ -364,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                             .compose(RxUtils.applyCompletableIOToMainSchedulers())
                             .subscribe(RxUtils.dummy(), t -> {/*TODO*/}));
 
-                    CheckMusicInPC();
+                    Utils.checkMusicInPC(this);
 
                     if (Settings.get().other().isDelete_cache_images()) {
                         PreferencesFragment.CleanImageCache(this, false);
@@ -385,23 +380,6 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
         mCompositeDisposable.add(new CountersInteractor(Injection.provideNetworkInterfaces()).getApiCounters(account)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(this::updateNotificationsBagde, t -> removeNotificationsBagde()));
-    }
-
-    private void CheckMusicInPC() {
-        if (!AppPerms.hasReadWriteStoragePermission(this))
-            return;
-        File audios = new File(Settings.get().other().getMusicDir(), "audio_downloads.json");
-        if (!audios.exists())
-            return;
-        try {
-            JsonReader reader = new JsonReader(new InputStreamReader(new FileInputStream(audios), StandardCharsets.UTF_8));
-            reader.beginArray();
-            while (reader.hasNext()) {
-                MusicUtils.RemoteAudios.add(reader.nextString());
-            }
-        } catch (Throwable ignore) {
-            CustomToast.CreateCustomToast(this).showToastError(R.string.remote_audio_error);
-        }
     }
 
     @Override
@@ -1347,7 +1325,11 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                 break;
 
             case Place.ARTIST:
-                attachToFront(AudioCatalogFragment.newInstance(args));
+                if (Settings.get().accounts().getType(mAccountId) == Account_Types.VK_ANDROID || Settings.get().accounts().getType(mAccountId) == Account_Types.VK_ANDROID_HIDDEN) {
+                    attachToFront(AudioCatalogFragment.newInstance(args));
+                    break;
+                }
+                attachToFront(AudiosByArtistFragment.newInstance(args));
                 break;
 
             case Place.CATALOG_BLOCK_AUDIOS:

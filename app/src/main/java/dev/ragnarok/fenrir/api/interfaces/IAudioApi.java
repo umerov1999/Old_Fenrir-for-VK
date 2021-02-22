@@ -67,6 +67,9 @@ public interface IAudioApi {
                                   Integer offset, Integer count, String accessKey);
 
     @CheckResult
+    Single<Items<VKApiAudio>> getAudiosByArtist(String artist_id, Integer offset, Integer count);
+
+    @CheckResult
     Single<List<VKApiAudio>> getPopular(Integer foreign,
                                         Integer genre, Integer count);
 

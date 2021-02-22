@@ -172,6 +172,26 @@ public class AllFriendsFragment extends BaseMvpFragment<AllFriendsPresenter, IAl
     }
 
     @Override
+    public void showAddFriends(List<Owner> add, List<Owner> remove, int accountId) {
+        if (add.size() <= 0 && remove.size() > 0) {
+            showNotFriends(remove, accountId);
+            return;
+        }
+        OwnersAdapter adapter = new OwnersAdapter(requireActivity(), add);
+        adapter.setClickListener(owner -> PlaceFactory.getOwnerWallPlace(accountId, owner.getOwnerId(), null).tryOpenWith(requireContext()));
+        MaterialAlertDialogBuilder dlg = new MaterialAlertDialogBuilder(requireActivity())
+                .setTitle(requireActivity().getString(R.string.new_friend))
+                .setView(Utils.createAlertRecycleFrame(requireActivity(), adapter))
+                .setPositiveButton("OK", (dialog, which) -> {
+                    if (remove.size() > 0) {
+                        showNotFriends(remove, accountId);
+                    }
+                })
+                .setCancelable(remove.size() <= 0);
+        dlg.show();
+    }
+
+    @Override
     public void onUserClick(User user) {
         getPresenter().fireUserClick(user);
     }

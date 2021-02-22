@@ -1440,6 +1440,7 @@
     <string name="change_photo">Фото</string>
     <string name="delete_photo">Удалить Фото</string>
     <string name="not_friend">Больше не друзья:</string>
+    <string name="new_friend">Новые друзья:</string>
     <string name="keyboard">Клавиатура</string>
     <string name="not_friend_show">Больше не друзья</string>
     <string name="not_friend_show_summary">Показывать, кто убрался из друзей</string>
@@ -1517,4 +1518,5 @@
     <string name="update_time">Задать текущее время</string>
     <string name="max_bitmap_resolution">Максимальное разрешение картинки</string>
     <string name="artists">Артисты</string>
+    <string name="video_controller_to_decor">Видео кнопки в DecorView</string>
 </resources>

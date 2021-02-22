@@ -121,6 +121,21 @@ public interface IAudioService {
                                                    @Field("v") String version,
                                                    @Field("access_key") String accessKey);
 
+    //https://vk.com/dev/audio.getAudiosByArtist
+    @FormUrlEncoded
+    @POST("audio.getAudiosByArtist")
+    Single<BaseResponse<Items<VKApiAudio>>> getAudiosByArtist(@Field("artist_id") String artist_id,
+                                                              @Field("offset") Integer offset,
+                                                              @Field("count") Integer count);
+
+    //https://vk.com/dev/audio.getAudiosByArtist
+    @FormUrlEncoded
+    @POST("audio.getAudiosByArtist")
+    Single<BaseResponse<Items<VKApiAudio>>> getAudiosByArtistOld(@Field("artist_id") String artist_id,
+                                                                 @Field("offset") Integer offset,
+                                                                 @Field("count") Integer count,
+                                                                 @Field("v") String version);
+
     @FormUrlEncoded
     @POST("audio.getPopular")
     Single<BaseResponse<List<VKApiAudio>>> getPopular(@Field("only_eng") Integer foreign,

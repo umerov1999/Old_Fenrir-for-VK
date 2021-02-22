@@ -1594,6 +1594,7 @@
     <string name="change_photo">Photo</string>
     <string name="delete_photo">Delete photo</string>
     <string name="not_friend">No longer friends:</string>
+    <string name="new_friend">New friends:</string>
     <string name="keyboard">Keyboard</string>
     <string name="not_friend_show">No longer friends</string>
     <string name="not_friend_show_summary">Show who has left friends</string>
@@ -1673,4 +1674,5 @@
     <string name="update_time">Set current time</string>
     <string name="max_bitmap_resolution">Max bitmap Resolution</string>
     <string name="artists">Artists</string>
+    <string name="video_controller_to_decor">Video controller to decor view</string>
 </resources>
