@@ -5,7 +5,7 @@
     <string-array name="array_language_names">
         <item>Default</item>
         <item>English</item>
-        <item>Russia</item>
+        <item>Russian</item>
     </string-array>
 
     <string-array name="array_language_items" translatable="false">
@@ -29,7 +29,7 @@
         <item>Cookies</item>
         <item>Lines</item>
         <item>Runes</item>
-        <item>Own…</item>
+        <item>Custom…</item>
     </string-array>
 
     <string-array name="array_chat_background_items" translatable="false">
@@ -57,9 +57,9 @@
     </string-array>
 
     <string-array name="array_photo_rounded_names">
-        <item>Always round</item>
-        <item>Round if one photo</item>
-        <item>Do not round</item>
+        <item>Always rounded</item>
+        <item>Rounded if one photo</item>
+        <item>Not rounded</item>
     </string-array>
 
     <string-array name="array_photo_rounded_items" translatable="false">
@@ -296,9 +296,9 @@
     </string-array>
 
     <string-array name="array_image_sizes_settings_names">
-        <item>Asking every time</item>
+        <item>Ask every time</item>
         <item>Small (800 px)</item>
-        <item>Average (1200 px)</item>
+        <item>Medium (1200 px)</item>
         <item>Original</item>
         <item>Crop</item>
     </string-array>
@@ -1054,7 +1054,7 @@
     <string name="choose_location_key_store">Choose where to store your keys</string>
     <string name="clear_storage_of_encryption_keys">Clear encryption key store</string>
     <string name="delete_keys">Delete keys</string>
-    <string name="encryption_terms_of_use_title">Conditions use</string>
+    <string name="encryption_terms_of_use_title">Terms of Use</string>
     <string name="for_all_accounts">For all accounts</string>
     <string name="for_the_current_account">For current account</string>
     <string name="fenrir_encryption">Fenrir encryption</string>
@@ -1425,7 +1425,7 @@
     <string name="search_by_artist">Search by artist</string>
     <string name="info_reading">Notify me when my message was read</string>
     <string name="use_stop_audio">Stop instead of pause audio</string>
-    <string name="use_long_click_download">Long press download</string>
+    <string name="use_long_click_download">Download by long press</string>
     <string name="download">Download"</string>
     <string name="downloaded">Downloaded"</string>
     <string name="downloading">Downloading"</string>
@@ -1447,7 +1447,7 @@
     <string name="use_old_vk_api">Audio with VK API 5.90</string>
     <string name="expires">%1$s %2$s</string>
     <string name="disable_history">Don\'t show Stories</string>
-    <string name="audio_round_icon">Round audio covers</string>
+    <string name="audio_round_icon">Rounded audio covers</string>
     <string name="custom_chat_color">First background color</string>
     <string name="use_custom_chat_color">Set background color</string>
     <string name="custom_chat_color_second">Second background color</string>
@@ -1496,7 +1496,7 @@
     <string name="be_online">Stay online</string>
     <string name="wall_attachments">Wall attachments</string>
     <string name="posts_analized">%1$d posts checked</string>
-    <string name="photo_rounded_view">Rounding of the edges of images</string>
+    <string name="photo_rounded_view">Rounded image edges</string>
     <string name="font_size">Font size</string>
     <string name="load_history_notif">Dialog preview in notifications</string>
     <string name="load_history_notif_summary">Show recent messages from chat (may cause captcha)</string>
@@ -1597,7 +1597,7 @@
     <string name="new_friend">New friends:</string>
     <string name="keyboard">Keyboard</string>
     <string name="not_friend_show">No longer friends</string>
-    <string name="not_friend_show_summary">Show who has left friends</string>
+    <string name="not_friend_show_summary">Show who has removed you from the friends list</string>
     <string name="show_bot_keyboard">Bot keyboard</string>
     <string name="do_zoom_photo">Zoom pictures like in Instagram</string>
     <string name="do_auto_play_video">Auto select video quality</string>
