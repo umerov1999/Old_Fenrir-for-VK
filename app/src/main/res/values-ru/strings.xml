@@ -26,7 +26,7 @@
     </string-array>
 
     <string-array name="array_font_size_names">
-        <item>Поумолчанию</item>
+        <item>По умолчанию</item>
         <item>Маленький</item>
         <item>Средний</item>
         <item>Большой</item>
