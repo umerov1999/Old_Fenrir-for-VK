@@ -27,6 +27,11 @@ import com.yalantis.ucrop.UCrop;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.nio.file.Files;
@@ -70,7 +75,7 @@ import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<MessageAttachmentsPresenter,
         IMessageAttachmentsView> implements IMessageAttachmentsView, AttachmentsBottomSheetAdapter.ActionListener {
-    private final int PHOTO_EDITOR_REQUEST_CODE = 231;
+    public String sourcePath;
     public static final String MESSAGE_CLOSE_ONLY = "message_attachments_close_only";
     public static final String MESSAGE_SYNC_ATTACHMENTS = "message_attachments_sync";
     private final AppPerms.doRequestPermissions requestCameraPermission = AppPerms.requestPermissions(this,
@@ -98,7 +103,11 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
     });
     private final ActivityResultLauncher<Intent> openRequestResizePhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
-            getPresenter().doUploadFile(result.getData().getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH), Upload.IMAGE_SIZE_FULL, false);
+            if (result.getData().getBooleanExtra(EditImageActivity.IS_IMAGE_EDITED, false)) {
+                getPresenter().doUploadFile(result.getData().getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH), Upload.IMAGE_SIZE_FULL, false);
+            } else {
+                getPresenter().doUploadFile(result.getData().getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH), Upload.IMAGE_SIZE_FULL, false);
+            }
         }
     });
     private AttachmentsBottomSheetAdapter mAdapter;
@@ -219,10 +228,9 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
     @Override
     public void displayCropPhotoDialog(Uri uri) {
         Intent intent = null;
+        sourcePath = uri.getPath();
         try {
-            long currentTimeMillis = System.currentTimeMillis();
-            Files.copy(new File(uri.getPath()).toPath(), new File(requireActivity().getExternalCacheDir() + File.separator + "scale_" + currentTimeMillis + ".jpg").toPath(), StandardCopyOption.REPLACE_EXISTING);
-            intent = new ImageEditorIntentBuilder(requireContext(), uri.getPath(), Uri.fromFile(new File(requireActivity().getExternalCacheDir() + File.separator + "scale_" + currentTimeMillis + ".jpg")).getPath())
+            intent = new ImageEditorIntentBuilder(requireContext(), uri.getPath(), Uri.fromFile(new File(requireActivity().getExternalCacheDir() + File.separator + "scale.jpg")).getPath())
                     .withAddText() // Add the features you need
                     .withPaintFeature()
                     .withFilterFeature()
