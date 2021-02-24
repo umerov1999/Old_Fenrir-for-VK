@@ -61,12 +61,14 @@ import dev.ragnarok.fenrir.upload.Upload;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Utils;
+import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
+import iamutkarshtiwari.github.io.ananas.editimage.ImageEditorIntentBuilder;
 
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<MessageAttachmentsPresenter,
         IMessageAttachmentsView> implements IMessageAttachmentsView, AttachmentsBottomSheetAdapter.ActionListener {
-
+    private final int PHOTO_EDITOR_REQUEST_CODE = 231;
     public static final String MESSAGE_CLOSE_ONLY = "message_attachments_close_only";
     public static final String MESSAGE_SYNC_ATTACHMENTS = "message_attachments_sync";
     private final AppPerms.doRequestPermissions requestCameraPermission = AppPerms.requestPermissions(this,
@@ -94,9 +96,7 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
     });
     private final ActivityResultLauncher<Intent> openRequestResizePhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
-            getPresenter().doUploadFile(UCrop.getOutput(result.getData()).getPath(), Upload.IMAGE_SIZE_FULL, false);
-        } else if (result.getResultCode() == UCrop.RESULT_ERROR) {
-            showThrowable(UCrop.getError(result.getData()));
+            getPresenter().doUploadFile(result.getData().getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH), Upload.IMAGE_SIZE_FULL, false);
         }
     });
     private AttachmentsBottomSheetAdapter mAdapter;
@@ -216,8 +216,25 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
 
     @Override
     public void displayCropPhotoDialog(Uri uri) {
-        openRequestResizePhoto.launch(UCrop.of(uri, Uri.fromFile(new File(requireActivity().getExternalCacheDir() + File.separator + "scale.jpg")))
-                .getIntent(requireActivity()));
+        Intent intent = null;
+        try {
+            intent = new ImageEditorIntentBuilder(requireContext(), uri.toString().replace("file://", ""), Uri.fromFile(new File(requireActivity().getExternalCacheDir() + File.separator + "scale.jpg")).toString().replace("file://", ""))
+                    .withAddText() // Add the features you need
+                    .withPaintFeature()
+                    .withFilterFeature()
+                    .withRotateFeature()
+                    .withCropFeature()
+                    .withBrightnessFeature()
+                    .withSaturationFeature()
+                    .withBeautyFeature()
+                    .withStickerFeature()
+                    .forcePortrait(true)  // Add this to force portrait mode (It's set to false by default)
+                    .setSupportActionBarVisibility(false) // To hide app's default action bar
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        openRequestResizePhoto.launch(intent);
     }
 
     @Override
