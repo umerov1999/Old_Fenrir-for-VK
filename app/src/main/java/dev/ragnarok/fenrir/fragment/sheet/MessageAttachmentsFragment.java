@@ -29,6 +29,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.Injection;
@@ -218,7 +220,9 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
     public void displayCropPhotoDialog(Uri uri) {
         Intent intent = null;
         try {
-            intent = new ImageEditorIntentBuilder(requireContext(), uri.toString().replace("file://", ""), Uri.fromFile(new File(requireActivity().getExternalCacheDir() + File.separator + "scale.jpg")).toString().replace("file://", ""))
+            long currentTimeMillis = System.currentTimeMillis();
+            Files.copy(new File(uri.getPath()).toPath(), new File(requireActivity().getExternalCacheDir() + File.separator + "scale_" + currentTimeMillis + ".jpg").toPath(), StandardCopyOption.REPLACE_EXISTING);
+            intent = new ImageEditorIntentBuilder(requireContext(), uri.getPath(), Uri.fromFile(new File(requireActivity().getExternalCacheDir() + File.separator + "scale_" + currentTimeMillis + ".jpg")).getPath())
                     .withAddText() // Add the features you need
                     .withPaintFeature()
                     .withFilterFeature()
