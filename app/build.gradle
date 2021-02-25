@@ -131,7 +131,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-android-extensions-runtime:$kotlin_version"
     implementation 'com.github.ktheticdev:Imaging:translationBranch-SNAPSHOT'
     implementation 'androidx.core:core-ktx:1.3.2'
-    implementation 'com.github.iamutkarshtiwari:Ananas:1.2.4'
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'

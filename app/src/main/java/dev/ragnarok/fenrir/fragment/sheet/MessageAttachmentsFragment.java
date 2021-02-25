@@ -66,6 +66,7 @@ import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<MessageAttachmentsPresenter,
         IMessageAttachmentsView> implements IMessageAttachmentsView, AttachmentsBottomSheetAdapter.ActionListener {
+    private File mImageFile;
     public static boolean first = false;
     public String sourcePath;
     public static final String MESSAGE_CLOSE_ONLY = "message_attachments_close_only";
@@ -96,7 +97,7 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
     private final ActivityResultLauncher<Intent> openRequestResizePhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
 
-            getPresenter().doUploadFile(result.getData().getStringExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH), Upload.IMAGE_SIZE_FULL, false);
+            getPresenter().doUploadFile(mImageFile.getAbsolutePath(), Upload.IMAGE_SIZE_FULL, false);
         }
     });
     private AttachmentsBottomSheetAdapter mAdapter;
@@ -218,9 +219,10 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
     public void displayCropPhotoDialog(Uri uri) {
         sourcePath = uri.getPath();
         try {
+            mImageFile = new File(requireActivity().getExternalCacheDir() + File.separator + "scale.jpg");
             Intent intent = new Intent(requireContext(), IMGEditActivity.class)
                     .putExtra(IMGEditActivity.EXTRA_IMAGE_URI, uri)
-                    .putExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH, Uri.fromFile(new File(requireActivity().getExternalCacheDir() + File.separator + "scale.jpg")).getPath());
+                    .putExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH, mImageFile.getAbsolutePath());
 
             openRequestResizePhoto.launch(intent);
         } catch (Exception e) {
