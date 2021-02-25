@@ -22,20 +22,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.yalantis.ucrop.UCrop;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.Injection;
@@ -68,13 +60,13 @@ import dev.ragnarok.fenrir.upload.Upload;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Utils;
-import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
-import iamutkarshtiwari.github.io.ananas.editimage.ImageEditorIntentBuilder;
+import me.minetsh.imaging.IMGEditActivity;
 
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<MessageAttachmentsPresenter,
         IMessageAttachmentsView> implements IMessageAttachmentsView, AttachmentsBottomSheetAdapter.ActionListener {
+    public static boolean first = false;
     public String sourcePath;
     public static final String MESSAGE_CLOSE_ONLY = "message_attachments_close_only";
     public static final String MESSAGE_SYNC_ATTACHMENTS = "message_attachments_sync";
@@ -103,11 +95,8 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
     });
     private final ActivityResultLauncher<Intent> openRequestResizePhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
-            if (result.getData().getBooleanExtra(EditImageActivity.IS_IMAGE_EDITED, false)) {
-                getPresenter().doUploadFile(result.getData().getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH), Upload.IMAGE_SIZE_FULL, false);
-            } else {
-                getPresenter().doUploadFile(result.getData().getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH), Upload.IMAGE_SIZE_FULL, false);
-            }
+
+            getPresenter().doUploadFile(result.getData().getStringExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH), Upload.IMAGE_SIZE_FULL, false);
         }
     });
     private AttachmentsBottomSheetAdapter mAdapter;
@@ -227,26 +216,16 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
 
     @Override
     public void displayCropPhotoDialog(Uri uri) {
-        Intent intent = null;
         sourcePath = uri.getPath();
         try {
-            intent = new ImageEditorIntentBuilder(requireContext(), uri.getPath(), Uri.fromFile(new File(requireActivity().getExternalCacheDir() + File.separator + "scale.jpg")).getPath())
-                    .withAddText() // Add the features you need
-                    .withPaintFeature()
-                    .withFilterFeature()
-                    .withRotateFeature()
-                    .withCropFeature()
-                    .withBrightnessFeature()
-                    .withSaturationFeature()
-                    .withBeautyFeature()
-                    .withStickerFeature()
-                    .forcePortrait(true)  // Add this to force portrait mode (It's set to false by default)
-                    .setSupportActionBarVisibility(false) // To hide app's default action bar
-                    .build();
+            Intent intent = new Intent(requireContext(), IMGEditActivity.class)
+                    .putExtra(IMGEditActivity.EXTRA_IMAGE_URI, uri)
+                    .putExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH, Uri.fromFile(new File(requireActivity().getExternalCacheDir() + File.separator + "scale.jpg")).getPath());
+
+            openRequestResizePhoto.launch(intent);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        openRequestResizePhoto.launch(intent);
     }
 
     @Override
