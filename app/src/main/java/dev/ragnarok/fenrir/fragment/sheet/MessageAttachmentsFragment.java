@@ -22,7 +22,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.yalantis.ucrop.UCrop;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -61,12 +60,15 @@ import dev.ragnarok.fenrir.upload.Upload;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Utils;
+import me.minetsh.imaging.IMGEditActivity;
 
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<MessageAttachmentsPresenter,
         IMessageAttachmentsView> implements IMessageAttachmentsView, AttachmentsBottomSheetAdapter.ActionListener {
-
+    private File mImageFile;
+    public static boolean first = false;
+    public String sourcePath;
     public static final String MESSAGE_CLOSE_ONLY = "message_attachments_close_only";
     public static final String MESSAGE_SYNC_ATTACHMENTS = "message_attachments_sync";
     private final AppPerms.doRequestPermissions requestCameraPermission = AppPerms.requestPermissions(this,
@@ -94,9 +96,8 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
     });
     private final ActivityResultLauncher<Intent> openRequestResizePhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
-            getPresenter().doUploadFile(UCrop.getOutput(result.getData()).getPath(), Upload.IMAGE_SIZE_FULL, false);
-        } else if (result.getResultCode() == UCrop.RESULT_ERROR) {
-            showThrowable(UCrop.getError(result.getData()));
+
+            getPresenter().doUploadFile(mImageFile.getAbsolutePath(), Upload.IMAGE_SIZE_FULL, false);
         }
     });
     private AttachmentsBottomSheetAdapter mAdapter;
@@ -216,8 +217,17 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
 
     @Override
     public void displayCropPhotoDialog(Uri uri) {
-        openRequestResizePhoto.launch(UCrop.of(uri, Uri.fromFile(new File(requireActivity().getExternalCacheDir() + File.separator + "scale.jpg")))
-                .getIntent(requireActivity()));
+        sourcePath = uri.getPath();
+        try {
+            mImageFile = new File(requireActivity().getExternalCacheDir() + File.separator + "scale.jpg");
+            Intent intent = new Intent(requireContext(), IMGEditActivity.class)
+                    .putExtra(IMGEditActivity.EXTRA_IMAGE_URI, uri)
+                    .putExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH, mImageFile.getAbsolutePath());
+
+            openRequestResizePhoto.launch(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
