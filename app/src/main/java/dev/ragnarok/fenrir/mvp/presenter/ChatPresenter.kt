@@ -1217,7 +1217,10 @@ class ChatPresenter(
 
         addMessageToList(message)
         view?.notifyDataChanged()
-        if (!message.isOut) {
+        if (!message.isOut && Objects.nonNull(message.keyboard) && !message.keyboard.inline && !isEmpty(
+                message.keyboard.buttons
+            )
+        ) {
             conversation?.currentKeyboard = message.keyboard
             view?.convert_to_keyboard(message.keyboard)
         }

@@ -292,7 +292,7 @@
         <item>Small (800 px)</item>
         <item>Average (1200 px)</item>
         <item>Original</item>
-        <item>Crop</item>
+        <item>Edit</item>
     </string-array>
 
     <string-array name="array_image_sizes_settings_names">
@@ -300,7 +300,7 @@
         <item>Small (800 px)</item>
         <item>Medium (1200 px)</item>
         <item>Original</item>
-        <item>Crop</item>
+        <item>Edit</item>
     </string-array>
 
     <string-array name="array_image_sizes_settings_values" translatable="false">
@@ -746,7 +746,7 @@
     <string name="first_developer">Umerov Artyom</string>
     <string name="second_developer">Danilyuk Dmitry</string>
     <string name="first_pagan">First pagan</string>
-    <string name="stop_develop">Development stopped!</string>
+    <string name="stop_develop">The project is dedicated https://vk.com/id255645173</string>
     <string name="repo">Repository: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="repo_local_server">Repository: https://github.com/umerov1999/FenrirMediaServer/releases</string>
     <string name="comment">Comment</string>
@@ -1346,6 +1346,7 @@
     <string name="avatar_was_changed_successfully">New avatar uploaded successfully!</string>
     <string name="button_show">Show</string>
     <string name="upload_new_photo">Change avatar</string>
+    <string name="upload_new_story">Upload story</string>
     <string name="channel_upload_files">Uploading files</string>
     <string name="files_uploading_notification_title">Uploading files</string>
     <string name="service_pinned_message">%1$s pinned the message</string>
@@ -1675,4 +1676,5 @@
     <string name="max_bitmap_resolution">Max bitmap Resolution</string>
     <string name="artists">Artists</string>
     <string name="video_controller_to_decor">Video controller to decor view</string>
+    <string name="video_swipes">Enable video swipes</string>
 </resources>

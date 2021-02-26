@@ -52,6 +52,8 @@ public interface IDialogsView extends IAccountDependencyView, IMvpView, IErrorVi
         void setCanAddToShortcuts(boolean can);
 
         void setIsHidden(boolean can);
+
+        void setCanRead(boolean can);
     }
 
     interface IOptionView {

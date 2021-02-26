@@ -39,6 +39,7 @@ import dev.ragnarok.fenrir.upload.impl.OwnerPhotoUploadable;
 import dev.ragnarok.fenrir.upload.impl.Photo2AlbumUploadable;
 import dev.ragnarok.fenrir.upload.impl.Photo2MessageUploadable;
 import dev.ragnarok.fenrir.upload.impl.Photo2WallUploadable;
+import dev.ragnarok.fenrir.upload.impl.StoryUploadable;
 import dev.ragnarok.fenrir.upload.impl.Video2WallUploadable;
 import dev.ragnarok.fenrir.upload.impl.VideoToMessageUploadable;
 import dev.ragnarok.fenrir.upload.impl.VideoUploadable;
@@ -81,7 +82,6 @@ public class UploadManagerImpl implements IUploadManager {
     private final CompositeDisposable notificationUpdateDisposable = new CompositeDisposable();
     private final Map<String, UploadServer> serverMap = Collections.synchronizedMap(new HashMap<>());
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private final CompositeDisposable otherDisposables = new CompositeDisposable();
     private volatile Upload current;
     private boolean needCreateChannel = true;
 
@@ -129,6 +129,7 @@ public class UploadManagerImpl implements IUploadManager {
                     builder.append(Extra.GROUP_ID).append(Math.abs(dest.getOwnerId()));
                 }
                 break;
+            case Method.STORY:
             case Method.TO_MESSAGE:
                 //do nothink
                 break;
@@ -281,7 +282,7 @@ public class UploadManagerImpl implements IUploadManager {
             //}
 
             UploadDestination destination = upload.getDestination();
-            if (destination.getMessageMethod() != MessageMethod.VIDEO && destination.getMethod() != Method.VIDEO)
+            if (destination.getMessageMethod() != MessageMethod.VIDEO && destination.getMethod() != Method.VIDEO && destination.getMethod() != Method.STORY)
                 serverMap.put(createServerKey(upload), result.getServer());
 
             completeProcessor.onNext(Pair.Companion.create(upload, result));
@@ -422,6 +423,8 @@ public class UploadManagerImpl implements IUploadManager {
         switch (destination.getMethod()) {
             case Method.VIDEO:
                 return new VideoUploadable(context, networker);
+            case Method.STORY:
+                return new StoryUploadable(context, networker);
             case Method.AUDIO:
                 return new AudioUploadable(context, networker);
             case Method.TO_MESSAGE:

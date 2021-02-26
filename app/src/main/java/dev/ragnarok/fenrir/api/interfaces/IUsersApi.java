@@ -7,8 +7,10 @@ import java.util.List;
 
 import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiGift;
+import dev.ragnarok.fenrir.api.model.VKApiStory;
 import dev.ragnarok.fenrir.api.model.VKApiUser;
 import dev.ragnarok.fenrir.api.model.response.StoryResponse;
+import dev.ragnarok.fenrir.api.model.server.VkApiStoryUploadServer;
 import io.reactivex.rxjava3.core.Single;
 
 
@@ -39,6 +41,15 @@ public interface IUsersApi {
     @CheckResult
     Single<List<VKApiUser>> get(Collection<Integer> userIds, Collection<String> domains,
                                 String fields, String nameCase);
+
+    @CheckResult
+    Single<VkApiStoryUploadServer> stories_getPhotoUploadServer();
+
+    @CheckResult
+    Single<VkApiStoryUploadServer> stories_getVideoUploadServer();
+
+    @CheckResult
+    Single<Items<VKApiStory>> stories_save(String upload_results);
 
     @CheckResult
     Single<StoryResponse> getStory(Integer owner_id, Integer extended, String fields);

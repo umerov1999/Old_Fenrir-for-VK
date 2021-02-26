@@ -52,6 +52,7 @@ public class ChatUsersDomainFragment extends BaseMvpBottomSheetDialogFragment<Ch
         return fragment;
     }
 
+    @Override
     @NotNull
     public BottomSheetDialog onCreateDialog(Bundle savedInstanceState) {
         BottomSheetDialog dialog = new BottomSheetDialog(requireActivity(), getTheme());

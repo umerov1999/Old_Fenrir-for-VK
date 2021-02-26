@@ -575,9 +575,20 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
                 .subscribe(() -> safeShowToast(getView(), R.string.success, false), Analytics::logUnexpectedError));
     }
 
+    public void fireRead(Dialog dialog) {
+        appendDisposable(messagesInteractor.markAsRead(getAccountId(), dialog.getPeerId(), dialog.getLastMessageId())
+                .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                .subscribe(() -> {
+                    safeShowToast(getView(), R.string.success, false);
+                    dialog.setInRead(dialog.getLastMessageId());
+                    getView().notifyDataSetChanged();
+                }, Analytics::logUnexpectedError));
+    }
+
     public void fireContextViewCreated(IDialogsView.IContextView contextView, Dialog dialog) {
         boolean isHide = Settings.get().security().ContainsValueInSet(dialog.getId(), "hidden_dialogs");
         contextView.setCanDelete(true);
+        contextView.setCanRead(!Utils.isHiddenCurrent() && !dialog.isLastMessageOut() && dialog.getLastMessageId() != dialog.getInRead());
         contextView.setCanAddToHomescreen(dialogsOwnerId > 0 && !isHide);
         contextView.setCanAddToShortcuts(dialogsOwnerId > 0 && !isHide);
         contextView.setCanConfigNotifications(dialogsOwnerId > 0);

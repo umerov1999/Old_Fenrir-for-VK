@@ -121,6 +121,10 @@ public class CurrentTheme {
         return getColorFromAttrs(R.attr.toast_background, context, "#FFFFFF");
     }
 
+    public static int getColorWhite(Context context) {
+        return getColorFromAttrs(R.attr.white_color, context, "#FFFFFF");
+    }
+
     public static int getColorOnPrimary(Context context) {
         return getColorFromAttrs(com.google.android.material.R.attr.colorOnPrimary, context, "#000000");
     }

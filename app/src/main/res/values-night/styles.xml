@@ -11,7 +11,8 @@
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
         <item name="android:windowLightStatusBar" tools:targetApi="o_mr1">false</item>
         <item name="colorPrimary">#448AFF</item>
-        <item name="colorSecondary">#82B1FF</item>
+        <item name="colorControlNormal">#448AFF</item>
+        <item name="colorSecondary">#1E88E5</item>
         <item name="colorOnPrimary">#FFF</item>
         <item name="colorOnSecondary">#FFF</item>
         <item name="android:colorBackground">@color/night</item>
@@ -19,6 +20,8 @@
         <item name="colorBackgroundFloating">@color/night</item>
         <item name="colorOnBackground">#1E1E1E</item>
         <item name="colorSurface">#F01E1E1E</item>
+        <item name="white_color">#FFFFFF</item>
+        <item name="toolbar_left_icon_color">?attr/colorPrimary</item>
 
         <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.AppTheme.SmallComponent
         </item>
@@ -89,6 +92,7 @@
         <item name="my_messages_secondary_bubble_color">#D4303030</item>
         <item name="icon_color_active">#AA448AFF</item>
         <item name="icon_color_inactive">#AAFF0000</item>
+        <item name="white_color">#000000</item>
     </style>
 
     <style name="App.DayNight.Ice.Amoled" parent="App.DayNight.Ice">

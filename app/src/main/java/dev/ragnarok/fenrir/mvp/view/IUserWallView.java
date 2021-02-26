@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.mvp.view;
 
+import android.net.Uri;
+
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -50,4 +52,6 @@ public interface IUserWallView extends IWallView, IProgressView {
     void openUserDetails(int accountId, @NonNull User user, @NonNull UserDetails details);
 
     void showAvatarUploadedMessage(int accountId, Post post);
+
+    void doEditPhoto(@NonNull Uri uri);
 }

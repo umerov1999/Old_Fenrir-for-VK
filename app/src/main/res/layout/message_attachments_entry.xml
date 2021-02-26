@@ -50,7 +50,8 @@
                     android:background="@drawable/circle_back"
                     android:padding="8dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/close" />
+                    android:src="@drawable/close"
+                    app:tint="?white_color" />
 
                 <dev.ragnarok.fenrir.view.CircleRoadProgress
                     android:id="@+id/progress_view"
@@ -73,7 +74,8 @@
                 android:layout_alignParentBottom="true"
                 android:background="@drawable/audio_button_material"
                 android:scaleType="centerCrop"
-                android:src="@drawable/refresh" />
+                android:src="@drawable/refresh"
+                app:tint="?white_color" />
 
             <TextView
                 android:id="@+id/title"

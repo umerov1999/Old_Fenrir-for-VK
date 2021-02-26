@@ -41,16 +41,23 @@ import dev.ragnarok.fenrir.CheckDonate;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
+import dev.ragnarok.fenrir.activity.DualTabPhotoActivity;
 import dev.ragnarok.fenrir.activity.PhotosActivity;
 import dev.ragnarok.fenrir.adapter.horizontal.HorizontalOptionsAdapter;
 import dev.ragnarok.fenrir.model.FriendsCounters;
 import dev.ragnarok.fenrir.model.LocalPhoto;
+import dev.ragnarok.fenrir.model.LocalVideo;
 import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.ParcelableOwnerWrapper;
 import dev.ragnarok.fenrir.model.Post;
 import dev.ragnarok.fenrir.model.PostFilter;
 import dev.ragnarok.fenrir.model.User;
 import dev.ragnarok.fenrir.model.UserDetails;
+import dev.ragnarok.fenrir.model.selection.FileManagerSelectableSource;
+import dev.ragnarok.fenrir.model.selection.LocalGallerySelectableSource;
+import dev.ragnarok.fenrir.model.selection.LocalPhotosSelectableSource;
+import dev.ragnarok.fenrir.model.selection.LocalVideosSelectableSource;
+import dev.ragnarok.fenrir.model.selection.Sources;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.UserWallPresenter;
 import dev.ragnarok.fenrir.mvp.view.IUserWallView;
@@ -59,12 +66,14 @@ import dev.ragnarok.fenrir.picasso.transforms.BlurTransformation;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.upload.Upload;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.InputTextDialog;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.OnlineView;
+import me.minetsh.imaging.IMGEditActivity;
 
 import static dev.ragnarok.fenrir.util.Objects.isNull;
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
@@ -97,6 +106,21 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
     private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
             () -> getPresenter().fireShowQR(requireActivity()));
+    private final ActivityResultLauncher<Intent> openRequestPhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getData() != null && result.getResultCode() == Activity.RESULT_OK) {
+            ArrayList<LocalPhoto> localPhotos = result.getData().getParcelableArrayListExtra(Extra.PHOTOS);
+            String file = result.getData().getStringExtra(FileManagerFragment.returnFileParameter);
+            LocalVideo video = result.getData().getParcelableExtra(Extra.VIDEO);
+            getPresenter().firePhotosSelected(localPhotos, file, video);
+        }
+    });
+
+    private final ActivityResultLauncher<Intent> openRequestResizePhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            assert result.getData() != null;
+            getPresenter().doUploadFile(result.getData().getStringExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH), Upload.IMAGE_SIZE_FULL, false);
+        }
+    });
     private UserHeaderHolder mHeaderHolder;
 
     @Override
@@ -161,16 +185,6 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
         PlaceFactory.getUserDetailsPlace(accountId, user, details).tryOpenWith(requireActivity());
     }
 
-    @Override
-    public void showAvatarUploadedMessage(int accountId, Post post) {
-        new MaterialAlertDialogBuilder(requireActivity())
-                .setTitle(R.string.success)
-                .setMessage(R.string.avatar_was_changed_successfully)
-                .setPositiveButton(R.string.button_show, (dialog, which) -> PlaceFactory.getPostPreviewPlace(accountId, post.getVkid(), post.getOwnerId(), post).tryOpenWith(requireActivity()))
-                .setNegativeButton(R.string.button_ok, null)
-                .show();
-    }
-
     /*@Override
     public void displayOwnerData(User user) {
         if (isNull(mHeaderHolder)) return;
@@ -221,6 +235,27 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
 
         SelectionUtils.addSelectionProfileSupport(getContext(), mHeaderHolder.avatarRoot, user);
     }*/
+
+    @Override
+    public void showAvatarUploadedMessage(int accountId, Post post) {
+        new MaterialAlertDialogBuilder(requireActivity())
+                .setTitle(R.string.success)
+                .setMessage(R.string.avatar_was_changed_successfully)
+                .setPositiveButton(R.string.button_show, (dialog, which) -> PlaceFactory.getPostPreviewPlace(accountId, post.getVkid(), post.getOwnerId(), post).tryOpenWith(requireActivity()))
+                .setNegativeButton(R.string.button_ok, null)
+                .show();
+    }
+
+    @Override
+    public void doEditPhoto(@NonNull Uri uri) {
+        try {
+            openRequestResizePhoto.launch(new Intent(requireContext(), IMGEditActivity.class)
+                    .putExtra(IMGEditActivity.EXTRA_IMAGE_URI, uri)
+                    .putExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH, new File(requireActivity().getExternalCacheDir() + File.separator + "scale.jpg").getAbsolutePath()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void displayCounters(int friends, int mutual, int followers, int groups, int photos, int audios, int videos, int articles, int products, int gifts) {
@@ -364,7 +399,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
     public void showAvatarContextMenu(boolean canUploadAvatar) {
         String[] items;
         if (canUploadAvatar) {
-            items = new String[]{getString(R.string.open_photo), getString(R.string.open_avatar), getString(R.string.upload_new_photo)};
+            items = new String[]{getString(R.string.open_photo), getString(R.string.open_avatar), getString(R.string.upload_new_photo), getString(R.string.upload_new_story)};
         } else {
             items = new String[]{getString(R.string.open_photo), getString(R.string.open_avatar)};
         }
@@ -382,6 +417,16 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
                     Intent attachPhotoIntent = new Intent(requireActivity(), PhotosActivity.class);
                     attachPhotoIntent.putExtra(PhotosActivity.EXTRA_MAX_SELECTION_COUNT, 1);
                     openRequestSelectAvatar.launch(attachPhotoIntent);
+                    break;
+                case 3:
+                    Sources sources = new Sources()
+                            .with(new LocalPhotosSelectableSource())
+                            .with(new LocalGallerySelectableSource())
+                            .with(new LocalVideosSelectableSource())
+                            .with(new FileManagerSelectableSource());
+
+                    Intent intent = DualTabPhotoActivity.createIntent(requireActivity(), 1, sources);
+                    openRequestPhoto.launch(intent);
                     break;
             }
         }).setCancelable(true).show();

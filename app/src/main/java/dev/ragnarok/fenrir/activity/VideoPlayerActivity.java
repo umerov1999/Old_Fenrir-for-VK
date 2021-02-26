@@ -152,7 +152,9 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Slidr.attach(this, new SlidrConfig.Builder().scrimColor(CurrentTheme.getColorBackground(this)).build());
+        if (Settings.get().other().isVideo_swipes()) {
+            Slidr.attach(this, new SlidrConfig.Builder().scrimColor(CurrentTheme.getColorBackground(this)).build());
+        }
 
         setTheme(Settings.get().ui().getMainTheme());
         Utils.prepareDensity(this);

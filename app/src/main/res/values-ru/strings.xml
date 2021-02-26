@@ -204,7 +204,7 @@
         <item>Маленький (800 px)</item>
         <item>Средний (1200 px)</item>
         <item>Оригинал</item>
-        <item>Обрезать</item>
+        <item>Редактировать</item>
     </string-array>
 
     <string-array name="array_image_sizes_settings_names">
@@ -212,7 +212,7 @@
         <item>Маленький (800 px)</item>
         <item>Средний (1200 px)</item>
         <item>Оригинал</item>
-        <item>Обрезать</item>
+        <item>Редактировать</item>
     </string-array>
 
     <string name="high_notif_priority_title">Высокий приоритет уведомлений</string>
@@ -635,7 +635,7 @@
     <string name="first_developer">Умеров Артём</string>
     <string name="second_developer">Данилюк Дмитрий</string>
     <string name="first_pagan">Первый языческий</string>
-    <string name="stop_develop">Разработка прекращена!</string>
+    <string name="stop_develop">Проект посвящён https://vk.com/id255645173</string>
     <string name="repo">Репозиторий: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="repo_local_server">Репозиторий: https://github.com/umerov1999/FenrirMediaServer/releases</string>
     <string name="comment">Комментарий</string>
@@ -1196,6 +1196,7 @@
     <string name="avatar_was_changed_successfully">Новый аватар успешно загружен!</string>
     <string name="button_show">Показать</string>
     <string name="upload_new_photo">Сменить аватар</string>
+    <string name="upload_new_story">Загрузить историю</string>
     <string name="channel_upload_files">Загрузка файлов</string>
     <string name="files_uploading_notification_title">Загрузка файлов</string>
     <string name="service_pinned_message">%1$s закрепил сообщение</string>
@@ -1519,4 +1520,5 @@
     <string name="max_bitmap_resolution">Максимальное разрешение картинки</string>
     <string name="artists">Артисты</string>
     <string name="video_controller_to_decor">Видео кнопки в DecorView</string>
+    <string name="video_swipes">Свайпы у видео</string>
 </resources>

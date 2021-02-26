@@ -1,1 +1,1 @@
-include ':app', ':ealvatag', ':picasso', ':crashx', ':firebase-installations', ':zxing-android-embedded', ':slidr', ':ucrop'
+include ':app', ':ealvatag', ':picasso', ':crashx', ':firebase-installations', ':zxing-android-embedded', ':slidr', ':ucrop', ':image'

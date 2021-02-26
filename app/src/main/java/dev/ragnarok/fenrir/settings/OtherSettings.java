@@ -392,8 +392,18 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public boolean isVideo_swipes() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("video_swipes", true);
+    }
+
+    @Override
     public boolean isDisable_likes() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("disable_likes", false);
+    }
+
+    @Override
+    public void setDisable_likes(boolean disabled) {
+        PreferenceManager.getDefaultSharedPreferences(app).edit().putBoolean("disable_likes", disabled).apply();
     }
 
     @Override

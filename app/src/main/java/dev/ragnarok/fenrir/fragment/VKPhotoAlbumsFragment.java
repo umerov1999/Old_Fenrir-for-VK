@@ -282,12 +282,24 @@ public class VKPhotoAlbumsFragment extends BaseMvpFragment<PhotoAlbumsPresenter,
     }
 
     @Override
+    public void onPrepareOptionsMenu(@NotNull Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.findItem(R.id.action_photo_toggle_like).setIcon(Settings.get().other().isDisable_likes() ? R.drawable.ic_no_heart : R.drawable.heart);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_photo_comments) {
             if (!CheckDonate.isFullVersion(requireActivity())) {
                 return false;
             }
             getPresenter().fireAllComments();
+            return true;
+        }
+
+        if (item.getItemId() == R.id.action_photo_toggle_like) {
+            Settings.get().other().setDisable_likes(!Settings.get().other().isDisable_likes());
+            requireActivity().invalidateOptionsMenu();
             return true;
         }
 

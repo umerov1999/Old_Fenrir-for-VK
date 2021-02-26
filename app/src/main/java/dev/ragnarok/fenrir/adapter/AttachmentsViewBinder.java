@@ -2,7 +2,6 @@ package dev.ragnarok.fenrir.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.util.SparseArray;
@@ -635,7 +634,6 @@ public class AttachmentsViewBinder {
                         } else {
                             ivType.setVisibility(View.VISIBLE);
                             ivPhotoT.setVisibility(View.GONE);
-                            Utils.setColorFilter(ivType.getBackground(), CurrentTheme.getColorPrimary(mContext));
                             ivType.setImageResource(R.drawable.file);
                         }
                         break;
@@ -647,7 +645,6 @@ public class AttachmentsViewBinder {
                             ViewUtils.displayAvatar(ivGraffity, null, imageUrl, Constants.PICASSO_TAG);
                         } else {
                             ivType.setVisibility(View.VISIBLE);
-                            Utils.setColorFilter(ivType.getBackground(), CurrentTheme.getColorPrimary(mContext));
                             ivType.setImageResource(R.drawable.counter);
                         }
                         break;
@@ -656,7 +653,6 @@ public class AttachmentsViewBinder {
                             ivType.setVisibility(View.VISIBLE);
                             ivPhotoT.setVisibility(View.VISIBLE);
                             ViewUtils.displayAvatar(ivPhotoT, null, imageUrl, Constants.PICASSO_TAG);
-                            Utils.setColorFilter(ivType.getBackground(), CurrentTheme.getColorPrimary(mContext));
                             ivType.setImageResource(R.drawable.audio_player);
                         } else {
                             ivPhotoT.setVisibility(View.GONE);
@@ -667,7 +663,6 @@ public class AttachmentsViewBinder {
                             ivType.setVisibility(View.VISIBLE);
                             ivPhotoT.setVisibility(View.VISIBLE);
                             ViewUtils.displayAvatar(ivPhotoT, null, imageUrl, Constants.PICASSO_TAG);
-                            Utils.setColorFilter(ivType.getBackground(), CurrentTheme.getColorPrimary(mContext));
                             ivType.setImageResource(R.drawable.album_photo);
                         } else {
                             ivPhotoT.setVisibility(View.GONE);
@@ -678,7 +673,6 @@ public class AttachmentsViewBinder {
                             ivType.setVisibility(View.VISIBLE);
                             ivPhotoT.setVisibility(View.VISIBLE);
                             ViewUtils.displayAvatar(ivPhotoT, null, imageUrl, Constants.PICASSO_TAG);
-                            Utils.setColorFilter(ivType.getBackground(), CurrentTheme.getColorPrimary(mContext));
                             ivType.setImageResource(R.drawable.ic_market_stack);
                         } else {
                             ivPhotoT.setVisibility(View.GONE);
@@ -689,7 +683,6 @@ public class AttachmentsViewBinder {
                             ivType.setVisibility(View.VISIBLE);
                             ivPhotoT.setVisibility(View.VISIBLE);
                             ViewUtils.displayAvatar(ivPhotoT, null, imageUrl, Constants.PICASSO_TAG);
-                            Utils.setColorFilter(ivType.getBackground(), CurrentTheme.getColorPrimary(mContext));
                             ivType.setImageResource(R.drawable.artist_icon);
                         } else {
                             ivPhotoT.setVisibility(View.GONE);
@@ -700,11 +693,6 @@ public class AttachmentsViewBinder {
                             ivType.setVisibility(View.VISIBLE);
                             ivPhotoT.setVisibility(View.VISIBLE);
                             ViewUtils.displayAvatar(ivPhotoT, null, imageUrl, Constants.PICASSO_TAG);
-                            if (((Market) doc.attachment).getAvailability() == 0) {
-                                Utils.setColorFilter(ivType.getBackground(), CurrentTheme.getColorPrimary(mContext));
-                            } else {
-                                Utils.setColorFilter(ivType.getBackground(), Color.parseColor("#ff0000"));
-                            }
                             ivType.setImageResource(R.drawable.ic_market_outline);
                         } else {
                             ivPhotoT.setVisibility(View.GONE);
@@ -747,7 +735,6 @@ public class AttachmentsViewBinder {
                         ivPhotoT.setVisibility(View.GONE);
                         ivType.setVisibility(View.VISIBLE);
                         ivType.setImageResource(R.drawable.comment);
-                        Utils.setColorFilter(ivType.getBackground(), CurrentTheme.getColorPrimary(mContext));
                         if (imageUrl != null) {
                             ivPhoto_Post.setVisibility(View.VISIBLE);
                             ViewUtils.displayAvatar(ivPhoto_Post, mAvatarTransformation, imageUrl, Constants.PICASSO_TAG);
@@ -764,7 +751,6 @@ public class AttachmentsViewBinder {
                         ivPhotoT.setVisibility(View.GONE);
                         ivType.setVisibility(View.VISIBLE);
                         ivType.setImageResource(R.drawable.feed);
-                        Utils.setColorFilter(ivType.getBackground(), CurrentTheme.getColorPrimary(mContext));
                         if (imageUrl != null) {
                             ivPhoto_Post.setVisibility(View.VISIBLE);
                             ViewUtils.displayAvatar(ivPhoto_Post, mAvatarTransformation, imageUrl, Constants.PICASSO_TAG);
@@ -781,7 +767,6 @@ public class AttachmentsViewBinder {
                         } else {
                             ivPhotoT.setVisibility(View.GONE);
                         }
-                        Utils.setColorFilter(ivType.getBackground(), CurrentTheme.getColorPrimary(mContext));
                         ivType.setImageResource(R.drawable.attachment);
                         break;
                     case Types.NOT_SUPPORTED:
@@ -792,13 +777,11 @@ public class AttachmentsViewBinder {
                     case Types.POLL:
                         ivType.setVisibility(View.VISIBLE);
                         ivPhotoT.setVisibility(View.GONE);
-                        Utils.setColorFilter(ivType.getBackground(), CurrentTheme.getColorPrimary(mContext));
                         ivType.setImageResource(R.drawable.chart_bar);
                         break;
                     case Types.CALL:
                         ivType.setVisibility(View.VISIBLE);
                         ivPhotoT.setVisibility(View.GONE);
-                        Utils.setColorFilter(ivType.getBackground(), CurrentTheme.getColorPrimary(mContext));
                         ivType.setImageResource(R.drawable.phone_call);
                         break;
                     default:

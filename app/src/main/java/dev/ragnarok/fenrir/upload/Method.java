@@ -13,7 +13,8 @@ import java.lang.annotation.RetentionPolicy;
         Method.TO_MESSAGE,
         Method.AUDIO,
         Method.VIDEO,
-        Method.DOCUMENT})
+        Method.DOCUMENT,
+        Method.STORY})
 @Retention(RetentionPolicy.SOURCE)
 public @interface Method {
     int PHOTO_TO_ALBUM = 1;
@@ -25,5 +26,6 @@ public @interface Method {
     int AUDIO = 7;
     int VIDEO = 8;
     int DOCUMENT = 9;
+    int STORY = 10;
 }
 

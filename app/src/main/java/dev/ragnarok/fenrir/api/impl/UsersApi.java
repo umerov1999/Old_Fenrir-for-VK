@@ -10,9 +10,11 @@ import dev.ragnarok.fenrir.api.TokenType;
 import dev.ragnarok.fenrir.api.interfaces.IUsersApi;
 import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiGift;
+import dev.ragnarok.fenrir.api.model.VKApiStory;
 import dev.ragnarok.fenrir.api.model.VKApiUser;
 import dev.ragnarok.fenrir.api.model.response.StoryResponse;
 import dev.ragnarok.fenrir.api.model.response.UserWallInfoResponse;
+import dev.ragnarok.fenrir.api.model.server.VkApiStoryUploadServer;
 import dev.ragnarok.fenrir.api.services.IUsersService;
 import dev.ragnarok.fenrir.exception.NotFoundException;
 import dev.ragnarok.fenrir.util.Utils;
@@ -162,6 +164,27 @@ class UsersApi extends AbsApi implements IUsersApi {
         return provideService(IUsersService.class, TokenType.USER, TokenType.SERVICE)
                 .flatMap(service -> service
                         .get(join(ids, ","), fields, nameCase)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<VkApiStoryUploadServer> stories_getPhotoUploadServer() {
+        return provideService(IUsersService.class, TokenType.USER)
+                .flatMap(service -> service.stories_getPhotoUploadServer(1)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<VkApiStoryUploadServer> stories_getVideoUploadServer() {
+        return provideService(IUsersService.class, TokenType.USER)
+                .flatMap(service -> service.stories_getVideoUploadServer(1)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<Items<VKApiStory>> stories_save(String upload_results) {
+        return provideService(IUsersService.class, TokenType.USER)
+                .flatMap(service -> service.stories_save(upload_results)
                         .map(extractResponseWithErrorHandling()));
     }
 }

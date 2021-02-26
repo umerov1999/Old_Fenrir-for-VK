@@ -22,8 +22,9 @@
         android:drawablePadding="4dp"
         android:gravity="center_vertical"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+        android:textColor="?white_color"
         app:drawableStartCompat="@drawable/check"
-        app:drawableTint="?colorOnSurface"
+        app:drawableTint="?white_color"
         tools:text="14" />
 
 </LinearLayout>

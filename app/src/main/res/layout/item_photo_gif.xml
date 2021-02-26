@@ -22,7 +22,8 @@
         android:padding="6dp"
         android:scaleType="centerCrop"
         android:src="@drawable/gif"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:tint="?white_color" />
 
     <TextView
         android:id="@+id/item_video_title"

@@ -167,9 +167,13 @@ public interface ISettings {
 
         boolean isDisable_likes();
 
+        void setDisable_likes(boolean disabled);
+
         boolean isDo_auto_play_video();
 
         boolean isVideo_controller_to_decor();
+
+        boolean isVideo_swipes();
 
         boolean isHint_stickers();
 

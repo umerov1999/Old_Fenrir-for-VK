@@ -306,6 +306,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
 
         String setHide = getString(R.string.hide_dialog);
         String setShow = getString(R.string.set_no_hide_dialog);
+        String setRead = getString(R.string.read);
 
         if (contextView.canDelete) {
             options.add(delete);
@@ -331,6 +332,10 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
             options.add(setShow);
         }
 
+        if (contextView.canRead) {
+            options.add(setRead);
+        }
+
         new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(contextView.isHidden && !Settings.get().security().getShowHiddenDialogs() ? getString(R.string.dialogs) : dialog.getDisplayTitle(requireActivity()))
                 .setItems(options.toArray(new String[0]), (dialogInterface, which) -> {
@@ -344,6 +349,8 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
                         getPresenter().fireNotificationsSettingsClick(dialog);
                     } else if (selected.equals(addToShortcuts)) {
                         getPresenter().fireAddToLauncherShortcuts(dialog);
+                    } else if (selected.equals(setRead)) {
+                        getPresenter().fireRead(dialog);
                     } else if (selected.equals(setHide)) {
                         if (!CheckDonate.isFullVersion(requireActivity())) {
                             return;
@@ -545,6 +552,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         boolean canAddToHomescreen;
         boolean canConfigNotifications;
         boolean canAddToShortcuts;
+        boolean canRead;
         boolean isHidden;
 
         @Override
@@ -570,6 +578,11 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         @Override
         public void setIsHidden(boolean can) {
             isHidden = can;
+        }
+
+        @Override
+        public void setCanRead(boolean can) {
+            canRead = can;
         }
     }
 }

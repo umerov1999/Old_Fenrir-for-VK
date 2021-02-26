@@ -34,7 +34,8 @@
                     android:layout_marginTop="100dp"
                     android:background="@drawable/circle_back_white"
                     android:padding="16dp"
-                    android:src="@drawable/file" />
+                    android:src="@drawable/file"
+                    custom:tint="?white_color" />
 
                 <dev.ragnarok.fenrir.view.TouchImageView
                     android:id="@+id/fragment_document_preview"

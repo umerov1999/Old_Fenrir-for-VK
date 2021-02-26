@@ -88,6 +88,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:autoLink="web"
+                android:gravity="center_horizontal"
                 android:padding="4dp"
                 android:text="@string/stop_develop"
                 android:textColor="#ff0000"

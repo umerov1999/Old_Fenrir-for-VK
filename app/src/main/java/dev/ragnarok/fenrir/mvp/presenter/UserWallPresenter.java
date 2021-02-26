@@ -11,6 +11,7 @@ import androidx.annotation.StringRes;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +30,7 @@ import dev.ragnarok.fenrir.domain.Repository;
 import dev.ragnarok.fenrir.fragment.friends.FriendsTabsFragment;
 import dev.ragnarok.fenrir.model.FriendsCounters;
 import dev.ragnarok.fenrir.model.LocalPhoto;
+import dev.ragnarok.fenrir.model.LocalVideo;
 import dev.ragnarok.fenrir.model.Peer;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.Post;
@@ -40,18 +42,22 @@ import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.IUserWallView;
 import dev.ragnarok.fenrir.mvp.view.IWallView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
+import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.upload.IUploadManager;
+import dev.ragnarok.fenrir.upload.MessageMethod;
 import dev.ragnarok.fenrir.upload.Method;
 import dev.ragnarok.fenrir.upload.Upload;
 import dev.ragnarok.fenrir.upload.UploadDestination;
 import dev.ragnarok.fenrir.upload.UploadIntent;
 import dev.ragnarok.fenrir.upload.UploadResult;
+import dev.ragnarok.fenrir.upload.UploadUtils;
 import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
 
@@ -105,6 +111,52 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
         requestActualFullInfo();
     }
 
+    public void firePhotosSelected(ArrayList<LocalPhoto> localPhotos, String file, LocalVideo video) {
+        if (nonEmpty(file))
+            doUploadFile(file);
+        else if (nonEmpty(localPhotos)) {
+            doUploadPhotos(localPhotos);
+        } else if (video != null) {
+            doUploadVideo(video.getData().toString());
+        }
+    }
+
+    private void doUploadFile(String file) {
+        new MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.select)
+                .setNegativeButton(R.string.video, (dialog, which) -> doUploadFile(file, 0, true))
+                .setPositiveButton(R.string.photo, (dialog, which) -> getView().doEditPhoto(Uri.fromFile(new File(file))))
+                .create().show();
+    }
+
+    public void doUploadFile(String file, int size, boolean isVideo) {
+        List<UploadIntent> intents;
+        if (isVideo) {
+            intents = UploadUtils.createIntents(getAccountId(), UploadDestination.forStory(MessageMethod.VIDEO), file, size, true);
+        } else {
+            intents = UploadUtils.createIntents(getAccountId(), UploadDestination.forStory(MessageMethod.PHOTO), file, size, true);
+        }
+        uploadManager.enqueue(intents);
+    }
+
+    private void doUploadVideo(String file) {
+        List<UploadIntent> intents = UploadUtils.createVideoIntents(getAccountId(), UploadDestination.forStory(MessageMethod.VIDEO), file, true);
+        uploadManager.enqueue(intents);
+    }
+
+    private void doUploadPhotos(List<LocalPhoto> photos) {
+        if (photos.size() == 1) {
+            Uri to_up = photos.get(0).getFullImageUri();
+            if (new File(to_up.getPath()).isFile()) {
+                to_up = Uri.fromFile(new File(to_up.getPath()));
+            }
+            getView().doEditPhoto(to_up);
+            return;
+        }
+        List<UploadIntent> intents = UploadUtils.createIntents(getAccountId(), UploadDestination.forStory(MessageMethod.PHOTO), photos, Upload.IMAGE_SIZE_FULL, true);
+        uploadManager.enqueue(intents);
+    }
+
     private void onUploadFinished(Pair<Upload, UploadResult<?>> pair) {
         UploadDestination destination = pair.getFirst().getDestination();
         if (destination.getMethod() == Method.PHOTO_TO_PROFILE && destination.getOwnerId() == ownerId) {
@@ -114,6 +166,8 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
                 Post post = (Post) pair.getSecond().getResult();
                 getView().showAvatarUploadedMessage(getAccountId(), post);
             }
+        } else if (destination.getMethod() == Method.STORY && Settings.get().accounts().getCurrent() == ownerId) {
+            fireRefresh();
         }
     }
 

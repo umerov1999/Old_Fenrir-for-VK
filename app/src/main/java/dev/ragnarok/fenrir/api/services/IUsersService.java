@@ -4,10 +4,12 @@ import java.util.List;
 
 import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiGift;
+import dev.ragnarok.fenrir.api.model.VKApiStory;
 import dev.ragnarok.fenrir.api.model.VKApiUser;
 import dev.ragnarok.fenrir.api.model.response.BaseResponse;
 import dev.ragnarok.fenrir.api.model.response.StoryResponse;
 import dev.ragnarok.fenrir.api.model.response.UserWallInfoResponse;
+import dev.ragnarok.fenrir.api.model.server.VkApiStoryUploadServer;
 import io.reactivex.rxjava3.core.Single;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -99,6 +101,18 @@ public interface IUsersService {
     Single<BaseResponse<List<VKApiUser>>> get(@Field("user_ids") String userIds,
                                               @Field("fields") String fields,
                                               @Field("name_case") String nameCase);
+
+    @FormUrlEncoded
+    @POST("stories.getPhotoUploadServer")
+    Single<BaseResponse<VkApiStoryUploadServer>> stories_getPhotoUploadServer(@Field("add_to_news") Integer add_to_news);
+
+    @FormUrlEncoded
+    @POST("stories.getVideoUploadServer")
+    Single<BaseResponse<VkApiStoryUploadServer>> stories_getVideoUploadServer(@Field("add_to_news") Integer add_to_news);
+
+    @FormUrlEncoded
+    @POST("stories.save")
+    Single<BaseResponse<Items<VKApiStory>>> stories_save(@Field("upload_results") String upload_results);
 
     @POST("users.report")
     @FormUrlEncoded

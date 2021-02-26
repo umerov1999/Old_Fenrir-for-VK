@@ -7,6 +7,7 @@ import java.io.InputStream;
 import dev.ragnarok.fenrir.api.IUploadRetrofitProvider;
 import dev.ragnarok.fenrir.api.PercentagePublisher;
 import dev.ragnarok.fenrir.api.interfaces.IUploadApi;
+import dev.ragnarok.fenrir.api.model.response.BaseResponse;
 import dev.ragnarok.fenrir.api.model.upload.UploadAudioDto;
 import dev.ragnarok.fenrir.api.model.upload.UploadChatPhotoDto;
 import dev.ragnarok.fenrir.api.model.upload.UploadDocDto;
@@ -14,6 +15,7 @@ import dev.ragnarok.fenrir.api.model.upload.UploadOwnerPhotoDto;
 import dev.ragnarok.fenrir.api.model.upload.UploadPhotoToAlbumDto;
 import dev.ragnarok.fenrir.api.model.upload.UploadPhotoToMessageDto;
 import dev.ragnarok.fenrir.api.model.upload.UploadPhotoToWallDto;
+import dev.ragnarok.fenrir.api.model.upload.UploadStoryDto;
 import dev.ragnarok.fenrir.api.model.upload.UploadVideoDto;
 import dev.ragnarok.fenrir.api.services.IUploadService;
 import dev.ragnarok.fenrir.api.util.ProgressRequestBody;
@@ -55,6 +57,13 @@ public class UploadApi implements IUploadApi {
         ProgressRequestBody body = new ProgressRequestBody(is, wrapPercentageListener(listener), MediaType.parse("*/*"));
         MultipartBody.Part part = MultipartBody.Part.createFormData("file", filename, body);
         return service().uploadAudioRx(server, part);
+    }
+
+    @Override
+    public Single<BaseResponse<UploadStoryDto>> uploadStoryRx(String server, String filename, @NonNull InputStream is, PercentagePublisher listener, boolean isVideo) {
+        ProgressRequestBody body = new ProgressRequestBody(is, wrapPercentageListener(listener), MediaType.parse("*/*"));
+        MultipartBody.Part part = MultipartBody.Part.createFormData(!isVideo ? "photo" : "video_file", filename, body);
+        return service().uploadStoryRx(server, part);
     }
 
     @Override

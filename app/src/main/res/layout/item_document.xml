@@ -14,7 +14,6 @@
         android:id="@+id/item_post_avatar_image"
         android:layout_width="@dimen/avatar_size_chat"
         android:layout_height="@dimen/avatar_size_chat"
-
         android:visibility="gone" />
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -49,7 +48,10 @@
             android:background="@drawable/circle_back_white"
             android:gravity="center"
             android:padding="8dp"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/close"
+            app:backgroundTint="?colorPrimary"
+            app:tint="?white_color" />
 
         <TextView
             android:id="@+id/item_document_title"

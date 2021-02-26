@@ -74,6 +74,7 @@ import dev.ragnarok.fenrir.view.emoji.BotKeyboardView
 import dev.ragnarok.fenrir.view.emoji.EmojiconTextView
 import dev.ragnarok.fenrir.view.emoji.EmojiconsPopup
 import dev.ragnarok.fenrir.view.emoji.StickersKeyWordsAdapter
+import me.minetsh.imaging.IMGEditActivity
 import java.io.File
 import java.lang.ref.WeakReference
 import java.util.*
@@ -758,16 +759,14 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
     }
 
     private val openRequestPhotoResize =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        registerForActivityResult(StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 result.data?.let {
                     presenter?.fireFilePhotoForUploadSelected(
-                        UCrop.getOutput(it)!!.path,
+                        it.getStringExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH),
                         Upload.IMAGE_SIZE_FULL
                     )
                 }
-            } else if (result.resultCode == UCrop.RESULT_ERROR) {
-                result.data?.let { showThrowable(UCrop.getError(it)) }
             }
         }
 
@@ -791,11 +790,12 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
                     }
 
                     openRequestPhotoResize.launch(
-                        UCrop.of(
-                            to_up,
-                            Uri.fromFile(File(requireActivity().externalCacheDir.toString() + File.separator + "scale.jpg"))
-                        )
-                            .getIntent(requireActivity())
+                        Intent(requireContext(), IMGEditActivity::class.java)
+                            .putExtra(IMGEditActivity.EXTRA_IMAGE_URI, to_up)
+                            .putExtra(
+                                IMGEditActivity.EXTRA_IMAGE_SAVE_PATH,
+                                File(requireActivity().externalCacheDir.toString() + File.separator + "scale.jpg").absolutePath
+                            )
                     )
                 } else {
                     presenter?.fireEditLocalPhotosSelected(photos, Upload.IMAGE_SIZE_FULL)
@@ -832,11 +832,15 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
                         }
                         Upload.IMAGE_SIZE_CROPPING -> {
                             openRequestPhotoResize.launch(
-                                UCrop.of(
-                                    Uri.fromFile(File(file)),
-                                    Uri.fromFile(File(requireActivity().externalCacheDir.toString() + File.separator + "scale.jpg"))
-                                )
-                                    .getIntent(requireActivity())
+                                Intent(requireContext(), IMGEditActivity::class.java)
+                                    .putExtra(
+                                        IMGEditActivity.EXTRA_IMAGE_URI,
+                                        Uri.fromFile(File(file))
+                                    )
+                                    .putExtra(
+                                        IMGEditActivity.EXTRA_IMAGE_SAVE_PATH,
+                                        File(requireActivity().externalCacheDir.toString() + File.separator + "scale.jpg").absolutePath
+                                    )
                             )
                         }
                         else -> presenter?.fireFilePhotoForUploadSelected(file, defaultSize)
@@ -876,7 +880,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
     }
 
     private val openRequestPhoto =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        registerForActivityResult(StartActivityForResult()) { result ->
             if (result.data != null && result.resultCode == RESULT_OK) {
                 val vkphotos: List<Photo> =
                     result.data?.getParcelableArrayListExtra(Extra.ATTACHMENTS)
@@ -914,7 +918,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
     }
 
     private val openRequestAudioVideoDoc =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        registerForActivityResult(StartActivityForResult()) { result ->
             if (result.data != null && result.resultCode == RESULT_OK) {
                 val attachments: List<AbsModel> =
                     result.data?.getParcelableArrayListExtra(Extra.ATTACHMENTS)
@@ -1151,7 +1155,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
     }
 
     private val openRequestUploadChatAvatar =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        registerForActivityResult(StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 result.data?.let { presenter?.fireNewChatPhotoSelected(UCrop.getOutput(it)!!.path!!) }
             } else if (result.resultCode == UCrop.RESULT_ERROR) {
@@ -1170,11 +1174,12 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
                         }
 
                         openRequestPhotoResize.launch(
-                            UCrop.of(
-                                to_up,
-                                Uri.fromFile(File(requireActivity().externalCacheDir.toString() + File.separator + "scale.jpg"))
-                            )
-                                .getIntent(requireActivity())
+                            Intent(requireContext(), IMGEditActivity::class.java)
+                                .putExtra(IMGEditActivity.EXTRA_IMAGE_URI, to_up)
+                                .putExtra(
+                                    IMGEditActivity.EXTRA_IMAGE_SAVE_PATH,
+                                    File(requireActivity().externalCacheDir.toString() + File.separator + "scale.jpg").absolutePath
+                                )
                         )
                     } else {
                         presenter?.fireImageUploadSizeSelected(streams, size)
@@ -1288,7 +1293,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
     }
 
     private val openRequestSelectPhotoToChatAvatar =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        registerForActivityResult(StartActivityForResult()) { result ->
             if (result.data != null && result.resultCode == RESULT_OK) {
                 val photos: ArrayList<LocalPhoto>? =
                     result.data?.getParcelableArrayListExtra(Extra.PHOTOS)
