@@ -17,7 +17,6 @@ import androidx.annotation.Nullable;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textfield.TextInputEditText;
-import com.umerov.qrcode.QrGenerator;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,6 +27,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import dev.libfenrir.FenrirNative;
+import dev.libfenrir.qrcode.QrGenerator;
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.api.model.VKApiPost;
@@ -462,6 +463,9 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
  */
 
     public void fireShowQR(Context context) {
+        if (!FenrirNative.isNativeLoaded()) {
+            return;
+        }
         Bitmap qr = QrGenerator.generateQR("https://vk.com/" + (ownerId < 0 ? "club" : "id") + Math.abs(ownerId), CurrentTheme.getColorPrimary(context), CurrentTheme.getColorSecondary(context), Color.parseColor("#ffffff"), Color.parseColor("#000000"), 3);
         MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(context);
         dlgAlert.setCancelable(true);

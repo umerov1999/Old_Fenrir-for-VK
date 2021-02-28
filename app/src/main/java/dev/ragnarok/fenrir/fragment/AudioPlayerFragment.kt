@@ -28,7 +28,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import com.umerov.qrcode.QrGenerator.generateQR
+import dev.libfenrir.FenrirNative
+import dev.libfenrir.qrcode.QrGenerator.generateQR
 import dev.ragnarok.fenrir.Constants
 import dev.ragnarok.fenrir.Extra
 import dev.ragnarok.fenrir.Injection
@@ -208,6 +209,9 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
 
     @Suppress("DEPRECATION")
     private fun fireAudioQR() {
+        if (!FenrirNative.isNativeLoaded()) {
+            return
+        }
         val audio = MusicUtils.getCurrentAudio() ?: return
         val qr = generateQR(
             "https://vk.com/audio/" + audio.ownerId + "_" + audio.id,

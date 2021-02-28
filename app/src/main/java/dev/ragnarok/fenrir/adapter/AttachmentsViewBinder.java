@@ -20,7 +20,6 @@ import androidx.annotation.Nullable;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.squareup.picasso.Transformation;
-import com.umerov.rlottie.RLottieImageView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -29,6 +28,7 @@ import java.util.EventListener;
 import java.util.List;
 import java.util.Set;
 
+import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.adapter.holder.IdentificableHolder;

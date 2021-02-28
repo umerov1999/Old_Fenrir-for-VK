@@ -17,8 +17,8 @@ android {
         minSdkVersion 21
         //noinspection ExpiredTargetSdkVersion,OldTargetApi
         targetSdkVersion 29
-        versionCode 56
-        versionName '1.56'
+        versionCode 57
+        versionName '1.57'
 
         buildConfigField 'String', 'SERVICE_TOKEN', getProps("vk_service_token")
         buildConfigField 'String', 'YOUTUBE_DEV_KEY', getProps("youtube_dev_key")
@@ -183,7 +183,6 @@ dependencies {
     implementation 'androidx.work:work-runtime-ktx:2.5.0'
     implementation 'com.google.guava:guava:30.1-android'
     implementation 'com.caverock:androidsvg:1.4'
-    implementation 'org.conscrypt:conscrypt-android:2.5.1'
 
     //hidden
     implementation 'com.google.android.datatransport:transport-runtime:2.2.6'

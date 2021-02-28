@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.umerov.rlottie.RLottieImageView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -30,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.CheckDonate;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;

@@ -13,7 +13,7 @@ import androidx.annotation.IdRes
 import androidx.annotation.NonNull
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Callback
-import com.umerov.rlottie.RLottieImageView
+import dev.libfenrir.rlottie.RLottieImageView
 import dev.ragnarok.fenrir.App.Companion.instance
 import dev.ragnarok.fenrir.Extra
 import dev.ragnarok.fenrir.R
@@ -211,7 +211,7 @@ class SinglePhotoFragment : BaseFragment(), GoBackCallback, BackPressCallback {
         private fun resolveProgressVisibility() {
             progress.visibility = if (mLoadingNow) View.VISIBLE else View.GONE
             if (mLoadingNow) {
-                progress.setAnimation(
+                progress.fromRes(
                     R.raw.loading,
                     Utils.dp(80F),
                     Utils.dp(80F),

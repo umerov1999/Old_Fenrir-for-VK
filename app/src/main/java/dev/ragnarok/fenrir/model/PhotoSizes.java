@@ -3,7 +3,7 @@ package dev.ragnarok.fenrir.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.umerov.parcel.ParcelNative;
+import dev.libfenrir.parcel.ParcelNative;
 
 import static dev.ragnarok.fenrir.util.Utils.firstNonNull;
 

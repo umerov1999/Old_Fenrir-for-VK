@@ -3,8 +3,7 @@ package dev.ragnarok.fenrir.view;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.umerov.rlottie.RLottieImageView;
-
+import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.LoadMoreState;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
@@ -46,9 +45,9 @@ public class LoadMoreFooterHelper {
                 holder.tvEndOfList.setVisibility(View.VISIBLE);
                 holder.tvEndOfList.setAutoRepeat(false);
                 if (animation_id == 0) {
-                    holder.tvEndOfList.setAnimation(R.raw.end_list_succes, Utils.dp(40), Utils.dp(40), new int[]{0xffffff, CurrentTheme.getColorControlNormal(holder.bLoadMore.getContext())});
+                    holder.tvEndOfList.fromRes(R.raw.end_list_succes, Utils.dp(40), Utils.dp(40), new int[]{0xffffff, CurrentTheme.getColorControlNormal(holder.bLoadMore.getContext())});
                 } else {
-                    holder.tvEndOfList.setAnimation(R.raw.end_list_balls, Utils.dp(40), Utils.dp(40), new int[]{0xffffff, CurrentTheme.getColorControlNormal(holder.bLoadMore.getContext())});
+                    holder.tvEndOfList.fromRes(R.raw.end_list_balls, Utils.dp(40), Utils.dp(40), new int[]{0xffffff, CurrentTheme.getColorControlNormal(holder.bLoadMore.getContext())});
                 }
                 holder.tvEndOfList.playAnimation();
                 holder.bLoadMore.setVisibility(View.INVISIBLE);

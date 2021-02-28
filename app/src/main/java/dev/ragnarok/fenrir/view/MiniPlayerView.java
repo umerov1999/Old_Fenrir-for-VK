@@ -20,11 +20,11 @@ import androidx.annotation.DrawableRes;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.squareup.picasso.Transformation;
-import com.umerov.rlottie.RLottieImageView;
 
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 
+import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;

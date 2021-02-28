@@ -10,11 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Callback;
-import com.umerov.rlottie.RLottieDrawable;
-import com.umerov.rlottie.RLottieImageView;
 
 import java.lang.ref.WeakReference;
 
+import dev.libfenrir.rlottie.RLottieDrawable;
+import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.Sticker;

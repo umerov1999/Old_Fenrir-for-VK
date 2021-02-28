@@ -26,7 +26,6 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.umerov.rlottie.RLottieImageView;
 import com.yalantis.ucrop.UCrop;
 
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.CheckDonate;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
@@ -158,7 +158,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
         if (Settings.get().other().isShow_donate_anim() && user.isDonated()) {
             mHeaderHolder.bDonate.setVisibility(View.VISIBLE);
             mHeaderHolder.bDonate.setAutoRepeat(true);
-            mHeaderHolder.bDonate.setAnimation(R.raw.donater, Utils.dp(100), Utils.dp(100), new int[]{0xffffff, CurrentTheme.getColorControlNormal(requireActivity())});
+            mHeaderHolder.bDonate.fromRes(R.raw.donater, Utils.dp(100), Utils.dp(100), new int[]{0xffffff, CurrentTheme.getColorControlNormal(requireActivity())});
             mHeaderHolder.bDonate.playAnimation();
         } else {
             mHeaderHolder.bDonate.setImageDrawable(null);

@@ -20,7 +20,7 @@
             android:layout_width="42dp"
             android:layout_height="42dp" />
 
-        <com.umerov.rlottie.RLottieImageView
+        <dev.libfenrir.rlottie.RLottieImageView
             android:id="@+id/item_audio_visual"
             android:layout_width="28dp"
             android:layout_height="28dp"

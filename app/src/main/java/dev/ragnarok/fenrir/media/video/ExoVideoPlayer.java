@@ -62,7 +62,7 @@ public class ExoVideoPlayer implements IVideoPlayer {
 
     private SimpleExoPlayer createPlayer(Context context) {
         SimpleExoPlayer ret = new SimpleExoPlayer.Builder(context, new DefaultRenderersFactory(context)
-                .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER)).build();
+                .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)).build();
         ret.setAudioAttributes(new AudioAttributes.Builder().setContentType(C.CONTENT_TYPE_MOVIE).setUsage(C.USAGE_MEDIA).build(), true);
         return ret;
     }

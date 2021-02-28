@@ -6,7 +6,7 @@ import android.os.Handler
 import androidx.appcompat.app.AppCompatDelegate
 import coil.ImageLoader
 import coil.ImageLoaderFactory
-import com.umerov.rlottie.RLottieDrawable
+import dev.libfenrir.FenrirNative
 import dev.ragnarok.fenrir.domain.Repository.messages
 import dev.ragnarok.fenrir.longpoll.NotificationHelper
 import dev.ragnarok.fenrir.model.PeerUpdate
@@ -23,8 +23,6 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.plugins.RxJavaPlugins
-import org.conscrypt.Conscrypt
-import java.security.Security
 
 class App : Application(), ImageLoaderFactory {
     private val compositeDisposable = CompositeDisposable()
@@ -35,13 +33,14 @@ class App : Application(), ImageLoaderFactory {
 
     @SuppressLint("UnsafeExperimentalUsageWarning")
     override fun onCreate() {
+
         sInstanse = this
         AppCompatDelegate.setDefaultNightMode(Settings.get().ui().nightMode)
 
         //CrashConfig.Builder.create().apply()
-        RLottieDrawable.init(this)
+        FenrirNative.loadNativeLibrary()
+        FenrirNative.updateAppContext(this)
         TagOptionSingleton.getInstance().isAndroid = true
-        Security.addProvider(Conscrypt.newProvider())
         MusicUtils.registerBroadcast(this)
         super.onCreate()
         PicassoInstance.init(this, Injection.provideProxySettings())

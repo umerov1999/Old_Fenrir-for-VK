@@ -12,12 +12,12 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Transformation;
-import com.umerov.rlottie.RLottieImageView;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.fragment.UserInfoResolveUtil;
@@ -126,7 +126,7 @@ public class AccountAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         holder.active.setVisibility(isCurrent ? View.VISIBLE : View.INVISIBLE);
         if (isCurrent) {
-            holder.active.setAnimation(R.raw.select_check_box, Utils.dp(40), Utils.dp(40), new int[]{0x333333, CurrentTheme.getColorPrimary(context), 0x777777, CurrentTheme.getColorSecondary(context)});
+            holder.active.fromRes(R.raw.select_check_box, Utils.dp(40), Utils.dp(40), new int[]{0x333333, CurrentTheme.getColorPrimary(context), 0x777777, CurrentTheme.getColorSecondary(context)});
             holder.active.playAnimation();
         } else {
             holder.active.stopAnimation();

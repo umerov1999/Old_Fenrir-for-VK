@@ -9,11 +9,9 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.umerov.rlottie.RLottieDrawable;
-import com.umerov.rlottie.RLottieImageView;
-
 import java.io.File;
 
+import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.Sticker;
@@ -60,7 +58,7 @@ public class MyStickersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             default:
             case TYPE_ANIMATED:
                 StickerAnimatedHolder animatedHolder = (StickerAnimatedHolder) holder;
-                animatedHolder.animation.setAnimation(new RLottieDrawable(new File(item.getPath()), Utils.dp(128), Utils.dp(128), false, false));
+                animatedHolder.animation.fromFile(new File(item.getPath()), Utils.dp(128), Utils.dp(128));
                 animatedHolder.root.setOnClickListener(v -> myStickerClickedListener.onMyStickerClick(item));
                 animatedHolder.root.setOnLongClickListener(v -> {
                     animatedHolder.animation.playAnimation();

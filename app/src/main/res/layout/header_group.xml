@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.umerov.rlottie.RLottieImageView
+    <dev.libfenrir.rlottie.RLottieImageView
         android:id="@+id/pagan_symbol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

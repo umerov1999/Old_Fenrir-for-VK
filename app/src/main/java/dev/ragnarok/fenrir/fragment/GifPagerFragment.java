@@ -17,13 +17,12 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.umerov.rlottie.RLottieImageView;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
+import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
@@ -292,7 +291,7 @@ public class GifPagerFragment extends AbsDocumentPreviewFragment<GifPagerPresent
         void setProgressVisible(boolean visible) {
             mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
             if (visible) {
-                mProgressBar.setAnimation(R.raw.loading, Utils.dp(80F), Utils.dp(80F), new int[]{0xffffff, CurrentTheme.getColorPrimary(requireActivity()), 0x000000, CurrentTheme.getColorSecondary(requireActivity())});
+                mProgressBar.fromRes(R.raw.loading, Utils.dp(80F), Utils.dp(80F), new int[]{0xffffff, CurrentTheme.getColorPrimary(requireActivity()), 0x000000, CurrentTheme.getColorSecondary(requireActivity())});
                 mProgressBar.playAnimation();
             } else {
                 mProgressBar.stopAnimation();

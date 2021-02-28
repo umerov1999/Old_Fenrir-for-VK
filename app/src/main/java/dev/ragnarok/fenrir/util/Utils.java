@@ -54,8 +54,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.stream.JsonReader;
-import com.umerov.rlottie.RLottieDrawable;
-import com.umerov.rlottie.RLottieImageView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -84,6 +82,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import dev.libfenrir.rlottie.RLottieDrawable;
+import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Injection;
@@ -1026,10 +1026,10 @@ public class Utils {
         visual.stopAnimation();
         if (Play) {
             visual.setAutoRepeat(true);
-            visual.setAnimation(R.raw.waves, dp(28), dp(28));
+            visual.fromRes(R.raw.waves, dp(28), dp(28));
         } else {
             visual.setAutoRepeat(false);
-            visual.setAnimation(R.raw.waves_end, dp(28), dp(28));
+            visual.fromRes(R.raw.waves_end, dp(28), dp(28));
         }
         visual.playAnimation();
     }

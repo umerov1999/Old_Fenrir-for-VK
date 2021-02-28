@@ -7,8 +7,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.umerov.rlottie.RLottieImageView;
 
+import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.link.LinkHelper;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
@@ -124,7 +124,10 @@ public class CheckDonate {
             183420025,
             469507565,
             118540110,
-            164931482
+            164931482,
+            266524379,
+            295257534,
+            164602028
     };
 
     public static boolean isFullVersion(@NonNull Context context) {
@@ -135,7 +138,7 @@ public class CheckDonate {
             view.findViewById(R.id.item_donate).setOnClickListener(v -> LinkHelper.openLinkInBrowser(context, "https://play.google.com/store/apps/details?id=dev.ragnarok.fenrir_full"));
             RLottieImageView anim = view.findViewById(R.id.lottie_animation);
             anim.setAutoRepeat(true);
-            anim.setAnimation(R.raw.google_store, Utils.dp(200), Utils.dp(200));
+            anim.fromRes(R.raw.google_store, Utils.dp(200), Utils.dp(200));
             anim.playAnimation();
 
             dlgAlert.setTitle(R.string.info);

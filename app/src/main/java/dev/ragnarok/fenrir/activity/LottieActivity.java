@@ -15,12 +15,12 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
-import com.umerov.rlottie.RLottie2Gif;
-import com.umerov.rlottie.RLottieDrawable;
-import com.umerov.rlottie.RLottieImageView;
 
 import java.io.File;
 
+import dev.libfenrir.FenrirNative;
+import dev.libfenrir.rlottie.RLottie2Gif;
+import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.ISettings;
@@ -55,6 +55,9 @@ public class LottieActivity extends AppCompatActivity {
         lg = findViewById(R.id.log_tag);
         MaterialButton toGif = findViewById(R.id.lottie_to_gif);
         toGif.setOnClickListener(v -> {
+            if (!FenrirNative.isNativeLoaded()) {
+                return;
+            }
             toGif.setEnabled(false);
             lottie.stopAnimation();
             RLottie2Gif.create(lottie.getAnimatedDrawable())
@@ -142,7 +145,7 @@ public class LottieActivity extends AppCompatActivity {
             try {
                 file = findFileName(getIntent().getData());
                 lottie.setAutoRepeat(true);
-                lottie.setAnimation(new RLottieDrawable(new File(file), Utils.dp(500), Utils.dp(500), false, false, null));
+                lottie.fromFile(new File(file), Utils.dp(500), Utils.dp(500));
                 lottie.playAnimation();
             } catch (Throwable e) {
                 e.printStackTrace();

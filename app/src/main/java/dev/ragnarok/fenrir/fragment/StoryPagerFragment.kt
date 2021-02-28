@@ -19,7 +19,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Transformation
-import com.umerov.rlottie.RLottieImageView
+import dev.libfenrir.rlottie.RLottieImageView
 import dev.ragnarok.fenrir.Constants
 import dev.ragnarok.fenrir.Extra
 import dev.ragnarok.fenrir.R
@@ -330,7 +330,7 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         override fun setProgressVisible(visible: Boolean) {
             mProgressBar.visibility = if (visible) View.VISIBLE else View.GONE
             if (visible) {
-                mProgressBar.setAnimation(
+                mProgressBar.fromRes(
                     R.raw.loading,
                     Utils.dp(80F),
                     Utils.dp(80F),
@@ -411,7 +411,7 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         private fun resolveProgressVisibility() {
             progress.visibility = if (mLoadingNow) View.VISIBLE else View.GONE
             if (mLoadingNow) {
-                progress.setAnimation(
+                progress.fromRes(
                     R.raw.loading,
                     Utils.dp(80F),
                     Utils.dp(80F),

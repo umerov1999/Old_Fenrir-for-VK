@@ -178,7 +178,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
             });
     private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-            () -> startImportAccounts());
+            this::startImportAccounts);
     private IAccountsInteractor accountsInteractor;
 
     @Override
@@ -622,7 +622,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
         if (item.getItemId() == R.id.export_accounts) {
             if (Settings.get().accounts() == null || Settings.get().accounts().getRegistered() == null || Settings.get().accounts().getRegistered().size() <= 0)
                 return true;
-            if (!AppPerms.hasReadWriteStoragePermission(getActivity())) {
+            if (!AppPerms.hasReadWriteStoragePermission(requireActivity())) {
                 requestWritePermission.launch();
                 return true;
             }
@@ -634,7 +634,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
         }
 
         if (item.getItemId() == R.id.import_accounts) {
-            if (!AppPerms.hasReadStoragePermission(getActivity())) {
+            if (!AppPerms.hasReadStoragePermission(requireActivity())) {
                 requestReadPermission.launch();
                 return true;
             }

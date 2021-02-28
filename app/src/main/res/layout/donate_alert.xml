@@ -17,7 +17,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="18sp" />
 
-    <com.umerov.rlottie.RLottieImageView
+    <dev.libfenrir.rlottie.RLottieImageView
         android:id="@+id/lottie_animation"
         android:layout_width="200dp"
         android:layout_height="200dp"
