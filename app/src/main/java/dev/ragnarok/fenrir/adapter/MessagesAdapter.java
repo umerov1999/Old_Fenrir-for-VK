@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.adapter.base.RecyclerBindableAdapter;
@@ -36,6 +35,7 @@ import dev.ragnarok.fenrir.model.LastReadId;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.MessageStatus;
 import dev.ragnarok.fenrir.model.Sticker;
+import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;

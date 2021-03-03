@@ -19,7 +19,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Transformation
-import dev.libfenrir.rlottie.RLottieImageView
 import dev.ragnarok.fenrir.Constants
 import dev.ragnarok.fenrir.Extra
 import dev.ragnarok.fenrir.R
@@ -31,6 +30,7 @@ import dev.ragnarok.fenrir.listener.BackPressCallback
 import dev.ragnarok.fenrir.media.gif.IGifPlayer
 import dev.ragnarok.fenrir.model.PhotoSize
 import dev.ragnarok.fenrir.model.Story
+import dev.ragnarok.fenrir.module.rlottie.RLottieImageView
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory
 import dev.ragnarok.fenrir.mvp.presenter.StoryPagerPresenter
 import dev.ragnarok.fenrir.mvp.view.IStoryPagerView

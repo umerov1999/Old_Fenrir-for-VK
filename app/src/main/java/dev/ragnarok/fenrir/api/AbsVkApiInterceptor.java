@@ -24,6 +24,7 @@ import dev.ragnarok.fenrir.api.model.response.VkReponse;
 import dev.ragnarok.fenrir.exception.UnauthorizedException;
 import dev.ragnarok.fenrir.service.ApiErrorCodes;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.PersistentLogger;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Completable;
 import okhttp3.FormBody;
@@ -73,10 +74,10 @@ abstract class AbsVkApiInterceptor implements Interceptor {
      */
 
     private boolean upgradeToken() {
-        String fcm = Constants.KATE_RECEIPT_GMS_TOKEN;
+        String gms = Settings.get().other().getKateGMSToken();
         String oldToken = getToken();
-        String token = Injection.provideNetworkInterfaces().vkDefault(getAccountId()).account().refreshToken(fcm).blockingGet().token;
-        Log.w("refresh", oldToken + " " + token + " " + fcm);
+        String token = Injection.provideNetworkInterfaces().vkDefault(getAccountId()).account().refreshToken(gms).blockingGet().token;
+        Log.w("refresh", oldToken + " " + token + " " + gms);
         if (oldToken.equals(token) || isEmpty(token)) {
             return false;
         }
@@ -159,20 +160,33 @@ abstract class AbsVkApiInterceptor implements Interceptor {
             Error error = isNull(vkReponse) ? null : vkReponse.error;
 
             if (nonNull(error)) {
-                /*
                 switch (error.errorCode) {
                     case ApiErrorCodes.TOO_MANY_REQUESTS_PER_SECOND:
                         break;
                     case ApiErrorCodes.CAPTCHA_NEED:
-                        if (Settings.get().other().isDeveloper_mode()) {
+                        if (Settings.get().other().isExtra_debug()) {
                             PersistentLogger.logThrowable("Captcha request", new Exception("URL: " + request.url() + ", dump: " + new Gson().toJson(error)));
                         }
                         break;
                     default:
-                        PersistentLogger.logThrowable("ApiError", new Exception("Method: " + error.method + ", code: " + error.errorCode + ", message: " + error.errorMsg));
+                        if (Settings.get().other().isExtra_debug()) {
+                            StringBuilder uu = new StringBuilder();
+                            FormBody formBody = formBuilder.build();
+                            boolean first = true;
+                            for (int i = 0; i < formBody.size(); i++) {
+                                String name = formBody.name(i);
+                                String value = formBody.value(i);
+                                if (first) {
+                                    first = false;
+                                } else {
+                                    uu.append("; ");
+                                }
+                                uu.append(name).append("=").append(value);
+                            }
+                            PersistentLogger.logThrowable("ApiError", new Exception("Method: " + original.url() + ", code: " + error.errorCode + ", message: " + error.errorMsg + ", params: { " + uu + " }."));
+                        }
                         break;
                 }
-                 */
 
                 if (error.errorCode == ApiErrorCodes.TOO_MANY_REQUESTS_PER_SECOND) {
                     synchronized (AbsVkApiInterceptor.class) {
@@ -222,11 +236,9 @@ abstract class AbsVkApiInterceptor implements Interceptor {
                             break;
                         }
                     }
-                    /*
-                    if (Settings.get().other().isDeveloper_mode()) {
+                    if (Settings.get().other().isExtra_debug()) {
                         PersistentLogger.logThrowable("Captcha answer", new Exception("URL: " + request.url() + ", code: " + code + ", sid: " + captcha.getSid()));
                     }
-                     */
                     if (nonNull(code)) {
                         formBuilder.add("captcha_sid", captcha.getSid());
                         formBuilder.add("captcha_key", code);

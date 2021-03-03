@@ -54,7 +54,7 @@
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:gravity="center"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                android:textColor="@android:color/white"
+                android:textColor="?white_color"
                 android:textStyle="bold"
                 tools:text="34" />
         </FrameLayout>

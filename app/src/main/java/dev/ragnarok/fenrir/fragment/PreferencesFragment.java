@@ -631,6 +631,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     return true;
                 });
 
+        findPreference("kate_gms_token").setVisible(Constants.DEFAULT_ACCOUNT_TYPE == Account_Types.KATE);
+
         findPreference("show_logs")
                 .setOnPreferenceClickListener(preference -> {
                     PlaceFactory.getLogsPlace().tryOpenWith(requireActivity());

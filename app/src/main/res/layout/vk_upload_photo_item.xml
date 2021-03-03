@@ -44,7 +44,8 @@
                     android:background="@drawable/circle_back"
                     android:padding="8dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/close" />
+                    android:src="@drawable/close"
+                    custom:tint="?white_color" />
 
                 <dev.ragnarok.fenrir.view.CircleRoadProgress
                     android:id="@+id/progress"

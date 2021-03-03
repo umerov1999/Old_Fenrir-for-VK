@@ -29,13 +29,14 @@ public class Constants {
 
     public static final String VK_ANDROID_APP_VERSION_NAME = "6.26";
     public static final String VK_ANDROID_APP_VERSION_CODE = "7121";
-    public static final String KATE_APP_VERSION_NAME = "70 lite";
-    public static final String KATE_APP_VERSION_CODE = "486";
-    public static final String KATE_RECEIPT_GMS_TOKEN = BuildConfig.KATE_RECEIPT_GMS_TOKEN.replaceAll("[\\w%\\-]+:", ":");
+    public static final String KATE_APP_VERSION_NAME = "71 lite";
+    public static final String KATE_APP_VERSION_CODE = "487";
+    public static final String KATE_RECEIPT_GMS_TOKEN = BuildConfig.KATE_RECEIPT_GMS_TOKEN;
     public static final int API_ID = BuildConfig.VK_API_APP_ID;
     public static final String SECRET = BuildConfig.VK_CLIENT_SECRET;
     public static final String MAIN_OWNER_FIELDS = UserColumns.API_FIELDS + "," + GroupColumns.API_FIELDS;
     public static final String PHOTOS_PATH = "DCIM/Fenrir";
+    public static final int AUDIO_PLAYER_SERVICE_IDLE = 300000;
     public static final int PIN_DIGITS_COUNT = 4;
     public static final int FRAGMENT_CHAT_APP_BAR_VIEW_COUNT = 2;
     public static final int FRAGMENT_CHAT_DOWN_MENU_VIEW_COUNT = 0;

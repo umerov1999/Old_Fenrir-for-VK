@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <dev.libfenrir.rlottie.RLottieImageView
+    <dev.ragnarok.fenrir.module.rlottie.RLottieImageView
         android:id="@+id/pagan_symbol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
                         android:contentDescription="@string/open_avatar"
                         android:padding="1.5dp" />
 
-                    <dev.libfenrir.rlottie.RLottieImageView
+                    <dev.ragnarok.fenrir.module.rlottie.RLottieImageView
                         android:id="@+id/donated_anim"
                         android:layout_width="@dimen/avatar_size_big"
                         android:layout_height="@dimen/avatar_size_big"

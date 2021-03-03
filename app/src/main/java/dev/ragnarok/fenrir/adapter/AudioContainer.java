@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
@@ -42,6 +41,7 @@ import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.OptionRequest;
 import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.model.IdPair;
 import dev.ragnarok.fenrir.model.menu.AudioItem;
+import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.picasso.transforms.PolyTransformation;
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation;
@@ -260,8 +260,10 @@ public class AudioContainer extends LinearLayout {
                 int Status = DownloadWorkUtils.TrackIsDownloaded(audio);
                 if (Status == 2) {
                     holder.saved.setImageResource(R.drawable.remote_cloud);
+                    Utils.setColorFilter(holder.saved, CurrentTheme.getColorSecondary(mContext));
                 } else {
                     holder.saved.setImageResource(R.drawable.save);
+                    Utils.setColorFilter(holder.saved, CurrentTheme.getColorPrimary(mContext));
                 }
                 holder.saved.setVisibility(Status != 0 ? View.VISIBLE : View.GONE);
 
@@ -277,6 +279,7 @@ public class AudioContainer extends LinearLayout {
                     }
                     holder.saved.setVisibility(View.VISIBLE);
                     holder.saved.setImageResource(R.drawable.save);
+                    Utils.setColorFilter(holder.saved, CurrentTheme.getColorPrimary(mContext));
                     int ret = DownloadWorkUtils.doDownloadAudio(mContext, audio, Settings.get().accounts().getCurrent(), false, false);
                     if (ret == 0)
                         CustomToast.CreateCustomToast(mContext).showToastBottom(R.string.saved_audio);
@@ -368,6 +371,7 @@ public class AudioContainer extends LinearLayout {
                                 }
                                 holder.saved.setVisibility(View.VISIBLE);
                                 holder.saved.setImageResource(R.drawable.save);
+                                Utils.setColorFilter(holder.saved, CurrentTheme.getColorPrimary(mContext));
                                 int ret = DownloadWorkUtils.doDownloadAudio(mContext, audio, Settings.get().accounts().getCurrent(), false, false);
                                 if (ret == 0)
                                     CustomToast.CreateCustomToast(mContext).showToastBottom(R.string.saved_audio);

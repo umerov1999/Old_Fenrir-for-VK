@@ -30,7 +30,7 @@
                 android:backgroundTint="?colorPrimary"
                 android:scaleType="center"
                 android:src="@drawable/ic_log_vector"
-                app:tint="@android:color/white" />
+                app:tint="?white_color" />
 
             <LinearLayout
                 android:layout_width="match_parent"

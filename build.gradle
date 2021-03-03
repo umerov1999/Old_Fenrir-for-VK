@@ -3,7 +3,7 @@
 buildscript {
     ext.kotlin_version = '1.4.31'
     ext.retrofitLibraryVersion = '2.9.0'
-    ext.okhttpLibraryVersion = '4.9.1'
+    ext.okhttpLibraryVersion = '5.0.0-alpha.2'
     repositories {
         jcenter()
         google()

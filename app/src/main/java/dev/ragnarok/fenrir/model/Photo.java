@@ -2,7 +2,7 @@ package dev.ragnarok.fenrir.model;
 
 import android.os.Parcel;
 
-import dev.libfenrir.parcel.ParcelNative;
+import dev.ragnarok.fenrir.module.parcel.ParcelNative;
 import dev.ragnarok.fenrir.util.Objects;
 
 

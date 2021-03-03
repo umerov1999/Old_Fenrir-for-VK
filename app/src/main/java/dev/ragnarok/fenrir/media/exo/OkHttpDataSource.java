@@ -320,7 +320,7 @@ public class OkHttpDataSource extends BaseDataSource implements HttpDataSource {
             builder.addHeader("Accept-Encoding", "identity");
         }
 
-        RequestBody requestBody = null;
+        @Nullable RequestBody requestBody = null;
         if (dataSpec.httpBody != null) {
             requestBody = RequestBody.create(dataSpec.httpBody, null);
         } else if (dataSpec.httpMethod == DataSpec.HTTP_METHOD_POST) {

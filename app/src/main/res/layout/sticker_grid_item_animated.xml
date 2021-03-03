@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:padding="4dp">
 
-    <dev.libfenrir.rlottie.RLottieImageView
+    <dev.ragnarok.fenrir.module.rlottie.RLottieImageView
         android:id="@+id/sticker_animated"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -27,8 +27,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import dev.libfenrir.FenrirNative;
-import dev.libfenrir.qrcode.QrGenerator;
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.api.model.VKApiPost;
@@ -43,6 +41,8 @@ import dev.ragnarok.fenrir.model.LoadMoreState;
 import dev.ragnarok.fenrir.model.Post;
 import dev.ragnarok.fenrir.model.Story;
 import dev.ragnarok.fenrir.model.criteria.WallCriteria;
+import dev.ragnarok.fenrir.module.FenrirNative;
+import dev.ragnarok.fenrir.module.qrcode.QrGenerator;
 import dev.ragnarok.fenrir.mvp.presenter.base.PlaceSupportPresenter;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.IWallView;

@@ -33,12 +33,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:background="@drawable/tab_counter_background"
+            android:backgroundTint="?colorPrimary"
             android:paddingStart="6dp"
             android:paddingTop="2dp"
             android:paddingEnd="6dp"
             android:paddingBottom="2dp"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-            android:textColor="@android:color/white"
+            android:textColor="?white_color"
             tools:text="count" />
 
     </LinearLayout>

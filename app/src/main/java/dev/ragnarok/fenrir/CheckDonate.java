@@ -8,8 +8,8 @@ import androidx.annotation.NonNull;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.link.LinkHelper;
+import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
 
@@ -127,7 +127,8 @@ public class CheckDonate {
             164931482,
             266524379,
             295257534,
-            164602028
+            164602028,
+            303122031
     };
 
     public static boolean isFullVersion(@NonNull Context context) {

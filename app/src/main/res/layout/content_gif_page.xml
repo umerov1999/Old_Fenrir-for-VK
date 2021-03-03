@@ -27,7 +27,7 @@
     </dev.ragnarok.fenrir.view.FlingRelativeLayout>
 
 
-    <dev.libfenrir.rlottie.RLottieImageView
+    <dev.ragnarok.fenrir.module.rlottie.RLottieImageView
         android:id="@+id/preparing_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

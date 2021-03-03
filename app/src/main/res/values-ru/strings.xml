@@ -51,6 +51,7 @@
         <item>Вегвизир</item>
         <item>Кельтский узел</item>
         <item>Иггдрасиль v2</item>
+        <item>Фенрир</item>
     </string-array>
 
     <string-array name="array_accounts_input">
@@ -635,7 +636,6 @@
     <string name="first_developer">Умеров Артём</string>
     <string name="second_developer">Данилюк Дмитрий</string>
     <string name="first_pagan">Первый языческий</string>
-    <string name="stop_develop">Проект посвящён https://vk.com/id255645173</string>
     <string name="repo">Репозиторий: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="repo_local_server">Репозиторий: https://github.com/umerov1999/FenrirMediaServer/releases</string>
     <string name="comment">Комментарий</string>
@@ -1521,4 +1521,6 @@
     <string name="artists">Артисты</string>
     <string name="video_controller_to_decor">Видео кнопки в DecorView</string>
     <string name="video_swipes">Свайпы у видео</string>
+    <string name="extra_debug">Расширенная отладка</string>
+    <string name="kate_gms_token">Kate GMS Токен</string>
 </resources>

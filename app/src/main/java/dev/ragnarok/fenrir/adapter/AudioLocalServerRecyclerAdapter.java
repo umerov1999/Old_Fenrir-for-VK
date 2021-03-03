@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.domain.ILocalServerInteractor;
@@ -40,6 +39,7 @@ import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.ModalBottomSheetDialog
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.OptionRequest;
 import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.model.menu.AudioItem;
+import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.picasso.transforms.PolyTransformation;
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation;
@@ -164,8 +164,10 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
         int Status = DownloadWorkUtils.TrackIsDownloaded(audio);
         if (Status == 2) {
             holder.saved.setImageResource(R.drawable.remote_cloud);
+            Utils.setColorFilter(holder.saved, CurrentTheme.getColorSecondary(mContext));
         } else {
             holder.saved.setImageResource(R.drawable.save);
+            Utils.setColorFilter(holder.saved, CurrentTheme.getColorPrimary(mContext));
         }
         holder.saved.setVisibility(Status != 0 ? View.VISIBLE : View.GONE);
 
@@ -215,6 +217,7 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
             }
             holder.saved.setVisibility(View.VISIBLE);
             holder.saved.setImageResource(R.drawable.save);
+            Utils.setColorFilter(holder.saved, CurrentTheme.getColorPrimary(mContext));
             int ret = DownloadWorkUtils.doDownloadAudio(mContext, audio, Settings.get().accounts().getCurrent(), false, true);
             if (ret == 0)
                 CustomToast.CreateCustomToast(mContext).showToastBottom(R.string.saved_audio);
@@ -254,6 +257,7 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
                         }
                         holder.saved.setVisibility(View.VISIBLE);
                         holder.saved.setImageResource(R.drawable.save);
+                        Utils.setColorFilter(holder.saved, CurrentTheme.getColorPrimary(mContext));
                         int ret = DownloadWorkUtils.doDownloadAudio(mContext, audio, Settings.get().accounts().getCurrent(), false, true);
                         if (ret == 0)
                             CustomToast.CreateCustomToast(mContext).showToastBottom(R.string.saved_audio);

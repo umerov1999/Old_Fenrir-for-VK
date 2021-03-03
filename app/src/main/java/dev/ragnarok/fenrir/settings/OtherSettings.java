@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 
 import java.io.File;
 
+import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.api.model.LocalServerSettings;
 import dev.ragnarok.fenrir.model.Lang;
 import dev.ragnarok.fenrir.util.Objects;
@@ -412,6 +413,11 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public boolean isExtra_debug() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("extra_debug", false);
+    }
+
+    @Override
     public boolean isHint_stickers() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("hint_stickers", true);
     }
@@ -444,6 +450,17 @@ class OtherSettings implements ISettings.IOtherSettings {
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    @Override
+    public @NonNull
+    String getKateGMSToken() {
+        String res = PreferenceManager.getDefaultSharedPreferences(app).getString("kate_gms_token", Constants.KATE_RECEIPT_GMS_TOKEN).trim();
+        if (res.isEmpty()) {
+            res = Constants.KATE_RECEIPT_GMS_TOKEN;
+            PreferenceManager.getDefaultSharedPreferences(app).edit().putString("kate_gms_token", Constants.KATE_RECEIPT_GMS_TOKEN).apply();
+        }
+        return res.replaceAll("[\\w%\\-]+:", ":");
     }
 
     @Lang

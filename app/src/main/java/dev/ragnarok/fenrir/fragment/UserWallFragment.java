@@ -36,7 +36,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.CheckDonate;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
@@ -58,6 +57,7 @@ import dev.ragnarok.fenrir.model.selection.LocalGallerySelectableSource;
 import dev.ragnarok.fenrir.model.selection.LocalPhotosSelectableSource;
 import dev.ragnarok.fenrir.model.selection.LocalVideosSelectableSource;
 import dev.ragnarok.fenrir.model.selection.Sources;
+import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.UserWallPresenter;
 import dev.ragnarok.fenrir.mvp.view.IUserWallView;

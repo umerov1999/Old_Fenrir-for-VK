@@ -82,8 +82,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import dev.libfenrir.rlottie.RLottieDrawable;
-import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Injection;
@@ -97,6 +95,8 @@ import dev.ragnarok.fenrir.model.Lang;
 import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.ProxyConfig;
 import dev.ragnarok.fenrir.model.Sticker;
+import dev.ragnarok.fenrir.module.rlottie.RLottieDrawable;
+import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.player.util.MusicUtils;
 import dev.ragnarok.fenrir.service.ErrorLocalizer;
 import dev.ragnarok.fenrir.settings.CurrentTheme;

@@ -13,13 +13,13 @@ import androidx.annotation.IdRes
 import androidx.annotation.NonNull
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Callback
-import dev.libfenrir.rlottie.RLottieImageView
 import dev.ragnarok.fenrir.App.Companion.instance
 import dev.ragnarok.fenrir.Extra
 import dev.ragnarok.fenrir.R
 import dev.ragnarok.fenrir.activity.ActivityFeatures
 import dev.ragnarok.fenrir.fragment.base.BaseFragment
 import dev.ragnarok.fenrir.listener.BackPressCallback
+import dev.ragnarok.fenrir.module.rlottie.RLottieImageView
 import dev.ragnarok.fenrir.picasso.PicassoInstance
 import dev.ragnarok.fenrir.settings.CurrentTheme
 import dev.ragnarok.fenrir.settings.Settings

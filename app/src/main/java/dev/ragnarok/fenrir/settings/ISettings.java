@@ -63,6 +63,8 @@ public interface ISettings {
 
         boolean isNative_parcel();
 
+        boolean isExtra_debug();
+
         boolean isUse_coil();
 
         String get_Api_Domain();
@@ -182,6 +184,9 @@ public interface ISettings {
         boolean isRunes_show();
 
         boolean isShow_pagan_symbol();
+
+        @NonNull
+        String getKateGMSToken();
 
         @Lang
         int getLanguage();

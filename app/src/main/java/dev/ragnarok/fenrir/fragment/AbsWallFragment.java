@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
@@ -56,12 +55,14 @@ import dev.ragnarok.fenrir.model.ParcelableOwnerWrapper;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.Post;
 import dev.ragnarok.fenrir.model.Story;
+import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.mvp.presenter.AbsWallPresenter;
 import dev.ragnarok.fenrir.mvp.view.IVideosListView;
 import dev.ragnarok.fenrir.mvp.view.IVkPhotosView;
 import dev.ragnarok.fenrir.mvp.view.IWallView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.place.PlaceUtil;
+import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.FindAttachmentType;
@@ -158,6 +159,15 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
                 break;
             case 5:
                 paganSymbol.setImageResource(R.drawable.ic_igdr2);
+                break;
+            case 6:
+                paganSymbol.fromRes(R.raw.fenrir, Utils.dp(140), Utils.dp(140), new int[]{
+                        0x333333,
+                        CurrentTheme.getColorPrimary(requireActivity()),
+                        0x777777,
+                        CurrentTheme.getColorSecondary(requireActivity())
+                });
+                paganSymbol.playAnimation();
                 break;
             default:
                 paganSymbol.setImageResource(R.drawable.ic_igdr);

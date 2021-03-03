@@ -17,13 +17,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.fragment.UserInfoResolveUtil;
 import dev.ragnarok.fenrir.model.Account;
 import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.User;
+import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Objects;

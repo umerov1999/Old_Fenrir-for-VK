@@ -723,6 +723,14 @@
             app:icon="@drawable/developer_mode"
             app:iconSpaceReserved="true" />
 
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="developer_mode"
+            android:key="extra_debug"
+            android:title="@string/extra_debug"
+            app:icon="@drawable/developer_mode"
+            app:iconSpaceReserved="false" />
+
         <EditTextPreference
             android:defaultValue="api.vk.com"
             android:key="vk_api_domain"
@@ -738,6 +746,14 @@
             app:icon="@drawable/web_settings"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            android:defaultValue="@string/kate_receipt_gms_token"
+            android:key="kate_gms_token"
+            android:title="@string/kate_gms_token"
+            app:icon="@drawable/kate_settings"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="false" />
 
         <SwitchPreference
             android:defaultValue="false"

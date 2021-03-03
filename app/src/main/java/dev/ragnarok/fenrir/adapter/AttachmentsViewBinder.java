@@ -28,7 +28,6 @@ import java.util.EventListener;
 import java.util.List;
 import java.util.Set;
 
-import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.adapter.holder.IdentificableHolder;
@@ -60,6 +59,7 @@ import dev.ragnarok.fenrir.model.Video;
 import dev.ragnarok.fenrir.model.VoiceMessage;
 import dev.ragnarok.fenrir.model.WallReply;
 import dev.ragnarok.fenrir.model.WikiPage;
+import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;

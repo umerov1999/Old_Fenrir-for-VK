@@ -21,9 +21,6 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Callback
-import dev.libfenrir.FenrirNative
-import dev.libfenrir.parcel.ParcelNative
-import dev.libfenrir.rlottie.RLottieImageView
 import dev.ragnarok.fenrir.Extra
 import dev.ragnarok.fenrir.R
 import dev.ragnarok.fenrir.activity.ActivityFeatures
@@ -34,6 +31,9 @@ import dev.ragnarok.fenrir.domain.ILikesInteractor
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment
 import dev.ragnarok.fenrir.listener.BackPressCallback
 import dev.ragnarok.fenrir.model.*
+import dev.ragnarok.fenrir.module.FenrirNative
+import dev.ragnarok.fenrir.module.parcel.ParcelNative
+import dev.ragnarok.fenrir.module.rlottie.RLottieImageView
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory
 import dev.ragnarok.fenrir.mvp.presenter.photo.*
 import dev.ragnarok.fenrir.mvp.view.IPhotoPagerView

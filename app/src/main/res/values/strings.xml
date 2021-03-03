@@ -113,6 +113,7 @@
         <item>Vegvisir</item>
         <item>Celtic knot</item>
         <item>Yggdrasil v2</item>
+        <item>Fenrir</item>
     </string-array>
 
     <string-array name="array_pagan_symbol_items" translatable="false">
@@ -122,6 +123,7 @@
         <item>3</item>
         <item>4</item>
         <item>5</item>
+        <item>6</item>
     </string-array>
 
     <string-array name="array_accounts_input">
@@ -746,7 +748,6 @@
     <string name="first_developer">Umerov Artyom</string>
     <string name="second_developer">Danilyuk Dmitry</string>
     <string name="first_pagan">First pagan</string>
-    <string name="stop_develop">The project is dedicated https://vk.com/id255645173</string>
     <string name="repo">Repository: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="repo_local_server">Repository: https://github.com/umerov1999/FenrirMediaServer/releases</string>
     <string name="comment">Comment</string>
@@ -1677,4 +1678,6 @@
     <string name="artists">Artists</string>
     <string name="video_controller_to_decor">Video controller to decor view</string>
     <string name="video_swipes">Enable video swipes</string>
+    <string name="extra_debug">Extra Debug</string>
+    <string name="kate_gms_token">Kate GMS Token</string>
 </resources>

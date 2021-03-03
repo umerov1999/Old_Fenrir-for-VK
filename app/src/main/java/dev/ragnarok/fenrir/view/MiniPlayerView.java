@@ -24,9 +24,9 @@ import com.squareup.picasso.Transformation;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 
-import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.Audio;
+import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.picasso.transforms.PolyTransformation;
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation;

@@ -5,7 +5,7 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <dev.libfenrir.rlottie.RLottieImageView
+    <dev.ragnarok.fenrir.module.rlottie.RLottieImageView
         android:id="@+id/lottie_preview"
         android:layout_width="match_parent"
         android:layout_height="0dp"

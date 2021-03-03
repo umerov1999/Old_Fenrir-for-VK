@@ -52,7 +52,6 @@ public class FriendsRecycleAdapter extends RecyclerView.Adapter<FriendsRecycleAd
         ItemInfo itemInfo = get(position);
         User user = itemInfo.user;
 
-        Utils.setColorFilter(holder.headerCount.getBackground(), CurrentTheme.getColorPrimary(context));
         boolean headerVisible = group && itemInfo.first;
         holder.header.setVisibility(headerVisible ? View.VISIBLE : View.GONE);
 

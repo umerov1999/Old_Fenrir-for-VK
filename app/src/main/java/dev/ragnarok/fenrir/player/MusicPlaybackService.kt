@@ -1145,7 +1145,7 @@ class MusicPlaybackService : Service() {
         const val REPEAT_NONE = 0
         const val REPEAT_CURRENT = 1
         const val REPEAT_ALL = 2
-        private const val IDLE_DELAY = 60000
+        private const val IDLE_DELAY = Constants.AUDIO_PLAYER_SERVICE_IDLE
         private const val MAX_HISTORY_SIZE = 100
         private val mHistory = LinkedList<Int>()
         private val mShuffler = Shuffler(MAX_HISTORY_SIZE)

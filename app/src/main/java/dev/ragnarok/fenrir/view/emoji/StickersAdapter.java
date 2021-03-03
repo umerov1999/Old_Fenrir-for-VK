@@ -13,12 +13,12 @@ import com.squareup.picasso.Callback;
 
 import java.lang.ref.WeakReference;
 
-import dev.libfenrir.rlottie.RLottieDrawable;
-import dev.libfenrir.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.Sticker;
 import dev.ragnarok.fenrir.model.StickerSet;
+import dev.ragnarok.fenrir.module.rlottie.RLottieDrawable;
+import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
