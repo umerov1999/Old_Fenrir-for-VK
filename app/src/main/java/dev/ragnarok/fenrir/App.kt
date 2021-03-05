@@ -17,6 +17,7 @@ import dev.ragnarok.fenrir.service.ErrorLocalizer
 import dev.ragnarok.fenrir.service.KeepLongpollService
 import dev.ragnarok.fenrir.settings.Settings
 import dev.ragnarok.fenrir.util.CustomToast.Companion.CreateCustomToast
+import dev.ragnarok.fenrir.util.PersistentLogger
 import dev.ragnarok.fenrir.util.RxUtils
 import ealvatag.tag.TagOptionSingleton
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -33,12 +34,13 @@ class App : Application(), ImageLoaderFactory {
 
     @SuppressLint("UnsafeExperimentalUsageWarning")
     override fun onCreate() {
-
         sInstanse = this
         AppCompatDelegate.setDefaultNightMode(Settings.get().ui().nightMode)
 
         //CrashConfig.Builder.create().apply()
-        FenrirNative.loadNativeLibrary()
+        if (Settings.get().other().isEnable_native) {
+            FenrirNative.loadNativeLibrary { PersistentLogger.logThrowable("NativeError", it) }
+        }
         FenrirNative.updateAppContext(this)
         TagOptionSingleton.getInstance().isAndroid = true
         MusicUtils.registerBroadcast(this)

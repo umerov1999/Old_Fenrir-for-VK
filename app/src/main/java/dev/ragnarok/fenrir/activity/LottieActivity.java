@@ -135,10 +135,12 @@ public class LottieActivity extends AppCompatActivity {
     private void handleIntent(Intent intent) {
         if (intent == null) {
             finish();
+            return;
         }
         int accountId = Settings.get().accounts().getCurrent();
         if (accountId == ISettings.IAccountsSettings.INVALID_ID) {
             finish();
+            return;
         }
         String action = intent.getAction();
         if (Intent.ACTION_VIEW.equals(action)) {

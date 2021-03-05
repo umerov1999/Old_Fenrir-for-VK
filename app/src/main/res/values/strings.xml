@@ -1680,4 +1680,6 @@
     <string name="video_swipes">Enable video swipes</string>
     <string name="extra_debug">Extra Debug</string>
     <string name="kate_gms_token">Kate GMS Token</string>
+    <string name="need_restart">Need Restart</string>
+    <string name="enable_native">Enable Native</string>
 </resources>

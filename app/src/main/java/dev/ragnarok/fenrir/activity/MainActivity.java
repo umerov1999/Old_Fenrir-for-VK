@@ -538,6 +538,9 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
 
         if (ACTION_OPEN_PLACE.equals(action)) {
             Place place = intent.getParcelableExtra(Extra.PLACE);
+            if (isNull(place)) {
+                return false;
+            }
             openPlace(place);
             if (place.type == Place.CHAT) {
                 return Settings.get().ui().getSwipes_chat_mode() != SwipesChatMode.SLIDR || Settings.get().ui().getSwipes_chat_mode() == SwipesChatMode.DISABLED;

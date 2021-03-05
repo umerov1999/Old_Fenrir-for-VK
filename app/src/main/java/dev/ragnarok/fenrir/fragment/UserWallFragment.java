@@ -158,7 +158,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
         if (Settings.get().other().isShow_donate_anim() && user.isDonated()) {
             mHeaderHolder.bDonate.setVisibility(View.VISIBLE);
             mHeaderHolder.bDonate.setAutoRepeat(true);
-            mHeaderHolder.bDonate.fromRes(R.raw.donater, Utils.dp(100), Utils.dp(100), new int[]{0xffffff, CurrentTheme.getColorControlNormal(requireActivity())});
+            mHeaderHolder.bDonate.fromRes(R.raw.donater, Utils.dp(100), Utils.dp(100), new int[]{0xffffff, CurrentTheme.getColorPrimary(requireActivity()), 0x777777, CurrentTheme.getColorSecondary(requireActivity())});
             mHeaderHolder.bDonate.playAnimation();
         } else {
             mHeaderHolder.bDonate.setImageDrawable(null);

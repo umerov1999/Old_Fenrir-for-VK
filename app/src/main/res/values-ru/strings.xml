@@ -1523,4 +1523,6 @@
     <string name="video_swipes">Свайпы у видео</string>
     <string name="extra_debug">Расширенная отладка</string>
     <string name="kate_gms_token">Kate GMS Токен</string>
+    <string name="need_restart">Требуется перезапуск</string>
+    <string name="enable_native">Нативные библиотеки</string>
 </resources>

@@ -86,11 +86,16 @@ public class NotReadMessagesActivity extends NoMainActivity implements PlaceProv
 
     private void handleIntent(Intent intent) {
         if (intent == null) {
+            finish();
             return;
         }
         String action = intent.getAction();
         if (ACTION_OPEN_PLACE.equals(action)) {
             Place place = intent.getParcelableExtra(Extra.PLACE);
+            if (Objects.isNull(place)) {
+                finish();
+                return;
+            }
             openPlace(place);
         }
     }

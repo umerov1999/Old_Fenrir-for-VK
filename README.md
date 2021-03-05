@@ -21,6 +21,4 @@
         keytool -genkey -v -keystore ExampleKey.keystore -alias fenrir -storetype PKCS12 -keyalg RSA -keysize 2048 -validity 10000
   2) Выберите тип сборки (fenrir_vk_full) Debug или Release и соберите apk :)
 
-<b>Публикация полной версии запрещена!</b>
-
 Локальный медиа сервер https://github.com/umerov1999/FenrirMediaServer/releases

@@ -772,6 +772,13 @@
             app:useSimpleSummaryProvider="true" />
 
         <SwitchPreference
+            android:defaultValue="true"
+            android:key="enable_native"
+            android:summary="@string/need_restart"
+            android:title="@string/enable_native"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
             android:key="use_old_vk_api"
             android:summary="@string/mp3_friendly"
             android:title="@string/use_old_vk_api"

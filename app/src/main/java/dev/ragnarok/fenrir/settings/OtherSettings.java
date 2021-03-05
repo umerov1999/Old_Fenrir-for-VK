@@ -423,6 +423,11 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public boolean isEnable_native() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("enable_native", true);
+    }
+
+    @Override
     public boolean isDisable_sensored_voice() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("disable_sensored_voice", false);
     }

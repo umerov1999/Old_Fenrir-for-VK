@@ -179,6 +179,8 @@ public interface ISettings {
 
         boolean isHint_stickers();
 
+        boolean isEnable_native();
+
         int getPaganSymbol();
 
         boolean isRunes_show();
