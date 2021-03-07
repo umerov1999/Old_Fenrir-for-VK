@@ -23,11 +23,11 @@ import dev.ragnarok.fenrir.mvp.view.conversations.IChatAttachmentPhotosView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 
 public class ConversationPhotosFragment extends AbsChatAttachmentsFragment<Photo, ChatAttachmentPhotoPresenter,
-        IChatAttachmentPhotosView> implements FavePhotosAdapter.PhotoSelectionListener, IChatAttachmentPhotosView {
+        IChatAttachmentPhotosView> implements FavePhotosAdapter.PhotoSelectionListener, FavePhotosAdapter.PhotoConversationListener, IChatAttachmentPhotosView {
 
     @Override
     protected RecyclerView.LayoutManager createLayoutManager() {
-        int columns = getContext().getResources().getInteger(R.integer.photos_column_count);
+        int columns = getResources().getInteger(R.integer.photos_column_count);
         return new GridLayoutManager(requireActivity(), columns);
     }
 
@@ -35,6 +35,7 @@ public class ConversationPhotosFragment extends AbsChatAttachmentsFragment<Photo
     public RecyclerView.Adapter<?> createAdapter() {
         FavePhotosAdapter apiPhotoFavePhotosAdapter = new FavePhotosAdapter(requireActivity(), Collections.emptyList());
         apiPhotoFavePhotosAdapter.setPhotoSelectionListener(this);
+        apiPhotoFavePhotosAdapter.setPhotoConversationListener(this);
         return apiPhotoFavePhotosAdapter;
     }
 
@@ -62,5 +63,10 @@ public class ConversationPhotosFragment extends AbsChatAttachmentsFragment<Photo
     @Override
     public void goToTempPhotosGallery(int accountId, @NonNull TmpSource source, int index) {
         PlaceFactory.getTmpSourceGalleryPlace(accountId, source, index).tryOpenWith(requireActivity());
+    }
+
+    @Override
+    public void onGoPhotoConversation(@NonNull Photo photo) {
+        getPresenter().fireGoToMessagesLookup(photo.getMsgPeerId(), photo.getMsgId());
     }
 }

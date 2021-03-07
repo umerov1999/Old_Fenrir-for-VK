@@ -25,6 +25,7 @@ import static dev.ragnarok.fenrir.util.Objects.nonNull;
 public class LinksAdapter extends RecyclerBindableAdapter<Link, LinksAdapter.LinkViewHolder> {
 
     private ActionListener mActionListener;
+    private LinkConversationListener linkConversationListener;
 
     public LinksAdapter(List<Link> data) {
         super(data);
@@ -32,6 +33,10 @@ public class LinksAdapter extends RecyclerBindableAdapter<Link, LinksAdapter.Lin
 
     public void setActionListener(ActionListener listener) {
         mActionListener = listener;
+    }
+
+    public void setLinkConversationListener(LinkConversationListener linkConversationListener) {
+        this.linkConversationListener = linkConversationListener;
     }
 
     public String getImageUrl(Link link) {
@@ -86,6 +91,13 @@ public class LinksAdapter extends RecyclerBindableAdapter<Link, LinksAdapter.Lin
                 mActionListener.onLinkClick(holder.getAdapterPosition(), item);
             }
         });
+        holder.itemView.setOnLongClickListener(v -> {
+            if (linkConversationListener != null) {
+                linkConversationListener.onGoLinkConversation(item);
+                return true;
+            }
+            return false;
+        });
     }
 
     @Override
@@ -100,6 +112,10 @@ public class LinksAdapter extends RecyclerBindableAdapter<Link, LinksAdapter.Lin
 
     public interface ActionListener extends EventListener {
         void onLinkClick(int index, @NonNull Link doc);
+    }
+
+    public interface LinkConversationListener {
+        void onGoLinkConversation(@NonNull Link doc);
     }
 
     static class LinkViewHolder extends RecyclerView.ViewHolder {

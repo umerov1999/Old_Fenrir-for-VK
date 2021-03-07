@@ -174,7 +174,12 @@ class PhotosViewHelper internal constructor(
                                                 mIconColorActive
                                             )
                                             holder.ivPlay.visibility = View.VISIBLE
-                                            if (!Utils.isEmpty(url)) holder.vgPhoto.load(url)
+                                            if (!Utils.isEmpty(url)) {
+                                                holder.vgPhoto.load(url) {
+                                                    crossfade(true)
+                                                    placeholder(R.drawable.background_gray)
+                                                }
+                                            }
                                         }
                                     }
                                 )

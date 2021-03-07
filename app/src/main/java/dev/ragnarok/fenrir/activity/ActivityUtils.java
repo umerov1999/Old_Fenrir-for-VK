@@ -27,6 +27,12 @@ public class ActivityUtils {
         return mime.contains("video/");
     }
 
+    public static boolean isMimeAudio(String mime) {
+        if (Utils.isEmpty(mime))
+            return false;
+        return mime.contains("audio/");
+    }
+
     public static StreamData checkLocalStreams(Activity activity) {
         Intent intent = activity.getIntent();
         if (intent == null) {

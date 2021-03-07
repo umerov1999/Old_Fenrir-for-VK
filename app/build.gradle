@@ -17,8 +17,8 @@ android {
         minSdkVersion 21
         //noinspection ExpiredTargetSdkVersion,OldTargetApi
         targetSdkVersion 29
-        versionCode 61
-        versionName '1.61'
+        versionCode 62
+        versionName '1.62'
 
         buildConfigField 'String', 'SERVICE_TOKEN', getProps("vk_service_token")
         buildConfigField 'String', 'YOUTUBE_DEV_KEY', getProps("youtube_dev_key")
@@ -121,10 +121,6 @@ def getProps(String propName) {
     }
 }
 
-ext {
-    exoLibraryVersion = '2.13.2'
-}
-
 dependencies {
     implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
@@ -135,8 +131,8 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
     implementation 'com.google.android.material:material:1.4.0-alpha01'
-    implementation 'io.coil-kt:coil:1.1.1'
-    implementation 'io.coil-kt:coil-gif:1.1.1'
+    implementation 'io.coil-kt:coil:1.2.0-SNAPSHOT'
+    implementation 'io.coil-kt:coil-gif:1.2.0-SNAPSHOT'
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.customview:customview:1.1.0'
@@ -146,7 +142,7 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.1.1'
     implementation 'androidx.exifinterface:exifinterface:1.3.2'
     implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'io.reactivex.rxjava3:rxjava:3.0.10'
+    implementation "io.reactivex.rxjava3:rxjava:$RxJavaVersion"
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     implementation 'com.google.firebase:firebase-database:19.6.0'
     fenrir_vk_liteImplementation('com.google.firebase:firebase-messaging:21.0.1') {
@@ -172,7 +168,7 @@ dependencies {
     implementation "com.squareup.retrofit2:adapter-rxjava3:$retrofitLibraryVersion"
     implementation "com.squareup.okhttp3:okhttp:$okhttpLibraryVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttpLibraryVersion"
-    implementation "com.squareup.okio:okio:2.10.0"
+    implementation "com.squareup.okio:okio:$okioVersion"
     implementation "com.google.android.exoplayer:exoplayer-core:$exoLibraryVersion"
     implementation "com.google.android.exoplayer:exoplayer-hls:$exoLibraryVersion"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
@@ -182,18 +178,9 @@ dependencies {
     implementation 'androidx.fragment:fragment-ktx:1.3.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.work:work-runtime-ktx:2.5.0'
-    implementation 'com.google.guava:guava:30.1-android'
+    implementation "com.google.guava:guava:$GuavaVersion"
     implementation 'com.caverock:androidsvg:1.4'
-
-    //hidden
-    implementation 'com.google.android.datatransport:transport-runtime:2.2.6'
-    implementation 'com.google.android.datatransport:transport-backend-cct:2.3.3'
-    implementation 'com.google.android.datatransport:transport-api:2.2.1'
-    implementation 'androidx.versionedparcelable:versionedparcelable:1.1.1'
     implementation 'androidx.drawerlayout:drawerlayout:1.1.1'
-    implementation 'androidx.loader:loader:1.1.0'
-    implementation 'androidx.documentfile:documentfile:1.0.1'
-    implementation 'androidx.concurrent:concurrent-futures:1.1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -46,7 +46,7 @@ public class ChatAttachmentPhotoPresenter extends BaseChatAttachmentsPresenter<P
                     for (AttachmentsHistoryResponse.One one : response.items) {
                         if (nonNull(one) && nonNull(one.entry) && one.entry.attachment instanceof VKApiPhoto) {
                             VKApiPhoto dto = (VKApiPhoto) one.entry.attachment;
-                            photos.add(Dto2Model.transform(dto));
+                            photos.add(Dto2Model.transform(dto).setMsgId(one.messageId).setMsgPeerId(peerId));
                         }
                     }
 

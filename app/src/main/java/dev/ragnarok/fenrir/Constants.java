@@ -27,8 +27,8 @@ public class Constants {
     public static final boolean IS_HAS_LOGIN_WEB = BuildConfig.DEFAULT_ACCOUNT_TYPE == Account_Types.KATE;
     public static final String FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".fileprovider";
 
-    public static final String VK_ANDROID_APP_VERSION_NAME = "6.26";
-    public static final String VK_ANDROID_APP_VERSION_CODE = "7121";
+    public static final String VK_ANDROID_APP_VERSION_NAME = "6.27";
+    public static final String VK_ANDROID_APP_VERSION_CODE = "7203";
     public static final String KATE_APP_VERSION_NAME = "71 lite";
     public static final String KATE_APP_VERSION_CODE = "487";
     public static final String KATE_RECEIPT_GMS_TOKEN = BuildConfig.KATE_RECEIPT_GMS_TOKEN;

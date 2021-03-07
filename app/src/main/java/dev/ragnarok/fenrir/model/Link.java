@@ -22,6 +22,8 @@ public class Link extends AbsModel {
     private String description;
     private Photo photo;
     private String preview_photo;
+    private int msgId;
+    private int msgPeerId;
 
     public Link() {
 
@@ -35,6 +37,8 @@ public class Link extends AbsModel {
         description = in.readString();
         preview_photo = in.readString();
         photo = in.readParcelable(Photo.class.getClassLoader());
+        msgId = in.readInt();
+        msgPeerId = in.readInt();
     }
 
     @Override
@@ -46,6 +50,8 @@ public class Link extends AbsModel {
         dest.writeString(description);
         dest.writeString(preview_photo);
         dest.writeParcelable(photo, flags);
+        dest.writeInt(msgId);
+        dest.writeInt(msgPeerId);
     }
 
     public String getUrl() {
@@ -99,6 +105,24 @@ public class Link extends AbsModel {
 
     public Link setPreviewPhoto(String photo) {
         preview_photo = photo;
+        return this;
+    }
+
+    public int getMsgId() {
+        return msgId;
+    }
+
+    public Link setMsgId(int msgId) {
+        this.msgId = msgId;
+        return this;
+    }
+
+    public int getMsgPeerId() {
+        return msgPeerId;
+    }
+
+    public Link setMsgPeerId(int msgPeerId) {
+        this.msgPeerId = msgPeerId;
         return this;
     }
 

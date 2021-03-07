@@ -49,6 +49,8 @@ public class Video extends AbsModel {
     private boolean canRepost;
     private String hls;
     private String live;
+    private int msgId;
+    private int msgPeerId;
 
     public Video() {
 
@@ -89,6 +91,8 @@ public class Video extends AbsModel {
         canEdit = in.readByte() != 0;
         canAdd = in.readByte() != 0;
         isPrivate = in.readByte() != 0;
+        msgId = in.readInt();
+        msgPeerId = in.readInt();
     }
 
     public SimplePrivacy getPrivacyView() {
@@ -145,6 +149,8 @@ public class Video extends AbsModel {
         dest.writeByte((byte) (canEdit ? 1 : 0));
         dest.writeByte((byte) (canAdd ? 1 : 0));
         dest.writeByte((byte) (isPrivate ? 1 : 0));
+        dest.writeInt(msgId);
+        dest.writeInt(msgPeerId);
     }
 
     public boolean isCanAdd() {
@@ -428,6 +434,24 @@ public class Video extends AbsModel {
 
     public Video setDuration(int duration) {
         this.duration = duration;
+        return this;
+    }
+
+    public int getMsgId() {
+        return msgId;
+    }
+
+    public Video setMsgId(int msgId) {
+        this.msgId = msgId;
+        return this;
+    }
+
+    public int getMsgPeerId() {
+        return msgPeerId;
+    }
+
+    public Video setMsgPeerId(int msgPeerId) {
+        this.msgPeerId = msgPeerId;
         return this;
     }
 }

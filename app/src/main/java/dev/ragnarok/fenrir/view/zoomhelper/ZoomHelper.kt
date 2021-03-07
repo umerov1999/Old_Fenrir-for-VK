@@ -10,6 +10,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.fragment.app.Fragment
 import dev.ragnarok.fenrir.R
 import kotlin.math.abs
 import kotlin.math.max
@@ -17,7 +18,7 @@ import kotlin.math.min
 
 /**
  * @author AmirHossein Aghajari
- * @version 1.0.1
+ * @version 1.0.2
  */
 class ZoomHelper {
 
@@ -105,6 +106,7 @@ class ZoomHelper {
     var placeHolderDelay: Long = 80
     var placeHolderDismissDelay: Long = 30
     private var placeHolderEnabled = true
+
     var isPlaceHolderEnabled: Boolean
         get() = placeHolderEnabled
         set(value) {
@@ -136,6 +138,15 @@ class ZoomHelper {
      */
     fun dispatchTouchEvent(ev: MotionEvent, parent: View): Boolean {
         return load(ev, parent)
+    }
+
+    /**
+     * handle touch event for a Fragment
+     * call this method in [Activity.dispatchTouchEvent]
+     */
+    fun dispatchTouchEvent(ev: MotionEvent, fragment: Fragment): Boolean {
+        if (fragment.view == null) return false
+        return load(ev, fragment.requireView())
     }
 
     /**
@@ -210,8 +221,12 @@ class ZoomHelper {
                 frameLayout.addView(zoomableView, viewFrameLayoutParams)
 
                 if (placeHolderEnabled) {
-                    view.postDelayed({
-                        placeHolderView?.visibility = View.INVISIBLE
+                    view.postDelayed(Runnable {
+                        if (zoomableView == null || zoomableView!!.parent == null || placeHolderView == null) {
+                            dismissDialog()
+                            return@Runnable
+                        }
+                        placeHolderView!!.visibility = View.INVISIBLE
                     }, placeHolderDelay)
                 }
 
@@ -313,7 +328,7 @@ class ZoomHelper {
         valueAnimator.duration = dismissDuration
         valueAnimator.addUpdateListener {
             val animatedFraction = it.animatedFraction
-            if (zoomableView != null) {
+            if (zoomableView != null && zoomableView!!.parent != null) {
                 updateZoomableView(
                     animatedFraction,
                     scaleYStart,
@@ -345,7 +360,7 @@ class ZoomHelper {
             }
 
             private fun end() {
-                if (zoomableView != null) {
+                if (zoomableView != null && zoomableView!!.parent != null) {
                     updateZoomableView(
                         1f,
                         scaleYStart,
@@ -394,32 +409,30 @@ class ZoomHelper {
     }
 
     private fun dismissDialogAndViews() {
-        if (zoomableView != null) {
+        if (zoomableView != null && zoomableView!!.parent != null) {
             zoomableView?.visibility = View.VISIBLE
             if (placeHolderEnabled) {
                 placeHolderView?.visibility = View.VISIBLE
-                placeHolderView?.postDelayed({
-                    if (zoomableView?.parent is ViewGroup) {
-                        val parent = zoomableView?.parent as ViewGroup
-                        parent.removeView(zoomableView)
+                placeHolderView?.postDelayed(Runnable {
+                    if (zoomableView == null || zoomableView!!.parent == null) {
+                        dismissDialog()
+                        return@Runnable
                     }
-                    viewIndex?.let {
-                        zoomableViewParent?.addView(
-                            zoomableView,
-                            it,
-                            viewLayoutParams
-                        )
+                    val parent = zoomableView!!.parent as ViewGroup
+                    parent.removeView(zoomableView)
+                    if (zoomableViewParent != null) {
+                        zoomableViewParent?.addView(zoomableView!!, viewIndex!!, viewLayoutParams)
+                        zoomableViewParent?.removeView(placeHolderView)
                     }
-                    zoomableViewParent?.removeView(placeHolderView)
                     dismissDialog()
                 }, placeHolderDismissDelay)
             } else {
-                if (zoomableView!!.parent is ViewGroup) {
-                    val parent = zoomableView!!.parent as ViewGroup
-                    parent.removeView(zoomableView)
+                val parent = zoomableView!!.parent as ViewGroup
+                parent.removeView(zoomableView)
+                if (zoomableViewParent != null) {
+                    zoomableViewParent?.addView(zoomableView!!, viewIndex!!, viewLayoutParams)
+                    zoomableViewParent?.removeView(placeHolderView)
                 }
-                zoomableViewParent?.addView(zoomableView!!, viewIndex!!, viewLayoutParams)
-                zoomableViewParent?.removeView(placeHolderView)
                 dismissDialog()
             }
         } else {

@@ -38,6 +38,8 @@ public class Photo extends AbsModel implements ISomeones, ParcelNative.Parcelabl
     private String accessKey;
     private boolean deleted;
     private int postId;
+    private int msgId;
+    private int msgPeerId;
 
     public Photo() {
 
@@ -61,6 +63,8 @@ public class Photo extends AbsModel implements ISomeones, ParcelNative.Parcelabl
         deleted = in.readBoolean();
         postId = in.readInt();
         repostsCount = in.readInt();
+        msgId = in.readInt();
+        msgPeerId = in.readInt();
     }
 
     protected Photo(Parcel in) {
@@ -82,6 +86,8 @@ public class Photo extends AbsModel implements ISomeones, ParcelNative.Parcelabl
         deleted = in.readByte() != 0;
         postId = in.readInt();
         repostsCount = in.readInt();
+        msgId = in.readInt();
+        msgPeerId = in.readInt();
     }
 
     public int getId() {
@@ -241,6 +247,24 @@ public class Photo extends AbsModel implements ISomeones, ParcelNative.Parcelabl
         return this;
     }
 
+    public int getMsgId() {
+        return msgId;
+    }
+
+    public Photo setMsgId(int msgId) {
+        this.msgId = msgId;
+        return this;
+    }
+
+    public int getMsgPeerId() {
+        return msgPeerId;
+    }
+
+    public Photo setMsgPeerId(int msgPeerId) {
+        this.msgPeerId = msgPeerId;
+        return this;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -266,6 +290,8 @@ public class Photo extends AbsModel implements ISomeones, ParcelNative.Parcelabl
         parcel.writeByte((byte) (deleted ? 1 : 0));
         parcel.writeInt(postId);
         parcel.writeInt(repostsCount);
+        parcel.writeInt(msgId);
+        parcel.writeInt(msgPeerId);
     }
 
     public String generateWebLink() {
@@ -307,5 +333,7 @@ public class Photo extends AbsModel implements ISomeones, ParcelNative.Parcelabl
         parcel.writeBoolean(deleted);
         parcel.writeInt(postId);
         parcel.writeInt(repostsCount);
+        parcel.writeInt(msgId);
+        parcel.writeInt(msgPeerId);
     }
 }

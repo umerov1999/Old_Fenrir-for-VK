@@ -135,6 +135,7 @@ import dev.ragnarok.fenrir.listener.BackPressCallback;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.ModalBottomSheetDialogFragment;
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.OptionRequest;
+import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.model.Banned;
 import dev.ragnarok.fenrir.model.Comment;
 import dev.ragnarok.fenrir.model.Document;
@@ -159,6 +160,7 @@ import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.ISettings;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.settings.SwipesChatMode;
+import dev.ragnarok.fenrir.upload.impl.AudioUploadable;
 import dev.ragnarok.fenrir.util.Accounts;
 import dev.ragnarok.fenrir.util.Action;
 import dev.ragnarok.fenrir.util.AssertUtils;
@@ -576,6 +578,21 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
 
         if (Intent.ACTION_VIEW.equals(action)) {
             Uri data = intent.getData();
+            String mime = intent.getType();
+            if (getMainActivityTransform() == MainActivityTransforms.MAIN && !Utils.isEmpty(mime) && ActivityUtils.isMimeAudio(mime)) {
+                String track = AudioUploadable.findFileName(this, data);
+                String TrackName = track.replace(".mp3", "");
+                String Artist = "";
+                String[] arr = TrackName.split(" - ");
+                if (arr.length > 1) {
+                    Artist = arr[0];
+                    TrackName = TrackName.replace(Artist + " - ", "");
+                }
+                Audio tmp = new Audio().setUrl(data.toString()).setOwnerId(mAccountId).setArtist(Artist).setTitle(TrackName).setId(data.toString().hashCode());
+                MusicPlaybackService.startForPlayList(this, new ArrayList<>(Collections.singletonList(tmp)), 0, false);
+                PlaceFactory.getPlayerPlace(mAccountId).tryOpenWith(this);
+                return false;
+            }
             LinkHelper.openUrl(this, mAccountId, String.valueOf(data));
             return true;
         }

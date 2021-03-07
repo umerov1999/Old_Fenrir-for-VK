@@ -31,6 +31,8 @@ public class Document extends AbsModel {
     private PhotoSizes photoPreview;
     private VideoPreview videoPreview;
     private Graffiti graffiti;
+    private int msgId;
+    private int msgPeerId;
 
     public Document(int id, int ownerId) {
         this.id = id;
@@ -52,6 +54,8 @@ public class Document extends AbsModel {
         photoPreview = in.readParcelable(PhotoSizes.class.getClassLoader());
         videoPreview = in.readParcelable(VideoPreview.class.getClassLoader());
         graffiti = in.readParcelable(Graffiti.class.getClassLoader());
+        msgId = in.readInt();
+        msgPeerId = in.readInt();
     }
 
     public String getPreviewWithSize(@PhotoSize int size, boolean excludeNonAspectRatio) {
@@ -95,6 +99,8 @@ public class Document extends AbsModel {
         dest.writeParcelable(photoPreview, flags);
         dest.writeParcelable(videoPreview, flags);
         dest.writeParcelable(graffiti, flags);
+        dest.writeInt(msgId);
+        dest.writeInt(msgPeerId);
     }
 
     public Graffiti getGraffiti() {
@@ -192,6 +198,24 @@ public class Document extends AbsModel {
 
     public boolean hasValidGifVideoLink() {
         return nonNull(videoPreview) && !safeIsEmpty(videoPreview.src);
+    }
+
+    public int getMsgId() {
+        return msgId;
+    }
+
+    public Document setMsgId(int msgId) {
+        this.msgId = msgId;
+        return this;
+    }
+
+    public int getMsgPeerId() {
+        return msgPeerId;
+    }
+
+    public Document setMsgPeerId(int msgPeerId) {
+        this.msgPeerId = msgPeerId;
+        return this;
     }
 
     public static class Graffiti extends AbsModel {

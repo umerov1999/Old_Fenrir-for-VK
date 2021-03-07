@@ -676,8 +676,7 @@
         android:icon="@drawable/valknut_settings"
         android:key="wall_themed"
         android:title="@string/wall_themed"
-        app:iconSpaceReserved="false"
-        app:initialExpandedChildrenCount="2">
+        app:iconSpaceReserved="false">
         <SwitchPreference
             android:defaultValue="true"
             android:key="runes_show"

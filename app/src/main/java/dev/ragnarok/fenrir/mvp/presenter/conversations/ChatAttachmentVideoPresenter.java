@@ -45,7 +45,7 @@ public class ChatAttachmentVideoPresenter extends BaseChatAttachmentsPresenter<V
                         for (AttachmentsHistoryResponse.One one : response.items) {
                             if (nonNull(one) && nonNull(one.entry) && one.entry.attachment instanceof VKApiVideo) {
                                 VKApiVideo dto = (VKApiVideo) one.entry.attachment;
-                                videos.add(Dto2Model.transform(dto));
+                                videos.add(Dto2Model.transform(dto).setMsgId(one.messageId).setMsgPeerId(peerId));
                             }
                         }
                     }

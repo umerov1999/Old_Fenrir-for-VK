@@ -194,7 +194,11 @@ class PicassoInstance @SuppressLint("CheckResult") private constructor(
                 .availableMemoryPercentage(0.25)
                 .crossfade(true).componentRegistry(
                     ComponentRegistry().newBuilder()
-                        .add(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) ImageDecoderDecoder() else GifDecoder())
+                        .add(
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) ImageDecoderDecoder(
+                                context
+                            ) else GifDecoder()
+                        )
                         .add(CoilLocalRequestHandler())
                         .build()
                 )

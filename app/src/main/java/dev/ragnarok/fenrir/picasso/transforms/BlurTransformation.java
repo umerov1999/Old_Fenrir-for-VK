@@ -43,24 +43,24 @@ public class BlurTransformation implements Transformation {
         this.mContext = mContext;
     }
 
-    @NotNull
-    @Override
-    public String key() {
-        return TAG + "(radius=" + mRadius + ", sampling=" + mSampling + ")";
-    }
-
-    public Bitmap blur(Bitmap image) {
+    public static Bitmap blur(Bitmap image, Context context, float radius) {
         Bitmap outputBitmap = Bitmap.createBitmap(image);
-        RenderScript renderScript = RenderScript.create(mContext);
+        RenderScript renderScript = RenderScript.create(context);
         Allocation tmpIn = Allocation.createFromBitmap(renderScript, image);
         Allocation tmpOut = Allocation.createFromBitmap(renderScript, outputBitmap);
 
         ScriptIntrinsicBlur theIntrinsic = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript));
-        theIntrinsic.setRadius(mRadius);
+        theIntrinsic.setRadius(radius);
         theIntrinsic.setInput(tmpIn);
         theIntrinsic.forEach(tmpOut);
         tmpOut.copyTo(outputBitmap);
         return outputBitmap;
+    }
+
+    @NotNull
+    @Override
+    public String key() {
+        return TAG + "(radius=" + mRadius + ", sampling=" + mSampling + ")";
     }
 
     @Override
@@ -72,7 +72,7 @@ public class BlurTransformation implements Transformation {
             source = source.copy(Bitmap.Config.ARGB_8888, true);
         }
 
-        Bitmap bitmap = blur(source);
+        Bitmap bitmap = blur(source, mContext, mRadius);
         if (source != bitmap) {
             source.recycle();
         }

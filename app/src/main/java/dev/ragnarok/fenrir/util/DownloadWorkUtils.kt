@@ -188,7 +188,7 @@ object DownloadWorkUtils {
             return 1
         }
         for (i in MusicUtils.RemoteAudios) {
-            if (i == file_name)
+            if (i.equals(file_name, true))
                 return 2
         }
         return 0
@@ -198,11 +198,11 @@ object DownloadWorkUtils {
     fun TrackIsDownloaded(audio: Audio): Int {
         val audioName = makeLegalFilename(audio.artist + " - " + audio.title, "mp3")
         for (i in MusicUtils.CachedAudios) {
-            if (i == audioName)
+            if (i.equals(audioName, true))
                 return 1
         }
         for (i in MusicUtils.RemoteAudios) {
-            if (i == audioName)
+            if (i.equals(audioName, true))
                 return 2
         }
         return 0

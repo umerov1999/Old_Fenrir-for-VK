@@ -20,7 +20,7 @@ import dev.ragnarok.fenrir.mvp.presenter.conversations.ChatAttachmentLinksPresen
 import dev.ragnarok.fenrir.mvp.view.conversations.IChatAttachmentLinksView;
 
 public class ConversationLinksFragment extends AbsChatAttachmentsFragment<Link, ChatAttachmentLinksPresenter, IChatAttachmentLinksView>
-        implements LinksAdapter.ActionListener, IChatAttachmentLinksView {
+        implements LinksAdapter.ActionListener, LinksAdapter.LinkConversationListener, IChatAttachmentLinksView {
 
     @Override
     protected RecyclerView.LayoutManager createLayoutManager() {
@@ -31,6 +31,7 @@ public class ConversationLinksFragment extends AbsChatAttachmentsFragment<Link, 
     public RecyclerView.Adapter<?> createAdapter() {
         LinksAdapter simpleDocRecycleAdapter = new LinksAdapter(Collections.emptyList());
         simpleDocRecycleAdapter.setActionListener(this);
+        simpleDocRecycleAdapter.setLinkConversationListener(this);
         return simpleDocRecycleAdapter;
     }
 
@@ -54,5 +55,10 @@ public class ConversationLinksFragment extends AbsChatAttachmentsFragment<Link, 
     @Override
     public void onLinkClick(int index, @NonNull Link link) {
         getPresenter().fireLinkClick(link);
+    }
+
+    @Override
+    public void onGoLinkConversation(@NonNull Link doc) {
+        getPresenter().fireGoToMessagesLookup(doc.getMsgPeerId(), doc.getMsgId());
     }
 }

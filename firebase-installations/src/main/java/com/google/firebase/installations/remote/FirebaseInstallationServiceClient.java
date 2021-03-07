@@ -15,6 +15,7 @@
 package com.google.firebase.installations.remote;
 
 import android.content.Context;
+import android.net.TrafficStats;
 import android.text.TextUtils;
 import android.util.JsonReader;
 import android.util.Log;
@@ -56,8 +57,17 @@ import static com.google.android.gms.common.internal.Preconditions.checkArgument
  * @hide
  */
 public class FirebaseInstallationServiceClient {
+
     @VisibleForTesting
     static final String PARSING_EXPIRATION_TIME_ERROR_MESSAGE = "Invalid Expiration Timestamp.";
+    // TrafficStats tags must be kept in sync with java/com/google/android/gms/libs/punchclock
+    private static final int TRAFFIC_STATS_FIREBASE_INSTALLATIONS_TAG = 0x00008000;
+    private static final int TRAFFIC_STATS_CREATE_INSTALLATION_TAG =
+            TRAFFIC_STATS_FIREBASE_INSTALLATIONS_TAG | 0x1;
+    private static final int TRAFFIC_STATS_DELETE_INSTALLATION_TAG =
+            TRAFFIC_STATS_FIREBASE_INSTALLATIONS_TAG | 0x2;
+    private static final int TRAFFIC_STATS_GENERATE_AUTH_TOKEN_TAG =
+            TRAFFIC_STATS_FIREBASE_INSTALLATIONS_TAG | 0x3;
     private static final String FIREBASE_INSTALLATIONS_API_DOMAIN =
             "firebaseinstallations.googleapis.com";
     private static final String CREATE_REQUEST_RESOURCE_NAME_FORMAT = "projects/%s/installations";
@@ -240,7 +250,8 @@ public class FirebaseInstallationServiceClient {
                 response.append(input).append('\n');
             }
             return String.format(
-                    "Error when communicating with the Firebase Installations server API. HTTP response: [%d %s: %s]",
+                    "Error when communicating with the Firebase Installations server API. HTTP response: [%d"
+                            + " %s: %s]",
                     conn.getResponseCode(), conn.getResponseMessage(), response);
         } catch (IOException ignored) {
             return null;
@@ -289,6 +300,7 @@ public class FirebaseInstallationServiceClient {
         URL url = getFullyQualifiedRequestUri(resourceName);
         for (int retryCount = 0; retryCount <= MAX_RETRIES; retryCount++) {
 
+            TrafficStats.setThreadStatsTag(TRAFFIC_STATS_CREATE_INSTALLATION_TAG);
             HttpURLConnection httpURLConnection = openHttpURLConnection(url, apiKey);
 
             try {
@@ -330,6 +342,7 @@ public class FirebaseInstallationServiceClient {
                 continue;
             } finally {
                 httpURLConnection.disconnect();
+                TrafficStats.clearThreadStatsTag();
             }
         }
 
@@ -359,7 +372,6 @@ public class FirebaseInstallationServiceClient {
      * @param projectID    Project Id
      * @param refreshToken a token used to authenticate FIS requests
      */
-    @NonNull
     public void deleteFirebaseInstallation(
             @NonNull String apiKey,
             @NonNull String fid,
@@ -371,6 +383,7 @@ public class FirebaseInstallationServiceClient {
 
         int retryCount = 0;
         while (retryCount <= MAX_RETRIES) {
+            TrafficStats.setThreadStatsTag(TRAFFIC_STATS_DELETE_INSTALLATION_TAG);
             HttpURLConnection httpURLConnection = openHttpURLConnection(url, apiKey);
             try {
                 httpURLConnection.setRequestMethod("DELETE");
@@ -397,6 +410,7 @@ public class FirebaseInstallationServiceClient {
                 retryCount++;
             } finally {
                 httpURLConnection.disconnect();
+                TrafficStats.clearThreadStatsTag();
             }
         }
 
@@ -452,6 +466,7 @@ public class FirebaseInstallationServiceClient {
         URL url = getFullyQualifiedRequestUri(resourceName);
         for (int retryCount = 0; retryCount <= MAX_RETRIES; retryCount++) {
 
+            TrafficStats.setThreadStatsTag(TRAFFIC_STATS_GENERATE_AUTH_TOKEN_TAG);
             HttpURLConnection httpURLConnection = openHttpURLConnection(url, apiKey);
             try {
                 httpURLConnection.setRequestMethod("POST");
@@ -492,6 +507,7 @@ public class FirebaseInstallationServiceClient {
                 continue;
             } finally {
                 httpURLConnection.disconnect();
+                TrafficStats.clearThreadStatsTag();
             }
         }
         throw new FirebaseInstallationsException(
@@ -544,29 +560,35 @@ public class FirebaseInstallationServiceClient {
         reader.beginObject();
         while (reader.hasNext()) {
             String name = reader.nextName();
-            if (name.equals("name")) {
-                builder.setUri(reader.nextString());
-            } else if (name.equals("fid")) {
-                builder.setFid(reader.nextString());
-            } else if (name.equals("refreshToken")) {
-                builder.setRefreshToken(reader.nextString());
-            } else if (name.equals("authToken")) {
-                reader.beginObject();
-                while (reader.hasNext()) {
-                    String key = reader.nextName();
-                    if (key.equals("token")) {
-                        tokenResult.setToken(reader.nextString());
-                    } else if (key.equals("expiresIn")) {
-                        tokenResult.setTokenExpirationTimestamp(
-                                parseTokenExpirationTimestamp(reader.nextString()));
-                    } else {
-                        reader.skipValue();
+            switch (name) {
+                case "name":
+                    builder.setUri(reader.nextString());
+                    break;
+                case "fid":
+                    builder.setFid(reader.nextString());
+                    break;
+                case "refreshToken":
+                    builder.setRefreshToken(reader.nextString());
+                    break;
+                case "authToken":
+                    reader.beginObject();
+                    while (reader.hasNext()) {
+                        String key = reader.nextName();
+                        if (key.equals("token")) {
+                            tokenResult.setToken(reader.nextString());
+                        } else if (key.equals("expiresIn")) {
+                            tokenResult.setTokenExpirationTimestamp(
+                                    parseTokenExpirationTimestamp(reader.nextString()));
+                        } else {
+                            reader.skipValue();
+                        }
                     }
-                }
-                builder.setAuthToken(tokenResult.build());
-                reader.endObject();
-            } else {
-                reader.skipValue();
+                    builder.setAuthToken(tokenResult.build());
+                    reader.endObject();
+                    break;
+                default:
+                    reader.skipValue();
+                    break;
             }
         }
         reader.endObject();
@@ -606,22 +628,5 @@ public class FirebaseInstallationServiceClient {
      */
     private String getFingerprintHashForPackage() {
         return "48761EEF50EE53AFC4CC9C5F10E6BDE7F8F5B82F";
-    /*
-        byte[] hash;
-
-        try {
-            hash = AndroidUtilsLight.getPackageCertificateHashBytes(context, context.getPackageName());
-
-            if (hash == null) {
-                Log.e(TAG, "Could not get fingerprint hash for package: " + context.getPackageName());
-                return null;
-            } else {
-                return Hex.bytesToStringUppercase(hash, false);
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "No such package: " + context.getPackageName(), e);
-            return null;
-        }
-    */
     }
 }

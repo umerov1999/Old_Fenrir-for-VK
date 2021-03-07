@@ -224,6 +224,26 @@ class LocalMediaStorage extends AbsStorage implements ILocalMediaStorage {
 
     @Override
     public @Nullable
+    Bitmap getMetadataAudioThumbnail(@NonNull Uri uri, int x, int y) {
+        MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+        try {
+            mediaMetadataRetriever.setDataSource(getContext(), uri);
+            byte[] cover = mediaMetadataRetriever.getEmbeddedPicture();
+            if (cover == null) {
+                return null;
+            }
+            InputStream is = new ByteArrayInputStream(cover);
+            Bitmap bitmap = BitmapFactory.decodeStream(is);
+            bitmap = Bitmap.createScaledBitmap(bitmap, x, y, false);
+            return bitmap;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public @Nullable
     Bitmap getOldThumbnail(@Content_Local int type, long content_Id) {
         if (type == Content_Local.PHOTO) {
             return MediaStore.Images.Thumbnails.getThumbnail(getContext().getContentResolver(),
@@ -231,9 +251,13 @@ class LocalMediaStorage extends AbsStorage implements ILocalMediaStorage {
         } else if (type == Content_Local.AUDIO) {
             MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
             Uri oo = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, content_Id);
-            mediaMetadataRetriever.setDataSource(getContext(), oo);
-            InputStream is = new ByteArrayInputStream(mediaMetadataRetriever.getEmbeddedPicture());
             try {
+                mediaMetadataRetriever.setDataSource(getContext(), oo);
+                byte[] cover = mediaMetadataRetriever.getEmbeddedPicture();
+                if (cover == null) {
+                    return null;
+                }
+                InputStream is = new ByteArrayInputStream(cover);
                 Bitmap bitmap = BitmapFactory.decodeStream(is);
                 bitmap = Bitmap.createScaledBitmap(bitmap, 256, 256, false);
                 return bitmap;

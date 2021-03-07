@@ -79,6 +79,10 @@ public abstract class PlaceSupportPresenter<V extends IMvpView & IAttachmentsPla
         getView().goToMessagesLookupFWD(getAccountId(), message.getPeerId(), message.getOriginalId());
     }
 
+    public void fireGoToMessagesLookup(int peerId, int msgId) {
+        getView().goToMessagesLookupFWD(getAccountId(), peerId, msgId);
+    }
+
     public void fireForwardMessagesClick(@NonNull ArrayList<Message> messages) {
         getView().openForwardMessages(getAccountId(), messages);
     }

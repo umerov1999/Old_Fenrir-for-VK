@@ -24,7 +24,7 @@ public class ConversationVideosFragment extends AbsChatAttachmentsFragment<Video
 
     @Override
     protected RecyclerView.LayoutManager createLayoutManager() {
-        int columns = getContext().getResources().getInteger(R.integer.videos_column_count);
+        int columns = getResources().getInteger(R.integer.videos_column_count);
         return new StaggeredGridLayoutManager(columns, StaggeredGridLayoutManager.VERTICAL);
     }
 
@@ -42,7 +42,8 @@ public class ConversationVideosFragment extends AbsChatAttachmentsFragment<Video
 
     @Override
     public boolean onVideoLongClick(int position, Video video) {
-        return false;
+        getPresenter().fireGoToMessagesLookup(video.getMsgPeerId(), video.getMsgId());
+        return true;
     }
 
     @Override

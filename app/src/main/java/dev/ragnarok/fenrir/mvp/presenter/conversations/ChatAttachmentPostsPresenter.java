@@ -46,7 +46,7 @@ public class ChatAttachmentPostsPresenter extends BaseChatAttachmentsPresenter<L
                         for (AttachmentsHistoryResponse.One one : response.items) {
                             if (nonNull(one) && nonNull(one.entry) && one.entry.attachment instanceof VKApiLink) {
                                 VKApiLink dto = (VKApiLink) one.entry.attachment;
-                                docs.add(Dto2Model.transform(dto));
+                                docs.add(Dto2Model.transform(dto).setMsgId(one.messageId).setMsgPeerId(peerId));
                             }
                         }
                     }

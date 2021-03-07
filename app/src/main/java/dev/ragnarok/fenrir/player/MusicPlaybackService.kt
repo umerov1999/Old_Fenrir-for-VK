@@ -354,6 +354,9 @@ class MusicPlaybackService : Service() {
                 return
             }
             stop(java.lang.Boolean.FALSE)
+            if (mPlayList!!.size - 1 < mPlayPos) {
+                mPlayPos = 0
+            }
             val current = mPlayList!![mPlayPos]
             openFile(current, UpdateMeta)
         }

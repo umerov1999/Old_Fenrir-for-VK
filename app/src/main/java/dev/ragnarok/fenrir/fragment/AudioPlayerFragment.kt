@@ -28,11 +28,14 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.PicassoDrawable
 import dev.ragnarok.fenrir.Constants
 import dev.ragnarok.fenrir.Extra
 import dev.ragnarok.fenrir.Injection
 import dev.ragnarok.fenrir.R
 import dev.ragnarok.fenrir.activity.SendAttachmentsActivity
+import dev.ragnarok.fenrir.db.Stores
 import dev.ragnarok.fenrir.domain.IAudioInteractor
 import dev.ragnarok.fenrir.domain.InteractorFactory
 import dev.ragnarok.fenrir.fragment.search.SearchContentType
@@ -41,6 +44,7 @@ import dev.ragnarok.fenrir.materialpopupmenu.MaterialPopupMenuBuilder
 import dev.ragnarok.fenrir.model.Audio
 import dev.ragnarok.fenrir.module.FenrirNative
 import dev.ragnarok.fenrir.module.qrcode.QrGenerator.generateQR
+import dev.ragnarok.fenrir.picasso.transforms.BlurTransformation
 import dev.ragnarok.fenrir.place.PlaceFactory
 import dev.ragnarok.fenrir.player.ui.PlayPauseButton
 import dev.ragnarok.fenrir.player.ui.RepeatButton
@@ -754,14 +758,50 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                 }
             }
         } else {
-            ivCover!!.clear()
-            if (Settings.get().other().isBlur_for_player) {
-                ivBackground!!.clear()
-                ivBackground?.setImageDrawable(null)
+            val audio = MusicUtils.getCurrentAudio()?.url
+            if (!isEmpty(audio) && (audio!!.contains("content://") || audio.contains("file://"))) {
+                val btm = Stores.getInstance().localMedia()
+                    .getMetadataAudioThumbnail(Uri.parse(audio), 512, 512)
+                if (btm == null) {
+                    ivCover!!.clear()
+                    if (Settings.get().other().isBlur_for_player) {
+                        ivBackground!!.clear()
+                        ivBackground?.setImageDrawable(null)
+                    }
+                    ivCover!!.scaleType = ImageView.ScaleType.CENTER
+                    ivCover!!.setImageResource(R.drawable.itunes)
+                    ivCover!!.drawable.setTint(CurrentTheme.getColorOnSurface(requireActivity()))
+                } else {
+                    ivCover!!.scaleType = ImageView.ScaleType.FIT_START
+                    PicassoDrawable.setBitmap(
+                        ivCover!!,
+                        requireActivity(),
+                        btm,
+                        Picasso.LoadedFrom.DISK,
+                        false,
+                        false
+                    )
+                    if (Settings.get().other().isBlur_for_player) {
+                        PicassoDrawable.setBitmap(
+                            ivBackground!!,
+                            requireActivity(),
+                            BlurTransformation.blur(btm, requireActivity(), 25F),
+                            Picasso.LoadedFrom.DISK,
+                            false,
+                            false
+                        )
+                    }
+                }
+            } else {
+                ivCover!!.clear()
+                if (Settings.get().other().isBlur_for_player) {
+                    ivBackground!!.clear()
+                    ivBackground?.setImageDrawable(null)
+                }
+                ivCover!!.scaleType = ImageView.ScaleType.CENTER
+                ivCover!!.setImageResource(R.drawable.itunes)
+                ivCover!!.drawable.setTint(CurrentTheme.getColorOnSurface(requireActivity()))
             }
-            ivCover!!.scaleType = ImageView.ScaleType.CENTER
-            ivCover!!.setImageResource(R.drawable.itunes)
-            ivCover!!.drawable.setTint(CurrentTheme.getColorOnSurface(requireActivity()))
         }
         resolveAddButton()
         val current = MusicUtils.getCurrentAudio()

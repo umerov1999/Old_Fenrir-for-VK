@@ -36,7 +36,7 @@ public class AudioUploadable implements IUploadable<Audio> {
         this.networker = networker;
     }
 
-    private static String findFileName(Context context, Uri uri) {
+    public static String findFileName(Context context, Uri uri) {
         String fileName = uri.getLastPathSegment();
         try {
             String scheme = uri.getScheme();

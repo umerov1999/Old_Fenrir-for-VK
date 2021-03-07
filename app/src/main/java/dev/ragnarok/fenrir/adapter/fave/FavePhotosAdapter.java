@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +28,7 @@ public class FavePhotosAdapter extends RecyclerView.Adapter<FavePhotosAdapter.Vi
     private final int colorPrimary;
     private List<Photo> data;
     private PhotoSelectionListener photoSelectionListener;
+    private PhotoConversationListener photoConversationListener;
 
     public FavePhotosAdapter(Context context, List<Photo> data) {
         this.data = data;
@@ -68,6 +70,13 @@ public class FavePhotosAdapter extends RecyclerView.Adapter<FavePhotosAdapter.Vi
                 photoSelectionListener.onPhotoClicked(viewHolder.getAdapterPosition(), photo);
             }
         });
+        viewHolder.cardView.setOnLongClickListener(v -> {
+            if (photoConversationListener != null) {
+                photoConversationListener.onGoPhotoConversation(photo);
+                return true;
+            }
+            return false;
+        });
     }
 
     @Override
@@ -84,8 +93,16 @@ public class FavePhotosAdapter extends RecyclerView.Adapter<FavePhotosAdapter.Vi
         this.photoSelectionListener = photoSelectionListener;
     }
 
+    public void setPhotoConversationListener(PhotoConversationListener photoConversationListener) {
+        this.photoConversationListener = photoConversationListener;
+    }
+
     public interface PhotoSelectionListener {
         void onPhotoClicked(int position, Photo photo);
+    }
+
+    public interface PhotoConversationListener {
+        void onGoPhotoConversation(@NonNull Photo photo);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
