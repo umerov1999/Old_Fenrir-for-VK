@@ -11,6 +11,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.media.audiofx.AudioEffect
+import android.net.Uri
 import android.os.IBinder
 import android.os.SystemClock
 import android.support.v4.media.MediaMetadataCompat
@@ -20,7 +21,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.media.session.MediaButtonReceiver
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON
+import com.google.android.exoplayer2.DefaultRenderersFactory.*
 import com.google.android.exoplayer2.Player.PlayWhenReadyChangeReason
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.source.MediaSource
@@ -31,6 +32,7 @@ import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import com.squareup.picasso.Picasso.LoadedFrom
 import com.squareup.picasso.Target
 import dev.ragnarok.fenrir.*
+import dev.ragnarok.fenrir.db.Stores
 import dev.ragnarok.fenrir.domain.IAudioInteractor
 import dev.ragnarok.fenrir.domain.InteractorFactory
 import dev.ragnarok.fenrir.media.exo.ExoUtil
@@ -105,6 +107,9 @@ class MusicPlaybackService : Service() {
         super.onCreate()
         mNotificationHelper = NotificationHelper(this)
         setUpRemoteControlClient()
+
+        IDLE_DELAY = Settings.get().other().musicLifecycle
+
         mPlayer = MultiPlayer(this)
         val filter = IntentFilter()
         filter.addAction(SERVICECMD)
@@ -450,7 +455,17 @@ class MusicPlaybackService : Service() {
 
     private fun fetchCoverAndUpdateMetadata() {
         updateMetadata()
-        if (CoverBitmap != null || albumCover == null || albumCover!!.isEmpty()) {
+        if (CoverBitmap != null || Utils.isEmpty(albumCover)) {
+            val audio = currentTrack ?: return
+            audio.url ?: return
+            if (audio.url.contains("content://") || audio.url.contains("file://")) {
+                val btm = Stores.getInstance().localMedia()
+                    .getMetadataAudioThumbnail(Uri.parse(audio.url), 512, 512)
+                btm ?: return
+                CoverBitmap = btm
+                updateMetadata()
+                return
+            }
             return
         }
         PicassoInstance.with()
@@ -812,7 +827,14 @@ class MusicPlaybackService : Service() {
         val mService: WeakReference<MusicPlaybackService> = WeakReference(service)
         var mCurrentMediaPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(
             service, DefaultRenderersFactory(service)
-                .setExtensionRendererMode(EXTENSION_RENDERER_MODE_ON)
+                .setExtensionRendererMode(
+                    when (Settings.get().other().fFmpegPlugin) {
+                        0 -> EXTENSION_RENDERER_MODE_OFF
+                        1 -> EXTENSION_RENDERER_MODE_ON
+                        2 -> EXTENSION_RENDERER_MODE_PREFER
+                        else -> EXTENSION_RENDERER_MODE_OFF
+                    }
+                )
         ).build()
         var isInitialized = false
         var isPreparing = false
@@ -838,23 +860,23 @@ class MusicPlaybackService : Service() {
             val userAgent = Constants.USER_AGENT(Account_Types.BY_TYPE)
             val factory =
                 Utils.getExoPlayerFactory(userAgent, Injection.provideProxySettings().activeProxy)
-            val mediaSource: MediaSource
-            mediaSource = if (url.contains("file://") || url.contains("content://") || url.contains(
-                    RawResourceDataSource.RAW_RESOURCE_SCHEME
-                )
-            ) {
-                ProgressiveMediaSource.Factory(
-                    DefaultDataSourceFactory(
-                        mService.get()!!,
-                        userAgent
+            val mediaSource: MediaSource =
+                if (url.contains("file://") || url.contains("content://") || url.contains(
+                        RawResourceDataSource.RAW_RESOURCE_SCHEME
                     )
-                ).createMediaSource(makeMediaItem(url))
-            } else {
-                if (url.contains("index.m3u8")) HlsMediaSource.Factory(factory)
-                    .createMediaSource(makeMediaItem(url)) else ProgressiveMediaSource.Factory(
-                    factory
-                ).createMediaSource(makeMediaItem(url))
-            }
+                ) {
+                    ProgressiveMediaSource.Factory(
+                        DefaultDataSourceFactory(
+                            mService.get()!!,
+                            userAgent
+                        )
+                    ).createMediaSource(makeMediaItem(url))
+                } else {
+                    if (url.contains("index.m3u8")) HlsMediaSource.Factory(factory)
+                        .createMediaSource(makeMediaItem(url)) else ProgressiveMediaSource.Factory(
+                        factory
+                    ).createMediaSource(makeMediaItem(url))
+                }
             mCurrentMediaPlayer.setMediaSource(mediaSource)
             mCurrentMediaPlayer.prepare()
             mCurrentMediaPlayer.setAudioAttributes(
@@ -893,7 +915,8 @@ class MusicPlaybackService : Service() {
         fun stop() {
             this.isInitialized = false
             isPreparing = false
-            mCurrentMediaPlayer.stop(true)
+            mCurrentMediaPlayer.stop()
+            mCurrentMediaPlayer.clearMediaItems()
         }
 
         fun release() {
@@ -1148,7 +1171,7 @@ class MusicPlaybackService : Service() {
         const val REPEAT_NONE = 0
         const val REPEAT_CURRENT = 1
         const val REPEAT_ALL = 2
-        private const val IDLE_DELAY = Constants.AUDIO_PLAYER_SERVICE_IDLE
+        private var IDLE_DELAY = Constants.AUDIO_PLAYER_SERVICE_IDLE
         private const val MAX_HISTORY_SIZE = 100
         private val mHistory = LinkedList<Int>()
         private val mShuffler = Shuffler(MAX_HISTORY_SIZE)

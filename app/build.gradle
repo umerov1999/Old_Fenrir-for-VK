@@ -17,8 +17,8 @@ android {
         minSdkVersion 21
         //noinspection ExpiredTargetSdkVersion,OldTargetApi
         targetSdkVersion 29
-        versionCode 62
-        versionName '1.62'
+        versionCode 65
+        versionName '1.65'
 
         buildConfigField 'String', 'SERVICE_TOKEN', getProps("vk_service_token")
         buildConfigField 'String', 'YOUTUBE_DEV_KEY', getProps("youtube_dev_key")
@@ -158,6 +158,7 @@ dependencies {
     //noinspection GradleDependency
     fenrir_kate_fullImplementation 'com.google.firebase:firebase-messaging:20.1.0'
     implementation project(path: ':ealvatag')
+    //implementation project(path: ':crashx')
     implementation project(path: ':picasso')
     implementation project(path: ':slidr')
     implementation project(path: ':ucrop')

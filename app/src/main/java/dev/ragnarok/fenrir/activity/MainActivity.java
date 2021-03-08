@@ -588,7 +588,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                     Artist = arr[0];
                     TrackName = TrackName.replace(Artist + " - ", "");
                 }
-                Audio tmp = new Audio().setUrl(data.toString()).setOwnerId(mAccountId).setArtist(Artist).setTitle(TrackName).setId(data.toString().hashCode());
+                Audio tmp = new Audio().setIsLocal(true).setUrl(data.toString()).setOwnerId(mAccountId).setArtist(Artist).setTitle(TrackName).setId(data.toString().hashCode());
                 MusicPlaybackService.startForPlayList(this, new ArrayList<>(Collections.singletonList(tmp)), 0, false);
                 PlaceFactory.getPlayerPlace(mAccountId).tryOpenWith(this);
                 return false;

@@ -450,12 +450,12 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
         LocationResult locationResult;
         boolean gps_enabled;
         boolean network_enabled;
-        LocationListener locationListenerGps = new LocationListener() {
+        LocationListener gpsLocation = new LocationListener() {
             public void onLocationChanged(Location location) {
                 timer1.cancel();
                 locationResult.gotLocation(location);
                 lm.removeUpdates(this);
-                lm.removeUpdates(locationListenerNetwork);
+                lm.removeUpdates(networkLocation);
             }
 
             public void onProviderDisabled(String provider) {
@@ -467,12 +467,12 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
             public void onStatusChanged(String provider, int status, Bundle extras) {
             }
         };
-        LocationListener locationListenerNetwork = new LocationListener() {
+        LocationListener networkLocation = new LocationListener() {
             public void onLocationChanged(Location location) {
                 timer1.cancel();
                 locationResult.gotLocation(location);
                 lm.removeUpdates(this);
-                lm.removeUpdates(locationListenerGps);
+                lm.removeUpdates(gpsLocation);
             }
 
             public void onProviderDisabled(String provider) {
@@ -514,10 +514,10 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
 
             if (gps_enabled)
                 lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,
-                        locationListenerGps);
+                        gpsLocation);
             if (network_enabled)
                 lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
-                        locationListenerNetwork);
+                        networkLocation);
             timer1 = new Timer();
             timer1.schedule(new GetLastLocation(), 5000);
             return true;
@@ -530,8 +530,8 @@ public class FilterEditFragment extends BottomSheetDialogFragment implements Sea
                     requestGPSPermission.launch();
                     return;
                 }
-                lm.removeUpdates(locationListenerGps);
-                lm.removeUpdates(locationListenerNetwork);
+                lm.removeUpdates(gpsLocation);
+                lm.removeUpdates(networkLocation);
 
                 Location net_loc = null, gps_loc = null;
                 if (gps_enabled)

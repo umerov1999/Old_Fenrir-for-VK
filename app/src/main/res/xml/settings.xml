@@ -585,6 +585,24 @@
             android:title="@string/show_audio_top"
             app:iconSpaceReserved="false" />
 
+        <ListPreference
+            android:defaultValue="300000"
+            android:entries="@array/array_lifecycle_names"
+            android:entryValues="@array/array_lifecycle_items"
+            android:key="lifecycle_music_service"
+            android:title="@string/lifecycle_music_service"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/array_ffmpeg_names"
+            android:entryValues="@array/array_ffmpeg_items"
+            android:key="ffmpeg_audio_codecs"
+            android:title="@string/ffmpeg_audio_codecs"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -755,10 +773,10 @@
             app:useSimpleSummaryProvider="false" />
 
         <SwitchPreference
-            android:defaultValue="false"
-            android:key="native_parcel"
+            android:defaultValue="true"
+            android:key="native_parcel_enable"
             android:summary="@string/native_parcel_summary"
-            android:title="@string/native_parcel"
+            android:title="@string/native_parcel_enable"
             app:allowDividerAbove="true"
             app:iconSpaceReserved="false" />
 

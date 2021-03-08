@@ -453,7 +453,13 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
     @SuppressLint("ShowToast")
     private fun onSaveButtonClick(v: View) {
         val audio = MusicUtils.getCurrentAudio() ?: return
-        when (doDownloadAudio(requireActivity(), audio, mAccountId, false, isLocal = false)) {
+        when (doDownloadAudio(
+            requireActivity(),
+            audio,
+            mAccountId,
+            false,
+            isLocal = audio.isLocalServer
+        )) {
             0 -> {
                 CreateCustomToast(requireActivity()).showToastBottom(R.string.saved_audio)
                 ivSave!!.setImageResource(R.drawable.succ)
@@ -461,7 +467,15 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
             1 -> {
                 Snackbar.make(v, R.string.audio_force_download, Snackbar.LENGTH_LONG).setAction(
                     R.string.button_yes
-                ) { doDownloadAudio(requireActivity(), audio, mAccountId, true, isLocal = false) }
+                ) {
+                    doDownloadAudio(
+                        requireActivity(),
+                        audio,
+                        mAccountId,
+                        true,
+                        isLocal = audio.isLocalServer
+                    )
+                }
                     .setBackgroundTint(CurrentTheme.getColorPrimary(requireActivity()))
                     .setAnchorView(mPlayPauseButton).setActionTextColor(
                         if (Utils.isColorDark(
@@ -485,7 +499,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                             audio,
                             mAccountId,
                             true,
-                            isLocal = false
+                            isLocal = audio.isLocalServer
                         )
                     }
                     .setBackgroundTint(CurrentTheme.getColorPrimary(requireActivity()))
@@ -508,7 +522,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
 
     private fun onAddButtonClick() {
         val audio = MusicUtils.getCurrentAudio() ?: return
-        if (audio.isLocal) {
+        if (audio.isLocal || audio.isLocalServer) {
             CreateCustomToast(requireActivity()).showToastError(R.string.not_supported)
             return
         }
@@ -889,7 +903,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
 
     private fun shareAudio() {
         val current = MusicUtils.getCurrentAudio() ?: return
-        if (current.isLocal) {
+        if (current.isLocal || current.isLocalServer) {
             CreateCustomToast(requireActivity()).showToastError(R.string.not_supported)
             return
         }
@@ -910,6 +924,9 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
     private fun broadcastAudio() {
         mBroadcastDisposable.clear()
         val currentAudio = MusicUtils.getCurrentAudio() ?: return
+        if (currentAudio.isLocal || currentAudio.isLocalServer) {
+            return
+        }
         val accountId = mAccountId
         val targetIds: Collection<Int> = setOf(accountId)
         val id = currentAudio.id

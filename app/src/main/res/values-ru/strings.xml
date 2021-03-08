@@ -19,6 +19,20 @@
         <item>Свой…</item>
     </string-array>
 
+    <string-array name="array_lifecycle_names">
+        <item>1 мин.</item>
+        <item>2 мин.</item>
+        <item>5 мин.</item>
+        <item>10 мин.</item>
+        <item>15 мин.</item>
+    </string-array>
+
+    <string-array name="array_ffmpeg_names">
+        <item>Выключен</item>
+        <item>Включен</item>
+        <item>Первостепенный</item>
+    </string-array>
+
     <string-array name="array_photo_rounded_names">
         <item>Всегда скруглять</item>
         <item>Скруглять, если одно фото</item>
@@ -1484,7 +1498,7 @@
     <string name="photo_with_user">Фото с пользователем</string>
     <string name="detect_qr">Распознать QR</string>
     <string name="show_photos_line">Показывать трекбар с фотками</string>
-    <string name="native_parcel">Нативный Parcel</string>
+    <string name="native_parcel_enable">Нативный Parcel</string>
     <string name="native_parcel_summary">Если вылетает при открытии фото</string>
     <string name="disable_likes">Отключить лайки (фото, стена)</string>
     <string name="date_start">Дата от:</string>
@@ -1495,7 +1509,6 @@
     <string name="old_track">Старый</string>
     <string name="new_track">Новый</string>
     <string name="dual_track">Оба</string>
-    <string name="parcel_native_helper">Если при открытии фото будет вылет, включите пункт Нативный Parcel</string>
     <string name="runic">Руны</string>
     <string name="local_media_server">Локальный медиа сервер</string>
     <string name="enabled">Включен</string>
@@ -1525,4 +1538,6 @@
     <string name="kate_gms_token">Kate GMS Токен</string>
     <string name="need_restart">Требуется перезапуск</string>
     <string name="enable_native">Нативные библиотеки</string>
+    <string name="lifecycle_music_service">Время жизни аудиосервиса (сек.)</string>
+    <string name="ffmpeg_audio_codecs">Ffmpeg аудио кодеки</string>
 </resources>

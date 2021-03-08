@@ -212,9 +212,9 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         }
     }
 
-    override fun attachDisplayToPlayer(adapterPosition: Int, gifPlayer: IGifPlayer) {
+    override fun attachDisplayToPlayer(adapterPosition: Int, gifPlayer: IGifPlayer?) {
         val holder = findByPosition(adapterPosition)
-        if (Objects.nonNull(holder) && Objects.nonNull(gifPlayer) && holder!!.isSurfaceReady) {
+        if (holder != null && gifPlayer != null && holder.isSurfaceReady) {
             gifPlayer.setDisplay(holder.mSurfaceHolder)
         }
     }

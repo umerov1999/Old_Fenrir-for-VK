@@ -40,6 +40,34 @@
         <item>4</item>
     </string-array>
 
+    <string-array name="array_lifecycle_names">
+        <item>1 min.</item>
+        <item>2 min.</item>
+        <item>5 min.</item>
+        <item>10 min.</item>
+        <item>15 min.</item>
+    </string-array>
+
+    <string-array name="array_lifecycle_items" translatable="false">
+        <item>60000</item>
+        <item>120000</item>
+        <item>300000</item>
+        <item>600000</item>
+        <item>900000</item>
+    </string-array>
+
+    <string-array name="array_ffmpeg_names">
+        <item>Off</item>
+        <item>Enabled</item>
+        <item>Primary</item>
+    </string-array>
+
+    <string-array name="array_ffmpeg_items" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
     <string-array name="preview_preview_size" translatable="false">
         <item>S: 75 px</item>
         <item>M: 130 px</item>
@@ -1639,7 +1667,7 @@
     <string name="photo_with_user">Photo with user</string>
     <string name="detect_qr">Detect QR</string>
     <string name="show_photos_line">Show photos carousel</string>
-    <string name="native_parcel">Native Parcel</string>
+    <string name="native_parcel_enable">Native Parcel</string>
     <string name="native_parcel_summary">If it crashes when opening a photo</string>
     <string name="disable_likes">Hide likes (photos, walls)</string>
     <string name="date_start">Date from:</string>
@@ -1650,7 +1678,6 @@
     <string name="old_track">Old</string>
     <string name="new_track">New</string>
     <string name="dual_track">Both</string>
-    <string name="parcel_native_helper">If there is a crash when opening a photo, enable the Native Parcel item</string>
     <string name="runic">Runic</string>
     <string name="local_media_server">Local Media Server</string>
     <string name="enabled">Enabled</string>
@@ -1682,4 +1709,6 @@
     <string name="kate_gms_token">Kate GMS Token</string>
     <string name="need_restart">Need Restart</string>
     <string name="enable_native">Enable Native</string>
+    <string name="lifecycle_music_service">Lifecycle music service (sec.)</string>
+    <string name="ffmpeg_audio_codecs">Ffmpeg audio codecs</string>
 </resources>

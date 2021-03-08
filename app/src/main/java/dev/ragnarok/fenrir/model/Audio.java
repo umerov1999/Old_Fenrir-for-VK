@@ -45,6 +45,7 @@ public class Audio extends AbsModel {
     private boolean isSelected;
     private boolean isHq;
     private boolean is_local;
+    private boolean is_localServer;
 
     public Audio() {
 
@@ -74,6 +75,7 @@ public class Audio extends AbsModel {
         isHq = in.readInt() != 0;
         main_artists = Utils.readStringMap(in);
         is_local = in.readInt() != 0;
+        is_localServer = in.readInt() != 0;
     }
 
     public static String getMp3FromM3u8(String url) {
@@ -122,6 +124,7 @@ public class Audio extends AbsModel {
         dest.writeInt(isHq ? 1 : 0);
         Utils.writeStringMap(dest, main_artists);
         dest.writeInt(is_local ? 1 : 0);
+        dest.writeInt(is_localServer ? 1 : 0);
     }
 
     public boolean isAnimationNow() {
@@ -322,6 +325,15 @@ public class Audio extends AbsModel {
 
     public Audio setIsLocal(boolean is_local) {
         this.is_local = is_local;
+        return this;
+    }
+
+    public boolean isLocalServer() {
+        return is_localServer;
+    }
+
+    public Audio setIsLocalServer(boolean is_localServer) {
+        this.is_localServer = is_localServer;
         return this;
     }
 

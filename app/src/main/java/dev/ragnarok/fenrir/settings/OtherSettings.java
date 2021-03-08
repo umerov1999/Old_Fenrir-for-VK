@@ -143,6 +143,29 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public int getFFmpegPlugin() {
+        try {
+            return Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(app).getString("ffmpeg_audio_codecs", "1").trim());
+        } catch (Exception e) {
+            return 1;
+        }
+    }
+
+    @Override
+    public int getMusicLifecycle() {
+        try {
+            int v = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(app).getString("lifecycle_music_service", String.valueOf(Constants.AUDIO_PLAYER_SERVICE_IDLE)).trim());
+            if (v < 60000) {
+                PreferenceManager.getDefaultSharedPreferences(app).edit().putString("lifecycle_music_service", "60000").apply();
+                v = 60000;
+            }
+            return v;
+        } catch (Exception e) {
+            return Constants.AUDIO_PLAYER_SERVICE_IDLE;
+        }
+    }
+
+    @Override
     public boolean isUse_coil() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("use_coil_library", false);
     }
@@ -409,7 +432,7 @@ class OtherSettings implements ISettings.IOtherSettings {
 
     @Override
     public boolean isNative_parcel() {
-        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("native_parcel", false);
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("native_parcel_enable", true);
     }
 
     @Override

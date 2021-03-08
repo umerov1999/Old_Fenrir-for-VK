@@ -24,6 +24,7 @@ import com.squareup.picasso.Transformation;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 
+import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
@@ -46,6 +47,7 @@ public class MiniPlayerView extends FrameLayout implements SeekBar.OnSeekBarChan
 
     private static final int REFRESH_TIME = 1;
     private Disposable mPlayerDisposable = Disposable.disposed();
+    private Disposable mAccountDisposable = Disposable.disposed();
     private int mAccountId;
     private RLottieImageView visual;
     private ImageView play_cover;
@@ -283,6 +285,12 @@ public class MiniPlayerView extends FrameLayout implements SeekBar.OnSeekBarChan
                 .accounts()
                 .getCurrent();
 
+        mAccountDisposable = Settings.get()
+                .accounts()
+                .observeChanges()
+                .observeOn(Injection.provideMainThreadScheduler())
+                .subscribe(v -> mAccountId = v);
+
         long next = refreshCurrentTime();
         queueNextRefresh(next);
         mPlayerDisposable = observeServiceBinding()
@@ -294,6 +302,7 @@ public class MiniPlayerView extends FrameLayout implements SeekBar.OnSeekBarChan
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mPlayerDisposable.dispose();
+        mAccountDisposable.dispose();
 
         mTimeHandler.removeMessages(REFRESH_TIME);
     }
