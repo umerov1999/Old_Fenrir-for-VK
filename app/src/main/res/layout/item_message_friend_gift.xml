@@ -32,7 +32,6 @@
             android:layout_width="@dimen/avatar_size_small"
             android:layout_height="@dimen/avatar_size_small"
             android:layout_marginStart="4dp"
-            android:stateListAnimator="@animator/clicked"
             android:visibility="gone" />
 
         <dev.ragnarok.fenrir.view.OnlineView

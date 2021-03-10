@@ -17,8 +17,8 @@ android {
         minSdkVersion 21
         //noinspection ExpiredTargetSdkVersion,OldTargetApi
         targetSdkVersion 29
-        versionCode 65
-        versionName '1.65'
+        versionCode 66
+        versionName '1.66'
 
         buildConfigField 'String', 'SERVICE_TOKEN', getProps("vk_service_token")
         buildConfigField 'String', 'YOUTUBE_DEV_KEY', getProps("youtube_dev_key")

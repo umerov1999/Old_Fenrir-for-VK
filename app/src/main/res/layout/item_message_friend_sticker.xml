@@ -31,8 +31,7 @@
             android:id="@+id/item_message_avatar"
             android:layout_width="@dimen/avatar_size_small"
             android:layout_height="@dimen/avatar_size_small"
-            android:layout_marginStart="4dp"
-            android:stateListAnimator="@animator/clicked" />
+            android:layout_marginStart="4dp" />
 
         <dev.ragnarok.fenrir.view.OnlineView
             android:id="@+id/item_message_important"

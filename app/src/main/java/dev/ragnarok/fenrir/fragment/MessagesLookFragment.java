@@ -2,17 +2,16 @@ package dev.ragnarok.fenrir.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.ActionMode;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,6 +29,7 @@ import dev.ragnarok.fenrir.activity.ActivityUtils;
 import dev.ragnarok.fenrir.activity.SendAttachmentsActivity;
 import dev.ragnarok.fenrir.adapter.MessagesAdapter;
 import dev.ragnarok.fenrir.fragment.base.PlaceSupportMvpFragment;
+import dev.ragnarok.fenrir.listener.BackPressCallback;
 import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener;
 import dev.ragnarok.fenrir.model.FwdMessages;
 import dev.ragnarok.fenrir.model.Keyboard;
@@ -39,24 +39,24 @@ import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.MessagesLookPresenter;
 import dev.ragnarok.fenrir.mvp.view.IMessagesLookView;
-import dev.ragnarok.fenrir.util.Objects;
+import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.view.LoadMoreFooterHelper;
 
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPresenter, IMessagesLookView>
-        implements IMessagesLookView, MessagesAdapter.OnMessageActionListener {
+        implements IMessagesLookView, MessagesAdapter.OnMessageActionListener, BackPressCallback {
 
     private static final String TAG = MessagesLookFragment.class.getSimpleName();
-    private final ActionModeCallback mActionModeCallback = new ActionModeCallback();
     private RecyclerView mRecyclerView;
+    private RelativeLayout mActionRoot;
     private MessagesAdapter mMessagesAdapter;
     private View mHeaderView;
     private View mFooterView;
     private LoadMoreFooterHelper mHeaderHelper;
     private LoadMoreFooterHelper mFooterHelper;
     private EndlessRecyclerOnScrollListener mEndlessRecyclerOnScrollListener;
-    private ActionMode mActionMode;
+    private ActionModeHolder mActionView;
 
     public static Bundle buildArgs(int accountId, int peerId, int focusMessageId, @Nullable Message message) {
         Bundle args = new Bundle();
@@ -80,7 +80,6 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_messages_lookup, container, false);
         ((AppCompatActivity) requireActivity()).setSupportActionBar(root.findViewById(R.id.toolbar));
-
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, true);
 
         mRecyclerView = root.findViewById(R.id.recycleView);
@@ -90,6 +89,7 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
         mFooterView = inflater.inflate(R.layout.footer_load_more, mRecyclerView, false);
         mHeaderHelper = LoadMoreFooterHelper.createFrom(mHeaderView, this::onHeaderLoadMoreClick);
         mFooterHelper = LoadMoreFooterHelper.createFrom(mFooterView, this::onFooterLoadMoreClick);
+        mActionRoot = root.findViewById(R.id.action_mode);
 
         mEndlessRecyclerOnScrollListener = new EndlessRecyclerOnScrollListener() {
             @Override
@@ -174,21 +174,33 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
 
     @Override
     public void showActionMode(String title, Boolean canEdit, Boolean canPin, Boolean canStar, Boolean doStar) {
-        if (Objects.isNull(mActionMode)) {
-            mActionMode = ((AppCompatActivity) requireActivity()).startSupportActionMode(mActionModeCallback);
+        if (mActionRoot == null) {
+            return;
+        }
+        if (mActionRoot.getChildCount() == 0) {
+            mActionView = new ActionModeHolder(LayoutInflater.from(requireActivity()).inflate(R.layout.view_action_mode, mActionRoot, false));
+            mActionRoot.addView(mActionView.rootView);
+        }
+        if (Settings.get().main().isMessages_menu_down()) {
+            ((RelativeLayout.LayoutParams) mActionView.rootView.getLayoutParams()).removeRule(RelativeLayout.ALIGN_PARENT_TOP);
+            ((RelativeLayout.LayoutParams) mActionView.rootView.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        } else {
+            ((RelativeLayout.LayoutParams) mActionView.rootView.getLayoutParams()).removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            ((RelativeLayout.LayoutParams) mActionView.rootView.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_TOP);
         }
 
-        if (nonNull(mActionMode)) {
-            mActionMode.setTitle(title);
-            mActionMode.invalidate();
-        }
+        mActionView.show();
+        mActionView.titleView.setText(title);
+        mActionView.buttonEdit.setVisibility(canEdit ? View.VISIBLE : View.GONE);
+        mActionView.buttonPin.setVisibility(canPin ? View.VISIBLE : View.GONE);
+        mActionView.buttonStar.setVisibility(canStar ? View.VISIBLE : View.GONE);
+        mActionView.buttonStar.setImageResource(doStar ? R.drawable.star_add : R.drawable.star_none);
     }
 
     @Override
     public void finishActionMode() {
-        if (nonNull(mActionMode)) {
-            mActionMode.finish();
-            mActionMode = null;
+        if (nonNull(mActionView)) {
+            mActionView.hide();
         }
     }
 
@@ -229,7 +241,7 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
 
     @Override
     public void onAvatarClick(@NonNull Message message, int userId) {
-        if (nonNull(mActionMode)) {
+        if (nonNull(mActionView) && mActionView.isVisible()) {
             getPresenter().fireMessageClick(message);
         } else {
             getPresenter().fireOwnerClick(userId);
@@ -238,7 +250,7 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
 
     @Override
     public void onLongAvatarClick(@NonNull Message message, int userId) {
-        if (nonNull(mActionMode)) {
+        if (nonNull(mActionView) && mActionView.isVisible()) {
             getPresenter().fireMessageClick(message);
         } else {
             getPresenter().fireOwnerClick(userId);
@@ -274,6 +286,15 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
     }
 
     @Override
+    public boolean onBackPressed() {
+        if (nonNull(mActionView) && mActionView.isVisible()) {
+            mActionView.hide();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         ActionBar actionBar = ActivityUtils.supportToolbarFor(this);
@@ -290,42 +311,69 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
                 .apply(requireActivity());
     }
 
-    private class ActionModeCallback implements ActionMode.Callback {
+    class ActionModeHolder implements View.OnClickListener {
+        public View buttonClose;
+        public View rootView;
+        public View buttonEdit;
+        public View buttonForward;
+        public View buttonCopy;
+        public View buttonDelete;
+        public View buttonPin;
+        public ImageView buttonStar;
+        public TextView titleView;
 
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
+        public ActionModeHolder(View rootView) {
+            this.rootView = rootView;
+            buttonClose = rootView.findViewById(R.id.buttonClose);
+            buttonEdit = rootView.findViewById(R.id.buttonEdit);
+            buttonForward = rootView.findViewById(R.id.buttonForward);
+            buttonCopy = rootView.findViewById(R.id.buttonCopy);
+            buttonDelete = rootView.findViewById(R.id.buttonDelete);
+            buttonPin = rootView.findViewById(R.id.buttonPin);
+            buttonStar = rootView.findViewById(R.id.buttonStar);
+            titleView = rootView.findViewById(R.id.actionModeTitle);
+
+            buttonClose.setOnClickListener(this);
+            buttonEdit.setOnClickListener(this);
+            buttonForward.setOnClickListener(this);
+            buttonCopy.setOnClickListener(this);
+            buttonDelete.setOnClickListener(this);
+            buttonPin.setOnClickListener(this);
+            buttonStar.setOnClickListener(this);
+        }
+
+        public void show() {
+            rootView.setVisibility(View.VISIBLE);
+        }
+
+        public boolean isVisible() {
+            return rootView.getVisibility() == View.VISIBLE;
+        }
+
+        public void hide() {
+            rootView.setVisibility(View.GONE);
+            getPresenter().fireActionModeDestroy();
         }
 
         @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.delete:
-                    getPresenter().fireActionModeDeleteClick();
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.buttonClose:
+                    hide();
                     break;
-                case R.id.copy:
-                    getPresenter().fireActionModeCopyClick();
-                    break;
-                case R.id.forward:
+                case R.id.buttonForward:
                     getPresenter().fireForwardClick();
+                    hide();
+                    break;
+                case R.id.buttonCopy:
+                    getPresenter().fireActionModeCopyClick();
+                    hide();
+                    break;
+                case R.id.buttonDelete:
+                    getPresenter().fireActionModeDeleteClick();
+                    hide();
                     break;
             }
-
-            mode.finish();
-            return true;
-        }
-
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.messages_menu, menu);
-            return true;
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            getPresenter().fireActionModeDestroy();
-            mActionMode = null;
         }
     }
 }

@@ -35,7 +35,6 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="2dp"
-            android:stateListAnimator="@animator/clicked"
             android:visibility="gone" />
 
         <dev.ragnarok.fenrir.view.OnlineView

@@ -4,18 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.ActionMode;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,6 +28,7 @@ import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.SendAttachmentsActivity;
 import dev.ragnarok.fenrir.adapter.MessagesAdapter;
 import dev.ragnarok.fenrir.fragment.base.PlaceSupportMvpFragment;
+import dev.ragnarok.fenrir.listener.BackPressCallback;
 import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener;
 import dev.ragnarok.fenrir.model.FwdMessages;
 import dev.ragnarok.fenrir.model.Keyboard;
@@ -44,30 +41,31 @@ import dev.ragnarok.fenrir.mvp.presenter.NotReadMessagesPresenter;
 import dev.ragnarok.fenrir.mvp.view.INotReadMessagesView;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation;
-import dev.ragnarok.fenrir.util.Objects;
+import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.LoadMoreFooterHelper;
 
 import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMessagesPresenter, INotReadMessagesView>
-        implements INotReadMessagesView, MessagesAdapter.OnMessageActionListener {
+        implements INotReadMessagesView, MessagesAdapter.OnMessageActionListener, BackPressCallback {
 
     private static final String TAG = NotReadMessagesFragment.class.getSimpleName();
-    private final ActionModeCallback mActionModeCallback = new ActionModeCallback();
     private RecyclerView mRecyclerView;
+    private RelativeLayout mActionRoot;
     private MessagesAdapter mMessagesAdapter;
     private View mHeaderView;
     private View mFooterView;
     private LoadMoreFooterHelper mHeaderHelper;
     private LoadMoreFooterHelper mFooterHelper;
     private EndlessRecyclerOnScrollListener mEndlessRecyclerOnScrollListener;
-    private ActionMode mActionMode;
     private TextView EmptyAvatar;
     private TextView Title;
     private TextView SubTitle;
     private ImageView Avatar;
+    private ActionModeHolder mActionView;
 
     public static Bundle buildArgs(int accountId, int focusMessageId, int incoming, int outgoing, int unreadCount, @NonNull Peer peer) {
         Bundle args = new Bundle();
@@ -104,6 +102,7 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
         mFooterView = inflater.inflate(R.layout.footer_load_more, mRecyclerView, false);
         mHeaderHelper = LoadMoreFooterHelper.createFrom(mHeaderView, this::onHeaderLoadMoreClick);
         mFooterHelper = LoadMoreFooterHelper.createFrom(mFooterView, this::onFooterLoadMoreClick);
+        mActionRoot = root.findViewById(R.id.action_mode);
 
         mEndlessRecyclerOnScrollListener = new EndlessRecyclerOnScrollListener() {
             @Override
@@ -158,14 +157,14 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
 
     @Override
     public void notifyMessagesUpAdded(int startPosition, int count) {
-        if (Objects.nonNull(mMessagesAdapter)) {
+        if (nonNull(mMessagesAdapter)) {
             mMessagesAdapter.notifyItemRangeInserted(startPosition + 1, count); //+header
         }
     }
 
     @Override
     public void notifyMessagesDownAdded(int count) {
-        if (Objects.nonNull(mMessagesAdapter)) {
+        if (nonNull(mMessagesAdapter)) {
             mMessagesAdapter.notifyItemRemoved(0);
             mMessagesAdapter.notifyItemRangeInserted(0, count + 1); //+header
         }
@@ -188,38 +187,50 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
 
     @Override
     public void showActionMode(String title, Boolean canEdit, Boolean canPin, Boolean canStar, Boolean doStar) {
-        if (isNull(mActionMode)) {
-            mActionMode = ((AppCompatActivity) requireActivity()).startSupportActionMode(mActionModeCallback);
+        if (mActionRoot == null) {
+            return;
+        }
+        if (mActionRoot.getChildCount() == 0) {
+            mActionView = new ActionModeHolder(LayoutInflater.from(requireActivity()).inflate(R.layout.view_action_mode, mActionRoot, false));
+            mActionRoot.addView(mActionView.rootView);
+        }
+        if (Settings.get().main().isMessages_menu_down()) {
+            ((RelativeLayout.LayoutParams) mActionView.rootView.getLayoutParams()).removeRule(RelativeLayout.ALIGN_PARENT_TOP);
+            ((RelativeLayout.LayoutParams) mActionView.rootView.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        } else {
+            ((RelativeLayout.LayoutParams) mActionView.rootView.getLayoutParams()).removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            ((RelativeLayout.LayoutParams) mActionView.rootView.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_TOP);
         }
 
-        if (Objects.nonNull(mActionMode)) {
-            mActionMode.setTitle(title);
-            mActionMode.invalidate();
-        }
+        mActionView.show();
+        mActionView.titleView.setText(title);
+        mActionView.buttonEdit.setVisibility(canEdit ? View.VISIBLE : View.GONE);
+        mActionView.buttonPin.setVisibility(canPin ? View.VISIBLE : View.GONE);
+        mActionView.buttonStar.setVisibility(canStar ? View.VISIBLE : View.GONE);
+        mActionView.buttonStar.setImageResource(doStar ? R.drawable.star_add : R.drawable.star_none);
     }
 
     @Override
     public void finishActionMode() {
-        if (Objects.nonNull(mActionMode)) {
-            mActionMode.finish();
-            mActionMode = null;
+        if (nonNull(mActionView)) {
+            mActionView.hide();
         }
     }
 
     @Override
     public void notifyDataChanged() {
-        if (Objects.nonNull(mMessagesAdapter)) {
+        if (nonNull(mMessagesAdapter)) {
             mMessagesAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
     public void setupHeaders(@LoadMoreState int upHeaderState, @LoadMoreState int downHeaderState) {
-        if (Objects.nonNull(mFooterHelper)) {
+        if (nonNull(mFooterHelper)) {
             mFooterHelper.switchToState(upHeaderState);
         }
 
-        if (Objects.nonNull(mHeaderHelper)) {
+        if (nonNull(mHeaderHelper)) {
             mHeaderHelper.switchToState(downHeaderState);
         }
     }
@@ -261,7 +272,7 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
 
     @Override
     public void onAvatarClick(@NonNull Message message, int userId) {
-        if (Objects.nonNull(mActionMode)) {
+        if (nonNull(mActionView) && mActionView.isVisible()) {
             getPresenter().fireMessageClick(message);
         } else {
             getPresenter().fireOwnerClick(userId);
@@ -270,7 +281,7 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
 
     @Override
     public void onLongAvatarClick(@NonNull Message message, int userId) {
-        if (Objects.nonNull(mActionMode)) {
+        if (nonNull(mActionView) && mActionView.isVisible()) {
             getPresenter().fireMessageClick(message);
         } else {
             getPresenter().fireOwnerClick(userId);
@@ -307,7 +318,7 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
 
     @Override
     public void displayUnreadCount(int unreadCount) {
-        if (Objects.nonNull(SubTitle)) {
+        if (nonNull(SubTitle)) {
             SubTitle.setText(getString(R.string.not_read_count, unreadCount));
         }
     }
@@ -344,9 +355,17 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
     }
 
     @Override
+    public boolean onBackPressed() {
+        if (nonNull(mActionView) && mActionView.isVisible()) {
+            mActionView.hide();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-
         new ActivityFeatures.Builder()
                 .begin()
                 .setHideNavigationMenu(false)
@@ -355,42 +374,69 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
                 .apply(requireActivity());
     }
 
-    private class ActionModeCallback implements ActionMode.Callback {
+    class ActionModeHolder implements View.OnClickListener {
+        public View buttonClose;
+        public View rootView;
+        public View buttonEdit;
+        public View buttonForward;
+        public View buttonCopy;
+        public View buttonDelete;
+        public View buttonPin;
+        public ImageView buttonStar;
+        public TextView titleView;
 
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
+        public ActionModeHolder(View rootView) {
+            this.rootView = rootView;
+            buttonClose = rootView.findViewById(R.id.buttonClose);
+            buttonEdit = rootView.findViewById(R.id.buttonEdit);
+            buttonForward = rootView.findViewById(R.id.buttonForward);
+            buttonCopy = rootView.findViewById(R.id.buttonCopy);
+            buttonDelete = rootView.findViewById(R.id.buttonDelete);
+            buttonPin = rootView.findViewById(R.id.buttonPin);
+            buttonStar = rootView.findViewById(R.id.buttonStar);
+            titleView = rootView.findViewById(R.id.actionModeTitle);
+
+            buttonClose.setOnClickListener(this);
+            buttonEdit.setOnClickListener(this);
+            buttonForward.setOnClickListener(this);
+            buttonCopy.setOnClickListener(this);
+            buttonDelete.setOnClickListener(this);
+            buttonPin.setOnClickListener(this);
+            buttonStar.setOnClickListener(this);
+        }
+
+        public void show() {
+            rootView.setVisibility(View.VISIBLE);
+        }
+
+        public boolean isVisible() {
+            return rootView.getVisibility() == View.VISIBLE;
+        }
+
+        public void hide() {
+            rootView.setVisibility(View.GONE);
+            getPresenter().fireActionModeDestroy();
         }
 
         @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.delete:
-                    getPresenter().fireActionModeDeleteClick();
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.buttonClose:
+                    hide();
                     break;
-                case R.id.copy:
-                    getPresenter().fireActionModeCopyClick();
-                    break;
-                case R.id.forward:
+                case R.id.buttonForward:
                     getPresenter().fireForwardClick();
+                    hide();
+                    break;
+                case R.id.buttonCopy:
+                    getPresenter().fireActionModeCopyClick();
+                    hide();
+                    break;
+                case R.id.buttonDelete:
+                    getPresenter().fireActionModeDeleteClick();
+                    hide();
                     break;
             }
-
-            mode.finish();
-            return true;
-        }
-
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.messages_menu, menu);
-            return true;
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            getPresenter().fireActionModeDestroy();
-            mActionMode = null;
         }
     }
 }

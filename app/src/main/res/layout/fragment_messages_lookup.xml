@@ -13,4 +13,9 @@
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+    <RelativeLayout
+        android:id="@+id/action_mode"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></RelativeLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

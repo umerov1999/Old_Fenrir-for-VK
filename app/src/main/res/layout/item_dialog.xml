@@ -30,15 +30,13 @@
         android:paddingStart="12dp"
         android:paddingTop="4dp"
         android:paddingEnd="12dp"
-        android:paddingBottom="4dp"
-        android:stateListAnimator="@animator/clicked">
+        android:paddingBottom="4dp">
 
         <ImageView
             android:id="@+id/item_chat_avatar"
             android:layout_width="@dimen/avatar_size_chat"
             android:layout_height="@dimen/avatar_size_chat"
             android:layout_marginTop="8dp"
-            android:stateListAnimator="@animator/clicked"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
