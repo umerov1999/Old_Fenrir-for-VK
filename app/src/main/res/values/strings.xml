@@ -245,23 +245,23 @@
 
     <string name="notif_setting_title">Notifications</string>
     <string name="messages_in_dialogs_tite">Messages in dialogs</string>
-    <string name="enable_dialogs_notif_title">Off notifications</string>
+    <string name="enable_dialogs_notif_title">Enable notifications</string>
     <string name="enable_dialogs_sound_title">Sound</string>
     <string name="enable_dialogs_vibro_title">Vibration</string>
-    <string name="enable_dialogs_led_title">Light diode</string>
+    <string name="enable_dialogs_led_title">LED</string>
 
     <string name="messages_in_groupchat_tite">Messages in group chat</string>
-    <string name="enable_groupchat_notif_title">Off notifications</string>
+    <string name="enable_groupchat_notif_title">Enable notifications</string>
     <string name="enable_groupchat_sound_title">Sound</string>
     <string name="enable_groupchat_vibro_title">Vibration</string>
-    <string name="enable_groupchat_led_title">Light diode</string>
+    <string name="enable_groupchat_led_title">LED</string>
 
     <string name="enter_dir_name">Enter a name for the new folder</string>
     <string name="cannot_create_catalog">The directory already exists or you entered an invalid directory name</string>
     <string name="path_not_exist">The path does not exist or cannot be read</string>
     <string name="create_dir">New folder</string>
 
-    <string name="quick_answer_title">Quick response</string>
+    <string name="quick_answer_title">Quick answer</string>
 
     <string name="here">Here</string>
     <string name="to_another_dialogue">Into another dialog</string>
@@ -287,13 +287,13 @@
 
     <string name="counter_groups">groups</string>
     <string name="counter_friends">friends</string>
-    <string name="counter_followers">subscribers</string>
-    <string name="counter_mutual">commons</string>
+    <string name="counter_followers">followers</string>
+    <string name="counter_mutual">mutuals</string>
     <string name="counter_requests">subscriptions</string>
     <string name="counter_photos">photo</string>
     <string name="counter_audios">audio</string>
     <string name="counter_videos">video</string>
-    <string name="counter_gifts">presents</string>
+    <string name="counter_gifts">gifts</string>
 
     <string name="refresh">Refresh</string>
 
@@ -316,8 +316,8 @@
         <item>-1</item>
     </string-array>
 
-    <string name="select_image_size_summary">Medium recommended</string>
-    <string name="select_image_size_title">Send image size</string>
+    <string name="select_image_size_summary">Medium is recommended</string>
+    <string name="select_image_size_title">Select the image size</string>
     <string-array name="array_image_sizes_names">
         <item>Small (800 px)</item>
         <item>Average (1200 px)</item>
@@ -377,19 +377,19 @@
     <string name="behaviour_settings">Behavior</string>
     <string name="music_settings">Player and music</string>
 
-    <string name="wall_post">Writing on the wall</string>
+    <string name="wall_post">Wall post</string>
 
-    <string name="wall_post_view">(WRITING ON THE WALL)</string>
+    <string name="wall_post_view">(WALL POST)</string>
 
-    <string name="repost_title">Sending writing</string>
-    <string name="repost_send_message">Send by private message</string>
-    <string name="repost_to_wall">On wall</string>
-    <string name="pin">Anchor</string>
+    <string name="repost_title">Sending the post</string>
+    <string name="repost_send_message">Send in a private message</string>
+    <string name="repost_to_wall">On my wall</string>
+    <string name="pin">Pin</string>
     <string name="unpin">Unpin</string>
     <string name="restore">Restore</string>
 
     <string name="pin_result">The entry is pinned</string>
-    <string name="unpin_result">Unpinned post</string>
+    <string name="unpin_result">The entry is unpinned</string>
     <string name="delete_result">Removed</string>
     <string name="restore_result">Restored</string>
 
@@ -397,19 +397,19 @@
 
     <string name="waiting_for_upload">Waiting for download</string>
 
-    <string name="deleted_post">Writing delete</string>
-    <string name="comment_was_deleted">Comment delete</string>
+    <string name="deleted_post">Post has been deleted</string>
+    <string name="comment_was_deleted">Comment has been deleted</string>
 
     <string name="unknown_error">Unknown error</string>
 
-    <string name="anonymous_poll">Anonymous survey</string>
-    <string name="open_poll">Open survey</string>
+    <string name="anonymous_poll">Anonymous poll</string>
+    <string name="open_poll">Open poll</string>
 
     <string name="drawer_categories_title">Popup menu items</string>
     <string name="drawer_categories_summary">Select the items to be displayed in the main menu of the application</string>
 
     <string name="add_vote">Vote</string>
-    <string name="remove_vote">Delete voice</string>
+    <string name="remove_vote">Delete vote</string>
 
     <string name="saved">Saved</string>
     <string name="tag_modified">MP3 tags updated!</string>
@@ -425,7 +425,7 @@
     <string name="groups">Groups</string>
     <string name="community">Community</string>
 
-    <string name="api_error_internal_1">The server returned the damaged json</string>
+    <string name="api_error_internal_1">The server returned the damaged JSON</string>
     <string name="api_error_1">An unknown error has occurred</string>
     <string name="api_error_2">Application is off</string>
     <string name="api_error_3">Unknown method passed</string>
@@ -487,9 +487,9 @@
     <string name="videos">Videos</string>
     <string name="articles">Articles</string>
     <string name="products">Products</string>
-    <string name="product">Products</string>
+    <string name="product">Product</string>
 
-    <string name="send_on_enter_title">Send by Enter Button</string>
+    <string name="send_on_enter_title">Send by Enter key</string>
 
     <string name="videos_my">Videos</string>
     <string name="videos_albums">Albums</string>
@@ -498,8 +498,8 @@
     <string name="edit">Edit</string>
     <string name="added">Added</string>
 
-    <string name="saved_audio">Download audio…</string>
-    <string name="exist_audio">Already downloaded (change of date …)</string>
+    <string name="saved_audio">Downloading audio…</string>
+    <string name="exist_audio">Already downloaded (change of date…)</string>
     <string name="error_audio">Audio error</string>
 
     <string name="error_sending">Login failed, please try again later</string>
@@ -582,29 +582,29 @@
     <string name="mail_information">Main information</string>
     <string name="sex">Gender</string>
 
-    <string name="relationship_man_single">Not married</string>
-    <string name="relationship_man_in_relationship">Have a girlfriend</string>
+    <string name="relationship_man_single">Single</string>
+    <string name="relationship_man_in_relationship">In a relationship</string>
     <string name="relationship_man_engaged">Engaged</string>
     <string name="relationship_man_married">Married</string>
     <string name="relationship_man_in_love">In love</string>
     <string name="relationship_man_its_complicated">It\'s complicated</string>
-    <string name="relationship_man_activelly_searching">Actively looking</string>
+    <string name="relationship_man_activelly_searching">Actively searching</string>
 
     <string name="relationship_woman_single">Single</string>
-    <string name="relationship_woman_in_relationship">Have a friend</string>
+    <string name="relationship_woman_in_relationship">In a relationship</string>
     <string name="relationship_woman_engaged">Engaged</string>
     <string name="relationship_woman_married">Married</string>
     <string name="relationship_woman_in_love">In love</string>
     <string name="relationship_woman_its_complicated">It\'s complicated</string>
-    <string name="relationship_woman_activelly_searching">Actively looking</string>
+    <string name="relationship_woman_activelly_searching">Actively searching</string>
 
     <string name="birthday">Birthday</string>
-    <string name="hometown">Native city</string>
+    <string name="hometown">Hometown</string>
     <string name="languages">Languages</string>
     <string name="relatives_parents">Parents</string>
-    <string name="relatives_siblings">Brothers and sisters</string>
+    <string name="relatives_siblings">Siblings</string>
     <string name="relatives_children">Children</string>
-    <string name="relatives_grandchildren">Grandchildren\'s</string>
+    <string name="relatives_grandchildren">Grandchildren</string>
     <string name="relatives_others">Others</string>
 
     <!--Контактная информация пользователя-->
@@ -619,7 +619,7 @@
 
     <!--Жизненная позиция пользователя-->
     <string name="beliefs">Life position</string>
-    <string name="political_views">Political preferences</string>
+    <string name="political_views">Political views</string>
     <string name="political_views_communist">communist</string>
     <string name="political_views_socialist">socialist</string>
     <string name="political_views_moderate">moderate</string>
@@ -825,7 +825,7 @@
     <string name="invites_you_to_join_community">%1$s invites you to join the community</string>
     <string name="attachments_in_chat">Chat materials</string>
     <string name="attachments_in_wall">Wall materials</string>
-    <string name="messages_in_json">Chat Json (%1$d messages)</string>
+    <string name="messages_in_json">Chat JSON (%1$d messages)</string>
     <string name="change_hrono_history">Show start</string>
     <string name="show_profile">Profile</string>
     <string name="unknown_photos_count">unknown</string>
@@ -1148,18 +1148,18 @@
     <string name="button_add_photo">Add photo/video</string>
     <string name="log_type_error">Exceptions</string>
     <string name="settings_show_logs_title">Logs</string>
-    <string name="settings_domain">Domain API VK</string>
-    <string name="settings_vk_auth_domain">Domain OAUTH VK</string>
-    <string name="application_logs">Logs application</string>
+    <string name="settings_domain">VK API domain</string>
+    <string name="settings_vk_auth_domain">VK OAUTH domain</string>
+    <string name="application_logs">Application logs</string>
     <string name="search_option_empty_text">Search options not available</string>
     <string name="comment_editing_title">Editing</string>
     <string name="saving">Saving</string>
     <string name="drawer_newsfeed_comments">Comments</string>
-    <string name="suggests">The proposed</string>
+    <string name="suggests">Suggestions</string>
     <string name="doc_filter_all">All documents</string>
     <string name="doc_filter_text">Text</string>
     <string name="doc_filter_archive">Archives</string>
-    <string name="doc_filter_gif" translatable="false">Gif</string>
+    <string name="doc_filter_gif" translatable="false">GIF</string>
     <string name="doc_filter_image">Pictures</string>
     <string name="doc_filter_audio">Audio</string>
     <string name="doc_filter_video">Video</string>
@@ -1173,7 +1173,7 @@
     <string name="message_obtaining_owner_information">Getting information about the owner</string>
     <string name="title_suggest_news">Suggest news</string>
     <string name="who_likes">Who likes?</string>
-    <string name="send_to_friend">Send friend</string>
+    <string name="send_to_friend">Send to a friend</string>
     <string name="other">Other</string>
     <string name="hide_notif_message_body_summary">Don\'t show message text in notification</string>
     <string name="hide_notif_message_body_title">Hide message body</string>
@@ -1183,11 +1183,11 @@
     <string name="place_for_your_comment">• place for your comment •</string>
 
     <string name="section_play_title">Play</string>
-    <string name="play_in_external_player">Play in a third party player</string>
+    <string name="play_in_external_player">Play in a third-party player</string>
     <string name="title_play_fullscreen">Play in full screen</string>
     <string name="title_play_in_dialog">Play (min)</string>
     <string name="title_play_in_coub">Play in Coub</string>
-    <string name="title_play_in_another_software">Play across outside software</string>
+    <string name="title_play_in_another_software">Play through third-party software</string>
     <string name="title_play_in_browser">Play in browser</string>
     <string name="title_select_resolution">Choose quality</string>
     <string name="no_compatible_software_installed">No compatible software installed</string>
@@ -1433,7 +1433,7 @@
     <string name="gift">Present</string>
     <string name="gifts">Presents</string>
     <string name="chat">Chat</string>
-    <string name="chat_json">Chat from Json</string>
+    <string name="chat_json">Chat from JSON</string>
     <string name="lottie_preview">Lottie Preview</string>
     <string name="open_clipboard_url">Open link in clipboard</string>
     <string name="set_offline">Send offline request</string>
@@ -1490,8 +1490,8 @@
     <string name="show_profile_in_additional_page">Show profile in popup menu</string>
     <string name="swipes_for_chats_mode">Swipes in chats</string>
     <string name="chat_users_count">%1$d participants</string>
-    <string name="display_writing">Send typing status</string>
-    <string name="download_directory">Where to download</string>
+    <string name="display_writing">Show typing status</string>
+    <string name="download_directory">Download path</string>
     <string name="music_dir">Music</string>
     <string name="photo_dir">Photo</string>
     <string name="video_dir">Video</string>
@@ -1500,10 +1500,10 @@
     <string name="photo_to_user_dir">Sort photos by folders</string>
     <string name="import_accounts">Importing accounts</string>
     <string name="export_accounts">Exporting accounts</string>
-    <string name="entry_account">Introduce</string>
+    <string name="entry_account">Enter</string>
     <string name="show_qr">Show QR</string>
     <string name="download_peer_to">Download messages</string>
-    <string name="make_screenshot">Screenshot</string>
+    <string name="make_screenshot">Take a screenshot</string>
     <string name="usages">Used</string>
     <string name="is_player_support_volume">Volume switch in the player</string>
     <string name="notif_photos">%1$d photo</string>
@@ -1520,16 +1520,16 @@
     <string name="for_wear">Recommended for Wear OS</string>
     <string name="read_article">Read</string>
     <string name="copy_simple">Copy</string>
-    <string name="webview_night_mode">Turn on night mode WebView</string>
+    <string name="webview_night_mode">Turn on WebView night mode</string>
     <string name="snow_mode">Snow simulation</string>
-    <string name="webview_summary">Color pages depending on the topic</string>
+    <string name="webview_summary">Color pages depending on the theme</string>
     <string name="be_online">Stay online</string>
     <string name="wall_attachments">Wall attachments</string>
     <string name="posts_analized">%1$d posts checked</string>
-    <string name="photo_rounded_view">Rounded image edges</string>
+    <string name="photo_rounded_view">Round image edges</string>
     <string name="font_size">Font size</string>
     <string name="load_history_notif">Dialog preview in notifications</string>
-    <string name="load_history_notif_summary">Show recent messages from chat (may cause captcha)</string>
+    <string name="load_history_notif_summary">Show recent chat messages (may cause captcha)</string>
     <string name="mp3_friendly">If the download does not work</string>
     <string name="search_stories">Search stories</string>
     <string name="by_name">By name</string>
@@ -1537,12 +1537,12 @@
     <string name="notif_sticker">Sticker</string>
     <string name="notif_voice">A voice message</string>
     <string name="developer_mode">Developer mode</string>
-    <string name="dont_write">Don\'t send writing status</string>
+    <string name="dont_write">Don\'t send typing status</string>
     <string name="over_ten_attach">Send more than 10 attachments</string>
     <string name="open_photo">Open photo</string>
     <string name="open_avatar">Open avatar</string>
     <string name="add_and_download_button">Download and add</string>
-    <string name="delete_cache_images">Clear image cache on login</string>
+    <string name="delete_cache_images">Clear image cache on startup</string>
     <string name="click_next_track">Tap on a cover - next track</string>
     <string name="click_next_track_summary_on">Long press - previous</string>
     <string name="click_next_track_summary_off">Long press - next track</string>
@@ -1566,15 +1566,15 @@
     <string name="download_photo_tap">Download pictures by long press"</string>
     <string name="photo_album">Photo Album"</string>
     <string name="custom_second_message_color">Second color of outgoing message"</string>
-    <string name="short_link">Shortening links"</string>
-    <string name="do_short_link">Cut</string>
+    <string name="short_link">Shorten links"</string>
+    <string name="do_short_link">Shorten</string>
     <string name="validate">Verify</string>
     <string name="link_not_banned">Normal link</string>
-    <string name="link_banned">Forbidden link</string>
-    <string name="link_processing">Link is verified</string>
-    <string name="blacklisted">You are blacklisted !!!</string>
+    <string name="link_banned">Banned link</string>
+    <string name="link_processing">Link is being verified</string>
+    <string name="blacklisted">You are blacklisted!!!</string>
     <string name="additional_info">Additional Information</string>
-    <string name="mini_player_audio_round_icon">Round Covers in Mini Player</string>
+    <string name="mini_player_audio_round_icon">Round covers in mini player</string>
     <string name="select_audio">Audio selection</string>
     <string name="stop_action">Stop</string>
     <string name="important">Important messages</string>
@@ -1582,10 +1582,10 @@
     <string name="mention_user">Mention</string>
     <string name="update_news">New news available</string>
     <string name="update_dialogs">Refresh dialogs?</string>
-    <string name="to_html">In Html</string>
-    <string name="to_json">In Json</string>
+    <string name="to_html">To HTML</string>
+    <string name="to_json">To JSON</string>
     <string name="select_type">Choose format:</string>
-    <string name="start_news">Updating news at startup</string>
+    <string name="start_news">Update news at startup</string>
     <string name="disable_sensored_voice">Disable proximity sensor</string>
     <string name="disable_sensored_voice_summary">For voice messages</string>
     <string name="public_photo">Added photo:</string>
@@ -1603,7 +1603,7 @@
     <string name="enter_link">Enter link</string>
     <string name="enter_audio_info">Edit audio</string>
     <string name="info">Attention:</string>
-    <string name="what_search">What are we looking for?</string>
+    <string name="what_search">What are you looking for?</string>
     <string name="search_dialogs">Dialogs</string>
     <string name="search_messages">Messages</string>
     <string name="search_audios">Audio</string>
@@ -1629,7 +1629,7 @@
     <string name="not_friend_show">No longer friends</string>
     <string name="not_friend_show_summary">Show who has removed you from the friends list</string>
     <string name="show_bot_keyboard">Bot keyboard</string>
-    <string name="do_zoom_photo">Zoom pictures like in Instagram</string>
+    <string name="do_zoom_photo">Instagram-like photo zooming</string>
     <string name="do_auto_play_video">Auto select video quality</string>
     <string name="video_not_have_link">Video has no link</string>
     <string name="change_upload_size">Show picture sending quality settings</string>
@@ -1657,8 +1657,8 @@
     <string name="not_permitted">No permissions granted! Function not available</string>
     <string name="dialog_send_helper">You can forward it by swiping the dialogue</string>
     <string name="language_ui">Language</string>
-    <string name="please_wait_internal">Please Wait…</string>
-    <string name="end_list_anim">End list animation</string>
+    <string name="please_wait_internal">Please wait…</string>
+    <string name="end_list_anim">End of list animation</string>
     <string name="radius">Radius</string>
     <string name="gps">GPS</string>
     <string name="restore_login_info">Login: %1$s, Password %2$s, Token %3$s, Validation %4$s</string>
@@ -1707,8 +1707,8 @@
     <string name="video_swipes">Enable video swipes</string>
     <string name="extra_debug">Extra Debug</string>
     <string name="kate_gms_token">Kate GMS Token</string>
-    <string name="need_restart">Need Restart</string>
-    <string name="enable_native">Enable Native</string>
-    <string name="lifecycle_music_service">Lifecycle music service (sec.)</string>
-    <string name="ffmpeg_audio_codecs">Ffmpeg audio codecs</string>
+    <string name="need_restart">Restart required</string>
+    <string name="enable_native">Enable native libraries</string>
+    <string name="lifecycle_music_service">Audio service lifetime (sec)</string>
+    <string name="ffmpeg_audio_codecs">FFmpeg audio codecs</string>
 </resources>
