@@ -100,7 +100,7 @@ public class ReplyFCMMessage {
             nManager.createNotificationChannel(AppNotificationChannels.getCommentsChannel(context));
         }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, AppNotificationChannels.COMMENTS_CHANNEL_ID)
-                .setSmallIcon(R.drawable.client_round)
+                .setSmallIcon(R.drawable.channel)
                 .setLargeIcon(bitmap)
                 .setContentTitle(owner.getFullName())
                 .setContentText(targetText)

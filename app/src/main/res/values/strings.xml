@@ -142,6 +142,7 @@
         <item>Celtic knot</item>
         <item>Yggdrasil v2</item>
         <item>Fenrir</item>
+        <item>Triskel</item>
     </string-array>
 
     <string-array name="array_pagan_symbol_items" translatable="false">
@@ -152,6 +153,7 @@
         <item>4</item>
         <item>5</item>
         <item>6</item>
+        <item>7</item>
     </string-array>
 
     <string-array name="array_accounts_input">
@@ -506,7 +508,7 @@
     <string name="default_category_summary">Select the page that will be shown when the application starts</string>
     <string name="default_category_title">Start page</string>
 
-    <string name="drawer_feedback">Notifications</string>
+    <string name="drawer_feedback">Feedback</string>
 
     <string name="mentioned_in_post">mentioned you in the entry</string>
 
@@ -724,13 +726,13 @@
     <string name="community_send_request">Send request</string>
     <string name="community_join">Join the group</string>
     <string name="community_follow">Subscribe</string>
-    <string name="community_unsubscribe_from_news">Unsubscribe from news</string>
+    <string name="community_unsubscribe_from_news">Unsubscribe</string>
     <string name="community_leave">Leave the group</string>
 
     <string name="community_send_request_success">Application sent</string>
     <string name="community_join_success">You have joined a group</string>
     <string name="community_follow_success">Subscribed</string>
-    <string name="community_unsubscribe_from_news_success">You have successfully unsubscribed from news</string>
+    <string name="community_unsubscribe_from_news_success">Successfully unsubscribed</string>
     <string name="community_leave_success">You left the group</string>
 
     <string name="counter_topics">discussions</string>
@@ -767,7 +769,7 @@
     <string name="share">Share</string>
     <string name="new_comment">New comment</string>
     <string name="editing">Editing</string>
-    <string name="ready">Succes</string>
+    <string name="ready">Success</string>
     <string name="add_document_to_yourself_commit">Add to your documents?</string>
     <string name="avatar_style_title">Avatar style</string>
 
@@ -778,6 +780,8 @@
     <string name="first_pagan">First pagan</string>
     <string name="repo">Repository: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="repo_local_server">Repository: https://github.com/umerov1999/FenrirMediaServer/releases</string>
+    <string name="project_dedicated_summary">Project Dedicated for Arnoldova Ekaterina, https://vk.com/id255645173</string>
+    <string name="project_dedicated">Project Dedicated</string>
     <string name="comment">Comment</string>
     <string name="search">Search</string>
     <string name="input">Input</string>
@@ -954,7 +958,7 @@
     <string name="cancelling">Cancel</string>
     <string name="set_as_active">Make active</string>
     <string name="account_switched_to">Current account</string>
-    <string name="peer_notification_settings">Settings notifications</string>
+    <string name="peer_notification_settings">Notifications\' settings</string>
     <string name="wall_post_is_not_yet_initialized">Post information has not been received yet, please wait</string>
     <string name="post_is_pinned">Pinned post</string>
     <string name="will_be_posted_at">Will be published %1$s</string>
@@ -1098,7 +1102,7 @@
     <string name="select">Choose answer option</string>
     <string name="votes_count">%1$d of votes</string>
 
-    <string name="like_title">I like</string>
+    <string name="like_title">Liked</string>
     <string name="likes">Marks \"I like\"</string>
     <string name="likes_posts">Liked</string>
     <string name="chat_background">Background</string>
@@ -1148,9 +1152,9 @@
     <string name="button_add_photo">Add photo/video</string>
     <string name="log_type_error">Exceptions</string>
     <string name="settings_show_logs_title">Logs</string>
-    <string name="settings_domain">VK API domain</string>
-    <string name="settings_vk_auth_domain">VK OAUTH domain</string>
-    <string name="application_logs">Application logs</string>
+    <string name="settings_domain">Domain API VK</string>
+    <string name="settings_vk_auth_domain">Domain OAUTH VK</string>
+    <string name="application_logs">Logs application</string>
     <string name="search_option_empty_text">Search options not available</string>
     <string name="comment_editing_title">Editing</string>
     <string name="saving">Saving</string>
@@ -1172,7 +1176,7 @@
     <string name="button_postpone">Postpone</string>
     <string name="message_obtaining_owner_information">Getting information about the owner</string>
     <string name="title_suggest_news">Suggest news</string>
-    <string name="who_likes">Who likes?</string>
+    <string name="who_likes">Who liked</string>
     <string name="send_to_friend">Send to a friend</string>
     <string name="other">Other</string>
     <string name="hide_notif_message_body_summary">Don\'t show message text in notification</string>
@@ -1256,7 +1260,7 @@
     <string name="community_moderator">Moderator</string>
     <string name="community_moderator_desc">Can delete user-added content, manage community blacklist</string>
     <string name="community_editor">Editor</string>
-    <string name="community_editor_desc">Can write on behalf of the community, add, delete and edit content, update the main photo</string>
+    <string name="community_editor_desc">Can post on behalf of the community, add, delete and edit content, update the main photo</string>
     <string name="community_administrator">Administrator</string>
     <string name="community_administrator_desc">Can appoint and remove administrators, change community name and address</string>
     <string name="community_manager_show_in_contacts">Show in contact block</string>
@@ -1336,7 +1340,7 @@
     <string name="comment_channel">Comments</string>
     <string name="friend_requests_channel">Friend requests</string>
     <string name="group_invites_channel">Group invitations</string>
-    <string name="likes_channel">I like</string>
+    <string name="likes_channel">Like this</string>
     <string name="new_posts_channel">New entries</string>
 
     <string name="api_error_900">Can\'t send message to blacklisted user</string>

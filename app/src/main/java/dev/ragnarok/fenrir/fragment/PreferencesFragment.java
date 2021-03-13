@@ -437,6 +437,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             });
         }
 
+        findPreference("dedicated").setOnPreferenceClickListener(preference -> {
+            View view = View.inflate(requireActivity(), R.layout.dialog_dedicated, null);
+            new MaterialAlertDialogBuilder(requireActivity())
+                    .setView(view)
+                    .show();
+            return true;
+        });
+
         Preference additional_debug = findPreference("additional_debug");
         if (additional_debug != null) {
             additional_debug.setOnPreferenceClickListener(preference -> {

@@ -109,7 +109,7 @@ public class CommentFCMMessage {
         }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, AppNotificationChannels.COMMENTS_CHANNEL_ID)
-                .setSmallIcon(R.drawable.client_round)
+                .setSmallIcon(R.drawable.comment_thread)
                 .setLargeIcon(ownerInfo.getAvatar())
                 .setContentTitle(title)
                 .setContentText(text)

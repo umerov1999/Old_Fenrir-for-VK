@@ -1,9 +1,5 @@
 apply plugin: 'com.android.library'
 
-repositories {
-    google()
-    jcenter()
-}
 android {
     compileSdkVersion 30
     buildToolsVersion '30.0.3'

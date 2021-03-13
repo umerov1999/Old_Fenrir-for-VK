@@ -38,6 +38,7 @@ public class Constants {
     public static final String PHOTOS_PATH = "DCIM/Fenrir";
     public static final int AUDIO_PLAYER_SERVICE_IDLE = 300000;
     public static final int PIN_DIGITS_COUNT = 4;
+    public static final int MAX_RECENT_CHAT_COUNT = 4;
     public static final int FRAGMENT_CHAT_APP_BAR_VIEW_COUNT = 2;
     public static final int FRAGMENT_CHAT_DOWN_MENU_VIEW_COUNT = 0;
     public static final String PICASSO_TAG = "picasso_tag";

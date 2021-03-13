@@ -288,7 +288,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                 if (isEqualizerAvailable) {
                     item {
                         labelRes = R.string.equalizer
-                        icon = R.drawable.settings
+                        icon = R.drawable.preferences
                         iconColor = CurrentTheme.getColorSecondary(requireActivity())
                         callback = {
                             startEffectsPanel()

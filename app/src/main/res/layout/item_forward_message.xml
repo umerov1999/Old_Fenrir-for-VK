@@ -5,7 +5,8 @@
     android:id="@+id/message_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingBottom="2dp">
+    android:paddingTop="2dp"
+    android:paddingBottom="4dp">
 
     <ImageView
         android:id="@+id/item_fwd_message_avatar"

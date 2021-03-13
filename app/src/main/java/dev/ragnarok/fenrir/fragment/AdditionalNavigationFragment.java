@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.adapter.MenuListAdapter;
@@ -76,7 +77,7 @@ public class AdditionalNavigationFragment extends BaseFragment implements MenuLi
     public static final SectionMenuItem SECTION_ITEM_DIALOGS = new IconMenuItem(PAGE_DIALOGS, R.drawable.email, R.string.dialogs);
     public static final SectionMenuItem SECTION_ITEM_FEED = new IconMenuItem(PAGE_FEED, R.drawable.rss, R.string.feed);
     public static final SectionMenuItem SECTION_ITEM_FEEDBACK = new IconMenuItem(PAGE_NOTIFICATION, R.drawable.feed, R.string.drawer_feedback);
-    public static final SectionMenuItem SECTION_ITEM_NEWSFEED_COMMENTS = new IconMenuItem(PAGE_NEWSFEED_COMMENTS, R.drawable.comment_page, R.string.drawer_newsfeed_comments);
+    public static final SectionMenuItem SECTION_ITEM_NEWSFEED_COMMENTS = new IconMenuItem(PAGE_NEWSFEED_COMMENTS, R.drawable.comment, R.string.drawer_newsfeed_comments);
     public static final SectionMenuItem SECTION_ITEM_GROUPS = new IconMenuItem(PAGE_GROUPS, R.drawable.groups, R.string.groups);
     public static final SectionMenuItem SECTION_ITEM_PHOTOS = new IconMenuItem(PAGE_PHOTOS, R.drawable.photo_album, R.string.photos);
     public static final SectionMenuItem SECTION_ITEM_VIDEOS = new IconMenuItem(PAGE_VIDEOS, R.drawable.video, R.string.videos);
@@ -85,10 +86,9 @@ public class AdditionalNavigationFragment extends BaseFragment implements MenuLi
     public static final SectionMenuItem SECTION_ITEM_DOCS = new IconMenuItem(PAGE_DOCUMENTS, R.drawable.file, R.string.attachment_documents);
     public static final SectionMenuItem SECTION_ITEM_SEARCH = new IconMenuItem(PAGE_SEARCH, R.drawable.magnify, R.string.search);
 
-    public static final SectionMenuItem SECTION_ITEM_SETTINGS = new IconMenuItem(PAGE_PREFERENSES, R.drawable.settings, R.string.settings);
+    public static final SectionMenuItem SECTION_ITEM_SETTINGS = new IconMenuItem(PAGE_PREFERENSES, R.drawable.preferences, R.string.settings);
     public static final SectionMenuItem SECTION_ITEM_ACCOUNTS = new IconMenuItem(PAGE_ACCOUNTS, R.drawable.account_circle, R.string.accounts);
 
-    private static final int MAX_RECENT_COUNT = 5;
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private NavigationDrawerCallbacks mCallbacks;
     private BottomSheetBehavior<View> mBottomSheetBehavior;
@@ -293,7 +293,7 @@ public class AdditionalNavigationFragment extends BaseFragment implements MenuLi
 
             mRecentChats.set(index, recentChat);
         } else {
-            if (mRecentChats.size() >= MAX_RECENT_COUNT) {
+            while (mRecentChats.size() >= Constants.MAX_RECENT_CHAT_COUNT) {
                 mRecentChats.remove(mRecentChats.size() - 1);
             }
 

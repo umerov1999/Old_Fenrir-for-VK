@@ -13,6 +13,7 @@ import android.os.PowerManager;
 import androidx.annotation.Nullable;
 
 import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -28,6 +29,7 @@ import dev.ragnarok.fenrir.media.exo.ExoUtil;
 import dev.ragnarok.fenrir.model.ProxyConfig;
 import dev.ragnarok.fenrir.model.VoiceMessage;
 import dev.ragnarok.fenrir.player.util.MusicUtils;
+import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Logger;
 import dev.ragnarok.fenrir.util.Optional;
 import dev.ragnarok.fenrir.util.Utils;
@@ -146,7 +148,19 @@ public class ExoVoicePlayerSensored implements IVoicePlayer, SensorEventListener
         isPlaying = false;
         setStatus(STATUS_PREPARING);
 
-        exoPlayer = new SimpleExoPlayer.Builder(app).build();
+        int extensionRenderer = DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF;
+        switch (Settings.get().other().getFFmpegPlugin()) {
+            case 0:
+                extensionRenderer = DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF;
+                break;
+            case 1:
+                extensionRenderer = DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON;
+                break;
+            case 2:
+                extensionRenderer = DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER;
+                break;
+        }
+        exoPlayer = new SimpleExoPlayer.Builder(app, new DefaultRenderersFactory(app).setExtensionRendererMode(extensionRenderer)).build();
         exoPlayer.setWakeMode(C.WAKE_MODE_NETWORK);
 
         // DefaultBandwidthMeter bandwidthMeterA = new DefaultBandwidthMeter();

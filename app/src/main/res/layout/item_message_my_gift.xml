@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="2dp"
+    android:paddingBottom="4dp">
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/item_message_restore"

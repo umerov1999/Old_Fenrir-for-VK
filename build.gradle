@@ -9,11 +9,11 @@ buildscript {
     ext.GuavaVersion = '27.1-android'
     ext.exoLibraryVersion = '2.13.2'
     repositories {
-        jcenter()
+        mavenCentral()
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0-beta05'
+        classpath 'com.android.tools.build:gradle:4.2.0-beta06'
         classpath 'com.google.gms:google-services:4.3.5'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
@@ -24,9 +24,9 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter()
+        mavenCentral()
         google()
-        maven { url "https://jitpack.io" }
+        maven { url 'https://dl.bintray.com/google/exoplayer/' }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
     /*

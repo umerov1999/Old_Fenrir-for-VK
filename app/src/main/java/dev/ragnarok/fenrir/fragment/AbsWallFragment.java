@@ -169,6 +169,9 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
                 });
                 paganSymbol.playAnimation();
                 break;
+            case 7:
+                paganSymbol.setImageResource(R.drawable.ic_triskel);
+                break;
             default:
                 paganSymbol.setImageResource(R.drawable.ic_igdr);
                 break;

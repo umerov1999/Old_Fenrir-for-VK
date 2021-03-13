@@ -238,7 +238,7 @@ public class EmojiconsPopup {
         sections.add(new EmojiSection(EmojiSection.TYPE_CARS, getTintedDrawable(R.drawable.car)));
         sections.add(new EmojiSection(EmojiSection.TYPE_ELECTRONICS, getTintedDrawable(R.drawable.laptop_chromebook)));
         sections.add(new EmojiSection(EmojiSection.TYPE_SYMBOLS, getTintedDrawable(R.drawable.pound_box)));
-        sections.add(new EmojiSection(EmojiSection.TYPE_MY_STICKERS, getTintedDrawable(R.drawable.person)));
+        sections.add(new EmojiSection(EmojiSection.TYPE_MY_STICKERS, getTintedDrawable(R.drawable.dir_sticker)));
 
         List<StickerSet> stickersGridViews = new ArrayList<>();
 

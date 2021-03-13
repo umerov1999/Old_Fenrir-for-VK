@@ -46,7 +46,7 @@
     <PreferenceCategory
         android:title="@string/behaviour_settings"
         app:iconSpaceReserved="false"
-        app:initialExpandedChildrenCount="3">
+        app:initialExpandedChildrenCount="6">
 
         <ListPreference
             android:key="default_category"
@@ -852,6 +852,11 @@
         <Preference
             android:key="select_custom_icon"
             android:title="@string/select_custom_icon"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="dedicated"
+            android:title="@string/project_dedicated"
             app:iconSpaceReserved="false" />
 
         <Preference
