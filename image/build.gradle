@@ -2,17 +2,15 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion '30.0.3'
+    compileSdkVersion fenrirCompileSDK
+    buildToolsVersion fenrirBuildTools
 
     resourcePrefix "image_"
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion fenrirMinSDK
         //noinspection ExpiredTargetSdkVersion,OldTargetApi
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion fenrirTargetSDK
 
     }
 

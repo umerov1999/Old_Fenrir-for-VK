@@ -266,7 +266,7 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
         }
 
         holder.artist.setText(audio.getArtist());
-        if (Constants.DEFAULT_ACCOUNT_TYPE == Account_Types.VK_ANDROID && !audio.isHLS()) {
+        if (!audio.isLocal() && !audio.isLocalServer() && Constants.DEFAULT_ACCOUNT_TYPE == Account_Types.VK_ANDROID && !audio.isHLS()) {
             holder.quality.setVisibility(View.VISIBLE);
             if (audio.getIsHq()) {
                 holder.quality.setImageResource(R.drawable.high_quality);

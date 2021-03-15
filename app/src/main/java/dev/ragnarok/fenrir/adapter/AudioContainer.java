@@ -201,7 +201,7 @@ public class AudioContainer extends LinearLayout {
                 holder.tvTitle.setText(audio.getArtist());
                 holder.tvSubtitle.setText(audio.getTitle());
 
-                if (Constants.DEFAULT_ACCOUNT_TYPE == Account_Types.VK_ANDROID && !audio.isHLS()) {
+                if (!audio.isLocal() && !audio.isLocalServer() && Constants.DEFAULT_ACCOUNT_TYPE == Account_Types.VK_ANDROID && !audio.isHLS()) {
                     holder.quality.setVisibility(View.VISIBLE);
                     if (audio.getIsHq()) {
                         holder.quality.setImageResource(R.drawable.high_quality);

@@ -1,15 +1,14 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion '30.0.3'
+    compileSdkVersion fenrirCompileSDK
+    buildToolsVersion fenrirBuildTools
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion fenrirMinSDK
         //noinspection ExpiredTargetSdkVersion,OldTargetApi
-        targetSdkVersion 29
+        targetSdkVersion fenrirTargetSDK
         versionName "16.3.5"
-        multiDexEnabled true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

@@ -8,6 +8,15 @@ buildscript {
     ext.RxJavaVersion = '3.0.11'
     ext.GuavaVersion = '27.1-android'
     ext.exoLibraryVersion = '2.13.2'
+
+    ext.fenrirCompileSDK = 30
+    ext.fenrirBuildTools = '30.0.3'
+    ext.fenrirNdk = '22.0.7026061'
+    ext.fenrirMinSDK = 21
+    ext.fenrirTargetSDK = 29
+    ext.FenrirVersionCode = 71
+    ext.FenrirVersionName = "1:$FenrirVersionCode-build"
+
     repositories {
         mavenCentral()
         google()

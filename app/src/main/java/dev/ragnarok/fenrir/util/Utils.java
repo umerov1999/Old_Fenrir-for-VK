@@ -100,6 +100,7 @@ import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.player.util.MusicUtils;
 import dev.ragnarok.fenrir.service.ErrorLocalizer;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
+import dev.ragnarok.fenrir.view.emoji.EmojiconTextView;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import okhttp3.Call;
@@ -1423,11 +1424,19 @@ public class Utils {
         return new MediaItem.Builder().setUri(url).build();
     }
 
-    public static <T extends RecyclerView.ViewHolder> View createAlertRecycleFrame(@NonNull Context context, @NonNull RecyclerView.Adapter<T> adapter) {
+    public static <T extends RecyclerView.ViewHolder> View createAlertRecycleFrame(@NonNull Context context, @NonNull RecyclerView.Adapter<T> adapter, @Nullable String message) {
         View root = View.inflate(context, R.layout.alert_recycle_frame, null);
         RecyclerView recyclerView = root.findViewById(R.id.alert_recycle);
         recyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
         recyclerView.setAdapter(adapter);
+
+        EmojiconTextView mMessage = root.findViewById(R.id.alert_message);
+        if (isEmpty(message)) {
+            mMessage.setVisibility(View.GONE);
+        } else {
+            mMessage.setVisibility(View.VISIBLE);
+            mMessage.setText(message);
+        }
         return root;
     }
 

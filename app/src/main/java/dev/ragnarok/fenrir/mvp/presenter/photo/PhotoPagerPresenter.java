@@ -263,12 +263,9 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
 
         MaterialAlertDialogBuilder dlg = new MaterialAlertDialogBuilder(context)
                 .setTitle(context.getString(R.string.uploaded) + " " + AppTextUtils.getDateFromUnixTime(photo.getDate()))
-                .setView(Utils.createAlertRecycleFrame(context, adapter))
+                .setView(Utils.createAlertRecycleFrame(context, adapter, Utils.isEmpty(photo.getText()) ? null : context.getString(R.string.description_hint) + ": " + photo.getText()))
                 .setPositiveButton("OK", null)
                 .setCancelable(true);
-        if (!Utils.isEmpty(photo.getText())) {
-            dlg.setMessage(context.getString(R.string.description_hint) + ": " + photo.getText());
-        }
         dlg.show();
     }
 
@@ -518,10 +515,6 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
 
     public void fireWithUserClick() {
         Photo photo = getCurrent();
-        MaterialAlertDialogBuilder dlg = new MaterialAlertDialogBuilder(context)
-                .setTitle(R.string.has_tags)
-                .setPositiveButton("OK", null)
-                .setCancelable(true);
         appendDisposable(
                 InteractorFactory.createPhotosInteractor().getTags(getAccountId(), photo.getOwnerId(), photo.getId(), photo.getAccessKey())
                         .compose(RxUtils.applySingleIOToMainSchedulers())
@@ -536,7 +529,11 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
                                 }
                             }
                             ButtonAdapter adapter = new ButtonAdapter(context, buttons);
-                            dlg.setView(Utils.createAlertRecycleFrame(context, adapter));
+                            MaterialAlertDialogBuilder dlg = new MaterialAlertDialogBuilder(context)
+                                    .setTitle(R.string.has_tags)
+                                    .setPositiveButton("OK", null)
+                                    .setCancelable(true);
+                            dlg.setView(Utils.createAlertRecycleFrame(context, adapter, null));
                             dlg.show();
                         }, throwable -> showError(getView(), throwable)));
     }

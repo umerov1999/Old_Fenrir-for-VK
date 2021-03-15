@@ -526,6 +526,31 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
 
         Logger.d(TAG, "handleIntent, extras: " + extras + ", action: " + action);
 
+        if (Intent.ACTION_SEND_MULTIPLE.equals(action)) {
+            String mime = intent.getType();
+            if (getMainActivityTransform() == MainActivityTransforms.MAIN && extras != null && !Utils.isEmpty(mime) && ActivityUtils.isMimeAudio(mime) && extras.containsKey(Intent.EXTRA_STREAM)) {
+                ArrayList<Uri> uris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+                if (!Utils.isEmpty(uris)) {
+                    ArrayList<Audio> playlist = new ArrayList<>(uris.size());
+                    for (Uri i : uris) {
+                        String track = AudioUploadable.findFileName(this, i);
+                        String TrackName = track.replace(".mp3", "");
+                        String Artist = "";
+                        String[] arr = TrackName.split(" - ");
+                        if (arr.length > 1) {
+                            Artist = arr[0];
+                            TrackName = TrackName.replace(Artist + " - ", "");
+                        }
+                        Audio tmp = new Audio().setIsLocal(true).setUrl(i.toString()).setOwnerId(mAccountId).setArtist(Artist).setTitle(TrackName).setId(i.toString().hashCode());
+                        playlist.add(tmp);
+                    }
+                    intent.removeExtra(Intent.EXTRA_STREAM);
+                    MusicPlaybackService.startForPlayList(this, playlist, 0, false);
+                    PlaceFactory.getPlayerPlace(mAccountId).tryOpenWith(this);
+                }
+            }
+        }
+
         if (extras != null && ActivityUtils.checkInputExist(this)) {
             mCurrentFrontSection = AdditionalNavigationFragment.SECTION_ITEM_DIALOGS;
             openNavigationPage(mCurrentFrontSection);
