@@ -118,6 +118,12 @@ public class CommentEditPresenter extends AbsAttachmentsEditPresenter<ICommentEd
         uploadManager.enqueue(intents);
     }
 
+    @Override
+    protected void doUploadFile(String file, int size) {
+        List<UploadIntent> intents = UploadUtils.createIntents(getAccountId(), destination, file, size, false);
+        uploadManager.enqueue(intents);
+    }
+
     private void onUploadsReceived(List<Upload> uploads) {
         getData().addAll(createFrom(uploads));
         safeNotifyDataSetChanged();

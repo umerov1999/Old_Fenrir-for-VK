@@ -306,6 +306,26 @@ public abstract class AbsAttachmentsEditPresenter<V extends IBaseAttachmentsEdit
         throw new UnsupportedOperationException();
     }
 
+    protected void doUploadFile(String file, int size) {
+        throw new UnsupportedOperationException();
+    }
+
+    public final void fireFileSelected(String file) {
+        doUploadFile(file, Upload.IMAGE_SIZE_FULL);
+    }
+
+    private void doFinalUploadPhotos(List<LocalPhoto> photos, int size) {
+        if (size == Upload.IMAGE_SIZE_CROPPING && photos.size() == 1) {
+            Uri to_up = photos.get(0).getFullImageUri();
+            if (new File(to_up.getPath()).isFile()) {
+                to_up = Uri.fromFile(new File(to_up.getPath()));
+            }
+            getView().displayCropPhotoDialog(to_up);
+        } else {
+            doUploadPhotos(photos, size);
+        }
+    }
+
     private void doUploadPhotos(List<LocalPhoto> photos) {
         Integer size = Settings.get()
                 .main()
@@ -314,7 +334,7 @@ public abstract class AbsAttachmentsEditPresenter<V extends IBaseAttachmentsEdit
         if (isNull(size)) {
             getView().displaySelectUploadPhotoSizeDialog(photos);
         } else {
-            doUploadPhotos(photos, size);
+            doFinalUploadPhotos(photos, size);
         }
     }
 
@@ -375,7 +395,7 @@ public abstract class AbsAttachmentsEditPresenter<V extends IBaseAttachmentsEdit
     }
 
     public void fireUploadPhotoSizeSelected(@NonNull List<LocalPhoto> photos, int size) {
-        doUploadPhotos(photos, size);
+        doFinalUploadPhotos(photos, size);
     }
 
     public final void firePollCreated(@NonNull Poll poll) {

@@ -70,6 +70,27 @@
                             emojicon:emojiconSize="20sp"
                             tools:text="Message" />
 
+                        <LinearLayout
+                            android:id="@+id/item_message_attachment_container"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/item_message_text"
+                            android:orientation="vertical">
+
+                            <include
+                                layout="@layout/attachment_links"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+
+                        <dev.ragnarok.fenrir.view.emoji.BotKeyboardView
+                            android:id="@+id/input_keyboard_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:visibility="gone"
+                            app:track_keyboard_height="false" />
+
                         <TextView
                             android:id="@+id/item_message_time"
                             android:layout_width="wrap_content"
@@ -86,6 +107,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?attr/colorSurface"
                     android:padding="4dp">
 
                     <ImageButton
@@ -107,7 +129,7 @@
 
                         android:layout_toStartOf="@+id/activity_quick_answer_send"
                         android:layout_toEndOf="@+id/activity_quick_answer_to_dialog"
-                        android:background="?message_bubble_color"
+                        android:background="@drawable/background_message_round"
                         android:gravity="center_vertical"
                         android:hint="@string/text_hint"
                         android:maxLines="3"

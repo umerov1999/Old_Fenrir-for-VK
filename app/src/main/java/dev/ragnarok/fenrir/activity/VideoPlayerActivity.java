@@ -391,6 +391,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
         setRequestedOrientation(isLandscape ? ActivityInfo.SCREEN_ORIENTATION_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
+    @SuppressWarnings("deprecation")
     private boolean hasPipPermission() {
         AppOpsManager appsOps = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

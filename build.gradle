@@ -14,8 +14,8 @@ buildscript {
     ext.fenrirNdk = '22.0.7026061'
     ext.fenrirMinSDK = 21
     ext.fenrirTargetSDK = 29
-    ext.FenrirVersionCode = 71
-    ext.FenrirVersionName = "1:$FenrirVersionCode-build"
+    ext.FenrirVersionCode = 72
+    ext.FenrirVersionName = "1:build-$FenrirVersionCode"
 
     repositories {
         mavenCentral()

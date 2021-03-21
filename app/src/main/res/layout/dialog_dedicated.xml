@@ -24,8 +24,8 @@
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.MediumRoundedPictures" />
 
             <dev.ragnarok.fenrir.module.rlottie.RLottieImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
                 android:layout_gravity="bottom|center_horizontal"
                 android:alpha="0.80"
                 app:fromRes="@raw/heart"

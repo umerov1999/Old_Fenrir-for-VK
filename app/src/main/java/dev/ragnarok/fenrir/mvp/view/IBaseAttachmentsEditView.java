@@ -55,4 +55,6 @@ public interface IBaseAttachmentsEditView extends IMvpView, IAccountDependencyVi
     void notifyItemRangeInsert(int position, int count);
 
     void notifyItemRemoved(int position);
+
+    void displayCropPhotoDialog(Uri uri);
 }

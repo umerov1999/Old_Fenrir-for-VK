@@ -356,6 +356,16 @@ public class PostCreatePresenter extends AbsPostEditPresenter<IPostCreateView> {
         uploadManager.enqueue(UploadUtils.createIntents(getAccountId(), destination, photos, size, true));
     }
 
+    @Override
+    protected void doUploadFile(String file, int size) {
+        if (isNull(post)) {
+            return;
+        }
+
+        UploadDestination destination = UploadDestination.forPost(post.getDbid(), ownerId);
+        uploadManager.enqueue(UploadUtils.createIntents(getAccountId(), destination, file, size, true));
+    }
+
     private boolean filterAttachmentEvents(IAttachmentsRepository.IBaseEvent event) {
         return nonNull(post)
                 && event.getAttachToType() == AttachToType.POST

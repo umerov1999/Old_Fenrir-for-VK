@@ -455,6 +455,7 @@
         <item name="sticker_hint_color">#DD1E1E1E</item>
         <item name="quick_reply_icon_color">#FFF</item>
         <item name="dividerColor">#313131</item>
+        <item name="white_color">#FFFFFF</item>
     </style>
 
     <style name="Theme.MaterialCardView" parent="Widget.MaterialComponents.CardView">

@@ -22,6 +22,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -56,6 +57,7 @@ import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.view.DateTimePicker;
 import dev.ragnarok.fenrir.view.WeakRunnable;
 import dev.ragnarok.fenrir.view.YoutubeButton;
+import me.minetsh.imaging.IMGEditActivity;
 
 import static dev.ragnarok.fenrir.util.Objects.isNull;
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
@@ -92,6 +94,12 @@ public abstract class AbsAttachmentsEditFragment<P extends AbsAttachmentsEditPre
             ArrayList<LocalPhoto> photos = result.getData().getParcelableArrayListExtra(Extra.PHOTOS);
             AssertUtils.requireNonNull(photos);
             getPresenter().firePhotosFromGallerySelected(photos);
+        }
+    });
+    private final ActivityResultLauncher<Intent> openRequestResizePhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            assert result.getData() != null;
+            getPresenter().fireFileSelected(result.getData().getStringExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH));
         }
     });
     private TextInputEditText mTextBody;
@@ -312,12 +320,23 @@ public abstract class AbsAttachmentsEditFragment<P extends AbsAttachmentsEditPre
 
     @Override
     public void displaySelectUploadPhotoSizeDialog(@NonNull List<LocalPhoto> photos) {
-        int[] values = {Upload.IMAGE_SIZE_800, Upload.IMAGE_SIZE_1200, Upload.IMAGE_SIZE_FULL};
+        int[] values = {Upload.IMAGE_SIZE_800, Upload.IMAGE_SIZE_1200, Upload.IMAGE_SIZE_FULL, Upload.IMAGE_SIZE_CROPPING};
         new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(R.string.select_image_size_title)
                 .setItems(R.array.array_image_sizes_names,
                         (dialogInterface, index) -> getPresenter().fireUploadPhotoSizeSelected(photos, values[index]))
                 .show();
+    }
+
+    @Override
+    public void displayCropPhotoDialog(Uri uri) {
+        try {
+            openRequestResizePhoto.launch(new Intent(requireContext(), IMGEditActivity.class)
+                    .putExtra(IMGEditActivity.EXTRA_IMAGE_URI, uri)
+                    .putExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH, new File(requireActivity().getExternalCacheDir() + File.separator + "scale.jpg").getAbsolutePath()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

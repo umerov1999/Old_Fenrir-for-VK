@@ -346,6 +346,7 @@
         <item name="sticker_hint_color">#99FFFFFF</item>
         <item name="quick_reply_icon_color">#151515</item>
         <item name="dividerColor">#E1E3E7</item>
+        <item name="white_color">#FFFFFF</item>
     </style>
 
     <style name="QuickReply.Amoled" parent="QuickReply" />

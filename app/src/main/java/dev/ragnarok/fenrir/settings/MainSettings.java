@@ -15,7 +15,6 @@ import dev.ragnarok.fenrir.util.Optional;
 class MainSettings implements ISettings.IMainSettings {
 
     private static final String KEY_IMAGE_SIZE = "image_size";
-    private static final String KEY_RUN_COUNT = "run_count";
     private static final String KEY_CUSTOM_TABS = "custom_tabs";
 
     private final Context app;

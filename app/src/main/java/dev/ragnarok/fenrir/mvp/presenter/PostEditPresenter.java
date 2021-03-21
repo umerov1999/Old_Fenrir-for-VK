@@ -399,6 +399,12 @@ public class PostEditPresenter extends AbsPostEditPresenter<IPostEditView> {
     }
 
     @Override
+    protected void doUploadFile(String file, int size) {
+        List<UploadIntent> intents = UploadUtils.createIntents(getAccountId(), uploadDestination, file, size, false);
+        uploadManager.enqueue(intents);
+    }
+
+    @Override
     public void saveState(@NonNull Bundle outState) {
         super.saveState(outState);
         outState.putParcelable(SAVE_POST, post);

@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.PermissionChecker;
 import androidx.fragment.app.Fragment;
 
@@ -51,6 +52,17 @@ public class AppPerms {
                 callback.granted();
             } else {
                 Utils.showRedTopToast(fragment.requireActivity(), R.string.not_permitted);
+            }
+        });
+        return () -> request.launch(permissions);
+    }
+
+    public static doRequestPermissions requestPermissionsActivity(@NonNull AppCompatActivity activity, @NonNull String[] permissions, @NonNull onPermissionsGranted callback) {
+        ActivityResultLauncher<String[]> request = activity.registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+            if (Utils.checkValues(result.values())) {
+                callback.granted();
+            } else {
+                Utils.showRedTopToast(activity, R.string.not_permitted);
             }
         });
         return () -> request.launch(permissions);

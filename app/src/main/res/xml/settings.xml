@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        android:key="group_general"
         android:title="@string/general_settings"
         app:iconSpaceReserved="false">
 
@@ -121,7 +120,6 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="photo_appearance"
         android:title="@string/photo_settings"
         app:iconSpaceReserved="false"
         app:initialExpandedChildrenCount="3">
@@ -184,7 +182,6 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="group_appearance"
         android:title="@string/appearance_settings"
         app:iconSpaceReserved="false"
         app:initialExpandedChildrenCount="3">
@@ -606,7 +603,6 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="for_wear"
         android:title="@string/for_wear"
         app:iconSpaceReserved="false">
 
@@ -692,7 +688,6 @@
 
     <PreferenceCategory
         android:icon="@drawable/valknut_settings"
-        android:key="wall_themed"
         android:title="@string/wall_themed"
         app:iconSpaceReserved="false">
         <SwitchPreference
@@ -717,7 +712,6 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="dev"
         android:title="@string/dev_settings"
         app:iconSpaceReserved="false"
         app:initialExpandedChildrenCount="3">

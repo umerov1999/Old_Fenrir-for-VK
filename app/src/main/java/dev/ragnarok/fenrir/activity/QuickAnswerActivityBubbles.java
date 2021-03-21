@@ -1,15 +1,18 @@
 package dev.ragnarok.fenrir.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.view.WindowManager;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -18,41 +21,66 @@ import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.concurrent.TimeUnit;
 
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
+import dev.ragnarok.fenrir.adapter.AttachmentsHolder;
+import dev.ragnarok.fenrir.adapter.AttachmentsViewBinder;
 import dev.ragnarok.fenrir.crypt.KeyLocationPolicy;
 import dev.ragnarok.fenrir.domain.IMessagesRepository;
 import dev.ragnarok.fenrir.domain.Repository;
+import dev.ragnarok.fenrir.link.LinkHelper;
 import dev.ragnarok.fenrir.listener.TextWatcherAdapter;
 import dev.ragnarok.fenrir.longpoll.NotificationHelper;
+import dev.ragnarok.fenrir.model.Article;
+import dev.ragnarok.fenrir.model.Audio;
+import dev.ragnarok.fenrir.model.AudioArtist;
+import dev.ragnarok.fenrir.model.AudioPlaylist;
+import dev.ragnarok.fenrir.model.Document;
+import dev.ragnarok.fenrir.model.Link;
+import dev.ragnarok.fenrir.model.Market;
+import dev.ragnarok.fenrir.model.MarketAlbum;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.Peer;
+import dev.ragnarok.fenrir.model.Photo;
+import dev.ragnarok.fenrir.model.PhotoAlbum;
+import dev.ragnarok.fenrir.model.Poll;
+import dev.ragnarok.fenrir.model.Post;
 import dev.ragnarok.fenrir.model.SaveMessageBuilder;
+import dev.ragnarok.fenrir.model.Sticker;
+import dev.ragnarok.fenrir.model.Story;
+import dev.ragnarok.fenrir.model.Video;
+import dev.ragnarok.fenrir.model.VoiceMessage;
+import dev.ragnarok.fenrir.model.WallReply;
+import dev.ragnarok.fenrir.model.WikiPage;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
+import dev.ragnarok.fenrir.player.MusicPlaybackService;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.task.TextingNotifier;
+import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.AppTextUtils;
-import dev.ragnarok.fenrir.util.Objects;
+import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
-import io.reactivex.rxjava3.core.Observable;
+import dev.ragnarok.fenrir.view.emoji.BotKeyboardView;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
 import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 
 public class QuickAnswerActivityBubbles extends AppCompatActivity {
 
     public static final String PARAM_BODY = "body";
 
-    public static final String EXTRA_FOCUS_TO_FIELD = "focus_to_field";
-    public static final String EXTRA_LIVE_DELAY = "live_delay";
     private final CompositeDisposable mLiveSubscription = new CompositeDisposable();
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissionsActivity(this,
+            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+            () -> CustomToast.CreateCustomToast(this).showToast(R.string.permission_all_granted_text));
     private TextInputEditText etText;
     private TextingNotifier notifier;
     private int accountId;
@@ -76,22 +104,16 @@ public class QuickAnswerActivityBubbles extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(Settings.get().main().isAmoledTheme() ? R.style.QuickReply_Amoled : R.style.QuickReply);
+        setTheme(Settings.get().ui().getMainTheme());
         super.onCreate(savedInstanceState);
 
         messagesRepository = Repository.INSTANCE.getMessages();
-
-        boolean focusToField = getIntent().getBooleanExtra(EXTRA_FOCUS_TO_FIELD, true);
-
-        if (!focusToField) {
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        }
 
         msg = java.util.Objects.requireNonNull(getIntent().getExtras()).getParcelable(Extra.MESSAGE);
         accountId = getIntent().getExtras().getInt(Extra.ACCOUNT_ID);
         notifier = new TextingNotifier(accountId);
 
-        setContentView(R.layout.activity_quick_answer);
+        setContentView(R.layout.activity_quick_answer_bubbles);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
@@ -125,12 +147,188 @@ public class QuickAnswerActivityBubbles extends AppCompatActivity {
             ViewUtils.displayAvatar(ivAvatar, transformation, imgUrl, null);
         }
 
+        ViewGroup forwardMessagesRoot = findViewById(R.id.forward_messages);
+        View attachmentsRoot = findViewById(R.id.item_message_attachment_container);
+        AttachmentsHolder attachmentsHolder = new AttachmentsHolder();
+        attachmentsHolder.setVgAudios(attachmentsRoot.findViewById(R.id.audio_attachments))
+                .setVgVideos(attachmentsRoot.findViewById(R.id.video_attachments))
+                .setVgDocs(attachmentsRoot.findViewById(R.id.docs_attachments))
+                .setVgArticles(attachmentsRoot.findViewById(R.id.articles_attachments))
+                .setVgPhotos(attachmentsRoot.findViewById(R.id.photo_attachments))
+                .setVgPosts(attachmentsRoot.findViewById(R.id.posts_attachments))
+                .setVoiceMessageRoot(attachmentsRoot.findViewById(R.id.voice_message_attachments));
+
+        BotKeyboardView botKeyboardView = findViewById(R.id.input_keyboard_container);
+        if (nonNull(botKeyboardView)) {
+            if (nonNull(msg.getKeyboard()) && msg.getKeyboard().getInline() && msg.getKeyboard().getButtons().size() > 0) {
+                botKeyboardView.setVisibility(View.VISIBLE);
+                botKeyboardView.setButtons(msg.getKeyboard().getButtons(), false);
+            } else {
+                botKeyboardView.setVisibility(View.GONE);
+            }
+
+            botKeyboardView.setDelegate((button, needClose) -> {
+                if (button.getType().equals("open_link")) {
+                    LinkHelper.openLinkInBrowser(this, button.getLink());
+                    return;
+                }
+                SaveMessageBuilder builder = new SaveMessageBuilder(accountId, msg.getPeerId())
+                        .setPayload(button.getPayload()).setBody(button.getLabel());
+
+                compositeDisposable.add(messagesRepository.put(builder)
+                        .compose(RxUtils.applySingleIOToMainSchedulers())
+                        .subscribe(this::onMessageSaved, this::onSavingError));
+            });
+        }
+        boolean hasAttachments = Utils.nonEmpty(msg.getFwd()) || (nonNull(msg.getAttachments()) && msg.getAttachments().size() > 0);
+        attachmentsRoot.setVisibility(hasAttachments ? View.VISIBLE : View.GONE);
+
+        if (hasAttachments) {
+            AttachmentsViewBinder attachmentsViewBinder = new AttachmentsViewBinder(this, new AttachmentsViewBinder.OnAttachmentsActionCallback() {
+                @Override
+                public void onPollOpen(@NonNull Poll poll) {
+
+                }
+
+                @Override
+                public void onVideoPlay(@NonNull Video video) {
+
+                }
+
+                @Override
+                public void onAudioPlay(int position, @NonNull ArrayList<Audio> audios) {
+                    MusicPlaybackService.startForPlayList(QuickAnswerActivityBubbles.this, audios, position, false);
+                }
+
+                @Override
+                public void onForwardMessagesOpen(@NonNull ArrayList<Message> messages) {
+
+                }
+
+                @Override
+                public void onOpenOwner(int userId) {
+
+                }
+
+                @Override
+                public void onGoToMessagesLookup(@NonNull Message message) {
+
+                }
+
+                @Override
+                public void onDocPreviewOpen(@NonNull Document document) {
+
+                }
+
+                @Override
+                public void onPostOpen(@NonNull Post post) {
+
+                }
+
+                @Override
+                public void onLinkOpen(@NonNull Link link) {
+
+                }
+
+                @Override
+                public void onUrlOpen(@NonNull String url) {
+
+                }
+
+                @Override
+                public void onFaveArticle(@NonNull Article article) {
+
+                }
+
+                @Override
+                public void onWikiPageOpen(@NonNull WikiPage page) {
+
+                }
+
+                @Override
+                public void onStickerOpen(@NonNull Sticker sticker) {
+
+                }
+
+                @Override
+                public void onPhotosOpen(@NonNull ArrayList<Photo> photos, int index, boolean refresh) {
+
+                }
+
+                @Override
+                public void onUrlPhotoOpen(@NonNull String url, @NonNull String prefix, @NonNull String photo_prefix) {
+
+                }
+
+                @Override
+                public void onStoryOpen(@NonNull Story story) {
+
+                }
+
+                @Override
+                public void onWallReplyOpen(@NonNull WallReply reply) {
+
+                }
+
+                @Override
+                public void onAudioPlaylistOpen(@NonNull AudioPlaylist playlist) {
+
+                }
+
+                @Override
+                public void onPhotoAlbumOpen(@NonNull PhotoAlbum album) {
+
+                }
+
+                @Override
+                public void onMarketAlbumOpen(@NonNull MarketAlbum market_album) {
+
+                }
+
+                @Override
+                public void onMarketOpen(@NonNull Market market) {
+
+                }
+
+                @Override
+                public void onArtistOpen(@NonNull AudioArtist artist) {
+
+                }
+
+                @Override
+                public void onRequestWritePermissions() {
+                    requestWritePermission.launch();
+                }
+            });
+            attachmentsViewBinder.setVoiceActionListener(new AttachmentsViewBinder.VoiceActionListener() {
+                @Override
+                public void onVoiceHolderBinded(int voiceMessageId, int voiceHolderId) {
+
+                }
+
+                @Override
+                public void onVoicePlayButtonClick(int voiceHolderId, int voiceMessageId, @NonNull VoiceMessage voiceMessage) {
+                    Audio audio = new Audio().setId(voiceMessage.getId()).setOwnerId(voiceMessage.getOwnerId())
+                            .setTitle(voiceMessage.getId() + "_" + voiceMessage.getOwnerId()).setArtist("Voice")
+                            .setIsLocal(true).setDuration(voiceMessage.getDuration()).setUrl(firstNonEmptyString(voiceMessage.getLinkMp3(), voiceMessage.getLinkOgg()));
+                    MusicPlaybackService.startForPlayList(QuickAnswerActivityBubbles.this, new ArrayList<>(Collections.singletonList(audio)), 0, false);
+                }
+
+                @Override
+                public void onTranscript(String voiceMessageId, int messageId) {
+
+                }
+            });
+            attachmentsViewBinder.displayAttachments(msg.getAttachments(), attachmentsHolder, true, msg.getId());
+            attachmentsViewBinder.displayForwards(msg.getFwd(), forwardMessagesRoot, this, true);
+        }
+
         etText.addTextChangedListener(new TextWatcherAdapter() {
             @Override
             public void afterTextChanged(Editable editable) {
                 cancelFinishWithDelay();
 
-                if (Objects.nonNull(notifier)) {
+                if (nonNull(notifier)) {
                     notifier.notifyAboutTyping(msg.getPeerId());
                 }
             }
@@ -146,17 +344,6 @@ public class QuickAnswerActivityBubbles extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
-
-        boolean liveDelay = getIntent().getBooleanExtra(EXTRA_LIVE_DELAY, false);
-        if (liveDelay) {
-            finishWithDelay();
-        }
-    }
-
-    private void finishWithDelay() {
-        mLiveSubscription.add(Observable.just(new Object())
-                .delay(1, TimeUnit.MINUTES)
-                .subscribe(o -> finish()));
     }
 
     private void cancelFinishWithDelay() {

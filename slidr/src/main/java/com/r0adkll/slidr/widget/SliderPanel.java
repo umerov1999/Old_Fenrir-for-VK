@@ -743,7 +743,8 @@ public class SliderPanel extends FrameLayout {
     private void applyScrim(float percent) {
         float alpha = (percent * (config.getScrimStartAlpha() - config.getScrimEndAlpha())) + config.getScrimEndAlpha();
         scrimPaint.setAlpha(toAlpha(alpha));
-        invalidate(scrimRenderer.getDirtyRect(config.getPosition()));
+        //invalidate(scrimRenderer.getDirtyRect(config.getPosition()));
+        invalidate();
     }
 
 

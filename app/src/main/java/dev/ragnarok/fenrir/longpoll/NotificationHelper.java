@@ -489,14 +489,12 @@ public class NotificationHelper {
 
             Intent intentQuick = QuickAnswerActivityBubbles.forStart(context, accountId, message, text != null ? text.toString() : context.getString(R.string.error), peer.getAvaUrl(), peer.getTitle());
             PendingIntent bubbleIntent = PendingIntent.getActivity(context, 0, intentQuick, PendingIntent.FLAG_UPDATE_CURRENT);
-            NotificationCompat.BubbleMetadata.Builder bubbleBuilder = new NotificationCompat.BubbleMetadata.Builder();
-            bubbleBuilder.setIntent(bubbleIntent);
             assert avatar != null;
-            bubbleBuilder.setIcon(IconCompat.createWithAdaptiveBitmap(avatar));
+            NotificationCompat.BubbleMetadata.Builder bubbleBuilder = new NotificationCompat.BubbleMetadata.Builder(bubbleIntent, IconCompat.createWithAdaptiveBitmap(avatar));
 
             bubbleBuilder.setSuppressNotification(true);
             bubbleBuilder.setAutoExpandBubble(false);
-            bubbleBuilder.setDesiredHeight(Utils.dp(300));
+            bubbleBuilder.setDesiredHeight(400);
             builder.setBubbleMetadata(bubbleBuilder.build());
         } catch (Exception e) {
             //FileLog.e(e);

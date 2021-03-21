@@ -172,6 +172,17 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
             case 7:
                 paganSymbol.setImageResource(R.drawable.ic_triskel);
                 break;
+            case 8:
+                paganSymbol.fromRes(R.raw.fire_fan, Utils.dp(180), Utils.dp(140), new int[]{
+                        0xffffff,
+                        CurrentTheme.getColorOnSurface(requireActivity()),
+                        0x333333,
+                        CurrentTheme.getColorPrimary(requireActivity()),
+                        0x777777,
+                        CurrentTheme.getColorSecondary(requireActivity())
+                });
+                paganSymbol.playAnimation();
+                break;
             default:
                 paganSymbol.setImageResource(R.drawable.ic_igdr);
                 break;

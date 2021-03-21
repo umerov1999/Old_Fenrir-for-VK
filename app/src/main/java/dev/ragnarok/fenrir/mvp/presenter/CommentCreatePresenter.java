@@ -154,6 +154,11 @@ public class CommentCreatePresenter extends AbsAttachmentsEditPresenter<ICreateC
         uploadManager.enqueue(UploadUtils.createIntents(getAccountId(), destination, photos, size, true));
     }
 
+    @Override
+    protected void doUploadFile(String file, int size) {
+        uploadManager.enqueue(UploadUtils.createIntents(getAccountId(), destination, file, size, true));
+    }
+
     @OnGuiCreated
     private void resolveButtonsVisibility() {
         if (isGuiReady()) {
