@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.Handler;
+import android.os.Looper;
 
 /**
  * Finishes an context after a period of inactivity if the device is on battery power.
@@ -44,7 +45,7 @@ public final class InactivityTimer {
         this.callback = callback;
 
         powerStatusReceiver = new PowerStatusReceiver();
-        handler = new Handler();
+        handler = new Handler(Looper.getMainLooper());
     }
 
     /**

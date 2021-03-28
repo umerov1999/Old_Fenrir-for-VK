@@ -18,11 +18,13 @@ public class ChatUserDtoAdapter extends AbsAdapter implements JsonDeserializer<C
         VKApiUser user = context.deserialize(json, VKApiUser.class);
 
         ChatUserDto dto = new ChatUserDto();
-        JsonObject root = json.getAsJsonObject();
+        if (checkObject(json)) {
+            JsonObject root = json.getAsJsonObject();
+            dto.invited_by = optInt(root, "invited_by");
+            dto.type = optString(root, "type");
+        }
 
         dto.user = user;
-        dto.invited_by = optInt(root, "invited_by");
-        dto.type = optString(root, "type");
         return dto;
     }
 }

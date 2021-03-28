@@ -5,6 +5,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +18,35 @@ public class AbsAdapter {
         return optString(json, name, null);
     }
 
+    public static boolean checkObject(JsonElement element) {
+        return element instanceof JsonObject;
+    }
+
+    public static boolean checkArray(JsonElement element) {
+        return element instanceof JsonArray && ((JsonArray) element).size() > 0;
+    }
+
+    public static boolean hasObject(JsonObject object, String name) {
+        if (object.has(name)) {
+            JsonElement element = object.get(name);
+            return element.isJsonObject();
+        }
+        return false;
+    }
+
+    public static boolean hasArray(JsonObject object, String name) {
+        if (object.has(name)) {
+            JsonElement element = object.get(name);
+            return element.isJsonArray() && element.getAsJsonArray().size() > 0;
+        }
+        return false;
+    }
+
     public static String optString(JsonObject json, String name, String fallback) {
         try {
-            return json.has(name) ? json.get(name).getAsString() : fallback;
-        } catch (ClassCastException | IllegalStateException e) {
+            JsonElement element = json.get(name);
+            return element instanceof JsonPrimitive ? element.getAsString() : fallback;
+        } catch (Exception e) {
             if (Constants.IS_DEBUG) {
                 e.printStackTrace();
             }
@@ -34,8 +60,9 @@ public class AbsAdapter {
 
     public static boolean optBoolean(JsonObject json, String name) {
         try {
-            return json.has(name) && json.get(name).getAsBoolean();
-        } catch (ClassCastException | IllegalStateException e) {
+            JsonElement element = json.get(name);
+            return element instanceof JsonPrimitive && element.getAsBoolean();
+        } catch (Exception e) {
             if (Constants.IS_DEBUG) {
                 e.printStackTrace();
             }
@@ -54,13 +81,13 @@ public class AbsAdapter {
     public static int getFirstInt(JsonObject json, int fallback, String... names) {
         try {
             for (String name : names) {
-                if (json.has(name)) {
-                    return json.get(name).getAsInt();
+                JsonElement element = json.get(name);
+                if (element instanceof JsonPrimitive) {
+                    return element.getAsInt();
                 }
             }
-
             return fallback;
-        } catch (ClassCastException | IllegalStateException | NumberFormatException e) {
+        } catch (Exception e) {
             if (Constants.IS_DEBUG) {
                 e.printStackTrace();
             }
@@ -75,8 +102,8 @@ public class AbsAdapter {
     public static long optLong(JsonArray array, int index, long fallback) {
         try {
             JsonElement opt = opt(array, index);
-            return opt == null ? fallback : opt.getAsLong();
-        } catch (ClassCastException | IllegalStateException | NumberFormatException e) {
+            return opt instanceof JsonPrimitive ? opt.getAsLong() : fallback;
+        } catch (Exception e) {
             if (Constants.IS_DEBUG) {
                 e.printStackTrace();
             }
@@ -87,8 +114,8 @@ public class AbsAdapter {
     public static int optInt(JsonArray array, int index, int fallback) {
         try {
             JsonElement opt = opt(array, index);
-            return opt == null ? fallback : opt.getAsInt();
-        } catch (ClassCastException | IllegalStateException | NumberFormatException e) {
+            return opt instanceof JsonPrimitive ? opt.getAsInt() : fallback;
+        } catch (Exception e) {
             if (Constants.IS_DEBUG) {
                 e.printStackTrace();
             }
@@ -111,8 +138,8 @@ public class AbsAdapter {
     public static String optString(JsonArray array, int index, String fallback) {
         try {
             JsonElement opt = opt(array, index);
-            return opt == null ? fallback : opt.getAsString();
-        } catch (ClassCastException | IllegalStateException e) {
+            return opt instanceof JsonPrimitive ? opt.getAsString() : fallback;
+        } catch (Exception e) {
             if (Constants.IS_DEBUG) {
                 e.printStackTrace();
             }
@@ -122,8 +149,9 @@ public class AbsAdapter {
 
     public static int optInt(JsonObject json, String name, int fallback) {
         try {
-            return json.has(name) ? json.get(name).getAsInt() : fallback;
-        } catch (ClassCastException | IllegalStateException | NumberFormatException e) {
+            JsonElement element = json.get(name);
+            return (element instanceof JsonPrimitive) ? element.getAsInt() : fallback;
+        } catch (Exception e) {
             if (Constants.IS_DEBUG) {
                 e.printStackTrace();
             }
@@ -137,8 +165,29 @@ public class AbsAdapter {
 
     public static long optLong(JsonObject json, String name, long fallback) {
         try {
-            return json.has(name) ? json.get(name).getAsLong() : fallback;
-        } catch (ClassCastException | IllegalStateException | NumberFormatException e) {
+            JsonElement element = json.get(name);
+            return element instanceof JsonPrimitive ? element.getAsLong() : fallback;
+        } catch (Exception e) {
+            if (Constants.IS_DEBUG) {
+                e.printStackTrace();
+            }
+            return fallback;
+        }
+    }
+
+    protected static <T> List<T> parseArray(JsonElement array, Class<? extends T> type, JsonDeserializationContext context, List<T> fallback) {
+        if (!checkArray(array)) {
+            return fallback;
+        }
+
+        try {
+            List<T> list = new ArrayList<>();
+            for (int i = 0; i < array.getAsJsonArray().size(); i++) {
+                list.add(context.deserialize(array.getAsJsonArray().get(i), type));
+            }
+
+            return list;
+        } catch (JsonParseException e) {
             if (Constants.IS_DEBUG) {
                 e.printStackTrace();
             }
@@ -168,16 +217,12 @@ public class AbsAdapter {
 
     protected static String[] optStringArray(JsonObject root, String name, String[] fallback) {
         try {
-            if (!root.has(name)) {
+            JsonElement element = root.get(name);
+            if (!checkArray(element)) {
                 return fallback;
             }
-
-            JsonArray array = root.getAsJsonArray(name);
-            if (array == null) {
-                return fallback;
-            }
-            return parseStringArray(array);
-        } catch (ClassCastException | IllegalStateException e) {
+            return parseStringArray(element.getAsJsonArray());
+        } catch (Exception e) {
             if (Constants.IS_DEBUG) {
                 e.printStackTrace();
             }
@@ -187,16 +232,12 @@ public class AbsAdapter {
 
     protected static int[] optIntArray(JsonObject root, String name, int[] fallback) {
         try {
-            if (!root.has(name)) {
+            JsonElement element = root.get(name);
+            if (!checkArray(element)) {
                 return fallback;
             }
-
-            JsonArray array = root.getAsJsonArray(name);
-            if (array == null) {
-                return fallback;
-            }
-            return parseIntArray(array);
-        } catch (ClassCastException | IllegalStateException | NumberFormatException e) {
+            return parseIntArray(element.getAsJsonArray());
+        } catch (Exception e) {
             if (Constants.IS_DEBUG) {
                 e.printStackTrace();
             }
@@ -210,12 +251,12 @@ public class AbsAdapter {
                 return fallback;
             }
 
-            JsonArray array_r = array.get(index).getAsJsonArray();
-            if (array_r == null) {
+            JsonElement array_r = array.get(index);
+            if (!checkArray(array_r)) {
                 return fallback;
             }
-            return parseIntArray(array_r);
-        } catch (ClassCastException | IllegalStateException | NumberFormatException e) {
+            return parseIntArray(array_r.getAsJsonArray());
+        } catch (Exception e) {
             if (Constants.IS_DEBUG) {
                 e.printStackTrace();
             }

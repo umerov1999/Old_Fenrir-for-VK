@@ -66,8 +66,6 @@ import dev.ragnarok.fenrir.activity.alias.WhiteFenrirAlias;
 import dev.ragnarok.fenrir.activity.alias.YellowFenrirAlias;
 import dev.ragnarok.fenrir.api.model.LocalServerSettings;
 import dev.ragnarok.fenrir.db.DBHelper;
-import dev.ragnarok.fenrir.domain.InteractorFactory;
-import dev.ragnarok.fenrir.domain.Repository;
 import dev.ragnarok.fenrir.filepicker.model.DialogConfigs;
 import dev.ragnarok.fenrir.filepicker.model.DialogProperties;
 import dev.ragnarok.fenrir.filepicker.view.FilePickerDialog;
@@ -88,7 +86,6 @@ import dev.ragnarok.fenrir.settings.VkPushRegistration;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Objects;
-import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 
 import static dev.ragnarok.fenrir.util.Utils.isEmpty;
@@ -435,6 +432,12 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 View view = View.inflate(requireActivity(), R.layout.dialog_about_us, null);
                 new MaterialAlertDialogBuilder(requireActivity())
                         .setView(view)
+                        .setOnDismissListener(dialog -> {
+                            View view1 = View.inflate(requireActivity(), R.layout.dialog_dedicated, null);
+                            new MaterialAlertDialogBuilder(requireActivity())
+                                    .setView(view1)
+                                    .show();
+                        })
                         .show();
                 return true;
             });

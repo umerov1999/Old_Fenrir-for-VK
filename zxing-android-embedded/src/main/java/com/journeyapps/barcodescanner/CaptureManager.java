@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
@@ -118,7 +119,7 @@ public class CaptureManager {
         };
         barcodeView.getBarcodeView().addStateListener(stateListener);
 
-        handler = new Handler();
+        handler = new Handler(Looper.getMainLooper());
 
         inactivityTimer = new InactivityTimer(activity, () -> {
             Log.d(TAG, "Finishing due to inactivity");

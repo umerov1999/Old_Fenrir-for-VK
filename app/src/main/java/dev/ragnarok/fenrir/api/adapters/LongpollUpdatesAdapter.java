@@ -21,17 +21,20 @@ public class LongpollUpdatesAdapter extends AbsAdapter implements JsonDeserializ
 
     @Override
     public VkApiLongpollUpdates deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        JsonObject root = json.getAsJsonObject();
         VkApiLongpollUpdates updates = new VkApiLongpollUpdates();
+        if (!checkObject(json)) {
+            throw new JsonParseException(TAG + " error parse object");
+        }
+        JsonObject root = json.getAsJsonObject();
 
         updates.failed = optInt(root, "failed");
         updates.ts = optLong(root, "ts");
 
-        JsonArray array = root.getAsJsonArray("updates");
+        JsonElement array = root.get("updates");
 
-        if (nonNull(array)) {
-            for (int i = 0; i < array.size(); i++) {
-                JsonArray updateArray = array.get(i).getAsJsonArray();
+        if (checkArray(array)) {
+            for (int i = 0; i < array.getAsJsonArray().size(); i++) {
+                JsonArray updateArray = array.getAsJsonArray().get(i).getAsJsonArray();
 
                 AbsLongpollEvent event = context.deserialize(updateArray, AbsLongpollEvent.class);
 

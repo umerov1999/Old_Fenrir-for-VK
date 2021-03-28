@@ -2,6 +2,7 @@ package com.journeyapps.barcodescanner;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 
 import com.google.zxing.DecodeHintType;
@@ -78,7 +79,7 @@ public class BarcodeView extends CameraPreview {
 
     private void initialize() {
         decoderFactory = new DefaultDecoderFactory();
-        resultHandler = new Handler(resultCallback);
+        resultHandler = new Handler(Looper.getMainLooper(), resultCallback);
     }
 
     private Decoder createDecoder() {

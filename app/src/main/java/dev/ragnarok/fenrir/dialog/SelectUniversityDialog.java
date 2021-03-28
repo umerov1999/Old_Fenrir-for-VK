@@ -38,7 +38,6 @@ public class SelectUniversityDialog extends AccountDependencyDialogFragment impl
     private int countryId;
     private IDatabaseInteractor mDatabaseInteractor;
     private ArrayList<University> mData;
-    private RecyclerView mRecyclerView;
     private UniversitiesAdapter mAdapter;
     private String filter;
     private final Runnable runSearchRunnable = () -> request(0);
@@ -77,7 +76,7 @@ public class SelectUniversityDialog extends AccountDependencyDialogFragment impl
             }
         });
 
-        mRecyclerView = root.findViewById(R.id.list);
+        RecyclerView mRecyclerView = root.findViewById(R.id.list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false));
 
         boolean firstRun = false;

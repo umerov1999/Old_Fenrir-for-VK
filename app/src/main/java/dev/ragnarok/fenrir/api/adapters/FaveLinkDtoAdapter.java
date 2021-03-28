@@ -12,18 +12,24 @@ import dev.ragnarok.fenrir.api.model.FaveLinkDto;
 import dev.ragnarok.fenrir.api.model.VKApiPhoto;
 
 public class FaveLinkDtoAdapter extends AbsAdapter implements JsonDeserializer<FaveLinkDto> {
+    private static final String TAG = FaveLinkDtoAdapter.class.getSimpleName();
 
     @Override
     public FaveLinkDto deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (!checkObject(json)) {
+            throw new JsonParseException(TAG + " error parse object");
+        }
+        FaveLinkDto link = new FaveLinkDto();
         JsonObject root = json.getAsJsonObject();
 
-        FaveLinkDto link = new FaveLinkDto();
-        if (!root.has("link"))
+        if (!hasObject(root, "link"))
             return link;
         root = root.get("link").getAsJsonObject();
         link.id = optString(root, "id");
         link.description = optString(root, "description");
-        link.photo = context.deserialize(root.get("photo"), VKApiPhoto.class);
+        if (hasObject(root, "photo")) {
+            link.photo = context.deserialize(root.get("photo"), VKApiPhoto.class);
+        }
         link.title = optString(root, "title");
         link.url = optString(root, "url");
 

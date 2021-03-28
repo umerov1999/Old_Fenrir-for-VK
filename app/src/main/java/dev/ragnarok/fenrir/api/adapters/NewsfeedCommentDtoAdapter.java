@@ -19,12 +19,13 @@ public class NewsfeedCommentDtoAdapter extends AbsAdapter implements JsonDeseria
 
     @Override
     public NewsfeedCommentsResponse.Dto deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        JsonObject root = json.getAsJsonObject();
-        String type = "post";
-        if (root.has("type"))
-            type = root.get("type").getAsString();
-
         NewsfeedCommentsResponse.Dto dto = null;
+        if (!checkObject(json)) {
+            return null;
+        }
+        JsonObject root = json.getAsJsonObject();
+        String type = optString(root, "type", "post");
+
         if ("photo".equals(type)) {
             dto = new NewsfeedCommentsResponse.PhotoDto(context.deserialize(root, VKApiPhoto.class));
         } else if ("post".equals(type)) {

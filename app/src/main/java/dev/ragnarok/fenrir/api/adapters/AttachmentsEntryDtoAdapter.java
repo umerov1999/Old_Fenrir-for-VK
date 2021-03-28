@@ -16,10 +16,19 @@ public class AttachmentsEntryDtoAdapter extends AbsAdapter implements JsonDeseri
 
     @Override
     public VkApiAttachments.Entry deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (!checkObject(json)) {
+            return null;
+        }
         JsonObject o = json.getAsJsonObject();
 
         String type = optString(o, "type");
-        VKApiAttachment attachment = AttachmentsDtoAdapter.parse(type, o, context);
+        VKApiAttachment attachment;
+        try {
+            attachment = AttachmentsDtoAdapter.parse(type, o, context);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
 
         VkApiAttachments.Entry entry = null;
         if (Objects.nonNull(attachment)) {

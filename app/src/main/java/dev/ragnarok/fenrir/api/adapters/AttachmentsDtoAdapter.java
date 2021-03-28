@@ -111,15 +111,27 @@ public class AttachmentsDtoAdapter extends AbsAdapter implements JsonDeserialize
 
     @Override
     public VkApiAttachments deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        JsonArray array = json.getAsJsonArray();
         VkApiAttachments dto = new VkApiAttachments();
+        if (!checkArray(json)) {
+            return dto;
+        }
+        JsonArray array = json.getAsJsonArray();
 
         dto.entries = new ArrayList<>(array.size());
         for (int i = 0; i < array.size(); i++) {
+            if (!checkObject(array.get(i))) {
+                continue;
+            }
             JsonObject o = array.get(i).getAsJsonObject();
 
             String type = optString(o, "type");
-            VKApiAttachment attachment = parse(type, o, context);
+            VKApiAttachment attachment;
+            try {
+                attachment = parse(type, o, context);
+            } catch (Exception e) {
+                e.printStackTrace();
+                continue;
+            }
 
             if (Objects.nonNull(attachment)) {
                 dto.entries.add(new VkApiAttachments.Entry(type, attachment));

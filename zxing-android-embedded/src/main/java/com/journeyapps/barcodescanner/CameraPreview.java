@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -237,7 +238,7 @@ public class CameraPreview extends ViewGroup {
 
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 
-        stateHandler = new Handler(stateCallback);
+        stateHandler = new Handler(Looper.getMainLooper(), stateCallback);
 
         rotationListener = new RotationListener();
     }

@@ -20,11 +20,15 @@ import dev.ragnarok.fenrir.api.model.VKApiVideo;
 import dev.ragnarok.fenrir.api.model.VkApiAttachments;
 
 public class NewsAdapter extends AbsAdapter implements JsonDeserializer<VKApiNews> {
+    private static final String TAG = NewsAdapter.class.getSimpleName();
 
     @Override
     public VKApiNews deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        JsonObject root = json.getAsJsonObject();
+        if (!checkObject(json)) {
+            throw new JsonParseException(TAG + " error parse object");
+        }
         VKApiNews dto = new VKApiNews();
+        JsonObject root = json.getAsJsonObject();
 
         dto.type = optString(root, "type");
         dto.source_id = optInt(root, "source_id");
@@ -35,8 +39,8 @@ public class NewsAdapter extends AbsAdapter implements JsonDeserializer<VKApiNew
         dto.copy_owner_id = optInt(root, "copy_owner_id");
         dto.copy_post_id = optInt(root, "copy_post_id");
 
-        if (root.has("copy_history")) {
-            dto.copy_history = parseArray(root.getAsJsonArray("copy_history"), VKApiPost.class, context, null);
+        if (hasArray(root, "copy_history")) {
+            dto.copy_history = parseArray(root.getAsJsonArray("copy_history"), VKApiPost.class, context, Collections.emptyList());
         } else {
             dto.copy_history = Collections.emptyList();
         }
@@ -46,13 +50,13 @@ public class NewsAdapter extends AbsAdapter implements JsonDeserializer<VKApiNew
         dto.can_edit = optIntAsBoolean(root, "can_edit");
         dto.can_delete = optIntAsBoolean(root, "can_delete");
 
-        if (root.has("comments")) {
+        if (hasObject(root, "comments")) {
             JsonObject commentsRoot = root.getAsJsonObject("comments");
             dto.comment_count = optInt(commentsRoot, "count");
             dto.comment_can_post = optIntAsBoolean(commentsRoot, "can_post");
         }
 
-        if (root.has("likes")) {
+        if (hasObject(root, "likes")) {
             JsonObject likesRoot = root.getAsJsonObject("likes");
             dto.like_count = optInt(likesRoot, "count");
             dto.user_like = optIntAsBoolean(likesRoot, "user_likes");
@@ -60,18 +64,18 @@ public class NewsAdapter extends AbsAdapter implements JsonDeserializer<VKApiNew
             dto.can_publish = optIntAsBoolean(likesRoot, "can_publish");
         }
 
-        if (root.has("reposts")) {
+        if (hasObject(root, "reposts")) {
             JsonObject repostsRoot = root.getAsJsonObject("reposts");
             dto.reposts_count = optInt(repostsRoot, "count");
             dto.user_reposted = optIntAsBoolean(repostsRoot, "user_reposted");
         }
 
-        if (root.has("views")) {
+        if (hasObject(root, "views")) {
             JsonObject viewRoot = root.getAsJsonObject("views");
             dto.views = optInt(viewRoot, "count", 0);
         }
 
-        if (root.has("attachments")) {
+        if (hasArray(root, "attachments")) {
             dto.attachments = context.deserialize(root.get("attachments"), VkApiAttachments.class);
         }
 

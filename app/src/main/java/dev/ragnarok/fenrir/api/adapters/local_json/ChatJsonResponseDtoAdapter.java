@@ -17,9 +17,11 @@ public class ChatJsonResponseDtoAdapter extends AbsAdapter implements JsonDeseri
 
     @Override
     public ChatJsonResponse deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        JsonObject root = json.getAsJsonObject();
-
         ChatJsonResponse story = new ChatJsonResponse();
+        if (!checkObject(json)) {
+            return story;
+        }
+        JsonObject root = json.getAsJsonObject();
 
         story.type = optString(root, "type");
         story.page_avatar = optString(root, "page_avatar");

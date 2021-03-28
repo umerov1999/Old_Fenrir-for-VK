@@ -10,20 +10,21 @@ import java.lang.reflect.Type;
 
 import dev.ragnarok.fenrir.api.model.response.CustomCommentsResponse;
 
-public class CustomCommentsResponseAdapter implements JsonDeserializer<CustomCommentsResponse> {
+public class CustomCommentsResponseAdapter extends AbsAdapter implements JsonDeserializer<CustomCommentsResponse> {
+    private static final String TAG = CustomCommentsResponseAdapter.class.getSimpleName();
 
     @Override
     public CustomCommentsResponse deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (!checkObject(json)) {
+            throw new JsonParseException(TAG + " error parse object");
+        }
+        CustomCommentsResponse response = new CustomCommentsResponse();
         JsonObject root = json.getAsJsonObject();
 
-        CustomCommentsResponse response = new CustomCommentsResponse();
-
-        if (root.has("main")) {
-            JsonElement main = root.get("main");
-            if (!main.isJsonPrimitive()) {
-                response.main = context.deserialize(main, CustomCommentsResponse.Main.class);
-            } // "main": false (if has execute errors)
-        }
+        JsonElement main = root.get("main");
+        if (checkObject(main)) {
+            response.main = context.deserialize(main, CustomCommentsResponse.Main.class);
+        } // "main": false (if has execute errors)
 
         if (root.has("first_id")) {
             JsonElement firstIdJson = root.get("first_id");

@@ -16,11 +16,15 @@ import dev.ragnarok.fenrir.api.model.VkApiConversation;
 import dev.ragnarok.fenrir.api.util.VKStringUtils;
 
 public class MessageDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApiMessage> {
+    private static final String TAG = MessageDtoAdapter.class.getSimpleName();
 
     @Override
     public VKApiMessage deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        JsonObject root = json.getAsJsonObject();
+        if (!checkObject(json)) {
+            throw new JsonParseException(TAG + " error parse object");
+        }
         VKApiMessage dto = new VKApiMessage();
+        JsonObject root = json.getAsJsonObject();
 
         dto.id = optInt(root, "id");
         dto.out = optIntAsBoolean(root, "out");
@@ -32,25 +36,30 @@ public class MessageDtoAdapter extends AbsAdapter implements JsonDeserializer<VK
         //dto.title = VKStringUtils.unescape(optString(root, "title"));
         dto.body = VKStringUtils.unescape(root.has("text") ? optString(root, "text") : optString(root, "body"));
 
-        if (root.has("keyboard")) {
+        if (hasObject(root, "keyboard")) {
             dto.keyboard = context.deserialize(root.get("keyboard"), VkApiConversation.CurrentKeyboard.class);
         }
 
-        if (root.has("attachments")) {
+        if (hasArray(root, "attachments")) {
             dto.attachments = context.deserialize(root.get("attachments"), VkApiAttachments.class);
         }
 
-        if (root.has("fwd_messages")) {
+        if (hasArray(root, "fwd_messages")) {
             JsonArray fwdArray = root.getAsJsonArray("fwd_messages");
             dto.fwd_messages = new ArrayList<>(fwdArray.size());
 
             for (int i = 0; i < fwdArray.size(); i++) {
+                if (!checkObject(fwdArray.get(i))) {
+                    continue;
+                }
                 dto.fwd_messages.add(deserialize(fwdArray.get(i), VKApiMessage.class, context));
             }
         }
 
-        if (root.has("reply_message")) {
-            dto.fwd_messages = new ArrayList<>(1);
+        if (hasObject(root, "reply_message")) {
+            if (dto.fwd_messages == null) {
+                dto.fwd_messages = new ArrayList<>(1);
+            }
             dto.fwd_messages.add(deserialize(root.get("reply_message"), VKApiMessage.class, context));
         }
 
@@ -61,15 +70,15 @@ public class MessageDtoAdapter extends AbsAdapter implements JsonDeserializer<VK
         dto.update_time = optLong(root, "update_time");
         dto.conversation_message_id = optInt(root, "conversation_message_id");
 
-        JsonObject actionJson = root.getAsJsonObject("action");
-        if (actionJson != null) {
-            dto.action = optString(actionJson, "type");
-            dto.action_mid = optInt(actionJson, "member_id");
-            dto.action_text = optString(actionJson, "text");
-            dto.action_email = optString(actionJson, "email");
+        JsonElement actionJson = root.get("action");
+        if (checkObject(actionJson)) {
+            dto.action = optString(actionJson.getAsJsonObject(), "type");
+            dto.action_mid = optInt(actionJson.getAsJsonObject(), "member_id");
+            dto.action_text = optString(actionJson.getAsJsonObject(), "text");
+            dto.action_email = optString(actionJson.getAsJsonObject(), "email");
 
-            if (actionJson.has("photo")) {
-                JsonObject photoJson = actionJson.getAsJsonObject("photo");
+            if (hasObject(actionJson.getAsJsonObject(), "photo")) {
+                JsonObject photoJson = actionJson.getAsJsonObject().getAsJsonObject("photo");
                 dto.action_photo_50 = optString(photoJson, "photo_50");
                 dto.action_photo_100 = optString(photoJson, "photo_100");
                 dto.action_photo_200 = optString(photoJson, "photo_200");

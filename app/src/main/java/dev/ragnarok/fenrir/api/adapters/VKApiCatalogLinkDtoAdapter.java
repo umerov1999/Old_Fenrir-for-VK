@@ -13,18 +13,25 @@ import dev.ragnarok.fenrir.api.model.VKApiCatalogLink;
 
 
 public class VKApiCatalogLinkDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApiCatalogLink> {
+    private static final String TAG = VKApiCatalogLinkDtoAdapter.class.getSimpleName();
 
     @Override
     public VKApiCatalogLink deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        JsonObject root = json.getAsJsonObject();
+        if (!checkObject(json)) {
+            throw new JsonParseException(TAG + " error parse object");
+        }
         VKApiCatalogLink dto = new VKApiCatalogLink();
+        JsonObject root = json.getAsJsonObject();
         dto.url = optString(root, "url");
         dto.title = optString(root, "title");
         dto.subtitle = optString(root, "subtitle");
-        if (root.has("image") && root.get("image").isJsonArray()) {
+        if (hasArray(root, "image")) {
             JsonArray arr = root.getAsJsonArray("image");
             int max_res = 0;
             for (JsonElement i : arr) {
+                if (!checkObject(i)) {
+                    continue;
+                }
                 JsonObject res = i.getAsJsonObject();
                 int curr_res = optInt(res, "height") * optInt(res, "width");
                 if (curr_res > max_res) {

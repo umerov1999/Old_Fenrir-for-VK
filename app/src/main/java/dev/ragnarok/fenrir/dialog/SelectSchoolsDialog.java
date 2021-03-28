@@ -38,7 +38,6 @@ public class SelectSchoolsDialog extends AccountDependencyDialogFragment impleme
     private int cityId;
     private IDatabaseInteractor mDatabaseInteractor;
     private ArrayList<School> mData;
-    private RecyclerView mRecyclerView;
     private SchoolsAdapter mAdapter;
     private String filter;
     private final Runnable runSearchRunnable = () -> request(0);
@@ -77,7 +76,7 @@ public class SelectSchoolsDialog extends AccountDependencyDialogFragment impleme
             }
         });
 
-        mRecyclerView = root.findViewById(R.id.list);
+        RecyclerView mRecyclerView = root.findViewById(R.id.list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false));
 
         boolean firstRun = false;

@@ -28,7 +28,7 @@ public class EntitiesWrapperAdapter implements JsonSerializer<EntitiesWrapper>, 
 
     @Override
     public EntitiesWrapper deserialize(JsonElement jsonElement, Type typef, JsonDeserializationContext context) throws JsonParseException {
-        if (jsonElement == null || jsonElement instanceof JsonNull) {
+        if (!(jsonElement instanceof JsonArray)) {
             return null;
         }
 

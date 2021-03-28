@@ -14,9 +14,11 @@ public class JsonStringDtoAdapter extends AbsAdapter implements JsonDeserializer
 
     @Override
     public VkApiJsonString deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        JsonObject root = json.getAsJsonObject();
-
         VkApiJsonString story = new VkApiJsonString();
+        if (!checkObject(json)) {
+            return story;
+        }
+        JsonObject root = json.getAsJsonObject();
         story.json_data = root.toString();
         return story;
     }

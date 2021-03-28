@@ -16,9 +16,13 @@ import dev.ragnarok.fenrir.api.model.VKApiCommunity;
 import dev.ragnarok.fenrir.api.model.VKApiUser;
 
 public class ChatDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApiChat> {
+    private static final String TAG = ChatDtoAdapter.class.getSimpleName();
 
     @Override
     public VKApiChat deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (!checkObject(json)) {
+            throw new JsonParseException(TAG + " error parse object");
+        }
         VKApiChat dto = new VKApiChat();
         JsonObject root = json.getAsJsonObject();
 
@@ -30,7 +34,7 @@ public class ChatDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApi
         dto.photo_200 = optString(root, "photo_200");
         dto.admin_id = optInt(root, "admin_id");
 
-        if (root.has("users")) {
+        if (hasArray(root, "users")) {
             JsonArray users = root.getAsJsonArray("users");
             dto.users = new ArrayList<>(users.size());
 
@@ -45,7 +49,10 @@ public class ChatDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApi
                     chatUserDto.user = user;
                     dto.users.add(chatUserDto);
                 } else {
-                    JsonObject jsonObject = (JsonObject) userElement;
+                    if (!checkObject(userElement)) {
+                        continue;
+                    }
+                    JsonObject jsonObject = userElement.getAsJsonObject();
 
                     String type = optString(jsonObject, "type");
                     ChatUserDto chatUserDto = new ChatUserDto();

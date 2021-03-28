@@ -13,32 +13,39 @@ import dev.ragnarok.fenrir.api.model.VKApiVideoAlbum;
 import dev.ragnarok.fenrir.api.model.VkApiPrivacy;
 
 public class VideoAlbumDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApiVideoAlbum> {
+    private static final String TAG = VideoAlbumDtoAdapter.class.getSimpleName();
 
     @Override
     public VKApiVideoAlbum deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        JsonObject root = json.getAsJsonObject();
-
+        if (!checkObject(json)) {
+            throw new JsonParseException(TAG + " error parse object");
+        }
         VKApiVideoAlbum album = new VKApiVideoAlbum();
+        JsonObject root = json.getAsJsonObject();
 
         album.id = optInt(root, "id");
         album.owner_id = optInt(root, "owner_id");
         album.title = optString(root, "title");
         album.count = optInt(root, "count");
         album.updated_time = optInt(root, "updated_time");
-        if (root.has("privacy_view")) {
+        if (hasObject(root, "privacy_view")) {
             album.privacy = context.deserialize(root.get("privacy_view"), VkApiPrivacy.class);
         }
-        if (root.has("image")) {
+        if (hasArray(root, "image")) {
             JsonArray images = root.getAsJsonArray("image");
-            if (images.size() > 0) {
-                for (int i = 0; i < images.size(); i++) {
-                    if (images.get(i).getAsJsonObject().get("width").getAsInt() >= 800) {
-                        album.image = images.get(i).getAsJsonObject().get("url").getAsString();
-                        break;
-                    }
+            for (int i = 0; i < images.size(); i++) {
+                if (!checkObject(images.get(i))) {
+                    continue;
                 }
-                if (album.image == null)
+                if (images.get(i).getAsJsonObject().get("width").getAsInt() >= 800) {
+                    album.image = images.get(i).getAsJsonObject().get("url").getAsString();
+                    break;
+                }
+            }
+            if (album.image == null) {
+                if (checkObject(images.get(images.size() - 1))) {
                     album.image = images.get(images.size() - 1).getAsJsonObject().get("url").getAsString();
+                }
             }
         } else if (root.has("photo_800")) {
             album.image = optString(root, "photo_800");

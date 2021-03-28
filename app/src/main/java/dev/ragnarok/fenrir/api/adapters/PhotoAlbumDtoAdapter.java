@@ -15,12 +15,15 @@ import dev.ragnarok.fenrir.api.model.VKApiPhotoAlbum;
 import dev.ragnarok.fenrir.api.model.VkApiPrivacy;
 
 public class PhotoAlbumDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApiPhotoAlbum> {
+    private static final String TAG = PhotoAlbumDtoAdapter.class.getSimpleName();
 
     @Override
     public VKApiPhotoAlbum deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        JsonObject root = json.getAsJsonObject();
-
+        if (!checkObject(json)) {
+            throw new JsonParseException(TAG + " error parse object");
+        }
         VKApiPhotoAlbum album = new VKApiPhotoAlbum();
+        JsonObject root = json.getAsJsonObject();
 
         album.id = optInt(root, "id");
         album.thumb_id = optInt(root, "thumb_id");
@@ -33,24 +36,24 @@ public class PhotoAlbumDtoAdapter extends AbsAdapter implements JsonDeserializer
         album.can_upload = optInt(root, "can_upload") == 1;
         album.thumb_src = optString(root, "thumb_src");
 
-        if (root.has("privacy_view")) {
+        if (hasObject(root, "privacy_view")) {
             album.privacy_view = context.deserialize(root.get("privacy_view"), VkApiPrivacy.class);
         }
 
-        if (root.has("privacy_comment")) {
+        if (hasObject(root, "privacy_comment")) {
             album.privacy_comment = context.deserialize(root.get("privacy_comment"), VkApiPrivacy.class);
         }
 
-        if (root.has("sizes")) {
+        if (hasArray(root, "sizes")) {
             JsonArray sizesArray = root.getAsJsonArray("sizes");
             album.photo = new ArrayList<>(sizesArray.size());
 
             for (int i = 0; i < sizesArray.size(); i++) {
                 album.photo.add(context.deserialize(sizesArray.get(i).getAsJsonObject(), PhotoSizeDto.class));
             }
-        } else if (root.has("thumb")) {
+        } else if (hasObject(root, "thumb")) {
             JsonObject thumb = root.getAsJsonObject("thumb");
-            if (thumb.has("sizes")) {
+            if (hasArray(thumb, "sizes")) {
                 JsonArray sizesArray = thumb.getAsJsonArray("sizes");
                 album.photo = new ArrayList<>(sizesArray.size());
 
@@ -70,8 +73,8 @@ public class PhotoAlbumDtoAdapter extends AbsAdapter implements JsonDeserializer
             album.photo.add(PhotoSizeDto.create(PhotoSizeDto.Type.X, "http://vk.com/images/x_noalbum.png"));
         }
 
-        album.upload_by_admins_only = optInt(root, "upload_by_admins_only") == 1;
-        album.comments_disabled = optInt(root, "comments_disabled") == 1;
+        album.upload_by_admins_only = optIntAsBoolean(root, "upload_by_admins_only");
+        album.comments_disabled = optIntAsBoolean(root, "comments_disabled");
         return album;
     }
 }

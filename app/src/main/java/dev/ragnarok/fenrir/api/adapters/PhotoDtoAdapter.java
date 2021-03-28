@@ -15,12 +15,16 @@ import dev.ragnarok.fenrir.api.model.PhotoSizeDto;
 import dev.ragnarok.fenrir.api.model.VKApiPhoto;
 
 public class PhotoDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApiPhoto> {
+    private static final String TAG = PhotoDtoAdapter.class.getSimpleName();
 
     @Override
     public VKApiPhoto deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (!checkObject(json)) {
+            throw new JsonParseException(TAG + " error parse object");
+        }
+        VKApiPhoto photo = new VKApiPhoto();
         JsonObject root = json.getAsJsonObject();
 
-        VKApiPhoto photo = new VKApiPhoto();
         photo.id = optInt(root, "id");
         photo.album_id = optInt(root, "album_id");
         photo.date = optLong(root, "date");
@@ -30,30 +34,32 @@ public class PhotoDtoAdapter extends AbsAdapter implements JsonDeserializer<VKAp
         photo.text = optString(root, "text");
         photo.access_key = optString(root, "access_key");
 
-        if (root.has("likes")) {
+        if (hasObject(root, "likes")) {
             JsonObject likesRoot = root.get("likes").getAsJsonObject();
             photo.likes = optInt(likesRoot, "count");
-            photo.user_likes = optInt(likesRoot, "user_likes") == 1;
+            photo.user_likes = optIntAsBoolean(likesRoot, "user_likes");
         }
 
-        if (root.has("comments")) {
-            JsonElement commentsRoot = root.get("comments").getAsJsonObject();
-            photo.comments = context.deserialize(commentsRoot, CommentsDto.class);
+        if (hasObject(root, "comments")) {
+            photo.comments = context.deserialize(root.get("comments"), CommentsDto.class);
         }
 
-        if (root.has("tags")) {
+        if (hasObject(root, "tags")) {
             JsonObject tagsRoot = root.get("tags").getAsJsonObject();
             photo.tags = optInt(tagsRoot, "count");
         }
 
-        photo.can_comment = optInt(root, "can_comment") == 1;
+        photo.can_comment = optIntAsBoolean(root, "can_comment");
         photo.post_id = optInt(root, "post_id");
 
-        if (root.has("sizes")) {
+        if (hasArray(root, "sizes")) {
             JsonArray sizesArray = root.getAsJsonArray("sizes");
             photo.sizes = new ArrayList<>(sizesArray.size());
 
             for (int i = 0; i < sizesArray.size(); i++) {
+                if (!checkObject(sizesArray.get(i))) {
+                    continue;
+                }
                 PhotoSizeDto photoSizeDto = context.deserialize(sizesArray.get(i).getAsJsonObject(), PhotoSizeDto.class);
                 photo.sizes.add(photoSizeDto);
 

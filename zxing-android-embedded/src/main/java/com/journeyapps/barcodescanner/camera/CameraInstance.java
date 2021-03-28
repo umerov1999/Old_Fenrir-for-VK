@@ -2,6 +2,7 @@ package com.journeyapps.barcodescanner.camera;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
@@ -97,7 +98,7 @@ public class CameraInstance {
         cameraThread = CameraThread.getInstance();
         cameraManager = new CameraManager(context);
         cameraManager.setCameraSettings(cameraSettings);
-        mainHandler = new Handler();
+        mainHandler = new Handler(Looper.getMainLooper());
     }
 
     /**

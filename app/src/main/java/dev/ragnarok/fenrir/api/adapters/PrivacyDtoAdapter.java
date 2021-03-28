@@ -1,6 +1,5 @@
 package dev.ragnarok.fenrir.api.adapters;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -15,6 +14,9 @@ public class PrivacyDtoAdapter extends AbsAdapter implements JsonDeserializer<Vk
 
     @Override
     public VkApiPrivacy deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (!checkObject(json)) {
+            return new VkApiPrivacy("null");
+        }
         JsonObject root = json.getAsJsonObject();
 
         // Examples
@@ -22,37 +24,37 @@ public class PrivacyDtoAdapter extends AbsAdapter implements JsonDeserializer<Vk
         // {"owners":{"allowed":[13326918,26632922,31182820,50949233,113672278,138335672]}}
         VkApiPrivacy privacy = new VkApiPrivacy(optString(root, "category", "only_me"));
 
-        JsonObject owners = root.getAsJsonObject("owners");
+        JsonElement owners = root.get("owners");
 
-        if (owners != null) {
-            JsonArray allowed = owners.getAsJsonArray("allowed");
-            if (allowed != null) {
-                for (int i = 0; i < allowed.size(); i++) {
-                    privacy.includeOwner(allowed.get(i).getAsInt());
+        if (checkObject(owners)) {
+            JsonElement allowed = owners.getAsJsonObject().get("allowed");
+            if (checkArray(allowed)) {
+                for (int i = 0; i < allowed.getAsJsonArray().size(); i++) {
+                    privacy.includeOwner(optInt(allowed.getAsJsonArray(), i));
                 }
             }
 
-            JsonArray excluded = owners.getAsJsonArray("excluded");
-            if (excluded != null) {
-                for (int i = 0; i < excluded.size(); i++) {
-                    privacy.excludeOwner(excluded.get(i).getAsInt());
+            JsonElement excluded = owners.getAsJsonObject().get("excluded");
+            if (checkArray(excluded)) {
+                for (int i = 0; i < excluded.getAsJsonArray().size(); i++) {
+                    privacy.excludeOwner(optInt(excluded.getAsJsonArray(), i));
                 }
             }
         }
 
-        JsonObject lists = root.getAsJsonObject("lists");
-        if (lists != null) {
-            JsonArray allowed = lists.getAsJsonArray("allowed");
-            if (allowed != null) {
-                for (int i = 0; i < allowed.size(); i++) {
-                    privacy.includeFriendsList(allowed.get(i).getAsInt());
+        JsonElement lists = root.get("lists");
+        if (checkObject(lists)) {
+            JsonElement allowed = lists.getAsJsonObject().get("allowed");
+            if (checkArray(allowed)) {
+                for (int i = 0; i < allowed.getAsJsonArray().size(); i++) {
+                    privacy.includeFriendsList(optInt(allowed.getAsJsonArray(), i));
                 }
             }
 
-            JsonArray excluded = lists.getAsJsonArray("excluded");
-            if (excluded != null) {
-                for (int i = 0; i < excluded.size(); i++) {
-                    privacy.excludeFriendsList(excluded.get(i).getAsInt());
+            JsonElement excluded = lists.getAsJsonObject().get("excluded");
+            if (checkArray(excluded)) {
+                for (int i = 0; i < excluded.getAsJsonArray().size(); i++) {
+                    privacy.excludeFriendsList(optInt(excluded.getAsJsonArray(), i));
                 }
             }
         }

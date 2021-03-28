@@ -1455,9 +1455,27 @@ public class Utils {
         return Locale.getDefault();
     }
 
+    @SuppressWarnings("deprecation")
+    private static Locale getSystemLocale(Configuration config) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            return config.locale;
+        } else {
+            return config.getLocales().get(0);
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private static void setSystemLocaleLegacy(Configuration config, Locale locale) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            config.locale = locale;
+        } else {
+            config.setLocale(locale);
+        }
+    }
+
     public static Context updateActivityContext(Context base) {
-        if (base.getResources().getConfiguration().locale != null && !isEmpty(base.getResources().getConfiguration().locale.getLanguage())) {
-            Constants.DEVICE_COUNTRY_CODE = base.getResources().getConfiguration().locale.getLanguage().toLowerCase();
+        if (getSystemLocale(base.getResources().getConfiguration()) != null && !isEmpty(getSystemLocale(base.getResources().getConfiguration()).getLanguage())) {
+            Constants.DEVICE_COUNTRY_CODE = getSystemLocale(base.getResources().getConfiguration()).getLanguage().toLowerCase();
         } else {
             Constants.DEVICE_COUNTRY_CODE = "ru";
         }
@@ -1469,7 +1487,7 @@ public class Utils {
             } else {
                 Resources res = base.getResources();
                 Configuration config = new Configuration(res.getConfiguration());
-                config.locale = getLocaleSettings(lang);
+                setSystemLocaleLegacy(config, getLocaleSettings(lang));
                 return base.createConfigurationContext(config);
             }
         } else {
@@ -1477,7 +1495,7 @@ public class Utils {
             Configuration config = new Configuration(res.getConfiguration());
             config.fontScale = res.getConfiguration().fontScale + 0.15f * size;
             if (lang != Lang.DEFAULT) {
-                config.locale = getLocaleSettings(lang);
+                setSystemLocaleLegacy(config, getLocaleSettings(lang));
             }
             return base.createConfigurationContext(config);
         }

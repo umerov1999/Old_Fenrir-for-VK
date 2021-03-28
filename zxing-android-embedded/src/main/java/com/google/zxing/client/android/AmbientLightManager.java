@@ -22,6 +22,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.os.Looper;
 
 import com.journeyapps.barcodescanner.camera.CameraManager;
 import com.journeyapps.barcodescanner.camera.CameraSettings;
@@ -48,7 +49,7 @@ public final class AmbientLightManager implements SensorEventListener {
         this.cameraManager = cameraManager;
         cameraSettings = settings;
 
-        handler = new Handler();
+        handler = new Handler(Looper.getMainLooper());
     }
 
     public void start() {

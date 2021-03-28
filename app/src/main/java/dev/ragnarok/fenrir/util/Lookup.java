@@ -1,6 +1,7 @@
 package dev.ragnarok.fenrir.util;
 
 import android.os.Handler;
+import android.os.Looper;
 
 public class Lookup {
 
@@ -13,7 +14,7 @@ public class Lookup {
 
     public Lookup(int initialDelay) {
         mDelay = initialDelay;
-        mHandler = new Handler(msg -> {
+        mHandler = new Handler(Looper.getMainLooper(), msg -> {
             onLookupHandle();
             return true;
         });

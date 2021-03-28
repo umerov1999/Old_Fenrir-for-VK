@@ -14,16 +14,17 @@ import dev.ragnarok.fenrir.api.model.VKApiChat;
 import dev.ragnarok.fenrir.api.model.response.ChatsInfoResponse;
 
 public class ChatsInfoAdapter extends AbsAdapter implements JsonDeserializer<ChatsInfoResponse> {
-
     @Override
     public ChatsInfoResponse deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         List<VKApiChat> chats;
 
-        if (json.isJsonObject()) {
+        if (checkObject(json)) {
             chats = Collections.singletonList(context.deserialize(json, VKApiChat.class));
-        } else {
+        } else if (checkArray(json)) {
             JsonArray array = json.getAsJsonArray();
             chats = parseArray(array, VKApiChat.class, context, Collections.emptyList());
+        } else {
+            chats = Collections.emptyList();
         }
 
         ChatsInfoResponse response = new ChatsInfoResponse();

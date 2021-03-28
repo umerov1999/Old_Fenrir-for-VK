@@ -60,26 +60,30 @@ import static dev.ragnarok.fenrir.api.model.VKApiUser.Field.VERIFIED;
 import static dev.ragnarok.fenrir.api.model.VKApiUser.Field.WALL_DEFAULT;
 
 public class UserDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApiUser> {
+    private static final String TAG = UserDtoAdapter.class.getSimpleName();
 
     @Override
     public VKApiUser deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        JsonObject root = json.getAsJsonObject();
+        if (!checkObject(json)) {
+            throw new JsonParseException(TAG + " error parse object");
+        }
         VKApiUser dto = new VKApiUser();
+        JsonObject root = json.getAsJsonObject();
 
         dto.id = optInt(root, "id");
         if (dto.id == 0)
             dto.id = optInt(root, "user_id");
         dto.first_name = optString(root, "first_name");
         dto.last_name = optString(root, "last_name");
-        dto.online = optInt(root, ONLINE) == 1;
-        dto.online_mobile = optInt(root, ONLINE_MOBILE) == 1;
+        dto.online = optIntAsBoolean(root, ONLINE);
+        dto.online_mobile = optIntAsBoolean(root, ONLINE_MOBILE);
         dto.online_app = optInt(root, "online_app");
 
         dto.photo_50 = optString(root, PHOTO_50, CAMERA_50);
         dto.photo_100 = optString(root, PHOTO_100);
         dto.photo_200 = optString(root, PHOTO_200);
 
-        if (root.has(LAST_SEEN) && root.get(LAST_SEEN).isJsonObject()) {
+        if (hasObject(root, LAST_SEEN)) {
             JsonObject lastSeenRoot = root.getAsJsonObject(LAST_SEEN);
             dto.last_seen = optLong(lastSeenRoot, "time");
             dto.platform = optInt(lastSeenRoot, "platform");
@@ -90,27 +94,27 @@ public class UserDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApi
 
         dto.bdate = optString(root, BDATE);
 
-        if (root.has(CITY)) {
-            dto.city = context.deserialize(root.getAsJsonObject(CITY), VKApiCity.class);
+        if (hasObject(root, CITY)) {
+            dto.city = context.deserialize(root.get(CITY), VKApiCity.class);
         }
 
-        if (root.has(COUNTRY)) {
-            dto.country = context.deserialize(root.getAsJsonObject(COUNTRY), VKApiCountry.class);
+        if (hasObject(root, COUNTRY)) {
+            dto.country = context.deserialize(root.get(COUNTRY), VKApiCountry.class);
         }
 
-        dto.universities = parseArray(root.getAsJsonArray(UNIVERSITIES), VKApiUniversity.class, context, null);
-        dto.schools = parseArray(root.getAsJsonArray(SCHOOLS), VKApiSchool.class, context, null);
-        dto.militaries = parseArray(root.getAsJsonArray(MILITARY), VKApiMilitary.class, context, null);
-        dto.careers = parseArray(root.getAsJsonArray(CAREER), VKApiCareer.class, context, null);
+        dto.universities = parseArray(root.get(UNIVERSITIES), VKApiUniversity.class, context, null);
+        dto.schools = parseArray(root.get(SCHOOLS), VKApiSchool.class, context, null);
+        dto.militaries = parseArray(root.get(MILITARY), VKApiMilitary.class, context, null);
+        dto.careers = parseArray(root.get(CAREER), VKApiCareer.class, context, null);
 
         // status
         dto.activity = optString(root, ACTIVITY);
 
-        if (root.has("status_audio")) {
-            dto.status_audio = context.deserialize(root.getAsJsonObject("status_audio"), VKApiAudio.class);
+        if (hasObject(root, "status_audio")) {
+            dto.status_audio = context.deserialize(root.get("status_audio"), VKApiAudio.class);
         }
 
-        if (root.has(PERSONAL) && root.get(PERSONAL).isJsonObject()) {
+        if (hasObject(root, PERSONAL)) {
             JsonObject personal = root.getAsJsonObject(PERSONAL);
             dto.smoking = optInt(personal, "smoking");
             dto.alcohol = optInt(personal, "alcohol");
@@ -120,13 +124,11 @@ public class UserDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApi
             dto.inspired_by = optString(personal, "inspired_by");
             dto.religion = optString(personal, "religion");
 
-            if (personal.has("langs") && personal.get("langs").isJsonArray()) {
-                JsonArray langs = personal.getAsJsonArray("langs");
-                if (langs != null) {
-                    dto.langs = new String[langs.size()];
-                    for (int i = 0; i < langs.size(); i++) {
-                        dto.langs[i] = optString(langs, i);
-                    }
+            if (hasArray(personal, "langs")) {
+                JsonArray langs = personal.get("langs").getAsJsonArray();
+                dto.langs = new String[langs.size()];
+                for (int i = 0; i < langs.size(); i++) {
+                    dto.langs[i] = optString(langs, i);
                 }
             }
         }
@@ -156,59 +158,57 @@ public class UserDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApi
         // settings
         dto.nickname = optString(root, "nickname");
         dto.domain = optString(root, "domain");
-        dto.can_post = optInt(root, CAN_POST) == 1;
-        dto.can_see_all_posts = optInt(root, CAN_SEE_ALL_POSTS) == 1;
-        dto.blacklisted_by_me = optInt(root, BLACKLISTED_BY_ME) == 1;
-        dto.can_write_private_message = optInt(root, CAN_WRITE_PRIVATE_MESSAGE) == 1;
-        dto.wall_comments = optInt(root, WALL_DEFAULT) == 1;
+        dto.can_post = optIntAsBoolean(root, CAN_POST);
+        dto.can_see_all_posts = optIntAsBoolean(root, CAN_SEE_ALL_POSTS);
+        dto.blacklisted_by_me = optIntAsBoolean(root, BLACKLISTED_BY_ME);
+        dto.can_write_private_message = optIntAsBoolean(root, CAN_WRITE_PRIVATE_MESSAGE);
+        dto.wall_comments = optIntAsBoolean(root, WALL_DEFAULT);
 
         String deactivated = optString(root, "deactivated");
         dto.is_deleted = "deleted".equals(deactivated);
         dto.is_banned = "banned".equals(deactivated);
 
         dto.wall_default_owner = "owner".equals(optString(root, WALL_DEFAULT));
-        dto.verified = optInt(root, VERIFIED) == 1;
+        dto.verified = optIntAsBoolean(root, VERIFIED);
 
         dto.can_access_closed = optBoolean(root, "can_access_closed");
 
         // other
         dto.sex = optInt(root, SEX);
 
-        if (root.has(COUNTERS)) {
+        if (hasObject(root, COUNTERS)) {
             dto.counters = context.deserialize(root.get(COUNTERS), VKApiUser.Counters.class);
         }
 
         dto.relation = optInt(root, RELATION);
-        if (root.has(RELATIVES) && root.get(RELATIVES).isJsonArray()) {
-            dto.relatives = parseArray(root.getAsJsonArray(RELATIVES), VKApiUser.Relative.class,
-                    context, Collections.emptyList());
-        }
+        dto.relatives = parseArray(root.get(RELATIVES), VKApiUser.Relative.class,
+                context, Collections.emptyList());
 
         dto.home_town = optString(root, HOME_TOWN);
 
         dto.photo_id = optString(root, "photo_id");
-        dto.blacklisted = optInt(root, "blacklisted") == 1;
+        dto.blacklisted = optIntAsBoolean(root, "blacklisted");
         dto.photo_200_orig = optString(root, "photo_200_orig");
         dto.photo_400_orig = optString(root, "photo_400_orig");
         dto.photo_max = optString(root, "photo_max");
-        dto.has_mobile = optInt(root, "has_mobile") == 1;
+        dto.has_mobile = optIntAsBoolean(root, "has_mobile");
 
-        if (root.has("occupation")) {
+        if (hasObject(root, "occupation")) {
             dto.occupation = context.deserialize(root.get("occupation"), VKApiUser.Occupation.class);
         }
 
-        if (root.has("relation_partner")) {
+        if (hasObject(root, "relation_partner")) {
             dto.relation_partner = deserialize(root.get("relation_partner"), VKApiUser.class, context);
         }
 
         dto.music = optString(root, "music");
-        dto.can_see_audio = optInt(root, "can_see_audio") == 1;
-        dto.can_send_friend_request = optInt(root, "can_send_friend_request") == 1;
-        dto.is_favorite = optInt(root, "is_favorite") == 1;
-        dto.is_subscribed = optInt(root, "is_subscribed") == 1;
+        dto.can_see_audio = optIntAsBoolean(root, "can_see_audio");
+        dto.can_send_friend_request = optIntAsBoolean(root, "can_send_friend_request");
+        dto.is_favorite = optIntAsBoolean(root, "is_favorite");
+        dto.is_subscribed = optIntAsBoolean(root, "is_subscribed");
         dto.timezone = optInt(root, "timezone");
         dto.maiden_name = optString(root, "maiden_name");
-        dto.is_friend = optInt(root, "is_friend") == 1;
+        dto.is_friend = optIntAsBoolean(root, "is_friend");
         dto.friend_status = optInt(root, "friend_status");
         dto.role = optString(root, "role");
         return dto;

@@ -5,6 +5,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -12,17 +13,21 @@ import java.util.Collections;
 import dev.ragnarok.fenrir.api.model.GroupSettingsDto;
 
 public class GroupSettingsAdapter extends AbsAdapter implements JsonDeserializer<GroupSettingsDto> {
+    private static final String TAG = GroupSettingsAdapter.class.getSimpleName();
 
     @Override
     public GroupSettingsDto deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (!checkObject(json)) {
+            throw new JsonParseException(TAG + " error parse object");
+        }
+        GroupSettingsDto dto = new GroupSettingsDto();
         JsonObject root = json.getAsJsonObject();
 
-        GroupSettingsDto dto = new GroupSettingsDto();
         dto.title = optString(root, "title");
         dto.description = optString(root, "description");
         dto.address = optString(root, "address");
 
-        if (root.has("place")) {
+        if (hasObject(root, "place")) {
             dto.place = context.deserialize(root.get("place"), GroupSettingsDto.Place.class);
         }
 
@@ -43,8 +48,8 @@ public class GroupSettingsAdapter extends AbsAdapter implements JsonDeserializer
         dto.public_date = optString(root, "public_date");
         dto.public_date_label = optString(root, "public_date_label");
 
-        if (root.has("public_category")) {
-            JsonElement publicCategoryJson = root.get("public_category");
+        JsonElement publicCategoryJson = root.get("public_category");
+        if (publicCategoryJson instanceof JsonPrimitive) {
             try {
                 dto.public_category = String.valueOf(publicCategoryJson.getAsInt());
             } catch (Exception e) {
@@ -52,8 +57,8 @@ public class GroupSettingsAdapter extends AbsAdapter implements JsonDeserializer
             }
         }
 
-        if (root.has("public_subcategory")) {
-            JsonElement publicSubCategoryJson = root.get("public_subcategory");
+        JsonElement publicSubCategoryJson = root.get("public_subcategory");
+        if (publicSubCategoryJson instanceof JsonPrimitive) {
             try {
                 dto.public_subcategory = String.valueOf(publicSubCategoryJson.getAsInt());
             } catch (Exception e) {
@@ -61,7 +66,7 @@ public class GroupSettingsAdapter extends AbsAdapter implements JsonDeserializer
             }
         }
 
-        if (root.has("public_category_list")) {
+        if (hasArray(root, "public_category_list")) {
             dto.public_category_list = parseArray(root.getAsJsonArray("public_category_list"),
                     GroupSettingsDto.PublicCategory.class, context, Collections.emptyList());
         }
@@ -74,7 +79,7 @@ public class GroupSettingsAdapter extends AbsAdapter implements JsonDeserializer
         dto.website = optString(root, "website");
         dto.age_limits = optInt(root, "age_limits");
 
-        if (root.has("market")) {
+        if (hasObject(root, "market")) {
             dto.market = context.deserialize(root.get("market"), GroupSettingsDto.Market.class);
         }
 

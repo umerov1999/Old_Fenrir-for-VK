@@ -37,7 +37,6 @@ public class SelectCityDialog extends AccountDependencyDialogFragment implements
     private int accountId;
     private int countryId;
     private ArrayList<City> mData;
-    private RecyclerView mRecyclerView;
     private CitiesAdapter mAdapter;
     private String filter;
     private IDatabaseInteractor databaseInteractor;
@@ -77,7 +76,7 @@ public class SelectCityDialog extends AccountDependencyDialogFragment implements
             }
         });
 
-        mRecyclerView = root.findViewById(R.id.list);
+        RecyclerView mRecyclerView = root.findViewById(R.id.list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false));
 
         boolean firstRun = false;

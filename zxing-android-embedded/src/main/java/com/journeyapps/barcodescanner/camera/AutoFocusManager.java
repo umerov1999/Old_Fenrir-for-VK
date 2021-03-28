@@ -18,6 +18,7 @@ package com.journeyapps.barcodescanner.camera;
 
 import android.hardware.Camera;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public final class AutoFocusManager {
             }
             return false;
         };
-        handler = new Handler(focusHandlerCallback);
+        handler = new Handler(Looper.getMainLooper(), focusHandlerCallback);
         this.camera = camera;
         String currentFocusMode = camera.getParameters().getFocusMode();
         useAutoFocus = settings.isAutoFocusEnabled() && FOCUS_MODES_CALLING_AF.contains(currentFocusMode);

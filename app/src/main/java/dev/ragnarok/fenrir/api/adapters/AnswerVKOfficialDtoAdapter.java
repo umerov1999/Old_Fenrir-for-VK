@@ -14,48 +14,61 @@ import dev.ragnarok.fenrir.model.AnswerVKOfficial;
 import dev.ragnarok.fenrir.model.AnswerVKOfficialList;
 
 public class AnswerVKOfficialDtoAdapter extends AbsAdapter implements JsonDeserializer<AnswerVKOfficialList> {
+    private static final String TAG = AnswerVKOfficialDtoAdapter.class.getSimpleName();
 
     @Override
     public AnswerVKOfficialList deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (!checkObject(json)) {
+            throw new JsonParseException(TAG + " error parse object");
+        }
+        AnswerVKOfficialList dtolist = new AnswerVKOfficialList();
         JsonObject root = json.getAsJsonObject();
 
-        AnswerVKOfficialList dtolist = new AnswerVKOfficialList();
         dtolist.items = new ArrayList<>();
         dtolist.fields = new ArrayList<>();
 
-        if (root.has("profiles")) {
+        if (hasArray(root, "profiles")) {
             JsonArray temp = root.getAsJsonArray("profiles");
             for (JsonElement i : temp) {
+                if (!checkObject(i)) {
+                    continue;
+                }
                 JsonObject obj = i.getAsJsonObject();
-                int id = obj.get("id").getAsInt();
+                int id = optInt(obj, "id");
                 if (obj.has("photo_200")) {
-                    String url = obj.get("photo_200").getAsString();
+                    String url = optString(obj, "photo_200");
                     dtolist.fields.add(new AnswerVKOfficialList.AnswerField(id, url));
                 } else if (obj.has("photo_200_orig")) {
-                    String url = obj.get("photo_200_orig").getAsString();
+                    String url = optString(obj, "photo_200_orig");
                     dtolist.fields.add(new AnswerVKOfficialList.AnswerField(id, url));
                 }
             }
         }
-        if (root.has("groups")) {
+        if (hasArray(root, "groups")) {
             JsonArray temp = root.getAsJsonArray("groups");
             for (JsonElement i : temp) {
+                if (!checkObject(i)) {
+                    continue;
+                }
                 JsonObject obj = i.getAsJsonObject();
-                int id = (obj.get("id").getAsInt() * -1);
+                int id = optInt(obj, "id") * -1;
                 if (obj.has("photo_200")) {
-                    String url = obj.get("photo_200").getAsString();
+                    String url = optString(obj, "photo_200");
                     dtolist.fields.add(new AnswerVKOfficialList.AnswerField(id, url));
                 } else if (obj.has("photo_200_orig")) {
-                    String url = obj.get("photo_200_orig").getAsString();
+                    String url = optString(obj, "photo_200_orig");
                     dtolist.fields.add(new AnswerVKOfficialList.AnswerField(id, url));
                 }
             }
         }
 
-        if (!root.has("items") || root.getAsJsonArray("items").size() <= 0)
+        if (!hasArray(root, "items"))
             return dtolist;
 
         for (JsonElement i : root.getAsJsonArray("items")) {
+            if (!checkObject(i)) {
+                continue;
+            }
             JsonObject root_item = i.getAsJsonObject();
             AnswerVKOfficial dto = new AnswerVKOfficial();
             dto.iconType = optString(root_item, "icon_type");
@@ -72,21 +85,22 @@ public class AnswerVKOfficialDtoAdapter extends AbsAdapter implements JsonDeseri
             dto.time = optLong(root_item, "date");
             dto.iconURL = optString(root_item, "icon_url");
 
-            if (root_item.has("main_item")) {
+            if (hasObject(root_item, "main_item")) {
                 JsonObject main_item = root_item.get("main_item").getAsJsonObject();
-                if (main_item.has("image_object")) {
+                if (hasArray(main_item, "image_object")) {
                     JsonArray jsonPhotos2 = main_item.get("image_object").getAsJsonArray();
-                    if (jsonPhotos2.size() > 0) {
-                        dto.iconURL = jsonPhotos2.get(jsonPhotos2.size() - 1).getAsJsonObject().get("url").getAsString();
-                    }
+                    dto.iconURL = jsonPhotos2.get(jsonPhotos2.size() - 1).getAsJsonObject().get("url").getAsString();
                 }
             }
-            if (root_item.has("additional_item")) {
+            if (hasObject(root_item, "additional_item")) {
                 JsonObject additional_item = root_item.get("additional_item").getAsJsonObject();
-                if (additional_item.has("image_object") && additional_item.get("image_object").isJsonArray() && additional_item.getAsJsonArray("image_object").size() > 0) {
-                    dto.images = new ArrayList<>();
+                if (hasArray(additional_item, "image_object")) {
                     JsonArray arrt = additional_item.getAsJsonArray("image_object");
+                    dto.images = new ArrayList<>();
                     for (JsonElement s : arrt) {
+                        if (!checkObject(s)) {
+                            continue;
+                        }
                         AnswerVKOfficial.ImageAdditional imgh = context.deserialize(s, AnswerVKOfficial.ImageAdditional.class);
                         if (imgh != null)
                             dto.images.add(imgh);

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Base64;
 import android.util.LongSparseArray;
 import android.widget.Toast;
@@ -72,7 +73,7 @@ public class KeyExchangeService extends Service {
     private LongSparseArray<NotificationCompat.Builder> mCurrentActiveNotifications;
     private Set<Long> mFinishedSessionsIds;
     private NotificationManager mNotificationManager;
-    private final Handler mStopServiceHandler = new Handler(msg -> {
+    private final Handler mStopServiceHandler = new Handler(Looper.getMainLooper(), msg -> {
         if (msg.what == WHAT_STOP_SERVICE) {
             finishAllByTimeout();
             stopSelf();

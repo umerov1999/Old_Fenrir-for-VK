@@ -11,12 +11,16 @@ import java.lang.reflect.Type;
 import dev.ragnarok.fenrir.api.model.VkApiProfileInfoResponce;
 
 public class ProfileInfoResponceDtoAdapter extends AbsAdapter implements JsonDeserializer<VkApiProfileInfoResponce> {
+    private static final String TAG = ProfileInfoResponceDtoAdapter.class.getSimpleName();
 
     @Override
     public VkApiProfileInfoResponce deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (!checkObject(json)) {
+            throw new JsonParseException(TAG + " error parse object");
+        }
+        VkApiProfileInfoResponce info = new VkApiProfileInfoResponce();
         JsonObject root = json.getAsJsonObject();
 
-        VkApiProfileInfoResponce info = new VkApiProfileInfoResponce();
         if (root.has("name_request")) {
             info.status = 2;
         } else {

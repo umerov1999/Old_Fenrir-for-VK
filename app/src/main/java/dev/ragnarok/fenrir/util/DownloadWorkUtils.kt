@@ -304,7 +304,10 @@ object DownloadWorkUtils {
             return
         }
         val link: String? = if (sticker.isAnimated) {
-            sticker.getAnimationByType("light")
+            Utils.firstNonEmptyString(
+                sticker.getAnimationByType("light"),
+                sticker.getAnimationByType("dark")
+            )
         } else {
             sticker.getImage(256, false).url
         }

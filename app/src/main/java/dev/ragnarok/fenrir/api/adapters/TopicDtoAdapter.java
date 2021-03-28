@@ -14,11 +14,16 @@ import dev.ragnarok.fenrir.api.model.VKApiTopic;
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class TopicDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApiTopic> {
+    private static final String TAG = TopicDtoAdapter.class.getSimpleName();
+
     @Override
     public VKApiTopic deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (!checkObject(json)) {
+            throw new JsonParseException(TAG + " error parse object");
+        }
+        VKApiTopic dto = new VKApiTopic();
         JsonObject root = json.getAsJsonObject();
 
-        VKApiTopic dto = new VKApiTopic();
         dto.id = optInt(root, "id");
         dto.owner_id = optInt(root, "owner_id");
         dto.title = optString(root, "title");

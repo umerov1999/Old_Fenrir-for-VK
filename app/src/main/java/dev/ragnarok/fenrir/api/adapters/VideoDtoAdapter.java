@@ -16,9 +16,13 @@ import dev.ragnarok.fenrir.api.model.VkApiPrivacy;
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class VideoDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApiVideo> {
+    private static final String TAG = VideoDtoAdapter.class.getSimpleName();
 
     @Override
     public VKApiVideo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (!checkObject(json)) {
+            throw new JsonParseException(TAG + " error parse object");
+        }
         JsonObject root = json.getAsJsonObject();
         VKApiVideo dto = new VKApiVideo();
 

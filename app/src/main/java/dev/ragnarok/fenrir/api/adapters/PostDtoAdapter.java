@@ -18,12 +18,15 @@ import dev.ragnarok.fenrir.api.model.VkApiPostSource;
 import dev.ragnarok.fenrir.util.Utils;
 
 public class PostDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApiPost> {
+    private static final String TAG = PostDtoAdapter.class.getSimpleName();
 
     @Override
     public VKApiPost deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        JsonObject root = json.getAsJsonObject();
-
+        if (!checkObject(json)) {
+            throw new JsonParseException(TAG + " error parse object");
+        }
         VKApiPost dto = new VKApiPost();
+        JsonObject root = json.getAsJsonObject();
 
         dto.id = getFirstInt(root, 0, "post_id", "id");
         dto.post_type = VKApiPost.Type.parse(optString(root, "post_type"));
@@ -45,7 +48,7 @@ public class PostDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApi
 
         dto.date = optLong(root, "date");
         dto.text = optString(root, "text");
-        if (root.has("copyright") && root.get("copyright").isJsonObject()) {
+        if (hasObject(root, "copyright")) {
             JsonObject cop = root.getAsJsonObject("copyright");
             if (Utils.isEmpty(dto.text)) {
                 dto.text = "";
@@ -71,12 +74,11 @@ public class PostDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApi
 
         dto.friends_only = optIntAsBoolean(root, "friends_only");
 
-        if (root.has("comments")) {
-            JsonObject comments = root.getAsJsonObject("comments");
-            dto.comments = context.deserialize(comments, CommentsDto.class);
+        if (hasObject(root, "comments")) {
+            dto.comments = context.deserialize(root.get("comments"), CommentsDto.class);
         }
 
-        if (root.has("likes")) {
+        if (hasObject(root, "likes")) {
             JsonObject likes = root.getAsJsonObject("likes");
             dto.likes_count = optInt(likes, "count");
             dto.user_likes = optIntAsBoolean(likes, "user_likes");
@@ -84,25 +86,23 @@ public class PostDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApi
             dto.can_publish = optIntAsBoolean(likes, "can_publish");
         }
 
-        if (root.has("reposts")) {
+        if (hasObject(root, "reposts")) {
             JsonObject reposts = root.getAsJsonObject("reposts");
             dto.reposts_count = optInt(reposts, "count");
             dto.user_reposted = optIntAsBoolean(reposts, "user_reposted");
         }
 
-        if (root.has("views")) {
+        if (hasObject(root, "views")) {
             JsonObject views = root.getAsJsonObject("views");
             dto.views = optInt(views, "count");
         }
 
-        if (root.has("attachments")) {
-            JsonArray attachments = root.getAsJsonArray("attachments");
-            dto.attachments = context.deserialize(attachments, VkApiAttachments.class);
+        if (hasArray(root, "attachments")) {
+            dto.attachments = context.deserialize(root.get("attachments"), VkApiAttachments.class);
         }
 
-        if (root.has("geo")) {
-            JsonObject geo = root.getAsJsonObject("geo");
-            dto.geo = context.deserialize(geo, VKApiPlace.class);
+        if (hasObject(root, "geo")) {
+            dto.geo = context.deserialize(root.get("geo"), VKApiPlace.class);
         }
 
         dto.can_edit = optIntAsBoolean(root, "can_edit");
@@ -112,11 +112,14 @@ public class PostDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApi
         dto.can_pin = optInt(root, "can_pin") == 1;
         dto.is_pinned = optIntAsBoolean(root, "is_pinned");
 
-        if (root.has("copy_history")) {
+        if (hasArray(root, "copy_history")) {
             JsonArray copyHistoryArray = root.getAsJsonArray("copy_history");
             dto.copy_history = new ArrayList<>(copyHistoryArray.size());
 
             for (int i = 0; i < copyHistoryArray.size(); i++) {
+                if (!checkObject(copyHistoryArray.get(i))) {
+                    continue;
+                }
                 JsonObject copy = copyHistoryArray.get(i).getAsJsonObject();
                 dto.copy_history.add(deserialize(copy, VKApiPost.class, context));
             }
@@ -126,11 +129,9 @@ public class PostDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApi
             dto.copy_history = new ArrayList<>(0);
         }
 
-        if (root.has("post_source")) {
-            JsonObject postSource = root.getAsJsonObject("post_source");
-            dto.post_source = context.deserialize(postSource, VkApiPostSource.class);
+        if (hasObject(root, "post_source")) {
+            dto.post_source = context.deserialize(root.get("post_source"), VkApiPostSource.class);
         }
-
         return dto;
     }
 }
