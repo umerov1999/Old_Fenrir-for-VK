@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.link;
 
+import androidx.annotation.Nullable;
+
 import java.net.URLDecoder;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,6 +61,7 @@ public class VkLinkParser {
     private static final Pattern PATTERN_FAVE = Pattern.compile("vk\\.com/fave");
     private static final Pattern PATTERN_GROUP_ID = Pattern.compile("vk\\.com/(club|event|public)(\\d+)$"); //+
     private static final Pattern PATTERN_FAVE_WITH_SECTION = Pattern.compile("vk\\.com/fave\\?section=([\\w.]+)");
+    private static final Pattern PATTERN_ACCESS_KEY = Pattern.compile("access_key=(\\w+)");
 
     //vk.com/wall-2345345_7834545?reply=15345346
     private static final Pattern PATTERN_WALL_POST_COMMENT = Pattern.compile("vk\\.com/wall(-?\\d*)_(\\d*)\\?reply=(\\d*)");
@@ -385,6 +388,18 @@ public class VkLinkParser {
         return null;
     }
 
+    private static @Nullable
+    String parseAccessKey(String string) {
+        Matcher matcher = PATTERN_ACCESS_KEY.matcher(string);
+        try {
+            if (matcher.find()) {
+                return matcher.group(1);
+            }
+        } catch (Exception ignored) {
+        }
+        return null;
+    }
+
     private static AbsLink parsePhoto(String string) {
         Matcher matcher = PATTERN_PHOTO.matcher(string);
 
@@ -392,7 +407,7 @@ public class VkLinkParser {
             if (matcher.find()) {
                 int ownerId = parseInt(matcher.group(5));
                 int photoId = parseInt(matcher.group(6));
-                return new PhotoLink(photoId, ownerId);
+                return new PhotoLink(photoId, ownerId, parseAccessKey(string));
             }
         } catch (Exception ignored) {
 
@@ -442,7 +457,7 @@ public class VkLinkParser {
 
         try {
             if (matcher.find()) {
-                return new VideoLink(parseInt(matcher.group(1)), parseInt(matcher.group(2)));
+                return new VideoLink(parseInt(matcher.group(1)), parseInt(matcher.group(2)), parseAccessKey(string));
             }
         } catch (NumberFormatException ignored) {
 
@@ -529,7 +544,7 @@ public class VkLinkParser {
 
         try {
             if (matcher.find()) {
-                return new DocLink(parseInt(matcher.group(1)), parseInt(matcher.group(2)));
+                return new DocLink(parseInt(matcher.group(1)), parseInt(matcher.group(2)), parseAccessKey(string));
             }
         } catch (Exception ignored) {
 

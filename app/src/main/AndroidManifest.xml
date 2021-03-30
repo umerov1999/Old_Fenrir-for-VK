@@ -81,11 +81,14 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".activity.QuickAnswerActivityBubbles"
+            android:name=".activity.ChatActivityBubbles"
             android:allowEmbedded="true"
+            android:configChanges="keyboardHidden|orientation"
             android:documentLaunchMode="always"
+            android:label="@string/chat"
             android:resizeableActivity="true"
-            android:theme="@style/QuickReply" />
+            android:theme="@style/App.DayNight.Swipes"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".activity.KeyExchangeCommitActivity"

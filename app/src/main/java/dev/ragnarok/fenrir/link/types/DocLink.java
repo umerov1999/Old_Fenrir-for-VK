@@ -6,11 +6,13 @@ public class DocLink extends AbsLink {
 
     public final int ownerId;
     public final int docId;
+    public final String access_key;
 
-    public DocLink(int ownerId, int docId) {
+    public DocLink(int ownerId, int docId, String access_key) {
         super(DOC);
         this.docId = docId;
         this.ownerId = ownerId;
+        this.access_key = access_key;
     }
 
     @NotNull
@@ -19,6 +21,7 @@ public class DocLink extends AbsLink {
         return "DocLink{" +
                 "ownerId=" + ownerId +
                 ", docId=" + docId +
+                ", Access_Key=" + access_key +
                 '}';
     }
 }

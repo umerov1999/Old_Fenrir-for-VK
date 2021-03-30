@@ -68,6 +68,7 @@
         <item>Фенрир</item>
         <item>Трискель</item>
         <item>Файер веер</item>
+        <item>Арнольдова Екатерина</item>
     </string-array>
 
     <string-array name="array_accounts_input">
@@ -1544,4 +1545,6 @@
     <string name="enable_native">Использовать нативные библиотеки</string>
     <string name="lifecycle_music_service">Время жизни плеера (сек.)</string>
     <string name="ffmpeg_audio_codecs">FFmpeg аудио кодеки</string>
+    <string name="strip_news_repost">Убрать репосты из новостей</string>
+    <string name="need_refresh">Требует обновить список</string>
 </resources>

@@ -6,10 +6,10 @@ buildscript {
     ext.fenrirNdk = '22.1.7171670'
     ext.fenrirMinSDK = 21
     ext.fenrirTargetSDK = 29
-    ext.FenrirVersionCode = 75
-    ext.FenrirVersionName = "1:(build-$FenrirVersionCode)"
+    ext.FenrirVersionCode = 76
+    ext.FenrirVersionName = "1:build-$FenrirVersionCode"
 
-    ext.kotlin_version = '1.4.31'
+    ext.kotlin_version = '1.4.32'
     ext.retrofitLibraryVersion = '2.9.0'
     ext.okhttpLibraryVersion = '5.0.0-alpha.2'
     ext.okioVersion = '2.10.0'

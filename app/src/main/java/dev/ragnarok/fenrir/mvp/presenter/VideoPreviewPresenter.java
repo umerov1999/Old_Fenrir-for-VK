@@ -45,12 +45,12 @@ public class VideoPreviewPresenter extends AccountDependencyPresenter<IVideoPrev
     private Owner owner;
     private boolean refreshingNow;
 
-    public VideoPreviewPresenter(int accountId, int videoId, int ownerId, @Nullable Video video, @Nullable Bundle savedInstanceState) {
+    public VideoPreviewPresenter(int accountId, int videoId, int ownerId, @Nullable String aKey, @Nullable Video video, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
         interactor = InteractorFactory.createVideosInteractor();
         this.videoId = videoId;
         this.ownerId = ownerId;
-        accessKey = nonNull(video) ? video.getAccessKey() : null;
+        accessKey = nonNull(video) ? video.getAccessKey() : aKey;
         faveInteractor = InteractorFactory.createFaveInteractor();
         ownerInteractor = Repository.INSTANCE.getOwners();
 

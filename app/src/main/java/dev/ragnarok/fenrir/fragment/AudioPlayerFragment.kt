@@ -44,6 +44,7 @@ import dev.ragnarok.fenrir.materialpopupmenu.MaterialPopupMenuBuilder
 import dev.ragnarok.fenrir.model.Audio
 import dev.ragnarok.fenrir.module.FenrirNative
 import dev.ragnarok.fenrir.module.qrcode.QrGenerator.generateQR
+import dev.ragnarok.fenrir.module.rlottie.RLottieShapeableImageView
 import dev.ragnarok.fenrir.picasso.transforms.BlurTransformation
 import dev.ragnarok.fenrir.place.PlaceFactory
 import dev.ragnarok.fenrir.player.ui.PlayPauseButton
@@ -100,7 +101,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
     private var tvTitle: TextView? = null
     private var tvAlbum: TextView? = null
     private var tvSubtitle: TextView? = null
-    private var ivCover: ShapeableImageView? = null
+    private var ivCover: RLottieShapeableImageView? = null
     private var ivBackground: ImageView? = null
 
     // Handler used to update the current time
@@ -759,8 +760,24 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                 listener(onError = { _, _ ->
                     run {
                         ivCover!!.scaleType = ImageView.ScaleType.CENTER
-                        ivCover!!.setImageResource(R.drawable.itunes)
-                        ivCover!!.drawable.setTint(CurrentTheme.getColorOnSurface(requireActivity()))
+                        if (FenrirNative.isNativeLoaded()) {
+                            ivCover!!.fromRes(
+                                R.raw.auidio_no_cover, 450, 450, intArrayOf(
+                                    0x333333,
+                                    CurrentTheme.getColorSurface(requireActivity()),
+                                    0x777777,
+                                    CurrentTheme.getColorOnSurface(requireActivity())
+                                )
+                            )
+                            ivCover!!.playAnimation()
+                        } else {
+                            ivCover!!.setImageResource(R.drawable.itunes)
+                            ivCover!!.drawable.setTint(
+                                CurrentTheme.getColorOnSurface(
+                                    requireActivity()
+                                )
+                            )
+                        }
                     }
                 })
                 crossfade(true)
@@ -783,8 +800,20 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                         ivBackground?.setImageDrawable(null)
                     }
                     ivCover!!.scaleType = ImageView.ScaleType.CENTER
-                    ivCover!!.setImageResource(R.drawable.itunes)
-                    ivCover!!.drawable.setTint(CurrentTheme.getColorOnSurface(requireActivity()))
+                    if (FenrirNative.isNativeLoaded()) {
+                        ivCover!!.fromRes(
+                            R.raw.auidio_no_cover, 450, 450, intArrayOf(
+                                0x333333,
+                                CurrentTheme.getColorSurface(requireActivity()),
+                                0x777777,
+                                CurrentTheme.getColorOnSurface(requireActivity())
+                            )
+                        )
+                        ivCover!!.playAnimation()
+                    } else {
+                        ivCover!!.setImageResource(R.drawable.itunes)
+                        ivCover!!.drawable.setTint(CurrentTheme.getColorOnSurface(requireActivity()))
+                    }
                 } else {
                     ivCover!!.scaleType = ImageView.ScaleType.FIT_START
                     PicassoDrawable.setBitmap(
@@ -813,8 +842,20 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                     ivBackground?.setImageDrawable(null)
                 }
                 ivCover!!.scaleType = ImageView.ScaleType.CENTER
-                ivCover!!.setImageResource(R.drawable.itunes)
-                ivCover!!.drawable.setTint(CurrentTheme.getColorOnSurface(requireActivity()))
+                if (FenrirNative.isNativeLoaded()) {
+                    ivCover!!.fromRes(
+                        R.raw.auidio_no_cover, 450, 450, intArrayOf(
+                            0x333333,
+                            CurrentTheme.getColorSurface(requireActivity()),
+                            0x777777,
+                            CurrentTheme.getColorOnSurface(requireActivity())
+                        )
+                    )
+                    ivCover!!.playAnimation()
+                } else {
+                    ivCover!!.setImageResource(R.drawable.itunes)
+                    ivCover!!.drawable.setTint(CurrentTheme.getColorOnSurface(requireActivity()))
+                }
             }
         }
         resolveAddButton()

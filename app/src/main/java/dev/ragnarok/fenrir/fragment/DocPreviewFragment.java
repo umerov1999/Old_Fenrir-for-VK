@@ -60,6 +60,7 @@ public class DocPreviewFragment extends BaseFragment implements View.OnClickList
     private View rootView;
     private int ownerId;
     private int documentId;
+    private String documentAccessKey;
     private Document document;
     private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
@@ -72,11 +73,15 @@ public class DocPreviewFragment extends BaseFragment implements View.OnClickList
     private boolean deleted;
     private IDocsInteractor docsInteractor;
 
-    public static Bundle buildArgs(int accountId, int docId, int docOwnerId, @Nullable Document document) {
+    public static Bundle buildArgs(int accountId, int docId, int docOwnerId, @Nullable String accessKey, @Nullable Document document) {
         Bundle args = new Bundle();
         args.putInt(Extra.ACCOUNT_ID, accountId);
         args.putInt(Extra.DOC_ID, docId);
         args.putInt(Extra.OWNER_ID, docOwnerId);
+
+        if (!Utils.isEmpty(accessKey)) {
+            args.putString(Extra.ACCESS_KEY, accessKey);
+        }
 
         if (document != null) {
             args.putParcelable(Extra.DOC, document);
@@ -115,6 +120,10 @@ public class DocPreviewFragment extends BaseFragment implements View.OnClickList
 
         if (getArguments().containsKey(Extra.DOC)) {
             document = getArguments().getParcelable(Extra.DOC);
+        }
+
+        if (getArguments().containsKey(Extra.ACCESS_KEY)) {
+            documentAccessKey = getArguments().getString(Extra.ACCESS_KEY);
         }
     }
 
@@ -227,7 +236,7 @@ public class DocPreviewFragment extends BaseFragment implements View.OnClickList
 
     private void requestVideoInfo() {
         mLoadingNow = true;
-        appendDisposable(docsInteractor.findById(accountId, ownerId, documentId)
+        appendDisposable(docsInteractor.findById(accountId, ownerId, documentId, documentAccessKey)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(this::onDocumentInfoReceived, this::onDocumentInfoGetError));
     }

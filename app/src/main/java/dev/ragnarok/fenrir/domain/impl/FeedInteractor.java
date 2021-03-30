@@ -28,6 +28,7 @@ import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.Post;
 import dev.ragnarok.fenrir.model.criteria.FeedCriteria;
 import dev.ragnarok.fenrir.settings.ISettings;
+import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.VKOwnIds;
@@ -147,6 +148,7 @@ public class FeedInteractor implements IFeedInteractor {
                             ownIds.appendNews(news);
                         }
                         OwnerEntities ownerEntities = Dto2Entity.mapOwners(response.profiles, response.groups);
+                        boolean needStripRepost = Settings.get().other().isStrip_news_repost();
                         return stores.feed()
                                 .store(accountId, dbos, ownerEntities, Utils.isEmpty(startFrom))
                                 .flatMap(ints -> {
@@ -156,8 +158,10 @@ public class FeedInteractor implements IFeedInteractor {
                                             .map(owners1 -> {
                                                 List<News> news = new ArrayList<>(feed.size());
                                                 for (VKApiNews dto : feed) {
-                                                    if (dto.source_id == 0 || dto.type.equals("ads")) {
+                                                    if (dto.source_id == 0 || dto.type.equals("ads") || (needStripRepost && dto.isOnlyRepost())) {
                                                         continue;
+                                                    } else if (needStripRepost && dto.hasCopyHistory()) {
+                                                        dto.stripRepost();
                                                     }
                                                     news.add(Dto2Model.buildNews(dto, owners1));
                                                 }

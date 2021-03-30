@@ -67,6 +67,8 @@ public interface ISettings {
 
         boolean isUse_coil();
 
+        boolean isStrip_news_repost();
+
         String get_Api_Domain();
 
         String get_Auth_Domain();

@@ -426,7 +426,7 @@ public class PlaceFactory {
 
     public static Place getVideoPreviewPlace(int accountId, @NonNull Video video) {
         return new Place(Place.VIDEO_PREVIEW)
-                .setArguments(VideoPreviewFragment.buildArgs(accountId, video.getOwnerId(), video.getId(), video));
+                .setArguments(VideoPreviewFragment.buildArgs(accountId, video.getOwnerId(), video.getId(), video.getAccessKey(), video));
     }
 
     public static Place getHistoryVideoPreviewPlace(int accountId, @NonNull ArrayList<Story> stories, int index) {
@@ -434,9 +434,9 @@ public class PlaceFactory {
                 .setArguments(StoryPagerFragment.buildArgs(accountId, stories, index));
     }
 
-    public static Place getVideoPreviewPlace(int accountId, int ownerId, int videoId, @Nullable Video video) {
+    public static Place getVideoPreviewPlace(int accountId, int ownerId, int videoId, @Nullable String accessKey, @Nullable Video video) {
         return new Place(Place.VIDEO_PREVIEW)
-                .setArguments(VideoPreviewFragment.buildArgs(accountId, ownerId, videoId, video));
+                .setArguments(VideoPreviewFragment.buildArgs(accountId, ownerId, videoId, accessKey, video));
     }
 
     public static Place getSingleURLPhotoPlace(String url, String prefix, String photo_prefix) {
@@ -518,14 +518,14 @@ public class PlaceFactory {
                 .setArguments(VideoAlbumsByVideoFragment.buildArgs(accountId, ownerId, video_ownerId, video_Id));
     }
 
-    public static Place getDocPreviewPlace(int accountId, int docId, int ownerId, @Nullable Document document) {
+    public static Place getDocPreviewPlace(int accountId, int docId, int ownerId, @Nullable String accessKey, @Nullable Document document) {
         Place place = new Place(Place.DOC_PREVIEW);
-        place.setArguments(DocPreviewFragment.buildArgs(accountId, docId, ownerId, document));
+        place.setArguments(DocPreviewFragment.buildArgs(accountId, docId, ownerId, accessKey, document));
         return place;
     }
 
     public static Place getDocPreviewPlace(int accountId, @NonNull Document document) {
-        return getDocPreviewPlace(accountId, document.getId(), document.getOwnerId(), document);
+        return getDocPreviewPlace(accountId, document.getId(), document.getOwnerId(), document.getAccessKey(), document);
     }
 
     public static Place getConversationAttachmentsPlace(int accountId, int peerId, String type) {

@@ -144,6 +144,7 @@
         <item>Fenrir</item>
         <item>Triskel</item>
         <item>Fire Fan</item>
+        <item>Arnoldova Ekaterina</item>
     </string-array>
 
     <string-array name="array_pagan_symbol_items" translatable="false">
@@ -156,6 +157,7 @@
         <item>6</item>
         <item>7</item>
         <item>8</item>
+        <item>9</item>
     </string-array>
 
     <string-array name="array_accounts_input">
@@ -1717,4 +1719,6 @@
     <string name="enable_native">Enable native libraries</string>
     <string name="lifecycle_music_service">Audio service lifetime (sec)</string>
     <string name="ffmpeg_audio_codecs">FFmpeg audio codecs</string>
+    <string name="strip_news_repost">Remove reposts from news</string>
+    <string name="need_refresh">Need Refresh</string>
 </resources>

@@ -359,7 +359,7 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
 
     @Override
     public void goToVideoPreview(int accountId, int videoId, int videoOwnerId) {
-        PlaceFactory.getVideoPreviewPlace(accountId, videoOwnerId, videoId, null).tryOpenWith(requireActivity());
+        PlaceFactory.getVideoPreviewPlace(accountId, videoOwnerId, videoId, null, null).tryOpenWith(requireActivity());
     }
 
     @Override

@@ -16,13 +16,14 @@
             app:useSimpleSummaryProvider="true" />
 
         <Preference
-            android:key="proxy"
-            android:title="@string/http_proxy"
+            android:icon="@drawable/security_settings"
+            android:key="security"
+            android:title="@string/security"
             app:iconSpaceReserved="false" />
 
         <Preference
-            android:key="security"
-            android:title="@string/security"
+            android:key="proxy"
+            android:title="@string/http_proxy"
             app:iconSpaceReserved="false" />
 
         <Preference
@@ -62,6 +63,13 @@
             android:title="@string/start_news"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="strip_news_repost"
+            android:summary="@string/need_refresh"
+            android:title="@string/strip_news_repost"
+            app:iconSpaceReserved="false" />
 
         <SwitchPreference
             android:defaultValue="false"
@@ -213,12 +221,6 @@
             android:key="webview_night_mode"
             android:summary="@string/webview_summary"
             android:title="@string/webview_night_mode"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="snow_mode"
-            android:title="@string/snow_mode"
             app:iconSpaceReserved="false" />
 
         <ListPreference
@@ -709,6 +711,11 @@
             android:title="@string/pagan_symbol"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="snow_mode"
+            android:title="@string/snow_mode"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
 
     <PreferenceCategory

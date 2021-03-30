@@ -14,7 +14,7 @@ public interface IDocsInteractor {
 
     Single<Integer> add(int accountId, int docId, int ownerId, String accessKey);
 
-    Single<Document> findById(int accountId, int ownerId, int docId);
+    Single<Document> findById(int accountId, int ownerId, int docId, String accessKey);
 
     Single<List<Document>> search(int accountId, DocumentSearchCriteria criteria, int count, int offset);
 

@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import dev.ragnarok.fenrir.api.interfaces.INetworker;
-import dev.ragnarok.fenrir.api.model.IdPair;
+import dev.ragnarok.fenrir.api.model.AccessIdPair;
 import dev.ragnarok.fenrir.api.model.VkApiDoc;
 import dev.ragnarok.fenrir.db.interfaces.IDocsStorage;
 import dev.ragnarok.fenrir.db.model.entity.DocumentEntity;
@@ -72,10 +72,10 @@ public class DocsInteractor implements IDocsInteractor {
     }
 
     @Override
-    public Single<Document> findById(int accountId, int ownerId, int docId) {
+    public Single<Document> findById(int accountId, int ownerId, int docId, String accessKey) {
         return networker.vkDefault(accountId)
                 .docs()
-                .getById(Collections.singletonList(new IdPair(docId, ownerId)))
+                .getById(Collections.singletonList(new AccessIdPair(docId, ownerId, accessKey)))
                 .map(dtos -> {
                     if (dtos.isEmpty()) {
                         throw new NotFoundException();

@@ -93,7 +93,7 @@ public class LikeFCMMessage {
 
             place = PlaceFactory.getSimpleGalleryPlace(accountId, photos, 0, true);
         } else if ("video".equals(like_type)) {
-            place = PlaceFactory.getVideoPreviewPlace(accountId, owner_id, item_id, null);
+            place = PlaceFactory.getVideoPreviewPlace(accountId, owner_id, item_id, null, null);
         } else if ("post_comment".equals(like_type)) {
             Commented commented = new Commented(item_id, owner_id, CommentedType.POST, null);
             place = PlaceFactory.getCommentsPlace(accountId, commented, reply_id);

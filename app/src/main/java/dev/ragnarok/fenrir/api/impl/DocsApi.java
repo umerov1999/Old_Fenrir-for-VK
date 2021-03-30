@@ -5,7 +5,7 @@ import java.util.List;
 
 import dev.ragnarok.fenrir.api.IServiceProvider;
 import dev.ragnarok.fenrir.api.interfaces.IDocsApi;
-import dev.ragnarok.fenrir.api.model.IdPair;
+import dev.ragnarok.fenrir.api.model.AccessIdPair;
 import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VkApiDoc;
 import dev.ragnarok.fenrir.api.model.server.VkApiDocsUploadServer;
@@ -36,8 +36,8 @@ class DocsApi extends AbsApi implements IDocsApi {
     }
 
     @Override
-    public Single<List<VkApiDoc>> getById(Collection<IdPair> pairs) {
-        String ids = join(pairs, ",", orig -> orig.ownerId + "_" + orig.id);
+    public Single<List<VkApiDoc>> getById(Collection<AccessIdPair> pairs) {
+        String ids = join(pairs, ",", AccessIdPair::format);
         return provideService(IDocsService.class)
                 .flatMap(service -> service.getById(ids)
                         .map(extractResponseWithErrorHandling()));

@@ -106,7 +106,7 @@
             app:layout_constraintWidth_default="percent"
             app:layout_constraintWidth_percent="0.25">
 
-            <com.google.android.material.imageview.ShapeableImageView
+            <dev.ragnarok.fenrir.module.rlottie.RLottieShapeableImageView
                 android:id="@+id/cover"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -116,6 +116,7 @@
                 android:stateListAnimator="@animator/clicked"
                 app:contentPadding="0dp"
                 app:layout_behavior="dev.ragnarok.fenrir.view.swipehelper.HorizontalSwipeBehavior"
+                app:loopAnimation="true"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.RoundedPlayerCover" />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>

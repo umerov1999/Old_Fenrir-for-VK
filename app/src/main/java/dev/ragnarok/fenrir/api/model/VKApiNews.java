@@ -3,6 +3,8 @@ package dev.ragnarok.fenrir.api.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import dev.ragnarok.fenrir.util.Utils;
+
 public class VKApiNews {
 
     public String type; //friends_recomm //post
@@ -52,5 +54,13 @@ public class VKApiNews {
 
     public boolean hasCopyHistory() {
         return copy_history != null && !copy_history.isEmpty();
+    }
+
+    public boolean isOnlyRepost() {
+        return copy_history != null && !copy_history.isEmpty() && getAttachmentsCount() == 0 && Utils.isEmpty(text);
+    }
+
+    public void stripRepost() {
+        copy_history = null;
     }
 }

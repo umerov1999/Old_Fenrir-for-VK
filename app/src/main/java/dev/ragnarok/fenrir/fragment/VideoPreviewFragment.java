@@ -108,22 +108,22 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
     private Transformation mTransformation;
     private ViewGroup mOwnerGroup;
 
-    public static Bundle buildArgs(int accountId, int ownerId, int videoId, @Nullable Video video) {
+    public static Bundle buildArgs(int accountId, int ownerId, int videoId, @Nullable String accessKey, @Nullable Video video) {
         Bundle bundle = new Bundle();
 
         bundle.putInt(Extra.ACCOUNT_ID, accountId);
         bundle.putInt(Extra.OWNER_ID, ownerId);
         bundle.putInt(EXTRA_VIDEO_ID, videoId);
 
+        if (!isEmpty(accessKey)) {
+            bundle.putString(Extra.ACCESS_KEY, accessKey);
+        }
+
         if (nonNull(video)) {
             bundle.putParcelable(Extra.VIDEO, video);
         }
 
         return bundle;
-    }
-
-    public static VideoPreviewFragment newInstance(int accountId, int ownerId, int videoId, @Nullable Video video) {
-        return newInstance(buildArgs(accountId, ownerId, videoId, video));
     }
 
     public static VideoPreviewFragment newInstance(Bundle args) {
@@ -240,10 +240,16 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
     @NotNull
     @Override
     public IPresenterFactory<VideoPreviewPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
+        String documentAccessKey = null;
+        if (requireArguments().containsKey(Extra.ACCESS_KEY)) {
+            documentAccessKey = requireArguments().getString(Extra.ACCESS_KEY);
+        }
+        String finalDocumentAccessKey = documentAccessKey;
         return () -> new VideoPreviewPresenter(
                 requireArguments().getInt(Extra.ACCOUNT_ID),
                 requireArguments().getInt(EXTRA_VIDEO_ID),
                 requireArguments().getInt(Extra.OWNER_ID),
+                finalDocumentAccessKey,
                 requireArguments().getParcelable(Extra.VIDEO),
                 saveInstanceState
         );

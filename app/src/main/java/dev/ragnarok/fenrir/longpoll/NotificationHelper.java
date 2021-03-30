@@ -33,9 +33,9 @@ import java.util.List;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
+import dev.ragnarok.fenrir.activity.ChatActivityBubbles;
 import dev.ragnarok.fenrir.activity.MainActivity;
 import dev.ragnarok.fenrir.activity.QuickAnswerActivity;
-import dev.ragnarok.fenrir.activity.QuickAnswerActivityBubbles;
 import dev.ragnarok.fenrir.api.model.VKApiMessage;
 import dev.ragnarok.fenrir.domain.Repository;
 import dev.ragnarok.fenrir.link.internal.OwnerLinkSpanFactory;
@@ -76,6 +76,30 @@ public class NotificationHelper {
     public static final int NOTIFICATION_DOWNLOADING = 74;
     public static final int NOTIFICATION_DOWNLOAD = 75;
     public static final int NOTIFICATION_DOWNLOAD_MANAGER = 76;
+    private static final Object bubbleLock = new Object();
+    private static String bubbleOpened;
+
+    public static @Nullable
+    String getBubbleOpened() {
+        synchronized (bubbleLock) {
+            return bubbleOpened;
+        }
+    }
+
+    public static void setBubbleOpened(int accountId, int peerId) {
+        synchronized (bubbleLock) {
+            bubbleOpened = createPeerTagFor(accountId, peerId);
+        }
+    }
+
+    public static void resetBubbleOpened(Context context, boolean force) {
+        synchronized (bubbleLock) {
+            if (!force) {
+                getService(context).cancel(bubbleOpened, NOTIFICATION_MESSAGE);
+            }
+            bubbleOpened = null;
+        }
+    }
 
     /**
      * Отображение уведомления в statusbar о новом сообщении.
@@ -406,8 +430,10 @@ public class NotificationHelper {
         //        .getNotifPref(accountId, peerId);
 
         //if (hasFlag(mask, ISettings.INotificationSettings.FLAG_SHOW_NOTIF)) {
-        getService(context).cancel(createPeerTagFor(accountId, peerId),
-                NOTIFICATION_MESSAGE);
+        String peer = createPeerTagFor(accountId, peerId);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R || !peer.equals(getBubbleOpened())) {
+            getService(context).cancel(peer, NOTIFICATION_MESSAGE);
+        }
         //}
     }
 
@@ -487,14 +513,14 @@ public class NotificationHelper {
             ShortcutManagerCompat.addDynamicShortcuts(context, arrayList);
             builder.setShortcutId(id);
 
-            Intent intentQuick = QuickAnswerActivityBubbles.forStart(context, accountId, message, text != null ? text.toString() : context.getString(R.string.error), peer.getAvaUrl(), peer.getTitle());
+            Intent intentQuick = ChatActivityBubbles.forStart(context, accountId, peer);
             PendingIntent bubbleIntent = PendingIntent.getActivity(context, 0, intentQuick, PendingIntent.FLAG_UPDATE_CURRENT);
             assert avatar != null;
             NotificationCompat.BubbleMetadata.Builder bubbleBuilder = new NotificationCompat.BubbleMetadata.Builder(bubbleIntent, IconCompat.createWithAdaptiveBitmap(avatar));
 
             bubbleBuilder.setSuppressNotification(true);
             bubbleBuilder.setAutoExpandBubble(false);
-            bubbleBuilder.setDesiredHeight(400);
+            bubbleBuilder.setDesiredHeight(600);
             builder.setBubbleMetadata(bubbleBuilder.build());
         } catch (Exception e) {
             //FileLog.e(e);

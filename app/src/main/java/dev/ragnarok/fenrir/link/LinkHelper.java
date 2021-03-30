@@ -119,7 +119,8 @@ public class LinkHelper {
 
                 Photo photo = new Photo()
                         .setId(photoLink.id)
-                        .setOwnerId(photoLink.ownerId);
+                        .setOwnerId(photoLink.ownerId)
+                        .setAccessKey(photoLink.access_key);
 
                 PlaceFactory.getSimpleGalleryPlace(accountId, singletonArrayList(photo), 0, true).tryOpenWith(activity);
                 break;
@@ -166,7 +167,7 @@ public class LinkHelper {
 
             case AbsLink.VIDEO:
                 VideoLink videoLink = (VideoLink) link;
-                PlaceFactory.getVideoPreviewPlace(accountId, videoLink.ownerId, videoLink.videoId, null)
+                PlaceFactory.getVideoPreviewPlace(accountId, videoLink.ownerId, videoLink.videoId, videoLink.access_key, null)
                         .tryOpenWith(activity);
                 break;
 
@@ -187,7 +188,7 @@ public class LinkHelper {
 
             case AbsLink.DOC:
                 DocLink docLink = (DocLink) link;
-                PlaceFactory.getDocPreviewPlace(accountId, docLink.docId, docLink.ownerId, null).tryOpenWith(activity);
+                PlaceFactory.getDocPreviewPlace(accountId, docLink.docId, docLink.ownerId, docLink.access_key, null).tryOpenWith(activity);
                 break;
 
             case AbsLink.FAVE:

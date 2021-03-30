@@ -29,8 +29,8 @@ public class Constants {
 
     public static final String VK_ANDROID_APP_VERSION_NAME = "6.30";
     public static final String VK_ANDROID_APP_VERSION_CODE = "7444";
-    public static final String KATE_APP_VERSION_NAME = "71 lite";
-    public static final String KATE_APP_VERSION_CODE = "487";
+    public static final String KATE_APP_VERSION_NAME = "72 lite";
+    public static final String KATE_APP_VERSION_CODE = "488";
     public static final String KATE_RECEIPT_GMS_TOKEN = BuildConfig.KATE_RECEIPT_GMS_TOKEN;
     public static final int API_ID = BuildConfig.VK_API_APP_ID;
     public static final String SECRET = BuildConfig.VK_CLIENT_SECRET;

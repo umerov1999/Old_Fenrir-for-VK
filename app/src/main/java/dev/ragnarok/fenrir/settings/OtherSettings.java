@@ -171,6 +171,11 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public boolean isStrip_news_repost() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("strip_news_repost", false);
+    }
+
+    @Override
     public String get_Api_Domain() {
         return PreferenceManager.getDefaultSharedPreferences(app).getString("vk_api_domain", "api.vk.com").trim();
     }

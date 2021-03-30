@@ -54,6 +54,7 @@ import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.WeakViewAnimatorAdapter;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleOnSubscribe;
 import io.reactivex.rxjava3.disposables.Disposable;
 
 import static dev.ragnarok.fenrir.player.util.MusicUtils.observeServiceBinding;
@@ -161,15 +162,18 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
             holder.time.setText(Utils.BytesToSize(audio.getDuration()));
         }
 
-        int Status = DownloadWorkUtils.TrackIsDownloaded(audio);
-        if (Status == 2) {
-            holder.saved.setImageResource(R.drawable.remote_cloud);
-            Utils.setColorFilter(holder.saved, CurrentTheme.getColorSecondary(mContext));
-        } else {
-            holder.saved.setImageResource(R.drawable.save);
-            Utils.setColorFilter(holder.saved, CurrentTheme.getColorPrimary(mContext));
-        }
-        holder.saved.setVisibility(Status != 0 ? View.VISIBLE : View.GONE);
+        audioListDisposable = Single.create((SingleOnSubscribe<Integer>) emitter -> emitter.onSuccess(DownloadWorkUtils.TrackIsDownloaded(audio)))
+                .compose(RxUtils.applySingleIOToMainSchedulers())
+                .subscribe(v -> {
+                    if (v == 2) {
+                        holder.saved.setImageResource(R.drawable.remote_cloud);
+                        Utils.setColorFilter(holder.saved, CurrentTheme.getColorSecondary(mContext));
+                    } else {
+                        holder.saved.setImageResource(R.drawable.save);
+                        Utils.setColorFilter(holder.saved, CurrentTheme.getColorPrimary(mContext));
+                    }
+                    holder.saved.setVisibility(v != 0 ? View.VISIBLE : View.GONE);
+                }, RxUtils.ignore());
 
         updateAudioStatus(holder, audio);
 

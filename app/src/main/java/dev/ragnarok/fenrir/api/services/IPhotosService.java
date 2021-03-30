@@ -247,6 +247,7 @@ public interface IPhotosService {
     @POST("photos.getUserPhotos")
     Single<BaseResponse<Items<VKApiPhoto>>> getUserPhotos(@Field("user_id") Integer ownerId,
                                                           @Field("extended") Integer extended,
+                                                          @Field("sort") Integer sort,
                                                           @Field("offset") Integer offset,
                                                           @Field("count") Integer count);
 
