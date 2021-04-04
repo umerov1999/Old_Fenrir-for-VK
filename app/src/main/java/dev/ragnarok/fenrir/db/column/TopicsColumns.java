@@ -1,11 +1,11 @@
 package dev.ragnarok.fenrir.db.column;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+
 import android.content.ContentValues;
 import android.provider.BaseColumns;
 
 import dev.ragnarok.fenrir.api.model.VKApiTopic;
-
-import static dev.ragnarok.fenrir.util.Objects.isNull;
 
 public class TopicsColumns implements BaseColumns {
 

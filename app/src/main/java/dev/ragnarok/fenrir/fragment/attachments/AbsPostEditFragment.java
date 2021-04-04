@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment.attachments;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +19,6 @@ import dev.ragnarok.fenrir.mvp.view.IBasePostEditView;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation;
 import dev.ragnarok.fenrir.util.AssertUtils;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public abstract class AbsPostEditFragment<P extends AbsPostEditPresenter<V>, V extends IBasePostEditView>
         extends AbsAttachmentsEditFragment<P, V> implements IBasePostEditView {

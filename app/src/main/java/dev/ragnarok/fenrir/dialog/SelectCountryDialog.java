@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.dialog;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
@@ -26,8 +28,6 @@ import dev.ragnarok.fenrir.model.database.Country;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.CountriesPresenter;
 import dev.ragnarok.fenrir.mvp.view.ICountriesView;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class SelectCountryDialog extends BaseMvpDialogFragment<CountriesPresenter, ICountriesView>
         implements CountriesAdapter.Listener, ICountriesView {

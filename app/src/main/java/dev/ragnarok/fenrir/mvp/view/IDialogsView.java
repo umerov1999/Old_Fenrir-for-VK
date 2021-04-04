@@ -54,6 +54,8 @@ public interface IDialogsView extends IAccountDependencyView, IMvpView, IErrorVi
         void setIsHidden(boolean can);
 
         void setCanRead(boolean can);
+
+        void setPinned(boolean pinned);
     }
 
     interface IOptionView {

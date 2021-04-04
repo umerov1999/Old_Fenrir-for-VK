@@ -440,6 +440,8 @@ public class MessengerContentProvider extends ContentProvider {
         sDialogsProjectionMap.put(DialogsColumns.ACL, DialogsColumns.FULL_ACL);
         sDialogsProjectionMap.put(DialogsColumns.LAST_MESSAGE_ID, DialogsColumns.FULL_LAST_MESSAGE_ID);
         sDialogsProjectionMap.put(DialogsColumns.IS_GROUP_CHANNEL, DialogsColumns.FULL_IS_GROUP_CHANNEL);
+        sDialogsProjectionMap.put(DialogsColumns.MAJOR_ID, DialogsColumns.FULL_MAJOR_ID);
+        sDialogsProjectionMap.put(DialogsColumns.MINOR_ID, DialogsColumns.FULL_MINOR_ID);
 
         sDialogsProjectionMap.put(DialogsColumns.FOREIGN_MESSAGE_FROM_ID, MessageColumns.FULL_FROM_ID + " AS " + DialogsColumns.FOREIGN_MESSAGE_FROM_ID);
         sDialogsProjectionMap.put(DialogsColumns.FOREIGN_MESSAGE_BODY, MessageColumns.FULL_BODY + " AS " + DialogsColumns.FOREIGN_MESSAGE_BODY);
@@ -465,6 +467,8 @@ public class MessengerContentProvider extends ContentProvider {
         sPeersProjectionMap.put(PeersColumns.ACL, PeersColumns.FULL_ACL);
         sPeersProjectionMap.put(PeersColumns.IS_GROUP_CHANNEL, PeersColumns.FULL_IS_GROUP_CHANNEL);
         sPeersProjectionMap.put(PeersColumns.KEYBOARD, PeersColumns.FULL_KEYBOARD);
+        sPeersProjectionMap.put(PeersColumns.MAJOR_ID, PeersColumns.FULL_MAJOR_ID);
+        sPeersProjectionMap.put(PeersColumns.MINOR_ID, PeersColumns.FULL_MINOR_ID);
 
         sDocsProjectionMap = new HashMap<>();
         sDocsProjectionMap.put(BaseColumns._ID, DocColumns.FULL_ID);

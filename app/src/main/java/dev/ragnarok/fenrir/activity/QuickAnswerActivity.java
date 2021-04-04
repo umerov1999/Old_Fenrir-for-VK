@@ -1,5 +1,10 @@
 package dev.ragnarok.fenrir.activity;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.RxUtils.ignore;
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -70,11 +75,6 @@ import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.emoji.BotKeyboardView;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.RxUtils.ignore;
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 
 public class QuickAnswerActivity extends AppCompatActivity {
 

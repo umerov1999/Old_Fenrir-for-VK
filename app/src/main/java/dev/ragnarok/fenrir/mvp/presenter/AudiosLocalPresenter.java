@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import static dev.ragnarok.fenrir.Injection.provideMainThreadScheduler;
+import static dev.ragnarok.fenrir.util.Utils.findIndexById;
+
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,9 +33,6 @@ import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-
-import static dev.ragnarok.fenrir.Injection.provideMainThreadScheduler;
-import static dev.ragnarok.fenrir.util.Utils.findIndexById;
 
 public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLocalView> {
 

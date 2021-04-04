@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import static dev.ragnarok.fenrir.util.Utils.trimmedIsEmpty;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,8 +12,6 @@ import dev.ragnarok.fenrir.mvp.presenter.base.RxSupportPresenter;
 import dev.ragnarok.fenrir.mvp.view.IAddProxyView;
 import dev.ragnarok.fenrir.settings.IProxySettings;
 import dev.ragnarok.fenrir.util.ValidationUtil;
-
-import static dev.ragnarok.fenrir.util.Utils.trimmedIsEmpty;
 
 
 public class AddProxyPresenter extends RxSupportPresenter<IAddProxyView> {

@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.activity;
 
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -27,8 +29,6 @@ import dev.ragnarok.fenrir.model.Token;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Logger;
-
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class ValidateActivity extends Activity {
 

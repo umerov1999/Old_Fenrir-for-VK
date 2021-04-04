@@ -1,5 +1,10 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import static dev.ragnarok.fenrir.Injection.provideMainThreadScheduler;
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Utils.findIndexById;
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -31,11 +36,6 @@ import dev.ragnarok.fenrir.util.DisposableHolder;
 import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
-
-import static dev.ragnarok.fenrir.Injection.provideMainThreadScheduler;
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Utils.findIndexById;
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 
 
 public class DocsListPresenter extends AccountDependencyPresenter<IDocListView> {

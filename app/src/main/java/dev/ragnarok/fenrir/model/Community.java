@@ -1,8 +1,8 @@
 package dev.ragnarok.fenrir.model;
 
-import android.os.Parcel;
-
 import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+
+import android.os.Parcel;
 
 
 public class Community extends Owner {

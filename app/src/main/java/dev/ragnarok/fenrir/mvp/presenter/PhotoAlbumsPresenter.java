@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import static dev.ragnarok.fenrir.util.Utils.findIndexById;
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 
@@ -29,9 +32,6 @@ import dev.ragnarok.fenrir.util.Analytics;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.RxUtils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-
-import static dev.ragnarok.fenrir.util.Utils.findIndexById;
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 
 public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbumsView> {
 

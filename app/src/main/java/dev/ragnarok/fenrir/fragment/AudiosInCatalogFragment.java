@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.Manifest;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -43,8 +45,6 @@ import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.ViewUtils;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class AudiosInCatalogFragment extends BaseMvpFragment<AudiosInCatalogPresenter, IAudiosInCatalogView>
         implements IAudiosInCatalogView {

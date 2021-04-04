@@ -173,6 +173,10 @@ public interface ISettings {
 
         void setDisable_likes(boolean disabled);
 
+        boolean isDisable_notifications();
+
+        void setDisable_notifications(boolean disabled);
+
         boolean isDo_auto_play_video();
 
         boolean isVideo_controller_to_decor();
@@ -182,6 +186,8 @@ public interface ISettings {
         boolean isHint_stickers();
 
         boolean isEnable_native();
+
+        boolean isEnable_cache_ui_anim();
 
         int getPaganSymbol();
 

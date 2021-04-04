@@ -1,5 +1,11 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.RxUtils.applyCompletableIOToMainSchedulers;
+import static dev.ragnarok.fenrir.util.Utils.copyToArrayListWithPredicate;
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -39,12 +45,6 @@ import dev.ragnarok.fenrir.util.Predicate;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Unixtime;
 import dev.ragnarok.fenrir.util.Utils;
-
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.RxUtils.applyCompletableIOToMainSchedulers;
-import static dev.ragnarok.fenrir.util.Utils.copyToArrayListWithPredicate;
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 
 
 public class PostEditPresenter extends AbsPostEditPresenter<IPostEditView> {

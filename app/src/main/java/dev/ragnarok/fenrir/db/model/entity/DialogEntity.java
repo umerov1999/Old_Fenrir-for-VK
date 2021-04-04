@@ -31,6 +31,10 @@ public class DialogEntity extends Entity {
 
     private boolean isGroupChannel;
 
+    private int major_id;
+
+    private int minor_id;
+
     public DialogEntity(int peerId) {
         this.peerId = peerId;
     }
@@ -124,7 +128,9 @@ public class DialogEntity extends Entity {
                 .setLastMessageId(lastMessageId)
                 .setAcl(acl)
                 .setCurrentKeyboard(currentKeyboard)
-                .setGroupChannel(isGroupChannel);
+                .setGroupChannel(isGroupChannel)
+                .setMajor_id(major_id)
+                .setMinor_id(minor_id);
     }
 
     public String getPhoto100() {
@@ -169,6 +175,24 @@ public class DialogEntity extends Entity {
 
     public DialogEntity setGroupChannel(boolean groupChannel) {
         isGroupChannel = groupChannel;
+        return this;
+    }
+
+    public int getMajor_id() {
+        return major_id;
+    }
+
+    public DialogEntity setMajor_id(int major_id) {
+        this.major_id = major_id;
+        return this;
+    }
+
+    public int getMinor_id() {
+        return minor_id;
+    }
+
+    public DialogEntity setMinor_id(int minor_id) {
+        this.minor_id = minor_id;
         return this;
     }
 }

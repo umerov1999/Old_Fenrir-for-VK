@@ -1,5 +1,18 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.model.SwitchableCategory.BOOKMARKS;
+import static dev.ragnarok.fenrir.model.SwitchableCategory.DOCS;
+import static dev.ragnarok.fenrir.model.SwitchableCategory.FRIENDS;
+import static dev.ragnarok.fenrir.model.SwitchableCategory.GROUPS;
+import static dev.ragnarok.fenrir.model.SwitchableCategory.MUSIC;
+import static dev.ragnarok.fenrir.model.SwitchableCategory.NEWSFEED_COMMENTS;
+import static dev.ragnarok.fenrir.model.SwitchableCategory.PHOTOS;
+import static dev.ragnarok.fenrir.model.SwitchableCategory.VIDEOS;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.RxUtils.ignore;
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -42,19 +55,6 @@ import dev.ragnarok.fenrir.settings.NightMode;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.RxUtils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-
-import static dev.ragnarok.fenrir.model.SwitchableCategory.BOOKMARKS;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.DOCS;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.FRIENDS;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.GROUPS;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.MUSIC;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.NEWSFEED_COMMENTS;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.PHOTOS;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.VIDEOS;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.RxUtils.ignore;
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class AdditionalNavigationFragment extends BaseFragment implements MenuListAdapter.ActionListener {
 
@@ -185,6 +185,7 @@ public class AdditionalNavigationFragment extends BaseFragment implements MenuLi
         tvUserName = root.findViewById(R.id.header_navi_menu_username);
         tvDomain = root.findViewById(R.id.header_navi_menu_usernick);
         ImageView ivHeaderDayNight = root.findViewById(R.id.header_navi_menu_day_night);
+        ImageView ivHeaderNotifications = root.findViewById(R.id.header_navi_menu_notifications);
 
         ivHeaderDayNight.setOnClickListener(v -> {
             if (Settings.get().ui().getNightMode() == NightMode.ENABLE || Settings.get().ui().getNightMode() == NightMode.AUTO ||
@@ -197,13 +198,20 @@ public class AdditionalNavigationFragment extends BaseFragment implements MenuLi
             }
         });
 
+        ivHeaderNotifications.setOnClickListener(v -> {
+            boolean rs = !Settings.get().other().isDisable_notifications();
+            Settings.get().other().setDisable_notifications(rs);
+            ivHeaderNotifications.setImageResource(rs ? R.drawable.notification_disable : R.drawable.feed);
+        });
+        ivHeaderNotifications.setImageResource(Settings.get().other().isDisable_notifications() ? R.drawable.notification_disable : R.drawable.feed);
+
         ivHeaderDayNight.setOnLongClickListener(v -> {
             PlaceFactory.getSettingsThemePlace().tryOpenWith(requireActivity());
             return true;
         });
 
         ivHeaderDayNight.setImageResource((Settings.get().ui().getNightMode() == NightMode.ENABLE || Settings.get().ui().getNightMode() == NightMode.AUTO ||
-                Settings.get().ui().getNightMode() == NightMode.FOLLOW_SYSTEM) ? R.drawable.ic_outline_wb_sunny : R.drawable.ic_outline_nights_stay);
+                Settings.get().ui().getNightMode() == NightMode.FOLLOW_SYSTEM) ? R.drawable.ic_outline_nights_stay : R.drawable.ic_outline_wb_sunny);
 
         mAdapter = new MenuListAdapter(requireActivity(), mDrawerItems, this);
 

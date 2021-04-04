@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,8 +29,6 @@ import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.ProxyManagerPresenter;
 import dev.ragnarok.fenrir.mvp.view.IProxyManagerView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class ProxyManagerFrgament extends BaseMvpFragment<ProxyManagerPresenter, IProxyManagerView>
         implements IProxyManagerView, ProxiesAdapter.ActionListener {

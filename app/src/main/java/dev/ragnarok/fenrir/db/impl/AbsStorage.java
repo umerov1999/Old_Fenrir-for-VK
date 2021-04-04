@@ -1,5 +1,10 @@
 package dev.ragnarok.fenrir.db.impl;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
+
 import android.content.ContentProviderResult;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -27,11 +32,6 @@ import dev.ragnarok.fenrir.db.serialize.AttachmentsDboAdapter;
 import dev.ragnarok.fenrir.db.serialize.EntitiesWrapperAdapter;
 import dev.ragnarok.fenrir.db.serialize.EntityWrapperAdapter;
 import dev.ragnarok.fenrir.db.serialize.UriSerializer;
-
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 public class AbsStorage implements IStorage {
 

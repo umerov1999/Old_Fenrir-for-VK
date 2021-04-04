@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.mvp.presenter.conversations;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
+
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -23,9 +26,6 @@ import dev.ragnarok.fenrir.util.DisposableHolder;
 import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.RxUtils;
 import io.reactivex.rxjava3.core.Single;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 public class ChatAttachmentPhotoPresenter extends BaseChatAttachmentsPresenter<Photo, IChatAttachmentPhotosView> {
 

@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.dialog;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -47,8 +49,6 @@ import dev.ragnarok.fenrir.player.util.MusicUtils;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.Utils;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class AudioDuplicateDialog extends BaseMvpDialogFragment<AudioDuplicatePresenter, IAudioDuplicateView>
         implements IAudioDuplicateView {

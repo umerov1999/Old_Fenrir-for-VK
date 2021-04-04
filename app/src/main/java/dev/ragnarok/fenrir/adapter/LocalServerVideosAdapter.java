@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.adapter;
 
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -35,8 +37,6 @@ import dev.ragnarok.fenrir.util.DownloadWorkUtils;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.disposables.Disposable;
-
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
 
 public class LocalServerVideosAdapter extends RecyclerView.Adapter<LocalServerVideosAdapter.Holder> {
 

@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.longpoll;
 
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 import androidx.annotation.NonNull;
 
 import dev.ragnarok.fenrir.api.model.longpoll.VkApiLongpollUpdates;
@@ -7,8 +9,6 @@ import dev.ragnarok.fenrir.domain.IMessagesRepository;
 import dev.ragnarok.fenrir.domain.IOwnersRepository;
 import dev.ragnarok.fenrir.domain.Repository;
 import io.reactivex.rxjava3.core.Completable;
-
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class LongPollEventSaver {
 

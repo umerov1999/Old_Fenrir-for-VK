@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.longpoll;
 
+import static dev.ragnarok.fenrir.util.Utils.hasFlag;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -56,9 +59,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import static dev.ragnarok.fenrir.util.Utils.hasFlag;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-
 public class NotificationHelper {
 
     public static final int NOTIFICATION_MESSAGE = 62;
@@ -110,6 +110,8 @@ public class NotificationHelper {
 
     @SuppressLint("CheckResult")
     public static void notifyNewMessage(Context context, int accountId, Message message) {
+        if (Settings.get().other().isDisable_notifications())
+            return;
         ChatEntryFetcher.getRx(context, accountId, accountId)
                 .subscribeOn(NotificationScheduler.INSTANCE)
                 .subscribe(account -> ChatEntryFetcher.getRx(context, accountId, message.getPeerId())

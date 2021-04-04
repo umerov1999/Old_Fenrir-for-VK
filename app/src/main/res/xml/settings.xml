@@ -16,12 +16,6 @@
             app:useSimpleSummaryProvider="true" />
 
         <Preference
-            android:icon="@drawable/security_settings"
-            android:key="security"
-            android:title="@string/security"
-            app:iconSpaceReserved="false" />
-
-        <Preference
             android:key="proxy"
             android:title="@string/http_proxy"
             app:iconSpaceReserved="false" />
@@ -37,6 +31,13 @@
             app:iconSpaceReserved="false" />
 
         <Preference
+            android:icon="@drawable/security_settings"
+            android:key="security"
+            android:title="@string/security"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:icon="@drawable/feed_settings"
             android:key="notifications"
             android:title="@string/notif_setting_title"
             app:iconSpaceReserved="false" />
@@ -794,6 +795,13 @@
             android:key="enable_native"
             android:summary="@string/need_restart"
             android:title="@string/enable_native"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="enable_cache_ui_anim"
+            android:summary="@string/need_restart"
+            android:title="@string/enable_cache_ui_anim"
             app:iconSpaceReserved="false" />
 
         <SwitchPreference

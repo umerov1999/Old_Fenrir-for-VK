@@ -1,5 +1,10 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.findIndexByPredicate;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -43,11 +48,6 @@ import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.RxUtils;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.functions.Predicate;
-
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.findIndexByPredicate;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 
 public class MessageAttachmentsPresenter extends RxSupportPresenter<IMessageAttachmentsView> {

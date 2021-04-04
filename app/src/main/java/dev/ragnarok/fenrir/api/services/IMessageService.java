@@ -42,6 +42,14 @@ public interface IMessageService {
                                            @Field("message_id") int messageId);
 
     @FormUrlEncoded
+    @POST("messages.pinConversation")
+    Single<BaseResponse<Integer>> pinConversation(@Field("peer_id") int peerId);
+
+    @FormUrlEncoded
+    @POST("messages.unpinConversation")
+    Single<BaseResponse<Integer>> unpinConversation(@Field("peer_id") int peerId);
+
+    @FormUrlEncoded
     @POST("messages.unpin")
     Single<BaseResponse<Integer>> unpin(@Field("peer_id") int peerId);
 

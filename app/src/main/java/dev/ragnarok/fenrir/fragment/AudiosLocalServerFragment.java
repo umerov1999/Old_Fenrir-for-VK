@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.Manifest;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -39,8 +41,6 @@ import dev.ragnarok.fenrir.util.DownloadWorkUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.MySearchView;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class AudiosLocalServerFragment extends BaseMvpFragment<AudiosLocalServerPresenter, IAudiosLocalServerView>
         implements MySearchView.OnQueryTextListener, AudioLocalServerRecyclerAdapter.ClickListener, IAudiosLocalServerView {

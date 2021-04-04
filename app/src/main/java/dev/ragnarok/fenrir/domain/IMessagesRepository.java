@@ -19,6 +19,7 @@ import dev.ragnarok.fenrir.model.AbsModel;
 import dev.ragnarok.fenrir.model.AppChatUser;
 import dev.ragnarok.fenrir.model.Conversation;
 import dev.ragnarok.fenrir.model.Dialog;
+import dev.ragnarok.fenrir.model.Keyboard;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.MessageUpdate;
 import dev.ragnarok.fenrir.model.Peer;
@@ -129,6 +130,8 @@ public interface IMessagesRepository {
      */
     Single<List<Conversation>> searchConversations(int accountId, int count, String q);
 
+    Completable updateDialogKeyboard(int accountId, int peerId, @Nullable Keyboard keyboard);
+
     Single<List<Message>> searchMessages(int accountId, Integer peerId, int count, int offset, String q);
 
     Single<List<AppChatUser>> getChatUsers(int accountId, int chatId);
@@ -156,4 +159,6 @@ public interface IMessagesRepository {
     Completable markAsImportant(int accountId, int peerId, @NonNull Collection<Integer> ids, Integer important);
 
     Completable pin(int accountId, int peerId, @Nullable Message message);
+
+    Completable pinUnPinConversation(int accountId, int peerId, boolean peen);
 }

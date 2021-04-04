@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.util;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import androidx.annotation.NonNull;
 
 import org.jetbrains.annotations.NotNull;
@@ -26,8 +28,6 @@ import dev.ragnarok.fenrir.api.model.feedback.UserArray;
 import dev.ragnarok.fenrir.api.model.feedback.VkApiUsersFeedback;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.Peer;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class VKOwnIds {
 

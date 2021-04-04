@@ -1222,6 +1222,10 @@ class ChatPresenter(
             )
         ) {
             conversation?.currentKeyboard = message.keyboard
+            fetchConversationDisposable = Repository.messages
+                .updateDialogKeyboard(accountId, peerId, message.keyboard)
+                .fromIOToMain()
+                .subscribe(dummy(), ignore())
             view?.convert_to_keyboard(message.keyboard)
         }
         if (Settings.get().other().isAuto_read && !Processors.realtimeMessages()

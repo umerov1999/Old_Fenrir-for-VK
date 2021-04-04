@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.activity;
 
+import static dev.ragnarok.fenrir.util.RxUtils.ignore;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,8 +22,6 @@ import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-
-import static dev.ragnarok.fenrir.util.RxUtils.ignore;
 
 public class CaptchaActivity extends AppCompatActivity {
 

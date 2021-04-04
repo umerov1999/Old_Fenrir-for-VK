@@ -1,5 +1,9 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.join;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -37,10 +41,6 @@ import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
-
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.join;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 
 public class RequestExecutePresenter extends AccountDependencyPresenter<IRequestExecuteView> {

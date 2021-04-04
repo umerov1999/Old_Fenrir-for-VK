@@ -1,5 +1,10 @@
 package dev.ragnarok.fenrir.view;
 
+import static dev.ragnarok.fenrir.player.util.MusicUtils.mService;
+import static dev.ragnarok.fenrir.player.util.MusicUtils.observeServiceBinding;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
@@ -37,11 +42,6 @@ import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.disposables.Disposable;
-
-import static dev.ragnarok.fenrir.player.util.MusicUtils.mService;
-import static dev.ragnarok.fenrir.player.util.MusicUtils.observeServiceBinding;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
 
 public class MiniPlayerView extends FrameLayout implements SeekBar.OnSeekBarChangeListener {
 

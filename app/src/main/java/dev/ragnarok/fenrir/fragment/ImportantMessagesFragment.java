@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.os.Bundle;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
@@ -43,8 +45,6 @@ import dev.ragnarok.fenrir.mvp.presenter.ImportantMessagesPresenter;
 import dev.ragnarok.fenrir.mvp.view.IImportantMessagesView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.util.ViewUtils;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class ImportantMessagesFragment extends PlaceSupportMvpFragment<ImportantMessagesPresenter, IImportantMessagesView>
         implements MessagesAdapter.OnMessageActionListener, IImportantMessagesView, AttachmentsViewBinder.VoiceActionListener {

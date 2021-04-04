@@ -1,5 +1,9 @@
 package dev.ragnarok.fenrir.link;
 
+import static androidx.browser.customtabs.CustomTabsService.ACTION_CUSTOM_TABS_CONNECTION;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.singletonArrayList;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -54,10 +58,6 @@ import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
-
-import static androidx.browser.customtabs.CustomTabsService.ACTION_CUSTOM_TABS_CONNECTION;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.singletonArrayList;
 
 public class LinkHelper {
     public static void openUrl(Activity context, int accountId, String link) {

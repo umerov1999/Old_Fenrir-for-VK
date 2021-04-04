@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.adapter;
 
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +19,6 @@ import java.util.List;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.VideoAlbum;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
-
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class VideoAlbumsNewAdapter extends RecyclerView.Adapter<VideoAlbumsNewAdapter.ViewHolder> {
 

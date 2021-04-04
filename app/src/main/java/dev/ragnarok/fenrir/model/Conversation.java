@@ -36,6 +36,10 @@ public class Conversation {
 
     private int acl;
 
+    private int major_id;
+
+    private int minor_id;
+
     public Conversation(int id) {
         this.id = id;
     }
@@ -157,6 +161,24 @@ public class Conversation {
 
     public Conversation setGroupChannel(boolean isGroupChannel) {
         this.isGroupChannel = isGroupChannel;
+        return this;
+    }
+
+    public int getMajor_id() {
+        return major_id;
+    }
+
+    public Conversation setMajor_id(int major_id) {
+        this.major_id = major_id;
+        return this;
+    }
+
+    public int getMinor_id() {
+        return minor_id;
+    }
+
+    public Conversation setMinor_id(int minor_id) {
+        this.minor_id = minor_id;
         return this;
     }
 

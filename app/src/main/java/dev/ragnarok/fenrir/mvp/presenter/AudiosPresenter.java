@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
@@ -31,8 +33,6 @@ import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
-
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 
 public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
 

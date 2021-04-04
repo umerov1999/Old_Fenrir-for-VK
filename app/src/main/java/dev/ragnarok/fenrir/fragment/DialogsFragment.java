@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
@@ -69,8 +71,6 @@ import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.InputTextDialog;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsView>
         implements IDialogsView, DialogsAdapter.ClickListener {
@@ -308,9 +308,14 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         String setShow = getString(R.string.set_no_hide_dialog);
         String setRead = getString(R.string.read);
 
+        String setPin = getString(R.string.pin);
+        String setUnPin = getString(R.string.unpin);
+
         if (contextView.canDelete) {
             options.add(delete);
         }
+
+        options.add(contextView.isPinned ? setUnPin : setPin);
 
         if (contextView.canAddToHomescreen) {
             options.add(addToHomeScreen);
@@ -349,6 +354,10 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
                         getPresenter().fireNotificationsSettingsClick(dialog);
                     } else if (selected.equals(addToShortcuts)) {
                         getPresenter().fireAddToLauncherShortcuts(dialog);
+                    } else if (selected.equals(setUnPin)) {
+                        getPresenter().fireUnPin(dialog);
+                    } else if (selected.equals(setPin)) {
+                        getPresenter().firePin(dialog);
                     } else if (selected.equals(setRead)) {
                         getPresenter().fireRead(dialog);
                     } else if (selected.equals(setHide)) {
@@ -554,6 +563,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         boolean canAddToShortcuts;
         boolean canRead;
         boolean isHidden;
+        boolean isPinned;
 
         @Override
         public void setCanDelete(boolean can) {
@@ -583,6 +593,11 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         @Override
         public void setCanRead(boolean can) {
             canRead = can;
+        }
+
+        @Override
+        public void setPinned(boolean pinned) {
+            isPinned = pinned;
         }
     }
 }

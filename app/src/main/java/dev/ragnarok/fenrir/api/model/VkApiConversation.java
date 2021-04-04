@@ -29,6 +29,9 @@ public class VkApiConversation {
     @SerializedName("unread_count")
     public int unreadCount;
 
+    @SerializedName("sort_id")
+    public SortElement sort_id;
+
     /**
      * true, если диалог помечен как важный (только для сообщений сообществ).
      */
@@ -169,6 +172,14 @@ public class VkApiConversation {
 
         @SerializedName("color")
         public String color;
+    }
+
+    public static final class SortElement {
+        @SerializedName("major_id")
+        public int major_id;
+
+        @SerializedName("minor_id")
+        public int minor_id;
     }
 
     public static final class CurrentKeyboard {

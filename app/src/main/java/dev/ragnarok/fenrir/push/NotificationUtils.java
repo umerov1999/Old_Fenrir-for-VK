@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.push;
 
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
+
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -19,9 +22,6 @@ import dev.ragnarok.fenrir.settings.ISettings;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
-
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
 
 public class NotificationUtils {
 

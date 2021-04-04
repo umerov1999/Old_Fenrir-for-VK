@@ -67,6 +67,7 @@
         <item>Иггдрасиль v2</item>
         <item>Фенрир</item>
         <item>Трискель</item>
+        <item>Хель</item>
         <item>Файер веер</item>
         <item>Арнольдова Екатерина</item>
     </string-array>
@@ -88,6 +89,7 @@
     <string name="dialog_day_today">Сегодня</string>
     <string name="dialog_day_yesterday">Вчера</string>
     <string name="dialog_day_ten_days">За 10 дней</string>
+    <string name="dialog_pinned">Закреплённые</string>
     <string name="dialog_day_older">Старые</string>
     <string name="dialog_me">Я</string>
     <string name="attachments">[вложения]</string>
@@ -1547,4 +1549,5 @@
     <string name="ffmpeg_audio_codecs">FFmpeg аудио кодеки</string>
     <string name="strip_news_repost">Убрать репосты из новостей</string>
     <string name="need_refresh">Требует обновить список</string>
+    <string name="enable_cache_ui_anim">Кэшировать UI анимации</string>
 </resources>

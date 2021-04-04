@@ -1,5 +1,9 @@
 package dev.ragnarok.fenrir.domain.impl;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
+
 import android.annotation.SuppressLint;
 
 import androidx.annotation.NonNull;
@@ -34,10 +38,6 @@ import dev.ragnarok.fenrir.model.User;
 import dev.ragnarok.fenrir.util.Optional;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
-
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
 
 public class UtilsInteractor implements IUtilsInteractor {
 

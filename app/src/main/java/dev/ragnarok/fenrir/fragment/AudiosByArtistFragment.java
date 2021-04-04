@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.Manifest;
 import android.os.Bundle;
 import android.view.HapticFeedbackConstants;
@@ -53,8 +55,6 @@ import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.DownloadWorkUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class AudiosByArtistFragment extends BaseMvpFragment<AudiosByArtistPresenter, IAudiosByArtistView>
         implements IAudiosByArtistView {

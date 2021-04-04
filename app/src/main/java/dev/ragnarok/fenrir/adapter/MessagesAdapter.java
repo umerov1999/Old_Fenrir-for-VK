@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.adapter;
 
+import static dev.ragnarok.fenrir.util.AppTextUtils.getDateFromUnixTime;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ShapeDrawable;
@@ -47,9 +50,6 @@ import dev.ragnarok.fenrir.view.MessageView;
 import dev.ragnarok.fenrir.view.OnlineView;
 import dev.ragnarok.fenrir.view.emoji.BotKeyboardView;
 import dev.ragnarok.fenrir.view.emoji.EmojiconTextView;
-
-import static dev.ragnarok.fenrir.util.AppTextUtils.getDateFromUnixTime;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerView.ViewHolder> {
 

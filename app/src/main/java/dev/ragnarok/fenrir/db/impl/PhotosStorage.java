@@ -1,5 +1,9 @@
 package dev.ragnarok.fenrir.db.impl;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
+
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -21,10 +25,6 @@ import dev.ragnarok.fenrir.db.model.entity.PhotoSizeEntity;
 import dev.ragnarok.fenrir.model.criteria.PhotoCriteria;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 class PhotosStorage extends AbsStorage implements IPhotosStorage {
 

@@ -159,7 +159,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                     String Password = result.getData().getStringExtra(Extra.PASSWORD);
                     String TwoFA = result.getData().getStringExtra(Extra.TWO_FA);
                     boolean isSave = result.getData().getBooleanExtra(Extra.SAVE, false);
-                    processNewAccount(uid, token, Constants.DEFAULT_ACCOUNT_TYPE, Login, Password, TwoFA, true, true, isSave);
+                    processNewAccount(uid, token, Constants.DEFAULT_ACCOUNT_TYPE, Login, Password, TwoFA, true, isSave);
                 }
             });
     private final ActivityResultLauncher<Intent> requestPin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -332,7 +332,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
         resolveEmptyText();
     }
 
-    private void processNewAccount(int uid, String token, @Account_Types int type, String Login, String Password, String TwoFA, boolean IsSend, boolean isCurrent, boolean needSave) {
+    private void processNewAccount(int uid, String token, @Account_Types int type, String Login, String Password, String TwoFA, boolean isCurrent, boolean needSave) {
         //Accounts account = new Accounts(token, uid);
 
         // важно!! Если мы получили новый токен, то необходимо удалить запись
@@ -392,7 +392,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
             String Password = result.getString(Extra.PASSWORD);
             String TwoFA = result.getString(Extra.TWO_FA);
             boolean isSave = result.getBoolean(Extra.SAVE);
-            processNewAccount(uid, token, Constants.DEFAULT_ACCOUNT_TYPE, Login, Password, TwoFA, true, true, isSave);
+            processNewAccount(uid, token, Constants.DEFAULT_ACCOUNT_TYPE, Login, Password, TwoFA, true, isSave);
         });
         auth.show(getParentFragmentManager(), "direct-login");
     }
@@ -568,7 +568,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                             continue;
                         String token = elem.get("access_token").getAsString();
                         int Type = elem.get("type").getAsInt();
-                        processNewAccount(id, token, Type, null, null, "fenrir_app", true, false, false);
+                        processNewAccount(id, token, Type, null, null, "fenrir_app", false, false);
                         if (elem.has("login")) {
                             Settings.get().accounts().storeLogin(id, elem.get("login").getAsString());
                         }
@@ -610,7 +610,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                             int selected = ((Spinner) root.findViewById(R.id.access_token_type)).getSelectedItemPosition();
                             int[] types = {Account_Types.VK_ANDROID, Account_Types.KATE, Account_Types.VK_ANDROID_HIDDEN, Account_Types.KATE_HIDDEN};
                             if (!Utils.isEmpty(access_token) && id != 0 && selected >= 0 && selected < 3) {
-                                processNewAccount(id, access_token, types[selected], null, null, "fenrir_app", true, false, false);
+                                processNewAccount(id, access_token, types[selected], null, null, "fenrir_app", false, false);
                             }
                         } catch (NumberFormatException ignored) {
                         }

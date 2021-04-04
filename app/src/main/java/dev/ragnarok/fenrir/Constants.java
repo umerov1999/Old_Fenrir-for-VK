@@ -19,7 +19,7 @@ public class Constants {
 
     public static final String API_VERSION = "5.126";
     public static final String AUTH_VERSION = "5.122";
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 5;
 
     public static final @Account_Types
     int DEFAULT_ACCOUNT_TYPE = BuildConfig.DEFAULT_ACCOUNT_TYPE;
@@ -27,8 +27,8 @@ public class Constants {
     public static final boolean IS_HAS_LOGIN_WEB = BuildConfig.DEFAULT_ACCOUNT_TYPE == Account_Types.KATE;
     public static final String FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".fileprovider";
 
-    public static final String VK_ANDROID_APP_VERSION_NAME = "6.30";
-    public static final String VK_ANDROID_APP_VERSION_CODE = "7444";
+    public static final String VK_ANDROID_APP_VERSION_NAME = "6.31";
+    public static final String VK_ANDROID_APP_VERSION_CODE = "7502";
     public static final String KATE_APP_VERSION_NAME = "72 lite";
     public static final String KATE_APP_VERSION_CODE = "488";
     public static final String KATE_RECEIPT_GMS_TOKEN = BuildConfig.KATE_RECEIPT_GMS_TOKEN;

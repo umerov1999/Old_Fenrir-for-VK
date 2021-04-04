@@ -143,6 +143,7 @@
         <item>Yggdrasil v2</item>
         <item>Fenrir</item>
         <item>Triskel</item>
+        <item>Hella</item>
         <item>Fire Fan</item>
         <item>Arnoldova Ekaterina</item>
     </string-array>
@@ -158,6 +159,7 @@
         <item>7</item>
         <item>8</item>
         <item>9</item>
+        <item>10</item>
     </string-array>
 
     <string-array name="array_accounts_input">
@@ -187,6 +189,7 @@
     <string name="dialog_day_today">Today</string>
     <string name="dialog_day_yesterday">Yesterday</string>
     <string name="dialog_day_ten_days">For 10 days</string>
+    <string name="dialog_pinned">Pinned</string>
     <string name="dialog_day_older">Old</string>
     <string name="dialog_me">I</string>
     <string name="attachments">[attachments]</string>
@@ -1721,4 +1724,5 @@
     <string name="ffmpeg_audio_codecs">FFmpeg audio codecs</string>
     <string name="strip_news_repost">Remove reposts from news</string>
     <string name="need_refresh">Need Refresh</string>
+    <string name="enable_cache_ui_anim">Caching UI Animations</string>
 </resources>

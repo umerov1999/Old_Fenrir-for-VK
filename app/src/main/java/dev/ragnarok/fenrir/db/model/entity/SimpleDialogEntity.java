@@ -28,6 +28,10 @@ public class SimpleDialogEntity {
 
     private int acl;
 
+    private int major_id;
+
+    private int minor_id;
+
     public SimpleDialogEntity(int peerId) {
         this.peerId = peerId;
     }
@@ -141,6 +145,24 @@ public class SimpleDialogEntity {
 
     public SimpleDialogEntity setGroupChannel(boolean groupChannel) {
         isGroupChannel = groupChannel;
+        return this;
+    }
+
+    public int getMajor_id() {
+        return major_id;
+    }
+
+    public SimpleDialogEntity setMajor_id(int major_id) {
+        this.major_id = major_id;
+        return this;
+    }
+
+    public int getMinor_id() {
+        return minor_id;
+    }
+
+    public SimpleDialogEntity setMinor_id(int minor_id) {
+        this.minor_id = minor_id;
         return this;
     }
 }

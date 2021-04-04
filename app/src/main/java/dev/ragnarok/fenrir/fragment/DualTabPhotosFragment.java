@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,8 +35,6 @@ import dev.ragnarok.fenrir.model.selection.Sources;
 import dev.ragnarok.fenrir.model.selection.Types;
 import dev.ragnarok.fenrir.model.selection.VkPhotosSelectableSource;
 import dev.ragnarok.fenrir.util.Objects;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class DualTabPhotosFragment extends BaseFragment implements BackPressCallback {
 

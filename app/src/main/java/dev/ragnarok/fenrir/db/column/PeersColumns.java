@@ -13,6 +13,8 @@ public final class PeersColumns implements BaseColumns {
     public static final String PHOTO_100 = "photo_100";
     public static final String PHOTO_200 = "photo_200";
     public static final String KEYBOARD = "current_keyboard";
+    public static final String MAJOR_ID = "major_id";
+    public static final String MINOR_ID = "minor_id";
     public static final String PINNED = "pinned";
     public static final String LAST_MESSAGE_ID = "last_message_id";
     public static final String ACL = "acl";
@@ -26,6 +28,8 @@ public final class PeersColumns implements BaseColumns {
     public static final String FULL_PHOTO_100 = TABLENAME + "." + PHOTO_100;
     public static final String FULL_PHOTO_200 = TABLENAME + "." + PHOTO_200;
     public static final String FULL_KEYBOARD = TABLENAME + "." + KEYBOARD;
+    public static final String FULL_MAJOR_ID = TABLENAME + "." + MAJOR_ID;
+    public static final String FULL_MINOR_ID = TABLENAME + "." + MINOR_ID;
     public static final String FULL_PINNED = TABLENAME + "." + PINNED;
     public static final String FULL_LAST_MESSAGE_ID = TABLENAME + "." + LAST_MESSAGE_ID;
     public static final String FULL_ACL = TABLENAME + "." + ACL;

@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.mvp.presenter.photo;
 
+import static dev.ragnarok.fenrir.util.Utils.findIndexById;
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -59,9 +62,6 @@ import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Completable;
-
-import static dev.ragnarok.fenrir.util.Utils.findIndexById;
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 
 public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerView> {
 

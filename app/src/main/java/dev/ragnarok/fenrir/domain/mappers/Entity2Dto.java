@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.domain.mappers;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,9 +30,6 @@ import dev.ragnarok.fenrir.db.model.entity.StoryEntity;
 import dev.ragnarok.fenrir.db.model.entity.VideoEntity;
 import dev.ragnarok.fenrir.db.model.entity.WallReplyEntity;
 import dev.ragnarok.fenrir.util.Utils;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 
 public class Entity2Dto {

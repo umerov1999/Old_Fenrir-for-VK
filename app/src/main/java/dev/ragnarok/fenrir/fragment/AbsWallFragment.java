@@ -1,5 +1,9 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.isLandscape;
+
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -73,10 +77,6 @@ import dev.ragnarok.fenrir.util.FindAttachmentType;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.LoadMoreFooterHelper;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.isLandscape;
 
 public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPresenter<V>>
         extends PlaceSupportMvpFragment<P, V> implements IWallView, WallAdapter.ClickListener, WallAdapter.NonPublishedPostActionListener {
@@ -177,6 +177,9 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
                 paganSymbol.setImageResource(R.drawable.ic_triskel);
                 break;
             case 8:
+                paganSymbol.setImageResource(R.drawable.ic_hell);
+                break;
+            case 9:
                 paganSymbol.fromRes(R.raw.fire_fan, Utils.dp(180), Utils.dp(140), new int[]{
                         0xffffff,
                         CurrentTheme.getColorOnSurface(requireActivity()),
@@ -187,7 +190,7 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
                 });
                 paganSymbol.playAnimation();
                 break;
-            case 9:
+            case 10:
                 try {
                     Bitmap arn = Bitmap.createBitmap(Utils.dp(150), Utils.dp(150), Bitmap.Config.ARGB_8888);
                     SVG svg = SVG.getFromResource(getResources(), R.raw.arnoldova);

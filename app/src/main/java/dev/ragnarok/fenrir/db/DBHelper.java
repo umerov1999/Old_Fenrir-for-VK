@@ -662,6 +662,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 "  [" + DialogsColumns.PHOTO_50 + "] TEXT, " +
                 "  [" + DialogsColumns.PHOTO_100 + "] TEXT, " +
                 "  [" + DialogsColumns.PHOTO_200 + "] TEXT, " +
+                "  [" + DialogsColumns.MAJOR_ID + "] INTEGER, " +
+                "  [" + DialogsColumns.MINOR_ID + "] INTEGER, " +
                 "  [" + DialogsColumns.LAST_MESSAGE_ID + "] INTEGER, " +
                 "  [" + DialogsColumns.IS_GROUP_CHANNEL + "] INTEGER);";
         db.execSQL(sql);
@@ -681,6 +683,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 "  [" + PeersColumns.PHOTO_100 + "] TEXT, " +
                 "  [" + PeersColumns.PHOTO_200 + "] TEXT, " +
                 "  [" + PeersColumns.KEYBOARD + "] TEXT, " +
+                "  [" + PeersColumns.MAJOR_ID + "] INTEGER, " +
+                "  [" + PeersColumns.MINOR_ID + "] INTEGER, " +
                 "  [" + PeersColumns.IS_GROUP_CHANNEL + "] INTEGER);";
         db.execSQL(sql);
     }

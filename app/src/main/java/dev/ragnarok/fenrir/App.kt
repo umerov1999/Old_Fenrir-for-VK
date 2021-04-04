@@ -11,6 +11,7 @@ import dev.ragnarok.fenrir.longpoll.NotificationHelper
 import dev.ragnarok.fenrir.model.PeerUpdate
 import dev.ragnarok.fenrir.model.SentMsg
 import dev.ragnarok.fenrir.module.FenrirNative
+import dev.ragnarok.fenrir.module.rlottie.RLottieDrawable
 import dev.ragnarok.fenrir.picasso.PicassoInstance
 import dev.ragnarok.fenrir.player.util.MusicUtils
 import dev.ragnarok.fenrir.service.ErrorLocalizer
@@ -42,6 +43,7 @@ class App : Application(), ImageLoaderFactory {
             FenrirNative.loadNativeLibrary { PersistentLogger.logThrowable("NativeError", it) }
         }
         FenrirNative.updateAppContext(this)
+        RLottieDrawable.setCacheResourceAnimation(Settings.get().other().isEnable_cache_ui_anim)
         TagOptionSingleton.getInstance().isAndroid = true
         MusicUtils.registerBroadcast(this)
         super.onCreate()

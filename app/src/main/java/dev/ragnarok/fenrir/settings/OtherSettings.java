@@ -436,6 +436,16 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public boolean isDisable_notifications() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("disable_notifications", false);
+    }
+
+    @Override
+    public void setDisable_notifications(boolean disabled) {
+        PreferenceManager.getDefaultSharedPreferences(app).edit().putBoolean("disable_notifications", disabled).apply();
+    }
+
+    @Override
     public boolean isNative_parcel() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("native_parcel_enable", true);
     }
@@ -453,6 +463,11 @@ class OtherSettings implements ISettings.IOtherSettings {
     @Override
     public boolean isEnable_native() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("enable_native", true);
+    }
+
+    @Override
+    public boolean isEnable_cache_ui_anim() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("enable_cache_ui_anim", false);
     }
 
     @Override

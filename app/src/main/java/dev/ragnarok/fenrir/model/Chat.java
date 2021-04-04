@@ -1,9 +1,9 @@
 package dev.ragnarok.fenrir.model;
 
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
 
 public class Chat extends AbsModel {
 

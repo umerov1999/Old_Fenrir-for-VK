@@ -48,6 +48,8 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public static final String PICASSO_TAG = "dialogs.adapter.tag";
     private static final Date DATE = new Date();
+    private static final int DIV_TODAY_OTHER_PINNED = -2;
+    private static final int DIV_PINNED = -1;
     private static final int DIV_DISABLE = 0;
     private static final int DIV_TODAY = 1;
     private static final int DIV_YESTERDAY = 2;
@@ -282,9 +284,8 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         boolean counterVisible = dialog.getUnreadCount() > 0;
         holder.tvUnreadCount.setText(AppTextUtils.getCounterWithK(dialog.getUnreadCount()));
         holder.tvUnreadCount.setVisibility(counterVisible ? View.VISIBLE : View.INVISIBLE);
-
         long lastMessageJavaTime = dialog.getLastMessageDate() * 1000;
-        int headerStatus = getDivided(lastMessageJavaTime, previous == null ? null : previous.getLastMessageDate() * 1000);
+        int headerStatus = getDivided(dialog, previous);
 
         switch (headerStatus) {
             case DIV_DISABLE:
@@ -292,6 +293,10 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 holder.mHeaderTitle.setVisibility(View.GONE);
                 //holder.mHeaderTitle.setVisibility(View.VISIBLE);
                 //holder.mHeaderTitle.setText(R.string.dialog_day_today);
+                break;
+            case DIV_TODAY_OTHER_PINNED:
+                holder.mHeaderTitle.setVisibility(View.VISIBLE);
+                holder.mHeaderTitle.setText(R.string.dialog_day_today);
                 break;
             case DIV_OLD:
                 holder.mHeaderTitle.setVisibility(View.VISIBLE);
@@ -305,12 +310,16 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 holder.mHeaderTitle.setVisibility(View.VISIBLE);
                 holder.mHeaderTitle.setText(R.string.dialog_day_ten_days);
                 break;
+            case DIV_PINNED:
+                holder.mHeaderTitle.setVisibility(View.VISIBLE);
+                holder.mHeaderTitle.setText(R.string.dialog_pinned);
+                break;
         }
 
         DATE.setTime(lastMessageJavaTime);
         if (lastMessageJavaTime < mStartOfToday) {
             holder.tvDate.setTextColor(CurrentTheme.getSecondaryTextColorCode(mContext));
-            if (getStatus(lastMessageJavaTime) == DIV_YESTERDAY)
+            if (getStatus(dialog) == DIV_YESTERDAY || getStatus(dialog) == DIV_PINNED)
                 holder.tvDate.setText(DF_TODAY.format(DATE));
             else
                 holder.tvDate.setText(DF_OLD.format(DATE));
@@ -350,13 +359,15 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return read || out ? Typeface.NORMAL : Typeface.BOLD;
     }
 
-    private int getDivided(long messageDateJavaTime, Long previousMessageDateJavaTime) {
-        int stCurrent = getStatus(messageDateJavaTime);
-        if (previousMessageDateJavaTime == null) {
+    private int getDivided(Dialog dialog, Dialog previous) {
+        int stCurrent = getStatus(dialog);
+        if (previous == null) {
             return stCurrent;
         } else {
-            int stPrevious = getStatus(previousMessageDateJavaTime);
-            if (stCurrent == stPrevious) {
+            int stPrevious = getStatus(previous);
+            if (stPrevious == DIV_PINNED && stCurrent == DIV_TODAY) {
+                return DIV_TODAY_OTHER_PINNED;
+            } else if (stCurrent == stPrevious) {
                 return DIV_DISABLE;
             } else {
                 return stCurrent;
@@ -364,7 +375,13 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    private int getStatus(long time) {
+    private int getStatus(Dialog dialog) {
+        long time = dialog.getLastMessageDate() * 1000;
+
+        if (dialog.getMajor_id() > 0) {
+            return DIV_PINNED;
+        }
+
         if (time >= mStartOfToday) {
             return DIV_TODAY;
         }

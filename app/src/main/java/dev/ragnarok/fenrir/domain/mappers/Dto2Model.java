@@ -1,5 +1,12 @@
 package dev.ragnarok.fenrir.domain.mappers;
 
+import static dev.ragnarok.fenrir.domain.mappers.MapUtil.calculateConversationAcl;
+import static dev.ragnarok.fenrir.domain.mappers.MapUtil.mapAll;
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
+
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -114,13 +121,6 @@ import dev.ragnarok.fenrir.model.VoiceMessage;
 import dev.ragnarok.fenrir.model.WallReply;
 import dev.ragnarok.fenrir.model.WikiPage;
 import dev.ragnarok.fenrir.util.Utils;
-
-import static dev.ragnarok.fenrir.domain.mappers.MapUtil.calculateConversationAcl;
-import static dev.ragnarok.fenrir.domain.mappers.MapUtil.mapAll;
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 public class Dto2Model {
 
@@ -408,6 +408,30 @@ public class Dto2Model {
         return data;
     }
 
+    public static Keyboard mapKeyboard(VkApiConversation.CurrentKeyboard keyboard) {
+        if (keyboard == null || Utils.isEmpty(keyboard.buttons)) {
+            return null;
+        }
+        List<List<Keyboard.Button>> buttons = new ArrayList<>();
+        for (List<VkApiConversation.ButtonElement> i : keyboard.buttons) {
+            List<Keyboard.Button> v = new ArrayList<>();
+            for (VkApiConversation.ButtonElement s : i) {
+                if (isNull(s.action) || (!"text".equals(s.action.type) && !"open_link".equals(s.action.type))) {
+                    continue;
+                }
+                v.add(new Keyboard.Button().setType(s.action.type).setColor(s.color).setLabel(s.action.label).setLink(s.action.link).setPayload(s.action.payload));
+            }
+            buttons.add(v);
+        }
+        if (!Utils.isEmpty(buttons)) {
+            return new Keyboard().setAuthor_id(keyboard.author_id)
+                    .setInline(keyboard.inline)
+                    .setOne_time(keyboard.one_time)
+                    .setButtons(buttons);
+        }
+        return null;
+    }
+
     public static Conversation transform(int accountId, @NonNull VkApiConversation dto, @NonNull IOwnersBundle bundle) {
         Conversation entity = new Conversation(dto.peer.id)
                 .setInRead(dto.inRead)
@@ -437,6 +461,11 @@ public class Dto2Model {
             }
         }
 
+        if (nonNull(dto.sort_id)) {
+            entity.setMajor_id(dto.sort_id.major_id);
+            entity.setMinor_id(dto.sort_id.minor_id);
+        }
+        entity.setCurrentKeyboard(mapKeyboard(dto.current_keyboard));
         return entity;
     }
 
@@ -468,6 +497,10 @@ public class Dto2Model {
                         .setPhoto100(dto.conversation.settings.photo.photo100)
                         .setPhoto200(dto.conversation.settings.photo.photo200);
             }
+        }
+        if (nonNull(dto.conversation.sort_id)) {
+            dialog.setMajor_id(dto.conversation.sort_id.major_id);
+            dialog.setMinor_id(dto.conversation.sort_id.minor_id);
         }
 
         return dialog;

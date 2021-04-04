@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -46,8 +48,6 @@ import dev.ragnarok.fenrir.util.Logger;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.MySearchView;
-
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 
 public class FileManagerFragment extends Fragment implements FileManagerAdapter.ClickListener, BackPressCallback {
 

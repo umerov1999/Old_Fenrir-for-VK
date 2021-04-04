@@ -1,5 +1,9 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,10 +20,6 @@ import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.ICreatePollView;
 import dev.ragnarok.fenrir.util.RxUtils;
-
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
-import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
 
 
 public class CreatePollPresenter extends AccountDependencyPresenter<ICreatePollView> {

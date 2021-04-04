@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,8 +17,6 @@ import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IFavePhotosView;
 import dev.ragnarok.fenrir.util.RxUtils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 
 
 public class FavePhotosPresenter extends AccountDependencyPresenter<IFavePhotosView> {

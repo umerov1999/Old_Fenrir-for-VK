@@ -1,5 +1,14 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.RxUtils.dummy;
+import static dev.ragnarok.fenrir.util.RxUtils.ignore;
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+import static dev.ragnarok.fenrir.util.Utils.indexOf;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
+
 import android.content.Context;
 import android.os.Bundle;
 
@@ -46,22 +55,13 @@ import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.RxUtils.dummy;
-import static dev.ragnarok.fenrir.util.RxUtils.ignore;
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
-import static dev.ragnarok.fenrir.util.Utils.indexOf;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
-
 
 public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
 
     private static final int COUNT = 30;
 
     private static final String SAVE_DIALOGS_OWNER_ID = "save-dialogs-owner-id";
-    private static final Comparator<Dialog> COMPARATOR = (rhs, lhs) -> Integer.compare(lhs.getLastMessageId(), rhs.getLastMessageId());
+    private static final Comparator<Dialog> COMPARATOR = new DialogByIdMajorID();
     private final ArrayList<Dialog> dialogs;
     private final IMessagesRepository messagesInteractor;
     private final IAccountsInteractor accountsInteractor;
@@ -369,6 +369,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
             if (messageOptional.nonEmpty()) {
                 Message message = messageOptional.get();
                 dialog.setLastMessageId(message.getId());
+                dialog.setMinor_id(message.getId());
                 dialog.setMessage(message);
 
                 if (dialog.isChat()) {
@@ -561,6 +562,24 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
         checkLongpoll();
     }
 
+    public void fireUnPin(Dialog dialog) {
+        appendDisposable(messagesInteractor.pinUnPinConversation(getAccountId(), dialog.getPeerId(), false)
+                .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                .subscribe(() -> {
+                    safeShowToast(getView(), R.string.success, false);
+                    fireRefresh();
+                }, throwable -> safeShowError(getView(), throwable.getMessage())));
+    }
+
+    public void firePin(Dialog dialog) {
+        appendDisposable(messagesInteractor.pinUnPinConversation(getAccountId(), dialog.getPeerId(), true)
+                .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                .subscribe(() -> {
+                    safeShowToast(getView(), R.string.success, false);
+                    fireRefresh();
+                }, throwable -> safeShowError(getView(), throwable.getMessage())));
+    }
+
     public void fireAddToLauncherShortcuts(Dialog dialog) {
         AssertUtils.assertPositive(dialogsOwnerId);
 
@@ -582,7 +601,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
                     safeShowToast(getView(), R.string.success, false);
                     dialog.setInRead(dialog.getLastMessageId());
                     getView().notifyDataSetChanged();
-                }, Analytics::logUnexpectedError));
+                }, throwable -> safeShowError(getView(), throwable.getMessage())));
     }
 
     public void fireContextViewCreated(IDialogsView.IContextView contextView, Dialog dialog) {
@@ -592,10 +611,19 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
         contextView.setCanAddToHomescreen(dialogsOwnerId > 0 && !isHide);
         contextView.setCanAddToShortcuts(dialogsOwnerId > 0 && !isHide);
         contextView.setCanConfigNotifications(dialogsOwnerId > 0);
+        contextView.setPinned(dialog.getMajor_id() > 0);
         contextView.setIsHidden(isHide);
     }
 
     public void fireOptionViewCreated(IDialogsView.IOptionView view) {
         view.setCanSearch(dialogsOwnerId > 0);
+    }
+
+    private static class DialogByIdMajorID implements Comparator<Dialog> {
+        @Override
+        public int compare(Dialog o1, Dialog o2) {
+            int res = Integer.compare(o2.getMajor_id(), o1.getMajor_id());
+            return res == 0 ? Integer.compare(o2.getMinor_id(), o1.getMinor_id()) : res;
+        }
     }
 }

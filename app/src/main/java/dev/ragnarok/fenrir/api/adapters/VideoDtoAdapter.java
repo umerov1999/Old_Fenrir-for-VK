@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.api.adapters;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -12,8 +14,6 @@ import java.lang.reflect.Type;
 import dev.ragnarok.fenrir.api.model.CommentsDto;
 import dev.ragnarok.fenrir.api.model.VKApiVideo;
 import dev.ragnarok.fenrir.api.model.VkApiPrivacy;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class VideoDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApiVideo> {
     private static final String TAG = VideoDtoAdapter.class.getSimpleName();

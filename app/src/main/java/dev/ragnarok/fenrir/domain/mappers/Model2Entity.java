@@ -1,5 +1,10 @@
 package dev.ragnarok.fenrir.domain.mappers;
 
+import static dev.ragnarok.fenrir.domain.mappers.MapUtil.mapAll;
+import static dev.ragnarok.fenrir.domain.mappers.MapUtil.mapAndAdd;
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -31,6 +36,7 @@ import dev.ragnarok.fenrir.db.model.entity.PhotoSizeEntity;
 import dev.ragnarok.fenrir.db.model.entity.PollEntity;
 import dev.ragnarok.fenrir.db.model.entity.PostEntity;
 import dev.ragnarok.fenrir.db.model.entity.PrivacyEntity;
+import dev.ragnarok.fenrir.db.model.entity.SimpleDialogEntity;
 import dev.ragnarok.fenrir.db.model.entity.StickerEntity;
 import dev.ragnarok.fenrir.db.model.entity.StoryEntity;
 import dev.ragnarok.fenrir.db.model.entity.VideoEntity;
@@ -42,6 +48,7 @@ import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.model.AudioArtist;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.Call;
+import dev.ragnarok.fenrir.model.Conversation;
 import dev.ragnarok.fenrir.model.CryptStatus;
 import dev.ragnarok.fenrir.model.Document;
 import dev.ragnarok.fenrir.model.Event;
@@ -68,11 +75,6 @@ import dev.ragnarok.fenrir.model.WallReply;
 import dev.ragnarok.fenrir.model.WikiPage;
 import dev.ragnarok.fenrir.util.Utils;
 
-import static dev.ragnarok.fenrir.domain.mappers.MapUtil.mapAll;
-import static dev.ragnarok.fenrir.domain.mappers.MapUtil.mapAndAdd;
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 
 public class Model2Entity {
 
@@ -91,6 +93,23 @@ public class Model2Entity {
         return new KeyboardEntity().setAuthor_id(
                 keyboard.getAuthor_id()).setInline(keyboard.getInline())
                 .setOne_time(keyboard.getOne_time()).setButtons(buttons);
+    }
+
+    public static SimpleDialogEntity buildSimpleDialog(Conversation entity) {
+        return new SimpleDialogEntity(entity.getId())
+                .setInRead(entity.getInRead())
+                .setOutRead(entity.getOutRead())
+                .setPhoto50(entity.getPhoto50())
+                .setPhoto100(entity.getPhoto100())
+                .setPhoto200(entity.getPhoto200())
+                .setUnreadCount(entity.getUnreadCount())
+                .setTitle(entity.getTitle())
+                .setPinned(isNull(entity.getPinned()) ? null : buildMessageEntity(entity.getPinned()))
+                .setAcl(entity.getAcl())
+                .setGroupChannel(entity.isGroupChannel())
+                .setCurrentKeyboard(buildKeyboardEntity(entity.getCurrentKeyboard()))
+                .setMajor_id(entity.getMajor_id())
+                .setMinor_id(entity.getMinor_id());
     }
 
     public static MessageEntity buildMessageEntity(Message message) {

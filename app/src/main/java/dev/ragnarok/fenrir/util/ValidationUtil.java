@@ -1,10 +1,10 @@
 package dev.ragnarok.fenrir.util;
 
+import static dev.ragnarok.fenrir.util.Utils.trimmedIsEmpty;
+
 import android.annotation.SuppressLint;
 
 import androidx.core.util.PatternsCompat;
-
-import static dev.ragnarok.fenrir.util.Utils.trimmedIsEmpty;
 
 public class ValidationUtil {
 

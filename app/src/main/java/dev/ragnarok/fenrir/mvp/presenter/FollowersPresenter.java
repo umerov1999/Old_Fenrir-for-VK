@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -12,8 +14,6 @@ import dev.ragnarok.fenrir.model.User;
 import dev.ragnarok.fenrir.mvp.view.ISimpleOwnersView;
 import dev.ragnarok.fenrir.util.RxUtils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 
 
 public class FollowersPresenter extends SimpleOwnersPresenter<ISimpleOwnersView> {

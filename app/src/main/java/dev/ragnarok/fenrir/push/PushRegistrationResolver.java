@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.push;
 
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+
 import android.os.Build;
 
 import java.util.ArrayList;
@@ -21,8 +23,6 @@ import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 
 public class PushRegistrationResolver implements IPushRegistrationResolver {
 

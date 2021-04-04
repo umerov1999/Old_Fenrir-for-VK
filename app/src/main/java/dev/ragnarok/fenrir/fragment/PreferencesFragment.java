@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -88,8 +90,6 @@ import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
 
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-
 public class PreferencesFragment extends PreferenceFragmentCompat {
 
     public static final String KEY_DEFAULT_CATEGORY = "default_category";
@@ -153,6 +153,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         try {
             PicassoInstance.clear_cache();
             File cache = new File(context.getCacheDir(), "notif-cache");
+            if (cache.exists() && cache.isDirectory()) {
+                String[] children = cache.list();
+                assert children != null;
+                for (String child : children) {
+                    new File(cache, child).delete();
+                }
+            }
+            cache = new File(context.getCacheDir(), "lottie_network_cache/acache");
             if (cache.exists() && cache.isDirectory()) {
                 String[] children = cache.list();
                 assert children != null;

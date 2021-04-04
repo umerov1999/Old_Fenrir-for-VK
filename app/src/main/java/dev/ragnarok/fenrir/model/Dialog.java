@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.model;
 
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,8 +11,6 @@ import androidx.annotation.NonNull;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.api.model.Identificable;
 import dev.ragnarok.fenrir.util.Objects;
-
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
 
 public class Dialog implements Identificable, Parcelable {
 
@@ -37,6 +37,8 @@ public class Dialog implements Identificable, Parcelable {
     private int inRead;
     private int outRead;
     private boolean isGroupChannel;
+    private int major_id;
+    private int minor_id;
 
     public Dialog() {
 
@@ -61,6 +63,8 @@ public class Dialog implements Identificable, Parcelable {
         lastMessageId = in.readInt();
         inRead = in.readInt();
         outRead = in.readInt();
+        major_id = in.readInt();
+        minor_id = in.readInt();
         isGroupChannel = in.readInt() == 1;
     }
 
@@ -253,6 +257,27 @@ public class Dialog implements Identificable, Parcelable {
         return this;
     }
 
+    public int getMajor_id() {
+        return major_id;
+    }
+
+    public Dialog setMajor_id(int major_id) {
+        this.major_id = major_id;
+        return this;
+    }
+
+    public int getMinor_id() {
+        if (minor_id == 0) {
+            return getLastMessageId();
+        }
+        return minor_id;
+    }
+
+    public Dialog setMinor_id(int minor_id) {
+        this.minor_id = minor_id;
+        return this;
+    }
+
     @Override
     public int getId() {
         return peerId;
@@ -282,6 +307,8 @@ public class Dialog implements Identificable, Parcelable {
         dest.writeInt(lastMessageId);
         dest.writeInt(inRead);
         dest.writeInt(outRead);
+        dest.writeInt(major_id);
+        dest.writeInt(minor_id);
         dest.writeInt(isGroupChannel ? 1 : 0);
     }
 }

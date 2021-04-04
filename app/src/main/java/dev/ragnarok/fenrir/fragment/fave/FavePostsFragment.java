@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment.fave;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,8 +35,6 @@ import dev.ragnarok.fenrir.mvp.presenter.FavePostsPresenter;
 import dev.ragnarok.fenrir.mvp.view.IFavePostsView;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class FavePostsFragment extends PlaceSupportMvpFragment<FavePostsPresenter, IFavePostsView>
         implements FavePostAdapter.ClickListener, IFavePostsView {

@@ -1,5 +1,10 @@
 package dev.ragnarok.fenrir.db.impl;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.join;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
+
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,6 +15,7 @@ import android.provider.BaseColumns;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,11 +45,6 @@ import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.subjects.PublishSubject;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.join;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 class DialogsStorage extends AbsStorage implements IDialogsStorage {
 
@@ -81,7 +82,7 @@ class DialogsStorage extends AbsStorage implements IDialogsStorage {
             Uri uri = MessengerContentProvider.getDialogsContentUriFor(criteria.getAccountId());
 
             Cursor cursor = getContext().getContentResolver().query(uri, null, null,
-                    null, DialogsColumns.LAST_MESSAGE_ID + " DESC");
+                    null, DialogsColumns.MAJOR_ID + " DESC, " + DialogsColumns.MINOR_ID + " DESC");
 
             List<DialogEntity> dbos = new ArrayList<>(safeCountOf(cursor));
 
@@ -157,6 +158,8 @@ class DialogsStorage extends AbsStorage implements IDialogsStorage {
         cv.put(DialogsColumns.LAST_MESSAGE_ID, messageDbo.getId());
         cv.put(DialogsColumns.ACL, entity.getAcl());
         cv.put(DialogsColumns.IS_GROUP_CHANNEL, entity.isGroupChannel());
+        cv.put(DialogsColumns.MAJOR_ID, entity.getMajor_id());
+        cv.put(DialogsColumns.MINOR_ID, entity.getMinor_id());
         return cv;
     }
 
@@ -174,6 +177,8 @@ class DialogsStorage extends AbsStorage implements IDialogsStorage {
         cv.put(PeersColumns.PINNED, serializeJson(entity.getPinned()));
         cv.put(PeersColumns.ACL, entity.getAcl());
         cv.put(PeersColumns.IS_GROUP_CHANNEL, entity.isGroupChannel());
+        cv.put(PeersColumns.MAJOR_ID, entity.getMajor_id());
+        cv.put(PeersColumns.MINOR_ID, entity.getMinor_id());
         return cv;
     }
 
@@ -183,6 +188,25 @@ class DialogsStorage extends AbsStorage implements IDialogsStorage {
             Uri uri = MessengerContentProvider.getPeersContentUriFor(accountId);
             ArrayList<ContentProviderOperation> operations = new ArrayList<>();
             operations.add(ContentProviderOperation.newInsert(uri).withValues(createPeerCv(entity)).build());
+            getContentResolver().applyBatch(MessengerContentProvider.AUTHORITY, operations);
+            emitter.onComplete();
+        });
+    }
+
+    @Override
+    public Completable updateDialogKeyboard(int accountId, int peerId, @Nullable KeyboardEntity keyboardEntity) {
+        return Completable.create(emitter -> {
+            Uri uri = MessengerContentProvider.getPeersContentUriFor(accountId);
+            String[] args = {String.valueOf(peerId)};
+            ArrayList<ContentProviderOperation> operations = new ArrayList<>(1);
+            ContentValues cv = new ContentValues();
+            cv.put(PeersColumns.KEYBOARD, serializeJson(keyboardEntity));
+
+            operations.add(ContentProviderOperation.newUpdate(uri)
+                    .withSelection(BaseColumns._ID + " = ?", args)
+                    .withValues(cv)
+                    .build());
+
             getContentResolver().applyBatch(MessengerContentProvider.AUTHORITY, operations);
             emitter.onComplete();
         });
@@ -240,7 +264,9 @@ class DialogsStorage extends AbsStorage implements IDialogsStorage {
                     PeersColumns.PINNED,
                     PeersColumns.LAST_MESSAGE_ID,
                     PeersColumns.ACL,
-                    PeersColumns.IS_GROUP_CHANNEL
+                    PeersColumns.IS_GROUP_CHANNEL,
+                    PeersColumns.MAJOR_ID,
+                    PeersColumns.MINOR_ID
             };
 
             Uri uri = MessengerContentProvider.getPeersContentUriFor(accountId);
@@ -262,6 +288,8 @@ class DialogsStorage extends AbsStorage implements IDialogsStorage {
                             .setCurrentKeyboard(deserializeJson(cursor, PeersColumns.KEYBOARD, KeyboardEntity.class))
                             .setLastMessageId(cursor.getInt(cursor.getColumnIndex(PeersColumns.LAST_MESSAGE_ID)))
                             .setAcl(cursor.getInt(cursor.getColumnIndex(PeersColumns.ACL)))
+                            .setMajor_id(cursor.getInt(cursor.getColumnIndex(PeersColumns.MAJOR_ID)))
+                            .setMinor_id(cursor.getInt(cursor.getColumnIndex(PeersColumns.MINOR_ID)))
                             .setGroupChannel(cursor.getInt(cursor.getColumnIndex(PeersColumns.IS_GROUP_CHANNEL)) == 1);
                 }
 
@@ -355,6 +383,8 @@ class DialogsStorage extends AbsStorage implements IDialogsStorage {
                 if (nonNull(patch.getLastMessage())) {
                     dialogscv.put(DialogsColumns.LAST_MESSAGE_ID, patch.getLastMessage().getId());
                     peerscv.put(PeersColumns.LAST_MESSAGE_ID, patch.getLastMessage().getId());
+                    dialogscv.put(DialogsColumns.MINOR_ID, patch.getLastMessage().getId());
+                    peerscv.put(PeersColumns.MINOR_ID, patch.getLastMessage().getId());
                 }
 
                 if (nonNull(patch.getPin())) {
@@ -452,6 +482,8 @@ class DialogsStorage extends AbsStorage implements IDialogsStorage {
                 .setUnreadCount(cursor.getInt(cursor.getColumnIndex(DialogsColumns.UNREAD)))
                 .setLastMessageId(cursor.getInt(cursor.getColumnIndex(DialogsColumns.LAST_MESSAGE_ID)))
                 .setAcl(cursor.getInt(cursor.getColumnIndex(DialogsColumns.ACL)))
+                .setMajor_id(cursor.getInt(cursor.getColumnIndex(DialogsColumns.MAJOR_ID)))
+                .setMinor_id(cursor.getInt(cursor.getColumnIndex(DialogsColumns.MINOR_ID)))
                 .setGroupChannel(cursor.getInt(cursor.getColumnIndex(DialogsColumns.LAST_MESSAGE_ID)) == 1);
     }
 }

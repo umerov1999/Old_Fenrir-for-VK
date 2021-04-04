@@ -1,5 +1,13 @@
 package dev.ragnarok.fenrir.domain.mappers;
 
+import static dev.ragnarok.fenrir.domain.mappers.MapUtil.calculateConversationAcl;
+import static dev.ragnarok.fenrir.domain.mappers.MapUtil.mapAll;
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
+
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -131,14 +139,6 @@ import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.MessageStatus;
 import dev.ragnarok.fenrir.model.feedback.FeedbackType;
 import dev.ragnarok.fenrir.util.Utils;
-
-import static dev.ragnarok.fenrir.domain.mappers.MapUtil.calculateConversationAcl;
-import static dev.ragnarok.fenrir.domain.mappers.MapUtil.mapAll;
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 
 public class Dto2Entity {
@@ -717,6 +717,10 @@ public class Dto2Entity {
                         .setPhoto200(dto.settings.photo.photo200);
             }
         }
+        if (nonNull(dto.sort_id)) {
+            entity.setMajor_id(dto.sort_id.major_id);
+            entity.setMinor_id(dto.sort_id.minor_id);
+        }
         entity.setCurrentKeyboard(mapKeyboard(dto.current_keyboard));
         return entity;
     }
@@ -745,6 +749,10 @@ public class Dto2Entity {
                         .setPhoto100(dto.conversation.settings.photo.photo100)
                         .setPhoto200(dto.conversation.settings.photo.photo200);
             }
+        }
+        if (nonNull(dto.conversation.sort_id)) {
+            entity.setMajor_id(dto.conversation.sort_id.major_id);
+            entity.setMinor_id(dto.conversation.sort_id.minor_id);
         }
 
         entity.setCurrentKeyboard(mapKeyboard(dto.conversation.current_keyboard));
@@ -915,7 +923,7 @@ public class Dto2Entity {
                 .setThumb_image_little(dto.thumb_image_little)
                 .setThumb_image_very_big(dto.thumb_image_very_big)
                 .setIsHq(dto.isHq)
-                .setArtist(dto.artist);
+                .setMain_artists(dto.main_artists);
     }
 
     public static PollEntity.Answer mapPollAnswer(VKApiPoll.Answer dto) {

@@ -1,5 +1,17 @@
 package dev.ragnarok.fenrir.domain.impl;
 
+import static dev.ragnarok.fenrir.longpoll.NotificationHelper.tryCancelNotificationForPeer;
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.RxUtils.ignore;
+import static dev.ragnarok.fenrir.util.RxUtils.safelyCloseAction;
+import static dev.ragnarok.fenrir.util.Utils.hasFlag;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
+import static dev.ragnarok.fenrir.util.Utils.safelyClose;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -86,6 +98,7 @@ import dev.ragnarok.fenrir.model.Conversation;
 import dev.ragnarok.fenrir.model.CryptStatus;
 import dev.ragnarok.fenrir.model.Dialog;
 import dev.ragnarok.fenrir.model.IOwnersBundle;
+import dev.ragnarok.fenrir.model.Keyboard;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.MessageStatus;
 import dev.ragnarok.fenrir.model.MessageUpdate;
@@ -124,18 +137,6 @@ import io.reactivex.rxjava3.core.SingleTransformer;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.processors.PublishProcessor;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-
-import static dev.ragnarok.fenrir.longpoll.NotificationHelper.tryCancelNotificationForPeer;
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.RxUtils.ignore;
-import static dev.ragnarok.fenrir.util.RxUtils.safelyCloseAction;
-import static dev.ragnarok.fenrir.util.Utils.hasFlag;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
-import static dev.ragnarok.fenrir.util.Utils.safelyClose;
 
 public class MessagesRepository implements IMessagesRepository {
 
@@ -201,7 +202,9 @@ public class MessagesRepository implements IMessagesRepository {
                 .setPinned(isNull(entity.getPinned()) ? null : Entity2Model.message(accountId, entity.getPinned(), owners))
                 .setAcl(entity.getAcl())
                 .setGroupChannel(entity.isGroupChannel())
-                .setCurrentKeyboard(Entity2Model.buildKeyboardFromDbo(entity.getCurrentKeyboard()));
+                .setCurrentKeyboard(Entity2Model.buildKeyboardFromDbo(entity.getCurrentKeyboard()))
+                .setMajor_id(entity.getMajor_id())
+                .setMinor_id(entity.getMinor_id());
     }
 
     private static MessageUpdate patch2Update(int accountId, MessagePatch patch) {
@@ -362,6 +365,11 @@ public class MessagesRepository implements IMessagesRepository {
             }
             writeTextPublisher.onNext(list);
         });
+    }
+
+    @Override
+    public Completable updateDialogKeyboard(int accountId, int peerId, @Nullable Keyboard keyboard) {
+        return storages.dialogs().updateDialogKeyboard(accountId, peerId, Model2Entity.buildKeyboardEntity(keyboard));
     }
 
     @Override
@@ -1249,6 +1257,13 @@ public class MessagesRepository implements IMessagesRepository {
 
                     return applyMessagesPatchesAndPublish(accountId, patches);
                 });
+    }
+
+    @Override
+    public Completable pinUnPinConversation(int accountId, int peerId, boolean peen) {
+        return networker.vkDefault(accountId)
+                .messages()
+                .pinUnPinConversation(peerId, peen);
     }
 
     @Override

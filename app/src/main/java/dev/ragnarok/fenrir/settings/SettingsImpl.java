@@ -1,8 +1,8 @@
 package dev.ragnarok.fenrir.settings;
 
-import android.content.Context;
-
 import static dev.ragnarok.fenrir.util.Objects.isNull;
+
+import android.content.Context;
 
 public class SettingsImpl implements ISettings {
 

@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,8 +38,6 @@ import dev.ragnarok.fenrir.mvp.view.ITopicsView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.LoadMoreFooterHelper;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class TopicsFragment extends BaseMvpFragment<TopicsPresenter, ITopicsView>
         implements SwipeRefreshLayout.OnRefreshListener, ITopicsView, TopicsAdapter.ActionListener {

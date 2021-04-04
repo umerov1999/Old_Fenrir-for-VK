@@ -1,5 +1,11 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.RxUtils.subscribeOnIOAndIgnore;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.removeIf;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,12 +29,6 @@ import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.Predicate;
 import dev.ragnarok.fenrir.util.RxUtils;
 import io.reactivex.rxjava3.core.Single;
-
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.RxUtils.subscribeOnIOAndIgnore;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.removeIf;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 
 public class CommentCreatePresenter extends AbsAttachmentsEditPresenter<ICreateCommentView> {

@@ -110,11 +110,18 @@ public interface IMessagesApi {
     @CheckResult
     Single<VkApiLongpollServer> getLongpollServer(boolean needPts, int lpVersion);
 
+    @CheckResult
     Single<ConversationsResponse> searchConversations(String query, Integer count, Integer extended, String fields);
 
+    @CheckResult
     Completable pin(int peerId, int messageId);
 
+    @CheckResult
     Completable unpin(int peerId);
 
+    @CheckResult
+    Completable pinUnPinConversation(int peerId, boolean peen);
+
+    @CheckResult
     Single<Integer> recogniseAudioMessage(Integer message_id, String audio_message_id);
 }
