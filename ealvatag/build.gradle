@@ -25,6 +25,10 @@ android {
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-parcelize-runtime:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-android-extensions-runtime:$kotlin_version"
+    implementation 'org.jetbrains:annotations:20.1.0'
     implementation "com.squareup.okio:okio:$okioVersion"
     implementation "com.google.guava:guava:$GuavaVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"

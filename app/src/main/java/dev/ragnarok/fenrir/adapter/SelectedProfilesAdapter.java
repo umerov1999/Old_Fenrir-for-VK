@@ -103,7 +103,7 @@ public class SelectedProfilesAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         holder.buttonRemove.setOnClickListener(v -> {
             if (mActionListener != null) {
-                mActionListener.onClick(holder.getAdapterPosition(), owner);
+                mActionListener.onClick(holder.getBindingAdapterPosition(), owner);
             }
         });
     }

@@ -20,6 +20,8 @@
  */
 package ealvatag.tag.id3.framebody;
 
+import static ealvatag.logging.ErrorMessage.INVALID_DATATYPE;
+
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
@@ -34,8 +36,6 @@ import ealvatag.tag.InvalidTagException;
 import ealvatag.tag.datatype.AbstractDataType;
 import ealvatag.tag.id3.AbstractTagFrameBody;
 import okio.Buffer;
-
-import static ealvatag.logging.ErrorMessage.INVALID_DATATYPE;
 
 /**
  * Contains the content for an ID3v2 frame, (the header is held directly within the frame

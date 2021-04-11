@@ -69,7 +69,6 @@
         <item>Трискель</item>
         <item>Хель</item>
         <item>Файер веер</item>
-        <item>Арнольдова Екатерина</item>
     </string-array>
 
     <string-array name="array_accounts_input">
@@ -657,8 +656,6 @@
     <string name="first_pagan">Первый языческий</string>
     <string name="repo">Репозиторий: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="repo_local_server">Репозиторий: https://github.com/umerov1999/FenrirMediaServer/releases</string>
-    <string name="project_dedicated_summary">Проект посвящён Арнольдове Екатерине, https://vk.com/id255645173</string>
-    <string name="project_dedicated">Проект посвящён</string>
     <string name="comment">Комментарий</string>
     <string name="search">Поиск</string>
     <string name="input">Ввод</string>
@@ -965,8 +962,7 @@
     <string name="likes">Отметки \"Мне нравится\"</string>
     <string name="likes_posts">Понравилось</string>
     <string name="chat_background">Фон</string>
-    <string name="smooth_chat">Плавный чат</string>
-    <string name="smooth_chat_summary">Может тормозить</string>
+    <string name="notification_bubbles">Включить пузырьковые уведомления</string>
     <string name="chat_light_background">Дневной фон (фото)</string>
     <string name="chat_dark_background">Ночной фон (фото)</string>
     <string name="go_to_post">Перейти к записи</string>

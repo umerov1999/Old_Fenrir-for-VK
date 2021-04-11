@@ -340,7 +340,7 @@ public class AllFriendsPresenter extends AccountDependencyPresenter<IAllFriendsV
     public void fireSearchRequestChanged(String q) {
         String query = q == null ? null : q.trim();
 
-        if (Objects.safeEquals(q, this.q)) {
+        if (Objects.safeEquals(query, this.q)) {
             return;
         }
 

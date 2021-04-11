@@ -59,7 +59,7 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
     public void fireSearchRequestChanged(String q) {
         String query = q == null ? null : q.trim();
 
-        if (Objects.safeEquals(q, this.q)) {
+        if (Objects.safeEquals(query, this.q)) {
             return;
         }
         this.q = query;
@@ -68,7 +68,7 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
             if (i.getOwner() == null || Utils.isEmpty(i.getOwner().getFullName())) {
                 continue;
             }
-            if (i.getOwner().getFullName().toLowerCase().contains(q.toLowerCase())) {
+            if (i.getOwner().getFullName().toLowerCase().contains(query.toLowerCase())) {
                 search_pages.add(i);
             }
         }

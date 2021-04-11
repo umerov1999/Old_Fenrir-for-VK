@@ -306,7 +306,7 @@ public class RequestsPresenter extends AccountDependencyPresenter<IRequestsView>
     public void fireSearchRequestChanged(String q) {
         String query = q == null ? null : q.trim();
 
-        if (Objects.safeEquals(q, this.q)) {
+        if (Objects.safeEquals(query, this.q)) {
             return;
         }
 

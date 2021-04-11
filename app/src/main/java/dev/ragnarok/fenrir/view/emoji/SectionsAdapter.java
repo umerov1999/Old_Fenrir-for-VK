@@ -78,7 +78,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.Holder
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onClick(holder.getAdapterPosition());
+                listener.onClick(holder.getBindingAdapterPosition());
             }
         });
     }

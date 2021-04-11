@@ -20,6 +20,8 @@
  */
 package ealvatag.tag.datatype;
 
+import static ealvatag.utils.StandardCharsets.ISO_8859_1;
+
 import com.google.common.base.Strings;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,8 +31,6 @@ import java.nio.charset.Charset;
 import ealvatag.tag.id3.AbstractTagFrameBody;
 import ealvatag.tag.reference.Languages;
 import ealvatag.tag.reference.SimpleStringStringMap;
-
-import static ealvatag.utils.StandardCharsets.ISO_8859_1;
 
 
 /**

@@ -323,10 +323,9 @@
         app:initialExpandedChildrenCount="3">
 
         <SwitchPreference
-            android:defaultValue="false"
-            android:key="smooth_chat"
-            android:summary="@string/smooth_chat_summary"
-            android:title="@string/smooth_chat"
+            android:defaultValue="true"
+            android:key="notification_bubbles"
+            android:title="@string/notification_bubbles"
             app:iconSpaceReserved="false" />
 
         <ListPreference
@@ -861,11 +860,6 @@
         <Preference
             android:key="select_custom_icon"
             android:title="@string/select_custom_icon"
-            app:iconSpaceReserved="false" />
-
-        <Preference
-            android:key="dedicated"
-            android:title="@string/project_dedicated"
             app:iconSpaceReserved="false" />
 
         <Preference

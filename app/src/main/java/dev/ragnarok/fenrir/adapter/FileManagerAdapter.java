@@ -46,7 +46,7 @@ public class FileManagerAdapter extends RecyclerView.Adapter<FileManagerAdapter.
 
         holder.itemView.setOnClickListener(v -> {
             if (clickListener != null) {
-                clickListener.onClick(holder.getAdapterPosition(), item);
+                clickListener.onClick(holder.getBindingAdapterPosition(), item);
             }
         });
     }

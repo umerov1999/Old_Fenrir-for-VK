@@ -48,24 +48,26 @@ public class LocalVideosPresenter extends RxSupportPresenter<ILocalVideosView> {
                 .subscribe(this::onDataLoaded, this::onLoadError));
     }
 
-    public void fireSearchRequestChanged(String q) {
+    public void fireSearchRequestChanged(String q, boolean force) {
         String query = q == null ? null : q.trim();
 
-        if (Objects.safeEquals(q, this.q)) {
+        if (!force && Objects.safeEquals(query, this.q)) {
             return;
         }
         this.q = query;
         mLocalVideos_search.clear();
-        for (LocalVideo i : mLocalVideos) {
-            if (isEmpty(i.getTitle())) {
-                continue;
-            }
-            if (i.getTitle().toLowerCase().contains(q.toLowerCase())) {
-                mLocalVideos_search.add(i);
+        if (!isEmpty(this.q)) {
+            for (LocalVideo i : mLocalVideos) {
+                if (isEmpty(i.getTitle())) {
+                    continue;
+                }
+                if (i.getTitle().toLowerCase().contains(this.q.toLowerCase())) {
+                    mLocalVideos_search.add(i);
+                }
             }
         }
 
-        if (!isEmpty(q))
+        if (!isEmpty(this.q))
             callView(v -> v.displayData(mLocalVideos_search));
         else
             callView(v -> v.displayData(mLocalVideos));
@@ -77,9 +79,13 @@ public class LocalVideosPresenter extends RxSupportPresenter<ILocalVideosView> {
 
     private void onDataLoaded(List<LocalVideo> data) {
         changeLoadingState(false);
+        mLocalVideos.clear();
         mLocalVideos.addAll(data);
         resolveListData();
         resolveEmptyTextVisibility();
+        if (!isEmpty(q)) {
+            fireSearchRequestChanged(q, true);
+        }
     }
 
     @Override
@@ -96,8 +102,13 @@ public class LocalVideosPresenter extends RxSupportPresenter<ILocalVideosView> {
     }
 
     private void resolveListData() {
-        if (isGuiReady())
-            getView().displayData(mLocalVideos);
+        if (isGuiReady()) {
+            if (isEmpty(q)) {
+                getView().displayData(mLocalVideos);
+            } else {
+                getView().displayData(mLocalVideos_search);
+            }
+        }
     }
 
     private void changeLoadingState(boolean loading) {

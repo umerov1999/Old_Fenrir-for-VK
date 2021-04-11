@@ -35,24 +35,26 @@ public class LocalPhotoAlbumsPresenter extends RxSupportPresenter<ILocalPhotoAlb
         mLocalImageAlbums_Search = new ArrayList<>();
     }
 
-    public void fireSearchRequestChanged(String q) {
+    public void fireSearchRequestChanged(String q, boolean force) {
         String query = q == null ? null : q.trim();
 
-        if (Objects.safeEquals(q, this.q)) {
+        if (!force && Objects.safeEquals(query, this.q)) {
             return;
         }
         this.q = query;
         mLocalImageAlbums_Search.clear();
-        for (LocalImageAlbum i : mLocalImageAlbums) {
-            if (isEmpty(i.getName())) {
-                continue;
-            }
-            if (i.getName().toLowerCase().contains(q.toLowerCase())) {
-                mLocalImageAlbums_Search.add(i);
+        if (!isEmpty(this.q)) {
+            for (LocalImageAlbum i : mLocalImageAlbums) {
+                if (isEmpty(i.getName())) {
+                    continue;
+                }
+                if (i.getName().toLowerCase().contains(this.q.toLowerCase())) {
+                    mLocalImageAlbums_Search.add(i);
+                }
             }
         }
 
-        if (!isEmpty(q))
+        if (!isEmpty(this.q))
             callView(v -> v.displayData(mLocalImageAlbums_Search));
         else
             callView(v -> v.displayData(mLocalImageAlbums));
@@ -68,10 +70,17 @@ public class LocalPhotoAlbumsPresenter extends RxSupportPresenter<ILocalPhotoAlb
                 getView().requestReadExternalStoragePermission();
             }
         } else {
-            loadData();
+            if (isEmpty(mLocalImageAlbums)) {
+                loadData();
+                getView().displayData(mLocalImageAlbums);
+            } else {
+                if (isEmpty(q)) {
+                    getView().displayData(mLocalImageAlbums);
+                } else {
+                    getView().displayData(mLocalImageAlbums_Search);
+                }
+            }
         }
-
-        getView().displayData(mLocalImageAlbums);
         resolveProgressView();
         resolveEmptyTextView();
     }
@@ -111,6 +120,9 @@ public class LocalPhotoAlbumsPresenter extends RxSupportPresenter<ILocalPhotoAlb
         }
 
         resolveEmptyTextView();
+        if (!isEmpty(q)) {
+            fireSearchRequestChanged(q, true);
+        }
     }
 
     private void resolveEmptyTextView() {

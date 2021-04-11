@@ -101,7 +101,7 @@ public class PrivacyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             holder.itemView.setLayoutParams(layoutParams);
         }
 
-        int position = holder.getAdapterPosition();
+        int position = holder.getBindingAdapterPosition();
         if (position == 0) {
             String title = mContext.getString(getTypeTitle());
             String fullText = mContext.getString(R.string.who_can_have_access) + " " + title;

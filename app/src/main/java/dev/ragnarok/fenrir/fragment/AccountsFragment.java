@@ -111,8 +111,8 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
         @Override
         public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
             viewHolder.itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-            mAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
-            Account account = mAdapter.getByPosition(viewHolder.getAdapterPosition());
+            mAdapter.notifyItemChanged(viewHolder.getBindingAdapterPosition());
+            Account account = mAdapter.getByPosition(viewHolder.getBindingAdapterPosition());
             boolean idCurrent = account.getId() == Settings.get()
                     .accounts()
                     .getCurrent();

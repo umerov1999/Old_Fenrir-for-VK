@@ -129,6 +129,7 @@ import dev.ragnarok.fenrir.fragment.attachments.RepostFragment;
 import dev.ragnarok.fenrir.fragment.conversation.ConversationFragmentFactory;
 import dev.ragnarok.fenrir.fragment.fave.FaveTabsFragment;
 import dev.ragnarok.fenrir.fragment.friends.FriendsTabsFragment;
+import dev.ragnarok.fenrir.fragment.search.AudioSearchTabsFragment;
 import dev.ragnarok.fenrir.fragment.search.SearchTabsFragment;
 import dev.ragnarok.fenrir.fragment.search.SingleTabSearchFragment;
 import dev.ragnarok.fenrir.fragment.wallattachments.WallAttachmentsFragmentFactory;
@@ -1093,6 +1094,10 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
 
             case Place.SEARCH:
                 attachToFront(SearchTabsFragment.newInstance(args));
+                break;
+
+            case Place.AUDIOS_SEARCH_TABS:
+                attachToFront(AudioSearchTabsFragment.newInstance(args));
                 break;
 
             case Place.BUILD_NEW_POST:

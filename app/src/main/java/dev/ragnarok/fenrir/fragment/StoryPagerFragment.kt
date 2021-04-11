@@ -290,7 +290,7 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
     }
 
     private fun fireHolderCreate(holder: MultiHolder) {
-        presenter?.fireHolderCreate(holder.adapterPosition)
+        presenter?.fireHolderCreate(holder.bindingAdapterPosition)
     }
 
     private fun findByPosition(position: Int): MultiHolder? {
@@ -318,7 +318,7 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         override fun surfaceCreated(holder: SurfaceHolder) {
             isSurfaceReady = true
             if (isPresenterPrepared) {
-                presenter?.fireSurfaceCreated(adapterPosition)
+                presenter?.fireSurfaceCreated(bindingAdapterPosition)
             }
         }
 
@@ -544,12 +544,12 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
 
         override fun onViewDetachedFromWindow(holder: MultiHolder) {
             super.onViewDetachedFromWindow(holder)
-            mHolderSparseArray.remove(holder.adapterPosition)
+            mHolderSparseArray.remove(holder.bindingAdapterPosition)
         }
 
         override fun onViewAttachedToWindow(holder: MultiHolder) {
             super.onViewAttachedToWindow(holder)
-            mHolderSparseArray.put(holder.adapterPosition, WeakReference(holder))
+            mHolderSparseArray.put(holder.bindingAdapterPosition, WeakReference(holder))
             fireHolderCreate(holder)
         }
 

@@ -74,8 +74,8 @@ public class AudiosByArtistFragment extends BaseMvpFragment<AudiosByArtistPresen
         @Override
         public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
             viewHolder.itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-            mAudioRecyclerAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
-            getPresenter().playAudio(requireActivity(), mAudioRecyclerAdapter.getItemRawPosition(viewHolder.getAdapterPosition()));
+            mAudioRecyclerAdapter.notifyItemChanged(viewHolder.getBindingAdapterPosition());
+            getPresenter().playAudio(requireActivity(), mAudioRecyclerAdapter.getItemRawPosition(viewHolder.getBindingAdapterPosition()));
         }
 
         @Override

@@ -205,12 +205,10 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         recyclerView = root.findViewById(R.id.fragment_friend_dialog_list)
         recyclerView?.apply {
             layoutManager = createLayoutManager()
-            if (!Settings.get().main().is_smooth_chat) {
-                itemAnimator?.changeDuration = 0
-                itemAnimator?.addDuration = 0
-                itemAnimator?.moveDuration = 0
-                itemAnimator?.removeDuration = 0
-            }
+            itemAnimator?.changeDuration = 0
+            itemAnimator?.addDuration = 0
+            itemAnimator?.moveDuration = 0
+            itemAnimator?.removeDuration = 0
             addOnScrollListener(PicassoPauseOnScrollListener(Constants.PICASSO_TAG))
             addOnScrollListener(object : EndlessRecyclerOnScrollListener() {
                 override fun onScrollToLastElement() {

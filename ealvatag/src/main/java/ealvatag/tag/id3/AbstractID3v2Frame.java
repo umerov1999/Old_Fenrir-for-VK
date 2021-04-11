@@ -15,6 +15,9 @@
  */
 package ealvatag.tag.id3;
 
+import static ealvatag.tag.id3.ID3v22Frames.FRAME_ID_V2_ATTACHED_PICTURE;
+import static ealvatag.tag.id3.ID3v24Frames.FRAME_ID_ATTACHED_PICTURE;
+
 import com.google.common.base.Strings;
 
 import org.jetbrains.annotations.Nullable;
@@ -47,9 +50,6 @@ import okio.Buffer;
 import okio.BufferedSource;
 import okio.InflaterSource;
 import okio.Okio;
-
-import static ealvatag.tag.id3.ID3v22Frames.FRAME_ID_V2_ATTACHED_PICTURE;
-import static ealvatag.tag.id3.ID3v24Frames.FRAME_ID_ATTACHED_PICTURE;
 
 /**
  * This abstract class is each frame header inside a ID3v2 tag.

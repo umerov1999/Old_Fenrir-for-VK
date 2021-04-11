@@ -440,24 +440,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 View view = View.inflate(requireActivity(), R.layout.dialog_about_us, null);
                 new MaterialAlertDialogBuilder(requireActivity())
                         .setView(view)
-                        .setOnDismissListener(dialog -> {
-                            View view1 = View.inflate(requireActivity(), R.layout.dialog_dedicated, null);
-                            new MaterialAlertDialogBuilder(requireActivity())
-                                    .setView(view1)
-                                    .show();
-                        })
                         .show();
                 return true;
             });
         }
-
-        findPreference("dedicated").setOnPreferenceClickListener(preference -> {
-            View view = View.inflate(requireActivity(), R.layout.dialog_dedicated, null);
-            new MaterialAlertDialogBuilder(requireActivity())
-                    .setView(view)
-                    .show();
-            return true;
-        });
 
         Preference additional_debug = findPreference("additional_debug");
         if (additional_debug != null) {
@@ -466,6 +452,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 return true;
             });
         }
+
+        findPreference("notification_bubbles").setVisible(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R);
 
         Preference select_icon = findPreference("select_custom_icon");
         if (select_icon != null) {

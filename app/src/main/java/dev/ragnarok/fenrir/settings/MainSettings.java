@@ -62,8 +62,8 @@ class MainSettings implements ISettings.IMainSettings {
     }
 
     @Override
-    public boolean is_smooth_chat() {
-        return getDefaultPreferences().getBoolean("smooth_chat", false);
+    public boolean isNotification_bubbles_enabled() {
+        return getDefaultPreferences().getBoolean("notification_bubbles", true);
     }
 
     @Override

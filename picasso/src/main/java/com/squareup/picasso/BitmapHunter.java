@@ -15,26 +15,6 @@
  */
 package com.squareup.picasso;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.net.NetworkInfo;
-import android.os.Build;
-import android.view.Gravity;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import okio.BufferedSource;
-import okio.Okio;
-import okio.Source;
-
 import static androidx.exifinterface.media.ExifInterface.ORIENTATION_FLIP_HORIZONTAL;
 import static androidx.exifinterface.media.ExifInterface.ORIENTATION_FLIP_VERTICAL;
 import static androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180;
@@ -54,6 +34,26 @@ import static com.squareup.picasso.Utils.VERB_REMOVED;
 import static com.squareup.picasso.Utils.VERB_TRANSFORMED;
 import static com.squareup.picasso.Utils.getLogIdsForHunter;
 import static com.squareup.picasso.Utils.log;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.net.NetworkInfo;
+import android.os.Build;
+import android.view.Gravity;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import okio.BufferedSource;
+import okio.Okio;
+import okio.Source;
 
 class BitmapHunter implements Runnable {
     /**

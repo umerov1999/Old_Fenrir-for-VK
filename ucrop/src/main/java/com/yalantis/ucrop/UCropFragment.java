@@ -1,5 +1,7 @@
 package com.yalantis.ucrop;
 
+import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -47,8 +49,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 
 @SuppressWarnings("ConstantConditions")
 public class UCropFragment extends Fragment {

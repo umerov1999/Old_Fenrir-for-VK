@@ -265,7 +265,7 @@ public interface ISettings {
 
         boolean isMy_message_no_color();
 
-        boolean is_smooth_chat();
+        boolean isNotification_bubbles_enabled();
 
         boolean isMessages_menu_down();
 

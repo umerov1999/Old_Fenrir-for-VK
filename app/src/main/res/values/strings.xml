@@ -145,7 +145,6 @@
         <item>Triskel</item>
         <item>Hella</item>
         <item>Fire Fan</item>
-        <item>Arnoldova Ekaterina</item>
     </string-array>
 
     <string-array name="array_pagan_symbol_items" translatable="false">
@@ -159,7 +158,6 @@
         <item>7</item>
         <item>8</item>
         <item>9</item>
-        <item>10</item>
     </string-array>
 
     <string-array name="array_accounts_input">
@@ -787,8 +785,6 @@
     <string name="first_pagan">First pagan</string>
     <string name="repo">Repository: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="repo_local_server">Repository: https://github.com/umerov1999/FenrirMediaServer/releases</string>
-    <string name="project_dedicated_summary">Project Dedicated for Arnoldova Ekaterina, https://vk.com/id255645173</string>
-    <string name="project_dedicated">Project Dedicated</string>
     <string name="comment">Comment</string>
     <string name="search">Search</string>
     <string name="input">Input</string>
@@ -1113,8 +1109,7 @@
     <string name="likes">Marks \"I like\"</string>
     <string name="likes_posts">Liked</string>
     <string name="chat_background">Background</string>
-    <string name="smooth_chat">Smooth chat</string>
-    <string name="smooth_chat_summary">May slow down</string>
+    <string name="notification_bubbles">Enable Bubbles notifications</string>
     <string name="chat_light_background">Day background (photo)</string>
     <string name="chat_dark_background">Night background (photo)</string>
     <string name="go_to_post">Go to the post</string>

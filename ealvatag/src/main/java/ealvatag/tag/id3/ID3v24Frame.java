@@ -15,6 +15,8 @@
  */
 package ealvatag.tag.id3;
 
+import static ealvatag.tag.id3.ID3SyncSafeInteger.INTEGRAL_SIZE;
+
 import com.google.common.base.Strings;
 
 import java.io.ByteArrayOutputStream;
@@ -58,8 +60,6 @@ import ealvatag.utils.Characters;
 import ealvatag.utils.EqualsUtil;
 import ealvatag.utils.StandardCharsets;
 import okio.Buffer;
-
-import static ealvatag.tag.id3.ID3SyncSafeInteger.INTEGRAL_SIZE;
 
 /**
  * Represents an ID3v2.4 frame.

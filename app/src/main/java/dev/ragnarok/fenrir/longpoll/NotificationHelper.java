@@ -355,7 +355,7 @@ public class NotificationHelper {
             builder.setSound(findNotificationSound());
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Peer.isGroupChat(peer.getId()) && Settings.get().main().isNotification_bubbles_enabled()) {
             createNotificationShortcut(context, builder, new Person.Builder()
                     .setName(getSenderName(message.getSender(), context)).setIcon(IconCompat.createWithBitmap(message.getSenderId() == accountId ? acc_avatar : avatar))
                     .setKey(String.valueOf(message.getSenderId())).build(), peer, accountId, message, text);
@@ -490,9 +490,6 @@ public class NotificationHelper {
 
     @SuppressLint("RestrictedApi")
     private static void createNotificationShortcut(Context context, NotificationCompat.Builder builder, Person person, Peer peer, int accountId, Message message, CharSequence text) {
-        if (Peer.isGroupChat(peer.getId())) {
-            return;
-        }
         try {
             String person_name = person.getName() != null ? person.getName().toString() : context.getString(R.string.error);
             String id = "fenrir_peer_" + peer.getId() + "_aid_" + accountId;

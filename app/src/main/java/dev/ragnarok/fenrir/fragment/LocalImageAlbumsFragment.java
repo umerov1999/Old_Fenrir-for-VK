@@ -66,13 +66,13 @@ public class LocalImageAlbumsFragment extends BaseMvpFragment<LocalPhotoAlbumsPr
         mySearchView.setOnQueryTextListener(new MySearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                getPresenter().fireSearchRequestChanged(query);
+                getPresenter().fireSearchRequestChanged(query, false);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                getPresenter().fireSearchRequestChanged(newText);
+                getPresenter().fireSearchRequestChanged(newText, false);
                 return false;
             }
         });

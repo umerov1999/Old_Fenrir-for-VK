@@ -15,13 +15,13 @@
  */
 package com.squareup.picasso;
 
+import static com.squareup.picasso.Utils.KEY_SEPARATOR;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import static com.squareup.picasso.Utils.KEY_SEPARATOR;
 
 /**
  * A memory cache which uses a least-recently used eviction policy.

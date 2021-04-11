@@ -15,6 +15,12 @@
  */
 package ealvatag.tag.id3;
 
+import static ealvatag.logging.ErrorMessage.ID3_EXTENDED_HEADER_SIZE_TOO_SMALL;
+import static ealvatag.utils.Check.CANNOT_BE_NULL;
+import static ealvatag.utils.Check.checkArgNotNull;
+import static ealvatag.utils.Check.checkArgNotNullOrEmpty;
+import static ealvatag.utils.Check.checkVarArg0NotNull;
+
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 
@@ -67,12 +73,6 @@ import ealvatag.tag.lyrics3.Lyrics3v2Field;
 import ealvatag.tag.reference.GenreTypes;
 import ealvatag.utils.Check;
 import okio.Buffer;
-
-import static ealvatag.logging.ErrorMessage.ID3_EXTENDED_HEADER_SIZE_TOO_SMALL;
-import static ealvatag.utils.Check.CANNOT_BE_NULL;
-import static ealvatag.utils.Check.checkArgNotNull;
-import static ealvatag.utils.Check.checkArgNotNullOrEmpty;
-import static ealvatag.utils.Check.checkVarArg0NotNull;
 
 /**
  * Represents an ID3v2.4 tag.

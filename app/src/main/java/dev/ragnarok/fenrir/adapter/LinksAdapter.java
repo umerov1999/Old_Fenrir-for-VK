@@ -88,7 +88,7 @@ public class LinksAdapter extends RecyclerBindableAdapter<Link, LinksAdapter.Lin
 
         holder.itemView.setOnClickListener(v -> {
             if (nonNull(mActionListener)) {
-                mActionListener.onLinkClick(holder.getAdapterPosition(), item);
+                mActionListener.onLinkClick(holder.getBindingAdapterPosition(), item);
             }
         });
         holder.itemView.setOnLongClickListener(v -> {

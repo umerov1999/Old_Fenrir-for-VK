@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.jetbrains.annotations.NotNull;
@@ -30,9 +29,7 @@ import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
 import dev.ragnarok.fenrir.api.model.VKApiAudio;
 import dev.ragnarok.fenrir.fragment.base.BaseFragment;
-import dev.ragnarok.fenrir.fragment.search.SearchContentType;
-import dev.ragnarok.fenrir.fragment.search.criteria.AudioPlaylistSearchCriteria;
-import dev.ragnarok.fenrir.fragment.search.criteria.AudioSearchCriteria;
+import dev.ragnarok.fenrir.fragment.search.AudioSearchTabsFragment;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
@@ -209,19 +206,7 @@ public class AudiosTabsFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
-            new MaterialAlertDialogBuilder(requireActivity())
-                    .setTitle(R.string.info)
-                    .setCancelable(true)
-                    .setMessage(R.string.what_search)
-                    .setNegativeButton(R.string.search_audios, (dialog, which) -> {
-                        AudioSearchCriteria criteria = new AudioSearchCriteria("", false, true);
-                        PlaceFactory.getSingleTabSearchPlace(getAccountId(), SearchContentType.AUDIOS, criteria).tryOpenWith(requireActivity());
-                    })
-                    .setPositiveButton(R.string.search_playlists, (dialog, which) -> {
-                        AudioPlaylistSearchCriteria criteria = new AudioPlaylistSearchCriteria("");
-                        PlaceFactory.getSingleTabSearchPlace(getAccountId(), SearchContentType.AUDIO_PLAYLISTS, criteria).tryOpenWith(requireActivity());
-                    })
-                    .show();
+            PlaceFactory.getAudiosTabsSearchPlace(getAccountId(), AudioSearchTabsFragment.TAB_MUSIC).tryOpenWith(requireActivity());
             return true;
         }
 

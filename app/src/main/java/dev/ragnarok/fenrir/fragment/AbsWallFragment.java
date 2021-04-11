@@ -8,8 +8,6 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,8 +27,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.caverock.androidsvg.SVG;
-import com.caverock.androidsvg.SVGParseException;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -189,17 +185,6 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
                         CurrentTheme.getColorSecondary(requireActivity())
                 });
                 paganSymbol.playAnimation();
-                break;
-            case 10:
-                try {
-                    Bitmap arn = Bitmap.createBitmap(Utils.dp(150), Utils.dp(150), Bitmap.Config.ARGB_8888);
-                    SVG svg = SVG.getFromResource(getResources(), R.raw.arnoldova);
-                    svg.setDocumentWidth(Utils.dp(150));
-                    svg.setDocumentHeight(Utils.dp(150));
-                    svg.renderToCanvas(new Canvas(arn));
-                    paganSymbol.setImageBitmap(arn);
-                } catch (SVGParseException ignore) {
-                }
                 break;
             default:
                 paganSymbol.setImageResource(R.drawable.ic_igdr);

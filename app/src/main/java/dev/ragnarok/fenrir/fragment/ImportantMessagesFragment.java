@@ -59,7 +59,7 @@ public class ImportantMessagesFragment extends PlaceSupportMvpFragment<Important
         @Override
         public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
             viewHolder.itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-            getPresenter().fireRemoveImportant(viewHolder.getAdapterPosition());
+            getPresenter().fireRemoveImportant(viewHolder.getBindingAdapterPosition());
         }
 
         @Override

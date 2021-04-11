@@ -79,7 +79,7 @@ public class AudioPlaylistsAdapter extends RecyclerView.Adapter<AudioPlaylistsAd
         holder.update.setText(AppTextUtils.getDateFromUnixTime(context, playlist.getUpdate_time()));
         holder.playlist_container.setOnClickListener(v -> {
             if (clickListener != null) {
-                clickListener.onAlbumClick(holder.getAdapterPosition(), playlist);
+                clickListener.onAlbumClick(holder.getBindingAdapterPosition(), playlist);
             }
         });
     }

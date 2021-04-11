@@ -16,13 +16,13 @@
  */
 package ealvatag.audio;
 
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
+
 import com.google.common.base.MoreObjects;
 
 import java.util.concurrent.TimeUnit;
 
 import ealvatag.utils.TimeUnits;
-
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 /**
  * This class represents a structure for storing and retrieving information

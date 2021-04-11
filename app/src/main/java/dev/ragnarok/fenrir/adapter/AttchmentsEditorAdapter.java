@@ -77,12 +77,12 @@ public class AttchmentsEditorAdapter extends RecyclerBindableAdapter<AttachmenEn
         configView(attachment, holder);
 
         holder.vRemove.setOnClickListener(view -> {
-            int dataposition = holder.getAdapterPosition() - getHeadersCount();
+            int dataposition = holder.getBindingAdapterPosition() - getHeadersCount();
             callback.onRemoveClick(dataposition, attachment);
         });
 
         holder.vTitleRoot.setOnClickListener(v -> {
-            int dataposition = holder.getAdapterPosition() - getHeadersCount();
+            int dataposition = holder.getBindingAdapterPosition() - getHeadersCount();
             callback.onTitleClick(dataposition, attachment);
         });
     }

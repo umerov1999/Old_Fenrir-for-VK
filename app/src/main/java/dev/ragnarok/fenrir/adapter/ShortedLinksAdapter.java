@@ -44,12 +44,12 @@ public class ShortedLinksAdapter extends RecyclerView.Adapter<ShortedLinksAdapte
         holder.original.setText(link.getUrl());
         holder.delete.setOnClickListener(v -> {
             if (clickListener != null) {
-                clickListener.onDelete(holder.getAdapterPosition(), link);
+                clickListener.onDelete(holder.getBindingAdapterPosition(), link);
             }
         });
         holder.copy.setOnClickListener(v -> {
             if (clickListener != null) {
-                clickListener.onCopy(holder.getAdapterPosition(), link);
+                clickListener.onCopy(holder.getBindingAdapterPosition(), link);
             }
         });
     }

@@ -15,6 +15,13 @@
  */
 package ealvatag.tag.id3;
 
+import static ealvatag.utils.Check.AT_LEAST_ONE_REQUIRED;
+import static ealvatag.utils.Check.CANNOT_BE_NULL;
+import static ealvatag.utils.Check.CANNOT_BE_NULL_OR_EMPTY;
+import static ealvatag.utils.Check.checkArgNotNull;
+import static ealvatag.utils.Check.checkArgNotNullOrEmpty;
+import static ealvatag.utils.Check.checkVarArg0NotNull;
+
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 
@@ -48,13 +55,6 @@ import ealvatag.tag.id3.framebody.FrameBodyTCON;
 import ealvatag.tag.id3.framebody.FrameBodyTDRC;
 import ealvatag.tag.id3.valuepair.ImageFormats;
 import okio.Buffer;
-
-import static ealvatag.utils.Check.AT_LEAST_ONE_REQUIRED;
-import static ealvatag.utils.Check.CANNOT_BE_NULL;
-import static ealvatag.utils.Check.CANNOT_BE_NULL_OR_EMPTY;
-import static ealvatag.utils.Check.checkArgNotNull;
-import static ealvatag.utils.Check.checkArgNotNullOrEmpty;
-import static ealvatag.utils.Check.checkVarArg0NotNull;
 
 /**
  * Represents an ID3v2.2 tag.

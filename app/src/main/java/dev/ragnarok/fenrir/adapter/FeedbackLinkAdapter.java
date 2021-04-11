@@ -165,7 +165,7 @@ public class FeedbackLinkAdapter extends RecyclerView.Adapter<FeedbackLinkAdapte
             Utils.setColorFilter(ivForward, CurrentTheme.getColorPrimary(mContext));
 
             root.setOnClickListener(v -> {
-                Object item = mData.get(getAdapterPosition());
+                Object item = mData.get(getBindingAdapterPosition());
                 if (item instanceof User) {
                     User user = (User) item;
                     mActionListener.onUserClick(user);

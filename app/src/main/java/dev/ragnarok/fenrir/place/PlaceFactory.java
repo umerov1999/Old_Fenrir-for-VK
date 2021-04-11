@@ -47,6 +47,7 @@ import dev.ragnarok.fenrir.fragment.attachments.RepostFragment;
 import dev.ragnarok.fenrir.fragment.conversation.ConversationFragmentFactory;
 import dev.ragnarok.fenrir.fragment.fave.FaveTabsFragment;
 import dev.ragnarok.fenrir.fragment.friends.FriendsTabsFragment;
+import dev.ragnarok.fenrir.fragment.search.AudioSearchTabsFragment;
 import dev.ragnarok.fenrir.fragment.search.SearchContentType;
 import dev.ragnarok.fenrir.fragment.search.SearchTabsFragment;
 import dev.ragnarok.fenrir.fragment.search.SingleTabSearchFragment;
@@ -479,6 +480,10 @@ public class PlaceFactory {
 
     public static Place getSearchPlace(int accountId, int tab) {
         return new Place(Place.SEARCH).setArguments(SearchTabsFragment.buildArgs(accountId, tab));
+    }
+
+    public static Place getAudiosTabsSearchPlace(int accountId, int tab) {
+        return new Place(Place.AUDIOS_SEARCH_TABS).setArguments(AudioSearchTabsFragment.buildArgs(accountId, tab));
     }
 
     public static Place getCreatePostPlace(int accountId, int ownerId, @EditingPostType int editingType,

@@ -58,7 +58,7 @@ public class AudioCatalogPresenter extends AccountDependencyPresenter<IAudioCata
         query = q == null ? null : q.trim();
 
         actualDataDisposable.dispose();
-        if (Utils.isEmpty(q)) {
+        if (Utils.isEmpty(query)) {
             fireRefresh();
             return;
         }
