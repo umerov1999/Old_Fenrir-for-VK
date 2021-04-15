@@ -176,6 +176,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     new File(cache, child).delete();
                 }
             }
+            cache = new File(context.getCacheDir(), "video_network_cache");
+            if (cache.exists() && cache.isDirectory()) {
+                String[] children = cache.list();
+                assert children != null;
+                for (String child : children) {
+                    new File(cache, child).delete();
+                }
+            }
             cache = context.getExternalFilesDir(Environment.DIRECTORY_RINGTONES);
             if (cache.exists() && cache.isDirectory()) {
                 String[] children = cache.list();
@@ -460,6 +468,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                 select_icon.setVisible(false);
             } else {
+                select_icon.setVisible(true);
                 select_icon.setOnPreferenceClickListener(preference -> {
                     ShowSelectIcon();
                     return true;

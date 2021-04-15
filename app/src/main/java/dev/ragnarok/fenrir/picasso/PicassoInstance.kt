@@ -7,18 +7,12 @@ import android.net.Uri
 import android.os.Build
 import android.os.StatFs
 import android.provider.MediaStore
-import coil.Coil.setImageLoader
-import coil.ComponentRegistry
-import coil.ImageLoader
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
 import com.squareup.picasso.BitmapSafeResize
 import com.squareup.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import dev.ragnarok.fenrir.Account_Types
 import dev.ragnarok.fenrir.Constants
 import dev.ragnarok.fenrir.api.ProxyUtil
-import dev.ragnarok.fenrir.picasso.PicassoInstance
 import dev.ragnarok.fenrir.settings.IProxySettings
 import dev.ragnarok.fenrir.settings.Settings
 import dev.ragnarok.fenrir.util.Logger
@@ -45,7 +39,6 @@ class PicassoInstance @SuppressLint("CheckResult") private constructor(
             }
             Logger.d(TAG, "Picasso singleton shutdown")
         }
-        setImageLoader(createCoilImageLoader(app, proxySettings))
     }
 
     private fun getSingleton(): Picasso {
@@ -151,7 +144,6 @@ class PicassoInstance @SuppressLint("CheckResult") private constructor(
         fun clear_cache() {
             instance!!.getCache_data()
             instance!!.cache_data!!.evictAll()
-            buildCoilCache(instance!!.app).evictAll()
         }
 
         // from picasso sources
@@ -166,44 +158,6 @@ class PicassoInstance @SuppressLint("CheckResult") private constructor(
             } catch (ignored: IllegalArgumentException) {
             }
             return size.coerceAtMost(52428800L).coerceAtLeast(5242880L)
-        }
-
-        private fun buildCoilCache(context: Context): Cache {
-            val cache = File(context.cacheDir, "coil-cache")
-            if (!cache.exists()) {
-                cache.mkdirs()
-            }
-            return Cache(cache, calculateDiskCacheSize(cache))
-        }
-
-        fun createCoilImageLoader(context: Context, proxySettings: IProxySettings): ImageLoader {
-            val cache = File(context.cacheDir, "coil-cache")
-            if (!cache.exists()) {
-                cache.mkdirs()
-            }
-            val builder: OkHttpClient.Builder = OkHttpClient.Builder()
-                .cache(buildCoilCache(context)) //.addNetworkInterceptor(chain -> chain.proceed(chain.request()).newBuilder().header("Cache-Control", "max-age=31536000,public").build())
-                .addInterceptor(Interceptor { chain: Interceptor.Chain ->
-                    val request = chain.request().newBuilder()
-                        .addHeader("User-Agent", Constants.USER_AGENT(Account_Types.BY_TYPE))
-                        .build()
-                    chain.proceed(request)
-                })
-            ProxyUtil.applyProxyConfig(builder, proxySettings.activeProxy)
-            return ImageLoader.Builder(context)
-                .availableMemoryPercentage(0.25)
-                .crossfade(true).componentRegistry(
-                    ComponentRegistry().newBuilder()
-                        .add(
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) ImageDecoderDecoder(
-                                context
-                            ) else GifDecoder()
-                        )
-                        .add(CoilLocalRequestHandler())
-                        .build()
-                )
-                .okHttpClient(builder.build())
-                .build()
         }
     }
 

@@ -47,7 +47,7 @@ class OtherSettings implements ISettings.IOtherSettings {
             PreferenceManager
                     .getDefaultSharedPreferences(app)
                     .edit()
-                    .putString("json_list_state" + accountId, state)
+                    .putString(KEY_JSON_STATE + accountId, state)
                     .apply();
         } else {
             PreferenceManager
@@ -84,14 +84,6 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
-    public void setAudioBroadcastActive(boolean active) {
-        PreferenceManager.getDefaultSharedPreferences(app)
-                .edit()
-                .putBoolean("broadcast", active)
-                .apply();
-    }
-
-    @Override
     public boolean isCommentsDesc() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("comments_desc", true);
     }
@@ -111,11 +103,6 @@ class OtherSettings implements ISettings.IOtherSettings {
     @Override
     public boolean isKeepLongpoll() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("keep_longpoll", false);
-    }
-
-    @Override
-    public void setKeepLongpoll(boolean en) {
-        PreferenceManager.getDefaultSharedPreferences(app).edit().putBoolean("keep_longpoll", en).apply();
     }
 
     @Override
@@ -166,8 +153,8 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
-    public boolean isUse_coil() {
-        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("use_coil_library", false);
+    public boolean isAutoplay_gif() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("autoplay_gif", true);
     }
 
     @Override
@@ -525,15 +512,6 @@ class OtherSettings implements ISettings.IOtherSettings {
     @Override
     public boolean isShow_pagan_symbol() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("show_pagan_symbol", true);
-    }
-
-    @Override
-    public void setSymbolSelectShow(boolean show) {
-        PreferenceManager
-                .getDefaultSharedPreferences(app)
-                .edit()
-                .putBoolean("symbol_select_show", show)
-                .apply();
     }
 
     @Override

@@ -14,12 +14,6 @@ import androidx.fragment.app.Fragment;
 import dev.ragnarok.fenrir.R;
 
 public class AppPerms {
-    public static boolean hasWriteStoragePermission(@NonNull Context context) {
-        if (!Utils.hasMarshmallow()) return true;
-        int hasWritePermission = PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        return hasWritePermission == PackageManager.PERMISSION_GRANTED;
-    }
-
     public static boolean hasReadWriteStoragePermission(@NonNull Context context) {
         if (!Utils.hasMarshmallow()) return true;
         int hasWritePermission = PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -33,12 +27,16 @@ public class AppPerms {
         return hasWritePermission == PackageManager.PERMISSION_GRANTED;
     }
 
+    public static boolean hasReadStoragePermissionSimple(@NonNull Context context) {
+        if (!Utils.hasMarshmallow()) return true;
+        int hasWritePermission = PermissionChecker.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE);
+        return hasWritePermission == PackageManager.PERMISSION_GRANTED;
+    }
+
     public static boolean hasCameraPermission(@NonNull Context context) {
         if (!Utils.hasMarshmallow()) return true;
         int hasCameraPermission = PermissionChecker.checkSelfPermission(context, Manifest.permission.CAMERA);
-        int hasWritePermission = PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        int hasReadPermission = PermissionChecker.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE);
-        return hasCameraPermission == PackageManager.PERMISSION_GRANTED && hasWritePermission == PackageManager.PERMISSION_GRANTED && hasReadPermission == PackageManager.PERMISSION_GRANTED;
+        return hasReadWriteStoragePermission(context) && hasCameraPermission == PackageManager.PERMISSION_GRANTED;
     }
 
     public static boolean hasContactsPermission(@NonNull Context context) {

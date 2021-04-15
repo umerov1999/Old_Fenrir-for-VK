@@ -105,7 +105,7 @@ public class StickersInteractor implements IStickersInteractor {
 
     @Override
     public Completable PlaceToStickerCache(Context context) {
-        if (!AppPerms.hasReadWriteStoragePermission(context))
+        if (!AppPerms.hasReadStoragePermissionSimple(context))
             return Completable.complete();
         return Completable.create(t -> {
             File temp = new File(Settings.get().other().getStickerDir());

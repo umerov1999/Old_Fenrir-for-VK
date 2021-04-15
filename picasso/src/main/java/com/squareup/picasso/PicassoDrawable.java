@@ -31,7 +31,7 @@ import android.graphics.drawable.Drawable;
 import android.os.SystemClock;
 import android.widget.ImageView;
 
-public final class PicassoDrawable extends BitmapDrawable {
+final class PicassoDrawable extends BitmapDrawable {
     // Only accessed from main thread.
     private static final Paint DEBUG_PAINT = new Paint();
     private static final float FADE_DURATION = 200f; //ms
@@ -64,8 +64,8 @@ public final class PicassoDrawable extends BitmapDrawable {
      * Create or update the drawable on the target {@link ImageView} to display the supplied bitmap
      * image.
      */
-    public static void setBitmap(ImageView target, Context context, Bitmap bitmap,
-                                 Picasso.LoadedFrom loadedFrom, boolean noFade, boolean debugging) {
+    static void setBitmap(ImageView target, Context context, Bitmap bitmap,
+                          Picasso.LoadedFrom loadedFrom, boolean noFade, boolean debugging) {
         Drawable placeholder = target.getDrawable();
         if (placeholder instanceof Animatable) {
             ((Animatable) placeholder).stop();

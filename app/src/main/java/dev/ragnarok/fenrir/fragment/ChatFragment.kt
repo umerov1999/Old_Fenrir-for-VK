@@ -599,6 +599,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
 
     override fun doCloseAfterSend() {
         try {
+            ViewUtils.keyboardHide(requireActivity())
             requireActivity().finish()
         } catch (ignored: Exception) {
 

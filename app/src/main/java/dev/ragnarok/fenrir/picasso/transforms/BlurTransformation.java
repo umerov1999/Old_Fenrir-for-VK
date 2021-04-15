@@ -33,13 +33,11 @@ public class BlurTransformation implements Transformation {
     private static final String TAG = BlurTransformation.class.getSimpleName();
 
     private final int mRadius;
-    private final int mSampling;
 
     private final Context mContext;
 
-    public BlurTransformation(int radius, int sampling, Context mContext) {
+    public BlurTransformation(int radius, Context mContext) {
         mRadius = radius;
-        mSampling = sampling;
         this.mContext = mContext;
     }
 
@@ -60,7 +58,7 @@ public class BlurTransformation implements Transformation {
     @NotNull
     @Override
     public String key() {
-        return TAG + "(radius=" + mRadius + ", sampling=" + mSampling + ")";
+        return TAG + "(radius=" + mRadius + ")";
     }
 
     @Override

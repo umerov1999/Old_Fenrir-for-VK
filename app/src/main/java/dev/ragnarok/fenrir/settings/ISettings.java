@@ -57,15 +57,13 @@ public interface ISettings {
 
         boolean isAudioBroadcastActive();
 
-        void setAudioBroadcastActive(boolean active);
-
         int getMaxBitmapResolution();
 
         boolean isNative_parcel();
 
         boolean isExtra_debug();
 
-        boolean isUse_coil();
+        boolean isAutoplay_gif();
 
         boolean isStrip_news_repost();
 
@@ -84,8 +82,6 @@ public interface ISettings {
         boolean isForce_cache();
 
         boolean isKeepLongpoll();
-
-        void setKeepLongpoll(boolean en);
 
         void setDisableErrorFCM(boolean en);
 
@@ -206,8 +202,6 @@ public interface ISettings {
         int getLanguage();
 
         int getEndListAnimation();
-
-        void setSymbolSelectShow(boolean show);
 
         @NonNull
         LocalServerSettings getLocalServer();

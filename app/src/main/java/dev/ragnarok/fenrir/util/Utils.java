@@ -680,6 +680,10 @@ public class Utils {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
 
+    public static boolean hasR() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
+    }
+
     public static boolean hasNougat() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
     }
@@ -1590,7 +1594,7 @@ public class Utils {
     }
 
     public static void checkMusicInPC(Context context) {
-        if (!AppPerms.hasReadWriteStoragePermission(context))
+        if (!AppPerms.hasReadStoragePermissionSimple(context))
             return;
         File audios = new File(dev.ragnarok.fenrir.settings.Settings.get().other().getMusicDir(), "local_server_audio_list.json");
         if (!audios.exists())

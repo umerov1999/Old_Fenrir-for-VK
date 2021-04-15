@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -83,6 +84,7 @@ import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.User;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.settings.backup.SettingsBackup;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Objects;
@@ -526,6 +528,9 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                 arr.add(temp);
             }
             root.add("fenrir_accounts", arr);
+            JsonObject settings = new SettingsBackup().doBackup();
+            if (settings != null)
+                root.add("settings", settings);
             byte[] bytes = root.toString().getBytes(StandardCharsets.UTF_8);
             out = new FileOutputStream(file);
             out.write(bytes);
@@ -560,7 +565,8 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                     while (d.ready())
                         jbld.append(d.readLine());
                     d.close();
-                    JsonArray reader = JsonParser.parseString(jbld.toString()).getAsJsonObject().getAsJsonArray("fenrir_accounts");
+                    JsonObject obj = JsonParser.parseString(jbld.toString()).getAsJsonObject();
+                    JsonArray reader = obj.getAsJsonArray("fenrir_accounts");
                     for (JsonElement i : reader) {
                         JsonObject elem = i.getAsJsonObject();
                         int id = elem.get("user_id").getAsInt();
@@ -575,6 +581,10 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                         if (elem.has("device")) {
                             Settings.get().accounts().storeDevice(id, elem.get("device").getAsString());
                         }
+                    }
+                    if (obj.has("settings")) {
+                        new SettingsBackup().doRestore(obj.getAsJsonObject("settings"));
+                        CustomToast.CreateCustomToast(requireActivity()).setDuration(Toast.LENGTH_LONG).showToastSuccessBottom((R.string.need_restart));
                     }
                 }
                 CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.accounts_restored, file.getAbsolutePath());

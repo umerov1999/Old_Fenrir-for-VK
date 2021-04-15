@@ -7,9 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import coil.clear
-import coil.load
-import com.google.android.material.imageview.ShapeableImageView
 import dev.ragnarok.fenrir.Constants
 import dev.ragnarok.fenrir.R
 import dev.ragnarok.fenrir.adapter.AttachmentsViewBinder.OnAttachmentsActionCallback
@@ -17,6 +14,7 @@ import dev.ragnarok.fenrir.model.Document
 import dev.ragnarok.fenrir.model.Photo
 import dev.ragnarok.fenrir.model.PhotoSize
 import dev.ragnarok.fenrir.model.Video
+import dev.ragnarok.fenrir.module.video.AnimatedShapeableImageView
 import dev.ragnarok.fenrir.picasso.PicassoInstance
 import dev.ragnarok.fenrir.settings.CurrentTheme
 import dev.ragnarok.fenrir.settings.Settings
@@ -34,7 +32,7 @@ class PhotosViewHelper internal constructor(
     @PhotoSize
     private val mPhotoPreviewSize = Settings.get().main().prefPreviewImageSize
     private val mIconColorActive = CurrentTheme.getColorPrimary(context)
-    private val isUseCoil = Settings.get().other().isUse_coil
+    private val isAutoplay_gif = Settings.get().other().isAutoplay_gif
 
     @SuppressLint("SetTextI18n")
     fun displayVideos(videos: List<PostImage>, container: ViewGroup) {
@@ -123,16 +121,12 @@ class PhotosViewHelper internal constructor(
             val holder = tmpV.tag as Holder
             if (g < photos.size) {
                 val image = photos[g]
-                if (isUseCoil) {
-                    holder.ivPlay.visibility = View.GONE
-                } else {
-                    holder.ivPlay.visibility =
-                        if (image.type == PostImage.TYPE_IMAGE) View.GONE else View.VISIBLE
-                    if (image.type != PostImage.TYPE_IMAGE) Utils.setColorFilter(
-                        holder.ivPlay.background,
-                        mIconColorActive
-                    )
-                }
+                holder.ivPlay.visibility =
+                    if (image.type == PostImage.TYPE_IMAGE) View.GONE else View.VISIBLE
+                if (image.type != PostImage.TYPE_IMAGE) Utils.setColorFilter(
+                    holder.ivPlay.background,
+                    mIconColorActive
+                )
                 holder.tvTitle.visibility =
                     if (image.type == PostImage.TYPE_IMAGE) View.GONE else View.VISIBLE
                 holder.vgPhoto.setOnClickListener {
@@ -162,55 +156,39 @@ class PhotosViewHelper internal constructor(
                         )
                     }
                 }
-                if (isUseCoil) {
-                    if (image.type == PostImage.TYPE_GIF) {
-                        if (Utils.nonEmpty(url)) {
-                            holder.vgPhoto.load((image.attachment as Document).url) {
-                                listener(
-                                    onError = { _, _ ->
-                                        run {
-                                            Utils.setColorFilter(
-                                                holder.ivPlay.background,
-                                                mIconColorActive
-                                            )
-                                            holder.ivPlay.visibility = View.VISIBLE
-                                            if (!Utils.isEmpty(url)) {
-                                                holder.vgPhoto.load(url) {
-                                                    crossfade(true)
-                                                    placeholder(R.drawable.background_gray)
-                                                }
-                                            }
-                                        }
-                                    }
-                                )
+                if (isAutoplay_gif && image.type == PostImage.TYPE_GIF) {
+                    holder.vgPhoto.setDecoderCallback {
+                        if (!it) {
+                            holder.ivPlay.visibility = View.VISIBLE
+                            if (Utils.nonEmpty(url)) {
+                                PicassoInstance.with()
+                                    .load(url)
+                                    .placeholder(R.drawable.background_gray)
+                                    .tag(Constants.PICASSO_TAG)
+                                    .into(holder.vgPhoto)
+                                tmpV.visibility = View.VISIBLE
+                            } else {
+                                PicassoInstance.with().cancelRequest(holder.vgPhoto)
+                                tmpV.visibility = View.GONE
                             }
                         } else {
-                            holder.vgPhoto.clear()
-                        }
-                    } else {
-                        if (Utils.nonEmpty(url)) {
-                            holder.vgPhoto.load(url) {
-                                crossfade(true)
-                                placeholder(R.drawable.background_gray)
-                            }
-                            tmpV.visibility = View.VISIBLE
-                        } else {
-                            holder.vgPhoto.clear()
-                            tmpV.visibility = View.GONE
+                            holder.ivPlay.visibility = View.GONE
                         }
                     }
+                    holder.vgPhoto.fromNet(
+                        (image.attachment as Document).videoPreview?.src,
+                        Utils.createOkHttp(5)
+                    )
+                } else if (Utils.nonEmpty(url)) {
+                    PicassoInstance.with()
+                        .load(url)
+                        .placeholder(R.drawable.background_gray)
+                        .tag(Constants.PICASSO_TAG)
+                        .into(holder.vgPhoto)
+                    tmpV.visibility = View.VISIBLE
                 } else {
-                    if (Utils.nonEmpty(url)) {
-                        PicassoInstance.with()
-                            .load(url)
-                            .placeholder(R.drawable.background_gray)
-                            .tag(Constants.PICASSO_TAG)
-                            .into(holder.vgPhoto)
-                        tmpV.visibility = View.VISIBLE
-                    } else {
-                        PicassoInstance.with().cancelRequest(holder.vgPhoto)
-                        tmpV.visibility = View.GONE
-                    }
+                    PicassoInstance.with().cancelRequest(holder.vgPhoto)
+                    tmpV.visibility = View.GONE
                 }
             } else {
                 tmpV.visibility = View.GONE
@@ -229,7 +207,7 @@ class PhotosViewHelper internal constructor(
     }
 
     private class Holder(itemView: View) {
-        val vgPhoto: ShapeableImageView = itemView.findViewById(R.id.item_video_image)
+        val vgPhoto: AnimatedShapeableImageView = itemView.findViewById(R.id.item_video_image)
         val ivPlay: ImageView = itemView.findViewById(R.id.item_video_play)
         val tvTitle: TextView = itemView.findViewById(R.id.item_video_title)
 

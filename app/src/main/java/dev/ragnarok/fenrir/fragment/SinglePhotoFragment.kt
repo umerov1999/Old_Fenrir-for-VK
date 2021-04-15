@@ -123,7 +123,7 @@ class SinglePhotoFragment : BaseFragment(), GoBackCallback, BackPressCallback {
 
     private fun doSaveOnDrive(Request: Boolean) {
         if (Request) {
-            if (!AppPerms.hasWriteStoragePermission(instance)) {
+            if (!AppPerms.hasReadWriteStoragePermission(instance)) {
                 requestWritePermission.launch()
             }
         }

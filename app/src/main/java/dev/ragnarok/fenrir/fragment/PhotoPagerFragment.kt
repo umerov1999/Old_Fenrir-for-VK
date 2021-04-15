@@ -16,7 +16,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import coil.clear
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -732,7 +731,7 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
 
         override fun onViewDetachedFromWindow(holder: PhotoViewHolder) {
             super.onViewDetachedFromWindow(holder)
-            holder.photo.clear()
+            PicassoInstance.with().cancelRequest(holder.photo)
         }
 
         override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {

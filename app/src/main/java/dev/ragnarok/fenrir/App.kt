@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.os.Handler
 import androidx.appcompat.app.AppCompatDelegate
-import coil.ImageLoader
-import coil.ImageLoaderFactory
 import dev.ragnarok.fenrir.domain.Repository.messages
 import dev.ragnarok.fenrir.longpoll.NotificationHelper
 import dev.ragnarok.fenrir.model.PeerUpdate
@@ -26,12 +24,8 @@ import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.plugins.RxJavaPlugins
 
-class App : Application(), ImageLoaderFactory {
+class App : Application() {
     private val compositeDisposable = CompositeDisposable()
-
-    override fun newImageLoader(): ImageLoader {
-        return PicassoInstance.createCoilImageLoader(this, Injection.provideProxySettings())
-    }
 
     @SuppressLint("UnsafeExperimentalUsageWarning")
     override fun onCreate() {

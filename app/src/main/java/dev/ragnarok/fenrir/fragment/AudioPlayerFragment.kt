@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.content.*
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
 import android.net.Uri
@@ -19,8 +20,6 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
-import coil.clear
-import coil.load
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -29,7 +28,7 @@ import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
-import com.squareup.picasso.PicassoDrawable
+import com.squareup.picasso.Target
 import dev.ragnarok.fenrir.Constants
 import dev.ragnarok.fenrir.Extra
 import dev.ragnarok.fenrir.Injection
@@ -45,6 +44,7 @@ import dev.ragnarok.fenrir.model.Audio
 import dev.ragnarok.fenrir.module.FenrirNative
 import dev.ragnarok.fenrir.module.qrcode.QrGenerator.generateQR
 import dev.ragnarok.fenrir.module.rlottie.RLottieShapeableImageView
+import dev.ragnarok.fenrir.picasso.PicassoInstance
 import dev.ragnarok.fenrir.picasso.transforms.BlurTransformation
 import dev.ragnarok.fenrir.place.PlaceFactory
 import dev.ragnarok.fenrir.player.ui.PlayPauseButton
@@ -64,6 +64,7 @@ import dev.ragnarok.fenrir.util.Objects
 import dev.ragnarok.fenrir.util.RxUtils
 import dev.ragnarok.fenrir.util.Utils
 import dev.ragnarok.fenrir.util.Utils.isEmpty
+import dev.ragnarok.fenrir.view.FadeDrawable
 import dev.ragnarok.fenrir.view.swipehelper.HorizontalSwipeBehavior
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
@@ -103,6 +104,8 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
     private var tvSubtitle: TextView? = null
     private var ivCover: RLottieShapeableImageView? = null
     private var ivBackground: ImageView? = null
+    private var playerGradientFirst: ImageView? = null
+    private var playerGradientSecond: ImageView? = null
 
     // Handler used to update the current time
     private var mTimeHandler: TimeHandler? = null
@@ -278,6 +281,8 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_audio_player, container, false)
+        playerGradientFirst = root.findViewById(R.id.cover_gradient_top)
+        playerGradientSecond = root.findViewById(R.id.cover_gradient)
         mProgress = root.findViewById(android.R.id.progress)
         mPlayPauseButton = root.findViewById(R.id.action_button_play)
         mShuffleButton = root.findViewById(R.id.action_button_shuffle)
@@ -734,6 +739,58 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         mBroadcastDisposable.dispose()
     }
 
+    private val target = object : Target {
+        override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
+            FadeDrawable.setBitmap(
+                ivCover!!,
+                requireActivity(),
+                bitmap
+            )
+            if (Settings.get().other().isBlur_for_player) {
+                playerGradientFirst?.visibility = View.VISIBLE
+                playerGradientSecond?.visibility = View.VISIBLE
+                FadeDrawable.setBitmap(
+                    ivBackground!!,
+                    requireActivity(),
+                    BlurTransformation.blur(
+                        bitmap.copy(Bitmap.Config.ARGB_8888, true),
+                        requireActivity(),
+                        25F
+                    )
+                )
+            }
+        }
+
+        override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+        }
+
+        override fun onBitmapFailed(e: Exception, errorDrawable: Drawable?) {
+            ivBackground?.setImageDrawable(null)
+            playerGradientFirst?.visibility = View.GONE
+            playerGradientSecond?.visibility = View.GONE
+            ivCover?.scaleType = ImageView.ScaleType.CENTER
+            if (FenrirNative.isNativeLoaded()) {
+                ivCover?.fromRes(
+                    R.raw.auidio_no_cover, 450, 450, intArrayOf(
+                        0x333333,
+                        CurrentTheme.getColorSurface(requireActivity()),
+                        0x777777,
+                        CurrentTheme.getColorOnSurface(requireActivity())
+                    )
+                )
+                ivCover?.playAnimation()
+            } else {
+                ivCover?.setImageResource(R.drawable.itunes)
+                ivCover?.drawable?.setTint(
+                    CurrentTheme.getColorOnSurface(
+                        requireActivity()
+                    )
+                )
+            }
+        }
+
+    }
+
     /**
      * Sets the track name, album name, and album art.
      */
@@ -756,48 +813,20 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         }
         if (coverUrl != null) {
             ivCover!!.scaleType = ImageView.ScaleType.FIT_START
-            ivCover!!.load(coverUrl) {
-                listener(onError = { _, _ ->
-                    run {
-                        ivCover!!.scaleType = ImageView.ScaleType.CENTER
-                        if (FenrirNative.isNativeLoaded()) {
-                            ivCover!!.fromRes(
-                                R.raw.auidio_no_cover, 450, 450, intArrayOf(
-                                    0x333333,
-                                    CurrentTheme.getColorSurface(requireActivity()),
-                                    0x777777,
-                                    CurrentTheme.getColorOnSurface(requireActivity())
-                                )
-                            )
-                            ivCover!!.playAnimation()
-                        } else {
-                            ivCover!!.setImageResource(R.drawable.itunes)
-                            ivCover!!.drawable.setTint(
-                                CurrentTheme.getColorOnSurface(
-                                    requireActivity()
-                                )
-                            )
-                        }
-                    }
-                })
-                crossfade(true)
-            }
-            if (Settings.get().other().isBlur_for_player) {
-                ivBackground!!.load(coverUrl) {
-                    crossfade(true)
-                    transformations(coil.transform.BlurTransformation(requireActivity(), 25f, 1f))
-                }
-            }
+            PicassoInstance.with()
+                .load(coverUrl)
+                .into(target)
         } else {
+            PicassoInstance.with().cancelRequest(target)
             val audio = MusicUtils.getCurrentAudio()?.url
             if (!isEmpty(audio) && (audio!!.contains("content://") || audio.contains("file://"))) {
                 val btm = Stores.getInstance().localMedia()
                     .getMetadataAudioThumbnail(Uri.parse(audio), 512, 512)
                 if (btm == null) {
-                    ivCover!!.clear()
                     if (Settings.get().other().isBlur_for_player) {
-                        ivBackground!!.clear()
                         ivBackground?.setImageDrawable(null)
+                        playerGradientFirst?.visibility = View.GONE
+                        playerGradientSecond?.visibility = View.GONE
                     }
                     ivCover!!.scaleType = ImageView.ScaleType.CENTER
                     if (FenrirNative.isNativeLoaded()) {
@@ -816,30 +845,30 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                     }
                 } else {
                     ivCover!!.scaleType = ImageView.ScaleType.FIT_START
-                    PicassoDrawable.setBitmap(
+                    FadeDrawable.setBitmap(
                         ivCover!!,
                         requireActivity(),
-                        btm,
-                        Picasso.LoadedFrom.DISK,
-                        false,
-                        false
+                        btm
                     )
                     if (Settings.get().other().isBlur_for_player) {
-                        PicassoDrawable.setBitmap(
+                        playerGradientFirst?.visibility = View.VISIBLE
+                        playerGradientSecond?.visibility = View.VISIBLE
+                        FadeDrawable.setBitmap(
                             ivBackground!!,
                             requireActivity(),
-                            BlurTransformation.blur(btm, requireActivity(), 25F),
-                            Picasso.LoadedFrom.DISK,
-                            false,
-                            false
+                            BlurTransformation.blur(
+                                btm.copy(Bitmap.Config.ARGB_8888, true),
+                                requireActivity(),
+                                25F
+                            )
                         )
                     }
                 }
             } else {
-                ivCover!!.clear()
                 if (Settings.get().other().isBlur_for_player) {
-                    ivBackground!!.clear()
                     ivBackground?.setImageDrawable(null)
+                    playerGradientFirst?.visibility = View.GONE
+                    playerGradientSecond?.visibility = View.GONE
                 }
                 ivCover!!.scaleType = ImageView.ScaleType.CENTER
                 if (FenrirNative.isNativeLoaded()) {
