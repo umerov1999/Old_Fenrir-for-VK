@@ -17,8 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -169,7 +167,7 @@ public class AudiosSearchFragment extends AbsSearchFragment<AudiosSearchPresente
         return new LinearLayoutManager(requireActivity());
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<AudiosSearchPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new AudiosSearchPresenter(

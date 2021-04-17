@@ -9,8 +9,6 @@ import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.lang.ref.WeakReference;
 import java.util.concurrent.Executors;
 
@@ -199,7 +197,7 @@ public class AndroidLongpollManager implements ILongpollManager, UserLongpoll.Ca
         }
 
         @Override
-        public void handleMessage(@NotNull Message msg) {
+        public void handleMessage(@NonNull Message msg) {
             LongpollEntry holder = reference.get();
             if (holder != null && !holder.released) {
                 switch (msg.what) {

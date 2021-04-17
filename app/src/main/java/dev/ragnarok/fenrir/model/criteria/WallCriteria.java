@@ -1,6 +1,6 @@
 package dev.ragnarok.fenrir.model.criteria;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import dev.ragnarok.fenrir.db.DatabaseIdRange;
 
@@ -48,7 +48,7 @@ public class WallCriteria extends Criteria {
         return ownerId;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "WallCriteria{" +

@@ -1,6 +1,6 @@
 package dev.ragnarok.fenrir.link.types;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class AudiosLink extends AbsLink {
 
@@ -11,7 +11,7 @@ public class AudiosLink extends AbsLink {
         this.ownerId = ownerId;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "AudiosLink{" +

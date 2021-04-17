@@ -10,9 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -33,9 +32,9 @@ public class VideoAlbumsNewAdapter extends RecyclerView.Adapter<VideoAlbumsNewAd
         this.data = data;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_video_album, parent, false));
     }
 

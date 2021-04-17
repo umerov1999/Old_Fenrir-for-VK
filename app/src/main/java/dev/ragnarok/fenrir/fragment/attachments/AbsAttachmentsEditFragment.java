@@ -57,6 +57,7 @@ import dev.ragnarok.fenrir.util.Action;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.AssertUtils;
+import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.DateTimePicker;
 import dev.ragnarok.fenrir.view.WeakRunnable;
 import dev.ragnarok.fenrir.view.YoutubeButton;
@@ -68,6 +69,10 @@ public abstract class AbsAttachmentsEditFragment<P extends AbsAttachmentsEditPre
     private final AppPerms.doRequestPermissions requestCameraPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
             () -> getPresenter().fireCameraPermissionResolved());
+    private final AppPerms.doRequestPermissions requestCameraPermissionScoped = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.CAMERA},
+            () -> getPresenter().fireCameraPermissionResolved());
+
     private final AppPerms.doRequestPermissions requestReqadPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
             () -> getPresenter().fireReadStoragePermissionResolved());
@@ -289,7 +294,10 @@ public abstract class AbsAttachmentsEditFragment<P extends AbsAttachmentsEditPre
 
     @Override
     public void requestCameraPermission() {
-        requestCameraPermission.launch();
+        if (Utils.hasScopedStorage())
+            requestCameraPermissionScoped.launch();
+        else
+            requestCameraPermission.launch();
     }
 
     @Override

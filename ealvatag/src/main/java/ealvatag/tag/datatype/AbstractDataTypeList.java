@@ -16,7 +16,7 @@
  */
 package ealvatag.tag.datatype;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.EOFException;
 import java.util.ArrayList;
@@ -148,7 +148,7 @@ public abstract class AbstractDataTypeList<T extends AbstractDataType> extends A
         return getValue() != null ? getValue().hashCode() : 0;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return getValue() != null ? getValue().toString() : "%s";

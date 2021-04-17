@@ -14,8 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
-import org.jetbrains.annotations.NotNull;
-
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
@@ -105,7 +103,7 @@ public class CreatePinFragment extends BaseMvpFragment<CreatePinPresenter, ICrea
         requireActivity().finish();
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<CreatePinPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new CreatePinPresenter(saveInstanceState);

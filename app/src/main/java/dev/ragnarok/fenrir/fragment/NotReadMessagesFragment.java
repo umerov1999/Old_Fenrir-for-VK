@@ -21,8 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -256,7 +254,7 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<NotReadMessagesPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {
@@ -294,7 +292,7 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
     }
 
     @Override
-    public void onBotKeyboardClick(@NonNull @NotNull Keyboard.Button button) {
+    public void onBotKeyboardClick(@NonNull Keyboard.Button button) {
 
     }
 

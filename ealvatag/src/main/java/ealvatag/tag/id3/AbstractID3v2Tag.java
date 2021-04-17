@@ -20,12 +20,12 @@ import static ealvatag.utils.Check.CANNOT_BE_NULL;
 import static ealvatag.utils.Check.checkArgNotNull;
 import static ealvatag.utils.Check.checkVarArg0NotNull;
 
+import androidx.annotation.NonNull;
+
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
@@ -2295,7 +2295,7 @@ public abstract class AbstractID3v2Tag extends AbstractID3Tag implements TagFiel
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder();

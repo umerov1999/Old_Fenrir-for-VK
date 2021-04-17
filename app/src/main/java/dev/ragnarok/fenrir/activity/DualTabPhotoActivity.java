@@ -9,8 +9,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.jetbrains.annotations.NotNull;
-
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.fragment.DualTabPhotosFragment;
@@ -50,7 +48,7 @@ public class DualTabPhotoActivity extends NoMainActivity implements PlaceProvide
     }
 
     @Override
-    protected void onSaveInstanceState(@NotNull Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("mMaxSelectionCount", mMaxSelectionCount);
         outState.putParcelable("mSources", mSources);

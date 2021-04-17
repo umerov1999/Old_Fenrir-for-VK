@@ -14,8 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.jetbrains.annotations.NotNull;
-
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
@@ -77,7 +75,7 @@ public class RequestExecuteFragment extends BaseMvpFragment<RequestExecutePresen
         return root;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<RequestExecutePresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new RequestExecutePresenter(requireArguments().getInt(Extra.ACCOUNT_ID), saveInstanceState);

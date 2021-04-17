@@ -22,8 +22,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -173,7 +171,7 @@ public class ChatUsersFragment extends BaseMvpFragment<ChatMembersPresenter, ICh
         requestAddUser.launch(intent);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<ChatMembersPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new ChatMembersPresenter(

@@ -32,8 +32,6 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -105,7 +103,7 @@ public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedVi
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_feed, menu);
     }
@@ -513,7 +511,7 @@ public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedVi
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<FeedPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new FeedPresenter(requireArguments().getInt(Extra.ACCOUNT_ID), saveInstanceState);

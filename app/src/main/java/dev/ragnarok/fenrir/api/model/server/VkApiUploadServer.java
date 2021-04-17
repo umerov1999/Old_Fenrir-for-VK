@@ -3,7 +3,7 @@ package dev.ragnarok.fenrir.api.model.server;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class VkApiUploadServer implements Parcelable, UploadServer {
 
@@ -53,7 +53,7 @@ public class VkApiUploadServer implements Parcelable, UploadServer {
         dest.writeInt(user_id);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "VkApiUploadServer{" +

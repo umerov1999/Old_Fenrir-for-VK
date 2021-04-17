@@ -3,7 +3,8 @@ package dev.ragnarok.fenrir.api.model.response;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
+
 import org.json.JSONObject;
 
 public class ResolveDomailResponse implements Parcelable {
@@ -50,7 +51,7 @@ public class ResolveDomailResponse implements Parcelable {
         dest.writeString(object_id);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "ResolveDomailResponse{" +

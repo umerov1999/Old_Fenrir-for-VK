@@ -1,6 +1,6 @@
 package dev.ragnarok.fenrir.link.types;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class FaveLink extends AbsLink {
 
@@ -23,7 +23,7 @@ public class FaveLink extends AbsLink {
         this(null);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "FaveLink{" +

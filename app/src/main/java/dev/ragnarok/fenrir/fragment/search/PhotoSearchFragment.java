@@ -3,11 +3,10 @@ package dev.ragnarok.fenrir.fragment.search;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +58,7 @@ public class PhotoSearchFragment extends AbsSearchFragment<PhotoSearchPresenter,
         return new GridLayoutManager(requireActivity(), columnCount);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<PhotoSearchPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new PhotoSearchPresenter(

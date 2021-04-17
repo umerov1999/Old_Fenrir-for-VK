@@ -15,8 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -178,7 +176,7 @@ public class FavePostsFragment extends PlaceSupportMvpFragment<FavePostsPresente
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<FavePostsPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new FavePostsPresenter(getArguments().getInt(Extra.ACCOUNT_ID), saveInstanceState);

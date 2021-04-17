@@ -1,6 +1,6 @@
 package dev.ragnarok.fenrir.api.impl;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.IOException;
 import java.util.Map;
@@ -51,12 +51,12 @@ public class OtherApi implements IOtherApi {
 
                             call.enqueue(new Callback() {
                                 @Override
-                                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
                                     emitter.onError(e);
                                 }
 
                                 @Override
-                                public void onResponse(@NotNull Call call, @NotNull Response response) {
+                                public void onResponse(@NonNull Call call, @NonNull Response response) {
                                     emitter.onSuccess(response);
                                 }
                             });

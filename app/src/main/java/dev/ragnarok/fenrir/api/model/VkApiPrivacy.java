@@ -1,6 +1,6 @@
 package dev.ragnarok.fenrir.api.model;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
@@ -39,7 +39,7 @@ public class VkApiPrivacy {
         return VKStringUtils.join(", ", option);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return buildJsonArray();
@@ -92,7 +92,7 @@ public class VkApiPrivacy {
             return new Entry(TYPE_FRIENDS_LIST, id, false);
         }
 
-        @NotNull
+        @NonNull
         @Override
         public String toString() {
             switch (type) {

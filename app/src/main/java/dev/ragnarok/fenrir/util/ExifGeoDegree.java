@@ -1,8 +1,7 @@
 package dev.ragnarok.fenrir.util;
 
+import androidx.annotation.NonNull;
 import androidx.exifinterface.media.ExifInterface;
-
-import org.jetbrains.annotations.NotNull;
 
 public class ExifGeoDegree {
 
@@ -61,7 +60,7 @@ public class ExifGeoDegree {
         return valid;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return (Latitude + ", " + Longitude);

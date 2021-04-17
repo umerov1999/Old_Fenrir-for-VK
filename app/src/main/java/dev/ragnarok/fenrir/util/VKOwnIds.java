@@ -4,8 +4,6 @@ import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -302,7 +300,7 @@ public class VKOwnIds {
         return constainsGids() || constainsUids();
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "uids: " + uids + ", gids: " + gids;

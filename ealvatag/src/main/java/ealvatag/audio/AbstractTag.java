@@ -39,10 +39,10 @@ import static ealvatag.utils.Check.CANNOT_BE_NULL_OR_EMPTY;
 import static ealvatag.utils.Check.checkArgNotNull;
 import static ealvatag.utils.Check.checkArgNotNullOrEmpty;
 
+import androidx.annotation.NonNull;
+
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -398,7 +398,7 @@ public abstract class AbstractTag implements TagFieldContainer {
         }
     }
 
-    @NotNull
+    @NonNull
     public String toString() {
         StringBuilder out = new StringBuilder();
         out.append("Tag content:\n");

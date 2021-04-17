@@ -8,8 +8,6 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
 import dev.ragnarok.fenrir.Extra;
@@ -73,7 +71,7 @@ public class MessagesSearchFragment extends AbsSearchFragment<MessagesSearchPres
     }
 
     @Override
-    public void onBotKeyboardClick(@NonNull @NotNull Keyboard.Button button) {
+    public void onBotKeyboardClick(@NonNull Keyboard.Button button) {
         // is not supported
     }
 
@@ -92,7 +90,7 @@ public class MessagesSearchFragment extends AbsSearchFragment<MessagesSearchPres
 
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<MessagesSearchPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {

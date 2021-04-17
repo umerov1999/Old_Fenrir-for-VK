@@ -17,12 +17,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.squareup.picasso.Transformation;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -212,13 +211,13 @@ public class CommentsAdapter extends RecyclerBindableAdapter<Comment, RecyclerVi
     }
 
     @Override
-    public void onAttachedToRecyclerView(@NotNull RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         this.recyclerView = recyclerView;
     }
 
     @Override
-    public void onDetachedFromRecyclerView(@NotNull RecyclerView recyclerView) {
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         this.recyclerView = null;
     }

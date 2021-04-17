@@ -1,6 +1,6 @@
 package ealvatag.tag.id3.framebody;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 /**
  * Represents a frameBody for a frame identifier that is not defined for the tag version but was valid for a for an
@@ -81,7 +81,7 @@ public class FrameBodyDeprecated extends AbstractID3v2FrameBody implements ID3v2
      *
      * @return a string representation of this frame
      */
-    @NotNull
+    @NonNull
     public String toString() {
         return getIdentifier();
     }

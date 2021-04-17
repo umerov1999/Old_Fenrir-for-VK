@@ -1,8 +1,8 @@
 package ealvatag.audio.mp3;
 
-import com.google.common.base.MoreObjects;
+import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
+import com.google.common.base.MoreObjects;
 
 import java.io.EOFException;
 import java.util.Arrays;
@@ -133,7 +133,7 @@ public class VbriFrame {
     }
 
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)

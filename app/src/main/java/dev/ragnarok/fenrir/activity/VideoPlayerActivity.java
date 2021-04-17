@@ -28,8 +28,6 @@ import androidx.appcompat.widget.Toolbar;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 
-import org.jetbrains.annotations.NotNull;
-
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.R;
@@ -445,7 +443,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
     }
 
     @Override
-    public void onConfigurationChanged(@NotNull Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {

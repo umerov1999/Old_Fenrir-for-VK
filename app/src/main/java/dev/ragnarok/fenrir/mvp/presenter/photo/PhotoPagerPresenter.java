@@ -24,8 +24,6 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -594,7 +592,7 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
         }
 
         @Override
-        public void onBindViewHolder(@NotNull ButtonHolder holder, int position) {
+        public void onBindViewHolder(@NonNull ButtonHolder holder, int position) {
             FunctionSource source = items.get(position);
             holder.button.setText(source.getTitle(context));
             holder.button.setIconResource(source.getIcon());

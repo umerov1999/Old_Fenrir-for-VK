@@ -25,8 +25,6 @@ import androidx.work.WorkManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -66,13 +64,13 @@ public class AudiosByArtistFragment extends BaseMvpFragment<AudiosByArtistPresen
     private AudioRecyclerAdapter mAudioRecyclerAdapter;
     private final ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT) {
         @Override
-        public boolean onMove(@NotNull RecyclerView recyclerView,
-                              @NotNull RecyclerView.ViewHolder viewHolder, @NotNull RecyclerView.ViewHolder target) {
+        public boolean onMove(@NonNull RecyclerView recyclerView,
+                              @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return false;
         }
 
         @Override
-        public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
             viewHolder.itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             mAudioRecyclerAdapter.notifyItemChanged(viewHolder.getBindingAdapterPosition());
             getPresenter().playAudio(requireActivity(), mAudioRecyclerAdapter.getItemRawPosition(viewHolder.getBindingAdapterPosition()));
@@ -249,7 +247,7 @@ public class AudiosByArtistFragment extends BaseMvpFragment<AudiosByArtistPresen
                 .apply(requireActivity());
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<AudiosByArtistPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new AudiosByArtistPresenter(

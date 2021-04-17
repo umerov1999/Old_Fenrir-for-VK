@@ -1,6 +1,6 @@
 package dev.ragnarok.fenrir.link.internal;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class TopicLink extends AbsInternalLink {
 
@@ -8,7 +8,7 @@ public class TopicLink extends AbsInternalLink {
     public int topicOwnerId;
     public int replyToCommentId;
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "TopicLink{" +

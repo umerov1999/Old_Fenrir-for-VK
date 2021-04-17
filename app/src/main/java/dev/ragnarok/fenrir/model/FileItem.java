@@ -3,7 +3,7 @@ package dev.ragnarok.fenrir.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class FileItem implements Parcelable {
 
@@ -46,7 +46,7 @@ public class FileItem implements Parcelable {
         canRead = in.readByte() != 0;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return file;

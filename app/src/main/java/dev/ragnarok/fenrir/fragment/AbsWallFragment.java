@@ -31,8 +31,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -87,7 +85,7 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
         int scrollMinOffset;
 
         @Override
-        public void onScrolled(@NotNull RecyclerView view, int dx, int dy) {
+        public void onScrolled(@NonNull RecyclerView view, int dx, int dy) {
             if (scrollMinOffset == 0) {
                 // one-time-init
                 scrollMinOffset = (int) Utils.dpToPx(2, view.getContext());
@@ -369,7 +367,7 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
     }
 
     @Override
-    public void onPrepareOptionsMenu(@NotNull Menu menu) {
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
         OptionView view = new OptionView();

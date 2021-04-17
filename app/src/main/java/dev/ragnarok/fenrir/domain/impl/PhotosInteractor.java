@@ -220,12 +220,6 @@ public class PhotosInteractor implements IPhotosInteractor {
                     List<PhotoAlbumEntity> dbos = new ArrayList<>(dtos.size());
                     List<PhotoAlbum> albums = new ArrayList<>(dbos.size());
 
-                    VKApiPhotoAlbum Allph = new VKApiPhotoAlbum();
-                    Allph.title = "Все фото";
-                    Allph.id = -9001;
-                    Allph.owner_id = ownerId;
-                    Allph.size = -1;
-
                     VKApiPhotoAlbum usersPh = new VKApiPhotoAlbum();
                     usersPh.title = "Фото с пользователем";
                     usersPh.id = -9000;
@@ -242,6 +236,12 @@ public class PhotosInteractor implements IPhotosInteractor {
                     }
 
                     if (offset == 0) {
+                        VKApiPhotoAlbum Allph = new VKApiPhotoAlbum();
+                        Allph.title = "Все фото";
+                        Allph.id = -9001;
+                        Allph.owner_id = ownerId;
+                        Allph.size = -1;
+
                         dbos.add(Dto2Entity.buildPhotoAlbumDbo(Allph));
                         albums.add(Dto2Model.transformPhotoAlbum(Allph));
 

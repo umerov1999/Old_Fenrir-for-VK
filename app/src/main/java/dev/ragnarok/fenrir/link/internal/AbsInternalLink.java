@@ -1,6 +1,6 @@
 package dev.ragnarok.fenrir.link.internal;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class AbsInternalLink {
 
@@ -9,7 +9,7 @@ public class AbsInternalLink {
 
     public String targetLine;
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "AbsInternalLink{" +

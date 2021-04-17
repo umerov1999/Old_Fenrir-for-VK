@@ -11,8 +11,6 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -280,7 +278,7 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
     }
 
     @Override
-    public void onMessageClick(@NotNull Message message) {
+    public void onMessageClick(@NonNull Message message) {
         readUnreadMessagesUpIfExists(message);
     }
 

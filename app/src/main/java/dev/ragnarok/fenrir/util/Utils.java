@@ -57,8 +57,6 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.stream.JsonReader;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -85,6 +83,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import dev.ragnarok.fenrir.Account_Types;
+import dev.ragnarok.fenrir.BuildConfig;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.R;
@@ -680,8 +679,8 @@ public class Utils {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
 
-    public static boolean hasR() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
+    public static boolean hasScopedStorage() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && BuildConfig.MANAGE_SCOPED_STORAGE;
     }
 
     public static boolean hasNougat() {
@@ -1551,12 +1550,12 @@ public class Utils {
 
         builder.build().newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(@NotNull Call th, @NotNull IOException e) {
+            public void onFailure(@NonNull Call th, @NonNull IOException e) {
                 e.printStackTrace();
             }
 
             @Override
-            public void onResponse(@NotNull Call th, @NotNull Response response) throws IOException {
+            public void onResponse(@NonNull Call th, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String resp = response.body().string();
                     String result = context.getString(R.string.error);

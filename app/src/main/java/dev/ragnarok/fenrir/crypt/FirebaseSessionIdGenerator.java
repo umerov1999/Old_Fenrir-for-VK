@@ -1,13 +1,13 @@
 package dev.ragnarok.fenrir.crypt;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
-
-import org.jetbrains.annotations.NotNull;
 
 import dev.ragnarok.fenrir.BuildConfig;
 import dev.ragnarok.fenrir.util.Objects;
@@ -26,9 +26,9 @@ public class FirebaseSessionIdGenerator implements ISessionIdGenerator {
 
             long nextValue;
 
-            @NotNull
+            @NonNull
             @Override
-            public Transaction.Result doTransaction(@NotNull MutableData currentData) {
+            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
                 if (currentData.getValue() == null) {
                     nextValue = 1;
                 } else {

@@ -3,7 +3,7 @@ package dev.ragnarok.fenrir.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class VideoSize implements Parcelable {
 
@@ -60,7 +60,7 @@ public class VideoSize implements Parcelable {
         parcel.writeInt(height);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "[" + width + "*" + height + "]";

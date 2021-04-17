@@ -20,10 +20,10 @@ import static ealvatag.utils.Check.CANNOT_BE_NULL;
 import static ealvatag.utils.Check.checkArgNotNull;
 import static ealvatag.utils.Check.checkVarArg0NotNull;
 
+import androidx.annotation.NonNull;
+
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.Charset;
 import java.util.Collections;
@@ -226,7 +226,7 @@ public abstract class GenericTag extends AbstractTag {
             return "".equals(content);
         }
 
-        @NotNull
+        @NonNull
         @Override
         public String toString() {
             return getContent();

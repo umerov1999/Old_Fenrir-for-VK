@@ -4,7 +4,7 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.util.DisplayMetrics;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.util.Locale;
 
@@ -57,7 +57,7 @@ public class Constants {
         return metrics.heightPixels + "x" + metrics.widthPixels;
     }
 
-    @NotNull
+    @NonNull
     private static String getTypedUserAgent(@Account_Types int type) {
         if (type == Account_Types.VK_ANDROID_HIDDEN || type == Account_Types.KATE_HIDDEN) {
             String device = Settings.get().accounts().getDevice(Settings.get().accounts().getCurrent());
@@ -79,7 +79,7 @@ public class Constants {
         return Utils.BY_DEFAULT_ACCOUNT_TYPE(VK_ANDROID_USER_AGENT, KATE_USER_AGENT);
     }
 
-    @NotNull
+    @NonNull
     public static String USER_AGENT(@Account_Types int type) {
         if (type != Account_Types.BY_TYPE) {
             return getTypedUserAgent(type);

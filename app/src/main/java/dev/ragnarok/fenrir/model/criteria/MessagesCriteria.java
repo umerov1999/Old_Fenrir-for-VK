@@ -1,6 +1,6 @@
 package dev.ragnarok.fenrir.model.criteria;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.util.Objects;
 
@@ -23,7 +23,7 @@ public class MessagesCriteria extends Criteria {
         return accountId;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "MessagesCriteria{" +

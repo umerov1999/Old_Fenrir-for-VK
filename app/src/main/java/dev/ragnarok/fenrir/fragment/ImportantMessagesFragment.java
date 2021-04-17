@@ -17,8 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,13 +49,13 @@ public class ImportantMessagesFragment extends PlaceSupportMvpFragment<Important
 
     private final ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         @Override
-        public boolean onMove(@NotNull RecyclerView recyclerView,
-                              @NotNull RecyclerView.ViewHolder viewHolder, @NotNull RecyclerView.ViewHolder target) {
+        public boolean onMove(@NonNull RecyclerView recyclerView,
+                              @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return false;
         }
 
         @Override
-        public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
             viewHolder.itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             getPresenter().fireRemoveImportant(viewHolder.getBindingAdapterPosition());
         }
@@ -142,7 +140,7 @@ public class ImportantMessagesFragment extends PlaceSupportMvpFragment<Important
     }
 
     @Override
-    public void onBotKeyboardClick(@NonNull @NotNull Keyboard.Button button) {
+    public void onBotKeyboardClick(@NonNull Keyboard.Button button) {
     }
 
     @Override
@@ -233,7 +231,7 @@ public class ImportantMessagesFragment extends PlaceSupportMvpFragment<Important
         // not supported
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<ImportantMessagesPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {

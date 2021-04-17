@@ -15,14 +15,13 @@
  */
 package dev.ragnarok.fenrir.media.exo;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.exoplayer2.upstream.HttpDataSource.BaseFactory;
 import com.google.android.exoplayer2.upstream.HttpDataSource.Factory;
 import com.google.android.exoplayer2.upstream.TransferListener;
-
-import org.jetbrains.annotations.NotNull;
 
 import okhttp3.CacheControl;
 import okhttp3.Call;
@@ -71,7 +70,7 @@ public final class OkHttpDataSourceFactory extends BaseFactory {
 
     @Override
     protected OkHttpDataSource createDataSourceInternal(
-            @NotNull HttpDataSource.RequestProperties defaultRequestProperties) {
+            @NonNull HttpDataSource.RequestProperties defaultRequestProperties) {
         OkHttpDataSource dataSource =
                 new OkHttpDataSource(
                         callFactory,

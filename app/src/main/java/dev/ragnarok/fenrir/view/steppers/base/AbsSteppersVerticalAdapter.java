@@ -9,8 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
-
 import dev.ragnarok.fenrir.adapter.holder.SharedHolders;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.util.Objects;
@@ -28,9 +26,9 @@ public abstract class AbsSteppersVerticalAdapter<H extends AbsStepsHost<?>> exte
         mActionListener = actionListener;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public AbsStepHolder<H> onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public AbsStepHolder<H> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return createHolderForStep(parent, mHost, viewType);
     }
 
@@ -42,7 +40,7 @@ public abstract class AbsSteppersVerticalAdapter<H extends AbsStepsHost<?>> exte
     public abstract AbsStepHolder<H> createHolderForStep(ViewGroup parent, H host, int step);
 
     @Override
-    public void onBindViewHolder(@NotNull AbsStepHolder<H> holder, int position) {
+    public void onBindViewHolder(@NonNull AbsStepHolder<H> holder, int position) {
         mSharedHolders.put(position, holder);
 
         holder.counterText.setText(String.valueOf(position + 1));

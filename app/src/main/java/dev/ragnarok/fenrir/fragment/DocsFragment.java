@@ -25,8 +25,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -344,7 +342,7 @@ public class DocsFragment extends BaseMvpFragment<DocsListPresenter, IDocListVie
         mImagesOnly = imagesOnly;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<DocsListPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new DocsListPresenter(

@@ -1,6 +1,6 @@
 package dev.ragnarok.fenrir.link.types;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class DialogLink extends AbsLink {
 
@@ -11,7 +11,7 @@ public class DialogLink extends AbsLink {
         this.peerId = peerId;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "DialogLink{" +

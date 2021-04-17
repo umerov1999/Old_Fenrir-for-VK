@@ -3,7 +3,7 @@ package dev.ragnarok.fenrir.fragment.search.options;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.util.Objects;
 
@@ -71,7 +71,7 @@ public class DatabaseOption extends BaseOption {
                 && (Objects.equals(value, that.value));
     }
 
-    @NotNull
+    @NonNull
     @Override
     public DatabaseOption clone() throws CloneNotSupportedException {
         DatabaseOption clone = (DatabaseOption) super.clone();
@@ -143,7 +143,7 @@ public class DatabaseOption extends BaseOption {
             dest.writeString(title);
         }
 
-        @NotNull
+        @NonNull
         @Override
         protected Entry clone() throws CloneNotSupportedException {
             return (Entry) super.clone();

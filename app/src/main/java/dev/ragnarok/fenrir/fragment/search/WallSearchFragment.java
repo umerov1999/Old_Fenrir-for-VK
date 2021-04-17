@@ -3,12 +3,11 @@ package dev.ragnarok.fenrir.fragment.search;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class WallSearchFragment extends AbsSearchFragment<WallSearchPresenter, I
         return fragment;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<WallSearchPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {

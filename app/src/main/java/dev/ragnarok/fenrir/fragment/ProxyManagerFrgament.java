@@ -16,8 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -64,7 +62,7 @@ public class ProxyManagerFrgament extends BaseMvpFragment<ProxyManagerPresenter,
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.proxies, menu);
     }
@@ -79,7 +77,7 @@ public class ProxyManagerFrgament extends BaseMvpFragment<ProxyManagerPresenter,
         return super.onOptionsItemSelected(item);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<ProxyManagerPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new ProxyManagerPresenter(saveInstanceState);

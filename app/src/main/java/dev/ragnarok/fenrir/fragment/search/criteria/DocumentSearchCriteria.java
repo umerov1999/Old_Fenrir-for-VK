@@ -2,7 +2,7 @@ package dev.ragnarok.fenrir.fragment.search.criteria;
 
 import android.os.Parcel;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public final class DocumentSearchCriteria extends BaseSearchCriteria {
 
@@ -31,7 +31,7 @@ public final class DocumentSearchCriteria extends BaseSearchCriteria {
         return 0;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public DocumentSearchCriteria clone() throws CloneNotSupportedException {
         return (DocumentSearchCriteria) super.clone();

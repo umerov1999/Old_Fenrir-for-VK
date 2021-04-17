@@ -16,8 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -88,7 +86,7 @@ public class NewsfeedMentionsFragment extends PlaceSupportMvpFragment<NewsfeedMe
         return root;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<NewsfeedMentionsPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {

@@ -16,8 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -53,7 +51,7 @@ public class ChatUsersDomainFragment extends BaseMvpBottomSheetDialogFragment<Ch
     }
 
     @Override
-    @NotNull
+    @NonNull
     public BottomSheetDialog onCreateDialog(Bundle savedInstanceState) {
         BottomSheetDialog dialog = new BottomSheetDialog(requireActivity(), getTheme());
         BottomSheetBehavior<FrameLayout> behavior = dialog.getBehavior();
@@ -133,7 +131,7 @@ public class ChatUsersDomainFragment extends BaseMvpBottomSheetDialogFragment<Ch
 
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<ChatUsersDomainPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new ChatUsersDomainPresenter(

@@ -14,8 +14,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 
 import dev.ragnarok.fenrir.Extra;
@@ -186,7 +184,7 @@ public class PrivacyViewFragment extends AccountDependencyDialogFragment impleme
     }
 
     @Override
-    public void onSaveInstanceState(@NotNull Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(SAVE_PRIVACY, mPrivacy);
     }

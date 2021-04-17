@@ -1,6 +1,6 @@
 package dev.ragnarok.fenrir.push;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -80,7 +80,7 @@ public class VkPlace {
             this.photoId = photoId;
         }
 
-        @NotNull
+        @NonNull
         @Override
         public String toString() {
             return "Photo{" +
@@ -109,7 +109,7 @@ public class VkPlace {
             this.photoId = photoId;
         }
 
-        @NotNull
+        @NonNull
         @Override
         public String toString() {
             return "PhotoComment{" +
@@ -138,7 +138,7 @@ public class VkPlace {
             this.postId = postId;
         }
 
-        @NotNull
+        @NonNull
         @Override
         public String toString() {
             return "WallComment{" +
@@ -167,7 +167,7 @@ public class VkPlace {
             this.postId = postId;
         }
 
-        @NotNull
+        @NonNull
         @Override
         public String toString() {
             return "WallPost{" +
@@ -196,7 +196,7 @@ public class VkPlace {
             this.videoId = videoId;
         }
 
-        @NotNull
+        @NonNull
         @Override
         public String toString() {
             return "Video{" +
@@ -225,7 +225,7 @@ public class VkPlace {
             this.videoId = videoId;
         }
 
-        @NotNull
+        @NonNull
         @Override
         public String toString() {
             return "VideoComment{" +

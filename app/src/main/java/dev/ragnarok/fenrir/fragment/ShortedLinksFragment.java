@@ -25,8 +25,6 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -211,7 +209,7 @@ public class ShortedLinksFragment extends BaseMvpFragment<ShortedLinksPresenter,
                 .setBackgroundTint(color).setTextColor(text_color).setAnchorView(R.id.recycler_view).show();
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<ShortedLinksPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new ShortedLinksPresenter(

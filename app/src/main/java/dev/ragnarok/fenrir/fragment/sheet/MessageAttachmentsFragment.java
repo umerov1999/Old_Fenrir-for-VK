@@ -25,8 +25,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +69,9 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
     private final AppPerms.doRequestPermissions requestCameraPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
             () -> getPresenter().fireCameraPermissionResolved());
+    private final AppPerms.doRequestPermissions requestCameraPermissionScoped = AppPerms.requestPermissions(this,
+            new String[]{Manifest.permission.CAMERA},
+            () -> getPresenter().fireCameraPermissionResolved());
     private final ActivityResultLauncher<Uri> openCameraRequest = registerForActivityResult(new ActivityResultContracts.TakePicture(), result -> {
         if (result) {
             getPresenter().firePhotoMaked();
@@ -112,7 +113,7 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
         return fragment;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         if (Utils.isLandscape(requireActivity())) {
@@ -128,7 +129,7 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
 
     @SuppressLint("RestrictedApi")
     @Override
-    public void setupDialog(@NotNull Dialog dialog, int style) {
+    public void setupDialog(@NonNull Dialog dialog, int style) {
         super.setupDialog(dialog, style);
 
         View view = View.inflate(requireActivity(), R.layout.bottom_sheet_attachments, null);
@@ -155,7 +156,7 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
         fireViewCreated();
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<MessageAttachmentsPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {
@@ -258,7 +259,10 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
 
     @Override
     public void requestCameraPermission() {
-        requestCameraPermission.launch();
+        if (Utils.hasScopedStorage())
+            requestCameraPermissionScoped.launch();
+        else
+            requestCameraPermission.launch();
     }
 
     @Override

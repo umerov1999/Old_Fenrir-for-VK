@@ -2,7 +2,11 @@ package dev.ragnarok.fenrir.util;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.Settings;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -16,6 +20,18 @@ import dev.ragnarok.fenrir.R;
 public class AppPerms {
     public static boolean hasReadWriteStoragePermission(@NonNull Context context) {
         if (!Utils.hasMarshmallow()) return true;
+        if (Utils.hasScopedStorage()) {
+            if (!Environment.isExternalStorageManager()) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                Uri uri = Uri.fromParts("package", context.getPackageName(), null);
+                intent.setData(uri);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+                android.os.Process.killProcess(android.os.Process.myPid());
+                return false;
+            }
+            return true;
+        }
         int hasWritePermission = PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int hasReadPermission = PermissionChecker.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE);
         return hasWritePermission == PackageManager.PERMISSION_GRANTED && hasReadPermission == PackageManager.PERMISSION_GRANTED;
@@ -23,12 +39,27 @@ public class AppPerms {
 
     public static boolean hasReadStoragePermission(@NonNull Context context) {
         if (!Utils.hasMarshmallow()) return true;
+        if (Utils.hasScopedStorage()) {
+            if (!Environment.isExternalStorageManager()) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                Uri uri = Uri.fromParts("package", context.getPackageName(), null);
+                intent.setData(uri);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+                android.os.Process.killProcess(android.os.Process.myPid());
+                return false;
+            }
+            return true;
+        }
         int hasWritePermission = PermissionChecker.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE);
         return hasWritePermission == PackageManager.PERMISSION_GRANTED;
     }
 
     public static boolean hasReadStoragePermissionSimple(@NonNull Context context) {
         if (!Utils.hasMarshmallow()) return true;
+        if (Utils.hasScopedStorage()) {
+            return Environment.isExternalStorageManager();
+        }
         int hasWritePermission = PermissionChecker.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE);
         return hasWritePermission == PackageManager.PERMISSION_GRANTED;
     }

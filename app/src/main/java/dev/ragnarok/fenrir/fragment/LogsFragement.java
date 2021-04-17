@@ -19,8 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -157,7 +155,7 @@ public class LogsFragement extends BaseMvpFragment<LogsPresenter, ILogsView>
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<LogsPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new LogsPresenter(saveInstanceState);
@@ -185,7 +183,7 @@ public class LogsFragement extends BaseMvpFragment<LogsPresenter, ILogsView>
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.logs_menu, menu);
     }

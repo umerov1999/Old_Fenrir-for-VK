@@ -19,8 +19,6 @@ import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.jetbrains.annotations.NotNull;
-
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
@@ -128,7 +126,7 @@ public class DirectAuthDialog extends BaseMvpDialogFragment<DirectAuthPresenter,
         return dialog;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<DirectAuthPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new DirectAuthPresenter(saveInstanceState);

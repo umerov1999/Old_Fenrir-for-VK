@@ -2,7 +2,7 @@ package dev.ragnarok.fenrir.fragment.search.criteria;
 
 import android.os.Parcel;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
@@ -47,7 +47,7 @@ public class AudioSearchCriteria extends BaseSearchCriteria {
         super(in);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public AudioSearchCriteria clone() throws CloneNotSupportedException {
         return (AudioSearchCriteria) super.clone();

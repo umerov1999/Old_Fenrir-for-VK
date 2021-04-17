@@ -8,9 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -28,9 +27,9 @@ public class CitiesAdapter extends RecyclerView.Adapter<CitiesAdapter.Holder> {
         this.mData = mData;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public Holder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new Holder(LayoutInflater.from(mContext).inflate(R.layout.item_city, parent, false));
     }
 

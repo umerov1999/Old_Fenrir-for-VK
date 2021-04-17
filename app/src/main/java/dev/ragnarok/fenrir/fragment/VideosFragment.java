@@ -30,8 +30,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -125,7 +123,7 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
         return fragment;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<VideosListPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {
@@ -403,7 +401,7 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
     }
 
     @Override
-    public void doVideoLongClick(int accountId, int ownerId, boolean isMy, int position, @NotNull Video video) {
+    public void doVideoLongClick(int accountId, int ownerId, boolean isMy, int position, @NonNull Video video) {
         ModalBottomSheetDialogFragment.Builder menus = new ModalBottomSheetDialogFragment.Builder();
         if (!isMy) {
             if (video.isCanAdd()) {

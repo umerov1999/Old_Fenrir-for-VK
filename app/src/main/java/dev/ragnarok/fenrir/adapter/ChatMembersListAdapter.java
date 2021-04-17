@@ -11,11 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Transformation;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -44,7 +43,7 @@ public class ChatMembersListAdapter extends RecyclerView.Adapter<ChatMembersList
         paddingForFirstLast = Utils.is600dp(context) ? (int) Utils.dpToPx(16, context) : 0;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_chat_user_list, viewGroup, false));

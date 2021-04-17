@@ -5,8 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 
 import dev.ragnarok.fenrir.domain.ILikesInteractor;
@@ -95,11 +93,11 @@ public abstract class PlaceSupportPresenter<V extends IMvpView & IAttachmentsPla
         getView().openVideo(getAccountId(), apiVideo);
     }
 
-    public void fireAudioPlaylistClick(@NotNull AudioPlaylist playlist) {
+    public void fireAudioPlaylistClick(@NonNull AudioPlaylist playlist) {
         getView().openAudioPlaylist(getAccountId(), playlist);
     }
 
-    public void fireWallReplyOpen(@NotNull WallReply reply) {
+    public void fireWallReplyOpen(@NonNull WallReply reply) {
         getView().goWallReplyOpen(getAccountId(), reply);
     }
 
@@ -119,7 +117,7 @@ public abstract class PlaceSupportPresenter<V extends IMvpView & IAttachmentsPla
         getView().openComments(getAccountId(), Commented.from(post), null);
     }
 
-    public void firePhotoAlbumClick(@NotNull PhotoAlbum album) {
+    public void firePhotoAlbumClick(@NonNull PhotoAlbum album) {
         getView().openPhotoAlbum(getAccountId(), album);
     }
 
@@ -135,7 +133,7 @@ public abstract class PlaceSupportPresenter<V extends IMvpView & IAttachmentsPla
         getView().toArtistOpen(getAccountId(), artist);
     }
 
-    public void fireFaveArticleClick(@NotNull Article article) {
+    public void fireFaveArticleClick(@NonNull Article article) {
         if (!article.getIsFavorite()) {
             appendDisposable(InteractorFactory.createFaveInteractor().addArticle(getAccountId(), article.getURL())
                     .compose(RxUtils.applyCompletableIOToMainSchedulers())

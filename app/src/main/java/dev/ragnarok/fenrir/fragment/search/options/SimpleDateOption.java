@@ -2,7 +2,7 @@ package dev.ragnarok.fenrir.fragment.search.options;
 
 import android.os.Parcel;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class SimpleDateOption extends BaseOption {
 
@@ -51,7 +51,7 @@ public class SimpleDateOption extends BaseOption {
         return result;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public SimpleDateOption clone() throws CloneNotSupportedException {
         return (SimpleDateOption) super.clone();

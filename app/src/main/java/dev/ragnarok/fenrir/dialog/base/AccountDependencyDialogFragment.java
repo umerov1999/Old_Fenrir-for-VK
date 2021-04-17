@@ -5,8 +5,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -202,7 +200,7 @@ public abstract class AccountDependencyDialogFragment extends BaseDialogFragment
     }
 
     @Override
-    public void onPhotoAlbumOpen(@NotNull PhotoAlbum album) {
+    public void onPhotoAlbumOpen(@NonNull PhotoAlbum album) {
         PlaceFactory.getVKPhotosAlbumPlace(accountId, album.getOwnerId(), album.getId(), null).tryOpenWith(requireActivity());
     }
 

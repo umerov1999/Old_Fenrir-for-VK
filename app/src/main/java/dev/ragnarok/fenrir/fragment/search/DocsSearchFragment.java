@@ -8,8 +8,6 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
 import dev.ragnarok.fenrir.Extra;
@@ -64,7 +62,7 @@ public class DocsSearchFragment extends AbsSearchFragment<DocsSearchPresenter, I
         return false;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<DocsSearchPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new DocsSearchPresenter(

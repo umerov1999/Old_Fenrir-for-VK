@@ -9,8 +9,6 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +58,7 @@ public class PostCreateFragment extends AbsPostEditFragment<PostCreatePresenter,
         setHasOptionsMenu(true);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<PostCreatePresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {
@@ -110,7 +108,7 @@ public class PostCreateFragment extends AbsPostEditFragment<PostCreatePresenter,
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_attchments, menu);
     }

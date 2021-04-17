@@ -1,6 +1,6 @@
 package dev.ragnarok.fenrir.api.util;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +33,7 @@ public class ProgressRequestBody extends RequestBody {
     }
 
     @Override
-    public void writeTo(@NotNull BufferedSink sink) throws IOException {
+    public void writeTo(@NonNull BufferedSink sink) throws IOException {
         long fileLength = stream.available();
 
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];

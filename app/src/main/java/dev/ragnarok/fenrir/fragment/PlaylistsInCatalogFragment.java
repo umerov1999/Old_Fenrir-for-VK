@@ -16,8 +16,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -122,7 +120,7 @@ public class PlaylistsInCatalogFragment extends BaseMvpFragment<PlaylistsInCatal
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<PlaylistsInCatalogPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new PlaylistsInCatalogPresenter(

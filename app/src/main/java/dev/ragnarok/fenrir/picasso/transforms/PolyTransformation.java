@@ -2,15 +2,15 @@ package dev.ragnarok.fenrir.picasso.transforms;
 
 import android.graphics.Bitmap;
 
-import com.squareup.picasso.Transformation;
+import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
+import com.squareup.picasso.Transformation;
 
 public class PolyTransformation implements Transformation {
 
     private static final String TAG = PolyTransformation.class.getSimpleName();
 
-    @NotNull
+    @NonNull
     @Override
     public String key() {
         return TAG + "()";

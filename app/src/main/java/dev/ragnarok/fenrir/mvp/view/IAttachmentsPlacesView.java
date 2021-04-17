@@ -3,8 +3,6 @@ package dev.ragnarok.fenrir.mvp.view;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 
 import dev.ragnarok.fenrir.fragment.search.SearchContentType;
@@ -71,11 +69,11 @@ public interface IAttachmentsPlacesView {
 
     void repostPost(int accountId, @NonNull Post post);
 
-    void openStory(int accountId, @NotNull Story story);
+    void openStory(int accountId, @NonNull Story story);
 
-    void openAudioPlaylist(int accountId, @NotNull AudioPlaylist playlist);
+    void openAudioPlaylist(int accountId, @NonNull AudioPlaylist playlist);
 
-    void openPhotoAlbum(int accountId, @NotNull PhotoAlbum album);
+    void openPhotoAlbum(int accountId, @NonNull PhotoAlbum album);
 
     void toMarketAlbumOpen(int accountId, @NonNull MarketAlbum market_album);
 

@@ -3,7 +3,7 @@ package dev.ragnarok.fenrir.upload;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class UploadDestination implements Parcelable {
 
@@ -133,7 +133,7 @@ public class UploadDestination implements Parcelable {
         return this.id == id && this.ownerId == ownerId && method == type;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "UploadDestination{" +

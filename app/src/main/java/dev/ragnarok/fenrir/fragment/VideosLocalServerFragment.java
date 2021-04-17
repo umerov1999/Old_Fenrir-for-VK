@@ -14,8 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -84,7 +82,7 @@ public class VideosLocalServerFragment extends BaseMvpFragment<VideosLocalServer
         return root;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<VideosLocalServerPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new VideosLocalServerPresenter(

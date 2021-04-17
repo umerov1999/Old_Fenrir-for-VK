@@ -6,8 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 
-import org.jetbrains.annotations.NotNull;
-
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
@@ -57,7 +55,7 @@ public class LikesFragment extends AbsOwnersListFragment<LikesListPresenter, ISi
                 .apply(requireActivity());
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<LikesListPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new LikesListPresenter(

@@ -1,10 +1,10 @@
 package dev.ragnarok.fenrir.model.criteria;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class Criteria implements Cloneable {
 
-    @NotNull
+    @NonNull
     @Override
     public Criteria clone() throws CloneNotSupportedException {
         return (Criteria) super.clone();

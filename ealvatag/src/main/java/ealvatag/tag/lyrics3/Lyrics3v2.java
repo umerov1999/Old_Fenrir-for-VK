@@ -22,7 +22,7 @@
  */
 package ealvatag.tag.lyrics3;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -289,7 +289,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
     /**
      * @return
      */
-    @NotNull
+    @NonNull
     public String toString() {
         Iterator<Lyrics3v2Field> iterator = fieldMap.values().iterator();
         Lyrics3v2Field field;

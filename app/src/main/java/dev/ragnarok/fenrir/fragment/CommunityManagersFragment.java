@@ -17,8 +17,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -106,7 +104,7 @@ public class CommunityManagersFragment extends BaseMvpFragment<CommunityManagers
                 .show();
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<CommunityManagersPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new CommunityManagersPresenter(

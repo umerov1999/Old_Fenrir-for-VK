@@ -5,9 +5,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import org.jetbrains.annotations.NotNull;
 
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
@@ -41,7 +40,7 @@ public class CommentCreateFragment extends AbsAttachmentsEditFragment<CommentCre
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_attchments, menu);
     }
@@ -56,7 +55,7 @@ public class CommentCreateFragment extends AbsAttachmentsEditFragment<CommentCre
         return super.onOptionsItemSelected(item);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<CommentCreatePresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {

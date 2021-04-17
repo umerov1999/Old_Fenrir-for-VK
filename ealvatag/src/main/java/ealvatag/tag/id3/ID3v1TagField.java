@@ -1,6 +1,6 @@
 package ealvatag.tag.id3;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -178,7 +178,7 @@ public class ID3v1TagField implements TagTextField {
         return "".equals(content);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return getContent();

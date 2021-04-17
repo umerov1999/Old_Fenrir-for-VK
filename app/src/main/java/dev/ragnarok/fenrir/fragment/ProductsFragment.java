@@ -16,8 +16,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -130,11 +128,11 @@ public class ProductsFragment extends BaseMvpFragment<ProductsPresenter, IProduc
     }
 
     @Override
-    public void onOpenMarket(int accountId, @NonNull @NotNull Market market) {
+    public void onOpenMarket(int accountId, @NonNull Market market) {
         PlaceFactory.getMarketViewPlace(accountId, market).tryOpenWith(requireActivity());
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<ProductsPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new ProductsPresenter(getArguments().getInt(Extra.ACCOUNT_ID), getArguments().getInt(Extra.OWNER_ID), getArguments().getInt(Extra.ALBUM_ID), saveInstanceState);

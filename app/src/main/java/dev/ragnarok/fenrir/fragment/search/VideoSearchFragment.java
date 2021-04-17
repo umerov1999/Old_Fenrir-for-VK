@@ -3,11 +3,10 @@ package dev.ragnarok.fenrir.fragment.search;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -65,7 +64,7 @@ public class VideoSearchFragment extends AbsSearchFragment<VideosSearchPresenter
         return false;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<VideosSearchPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new VideosSearchPresenter(

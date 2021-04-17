@@ -21,11 +21,11 @@ package ealvatag.audio;
 import static ealvatag.utils.Check.checkArgNotNull;
 import static ealvatag.utils.Check.checkArgNotNullOrEmpty;
 
+import androidx.annotation.NonNull;
+
 import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.io.Files;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -254,7 +254,7 @@ public class AudioFileImpl implements AudioFile {
     }
 
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "AudioFileImpl{" + "file=" + file +

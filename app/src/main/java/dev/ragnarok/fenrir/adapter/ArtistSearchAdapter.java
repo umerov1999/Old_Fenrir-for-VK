@@ -7,9 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -28,15 +27,15 @@ public class ArtistSearchAdapter extends RecyclerView.Adapter<ArtistSearchAdapte
         this.context = context;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public Holder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new Holder(LayoutInflater.from(context).inflate(R.layout.item_artist_search, parent, false));
     }
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NotNull Holder holder, int position) {
+    public void onBindViewHolder(@NonNull Holder holder, int position) {
         VkApiArtist item = data.get(position);
         if (Utils.isEmpty(item.name))
             holder.tvTitle.setVisibility(View.GONE);

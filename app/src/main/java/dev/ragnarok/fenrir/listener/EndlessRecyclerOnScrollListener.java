@@ -1,11 +1,10 @@
 package dev.ragnarok.fenrir.listener;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
-import org.jetbrains.annotations.NotNull;
 
 import dev.ragnarok.fenrir.util.Objects;
 
@@ -27,7 +26,7 @@ public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScr
     }
 
     @Override
-    public void onScrolled(@NotNull RecyclerView recyclerView, int dx, int dy) {
+    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
 
         RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();

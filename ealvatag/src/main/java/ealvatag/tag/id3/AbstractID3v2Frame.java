@@ -18,9 +18,9 @@ package ealvatag.tag.id3;
 import static ealvatag.tag.id3.ID3v22Frames.FRAME_ID_V2_ATTACHED_PICTURE;
 import static ealvatag.tag.id3.ID3v24Frames.FRAME_ID_ATTACHED_PICTURE;
 
-import com.google.common.base.Strings;
+import androidx.annotation.Nullable;
 
-import org.jetbrains.annotations.Nullable;
+import com.google.common.base.Strings;
 
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;

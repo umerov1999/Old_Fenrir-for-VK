@@ -23,7 +23,7 @@
 
 package ealvatag.tag.lyrics3;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -160,7 +160,7 @@ public class Lyrics3v2Field extends AbstractTagFrame {
     /**
      * @return
      */
-    @NotNull
+    @NonNull
     public String toString() {
         if (frameBody == null) {
             return "";

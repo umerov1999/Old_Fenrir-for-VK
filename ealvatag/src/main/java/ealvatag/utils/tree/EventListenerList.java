@@ -6,7 +6,7 @@
  */
 package ealvatag.utils.tree;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -267,7 +267,7 @@ public class EventListenerList implements Serializable {
     /**
      * Returns a string representation of the EventListenerList.
      */
-    @NotNull
+    @NonNull
     public String toString() {
         Object[] lList = listenerList;
         StringBuilder s = new StringBuilder("EventListenerList: ");

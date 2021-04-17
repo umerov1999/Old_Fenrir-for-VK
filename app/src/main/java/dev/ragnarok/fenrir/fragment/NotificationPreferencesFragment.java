@@ -12,13 +12,12 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -67,7 +66,7 @@ public class NotificationPreferencesFragment extends PreferenceFragmentCompat {
     }
 
     @Override
-    public void onViewCreated(@NotNull View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ((AppCompatActivity) requireActivity()).setSupportActionBar(view.findViewById(R.id.toolbar));
     }

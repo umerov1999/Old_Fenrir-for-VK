@@ -11,8 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
 import dev.ragnarok.fenrir.Constants;
@@ -91,13 +89,13 @@ public class FaveVideosAdapter extends RecyclerView.Adapter<FaveVideosAdapter.Ho
     }
 
     @Override
-    public void onAttachedToRecyclerView(@NotNull RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         this.recyclerView = recyclerView;
     }
 
     @Override
-    public void onDetachedFromRecyclerView(@NotNull RecyclerView recyclerView) {
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         this.recyclerView = null;
     }

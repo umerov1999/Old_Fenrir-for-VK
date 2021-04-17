@@ -5,10 +5,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-
-import org.jetbrains.annotations.NotNull;
 
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
@@ -59,7 +58,7 @@ public class RepostFragment extends AbsAttachmentsEditFragment<RepostPresenter, 
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_attchments, menu);
     }
@@ -85,7 +84,7 @@ public class RepostFragment extends AbsAttachmentsEditFragment<RepostPresenter, 
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<RepostPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {

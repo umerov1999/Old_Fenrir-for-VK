@@ -6,9 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -27,14 +26,14 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.Holder
         this.mContext = mContext;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public Holder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new Holder(LayoutInflater.from(mContext).inflate(R.layout.emoji_section_item, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NotNull Holder holder, int position) {
+    public void onBindViewHolder(@NonNull Holder holder, int position) {
         AbsSection section = data.get(position);
         switch (section.type) {
             case AbsSection.TYPE_EMOJI:

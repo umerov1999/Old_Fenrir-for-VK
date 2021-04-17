@@ -9,9 +9,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -41,14 +40,14 @@ public class DocsUploadAdapter extends RecyclerView.Adapter<DocsUploadAdapter.Ho
         return idGenerator;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new Holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.doc_upload_entry, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NotNull Holder holder, int position) {
+    public void onBindViewHolder(@NonNull Holder holder, int position) {
         Upload upload = data.get(position);
         sharedHolders.put(position, holder);
 

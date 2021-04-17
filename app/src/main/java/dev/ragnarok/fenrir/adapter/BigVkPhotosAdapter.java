@@ -12,8 +12,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -76,9 +74,9 @@ public class BigVkPhotosAdapter extends DifferentDataAdapter {
         isShowBDate = show;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_TYPE_PHOTO:
                 return new PhotoViewHolder(LayoutInflater.from(mContext).inflate(R.layout.vk_photo_item, parent, false));
@@ -90,7 +88,7 @@ public class BigVkPhotosAdapter extends DifferentDataAdapter {
     }
 
     @Override
-    public void onBindViewHolder(@NotNull RecyclerView.ViewHolder holder, int adapterPosition) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int adapterPosition) {
         switch (getItemViewType(adapterPosition)) {
             case VIEW_TYPE_PHOTO:
                 bindPhotoViewHolder((PhotoViewHolder) holder, getItem(adapterPosition));

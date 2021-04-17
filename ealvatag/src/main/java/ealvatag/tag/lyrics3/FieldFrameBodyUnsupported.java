@@ -22,7 +22,7 @@
  */
 package ealvatag.tag.lyrics3;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -131,7 +131,7 @@ public class FieldFrameBodyUnsupported extends AbstractLyrics3v2FieldFrameBody {
     /**
      * @return
      */
-    @NotNull
+    @NonNull
     public String toString() {
         return getIdentifier() + " : " + (new String(value));
     }

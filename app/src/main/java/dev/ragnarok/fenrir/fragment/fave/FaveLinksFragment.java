@@ -14,8 +14,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -141,7 +139,7 @@ public class FaveLinksFragment extends BaseMvpFragment<FaveLinksPresenter, IFave
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<FaveLinksPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new FaveLinksPresenter(getArguments().getInt(Extra.ACCOUNT_ID), saveInstanceState);

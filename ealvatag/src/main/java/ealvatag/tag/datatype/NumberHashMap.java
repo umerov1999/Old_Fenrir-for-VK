@@ -20,7 +20,7 @@
  */
 package ealvatag.tag.datatype;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import ealvatag.logging.ErrorMessage;
 import ealvatag.tag.InvalidDataTypeException;
@@ -146,7 +146,7 @@ public class NumberHashMap extends NumberFixedLength {
         }
     }
 
-    @NotNull
+    @NonNull
     public String toString() {
         if (value == null) {
             return "";

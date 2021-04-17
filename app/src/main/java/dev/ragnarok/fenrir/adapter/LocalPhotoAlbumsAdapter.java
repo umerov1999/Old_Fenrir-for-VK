@@ -7,11 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.MemoryPolicy;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class LocalPhotoAlbumsAdapter extends RecyclerView.Adapter<LocalPhotoAlbu
         notifyDataSetChanged();
     }
 
-    @NotNull
+    @NonNull
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new Holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.local_album_item, parent, false));

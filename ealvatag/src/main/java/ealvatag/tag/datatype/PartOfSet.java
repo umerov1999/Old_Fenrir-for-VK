@@ -1,6 +1,6 @@
 package ealvatag.tag.datatype;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.EOFException;
 import java.nio.ByteBuffer;
@@ -164,7 +164,7 @@ public class PartOfSet extends AbstractString {
         return (PartOfSetValue) value;
     }
 
-    @NotNull
+    @NonNull
     public String toString() {
         return value == null ? "" : value.toString();
     }
@@ -373,7 +373,7 @@ public class PartOfSet extends AbstractString {
             return sb.toString();
         }
 
-        @NotNull
+        @NonNull
         public String toString() {
 
             //Don't Pad

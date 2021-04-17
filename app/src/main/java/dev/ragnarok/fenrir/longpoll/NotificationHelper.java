@@ -14,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.Person;
 import androidx.core.app.RemoteInput;
@@ -21,8 +22,6 @@ import androidx.core.content.FileProvider;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
-
-import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedInputStream;
 import java.io.File;

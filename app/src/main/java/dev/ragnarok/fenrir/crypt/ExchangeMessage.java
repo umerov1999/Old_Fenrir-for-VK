@@ -3,10 +3,10 @@ package dev.ragnarok.fenrir.crypt;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
-
-import org.jetbrains.annotations.NotNull;
 
 import dev.ragnarok.fenrir.util.ParcelUtils;
 
@@ -70,7 +70,7 @@ public class ExchangeMessage implements Parcelable {
         return errorCode != 0;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "RSA" + new Gson().toJson(this);

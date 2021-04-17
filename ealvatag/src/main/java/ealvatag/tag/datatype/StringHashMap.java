@@ -22,9 +22,9 @@ package ealvatag.tag.datatype;
 
 import static ealvatag.utils.StandardCharsets.ISO_8859_1;
 
-import com.google.common.base.Strings;
+import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
+import com.google.common.base.Strings;
 
 import java.nio.charset.Charset;
 
@@ -84,7 +84,7 @@ public class StringHashMap extends StringFixedLength {
                 super.equals(obj);
     }
 
-    @NotNull
+    @NonNull
     public String toString() {
         if (value != null) {
             return Strings.nullToEmpty(simpleStringStringMap.getValue(value.toString()));

@@ -2,7 +2,7 @@ package dev.ragnarok.fenrir.fragment.search.criteria;
 
 import android.os.Parcel;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
@@ -196,7 +196,7 @@ public final class PeopleSearchCriteria extends BaseSearchCriteria {
         return 0;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public PeopleSearchCriteria clone() throws CloneNotSupportedException {
         return (PeopleSearchCriteria) super.clone();

@@ -8,8 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 
 import dev.ragnarok.fenrir.Extra;
@@ -110,7 +108,7 @@ public class SelectProfilesActivity extends MainActivity implements SelectedProf
     }
 
     @Override
-    protected void onSaveInstanceState(@NotNull Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(SAVE_SELECTED_OWNERS, mSelectedOwners);
     }

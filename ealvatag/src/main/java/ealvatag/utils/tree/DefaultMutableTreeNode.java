@@ -8,7 +8,7 @@
 package ealvatag.utils.tree;
 // ISSUE: this class depends on nothing in AWT -- move to java.util?
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -1232,7 +1232,7 @@ public class DefaultMutableTreeNode implements Cloneable,
      *
      * @see #getUserObject
      */
-    @NotNull
+    @NonNull
     public String toString() {
         return userObject.toString();
     }
@@ -1244,7 +1244,7 @@ public class DefaultMutableTreeNode implements Cloneable,
      *
      * @return a copy of this node
      */
-    @NotNull
+    @NonNull
     public Object clone() {
         DefaultMutableTreeNode newNode;
 

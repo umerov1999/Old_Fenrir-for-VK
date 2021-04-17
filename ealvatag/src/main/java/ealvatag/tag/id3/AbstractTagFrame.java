@@ -21,9 +21,9 @@
  */
 package ealvatag.tag.id3;
 
-import com.google.common.base.Objects;
+import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
+import com.google.common.base.Objects;
 
 /**
  * A frame contains meta-information of a particular type. A frame contains a header and a body
@@ -117,7 +117,7 @@ public abstract class AbstractTagFrame extends AbstractTagItem {
 
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return getBody().toString();

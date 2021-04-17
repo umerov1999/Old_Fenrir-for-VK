@@ -24,9 +24,9 @@ import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 
-import com.squareup.picasso.Transformation;
+import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
+import com.squareup.picasso.Transformation;
 
 public class BlurTransformation implements Transformation {
 
@@ -55,7 +55,7 @@ public class BlurTransformation implements Transformation {
         return outputBitmap;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String key() {
         return TAG + "(radius=" + mRadius + ")";

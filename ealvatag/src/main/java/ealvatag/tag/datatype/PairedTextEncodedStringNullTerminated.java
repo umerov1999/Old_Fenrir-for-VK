@@ -1,6 +1,6 @@
 package ealvatag.tag.datatype;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
@@ -214,7 +214,7 @@ public class PairedTextEncodedStringNullTerminated extends AbstractDataType {
         return buffer.toByteArray();
     }
 
-    @NotNull
+    @NonNull
     public String toString() {
         return value.toString();
     }
@@ -267,7 +267,7 @@ public class PairedTextEncodedStringNullTerminated extends AbstractDataType {
          *
          * @return a string representation of the value
          */
-        @NotNull
+        @NonNull
         public String toString() {
             StringBuilder sb = new StringBuilder();
             for (Pair next : mapping) {

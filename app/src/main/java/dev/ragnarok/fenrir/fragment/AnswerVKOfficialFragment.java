@@ -16,8 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import org.jetbrains.annotations.NotNull;
-
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
@@ -152,7 +150,7 @@ public class AnswerVKOfficialFragment extends BaseMvpFragment<AnswerVKOfficialPr
         PlaceFactory.getOwnerWallPlace(Settings.get().accounts().getCurrent(), owner_id, null).tryOpenWith(requireActivity());
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<AnswerVKOfficialPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new AnswerVKOfficialPresenter(

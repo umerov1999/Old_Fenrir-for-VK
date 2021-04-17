@@ -29,8 +29,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.squareup.picasso.Transformation;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -368,7 +366,7 @@ public class AdditionalNavigationFragment extends BaseFragment implements MenuLi
     }
 
     @Override
-    public void onAttach(@NotNull Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
             mCallbacks = (NavigationDrawerCallbacks) context;

@@ -3,9 +3,9 @@ package dev.ragnarok.fenrir.api.model.server;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.annotations.SerializedName;
+import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Атрибуты сервера для аплоада фотографий в личное сообщение
@@ -60,7 +60,7 @@ public class VkApiPhotoMessageServer implements Parcelable, UploadServer {
         dest.writeInt(user_id);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "VkApiPhotoMessageServer{" +

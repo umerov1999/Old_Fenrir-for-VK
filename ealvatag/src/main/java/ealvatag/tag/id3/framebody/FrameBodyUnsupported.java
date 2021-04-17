@@ -20,7 +20,7 @@
  */
 package ealvatag.tag.id3.framebody;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.nio.ByteBuffer;
 
@@ -136,7 +136,7 @@ public class FrameBodyUnsupported extends AbstractID3v2FrameBody implements ID3v
      *
      * @return a string representation of this frame
      */
-    @NotNull
+    @NonNull
     public String toString() {
         return getIdentifier();
     }

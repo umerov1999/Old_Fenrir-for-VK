@@ -2,7 +2,7 @@ package dev.ragnarok.fenrir.api.model;
 
 import android.text.TextUtils;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.util.List;
 
@@ -304,7 +304,7 @@ public class VKApiCommunity extends VKApiOwner {
         return photo_50;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "id: " + id + ", name: '" + name + "'";

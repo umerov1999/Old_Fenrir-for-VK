@@ -1,6 +1,6 @@
 package dev.ragnarok.fenrir.link.types;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class AudioPlaylistLink extends AbsLink {
 
@@ -15,7 +15,7 @@ public class AudioPlaylistLink extends AbsLink {
         this.access_key = access_key;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "AudioPlaylistLink{" +

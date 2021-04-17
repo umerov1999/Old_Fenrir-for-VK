@@ -26,6 +26,7 @@ android {
         buildConfigField 'String', 'FAKE_DEVICE', getProps("fake_device")
         buildConfigField 'String', 'FCM_SESSION_ID_GEN_URL', getProps("fcm_session_id_gen_url")
         buildConfigField 'String', 'KATE_RECEIPT_GMS_TOKEN', getProps("kate_receipt_gms_token")
+        buildConfigField 'boolean', 'MANAGE_SCOPED_STORAGE', fenrirTargetSDK >= 30 ? 'true' : 'false'
         resValue "string", "kate_receipt_gms_token", getProps("kate_receipt_gms_token")
 
         ndk {
@@ -122,7 +123,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-parcelize-runtime:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-android-extensions-runtime:$kotlin_version"
-    implementation 'org.jetbrains:annotations:20.1.0'
     implementation 'androidx.core:core-ktx:1.5.0-rc01'
     implementation 'androidx.annotation:annotation:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.0'

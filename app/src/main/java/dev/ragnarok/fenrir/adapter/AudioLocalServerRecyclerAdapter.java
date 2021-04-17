@@ -27,8 +27,6 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.squareup.picasso.Transformation;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -136,9 +134,9 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public AudioHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public AudioHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new AudioHolder(LayoutInflater.from(mContext).inflate(R.layout.item_audio_local_server, parent, false));
     }
 
@@ -337,7 +335,7 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
     }
 
     @Override
-    public void onAttachedToRecyclerView(@NotNull RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         mPlayerDisposable = observeServiceBinding()
                 .compose(RxUtils.applyObservableIOToMainSchedulers())
@@ -345,7 +343,7 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
     }
 
     @Override
-    public void onDetachedFromRecyclerView(@NotNull RecyclerView recyclerView) {
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         mPlayerDisposable.dispose();
         audioListDisposable.dispose();

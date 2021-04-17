@@ -2,7 +2,7 @@ package dev.ragnarok.fenrir.fragment.search.options;
 
 import android.os.Parcel;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.util.Objects;
 
@@ -53,7 +53,7 @@ public class SimpleTextOption extends BaseOption {
         return result;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public SimpleTextOption clone() throws CloneNotSupportedException {
         SimpleTextOption clone = (SimpleTextOption) super.clone();

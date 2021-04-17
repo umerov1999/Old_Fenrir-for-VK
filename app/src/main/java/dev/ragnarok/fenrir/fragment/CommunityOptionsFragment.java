@@ -13,8 +13,6 @@ import androidx.annotation.Nullable;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
 import dev.ragnarok.fenrir.Extra;
@@ -104,7 +102,7 @@ public class CommunityOptionsFragment extends BaseMvpFragment<CommunityOptionsPr
         return root;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<CommunityOptionsPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {

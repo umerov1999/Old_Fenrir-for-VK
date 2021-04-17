@@ -3,11 +3,10 @@ package dev.ragnarok.fenrir.fragment.search;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -63,7 +62,7 @@ public class ArtistSearchFragment extends AbsSearchFragment<ArtistSearchPresente
         return new LinearLayoutManager(requireActivity());
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<ArtistSearchPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new ArtistSearchPresenter(

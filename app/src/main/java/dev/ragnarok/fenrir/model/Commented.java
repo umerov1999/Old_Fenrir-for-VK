@@ -5,8 +5,6 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
-
 public class Commented implements Parcelable {
 
     public static final Creator<Commented> CREATOR = new Creator<Commented>() {
@@ -118,7 +116,7 @@ public class Commented implements Parcelable {
         return 0;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "Commented{" +

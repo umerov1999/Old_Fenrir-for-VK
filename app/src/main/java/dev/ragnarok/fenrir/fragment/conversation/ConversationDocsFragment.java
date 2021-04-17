@@ -7,8 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -41,7 +39,7 @@ public class ConversationDocsFragment extends AbsChatAttachmentsFragment<Documen
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<ChatAttachmentDocsPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new ChatAttachmentDocsPresenter(

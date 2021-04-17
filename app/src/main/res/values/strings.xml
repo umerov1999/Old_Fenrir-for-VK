@@ -1719,4 +1719,5 @@
     <string name="strip_news_repost">Remove reposts from news</string>
     <string name="need_refresh">Need Refresh</string>
     <string name="enable_cache_ui_anim">Caching UI Animations</string>
+    <string name="scoped_storage">Scoped Storage Android 11</string>
 </resources>

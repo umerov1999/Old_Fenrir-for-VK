@@ -1,6 +1,6 @@
 package dev.ragnarok.fenrir.link.types;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class PollLink extends AbsLink {
 
@@ -13,7 +13,7 @@ public class PollLink extends AbsLink {
         this.ownerId = ownerId;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "PollLink{" +

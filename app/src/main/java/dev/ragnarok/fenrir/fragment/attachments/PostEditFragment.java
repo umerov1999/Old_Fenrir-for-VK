@@ -10,8 +10,6 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import org.jetbrains.annotations.NotNull;
-
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
@@ -45,7 +43,7 @@ public class PostEditFragment extends AbsPostEditFragment<PostEditPresenter, IPo
         setHasOptionsMenu(true);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<PostEditPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {
@@ -60,7 +58,7 @@ public class PostEditFragment extends AbsPostEditFragment<PostEditPresenter, IPo
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_attchments, menu);
     }

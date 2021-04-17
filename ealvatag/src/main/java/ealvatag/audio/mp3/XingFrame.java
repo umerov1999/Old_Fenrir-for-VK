@@ -1,6 +1,6 @@
 package ealvatag.audio.mp3;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.EOFException;
 import java.util.Arrays;
@@ -207,7 +207,7 @@ public class XingFrame {
         return vbr;
     }
 
-    @NotNull
+    @NonNull
     public String toString() {
         return "xingheader" + " vbr:" + vbr + " frameCountEnabled:" + isFrameCountEnabled + " frameCount:" +
                 frameCount + " audioSizeEnabled:" + isAudioSizeEnabled + " audioFileSize:" + audioSize;

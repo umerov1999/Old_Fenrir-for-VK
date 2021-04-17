@@ -19,9 +19,9 @@ package ealvatag.audio.mp3;
 
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
-import com.google.common.base.MoreObjects;
+import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
+import com.google.common.base.MoreObjects;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -515,7 +515,7 @@ public class MP3AudioHeader implements AudioHeader {
         this.audioDataEndPosition = audioDataEndPosition;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)

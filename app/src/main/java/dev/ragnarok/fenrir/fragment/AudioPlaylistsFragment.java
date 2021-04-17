@@ -23,8 +23,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -227,7 +225,7 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<AudioPlaylistsPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new AudioPlaylistsPresenter(

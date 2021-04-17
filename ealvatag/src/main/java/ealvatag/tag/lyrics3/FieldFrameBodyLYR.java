@@ -22,7 +22,7 @@
  */
 package ealvatag.tag.lyrics3;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -266,7 +266,7 @@ public class FieldFrameBodyLYR extends AbstractLyrics3v2FieldFrameBody {
     /**
      * @return
      */
-    @NotNull
+    @NonNull
     public String toString() {
         StringBuilder str = new StringBuilder(getIdentifier() + " : ");
 

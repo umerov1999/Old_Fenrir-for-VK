@@ -9,8 +9,6 @@ import androidx.loader.app.LoaderManager;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import org.jetbrains.annotations.NotNull;
-
 import dev.ragnarok.fenrir.mvp.compat.ViewHostDelegate;
 import dev.ragnarok.fenrir.mvp.core.IMvpView;
 import dev.ragnarok.fenrir.mvp.core.IPresenter;
@@ -37,7 +35,7 @@ public abstract class AbsPresenterBottomSheetFragment<P extends IPresenter<V>, V
     }
 
     @Override
-    public void onSaveInstanceState(@NotNull Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         delegate.onSaveInstanceState(outState);
     }

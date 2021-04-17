@@ -24,7 +24,7 @@
  */
 package ealvatag.tag.id3;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -265,7 +265,7 @@ public abstract class AbstractTagFrameBody extends AbstractTagItem {
      *
      * @return brief description of FrameBody
      */
-    @NotNull
+    @NonNull
     public String toString() {
         return getBriefDescription();
     }

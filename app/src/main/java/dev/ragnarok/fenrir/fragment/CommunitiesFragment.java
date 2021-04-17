@@ -15,8 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -92,7 +90,7 @@ public class CommunitiesFragment extends BaseMvpFragment<CommunitiesPresenter, I
     }
 
     @Override
-    public void onAttach(@NotNull Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
     }
 
@@ -163,7 +161,7 @@ public class CommunitiesFragment extends BaseMvpFragment<CommunitiesPresenter, I
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<CommunitiesPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new CommunitiesPresenter(

@@ -14,8 +14,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -123,11 +121,11 @@ public class FaveProductsFragment extends BaseMvpFragment<FaveProductsPresenter,
     }
 
     @Override
-    public void onMarketOpen(int accountId, @NonNull @NotNull Market market) {
+    public void onMarketOpen(int accountId, @NonNull Market market) {
         PlaceFactory.getMarketViewPlace(accountId, market).tryOpenWith(requireActivity());
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<FaveProductsPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new FaveProductsPresenter(getArguments().getInt(Extra.ACCOUNT_ID), saveInstanceState);

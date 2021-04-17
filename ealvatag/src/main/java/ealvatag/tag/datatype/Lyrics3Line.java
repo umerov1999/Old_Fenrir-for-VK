@@ -20,7 +20,7 @@
  */
 package ealvatag.tag.datatype;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.EOFException;
 import java.util.Arrays;
@@ -171,7 +171,7 @@ public class Lyrics3Line extends AbstractDataType {
     /**
      * @return
      */
-    @NotNull
+    @NonNull
     public String toString() {
         StringBuilder str = new StringBuilder();
         for (Object aTimeStamp : timeStamp) {

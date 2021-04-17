@@ -11,8 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,9 +46,9 @@ public class AudioCatalogAdapter extends RecyclerView.Adapter<AudioCatalogAdapte
         this.account_id = account_id;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == 0)
             return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_audio_catalog, parent, false));
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_audio_catalog_artist, parent, false));
@@ -64,7 +62,7 @@ public class AudioCatalogAdapter extends RecyclerView.Adapter<AudioCatalogAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NotNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         AudioCatalog category = data.get(position);
 
         if (category.getArtist() != null) {

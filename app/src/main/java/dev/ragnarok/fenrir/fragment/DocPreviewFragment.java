@@ -23,8 +23,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -154,7 +152,7 @@ public class DocPreviewFragment extends BaseFragment implements View.OnClickList
     }
 
     @Override
-    public void onViewCreated(@NotNull View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         if (Objects.isNull(document) && !mLoadingNow) {

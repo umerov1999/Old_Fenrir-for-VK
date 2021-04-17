@@ -32,8 +32,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -193,7 +191,7 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
         return false;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<CommentsPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {
@@ -605,13 +603,13 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.comments_list_menu, menu);
     }
 
     @Override
-    public void onPrepareOptionsMenu(@NotNull Menu menu) {
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.open_poll).setVisible(mTopicPollAvailable);
 

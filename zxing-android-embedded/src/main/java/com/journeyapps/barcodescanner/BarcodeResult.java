@@ -5,12 +5,12 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import androidx.annotation.NonNull;
+
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.google.zxing.ResultMetadataType;
 import com.google.zxing.ResultPoint;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -167,7 +167,7 @@ public class BarcodeResult {
         return mResult.getTimestamp();
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return mResult.getText();

@@ -20,8 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Transformation;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
 import dev.ragnarok.fenrir.Constants;
@@ -209,13 +207,13 @@ public class FavePostAdapter extends RecyclerBindableAdapter<Post, RecyclerView.
     }
 
     @Override
-    public void onAttachedToRecyclerView(@NotNull RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         this.recyclerView = recyclerView;
     }
 
     @Override
-    public void onDetachedFromRecyclerView(@NotNull RecyclerView recyclerView) {
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         this.recyclerView = null;
     }

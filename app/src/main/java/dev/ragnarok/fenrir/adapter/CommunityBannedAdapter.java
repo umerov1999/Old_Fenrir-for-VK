@@ -9,11 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Transformation;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -43,7 +42,7 @@ public class CommunityBannedAdapter extends RecyclerView.Adapter<CommunityBanned
         transformation = CurrentTheme.createTransformationForAvatar(context);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new Holder(LayoutInflater.from(parent.getContext())

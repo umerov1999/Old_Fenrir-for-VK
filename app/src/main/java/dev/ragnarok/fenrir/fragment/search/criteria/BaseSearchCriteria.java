@@ -3,7 +3,7 @@ package dev.ragnarok.fenrir.fragment.search.criteria;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -112,7 +112,7 @@ public class BaseSearchCriteria implements Parcelable, Cloneable {
         return result;
     }
 
-    @NotNull
+    @NonNull
     @Override
     protected BaseSearchCriteria clone() throws CloneNotSupportedException {
         BaseSearchCriteria clone = (BaseSearchCriteria) super.clone();

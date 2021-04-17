@@ -16,8 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
 
-import org.jetbrains.annotations.NotNull;
-
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
@@ -193,7 +191,7 @@ public class MarketViewFragment extends BaseMvpFragment<MarketViewPresenter, IMa
                 .apply(requireActivity());
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<MarketViewPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {

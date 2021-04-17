@@ -42,8 +42,6 @@ import com.yalantis.ucrop.view.UCropView;
 import com.yalantis.ucrop.view.widget.AspectRatioTextView;
 import com.yalantis.ucrop.view.widget.HorizontalProgressWheelView;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -125,7 +123,7 @@ public class UCropFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(@NotNull Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (getParentFragment() instanceof UCropFragmentCallback)
             callback = (UCropFragmentCallback) getParentFragment();

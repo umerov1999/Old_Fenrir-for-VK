@@ -7,8 +7,6 @@ import android.os.Parcel;
 
 import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -364,7 +362,7 @@ public class Post extends AbsModel implements Cloneable {
         return 0;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "POST[dbid: " + dbid + ", vkid: " + vkid + ", ownerid: " + ownerId + "]";
@@ -445,7 +443,7 @@ public class Post extends AbsModel implements Cloneable {
         return !safeIsEmpty(copyHierarchy);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public Post clone() throws CloneNotSupportedException {
         Post clone = (Post) super.clone();

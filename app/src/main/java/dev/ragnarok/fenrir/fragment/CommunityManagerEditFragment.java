@@ -19,8 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 
 import dev.ragnarok.fenrir.Extra;
@@ -154,7 +152,7 @@ public class CommunityManagerEditFragment extends BaseMvpFragment<CommunityManag
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.community_manager_edit, menu);
     }
@@ -175,12 +173,12 @@ public class CommunityManagerEditFragment extends BaseMvpFragment<CommunityManag
     }
 
     @Override
-    public void onPrepareOptionsMenu(@NotNull Menu menu) {
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.action_delete).setVisible(mOptionDeleteVisible);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<CommunityManagerEditPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {

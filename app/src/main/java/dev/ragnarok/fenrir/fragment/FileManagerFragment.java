@@ -27,8 +27,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
@@ -219,7 +217,7 @@ public class FileManagerFragment extends Fragment implements FileManagerAdapter.
     }
 
     @Override
-    public void onViewCreated(@NotNull View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (directoryScrollPositions == null) {
             directoryScrollPositions = new DirectoryScrollPositions();

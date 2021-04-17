@@ -2,6 +2,7 @@ package dev.ragnarok.fenrir.mvp.presenter;
 
 import static dev.ragnarok.fenrir.util.Utils.findIndexById;
 import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -44,6 +45,7 @@ public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbum
     private Owner mOwner;
     private String mAction;
     private ArrayList<PhotoAlbum> mData;
+    private boolean endOfContent;
     private boolean netLoadingNow;
 
     public PhotoAlbumsPresenter(int accountId, int ownerId, @Nullable AdditionalParams params, @Nullable Bundle savedInstanceState) {
@@ -74,6 +76,12 @@ public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbum
 
         if (Objects.isNull(mOwner) && !isMy()) {
             loadOwnerInfo();
+        }
+    }
+
+    public void fireScrollToEnd() {
+        if (!netLoadingNow && nonEmpty(mData) && !endOfContent) {
+            refreshFromNet(mData.size());
         }
     }
 
@@ -135,6 +143,7 @@ public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbum
     private void onActualAlbumsReceived(int offset, List<PhotoAlbum> albums) {
         // reset cache loading
         cacheDisposable.clear();
+        endOfContent = albums.isEmpty();
 
         netLoadingNow = false;
 

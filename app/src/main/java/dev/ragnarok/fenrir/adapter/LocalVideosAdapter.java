@@ -6,11 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.MemoryPolicy;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.List;
@@ -38,9 +37,9 @@ public class LocalVideosAdapter extends RecyclerView.Adapter<LocalVideosAdapter.
         holders = new HashSet<>();
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ViewHolder holder = new ViewHolder(LayoutInflater.from(context)
                 .inflate(R.layout.item_local_video, parent, false));
         holders.add(holder);

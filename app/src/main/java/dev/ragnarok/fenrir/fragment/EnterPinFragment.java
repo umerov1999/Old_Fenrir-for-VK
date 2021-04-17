@@ -12,8 +12,6 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.jetbrains.annotations.NotNull;
-
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
@@ -58,7 +56,7 @@ public class EnterPinFragment extends BaseMvpFragment<EnterPinPresenter, IEnterP
         return root;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<EnterPinPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new EnterPinPresenter(this, saveInstanceState);

@@ -144,6 +144,12 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         )
     ) { presenter?.fireEditCameraClick() }
 
+    private val requestCameraEditPermissionScoped = AppPerms.requestPermissions(
+        this, arrayOf(
+            Manifest.permission.CAMERA
+        )
+    ) { presenter?.fireEditCameraClick() }
+
     private val openCameraRequest = registerForActivityResult(
         ActivityResultContracts.TakePicture()
     ) { result ->
@@ -945,7 +951,10 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         if (AppPerms.hasCameraPermission(requireContext())) {
             presenter?.fireEditCameraClick()
         } else {
-            requestCameraEditPermission.launch()
+            if (Utils.hasScopedStorage())
+                requestCameraEditPermissionScoped.launch()
+            else
+                requestCameraEditPermission.launch()
         }
     }
 

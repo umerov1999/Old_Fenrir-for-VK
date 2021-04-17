@@ -19,8 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Transformation;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.EventListener;
@@ -97,7 +95,7 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         mStartOfToday = Utils.startOfTodayMillis();
     }
 
-    @NotNull
+    @NonNull
     public Dialog getByPosition(int position) {
         return mDialogs.get(position);
     }
@@ -106,9 +104,9 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         unregisterAdapterDataObserver(mDataObserver);
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
             case DATA_TYPE_HIDDEN:
                 return new HiddenViewHolder(LayoutInflater.from(mContext).inflate(R.layout.line_hidden, parent, false));
@@ -145,7 +143,7 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NotNull RecyclerView.ViewHolder dualHolder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder dualHolder, int position) {
         if (getDataTypeByAdapterPosition(position) == DATA_TYPE_HIDDEN) {
             return;
         }

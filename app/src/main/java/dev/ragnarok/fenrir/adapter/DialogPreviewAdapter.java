@@ -7,11 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Transformation;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.EventListener;
 import java.util.List;
@@ -36,7 +35,7 @@ public class DialogPreviewAdapter extends RecyclerView.Adapter<DialogPreviewAdap
         this.actionListener = actionListener;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public DialogPreviewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new DialogPreviewHolder(LayoutInflater.from(parent.getContext())
@@ -44,7 +43,7 @@ public class DialogPreviewAdapter extends RecyclerView.Adapter<DialogPreviewAdap
     }
 
     @Override
-    public void onBindViewHolder(@NotNull DialogPreviewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull DialogPreviewHolder holder, int position) {
         Conversation item = mData.get(position);
 
         holder.mTitle.setText(item.getTitle());

@@ -2,7 +2,7 @@ package dev.ragnarok.fenrir.fragment.search.criteria;
 
 import android.os.Parcel;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
@@ -75,7 +75,7 @@ public class GroupSearchCriteria extends BaseSearchCriteria {
         return 0;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public GroupSearchCriteria clone() throws CloneNotSupportedException {
         return (GroupSearchCriteria) super.clone();

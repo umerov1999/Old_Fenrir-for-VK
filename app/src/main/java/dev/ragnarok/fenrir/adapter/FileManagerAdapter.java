@@ -7,9 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class FileManagerAdapter extends RecyclerView.Adapter<FileManagerAdapter.
         notifyDataSetChanged();
     }
 
-    @NotNull
+    @NonNull
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new Holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_file, parent, false));

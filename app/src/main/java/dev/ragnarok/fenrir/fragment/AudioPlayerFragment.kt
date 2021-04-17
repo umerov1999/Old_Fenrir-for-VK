@@ -733,6 +733,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
      * {@inheritDoc}
      */
     override fun onDestroy() {
+        PicassoInstance.with().cancelRequest(target)
         mCompositeDisposable.dispose()
         super.onDestroy()
         mTimeHandler!!.removeMessages(REFRESH_TIME)

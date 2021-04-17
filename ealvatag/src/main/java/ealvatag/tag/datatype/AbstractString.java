@@ -20,7 +20,7 @@
  */
 package ealvatag.tag.datatype;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -72,7 +72,7 @@ public abstract class AbstractString extends AbstractDataType {
      *
      * @return a string representation of the value
      */
-    @NotNull
+    @NonNull
     public String toString() {
         assert value != null;
         return (String) value;

@@ -7,7 +7,7 @@
  */
 package ealvatag.audio.mp3;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -801,7 +801,7 @@ public class MPEGFrameHeader {
     /**
      * @return a string represntation
      */
-    @NotNull
+    @NonNull
     public String toString() {
         return " mpeg frameheader:" +
                 " frame length:" +

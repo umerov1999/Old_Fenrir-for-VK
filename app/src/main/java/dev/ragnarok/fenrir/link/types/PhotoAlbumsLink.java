@@ -1,6 +1,6 @@
 package dev.ragnarok.fenrir.link.types;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class PhotoAlbumsLink extends AbsLink {
 
@@ -11,7 +11,7 @@ public class PhotoAlbumsLink extends AbsLink {
         this.ownerId = ownerId;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "PhotoAlbumsLink{" +

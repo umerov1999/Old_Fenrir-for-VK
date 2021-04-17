@@ -21,7 +21,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.lang.ref.WeakReference;
 import java.util.Locale;
@@ -672,7 +672,7 @@ public class VideoControllerView extends FrameLayout {
         }
 
         @Override
-        public void handleMessage(@NotNull Message msg) {
+        public void handleMessage(@NonNull Message msg) {
             VideoControllerView view = mView.get();
             if (view == null || view.mPlayer == null) {
                 return;

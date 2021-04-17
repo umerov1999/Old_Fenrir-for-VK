@@ -23,8 +23,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -36,6 +34,7 @@ import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
 import dev.ragnarok.fenrir.adapter.VkPhotoAlbumsAdapter;
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
+import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.listener.PicassoPauseOnScrollListener;
 import dev.ragnarok.fenrir.model.Owner;
@@ -101,6 +100,12 @@ public class VKPhotoAlbumsFragment extends BaseMvpFragment<PhotoAlbumsPresenter,
         int columnCount = getResources().getInteger(R.integer.photos_albums_column_count);
         recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), columnCount));
         recyclerView.addOnScrollListener(new PicassoPauseOnScrollListener(Constants.PICASSO_TAG));
+        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
+            @Override
+            public void onScrollToLastElement() {
+                getPresenter().fireScrollToEnd();
+            }
+        });
 
         mAdapter = new VkPhotoAlbumsAdapter(requireActivity(), Collections.emptyList());
         mAdapter.setClickListener(this);
@@ -276,13 +281,13 @@ public class VKPhotoAlbumsFragment extends BaseMvpFragment<PhotoAlbumsPresenter,
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_photo_albums, menu);
     }
 
     @Override
-    public void onPrepareOptionsMenu(@NotNull Menu menu) {
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.action_photo_toggle_like).setIcon(Settings.get().other().isDisable_likes() ? R.drawable.ic_no_heart : R.drawable.heart);
     }
@@ -306,7 +311,7 @@ public class VKPhotoAlbumsFragment extends BaseMvpFragment<PhotoAlbumsPresenter,
         return super.onOptionsItemSelected(item);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<PhotoAlbumsPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {

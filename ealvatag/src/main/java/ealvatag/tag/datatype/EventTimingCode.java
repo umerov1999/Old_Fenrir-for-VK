@@ -13,7 +13,7 @@
  */
 package ealvatag.tag.datatype;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.EOFException;
 
@@ -143,14 +143,14 @@ public class EventTimingCode extends AbstractDataType implements Cloneable {
         return result;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "" + getType() + " (\"" + EventTimingTypes.getInstanceOf().getValue(getType()) + "\"), " +
                 getTimestamp();
     }
 
-    @NotNull
+    @NonNull
     @Override
     public Object clone() {
         return new EventTimingCode(this);

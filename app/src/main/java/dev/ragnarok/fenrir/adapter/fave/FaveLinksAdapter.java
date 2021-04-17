@@ -10,9 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -45,14 +44,14 @@ public class FaveLinksAdapter extends RecyclerView.Adapter<FaveLinksAdapter.Hold
         return null;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public Holder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new Holder(LayoutInflater.from(context).inflate(R.layout.item_fave_link, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NotNull Holder holder, int position) {
+    public void onBindViewHolder(@NonNull Holder holder, int position) {
         FaveLink item = data.get(position);
         if (Utils.isEmpty(item.getTitle()))
             holder.tvTitle.setVisibility(View.GONE);
@@ -102,13 +101,13 @@ public class FaveLinksAdapter extends RecyclerView.Adapter<FaveLinksAdapter.Hold
     }
 
     @Override
-    public void onAttachedToRecyclerView(@NotNull RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         this.recyclerView = recyclerView;
     }
 
     @Override
-    public void onDetachedFromRecyclerView(@NotNull RecyclerView recyclerView) {
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         this.recyclerView = null;
     }

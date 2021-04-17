@@ -25,8 +25,6 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.squareup.picasso.Transformation;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
@@ -253,7 +251,7 @@ public class AudioDuplicateDialog extends BaseMvpDialogFragment<AudioDuplicatePr
         dismiss();
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<AudioDuplicatePresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new AudioDuplicatePresenter(

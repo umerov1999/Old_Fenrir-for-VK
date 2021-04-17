@@ -18,8 +18,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -123,7 +121,7 @@ public class WallPostCommentAttachmentsFragment extends PlaceSupportMvpFragment<
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<WallPostCommentAttachmentsPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new WallPostCommentAttachmentsPresenter(

@@ -13,7 +13,7 @@
  */
 package ealvatag.tag.datatype;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.EOFException;
 
@@ -145,14 +145,14 @@ public class SynchronisedTempoCode extends AbstractDataType implements Cloneable
         return result;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "" + getTempo() + " (\"" + EventTimingTypes.getInstanceOf().getValue(getTempo()) + "\"), " +
                 getTimestamp();
     }
 
-    @NotNull
+    @NonNull
     @Override
     public Object clone() {
         return new SynchronisedTempoCode(this);

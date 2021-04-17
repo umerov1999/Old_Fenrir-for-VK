@@ -14,8 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Transformation;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.EventListener;
 import java.util.List;
 
@@ -49,7 +47,7 @@ public class FeedbackLinkAdapter extends RecyclerView.Adapter<FeedbackLinkAdapte
         transformation = CurrentTheme.createTransformationForAvatar(context);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext())
@@ -57,7 +55,7 @@ public class FeedbackLinkAdapter extends RecyclerView.Adapter<FeedbackLinkAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NotNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Object item = mData.get(position);
 
         String title = null;

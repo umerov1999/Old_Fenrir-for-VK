@@ -3,12 +3,11 @@ package dev.ragnarok.fenrir.fragment.search;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -99,7 +98,7 @@ public class NewsFeedSearchFragment extends AbsSearchFragment<NewsFeedSearchPres
         getPresenter().fireLikeClick(post);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<NewsFeedSearchPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new NewsFeedSearchPresenter(

@@ -44,8 +44,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -105,13 +103,13 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
     private AccountAdapter mAdapter;
     private final ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         @Override
-        public boolean onMove(@NotNull RecyclerView recyclerView,
-                              @NotNull RecyclerView.ViewHolder viewHolder, @NotNull RecyclerView.ViewHolder target) {
+        public boolean onMove(@NonNull RecyclerView recyclerView,
+                              @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return false;
         }
 
         @Override
-        public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
             viewHolder.itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             mAdapter.notifyItemChanged(viewHolder.getBindingAdapterPosition());
             Account account = mAdapter.getByPosition(viewHolder.getBindingAdapterPosition());
@@ -217,7 +215,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
     }
 
     @Override
-    public void onViewCreated(@NotNull View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         boolean firstRun = false;
@@ -661,13 +659,13 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_accounts, menu);
     }
 
     @Override
-    public void onPrepareOptionsMenu(@NotNull Menu menu) {
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.export_accounts).setVisible(mData.size() > 0);
     }

@@ -1,8 +1,8 @@
 package dev.ragnarok.fenrir.api.model.upload;
 
-import com.google.gson.annotations.SerializedName;
+import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
+import com.google.gson.annotations.SerializedName;
 
 public class UploadAudioDto {
 
@@ -15,7 +15,7 @@ public class UploadAudioDto {
     @SerializedName("hash")
     public String hash;
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "UploadAudioDto{" +

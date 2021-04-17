@@ -10,8 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
 import dev.ragnarok.fenrir.R;
@@ -39,14 +37,14 @@ public class SearchPhotosAdapter extends RecyclerView.Adapter<SearchPhotosAdapte
         data = photos;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public PhotoViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public PhotoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new PhotoViewHolder(LayoutInflater.from(mContext).inflate(R.layout.vk_photo_item, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NotNull PhotoViewHolder holder, int adapterPosition) {
+    public void onBindViewHolder(@NonNull PhotoViewHolder holder, int adapterPosition) {
         bindPhotoViewHolder(holder, data.get(adapterPosition));
     }
 

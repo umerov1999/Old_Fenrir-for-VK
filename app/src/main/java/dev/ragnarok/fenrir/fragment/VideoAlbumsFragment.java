@@ -12,8 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -135,7 +133,7 @@ public class VideoAlbumsFragment extends BaseMvpFragment<VideoAlbumsPresenter, I
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<VideoAlbumsPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {

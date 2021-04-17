@@ -25,8 +25,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.squareup.picasso.Transformation;
 
-import org.jetbrains.annotations.NotNull;
-
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
@@ -258,7 +256,7 @@ public class WallPostFragment extends PlaceSupportMvpFragment<WallPostPresenter,
     }
 
     @Override
-    public void onPrepareOptionsMenu(@NotNull Menu menu) {
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
         OptionView optionView = new OptionView();
@@ -272,7 +270,7 @@ public class WallPostFragment extends PlaceSupportMvpFragment<WallPostPresenter,
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.single_post_menu, menu);
     }
@@ -453,7 +451,7 @@ public class WallPostFragment extends PlaceSupportMvpFragment<WallPostPresenter,
         Toast.makeText(requireActivity(), R.string.wall_post_is_not_yet_initialized, Toast.LENGTH_LONG).show();
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<WallPostPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {

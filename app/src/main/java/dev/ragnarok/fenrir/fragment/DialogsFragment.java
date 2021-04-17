@@ -32,8 +32,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -88,13 +86,13 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
     private DialogsAdapter mAdapter;
     private final ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         @Override
-        public boolean onMove(@NotNull RecyclerView recyclerView,
-                              @NotNull RecyclerView.ViewHolder viewHolder, @NotNull RecyclerView.ViewHolder target) {
+        public boolean onMove(@NonNull RecyclerView recyclerView,
+                              @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return false;
         }
 
         @Override
-        public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
             viewHolder.itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             mAdapter.notifyItemChanged(viewHolder.getBindingAdapterPosition());
             Dialog dialog = mAdapter.getByPosition(viewHolder.getBindingAdapterPosition());
@@ -115,7 +113,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         int scrollMinOffset;
 
         @Override
-        public void onScrolled(@NotNull RecyclerView view, int dx, int dy) {
+        public void onScrolled(@NonNull RecyclerView view, int dx, int dy) {
             if (scrollMinOffset == 0) {
                 // one-time-init
                 scrollMinOffset = (int) Utils.dpToPx(2, view.getContext());
@@ -188,7 +186,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_dialogs, menu);
     }
@@ -534,7 +532,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         PlaceFactory.getOwnerWallPlace(accountId, ownerId, owner).tryOpenWith(requireActivity());
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<DialogsPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new DialogsPresenter(

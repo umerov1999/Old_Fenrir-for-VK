@@ -2,9 +2,8 @@ package dev.ragnarok.fenrir.fragment.friends;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import org.jetbrains.annotations.NotNull;
 
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.fragment.AbsOwnersListFragment;
@@ -23,7 +22,7 @@ public class RecommendationsFriendsFragment extends AbsOwnersListFragment<Recomm
         return friendsFragment;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<RecommendationsFriendsPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new RecommendationsFriendsPresenter(

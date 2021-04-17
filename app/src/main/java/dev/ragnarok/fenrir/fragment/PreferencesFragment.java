@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -37,8 +38,6 @@ import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.squareup.picasso.BitmapSafeResize;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -463,6 +462,23 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         findPreference("notification_bubbles").setVisible(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R);
 
+        Preference scoped_storage = findPreference("scoped_storage");
+        if (scoped_storage != null) {
+            if (!Utils.hasScopedStorage()) {
+                scoped_storage.setVisible(false);
+            } else {
+                scoped_storage.setVisible(true);
+                scoped_storage.setOnPreferenceClickListener(preference -> {
+                    Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                    Uri uri = Uri.fromParts("package", requireActivity().getPackageName(), null);
+                    intent.setData(uri);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    requireActivity().startActivity(intent);
+                    return true;
+                });
+            }
+        }
+
         Preference select_icon = findPreference("select_custom_icon");
         if (select_icon != null) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -712,7 +728,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     @Override
-    public void onViewCreated(@NotNull View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ((AppCompatActivity) requireActivity()).setSupportActionBar(view.findViewById(R.id.toolbar));
     }

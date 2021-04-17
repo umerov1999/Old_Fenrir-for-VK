@@ -25,8 +25,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.squareup.picasso.Transformation;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -165,7 +163,7 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
     }
 
     @Override
-    public void onAttachedToRecyclerView(@NotNull RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         mPlayerDisposable = observeServiceBinding()
                 .compose(RxUtils.applyObservableIOToMainSchedulers())
@@ -173,7 +171,7 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
     }
 
     @Override
-    public void onDetachedFromRecyclerView(@NotNull RecyclerView recyclerView) {
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         mPlayerDisposable.dispose();
         audioListDisposable.dispose();

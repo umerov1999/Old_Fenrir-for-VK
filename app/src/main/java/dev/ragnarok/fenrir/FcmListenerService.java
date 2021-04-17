@@ -11,8 +11,6 @@ import androidx.annotation.WorkerThread;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Map;
 
 import dev.ragnarok.fenrir.longpoll.NotificationHelper;
@@ -42,7 +40,7 @@ public class FcmListenerService extends FirebaseMessagingService {
     @SuppressLint("CheckResult")
     @WorkerThread
     @Override
-    public void onNewToken(@NotNull String s) {
+    public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
         Injection.providePushRegistrationResolver()
                 .resolvePushRegistration()

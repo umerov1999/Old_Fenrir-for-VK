@@ -20,9 +20,9 @@
  */
 package ealvatag.tag.datatype;
 
-import com.google.common.base.Preconditions;
+import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
+import com.google.common.base.Preconditions;
 
 import java.io.EOFException;
 
@@ -133,7 +133,7 @@ public class NumberFixedLength extends AbstractDataType {
     /**
      * @return String representation of this datatype
      */
-    @NotNull
+    @NonNull
     public String toString() {
         if (value == null) {
             return "";

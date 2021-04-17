@@ -17,8 +17,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
@@ -141,7 +139,7 @@ public class GifPagerFragment extends AbsDocumentPreviewFragment<GifPagerPresent
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<GifPagerPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {
@@ -325,13 +323,13 @@ public class GifPagerFragment extends AbsDocumentPreviewFragment<GifPagerPresent
         }
 
         @Override
-        public void onViewDetachedFromWindow(@NotNull Holder holder) {
+        public void onViewDetachedFromWindow(@NonNull Holder holder) {
             super.onViewDetachedFromWindow(holder);
             mHolderSparseArray.remove(holder.getBindingAdapterPosition());
         }
 
         @Override
-        public void onViewAttachedToWindow(@NotNull Holder holder) {
+        public void onViewAttachedToWindow(@NonNull Holder holder) {
             super.onViewAttachedToWindow(holder);
             mHolderSparseArray.put(holder.getBindingAdapterPosition(), new WeakReference<>(holder));
             fireHolderCreate(holder);

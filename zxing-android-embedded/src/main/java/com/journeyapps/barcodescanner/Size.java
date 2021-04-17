@@ -2,8 +2,6 @@ package com.journeyapps.barcodescanner;
 
 import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  *
  */
@@ -91,7 +89,7 @@ public class Size implements Comparable<Size> {
         return Integer.compare(aPixels, bPixels);
     }
 
-    @NotNull
+    @NonNull
     public String toString() {
         return width + "x" + height;
     }

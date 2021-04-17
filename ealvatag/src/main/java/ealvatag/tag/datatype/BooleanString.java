@@ -20,7 +20,7 @@
  */
 package ealvatag.tag.datatype;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.EOFException;
 
@@ -73,7 +73,7 @@ public class BooleanString extends AbstractDataType {
     /**
      * @return
      */
-    @NotNull
+    @NonNull
     public String toString() {
         return "" + value;
     }

@@ -1,6 +1,6 @@
 package dev.ragnarok.fenrir.link.types;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class DomainLink extends AbsLink {
 
@@ -13,7 +13,7 @@ public class DomainLink extends AbsLink {
         this.fullLink = fullLink;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "DomainLink{" +

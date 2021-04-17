@@ -2,7 +2,7 @@ package dev.ragnarok.fenrir.fragment.search.criteria;
 
 import android.os.Parcel;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
@@ -56,7 +56,7 @@ public final class PhotoSearchCriteria extends BaseSearchCriteria {
         return 0;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public PhotoSearchCriteria clone() throws CloneNotSupportedException {
         return (PhotoSearchCriteria) super.clone();

@@ -3,11 +3,10 @@ package dev.ragnarok.fenrir.fragment.conversation;
 import android.Manifest;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -67,7 +66,7 @@ public class ConversationAudiosFragment extends AbsChatAttachmentsFragment<Audio
         ((AudioRecyclerAdapter) getAdapter()).setData(data);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<ChatAttachmentAudioPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new ChatAttachmentAudioPresenter(

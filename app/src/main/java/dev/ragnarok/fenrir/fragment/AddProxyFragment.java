@@ -14,8 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.jetbrains.annotations.NotNull;
-
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
 import dev.ragnarok.fenrir.listener.TextWatcherAdapter;
@@ -102,7 +100,7 @@ public class AddProxyFragment extends BaseMvpFragment<AddProxyPresenter, IAddPro
         requireActivity().onBackPressed();
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<AddProxyPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new AddProxyPresenter(saveInstanceState);

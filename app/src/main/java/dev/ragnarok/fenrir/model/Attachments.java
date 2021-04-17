@@ -10,7 +10,7 @@ import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
@@ -750,7 +750,7 @@ public class Attachments implements Parcelable, Cloneable {
         return result;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public Attachments clone() throws CloneNotSupportedException {
         Attachments clone = (Attachments) super.clone();
@@ -779,7 +779,7 @@ public class Attachments implements Parcelable, Cloneable {
         return clone;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         String line = "";

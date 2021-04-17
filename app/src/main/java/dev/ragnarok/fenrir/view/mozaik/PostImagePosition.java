@@ -1,6 +1,6 @@
 package dev.ragnarok.fenrir.view.mozaik;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class PostImagePosition {
 
@@ -9,7 +9,7 @@ public class PostImagePosition {
     public int marginX;
     public int marginY;
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "PostImagePosition{" +

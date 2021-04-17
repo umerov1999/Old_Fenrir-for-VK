@@ -16,8 +16,6 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -60,7 +58,7 @@ public class DrawerEditFragment extends AbsMvpFragment<DrawerEditPresenter, IDra
 
         ItemTouchHelper.Callback callback = new ItemTouchHelper.Callback() {
             @Override
-            public int getMovementFlags(@NotNull RecyclerView recyclerView, @NotNull RecyclerView.ViewHolder viewHolder) {
+            public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
                 int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
                 return makeMovementFlags(dragFlags, 0);
             }
@@ -76,7 +74,7 @@ public class DrawerEditFragment extends AbsMvpFragment<DrawerEditPresenter, IDra
             }
 
             @Override
-            public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int i) {
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
 
             }
 
@@ -100,7 +98,7 @@ public class DrawerEditFragment extends AbsMvpFragment<DrawerEditPresenter, IDra
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.drawer_edit, menu);
     }
@@ -125,7 +123,7 @@ public class DrawerEditFragment extends AbsMvpFragment<DrawerEditPresenter, IDra
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<DrawerEditPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new DrawerEditPresenter(saveInstanceState);

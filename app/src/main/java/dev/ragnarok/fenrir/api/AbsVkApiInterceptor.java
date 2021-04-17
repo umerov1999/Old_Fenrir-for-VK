@@ -10,10 +10,10 @@ import android.content.Intent;
 import android.os.SystemClock;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.Random;
@@ -97,7 +97,7 @@ abstract class AbsVkApiInterceptor implements Interceptor {
     }
 
 
-    @NotNull
+    @NonNull
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request original = chain.request();

@@ -2,9 +2,8 @@ package dev.ragnarok.fenrir.fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import org.jetbrains.annotations.NotNull;
 
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
@@ -24,7 +23,7 @@ public class CommunityControlMembersFragment extends BaseMvpFragment<CommunityMe
         return fragment;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<CommunityMembersPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new CommunityMembersPresenter(

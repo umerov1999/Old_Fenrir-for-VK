@@ -20,6 +20,7 @@ import static java.lang.Math.min;
 
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.exoplayer2.C;
@@ -31,8 +32,6 @@ import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.Util;
 import com.google.common.base.Predicate;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -138,21 +137,21 @@ public class OkHttpDataSource extends BaseDataSource implements HttpDataSource {
         return response == null ? -1 : response.code();
     }
 
-    @NotNull
+    @NonNull
     @Override
     public Map<String, List<String>> getResponseHeaders() {
         return response == null ? Collections.emptyMap() : response.headers().toMultimap();
     }
 
     @Override
-    public void setRequestProperty(@NotNull String name, @NotNull String value) {
+    public void setRequestProperty(@NonNull String name, @NonNull String value) {
         Assertions.checkNotNull(name);
         Assertions.checkNotNull(value);
         requestProperties.set(name, value);
     }
 
     @Override
-    public void clearRequestProperty(@NotNull String name) {
+    public void clearRequestProperty(@NonNull String name) {
         Assertions.checkNotNull(name);
         requestProperties.remove(name);
     }
@@ -163,7 +162,7 @@ public class OkHttpDataSource extends BaseDataSource implements HttpDataSource {
     }
 
     @Override
-    public long open(@NotNull DataSpec dataSpec) throws HttpDataSourceException {
+    public long open(@NonNull DataSpec dataSpec) throws HttpDataSourceException {
         this.dataSpec = dataSpec;
         bytesRead = 0;
         bytesSkipped = 0;
@@ -237,7 +236,7 @@ public class OkHttpDataSource extends BaseDataSource implements HttpDataSource {
     }
 
     @Override
-    public int read(@NotNull byte[] buffer, int offset, int readLength) throws HttpDataSourceException {
+    public int read(@NonNull byte[] buffer, int offset, int readLength) throws HttpDataSourceException {
         try {
             skipInternal();
             return readInternal(buffer, offset, readLength);

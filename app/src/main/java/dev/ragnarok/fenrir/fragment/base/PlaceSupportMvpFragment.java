@@ -5,8 +5,6 @@ import android.Manifest;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -141,7 +139,7 @@ public abstract class PlaceSupportMvpFragment<P extends PlaceSupportPresenter<V>
     }
 
     @Override
-    public void onStoryOpen(@NotNull Story story) {
+    public void onStoryOpen(@NonNull Story story) {
         getPresenter().fireStoryClick(story);
     }
 
@@ -151,22 +149,22 @@ public abstract class PlaceSupportMvpFragment<P extends PlaceSupportPresenter<V>
     }
 
     @Override
-    public void openStory(int accountId, @NotNull Story story) {
+    public void openStory(int accountId, @NonNull Story story) {
         PlaceFactory.getHistoryVideoPreviewPlace(accountId, new ArrayList<>(Collections.singleton(story)), 0).tryOpenWith(requireActivity());
     }
 
     @Override
-    public void onAudioPlaylistOpen(@NotNull AudioPlaylist playlist) {
+    public void onAudioPlaylistOpen(@NonNull AudioPlaylist playlist) {
         getPresenter().fireAudioPlaylistClick(playlist);
     }
 
     @Override
-    public void onWallReplyOpen(@NotNull WallReply reply) {
+    public void onWallReplyOpen(@NonNull WallReply reply) {
         getPresenter().fireWallReplyOpen(reply);
     }
 
     @Override
-    public void openAudioPlaylist(int accountId, @NotNull AudioPlaylist playlist) {
+    public void openAudioPlaylist(int accountId, @NonNull AudioPlaylist playlist) {
         PlaceFactory.getAudiosInAlbumPlace(accountId, playlist.getOwnerId(), playlist.getId(), playlist.getAccess_key()).tryOpenWith(requireActivity());
     }
 
@@ -176,12 +174,12 @@ public abstract class PlaceSupportMvpFragment<P extends PlaceSupportPresenter<V>
     }
 
     @Override
-    public void openPhotoAlbum(int accountId, @NotNull PhotoAlbum album) {
+    public void openPhotoAlbum(int accountId, @NonNull PhotoAlbum album) {
         PlaceFactory.getVKPhotosAlbumPlace(accountId, album.getOwnerId(), album.getId(), null).tryOpenWith(requireActivity());
     }
 
     @Override
-    public void onPhotoAlbumOpen(@NotNull PhotoAlbum album) {
+    public void onPhotoAlbumOpen(@NonNull PhotoAlbum album) {
         getPresenter().firePhotoAlbumClick(album);
     }
 

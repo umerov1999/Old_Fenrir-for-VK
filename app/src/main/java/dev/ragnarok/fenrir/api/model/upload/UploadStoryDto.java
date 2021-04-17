@@ -1,15 +1,15 @@
 package dev.ragnarok.fenrir.api.model.upload;
 
-import com.google.gson.annotations.SerializedName;
+import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
+import com.google.gson.annotations.SerializedName;
 
 public class UploadStoryDto {
 
     @SerializedName("upload_result")
     public String upload_result;
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "UploadStoryDto{" +

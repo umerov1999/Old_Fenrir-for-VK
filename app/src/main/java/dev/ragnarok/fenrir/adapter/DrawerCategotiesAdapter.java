@@ -5,9 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class DrawerCategotiesAdapter extends RecyclerView.Adapter<DrawerCategoti
         this.data = data;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_drawer_category, parent, false));

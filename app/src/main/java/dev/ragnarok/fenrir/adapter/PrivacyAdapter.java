@@ -12,10 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.EventListener;
@@ -43,9 +42,9 @@ public class PrivacyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         mPrivacy = privacy;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         switch (viewType) {
             case TYPE_ENTRY:
@@ -58,7 +57,7 @@ public class PrivacyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NotNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof TitleViewHolder) {
             bindTitle((TitleViewHolder) holder);
             return;
@@ -185,13 +184,13 @@ public class PrivacyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     @Override
-    public void onAttachedToRecyclerView(@NotNull RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         mLayoutManager = recyclerView.getLayoutManager();
     }
 
     @Override
-    public void onDetachedFromRecyclerView(@NotNull RecyclerView recyclerView) {
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         mLayoutManager = null;
     }

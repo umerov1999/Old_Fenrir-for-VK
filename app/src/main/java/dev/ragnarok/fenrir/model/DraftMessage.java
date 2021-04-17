@@ -1,6 +1,6 @@
 package dev.ragnarok.fenrir.model;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class DraftMessage {
 
@@ -31,7 +31,7 @@ public class DraftMessage {
         return body;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "id=" + getId() + ", body='" + getBody() + '\'' + ", count=" + attachmentsCount;

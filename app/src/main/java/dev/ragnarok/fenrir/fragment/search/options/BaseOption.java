@@ -3,7 +3,7 @@ package dev.ragnarok.fenrir.fragment.search.options;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class BaseOption implements Parcelable, Cloneable {
 
@@ -98,7 +98,7 @@ public class BaseOption implements Parcelable, Cloneable {
         return result;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public BaseOption clone() throws CloneNotSupportedException {
         BaseOption option = (BaseOption) super.clone();

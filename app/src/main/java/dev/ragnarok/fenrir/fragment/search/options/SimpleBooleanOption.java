@@ -2,7 +2,7 @@ package dev.ragnarok.fenrir.fragment.search.options;
 
 import android.os.Parcel;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class SimpleBooleanOption extends BaseOption {
 
@@ -57,7 +57,7 @@ public class SimpleBooleanOption extends BaseOption {
         return result;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public SimpleBooleanOption clone() throws CloneNotSupportedException {
         return (SimpleBooleanOption) super.clone();

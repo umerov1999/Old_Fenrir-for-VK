@@ -3,7 +3,7 @@ package dev.ragnarok.fenrir.db;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class DatabaseIdRange implements Parcelable {
 
@@ -43,7 +43,7 @@ public class DatabaseIdRange implements Parcelable {
         return last;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "DatabaseIdRange{" +

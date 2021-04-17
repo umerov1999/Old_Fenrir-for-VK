@@ -14,8 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -140,7 +138,7 @@ public class FaveVideosFragment extends BaseMvpFragment<FaveVideosPresenter, IFa
                 .tryOpenWith(requireActivity());
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<FaveVideosPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new FaveVideosPresenter(getArguments().getInt(Extra.ACCOUNT_ID), saveInstanceState);

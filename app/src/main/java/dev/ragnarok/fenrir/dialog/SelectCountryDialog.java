@@ -14,8 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -109,7 +107,7 @@ public class SelectCountryDialog extends BaseMvpDialogFragment<CountriesPresente
         dismiss();
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<CountriesPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new CountriesPresenter(

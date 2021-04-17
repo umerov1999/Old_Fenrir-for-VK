@@ -20,7 +20,7 @@
  */
 package ealvatag.tag.datatype;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.EOFException;
 
@@ -94,7 +94,7 @@ public class ByteArraySizeTerminated extends AbstractDataType {
      *
      * @return the number of bytes
      */
-    @NotNull
+    @NonNull
     public String toString() {
         return getSize() + " bytes";
     }

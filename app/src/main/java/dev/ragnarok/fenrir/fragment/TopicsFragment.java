@@ -17,8 +17,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -172,7 +170,7 @@ public class TopicsFragment extends BaseMvpFragment<TopicsPresenter, ITopicsView
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<TopicsPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {

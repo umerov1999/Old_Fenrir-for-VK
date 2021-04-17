@@ -1,6 +1,6 @@
 package dev.ragnarok.fenrir.crypt;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class AesKeyPair {
 
@@ -108,7 +108,7 @@ public class AesKeyPair {
         return (int) (sessionId ^ (sessionId >>> 32));
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "AesKeyPair{" +

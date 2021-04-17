@@ -7,11 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Transformation;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class CommunitiesAdapter extends MultyDataAdapter<Community, CommunitiesA
         this.context = context;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public Holder onCreateViewHolder(ViewGroup viewGroup, int position) {
         return new Holder(LayoutInflater.from(viewGroup.getContext())

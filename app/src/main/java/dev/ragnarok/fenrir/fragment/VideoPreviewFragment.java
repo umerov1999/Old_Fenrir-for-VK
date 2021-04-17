@@ -36,8 +36,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
 import com.squareup.picasso.Transformation;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -139,13 +137,13 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull android.view.Menu menu, @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull android.view.Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_video_preview, menu);
     }
 
     @Override
-    public void onPrepareOptionsMenu(@NotNull android.view.Menu menu) {
+    public void onPrepareOptionsMenu(@NonNull android.view.Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
         OptionView view = new OptionView();
@@ -237,7 +235,7 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<VideoPreviewPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         String documentAccessKey = null;
@@ -570,7 +568,7 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
     }
 
     @Override
-    public void displayOwner(@NotNull Owner owner) {
+    public void displayOwner(@NonNull Owner owner) {
         if (nonNull(mOwnerGroup)) {
             mOwnerGroup.setVisibility(View.VISIBLE);
         }

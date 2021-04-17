@@ -1,8 +1,7 @@
 package dev.ragnarok.fenrir.listener;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.jetbrains.annotations.NotNull;
 
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 
@@ -15,7 +14,7 @@ public class PicassoPauseOnScrollListener extends RecyclerView.OnScrollListener 
     }
 
     @Override
-    public void onScrollStateChanged(@NotNull RecyclerView recyclerView, int newState) {
+    public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
         if (newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_DRAGGING) {
             PicassoInstance.with().resumeTag(tag);
         } else {

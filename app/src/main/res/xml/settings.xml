@@ -652,6 +652,12 @@
         app:initialExpandedChildrenCount="2">
 
         <Preference
+            android:key="scoped_storage"
+            android:title="@string/scoped_storage"
+            app:icon="@drawable/security_settings"
+            app:iconSpaceReserved="false" />
+
+        <Preference
             android:key="music_dir"
             android:title="@string/music_dir"
             app:icon="@drawable/dir_song"

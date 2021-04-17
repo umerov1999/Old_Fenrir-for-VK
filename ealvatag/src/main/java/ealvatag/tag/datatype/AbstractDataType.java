@@ -20,7 +20,7 @@
  */
 package ealvatag.tag.datatype;
 
-import org.jetbrains.annotations.Nullable;
+import androidx.annotation.Nullable;
 
 import java.io.EOFException;
 import java.util.ArrayList;

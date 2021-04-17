@@ -19,7 +19,7 @@ import static com.squareup.picasso.Picasso.TAG;
 
 import android.util.Log;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -114,7 +114,7 @@ public class StatsSnapshot {
         writer.flush();
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "StatsSnapshot{"

@@ -1,6 +1,6 @@
 package ealvatag.tag.datatype;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
@@ -198,7 +198,7 @@ public class MultipleTextEncodedStringNullTerminated extends AbstractDataType {
          *
          * @return a string representation of the value
          */
-        @NotNull
+        @NonNull
         public String toString() {
             StringBuilder sb = new StringBuilder();
             for (ListIterator<String> li = valueList.listIterator(); li.hasNext(); ) {

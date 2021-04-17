@@ -32,8 +32,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.yalantis.ucrop.UCrop;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -295,7 +293,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
         setupPaganContent(mHeaderHolder.Runes, mHeaderHolder.paganSymbol);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<UserWallPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {
@@ -445,7 +443,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         OptionView view = new OptionView();
         getPresenter().fireOptionViewCreated(view);

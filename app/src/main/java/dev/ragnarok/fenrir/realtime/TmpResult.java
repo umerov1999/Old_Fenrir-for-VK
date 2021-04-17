@@ -2,7 +2,7 @@ package dev.ragnarok.fenrir.realtime;
 
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -107,7 +107,7 @@ public class TmpResult {
         return accountId;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "[" + id + "] -> " + data;

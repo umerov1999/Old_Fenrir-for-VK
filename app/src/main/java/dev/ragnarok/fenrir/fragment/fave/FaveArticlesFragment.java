@@ -14,8 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -136,7 +134,7 @@ public class FaveArticlesFragment extends BaseMvpFragment<FaveArticlesPresenter,
         PlaceFactory.getSimpleGalleryPlace(accountId, temp, 0, false).tryOpenWith(requireActivity());
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<FaveArticlesPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new FaveArticlesPresenter(getArguments().getInt(Extra.ACCOUNT_ID), saveInstanceState);

@@ -12,8 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
-
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
@@ -169,7 +167,7 @@ public class CreatePhotoAlbumFragment extends BaseMvpFragment<EditPhotoAlbumPres
         getPresenter().fireStepNegativeButtonClick(step);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<EditPhotoAlbumPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {

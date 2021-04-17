@@ -2,8 +2,6 @@ package dev.ragnarok.fenrir.longpoll;
 
 import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +48,7 @@ public class FullAndNonFullUpdates {
         return !Utils.safeIsEmpty(nonFull);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "FullAndNonFullUpdates[" +

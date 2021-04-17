@@ -2,7 +2,7 @@ package dev.ragnarok.fenrir.fragment.search.options;
 
 import android.os.Parcel;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 public class SimpleGPSOption extends BaseOption {
 
@@ -59,7 +59,7 @@ public class SimpleGPSOption extends BaseOption {
         return result;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public SimpleGPSOption clone() throws CloneNotSupportedException {
         return (SimpleGPSOption) super.clone();

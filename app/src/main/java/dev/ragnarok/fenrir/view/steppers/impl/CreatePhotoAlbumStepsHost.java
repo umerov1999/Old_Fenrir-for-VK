@@ -5,8 +5,6 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
-
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.Privacy;
 import dev.ragnarok.fenrir.view.steppers.base.AbsStepsHost;
@@ -191,7 +189,7 @@ public class CreatePhotoAlbumStepsHost extends AbsStepsHost<CreatePhotoAlbumStep
             return this;
         }
 
-        @NotNull
+        @NonNull
         @Override
         public String toString() {
             return "PhotoAlbumState{" +

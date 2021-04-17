@@ -17,8 +17,6 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,7 +107,7 @@ public class FriendsTabsFragment extends BaseMvpFragment<FriendsTabsPresenter, I
                 .apply(requireActivity());
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<FriendsTabsPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new FriendsTabsPresenter(

@@ -1545,4 +1545,5 @@
     <string name="strip_news_repost">Убрать репосты из новостей</string>
     <string name="need_refresh">Требует обновить список</string>
     <string name="enable_cache_ui_anim">Кэшировать UI анимации</string>
+    <string name="scoped_storage">Scoped Storage Android 11</string>
 </resources>

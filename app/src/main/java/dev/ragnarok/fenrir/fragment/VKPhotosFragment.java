@@ -27,8 +27,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -336,7 +334,7 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_photos, menu);
     }
@@ -373,7 +371,7 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
         }
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<VkPhotosPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {

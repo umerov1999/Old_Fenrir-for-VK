@@ -8,9 +8,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -32,14 +31,14 @@ public class OwnerArticlesAdapter extends RecyclerView.Adapter<OwnerArticlesAdap
         this.context = context;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public Holder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new Holder(LayoutInflater.from(context).inflate(R.layout.item_article, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NotNull Holder holder, int position) {
+    public void onBindViewHolder(@NonNull Holder holder, int position) {
         Article article = data.get(position);
         holder.btFave.setImageResource(article.getIsFavorite() ? R.drawable.favorite : R.drawable.star_add);
         holder.btFave.setOnClickListener(v -> {

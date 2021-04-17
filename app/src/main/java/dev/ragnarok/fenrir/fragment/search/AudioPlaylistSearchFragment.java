@@ -5,11 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -78,7 +77,7 @@ public class AudioPlaylistSearchFragment extends AbsSearchFragment<AudioPlaylist
         return new GridLayoutManager(requireActivity(), 2);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<AudioPlaylistSearchPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new AudioPlaylistSearchPresenter(

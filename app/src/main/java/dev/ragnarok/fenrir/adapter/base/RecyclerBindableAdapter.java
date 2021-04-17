@@ -6,11 +6,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,9 +151,9 @@ public abstract class RecyclerBindableAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     @SuppressWarnings("unchecked")
-    @NotNull
+    @NonNull
     @Override
-    public VH onCreateViewHolder(@NotNull ViewGroup viewGroup, int type) {
+    public VH onCreateViewHolder(@NonNull ViewGroup viewGroup, int type) {
         //if our position is one of our items (this comes from getItemViewType(int position) below)
         if (type != TYPE_HEADER && type != TYPE_FOOTER) {
             return onCreateItemViewHolder(viewGroup, type);
@@ -172,7 +171,7 @@ public abstract class RecyclerBindableAdapter<T, VH extends RecyclerView.ViewHol
 
     @SuppressWarnings("unchecked")
     @Override
-    public final void onBindViewHolder(@NotNull RecyclerView.ViewHolder vh, int position) {
+    public final void onBindViewHolder(@NonNull RecyclerView.ViewHolder vh, int position) {
         //check what type of view our position is
         if (isHeader(position)) {
             View v = headers.get(position);
@@ -243,7 +242,7 @@ public abstract class RecyclerBindableAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     @Override
-    public void onAttachedToRecyclerView(@NotNull RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         if (manager == null) {
             setManager(recyclerView.getLayoutManager());

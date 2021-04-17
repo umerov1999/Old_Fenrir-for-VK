@@ -5,6 +5,7 @@ import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.exoplayer2.C;
@@ -15,8 +16,6 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.audio.AudioAttributes;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
-
-import org.jetbrains.annotations.NotNull;
 
 import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.Constants;
@@ -102,7 +101,7 @@ public class ExoVoicePlayer implements IVoicePlayer {
             }
 
             @Override
-            public void onPlayerError(@NotNull ExoPlaybackException error) {
+            public void onPlayerError(@NonNull ExoPlaybackException error) {
                 onExoPlayerException(error);
             }
         });

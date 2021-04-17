@@ -17,10 +17,10 @@
 
 package ealvatag.utils;
 
+import androidx.annotation.NonNull;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * An ranges of numbers between lower and upper, inclusive.
@@ -85,7 +85,7 @@ public class InclusiveIntegerRange {
         return hash;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)

@@ -10,8 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
 import dev.ragnarok.fenrir.Constants;
@@ -35,7 +33,7 @@ public class FavePhotosAdapter extends RecyclerView.Adapter<FavePhotosAdapter.Vi
         colorPrimary = CurrentTheme.getColorPrimary(context);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View root = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_fave_photo, parent, false);

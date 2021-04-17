@@ -1,15 +1,15 @@
 package dev.ragnarok.fenrir.api.model.upload;
 
-import com.google.gson.annotations.SerializedName;
+import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
+import com.google.gson.annotations.SerializedName;
 
 public class UploadChatPhotoDto {
 
     @SerializedName("response")
     public String response;
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "UploadChatPhotoDto{" +

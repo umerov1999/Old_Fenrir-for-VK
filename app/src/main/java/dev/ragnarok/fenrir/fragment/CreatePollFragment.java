@@ -21,8 +21,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.jetbrains.annotations.NotNull;
-
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
@@ -109,7 +107,7 @@ public class CreatePollFragment extends BaseMvpFragment<CreatePollPresenter, ICr
         return root;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<CreatePollPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> new CreatePollPresenter(
@@ -191,7 +189,7 @@ public class CreatePollFragment extends BaseMvpFragment<CreatePollPresenter, ICr
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.add_menu, menu);
     }

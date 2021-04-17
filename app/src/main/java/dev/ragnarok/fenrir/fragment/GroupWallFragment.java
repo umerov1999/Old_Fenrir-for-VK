@@ -26,8 +26,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -144,7 +142,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
         requireActivity().invalidateOptionsMenu();
     }
 
-    @NotNull
+    @NonNull
     @Override
     public IPresenterFactory<GroupWallPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
         return () -> {
@@ -223,7 +221,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_community_wall, menu);
         OptionMenuView optionMenuView = new OptionMenuView();
@@ -332,7 +330,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
     }
 
     @Override
-    public void onPrepareOptionsMenu(@NotNull Menu menu) {
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
         OptionMenuView optionMenuView = new OptionMenuView();
