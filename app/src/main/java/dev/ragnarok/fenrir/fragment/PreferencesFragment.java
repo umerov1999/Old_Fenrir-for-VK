@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ import androidx.preference.SwitchPreference;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textview.MaterialTextView;
 import com.squareup.picasso.BitmapSafeResize;
 
 import java.io.File;
@@ -66,6 +68,7 @@ import dev.ragnarok.fenrir.activity.alias.VioletFenrirAlias;
 import dev.ragnarok.fenrir.activity.alias.WhiteFenrirAlias;
 import dev.ragnarok.fenrir.activity.alias.YellowFenrirAlias;
 import dev.ragnarok.fenrir.api.model.LocalServerSettings;
+import dev.ragnarok.fenrir.api.model.PlayerCoverBackgroundSettings;
 import dev.ragnarok.fenrir.db.DBHelper;
 import dev.ragnarok.fenrir.filepicker.model.DialogConfigs;
 import dev.ragnarok.fenrir.filepicker.model.DialogProperties;
@@ -288,6 +291,95 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         findPreference("vk_api_domain").setOnPreferenceChangeListener((preference, newValue) -> {
             Injection.provideProxySettings().setActive(Injection.provideProxySettings().getActiveProxy());
+            return true;
+        });
+
+        findPreference("player_background").setOnPreferenceClickListener((newValue) -> {
+            if (!CheckDonate.isFullVersion(requireActivity())) {
+                return false;
+            }
+            View view = View.inflate(requireActivity(), R.layout.entry_player_background, null);
+            MaterialCheckBox enabled_rotation = view.findViewById(R.id.edit_enabled);
+            MaterialCheckBox invert_rotation = view.findViewById(R.id.edit_invert_rotation);
+            SeekBar rotation_speed = view.findViewById(R.id.edit_rotation_speed);
+            SeekBar zoom = view.findViewById(R.id.edit_zoom);
+            SeekBar blur = view.findViewById(R.id.edit_blur);
+            MaterialTextView text_rotation_speed = view.findViewById(R.id.text_rotation_speed);
+            MaterialTextView text_zoom = view.findViewById(R.id.text_zoom);
+            MaterialTextView text_blur = view.findViewById(R.id.text_blur);
+            zoom.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    text_zoom.setText(getString(R.string.rotate_scale, progress));
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                }
+            });
+            rotation_speed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    text_rotation_speed.setText(getString(R.string.rotate_speed, progress));
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                }
+            });
+            blur.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    text_blur.setText(getString(R.string.player_blur, progress));
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                }
+            });
+            PlayerCoverBackgroundSettings settings = Settings.get().other().getPlayerCoverBackgroundSettings();
+            enabled_rotation.setChecked(settings.enabled_rotation);
+            invert_rotation.setChecked(settings.invert_rotation);
+            blur.setProgress(settings.blur);
+            rotation_speed.setProgress((int) (settings.rotation_speed * 1000));
+            zoom.setProgress((int) ((settings.zoom - 1) * 10));
+            text_zoom.setText(getString(R.string.rotate_scale, (int) ((settings.zoom - 1) * 10)));
+            text_rotation_speed.setText(getString(R.string.rotate_speed, (int) (settings.rotation_speed * 1000)));
+            text_blur.setText(getString(R.string.player_blur, settings.blur));
+
+            new MaterialAlertDialogBuilder(requireActivity())
+                    .setView(view)
+                    .setCancelable(true)
+                    .setNegativeButton(R.string.button_cancel, null)
+                    .setNeutralButton(R.string.set_default, (dialog, which) -> Settings.get().other().setPlayerCoverBackgroundSettings(new PlayerCoverBackgroundSettings().set_default()))
+                    .setPositiveButton(R.string.button_ok, (dialog, which) -> {
+                        PlayerCoverBackgroundSettings st = new PlayerCoverBackgroundSettings();
+                        st.blur = blur.getProgress();
+                        st.invert_rotation = invert_rotation.isChecked();
+                        st.enabled_rotation = enabled_rotation.isChecked();
+                        st.rotation_speed = (float) rotation_speed.getProgress() / 1000;
+                        st.zoom = ((float) zoom.getProgress() / 10) + 1f;
+                        Settings.get().other().setPlayerCoverBackgroundSettings(st);
+                    })
+                    .show();
             return true;
         });
 

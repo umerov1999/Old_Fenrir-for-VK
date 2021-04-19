@@ -8,6 +8,7 @@ public class PhotoCriteria {
     private Integer ownerId;
     private Integer albumId;
     private String orderBy;
+    private boolean sortInvert;
 
     private DatabaseIdRange range;
 
@@ -21,6 +22,15 @@ public class PhotoCriteria {
 
     public PhotoCriteria setRange(DatabaseIdRange range) {
         this.range = range;
+        return this;
+    }
+
+    public boolean getSortInvert() {
+        return sortInvert;
+    }
+
+    public PhotoCriteria setSortInvert(boolean invert) {
+        sortInvert = invert;
         return this;
     }
 

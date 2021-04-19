@@ -13,6 +13,7 @@ import java.io.File;
 
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.api.model.LocalServerSettings;
+import dev.ragnarok.fenrir.api.model.PlayerCoverBackgroundSettings;
 import dev.ragnarok.fenrir.model.Lang;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
@@ -463,6 +464,16 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public boolean isInvertPhotoRev() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("invert_photo_rev", false);
+    }
+
+    @Override
+    public void setInvertPhotoRev(boolean rev) {
+        PreferenceManager.getDefaultSharedPreferences(app).edit().putBoolean("invert_photo_rev", rev).apply();
+    }
+
+    @Override
     public @NonNull
     LocalServerSettings getLocalServer() {
         String ret = PreferenceManager.getDefaultSharedPreferences(app).getString("local_media_server", null);
@@ -476,6 +487,22 @@ class OtherSettings implements ISettings.IOtherSettings {
     @Override
     public void setLocalServer(@NonNull LocalServerSettings settings) {
         PreferenceManager.getDefaultSharedPreferences(app).edit().putString("local_media_server", new Gson().toJson(settings)).apply();
+    }
+
+    @Override
+    public @NonNull
+    PlayerCoverBackgroundSettings getPlayerCoverBackgroundSettings() {
+        String ret = PreferenceManager.getDefaultSharedPreferences(app).getString("player_background_json", null);
+        if (ret == null) {
+            return new PlayerCoverBackgroundSettings().set_default();
+        } else {
+            return new Gson().fromJson(ret, PlayerCoverBackgroundSettings.class);
+        }
+    }
+
+    @Override
+    public void setPlayerCoverBackgroundSettings(@NonNull PlayerCoverBackgroundSettings settings) {
+        PreferenceManager.getDefaultSharedPreferences(app).edit().putString("player_background_json", new Gson().toJson(settings)).apply();
     }
 
     @Override

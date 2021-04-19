@@ -15,13 +15,13 @@ import io.reactivex.rxjava3.core.Single;
 public interface IPhotosInteractor {
     Single<List<Photo>> get(int accountId, int ownerId, int albumId, int count, int offset, boolean rev);
 
-    Single<List<Photo>> getUsersPhoto(int accountId, Integer ownerId, Integer extended, Integer offset, Integer count);
+    Single<List<Photo>> getUsersPhoto(int accountId, Integer ownerId, Integer extended, Integer sort, Integer offset, Integer count);
 
     Single<List<Photo>> getAll(int accountId, Integer ownerId, Integer extended, Integer photo_sizes, Integer offset, Integer count);
 
     Single<List<Photo>> search(int accountId, PhotoSearchCriteria criteria, Integer offset, Integer count);
 
-    Single<List<Photo>> getAllCachedData(int accountId, int ownerId, int albumId);
+    Single<List<Photo>> getAllCachedData(int accountId, int ownerId, int albumId, boolean sortInvert);
 
     Single<PhotoAlbum> getAlbumById(int accountId, int ownerId, int albumId);
 

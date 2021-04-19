@@ -1546,4 +1546,13 @@
     <string name="need_refresh">Требует обновить список</string>
     <string name="enable_cache_ui_anim">Кэшировать UI анимации</string>
     <string name="scoped_storage">Scoped Storage Android 11</string>
+    <string name="rotating_player_cover">Вращать обложку плеера</string>
+    <string name="sort_old_to_new">От старых к новым</string>
+    <string name="sort_new_to_old">От новых к старым</string>
+    <string name="show_date">Показать дату</string>
+    <string name="rotate_speed">Скорость вращения %1$d</string>
+    <string name="rotate_scale">Масштаб фона %1$d</string>
+    <string name="player_blur">Blur %1$d</string>
+    <string name="invert_rotating">Вращать вдругую сторону</string>
+    <string name="player_background">Настройка фона плеера</string>
 </resources>

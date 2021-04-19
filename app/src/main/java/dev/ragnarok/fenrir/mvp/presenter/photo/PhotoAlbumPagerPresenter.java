@@ -14,6 +14,7 @@ import java.util.List;
 import dev.ragnarok.fenrir.domain.IPhotosInteractor;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
 import dev.ragnarok.fenrir.model.Photo;
+import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.RxUtils;
 
 public class PhotoAlbumPagerPresenter extends PhotoPagerPresenter {
@@ -22,6 +23,7 @@ public class PhotoAlbumPagerPresenter extends PhotoPagerPresenter {
     private final IPhotosInteractor photosInteractor;
     private final int mOwnerId;
     private final int mAlbumId;
+    private final boolean invertPhotoRev;
     private boolean canLoad;
 
     public PhotoAlbumPagerPresenter(int indexx, int accountId, int ownerId, int albumId, ArrayList<Photo> photos, Context context,
@@ -31,6 +33,7 @@ public class PhotoAlbumPagerPresenter extends PhotoPagerPresenter {
         mOwnerId = ownerId;
         mAlbumId = albumId;
         canLoad = true;
+        invertPhotoRev = Settings.get().other().isInvertPhotoRev();
 
         getData().addAll(photos);
         setCurrentIndex(indexx);
@@ -62,11 +65,11 @@ public class PhotoAlbumPagerPresenter extends PhotoPagerPresenter {
         changeLoadingNowState(true);
 
         if (mAlbumId != -9001 && mAlbumId != -9000) {
-            appendDisposable(photosInteractor.get(getAccountId(), mOwnerId, mAlbumId, COUNT_PER_LOAD, mPhotos.size(), true)
+            appendDisposable(photosInteractor.get(getAccountId(), mOwnerId, mAlbumId, COUNT_PER_LOAD, mPhotos.size(), !invertPhotoRev)
                     .compose(RxUtils.applySingleIOToMainSchedulers())
                     .subscribe(this::onActualPhotosReceived, this::onActualDataGetError));
         } else if (mAlbumId == -9000) {
-            appendDisposable(photosInteractor.getUsersPhoto(getAccountId(), mOwnerId, 1, mPhotos.size(), COUNT_PER_LOAD)
+            appendDisposable(photosInteractor.getUsersPhoto(getAccountId(), mOwnerId, 1, invertPhotoRev ? 1 : 0, mPhotos.size(), COUNT_PER_LOAD)
                     .compose(RxUtils.applySingleIOToMainSchedulers())
                     .subscribe(this::onActualPhotosReceived, this::onActualDataGetError));
         } else {

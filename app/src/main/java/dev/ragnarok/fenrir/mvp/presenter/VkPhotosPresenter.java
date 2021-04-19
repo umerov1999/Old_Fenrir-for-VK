@@ -73,6 +73,7 @@ public class VkPhotosPresenter extends AccountDependencyPresenter<IVkPhotosView>
     private boolean requestNow;
     private boolean endOfContent;
     private boolean isShowBDate;
+    private boolean invertPhotoRev;
 
     public VkPhotosPresenter(int accountId, int ownerId, int albumId, String action,
                              @Nullable Owner owner, @Nullable PhotoAlbum album, @Nullable Bundle savedInstanceState) {
@@ -81,6 +82,7 @@ public class VkPhotosPresenter extends AccountDependencyPresenter<IVkPhotosView>
         this.ownerId = ownerId;
         this.albumId = albumId;
         this.action = action;
+        invertPhotoRev = Settings.get().other().isInvertPhotoRev();
 
         interactor = InteractorFactory.createPhotosInteractor();
         ownersRepository = Repository.INSTANCE.getOwners();
@@ -133,6 +135,12 @@ public class VkPhotosPresenter extends AccountDependencyPresenter<IVkPhotosView>
             wrappers.add(new SelectablePhotoWrapper(photo));
         }
         return wrappers;
+    }
+
+    public void togglePhotoInvert() {
+        invertPhotoRev = !invertPhotoRev;
+        Settings.get().other().setInvertPhotoRev(invertPhotoRev);
+        fireRefresh();
     }
 
     @Override
@@ -245,6 +253,16 @@ public class VkPhotosPresenter extends AccountDependencyPresenter<IVkPhotosView>
         }
     }
 
+    public boolean getIsShowBDate() {
+        return isShowBDate;
+    }
+
+    public void doToggleDate() {
+        isShowBDate = !isShowBDate;
+        callView(v -> v.onToggleShowDate(isShowBDate));
+        callView(IVkPhotosView::notifyDataSetChanged);
+    }
+
     @Override
     public void onGuiCreated(@NonNull IVkPhotosView view) {
         super.onGuiCreated(view);
@@ -274,7 +292,7 @@ public class VkPhotosPresenter extends AccountDependencyPresenter<IVkPhotosView>
     private void requestActualData(int offset) {
         setRequestNow(true);
         if (albumId != -9001 && albumId != -9000) {
-            appendDisposable(interactor.get(getAccountId(), ownerId, albumId, COUNT, offset, true)
+            appendDisposable(interactor.get(getAccountId(), ownerId, albumId, COUNT, offset, !invertPhotoRev)
                     .map(t -> {
                         List<SelectablePhotoWrapper> wrap = wrappersOf(t);
                         if (!Utils.isEmpty(mDownloads)) {
@@ -287,7 +305,7 @@ public class VkPhotosPresenter extends AccountDependencyPresenter<IVkPhotosView>
                     .compose(RxUtils.applySingleIOToMainSchedulers())
                     .subscribe(photos -> onActualPhotosReceived(offset, photos), this::onActualDataGetError));
         } else if (albumId == -9000) {
-            appendDisposable(interactor.getUsersPhoto(getAccountId(), ownerId, 1, offset, COUNT)
+            appendDisposable(interactor.getUsersPhoto(getAccountId(), ownerId, 1, invertPhotoRev ? 1 : 0, offset, COUNT)
                     .map(t -> {
                         List<SelectablePhotoWrapper> wrap = wrappersOf(t);
                         if (!Utils.isEmpty(mDownloads)) {
@@ -340,7 +358,7 @@ public class VkPhotosPresenter extends AccountDependencyPresenter<IVkPhotosView>
 
     private void loadInitialData() {
         int accountId = getAccountId();
-        cacheDisposable.add(interactor.getAllCachedData(accountId, ownerId, albumId)
+        cacheDisposable.add(interactor.getAllCachedData(accountId, ownerId, albumId, invertPhotoRev)
                 .zipWith(uploadManager.get(getAccountId(), destination), Pair.Companion::create)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(this::onInitialDataReceived));

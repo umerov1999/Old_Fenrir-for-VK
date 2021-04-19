@@ -1720,4 +1720,13 @@
     <string name="need_refresh">Need Refresh</string>
     <string name="enable_cache_ui_anim">Caching UI Animations</string>
     <string name="scoped_storage">Scoped Storage Android 11</string>
+    <string name="rotating_player_cover">Rotate player cover</string>
+    <string name="sort_old_to_new">From Old to New</string>
+    <string name="sort_new_to_old">From New to Old</string>
+    <string name="show_date">Show Date</string>
+    <string name="rotate_speed">Rotate speed %1$d</string>
+    <string name="rotate_scale">Scale %1$d</string>
+    <string name="player_blur">Blur %1$d</string>
+    <string name="invert_rotating">Invert rotating</string>
+    <string name="player_background">Player background cover settings</string>
 </resources>

@@ -105,7 +105,7 @@ class PhotosStorage extends AbsStorage implements IPhotosStorage {
         return Single.create(e -> {
             String selection = getSelectionForCriteria(criteria);
 
-            String orderBy = criteria.getOrderBy() == null ? PhotosColumns.PHOTO_ID + " DESC" : criteria.getOrderBy();
+            String orderBy = criteria.getOrderBy() == null ? PhotosColumns.PHOTO_ID + (!criteria.getSortInvert() ? " DESC" : " ASC") : criteria.getOrderBy();
 
             Uri uri = MessengerContentProvider.getPhotosContentUriFor(criteria.getAccountId());
             Cursor cursor = getContext().getContentResolver().query(uri, null, selection, null, orderBy);

@@ -13,6 +13,7 @@ import java.util.Set;
 
 import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.api.model.LocalServerSettings;
+import dev.ragnarok.fenrir.api.model.PlayerCoverBackgroundSettings;
 import dev.ragnarok.fenrir.crypt.KeyLocationPolicy;
 import dev.ragnarok.fenrir.model.Lang;
 import dev.ragnarok.fenrir.model.PhotoSize;
@@ -153,6 +154,10 @@ public interface ISettings {
 
         boolean isDisable_sensored_voice();
 
+        boolean isInvertPhotoRev();
+
+        void setInvertPhotoRev(boolean rev);
+
         boolean isAudio_save_mode_button();
 
         boolean isShow_mutual_count();
@@ -207,6 +212,11 @@ public interface ISettings {
         LocalServerSettings getLocalServer();
 
         void setLocalServer(@NonNull LocalServerSettings settings);
+
+        @NonNull
+        PlayerCoverBackgroundSettings getPlayerCoverBackgroundSettings();
+
+        void setPlayerCoverBackgroundSettings(@NonNull PlayerCoverBackgroundSettings settings);
     }
 
     interface IAccountsSettings {

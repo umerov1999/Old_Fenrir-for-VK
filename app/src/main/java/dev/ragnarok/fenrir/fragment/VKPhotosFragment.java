@@ -51,6 +51,7 @@ import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.VkPhotosPresenter;
 import dev.ragnarok.fenrir.mvp.view.IVkPhotosView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
+import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.upload.Upload;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.ViewUtils;
@@ -340,6 +341,15 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
     }
 
     @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.findItem(R.id.action_toggle_rev).setTitle(Settings.get().other().isInvertPhotoRev() ? R.string.sort_new_to_old : R.string.sort_old_to_new);
+        if (isPresenterPrepared()) {
+            menu.findItem(R.id.action_show_date).setVisible(!getPresenter().getIsShowBDate());
+        }
+    }
+
+    @Override
     public void onToggleShowDate(boolean isShow) {
         mAdapter.setIsShowDate(isShow);
     }
@@ -353,6 +363,12 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
             }
             getPresenter().loadDownload();
             return true;
+        } else if (item.getItemId() == R.id.action_show_date) {
+            getPresenter().doToggleDate();
+            requireActivity().invalidateOptionsMenu();
+        } else if (item.getItemId() == R.id.action_toggle_rev) {
+            getPresenter().togglePhotoInvert();
+            requireActivity().invalidateOptionsMenu();
         }
 
         return super.onOptionsItemSelected(item);

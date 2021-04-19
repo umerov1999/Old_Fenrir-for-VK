@@ -538,6 +538,11 @@
             android:title="@string/use_long_click_download"
             app:iconSpaceReserved="false" />
 
+        <Preference
+            android:key="player_background"
+            android:title="@string/player_background"
+            app:iconSpaceReserved="false" />
+
         <SwitchPreference
             android:defaultValue="false"
             android:key="use_stop_audio"

@@ -42,6 +42,9 @@ public class BlurTransformation implements Transformation {
     }
 
     public static Bitmap blur(Bitmap image, Context context, float radius) {
+        if (radius <= 0) {
+            return image;
+        }
         Bitmap outputBitmap = Bitmap.createBitmap(image);
         RenderScript renderScript = RenderScript.create(context);
         Allocation tmpIn = Allocation.createFromBitmap(renderScript, image);

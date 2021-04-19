@@ -74,10 +74,10 @@ public class PhotosInteractor implements IPhotosInteractor {
     }
 
     @Override
-    public Single<List<Photo>> getUsersPhoto(int accountId, Integer ownerId, Integer extended, Integer offset, Integer count) {
+    public Single<List<Photo>> getUsersPhoto(int accountId, Integer ownerId, Integer extended, Integer sort, Integer offset, Integer count) {
         return networker.vkDefault(accountId)
                 .photos()
-                .getUsersPhoto(ownerId, extended, offset, count)
+                .getUsersPhoto(ownerId, extended, sort, offset, count)
                 .map(items -> Utils.listEmptyIfNull(items.getItems()))
                 .flatMap(dtos -> {
                     List<Photo> photos = new ArrayList<>(dtos.size());
@@ -132,8 +132,8 @@ public class PhotosInteractor implements IPhotosInteractor {
     }
 
     @Override
-    public Single<List<Photo>> getAllCachedData(int accountId, int ownerId, int albumId) {
-        PhotoCriteria criteria = new PhotoCriteria(accountId).setAlbumId(albumId).setOwnerId(ownerId);
+    public Single<List<Photo>> getAllCachedData(int accountId, int ownerId, int albumId, boolean sortInvert) {
+        PhotoCriteria criteria = new PhotoCriteria(accountId).setAlbumId(albumId).setOwnerId(ownerId).setSortInvert(sortInvert);
 
         if (albumId == -15) {
             criteria.setOrderBy(BaseColumns._ID);

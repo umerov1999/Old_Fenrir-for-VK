@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.content.*
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
@@ -64,6 +65,7 @@ import dev.ragnarok.fenrir.util.Objects
 import dev.ragnarok.fenrir.util.RxUtils
 import dev.ragnarok.fenrir.util.Utils
 import dev.ragnarok.fenrir.util.Utils.isEmpty
+import dev.ragnarok.fenrir.view.FadeAnimDrawable
 import dev.ragnarok.fenrir.view.FadeDrawable
 import dev.ragnarok.fenrir.view.swipehelper.HorizontalSwipeBehavior
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -742,6 +744,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
 
     private val target = object : Target {
         override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
+            ivCover!!.scaleType = ImageView.ScaleType.FIT_START
             FadeDrawable.setBitmap(
                 ivCover!!,
                 requireActivity(),
@@ -750,13 +753,13 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
             if (Settings.get().other().isBlur_for_player) {
                 playerGradientFirst?.visibility = View.VISIBLE
                 playerGradientSecond?.visibility = View.VISIBLE
-                FadeDrawable.setBitmap(
+                FadeAnimDrawable.setBitmap(
                     ivBackground!!,
                     requireActivity(),
                     BlurTransformation.blur(
                         bitmap.copy(Bitmap.Config.ARGB_8888, true),
                         requireActivity(),
-                        25F
+                        Settings.get().other().playerCoverBackgroundSettings.blur.toFloat()
                     )
                 )
             }
@@ -766,9 +769,14 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         }
 
         override fun onBitmapFailed(e: Exception, errorDrawable: Drawable?) {
-            ivBackground?.setImageDrawable(null)
-            playerGradientFirst?.visibility = View.GONE
-            playerGradientSecond?.visibility = View.GONE
+            if (Settings.get().other().isBlur_for_player) {
+                if (ivBackground?.drawable is Animatable) {
+                    (ivBackground?.drawable as Animatable).stop()
+                }
+                ivBackground?.setImageDrawable(null)
+                playerGradientFirst?.visibility = View.GONE
+                playerGradientSecond?.visibility = View.GONE
+            }
             ivCover?.scaleType = ImageView.ScaleType.CENTER
             if (FenrirNative.isNativeLoaded()) {
                 ivCover?.fromRes(
@@ -813,7 +821,6 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
             tvSubtitle!!.text = MusicUtils.getTrackName()
         }
         if (coverUrl != null) {
-            ivCover!!.scaleType = ImageView.ScaleType.FIT_START
             PicassoInstance.with()
                 .load(coverUrl)
                 .into(target)
@@ -825,6 +832,9 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                     .getMetadataAudioThumbnail(Uri.parse(audio), 512, 512)
                 if (btm == null) {
                     if (Settings.get().other().isBlur_for_player) {
+                        if (ivBackground?.drawable is Animatable) {
+                            (ivBackground?.drawable as Animatable).stop()
+                        }
                         ivBackground?.setImageDrawable(null)
                         playerGradientFirst?.visibility = View.GONE
                         playerGradientSecond?.visibility = View.GONE
@@ -854,19 +864,22 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                     if (Settings.get().other().isBlur_for_player) {
                         playerGradientFirst?.visibility = View.VISIBLE
                         playerGradientSecond?.visibility = View.VISIBLE
-                        FadeDrawable.setBitmap(
+                        FadeAnimDrawable.setBitmap(
                             ivBackground!!,
                             requireActivity(),
                             BlurTransformation.blur(
                                 btm.copy(Bitmap.Config.ARGB_8888, true),
                                 requireActivity(),
-                                25F
+                                Settings.get().other().playerCoverBackgroundSettings.blur.toFloat()
                             )
                         )
                     }
                 }
             } else {
                 if (Settings.get().other().isBlur_for_player) {
+                    if (ivBackground?.drawable is Animatable) {
+                        (ivBackground?.drawable as Animatable).stop()
+                    }
                     ivBackground?.setImageDrawable(null)
                     playerGradientFirst?.visibility = View.GONE
                     playerGradientSecond?.visibility = View.GONE
