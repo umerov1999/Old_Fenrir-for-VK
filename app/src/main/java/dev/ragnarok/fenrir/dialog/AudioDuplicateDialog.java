@@ -34,7 +34,6 @@ import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.fragment.base.BaseMvpDialogFragment;
 import dev.ragnarok.fenrir.model.Audio;
-import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.AudioDuplicatePresenter;
 import dev.ragnarok.fenrir.mvp.view.IAudioDuplicateView;
@@ -47,6 +46,7 @@ import dev.ragnarok.fenrir.player.util.MusicUtils;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.Utils;
+import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 
 public class AudioDuplicateDialog extends BaseMvpDialogFragment<AudioDuplicatePresenter, IAudioDuplicateView>
         implements IAudioDuplicateView {

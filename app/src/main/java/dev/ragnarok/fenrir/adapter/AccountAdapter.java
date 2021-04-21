@@ -24,13 +24,13 @@ import dev.ragnarok.fenrir.fragment.UserInfoResolveUtil;
 import dev.ragnarok.fenrir.model.Account;
 import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.User;
-import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.OnlineView;
+import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 
 public class AccountAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

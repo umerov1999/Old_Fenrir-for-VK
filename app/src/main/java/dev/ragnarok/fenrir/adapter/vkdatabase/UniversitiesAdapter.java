@@ -32,7 +32,7 @@ public class UniversitiesAdapter extends RecyclerView.Adapter<UniversitiesAdapte
     }
 
     @Override
-    public void onBindViewHolder(Holder holder, int position) {
+    public void onBindViewHolder(@NonNull Holder holder, int position) {
         University country = mData.get(position);
         holder.name.setText(country.getTitle());
 

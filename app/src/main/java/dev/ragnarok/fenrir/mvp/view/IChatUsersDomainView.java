@@ -19,5 +19,7 @@ public interface IChatUsersDomainView extends IAccountDependencyView, IMvpView, 
 
     void openUserWall(int accountId, Owner user);
 
+    void addDomain(int accountId, Owner user);
+
     void displayRefreshing(boolean refreshing);
 }

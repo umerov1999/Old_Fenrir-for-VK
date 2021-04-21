@@ -94,8 +94,8 @@
             app:barrierDirection="bottom"
             app:constraint_referenced_ids="audio_player_get_lyrics,player_handler,goto_button" />
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:id="@+id/cover_coordinator"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/cover_pager"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
@@ -106,22 +106,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/goto_button_header"
             app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.25">
-
-            <dev.ragnarok.fenrir.module.rlottie.RLottieShapeableImageView
-                android:id="@+id/cover"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/album_cover"
-                android:scaleType="fitStart"
-                android:stateListAnimator="@animator/clicked"
-                app:contentPadding="0dp"
-                app:layout_behavior="dev.ragnarok.fenrir.view.swipehelper.HorizontalSwipeBehavior"
-                app:loopAnimation="true"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.RoundedPlayerCover" />
-
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            app:layout_constraintWidth_percent="0.25" />
 
         <androidx.constraintlayout.helper.widget.Flow
             android:id="@+id/everything"
@@ -133,7 +118,7 @@
             app:flow_wrapMode="chain"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/cover_coordinator"
+            app:layout_constraintStart_toEndOf="@id/cover_pager"
             app:layout_constraintTop_toBottomOf="@id/goto_button_header" />
 
         <RelativeLayout

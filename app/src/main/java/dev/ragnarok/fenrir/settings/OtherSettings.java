@@ -354,11 +354,6 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
-    public boolean isClick_next_track() {
-        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("click_next_track", true);
-    }
-
-    @Override
     public boolean isDisabled_encryption() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("disable_encryption", false);
     }

@@ -28,6 +28,7 @@ import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.ChatUsersDomainPresenter;
 import dev.ragnarok.fenrir.mvp.view.IChatUsersDomainView;
+import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.view.MySearchView;
 
 public class ChatUsersDomainFragment extends BaseMvpBottomSheetDialogFragment<ChatUsersDomainPresenter, IChatUsersDomainView>
@@ -121,6 +122,11 @@ public class ChatUsersDomainFragment extends BaseMvpBottomSheetDialogFragment<Ch
 
     @Override
     public void openUserWall(int accountId, Owner user) {
+        PlaceFactory.getOwnerWallPlace(accountId, user).tryOpenWith(requireActivity());
+    }
+
+    @Override
+    public void addDomain(int accountId, Owner user) {
         if (nonNull(listener)) {
             listener.onSelected(user);
         }
@@ -144,6 +150,12 @@ public class ChatUsersDomainFragment extends BaseMvpBottomSheetDialogFragment<Ch
     @Override
     public void onUserClick(AppChatUser user) {
         getPresenter().fireUserClick(user);
+    }
+
+    @Override
+    public boolean onUserLongClick(AppChatUser user) {
+        getPresenter().fireUserLongClick(user);
+        return true;
     }
 
     interface Listener {

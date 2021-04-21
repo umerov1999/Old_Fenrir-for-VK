@@ -25,7 +25,6 @@ public class ChatUsersDomainPresenter extends AccountDependencyPresenter<IChatUs
     private final IMessagesRepository messagesInteractor;
 
     private final List<AppChatUser> users;
-    private final List<AppChatUser> found;
     private final List<AppChatUser> original;
     private boolean refreshing;
     private String query;
@@ -34,7 +33,6 @@ public class ChatUsersDomainPresenter extends AccountDependencyPresenter<IChatUs
         super(accountId, savedInstanceState);
         this.chatId = chatId;
         users = new ArrayList<>();
-        found = new ArrayList<>();
         original = new ArrayList<>();
         messagesInteractor = Repository.INSTANCE.getMessages();
 
@@ -129,6 +127,10 @@ public class ChatUsersDomainPresenter extends AccountDependencyPresenter<IChatUs
     }
 
     public void fireUserClick(AppChatUser user) {
+        getView().addDomain(getAccountId(), user.getMember());
+    }
+
+    public void fireUserLongClick(AppChatUser user) {
         getView().openUserWall(getAccountId(), user.getMember());
     }
 }

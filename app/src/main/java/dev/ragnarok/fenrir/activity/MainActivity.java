@@ -492,6 +492,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
         mAccountId = newAccountId;
         Accounts.showAccountSwitchedToast(this);
         UpdateNotificationCount(newAccountId);
+        MusicUtils.stop();
     }
 
     @Override

@@ -101,7 +101,6 @@ public class SettingsBackup {
         settings.add(new SettingCollector("sticker_dir", SettingTypes.TYPE_STRING));
         settings.add(new SettingCollector("photo_to_user_dir", SettingTypes.TYPE_BOOL));
         settings.add(new SettingCollector("delete_cache_images", SettingTypes.TYPE_BOOL));
-        settings.add(new SettingCollector("click_next_track", SettingTypes.TYPE_BOOL));
         settings.add(new SettingCollector("disable_encryption", SettingTypes.TYPE_BOOL));
         settings.add(new SettingCollector("download_photo_tap", SettingTypes.TYPE_BOOL));
         settings.add(new SettingCollector("audio_save_mode_button", SettingTypes.TYPE_BOOL));

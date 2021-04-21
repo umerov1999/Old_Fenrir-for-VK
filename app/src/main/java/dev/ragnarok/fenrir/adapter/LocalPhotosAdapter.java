@@ -46,7 +46,7 @@ public class LocalPhotosAdapter extends RecyclerView.Adapter<LocalPhotosAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         LocalPhoto photo = data.get(position);
         holder.attachPhoto(photo);
 

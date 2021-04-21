@@ -28,7 +28,7 @@ public class DrawerCategotiesAdapter extends RecyclerView.Adapter<DrawerCategoti
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         DrawerCategory category = data.get(position);
 
         holder.checkBox.setText(category.getTitle());

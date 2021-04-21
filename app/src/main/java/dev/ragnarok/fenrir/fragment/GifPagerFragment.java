@@ -26,7 +26,6 @@ import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
 import dev.ragnarok.fenrir.media.gif.IGifPlayer;
 import dev.ragnarok.fenrir.model.Document;
-import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.GifPagerPresenter;
 import dev.ragnarok.fenrir.mvp.view.IGifPagerView;
@@ -37,6 +36,7 @@ import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.AlternativeAspectRatioFrameLayout;
 import dev.ragnarok.fenrir.view.CircleCounterButton;
 import dev.ragnarok.fenrir.view.FlingRelativeLayout;
+import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.view.pager.CloseOnFlingListener;
 
 public class GifPagerFragment extends AbsDocumentPreviewFragment<GifPagerPresenter, IGifPagerView>

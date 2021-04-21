@@ -32,7 +32,7 @@ public class FacultiesAdapter extends RecyclerView.Adapter<FacultiesAdapter.Hold
     }
 
     @Override
-    public void onBindViewHolder(Holder holder, int position) {
+    public void onBindViewHolder(@NonNull Holder holder, int position) {
         Faculty faculty = mData.get(position);
         holder.name.setText(faculty.getTitle());
 

@@ -59,7 +59,6 @@ import dev.ragnarok.fenrir.model.selection.LocalGallerySelectableSource;
 import dev.ragnarok.fenrir.model.selection.LocalPhotosSelectableSource;
 import dev.ragnarok.fenrir.model.selection.LocalVideosSelectableSource;
 import dev.ragnarok.fenrir.model.selection.Sources;
-import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.UserWallPresenter;
 import dev.ragnarok.fenrir.mvp.view.IUserWallView;
@@ -75,6 +74,7 @@ import dev.ragnarok.fenrir.util.InputTextDialog;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.OnlineView;
+import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 import me.minetsh.imaging.IMGEditActivity;
 
 public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPresenter>

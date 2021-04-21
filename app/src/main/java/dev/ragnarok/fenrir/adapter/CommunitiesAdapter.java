@@ -45,7 +45,7 @@ public class CommunitiesAdapter extends MultyDataAdapter<Community, CommunitiesA
     }
 
     @Override
-    public void onBindViewHolder(Holder holder, int position) {
+    public void onBindViewHolder(@NonNull Holder holder, int position) {
         get(position, INFO);
 
         Community community = INFO.item;

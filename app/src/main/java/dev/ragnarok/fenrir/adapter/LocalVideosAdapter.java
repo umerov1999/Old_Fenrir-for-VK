@@ -47,7 +47,7 @@ public class LocalVideosAdapter extends RecyclerView.Adapter<LocalVideosAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         LocalVideo video = data.get(position);
         holder.attachPhoto(video);
 

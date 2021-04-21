@@ -21,7 +21,7 @@ public class PlayerCoverBackgroundSettings {
     public PlayerCoverBackgroundSettings set_default() {
         enabled_rotation = true;
         invert_rotation = false;
-        rotation_speed = 0.008f;
+        rotation_speed = 0.006f;
         zoom = 1.2f;
         blur = 16;
         return this;

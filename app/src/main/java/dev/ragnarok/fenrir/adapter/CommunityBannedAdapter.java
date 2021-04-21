@@ -50,7 +50,7 @@ public class CommunityBannedAdapter extends RecyclerView.Adapter<CommunityBanned
     }
 
     @Override
-    public void onBindViewHolder(Holder holder, int position) {
+    public void onBindViewHolder(@NonNull Holder holder, int position) {
         Context context = holder.itemView.getContext();
 
         Banned banned = data.get(position);

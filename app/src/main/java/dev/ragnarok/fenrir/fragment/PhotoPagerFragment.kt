@@ -32,7 +32,6 @@ import dev.ragnarok.fenrir.listener.BackPressCallback
 import dev.ragnarok.fenrir.model.*
 import dev.ragnarok.fenrir.module.FenrirNative
 import dev.ragnarok.fenrir.module.parcel.ParcelNative
-import dev.ragnarok.fenrir.module.rlottie.RLottieImageView
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory
 import dev.ragnarok.fenrir.mvp.presenter.photo.*
 import dev.ragnarok.fenrir.mvp.view.IPhotoPagerView
@@ -49,6 +48,7 @@ import dev.ragnarok.fenrir.util.Utils
 import dev.ragnarok.fenrir.util.Utils.nonEmpty
 import dev.ragnarok.fenrir.view.CircleCounterButton
 import dev.ragnarok.fenrir.view.TouchImageView
+import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView
 import dev.ragnarok.fenrir.view.pager.GoBackCallback
 import dev.ragnarok.fenrir.view.pager.WeakGoBackAnimationAdapter
 import dev.ragnarok.fenrir.view.pager.WeakPicassoLoadCallback

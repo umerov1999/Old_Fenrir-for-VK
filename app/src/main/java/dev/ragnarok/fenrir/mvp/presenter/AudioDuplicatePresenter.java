@@ -125,6 +125,7 @@ public class AudioDuplicatePresenter extends RxSupportPresenter<IAudioDuplicateV
                 break;
             case MusicUtils.PlayerStatus.REPEATMODE_CHANGED:
             case MusicUtils.PlayerStatus.SHUFFLEMODE_CHANGED:
+            case MusicUtils.PlayerStatus.UPDATE_PLAY_LIST:
                 break;
         }
     }

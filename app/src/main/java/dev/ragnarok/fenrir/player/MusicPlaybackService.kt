@@ -75,7 +75,8 @@ class MusicPlaybackService : Service() {
     private var AlbumTitle: String? = null
     private var mShuffleMode = SHUFFLE_NONE
     private var mRepeatMode = REPEAT_NONE
-    private var mPlayList: List<Audio>? = null
+    private var mPlayList: ArrayList<Audio>? = null
+    private var mPlayListOrig: ArrayList<Audio>? = null
     private var mNotificationHelper: NotificationHelper? = null
     private var mMediaMetadataCompat: MediaMetadataCompat? = null
     override fun onBind(intent: Intent): IBinder {
@@ -358,7 +359,7 @@ class MusicPlaybackService : Service() {
             if (Utils.safeIsEmpty(mPlayList)) {
                 return
             }
-            stop(java.lang.Boolean.FALSE)
+            stop(false)
             if (mPlayList!!.size - 1 < mPlayPos) {
                 mPlayPos = 0
             }
@@ -375,29 +376,6 @@ class MusicPlaybackService : Service() {
     private fun getNextPosition(force: Boolean): Int {
         if (!force && mRepeatMode == REPEAT_CURRENT) {
             return mPlayPos.coerceAtLeast(0)
-        }
-        if (mShuffleMode == SHUFFLE) {
-            if (mPlayPos >= 0) {
-                mHistory.add(mPlayPos)
-            }
-            if (mHistory.size > MAX_HISTORY_SIZE) {
-                mHistory.removeAt(0)
-            }
-            val notPlayedTracksPositions = Stack<Int>()
-            val allWerePlayed = mPlayList!!.size - mHistory.size == 0
-            if (!allWerePlayed) {
-                for (i in mPlayList!!.indices) {
-                    if (!mHistory.contains(i)) {
-                        notPlayedTracksPositions.push(i)
-                    }
-                }
-            } else {
-                for (i in mPlayList!!.indices) {
-                    notPlayedTracksPositions.push(i)
-                }
-                mHistory.clear()
-            }
-            return notPlayedTracksPositions[mShuffler.nextInt(notPlayedTracksPositions.size)]
         }
         return if (mPlayPos >= Utils.safeCountOf(mPlayList) - 1) {
             if (mRepeatMode == REPEAT_NONE && !force) {
@@ -505,7 +483,7 @@ class MusicPlaybackService : Service() {
     fun openFile(audio: Audio?, UpdateMeta: Boolean) {
         synchronized(this) {
             if (audio == null) {
-                stop(java.lang.Boolean.TRUE)
+                stop(true)
                 return
             }
 
@@ -560,6 +538,16 @@ class MusicPlaybackService : Service() {
                 }
                 mShuffleMode = shufflemode
                 notifyChange(SHUFFLEMODE_CHANGED)
+                if (mShuffleMode == SHUFFLE) {
+                    mPlayList?.shuffle()
+                    skip(0, true)
+                } else {
+                    val ps = mPlayListOrig?.indexOf(mPlayList?.get(mPlayPos))
+                    mPlayList?.clear()
+                    mPlayListOrig?.let { mPlayList?.addAll(it) }
+                    ps?.let { mPlayPos = it }
+                    notifyChange(META_CHANGED)
+                }
             }
         }
 
@@ -635,6 +623,16 @@ class MusicPlaybackService : Service() {
             return null
         }
 
+    val currentTrackPos: Int
+        get() {
+            synchronized(this) {
+                if (mPlayPos >= 0 && mPlayList!!.size > mPlayPos) {
+                    return mPlayPos
+                }
+            }
+            return -1
+        }
+
     fun seek(position: Long): Long {
         var positiontemp = position
         if (mPlayer != null && mPlayer!!.isInitialized) {
@@ -683,15 +681,17 @@ class MusicPlaybackService : Service() {
     fun open(list: List<Audio>, position: Int) {
         synchronized(this) {
             val oldAudio = currentTrack
-            mPlayList = list
+            mPlayList = ArrayList(list)
+            if (mShuffleMode == SHUFFLE)
+                mPlayList?.shuffle()
+            mPlayListOrig = ArrayList(list)
+            notifyChange(QUEUE_CHANGED)
             mPlayPos = if (position >= 0) {
                 position
             } else {
-                mShuffler.nextInt(Utils.safeCountOf(mPlayList))
+                0
             }
-            mHistory.clear()
             playCurrentTrack(true)
-            notifyChange(QUEUE_CHANGED)
             if (oldAudio !== currentTrack) {
                 notifyChange(META_CHANGED)
             }
@@ -759,25 +759,44 @@ class MusicPlaybackService : Service() {
         }
     }
 
+    fun skip(pos: Int, force: Boolean) {
+        if (!force && pos == currentTrackPos)
+            return
+        if (D) Logger.d(TAG, "Going to next track")
+        synchronized(this) {
+            if (Utils.safeCountOf(mPlayList) <= 0) {
+                if (D) Logger.d(TAG, "No play queue")
+                scheduleDelayedShutdown()
+                return
+            }
+            Logger.d(TAG, pos.toString())
+            if (pos < 0) {
+                pause()
+                scheduleDelayedShutdown()
+                if (isPlaying) {
+                    isPlaying = false
+                    notifyChange(PLAYSTATE_CHANGED)
+                }
+                return
+            }
+            mPlayPos = pos
+            stop(false)
+            mPlayPos = pos
+            playCurrentTrack(true)
+            notifyChange(META_CHANGED)
+        }
+    }
+
     /**
      * Changes from the current track to the previous played track
      */
     fun prev() {
         if (D) Logger.d(TAG, "Going to previous track")
         synchronized(this) {
-            if (mShuffleMode == SHUFFLE) {
-                // Go to previously-played track and remove it from the history
-                val histsize = mHistory.size
-                if (histsize == 0) {
-                    return
-                }
-                mPlayPos = mHistory.removeAt(histsize - 1)
+            if (mPlayPos > 0) {
+                mPlayPos--
             } else {
-                if (mPlayPos > 0) {
-                    mPlayPos--
-                } else {
-                    mPlayPos = Utils.safeCountOf(mPlayList) - 1
-                }
+                mPlayPos = Utils.safeCountOf(mPlayList) - 1
             }
             stop(false)
             playCurrentTrack(true)
@@ -838,6 +857,12 @@ class MusicPlaybackService : Service() {
         ).build()
         var isInitialized = false
         var isPreparing = false
+        val factory = Utils.getExoPlayerFactory(
+            Constants.USER_AGENT(Account_Types.BY_TYPE),
+            Injection.provideProxySettings().activeProxy
+        )
+        val factoryLocal =
+            DefaultDataSourceFactory(service, Constants.USER_AGENT(Account_Types.BY_TYPE))
         val audioInteractor: IAudioInteractor = InteractorFactory.createAudioInteractor()
         val compositeDisposable = CompositeDisposable()
 
@@ -857,20 +882,13 @@ class MusicPlaybackService : Service() {
                 res,
                 RawResourceDataSource.buildRawResourceUri(R.raw.audio_error).toString()
             )
-            val userAgent = Constants.USER_AGENT(Account_Types.BY_TYPE)
-            val factory =
-                Utils.getExoPlayerFactory(userAgent, Injection.provideProxySettings().activeProxy)
             val mediaSource: MediaSource =
                 if (url.contains("file://") || url.contains("content://") || url.contains(
                         RawResourceDataSource.RAW_RESOURCE_SCHEME
                     )
                 ) {
-                    ProgressiveMediaSource.Factory(
-                        DefaultDataSourceFactory(
-                            mService.get()!!,
-                            userAgent
-                        )
-                    ).createMediaSource(makeMediaItem(url))
+                    ProgressiveMediaSource.Factory(factoryLocal)
+                        .createMediaSource(makeMediaItem(url))
                 } else {
                     if (url.contains("index.m3u8")) HlsMediaSource.Factory(factory)
                         .createMediaSource(makeMediaItem(url)) else ProgressiveMediaSource.Factory(
@@ -1081,8 +1099,16 @@ class MusicPlaybackService : Service() {
             return mService.get()!!.seek(position)
         }
 
+        override fun skip(position: Int) {
+            mService.get()?.skip(position, false)
+        }
+
         override fun getCurrentAudio(): Audio? {
             return mService.get()?.currentTrack
+        }
+
+        override fun getCurrentAudioPos(): Int {
+            return mService.get()!!.currentTrackPos
         }
 
         override fun getArtistName(): String? {
@@ -1172,9 +1198,6 @@ class MusicPlaybackService : Service() {
         const val REPEAT_CURRENT = 1
         const val REPEAT_ALL = 2
         private var IDLE_DELAY = Constants.AUDIO_PLAYER_SERVICE_IDLE
-        private const val MAX_HISTORY_SIZE = 100
-        private val mHistory = LinkedList<Int>()
-        private val mShuffler = Shuffler(MAX_HISTORY_SIZE)
         private const val MAX_QUEUE_SIZE = 200
         private fun listToIdPair(audios: ArrayList<Audio>): List<IdPair> {
             val result: MutableList<IdPair> = ArrayList()

@@ -1377,9 +1377,6 @@
     <string name="open_avatar">Открыть аватар</string>
     <string name="add_and_download_button">Скачать и добавить</string>
     <string name="delete_cache_images">Очищать кэш изображений при входе</string>
-    <string name="click_next_track">Тап по обложке - следующий трек</string>
-    <string name="click_next_track_summary_on">Длинное нажатие - предыдущий</string>
-    <string name="click_next_track_summary_off">Длинное нажатие - следующий трек</string>
     <string name="voice_click">Ab</string>
     <string name="remote_audio_error">Ошибка получения списка сохранённых аудио на ПК</string>
     <string name="audio_catalog">Каталог</string>

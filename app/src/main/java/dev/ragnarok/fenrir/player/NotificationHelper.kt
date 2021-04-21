@@ -42,13 +42,13 @@ class NotificationHelper(private val mService: MusicPlaybackService) {
                 .setContentText(trackName)
                 .setContentIntent(getOpenIntent(context))
                 .setLargeIcon(cover)
-                .setDeleteIntent(retreivePlaybackActions(5))
+                //.setDeleteIntent(retreivePlaybackActions(SWIPE_DISMISS_ACTION))
                 .setStyle(
                     androidx.media.app.NotificationCompat.MediaStyle()
                         .setMediaSession(mediaSessionToken)
                         .setShowCancelButton(true)
                         .setShowActionsInCompactView(0, 1, 2)
-                        .setCancelButtonIntent(retreivePlaybackActions(4))
+                        .setCancelButtonIntent(retreivePlaybackActions(ACTION_STOP_ACTION))
                 )
                 .addAction(
                     NotificationCompat.Action(
@@ -99,7 +99,7 @@ class NotificationHelper(private val mService: MusicPlaybackService) {
             1, NotificationCompat.Action(
                 if (isPlaying) R.drawable.pause_notification else R.drawable.play_notification,
                 null,
-                retreivePlaybackActions(1)
+                retreivePlaybackActions(ACTION_PLAY_PAUSE)
             )
         )
         mNotificationManager.notify(FENRIR_MUSIC_SERVICE, mNotificationBuilder!!.build())
@@ -120,35 +120,35 @@ class NotificationHelper(private val mService: MusicPlaybackService) {
                 // Play and pause
                 action = Intent(MusicPlaybackService.TOGGLEPAUSE_ACTION)
                 action.component = serviceName
-                pendingIntent = PendingIntent.getService(mService, 1, action, 0)
+                pendingIntent = PendingIntent.getService(mService, ACTION_PLAY_PAUSE, action, 0)
                 return pendingIntent
             }
             ACTION_NEXT -> {
                 // Skip tracks
                 action = Intent(MusicPlaybackService.NEXT_ACTION)
                 action.component = serviceName
-                pendingIntent = PendingIntent.getService(mService, 2, action, 0)
+                pendingIntent = PendingIntent.getService(mService, ACTION_NEXT, action, 0)
                 return pendingIntent
             }
             ACTION_PREV -> {
                 // Previous tracks
                 action = Intent(MusicPlaybackService.PREVIOUS_ACTION)
                 action.component = serviceName
-                pendingIntent = PendingIntent.getService(mService, 3, action, 0)
+                pendingIntent = PendingIntent.getService(mService, ACTION_PREV, action, 0)
                 return pendingIntent
             }
             ACTION_STOP_ACTION -> {
                 // Stop and collapse the notification
                 action = Intent(MusicPlaybackService.STOP_ACTION)
                 action.component = serviceName
-                pendingIntent = PendingIntent.getService(mService, 4, action, 0)
+                pendingIntent = PendingIntent.getService(mService, ACTION_STOP_ACTION, action, 0)
                 return pendingIntent
             }
             SWIPE_DISMISS_ACTION -> {
                 // Stop and collapse the notification
                 action = Intent(MusicPlaybackService.SWIPE_DISMISS_ACTION)
                 action.component = serviceName
-                pendingIntent = PendingIntent.getService(mService, 5, action, 0)
+                pendingIntent = PendingIntent.getService(mService, SWIPE_DISMISS_ACTION, action, 0)
                 return pendingIntent
             }
             else -> {

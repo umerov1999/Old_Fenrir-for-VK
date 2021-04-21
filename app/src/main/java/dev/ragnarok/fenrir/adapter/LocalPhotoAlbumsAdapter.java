@@ -41,7 +41,7 @@ public class LocalPhotoAlbumsAdapter extends RecyclerView.Adapter<LocalPhotoAlbu
     }
 
     @Override
-    public void onBindViewHolder(Holder holder, int position) {
+    public void onBindViewHolder(@NonNull Holder holder, int position) {
         LocalImageAlbum album = data.get(position);
 
         Uri uri = PicassoInstance.buildUriForPicasso(Content_Local.PHOTO, album.getCoverImageId());

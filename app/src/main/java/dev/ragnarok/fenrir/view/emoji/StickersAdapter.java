@@ -18,10 +18,10 @@ import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.Sticker;
 import dev.ragnarok.fenrir.model.StickerSet;
 import dev.ragnarok.fenrir.module.rlottie.RLottieDrawable;
-import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
+import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 
 public class StickersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final int TYPE_IMAGE = 0;

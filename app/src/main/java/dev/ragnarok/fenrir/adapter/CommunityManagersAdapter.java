@@ -58,7 +58,7 @@ public class CommunityManagersAdapter extends RecyclerView.Adapter<CommunityMana
     }
 
     @Override
-    public void onBindViewHolder(Holder holder, int position) {
+    public void onBindViewHolder(@NonNull Holder holder, int position) {
         Manager manager = users.get(position);
         User user = manager.getUser();
 

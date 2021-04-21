@@ -213,4 +213,10 @@
         <attr name="snowflakesFadingEnabled" format="boolean" />
         <attr name="snowflakesAlreadyFalling" format="boolean" />
     </declare-styleable>
+    <declare-styleable name="RLottieImageView">
+        <attr name="loopAnimation" format="boolean" />
+        <attr name="fromRes" format="reference" />
+        <attr name="w" format="dimension" />
+        <attr name="h" format="dimension" />
+    </declare-styleable>
 </resources>

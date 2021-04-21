@@ -67,7 +67,6 @@ import dev.ragnarok.fenrir.model.Video;
 import dev.ragnarok.fenrir.model.VoiceMessage;
 import dev.ragnarok.fenrir.model.WallReply;
 import dev.ragnarok.fenrir.model.WikiPage;
-import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
@@ -78,6 +77,7 @@ import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.WaveFormView;
 import dev.ragnarok.fenrir.view.emoji.EmojiconTextView;
+import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 
 public class AttachmentsViewBinder {
 

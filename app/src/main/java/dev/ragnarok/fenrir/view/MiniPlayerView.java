@@ -32,7 +32,6 @@ import java.util.Objects;
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.Audio;
-import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.picasso.transforms.PolyTransformation;
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation;
@@ -41,6 +40,7 @@ import dev.ragnarok.fenrir.player.util.MusicUtils;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
+import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 import io.reactivex.rxjava3.disposables.Disposable;
 
 public class MiniPlayerView extends FrameLayout implements SeekBar.OnSeekBarChangeListener {
@@ -167,6 +167,7 @@ public class MiniPlayerView extends FrameLayout implements SeekBar.OnSeekBarChan
                 break;
             case MusicUtils.PlayerStatus.REPEATMODE_CHANGED:
             case MusicUtils.PlayerStatus.SHUFFLEMODE_CHANGED:
+            case MusicUtils.PlayerStatus.UPDATE_PLAY_LIST:
                 break;
         }
     }

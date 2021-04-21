@@ -55,9 +55,7 @@ public class ChatMembersListDomainAdapter extends RecyclerView.Adapter<ChatMembe
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        Context context = holder.itemView.getContext();
-
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         AppChatUser item = data.get(position);
         Owner user = item.getMember();
 
@@ -102,12 +100,13 @@ public class ChatMembersListDomainAdapter extends RecyclerView.Adapter<ChatMembe
             holder.tvDomain.setText("@id" + user.getOwnerId());
         }
 
-        holder.itemView.setOnClickListener(view -> {
-            if (Objects.nonNull(actionListener)) {
+        if (Objects.nonNull(actionListener)) {
+            holder.itemView.setOnClickListener(view -> {
                 actionListener.onUserClick(item);
                 holder.startSomeAnimation();
-            }
-        });
+            });
+            holder.itemView.setOnLongClickListener(v -> actionListener.onUserLongClick(item));
+        }
 
         View view = holder.itemView;
 
@@ -133,6 +132,8 @@ public class ChatMembersListDomainAdapter extends RecyclerView.Adapter<ChatMembe
 
     public interface ActionListener {
         void onUserClick(AppChatUser user);
+
+        boolean onUserLongClick(AppChatUser user);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

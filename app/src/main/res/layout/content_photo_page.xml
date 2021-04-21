@@ -18,7 +18,7 @@
             app:layout_behavior="dev.ragnarok.fenrir.view.swipehelper.VerticalSwipeBehavior" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <dev.ragnarok.fenrir.module.rlottie.RLottieImageView
+    <dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

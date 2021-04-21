@@ -570,14 +570,6 @@
 
         <SwitchPreference
             android:defaultValue="true"
-            android:key="click_next_track"
-            android:summaryOff="@string/click_next_track_summary_off"
-            android:summaryOn="@string/click_next_track_summary_on"
-            android:title="@string/click_next_track"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
-            android:defaultValue="true"
             android:key="show_mini_player"
             android:title="@string/show_mini_player"
             app:iconSpaceReserved="false" />

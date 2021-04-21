@@ -5,10 +5,10 @@ import android.widget.ProgressBar;
 
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.LoadMoreState;
-import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
+import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 
 public class LoadMoreFooterHelper {
 

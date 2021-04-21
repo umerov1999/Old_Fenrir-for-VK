@@ -39,7 +39,6 @@ import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.ModalBottomSheetDialog
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.OptionRequest;
 import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.model.menu.AudioItem;
-import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.picasso.transforms.PolyTransformation;
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation;
@@ -53,6 +52,7 @@ import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.WeakViewAnimatorAdapter;
+import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.Disposable;
 
@@ -279,6 +279,7 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
                 break;
             case MusicUtils.PlayerStatus.REPEATMODE_CHANGED:
             case MusicUtils.PlayerStatus.SHUFFLEMODE_CHANGED:
+            case MusicUtils.PlayerStatus.UPDATE_PLAY_LIST:
                 break;
         }
     }

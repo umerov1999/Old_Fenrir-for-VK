@@ -32,7 +32,7 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.Hold
     }
 
     @Override
-    public void onBindViewHolder(Holder holder, int position) {
+    public void onBindViewHolder(@NonNull Holder holder, int position) {
         Country country = mData.get(position);
         holder.name.setText(country.getTitle());
 

@@ -51,7 +51,7 @@ public class ChatMembersListAdapter extends RecyclerView.Adapter<ChatMembersList
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Context context = holder.itemView.getContext();
 
         AppChatUser item = data.get(position);

@@ -36,7 +36,7 @@ public class FileManagerAdapter extends RecyclerView.Adapter<FileManagerAdapter.
     }
 
     @Override
-    public void onBindViewHolder(Holder holder, int position) {
+    public void onBindViewHolder(@NonNull Holder holder, int position) {
         FileItem item = data.get(position);
         holder.icon.setBackgroundResource(item.icon);
         holder.fileName.setText(item.file);

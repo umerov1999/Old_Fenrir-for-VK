@@ -1549,9 +1549,6 @@
     <string name="open_avatar">Open avatar</string>
     <string name="add_and_download_button">Download and add</string>
     <string name="delete_cache_images">Clear image cache on startup</string>
-    <string name="click_next_track">Tap on a cover - next track</string>
-    <string name="click_next_track_summary_on">Long press - previous</string>
-    <string name="click_next_track_summary_off">Long press - next track</string>
     <string name="voice_click">Ab</string>
     <string name="remote_audio_error">Error getting the list of saved audio on PC</string>
     <string name="audio_catalog">Catalog</string>

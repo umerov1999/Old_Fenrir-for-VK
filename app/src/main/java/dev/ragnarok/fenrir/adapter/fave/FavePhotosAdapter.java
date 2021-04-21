@@ -41,7 +41,7 @@ public class FavePhotosAdapter extends RecyclerView.Adapter<FavePhotosAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(FavePhotosAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull FavePhotosAdapter.ViewHolder viewHolder, int position) {
         Photo photo = data.get(position);
 
         viewHolder.tvLike.setText(AppTextUtils.getCounterWithK(photo.getLikesCount()));

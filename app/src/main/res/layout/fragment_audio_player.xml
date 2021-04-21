@@ -96,8 +96,8 @@
             app:barrierDirection="bottom"
             app:constraint_referenced_ids="audio_player_get_lyrics,player_handler,goto_button" />
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:id="@+id/cover_coordinator"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/cover_pager"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="32dp"
@@ -107,21 +107,7 @@
             app:layout_constraintDimensionRatio="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/goto_button_header">
-
-            <dev.ragnarok.fenrir.module.rlottie.RLottieShapeableImageView
-                android:id="@+id/cover"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/album_cover"
-                android:scaleType="fitStart"
-                android:stateListAnimator="@animator/clicked"
-                app:layout_behavior="dev.ragnarok.fenrir.view.swipehelper.HorizontalSwipeBehavior"
-                app:loopAnimation="true"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.RoundedPlayerCover" />
-
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            app:layout_constraintTop_toBottomOf="@id/goto_button_header" />
 
         <TextView
             android:id="@+id/audio_player_current_time"

@@ -30,7 +30,6 @@ import dev.ragnarok.fenrir.listener.BackPressCallback
 import dev.ragnarok.fenrir.media.gif.IGifPlayer
 import dev.ragnarok.fenrir.model.PhotoSize
 import dev.ragnarok.fenrir.model.Story
-import dev.ragnarok.fenrir.module.rlottie.RLottieImageView
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory
 import dev.ragnarok.fenrir.mvp.presenter.StoryPagerPresenter
 import dev.ragnarok.fenrir.mvp.view.IStoryPagerView
@@ -45,6 +44,7 @@ import dev.ragnarok.fenrir.view.AlternativeAspectRatioFrameLayout
 import dev.ragnarok.fenrir.view.CircleCounterButton
 import dev.ragnarok.fenrir.view.FlingRelativeLayout
 import dev.ragnarok.fenrir.view.TouchImageView
+import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView
 import dev.ragnarok.fenrir.view.pager.CloseOnFlingListener
 import dev.ragnarok.fenrir.view.pager.GoBackCallback
 import dev.ragnarok.fenrir.view.pager.WeakGoBackAnimationAdapter

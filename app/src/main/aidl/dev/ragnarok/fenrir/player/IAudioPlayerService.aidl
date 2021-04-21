@@ -6,6 +6,7 @@ import java.util.List;
 interface IAudioPlayerService {
     void openFile(in Audio audio);
     void open(in List<Audio> list, int position);
+    void skip(int position);
     void stop();
     void pause();
     void play();
@@ -24,6 +25,7 @@ interface IAudioPlayerService {
     long position();
     long seek(long pos);
     Audio getCurrentAudio();
+    int getCurrentAudioPos();
     String getArtistName();
     String getTrackName();
     String getAlbumName();

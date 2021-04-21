@@ -75,6 +75,9 @@ public final class MusicUtils {
                     case MusicPlaybackService.META_CHANGED:
                         result = PlayerStatus.UPDATE_TRACK_INFO;
                         break;
+                    case MusicPlaybackService.QUEUE_CHANGED:
+                        result = PlayerStatus.UPDATE_PLAY_LIST;
+                        break;
                 }
                 SERVICE_BIND_PUBLISHER.onNext(result);
             }
@@ -86,6 +89,7 @@ public final class MusicUtils {
         filter.addAction(MusicPlaybackService.REPEATMODE_CHANGED);
         filter.addAction(MusicPlaybackService.META_CHANGED);
         filter.addAction(MusicPlaybackService.PREPARED);
+        filter.addAction(MusicPlaybackService.QUEUE_CHANGED);
 
         appContext.registerReceiver(receiver, filter);
     }
@@ -331,6 +335,23 @@ public final class MusicUtils {
         return null;
     }
 
+    @Nullable
+    public static Integer getCurrentAudioPos() {
+        if (mService != null) {
+            try {
+                int ret = mService.getCurrentAudioPos();
+                if (ret < 0) {
+                    return null;
+                } else {
+                    return ret;
+                }
+            } catch (RemoteException ignored) {
+            }
+        }
+
+        return null;
+    }
+
     /**
      * @return The current track name.
      */
@@ -439,6 +460,15 @@ public final class MusicUtils {
         }
     }
 
+    public static void skip(int position) {
+        if (mService != null) {
+            try {
+                mService.skip(position);
+            } catch (RemoteException ignored) {
+            }
+        }
+    }
+
     /**
      * @return The current position time of the track
      */
@@ -526,7 +556,8 @@ public final class MusicUtils {
             PlayerStatus.SHUFFLEMODE_CHANGED,
             PlayerStatus.REPEATMODE_CHANGED,
             PlayerStatus.UPDATE_TRACK_INFO,
-            PlayerStatus.UPDATE_PLAY_PAUSE})
+            PlayerStatus.UPDATE_PLAY_PAUSE,
+            PlayerStatus.UPDATE_PLAY_LIST})
     @Retention(RetentionPolicy.SOURCE)
     public @interface PlayerStatus {
         int SERVICE_KILLED = 0;
@@ -534,6 +565,7 @@ public final class MusicUtils {
         int REPEATMODE_CHANGED = 2;
         int UPDATE_TRACK_INFO = 3;
         int UPDATE_PLAY_PAUSE = 4;
+        int UPDATE_PLAY_LIST = 5;
     }
 
     public static final class ServiceBinder implements ServiceConnection {
@@ -551,6 +583,7 @@ public final class MusicUtils {
             if (mCallback != null) {
                 mCallback.onServiceConnected(className, service);
             }
+            SERVICE_BIND_PUBLISHER.onNext(PlayerStatus.UPDATE_PLAY_LIST);
             SERVICE_BIND_PUBLISHER.onNext(PlayerStatus.UPDATE_TRACK_INFO);
         }
 

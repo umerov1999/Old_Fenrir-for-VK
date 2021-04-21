@@ -34,7 +34,7 @@ public class CitiesAdapter extends RecyclerView.Adapter<CitiesAdapter.Holder> {
     }
 
     @Override
-    public void onBindViewHolder(Holder holder, int position) {
+    public void onBindViewHolder(@NonNull Holder holder, int position) {
         City city = mData.get(position);
         holder.title.setText(city.getTitle());
         holder.title.setTypeface(null, city.isImportant() ? Typeface.BOLD : Typeface.NORMAL);

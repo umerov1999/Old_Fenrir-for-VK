@@ -38,7 +38,6 @@ import dev.ragnarok.fenrir.model.LastReadId;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.MessageStatus;
 import dev.ragnarok.fenrir.model.Sticker;
-import dev.ragnarok.fenrir.module.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
@@ -50,6 +49,7 @@ import dev.ragnarok.fenrir.view.MessageView;
 import dev.ragnarok.fenrir.view.OnlineView;
 import dev.ragnarok.fenrir.view.emoji.BotKeyboardView;
 import dev.ragnarok.fenrir.view.emoji.EmojiconTextView;
+import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 
 public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerView.ViewHolder> {
 
