@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (C) 2020 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,36 +15,31 @@
   ~ limitations under the License.
 -->
 <resources>
+  <style name="Widget.MaterialComponents.ProgressIndicator" parent="android:Widget">
+    <item name="trackThickness">@dimen/mtrl_progress_track_thickness</item>
+    <item name="android:indeterminateOnly">false</item>
+  </style>
+  <style name="Widget.MaterialComponents.LinearProgressIndicator" parent="Widget.MaterialComponents.ProgressIndicator">
+    <item name="indeterminateAnimationType">disjoint</item>
+    <item name="indicatorDirectionLinear">startToEnd</item>
+  </style>
+  <style name="Widget.MaterialComponents.CircularProgressIndicator" parent="Widget.MaterialComponents.ProgressIndicator">
+    <item name="trackThickness">@dimen/mtrl_progress_circular_track_thickness_medium</item>
+    <item name="indicatorSize">@dimen/mtrl_progress_circular_size_medium</item>
+    <item name="indicatorInset">@dimen/mtrl_progress_circular_inset_medium</item>
+    <item name="trackColor">@android:color/transparent</item>
+    <item name="indicatorDirectionCircular">clockwise</item>
+  </style>
 
-    <style name="Widget.MaterialComponents.ProgressIndicator" parent="android:Widget">
-        <item name="trackThickness">@dimen/mtrl_progress_track_thickness</item>
-        <item name="android:indeterminateOnly">false</item>
-    </style>
-
-    <style name="Widget.MaterialComponents.LinearProgressIndicator" parent="Widget.MaterialComponents.ProgressIndicator">
-        <item name="indeterminateAnimationType">disjoint</item>
-        <item name="indicatorDirectionLinear">startToEnd</item>
-    </style>
-
-    <style name="Widget.MaterialComponents.CircularProgressIndicator" parent="Widget.MaterialComponents.ProgressIndicator">
-        <item name="trackThickness">@dimen/mtrl_progress_circular_track_thickness_medium</item>
-        <item name="indicatorSize">@dimen/mtrl_progress_circular_size_medium</item>
-        <item name="indicatorInset">@dimen/mtrl_progress_circular_inset_medium</item>
-        <item name="trackColor">@android:color/transparent</item>
-        <item name="indicatorDirectionCircular">clockwise</item>
-    </style>
-
-    <style name="Widget.MaterialComponents.CircularProgressIndicator.Medium" />
-
-    <style name="Widget.MaterialComponents.CircularProgressIndicator.Small">
-        <item name="trackThickness">@dimen/mtrl_progress_circular_track_thickness_small</item>
-        <item name="indicatorSize">@dimen/mtrl_progress_circular_size_small</item>
-        <item name="indicatorInset">@dimen/mtrl_progress_circular_inset_small</item>
-    </style>
-
-    <style name="Widget.MaterialComponents.CircularProgressIndicator.ExtraSmall">
-        <item name="trackThickness">@dimen/mtrl_progress_circular_track_thickness_extra_small</item>
-        <item name="indicatorSize">@dimen/mtrl_progress_circular_size_extra_small</item>
-        <item name="indicatorInset">@dimen/mtrl_progress_circular_inset_extra_small</item>
-    </style>
+  <style name="Widget.MaterialComponents.CircularProgressIndicator.Medium"/>
+  <style name="Widget.MaterialComponents.CircularProgressIndicator.Small">
+    <item name="trackThickness">@dimen/mtrl_progress_circular_track_thickness_small</item>
+    <item name="indicatorSize">@dimen/mtrl_progress_circular_size_small</item>
+    <item name="indicatorInset">@dimen/mtrl_progress_circular_inset_small</item>
+  </style>
+  <style name="Widget.MaterialComponents.CircularProgressIndicator.ExtraSmall">
+    <item name="trackThickness">@dimen/mtrl_progress_circular_track_thickness_extra_small</item>
+    <item name="indicatorSize">@dimen/mtrl_progress_circular_size_extra_small</item>
+    <item name="indicatorInset">@dimen/mtrl_progress_circular_inset_extra_small</item>
+  </style>
 </resources>

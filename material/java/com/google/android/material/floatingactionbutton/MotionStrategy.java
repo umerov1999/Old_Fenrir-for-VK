@@ -19,14 +19,11 @@ package com.google.android.material.floatingactionbutton;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
-
 import androidx.annotation.AnimatorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.google.android.material.animation.MotionSpec;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton.OnChangedCallback;
-
 import java.util.List;
 
 /**
@@ -35,35 +32,33 @@ import java.util.List;
  */
 interface MotionStrategy {
 
-    void performNow();
+  void performNow();
 
-    MotionSpec getCurrentMotionSpec();
+  MotionSpec getCurrentMotionSpec();
 
-    @AnimatorRes
-    int getDefaultMotionSpecResource();
+  @AnimatorRes int getDefaultMotionSpecResource();
 
-    @Nullable
-    MotionSpec getMotionSpec();
+  void setMotionSpec(@Nullable MotionSpec spec);
 
-    void setMotionSpec(@Nullable MotionSpec spec);
+  @Nullable MotionSpec getMotionSpec();
 
-    AnimatorSet createAnimator();
+  AnimatorSet createAnimator();
 
-    void addAnimationListener(@NonNull AnimatorListener listener);
+  void addAnimationListener(@NonNull AnimatorListener listener);
 
-    void removeAnimationListener(@NonNull AnimatorListener listener);
+  void removeAnimationListener(@NonNull AnimatorListener listener);
 
-    List<AnimatorListener> getListeners();
+  List<AnimatorListener> getListeners();
 
-    void onAnimationStart(Animator animator);
+  void onAnimationStart(Animator animator);
 
-    void onAnimationEnd();
+  void onAnimationEnd();
 
-    void onAnimationCancel();
+  void onAnimationCancel();
 
-    void onChange(@Nullable OnChangedCallback callback);
+  void onChange(@Nullable OnChangedCallback callback);
 
-    boolean shouldCancel();
+  boolean shouldCancel();
 }
 
 

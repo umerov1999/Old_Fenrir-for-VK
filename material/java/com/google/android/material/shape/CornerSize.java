@@ -17,15 +17,10 @@
 package com.google.android.material.shape;
 
 import android.graphics.RectF;
-
 import androidx.annotation.NonNull;
 
-/**
- * Allows clients to describe the size of a corner independently from a {@link CornerTreatment}.
- */
+/** Allows clients to describe the size of a corner independently from a {@link CornerTreatment}. */
 public interface CornerSize {
-    /**
-     * Returns the corner size that should be used given the full bounds of the shape.
-     */
-    float getCornerSize(@NonNull RectF bounds);
+  /** Returns the corner size that should be used given the full bounds of the shape. */
+  float getCornerSize(@NonNull RectF bounds);
 }

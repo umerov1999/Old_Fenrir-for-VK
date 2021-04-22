@@ -187,7 +187,7 @@ public class BottomSheetDialog extends AppCompatDialog {
       container =
           (FrameLayout) View.inflate(getContext(), R.layout.design_bottom_sheet_dialog, null);
 
-      FrameLayout bottomSheet = container.findViewById(R.id.design_bottom_sheet);
+      FrameLayout bottomSheet = (FrameLayout) container.findViewById(R.id.design_bottom_sheet);
       behavior = BottomSheetBehavior.from(bottomSheet);
       behavior.addBottomSheetCallback(bottomSheetCallback);
       behavior.setHideable(cancelable);
@@ -198,12 +198,12 @@ public class BottomSheetDialog extends AppCompatDialog {
   private View wrapInBottomSheet(
       int layoutResId, @Nullable View view, @Nullable ViewGroup.LayoutParams params) {
     ensureContainerAndBehavior();
-    CoordinatorLayout coordinator = container.findViewById(R.id.coordinator);
+    CoordinatorLayout coordinator = (CoordinatorLayout) container.findViewById(R.id.coordinator);
     if (layoutResId != 0 && view == null) {
       view = getLayoutInflater().inflate(layoutResId, coordinator, false);
     }
 
-    FrameLayout bottomSheet = container.findViewById(R.id.design_bottom_sheet);
+    FrameLayout bottomSheet = (FrameLayout) container.findViewById(R.id.design_bottom_sheet);
     bottomSheet.removeAllViews();
     if (params == null) {
       bottomSheet.addView(view);
@@ -289,7 +289,7 @@ public class BottomSheetDialog extends AppCompatDialog {
   }
 
   @NonNull
-  private final BottomSheetBehavior.BottomSheetCallback bottomSheetCallback =
+  private BottomSheetBehavior.BottomSheetCallback bottomSheetCallback =
       new BottomSheetBehavior.BottomSheetCallback() {
         @Override
         public void onStateChanged(

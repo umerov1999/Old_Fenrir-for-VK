@@ -20,140 +20,134 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.transition.TransitionValues;
 import androidx.transition.Visibility;
-
 import com.google.android.material.animation.AnimationUtils;
 import com.google.android.material.animation.AnimatorSetCompat;
-
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A {@link Visibility} transition that is composed of a primary and secondary animator.
- */
+/** A {@link Visibility} transition that is composed of a primary and secondary animator. */
 abstract class MaterialVisibility<P extends VisibilityAnimatorProvider> extends Visibility {
 
-    private final P primaryAnimatorProvider;
-    private final List<VisibilityAnimatorProvider> additionalAnimatorProviders = new ArrayList<>();
-    @Nullable
-    private VisibilityAnimatorProvider secondaryAnimatorProvider;
+  private final P primaryAnimatorProvider;
+  @Nullable private VisibilityAnimatorProvider secondaryAnimatorProvider;
+  private final List<VisibilityAnimatorProvider> additionalAnimatorProviders = new ArrayList<>();
 
-    protected MaterialVisibility(
-            P primaryAnimatorProvider, @Nullable VisibilityAnimatorProvider secondaryAnimatorProvider) {
-        this.primaryAnimatorProvider = primaryAnimatorProvider;
-        this.secondaryAnimatorProvider = secondaryAnimatorProvider;
-        setInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR);
+  protected MaterialVisibility(
+      P primaryAnimatorProvider, @Nullable VisibilityAnimatorProvider secondaryAnimatorProvider) {
+    this.primaryAnimatorProvider = primaryAnimatorProvider;
+    this.secondaryAnimatorProvider = secondaryAnimatorProvider;
+    setInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR);
+  }
+
+  /**
+   * Returns the primary {@link VisibilityAnimatorProvider} for this transition, which can be
+   * modified but not swapped out completely.
+   */
+  @NonNull
+  public P getPrimaryAnimatorProvider() {
+    return primaryAnimatorProvider;
+  }
+
+  /**
+   * Returns the secondary {@link VisibilityAnimatorProvider} for this transition or null, which can
+   * be modified or swapped out completely for a different {@link VisibilityAnimatorProvider}.
+   *
+   * @see #setSecondaryAnimatorProvider(VisibilityAnimatorProvider)
+   */
+  @Nullable
+  public VisibilityAnimatorProvider getSecondaryAnimatorProvider() {
+    return secondaryAnimatorProvider;
+  }
+
+  /**
+   * Sets the secondary {@link VisibilityAnimatorProvider}, which provides animators to be played
+   * together with the primary {@link VisibilityAnimatorProvider}.
+   */
+  public void setSecondaryAnimatorProvider(
+      @Nullable VisibilityAnimatorProvider secondaryAnimatorProvider) {
+    this.secondaryAnimatorProvider = secondaryAnimatorProvider;
+  }
+
+  /**
+   * Adds an additional {@link VisibilityAnimatorProvider}, which provides animators be played
+   * together with the primary and secondary {@link VisibilityAnimatorProvider
+   * VisibilityAnimatorProviders}.
+   *
+   * @see #getPrimaryAnimatorProvider()
+   * @see #getSecondaryAnimatorProvider()
+   */
+  public void addAdditionalAnimatorProvider(
+      @NonNull VisibilityAnimatorProvider additionalAnimatorProvider) {
+    additionalAnimatorProviders.add(additionalAnimatorProvider);
+  }
+
+  /**
+   * Removes an additional {@link VisibilityAnimatorProvider} that was previously added.
+   *
+   * @see #addAdditionalAnimatorProvider(VisibilityAnimatorProvider)
+   */
+  public boolean removeAdditionalAnimatorProvider(
+      @NonNull VisibilityAnimatorProvider additionalAnimatorProvider) {
+    return additionalAnimatorProviders.remove(additionalAnimatorProvider);
+  }
+
+  /**
+   * Clears all additional {@link VisibilityAnimatorProvider VisibilityAnimatorProviders} that were
+   * previously added.
+   *
+   * @see #addAdditionalAnimatorProvider(VisibilityAnimatorProvider)
+   */
+  public void clearAdditionalAnimatorProvider() {
+    additionalAnimatorProviders.clear();
+  }
+
+  @Override
+  public Animator onAppear(
+      ViewGroup sceneRoot, View view, TransitionValues startValues, TransitionValues endValues) {
+    return createAnimator(sceneRoot, view, true);
+  }
+
+  @Override
+  public Animator onDisappear(
+      ViewGroup sceneRoot, View view, TransitionValues startValues, TransitionValues endValues) {
+    return createAnimator(sceneRoot, view, false);
+  }
+
+  private Animator createAnimator(ViewGroup sceneRoot, View view, boolean appearing) {
+    AnimatorSet set = new AnimatorSet();
+    List<Animator> animators = new ArrayList<>();
+
+    addAnimatorIfNeeded(animators, primaryAnimatorProvider, sceneRoot, view, appearing);
+
+    addAnimatorIfNeeded(animators, secondaryAnimatorProvider, sceneRoot, view, appearing);
+
+    for (VisibilityAnimatorProvider additionalAnimatorProvider : additionalAnimatorProviders) {
+      addAnimatorIfNeeded(animators, additionalAnimatorProvider, sceneRoot, view, appearing);
     }
 
-    private static void addAnimatorIfNeeded(
-            List<Animator> animators,
-            @Nullable VisibilityAnimatorProvider animatorProvider,
-            ViewGroup sceneRoot,
-            View view,
-            boolean appearing) {
-        if (animatorProvider == null) {
-            return;
-        }
-        Animator animator =
-                appearing
-                        ? animatorProvider.createAppear(sceneRoot, view)
-                        : animatorProvider.createDisappear(sceneRoot, view);
-        if (animator != null) {
-            animators.add(animator);
-        }
+    AnimatorSetCompat.playTogether(set, animators);
+    return set;
+  }
+
+  private static void addAnimatorIfNeeded(
+      List<Animator> animators,
+      @Nullable VisibilityAnimatorProvider animatorProvider,
+      ViewGroup sceneRoot,
+      View view,
+      boolean appearing) {
+    if (animatorProvider == null) {
+      return;
     }
-
-    /**
-     * Returns the primary {@link VisibilityAnimatorProvider} for this transition, which can be
-     * modified but not swapped out completely.
-     */
-    @NonNull
-    public P getPrimaryAnimatorProvider() {
-        return primaryAnimatorProvider;
+    Animator animator =
+        appearing
+            ? animatorProvider.createAppear(sceneRoot, view)
+            : animatorProvider.createDisappear(sceneRoot, view);
+    if (animator != null) {
+      animators.add(animator);
     }
-
-    /**
-     * Returns the secondary {@link VisibilityAnimatorProvider} for this transition or null, which can
-     * be modified or swapped out completely for a different {@link VisibilityAnimatorProvider}.
-     *
-     * @see #setSecondaryAnimatorProvider(VisibilityAnimatorProvider)
-     */
-    @Nullable
-    public VisibilityAnimatorProvider getSecondaryAnimatorProvider() {
-        return secondaryAnimatorProvider;
-    }
-
-    /**
-     * Sets the secondary {@link VisibilityAnimatorProvider}, which provides animators to be played
-     * together with the primary {@link VisibilityAnimatorProvider}.
-     */
-    public void setSecondaryAnimatorProvider(
-            @Nullable VisibilityAnimatorProvider secondaryAnimatorProvider) {
-        this.secondaryAnimatorProvider = secondaryAnimatorProvider;
-    }
-
-    /**
-     * Adds an additional {@link VisibilityAnimatorProvider}, which provides animators be played
-     * together with the primary and secondary {@link VisibilityAnimatorProvider
-     * VisibilityAnimatorProviders}.
-     *
-     * @see #getPrimaryAnimatorProvider()
-     * @see #getSecondaryAnimatorProvider()
-     */
-    public void addAdditionalAnimatorProvider(
-            @NonNull VisibilityAnimatorProvider additionalAnimatorProvider) {
-        additionalAnimatorProviders.add(additionalAnimatorProvider);
-    }
-
-    /**
-     * Removes an additional {@link VisibilityAnimatorProvider} that was previously added.
-     *
-     * @see #addAdditionalAnimatorProvider(VisibilityAnimatorProvider)
-     */
-    public boolean removeAdditionalAnimatorProvider(
-            @NonNull VisibilityAnimatorProvider additionalAnimatorProvider) {
-        return additionalAnimatorProviders.remove(additionalAnimatorProvider);
-    }
-
-    /**
-     * Clears all additional {@link VisibilityAnimatorProvider VisibilityAnimatorProviders} that were
-     * previously added.
-     *
-     * @see #addAdditionalAnimatorProvider(VisibilityAnimatorProvider)
-     */
-    public void clearAdditionalAnimatorProvider() {
-        additionalAnimatorProviders.clear();
-    }
-
-    @Override
-    public Animator onAppear(
-            ViewGroup sceneRoot, View view, TransitionValues startValues, TransitionValues endValues) {
-        return createAnimator(sceneRoot, view, true);
-    }
-
-    @Override
-    public Animator onDisappear(
-            ViewGroup sceneRoot, View view, TransitionValues startValues, TransitionValues endValues) {
-        return createAnimator(sceneRoot, view, false);
-    }
-
-    private Animator createAnimator(ViewGroup sceneRoot, View view, boolean appearing) {
-        AnimatorSet set = new AnimatorSet();
-        List<Animator> animators = new ArrayList<>();
-
-        addAnimatorIfNeeded(animators, primaryAnimatorProvider, sceneRoot, view, appearing);
-
-        addAnimatorIfNeeded(animators, secondaryAnimatorProvider, sceneRoot, view, appearing);
-
-        for (VisibilityAnimatorProvider additionalAnimatorProvider : additionalAnimatorProviders) {
-            addAnimatorIfNeeded(animators, additionalAnimatorProvider, sceneRoot, view, appearing);
-        }
-
-        AnimatorSetCompat.playTogether(set, animators);
-        return set;
-    }
+  }
 }

@@ -145,7 +145,7 @@ class RadialViewGroup extends ConstraintLayout {
       currentAngle += (360 / (float) (childCount - skippedChildren));
     }
 
-    constraintSet.applyTo(this);
+    constraintSet.applyTo(RadialViewGroup.this);
   }
 
   public void setRadius(@Dimension int radius) {

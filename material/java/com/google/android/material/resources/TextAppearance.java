@@ -73,7 +73,7 @@ public class TextAppearance {
 
   @FontRes private final int fontFamilyResourceId;
 
-  private boolean fontResolved;
+  private boolean fontResolved = false;
   private Typeface font;
 
   /** Parses the given TextAppearance style resource. */

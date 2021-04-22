@@ -48,7 +48,7 @@ public class ForegroundLinearLayout extends LinearLayoutCompat {
 
   protected boolean mForegroundInPadding = true;
 
-  boolean foregroundBoundsChanged;
+  boolean foregroundBoundsChanged = false;
 
   public ForegroundLinearLayout(@NonNull Context context) {
     this(context, null);
@@ -69,7 +69,7 @@ public class ForegroundLinearLayout extends LinearLayoutCompat {
     foregroundGravity =
         a.getInt(R.styleable.ForegroundLinearLayout_android_foregroundGravity, foregroundGravity);
 
-    Drawable d = a.getDrawable(R.styleable.ForegroundLinearLayout_android_foreground);
+    final Drawable d = a.getDrawable(R.styleable.ForegroundLinearLayout_android_foreground);
     if (d != null) {
       setForeground(d);
     }
@@ -204,16 +204,16 @@ public class ForegroundLinearLayout extends LinearLayoutCompat {
   public void draw(@NonNull Canvas canvas) {
     super.draw(canvas);
 
-    if (foreground != null) {
-      Drawable foreground = this.foreground;
+    if (this.foreground != null) {
+      final Drawable foreground = this.foreground;
 
       if (foregroundBoundsChanged) {
         foregroundBoundsChanged = false;
-        Rect selfBounds = this.selfBounds;
-        Rect overlayBounds = this.overlayBounds;
+        final Rect selfBounds = this.selfBounds;
+        final Rect overlayBounds = this.overlayBounds;
 
-        int w = getRight() - getLeft();
-        int h = getBottom() - getTop();
+        final int w = getRight() - getLeft();
+        final int h = getBottom() - getTop();
 
         if (mForegroundInPadding) {
           selfBounds.set(0, 0, w, h);

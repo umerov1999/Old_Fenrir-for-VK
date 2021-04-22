@@ -24,16 +24,16 @@ import androidx.annotation.NonNull;
  */
 public interface Shapeable {
 
-    /**
-     * Returns the {@link ShapeAppearanceModel} used for the shape definition.
-     *
-     * <p>This {@link ShapeAppearanceModel} can be modified to change the shape.
-     */
-    @NonNull
-    ShapeAppearanceModel getShapeAppearanceModel();
+  /**
+   * Sets the {@link ShapeAppearanceModel} that defines the shape.
+   */
+  void setShapeAppearanceModel(@NonNull ShapeAppearanceModel shapeAppearanceModel);
 
-    /**
-     * Sets the {@link ShapeAppearanceModel} that defines the shape.
-     */
-    void setShapeAppearanceModel(@NonNull ShapeAppearanceModel shapeAppearanceModel);
+  /**
+   * Returns the {@link ShapeAppearanceModel} used for the shape definition.
+   *
+   * <p>This {@link ShapeAppearanceModel} can be modified to change the shape.
+   */
+  @NonNull
+  ShapeAppearanceModel getShapeAppearanceModel();
 }

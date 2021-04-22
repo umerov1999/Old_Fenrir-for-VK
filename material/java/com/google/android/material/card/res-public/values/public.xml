@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (C) 2018 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,11 +15,11 @@
   ~ limitations under the License.
 -->
 <resources>
-    <public name="cardForegroundColor" type="attr" />
-    <public name="checkedIconSize" type="attr" />
-    <public name="checkedIconMargin" type="attr" />
-    <public name="materialCardViewStyle" type="attr" />
-    <public name="state_dragged" type="attr" />
-    <public name="Widget.MaterialComponents.CardView" type="style" />
+  <public name="cardForegroundColor" type="attr"/>
+  <public name="checkedIconSize" type="attr"/>
+  <public name="checkedIconMargin" type="attr"/>
+  <public name="materialCardViewStyle" type="attr"/>
+  <public name="state_dragged" type="attr" />
+  <public name="Widget.MaterialComponents.CardView" type="style"/>
 </resources>
 

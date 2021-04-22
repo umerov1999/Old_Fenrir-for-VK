@@ -73,7 +73,7 @@ public final class MaterialTimePicker extends DialogFragment {
   @DrawableRes private int keyboardIcon;
   @DrawableRes private int clockIcon;
 
-  private int titleResId;
+  private int titleResId = 0;
   private String titleText;
 
   /** Values supported for the input type of the dialog. */
@@ -432,7 +432,7 @@ public final class MaterialTimePicker extends DialogFragment {
     private TimeModel time = new TimeModel();
 
     private int inputMode;
-    private int titleTextResId;
+    private int titleTextResId = 0;
     private CharSequence titleText;
 
     /** Sets the input mode with which to start the time picker. */
@@ -491,14 +491,14 @@ public final class MaterialTimePicker extends DialogFragment {
      */
     @NonNull
     public Builder setTitleText(@Nullable CharSequence charSequence) {
-      titleText = charSequence;
+      this.titleText = charSequence;
       return this;
     }
 
     /** Creates a {@link MaterialTimePicker} with the provided options. */
     @NonNull
     public MaterialTimePicker build() {
-      return newInstance(this);
+      return MaterialTimePicker.newInstance(this);
     }
   }
 }

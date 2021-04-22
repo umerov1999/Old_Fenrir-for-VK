@@ -17,7 +17,6 @@ package com.google.android.material.transformation;
 
 import android.content.Context;
 import android.util.AttributeSet;
-
 import com.google.android.material.circularreveal.cardview.CircularRevealCardView;
 import com.google.android.material.expandable.ExpandableWidget;
 
@@ -31,16 +30,16 @@ import com.google.android.material.expandable.ExpandableWidget;
  * <p>This class should be used if you need to support shadows on pre-L devices.
  *
  * @deprecated Use {@link com.google.android.material.transition.MaterialContainerTransform}
- * instead.
+ *     instead.
  */
 @Deprecated
 public class TransformationChildCard extends CircularRevealCardView {
 
-    public TransformationChildCard(Context context) {
-        this(context, null);
-    }
+  public TransformationChildCard(Context context) {
+    this(context, null);
+  }
 
-    public TransformationChildCard(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+  public TransformationChildCard(Context context, AttributeSet attrs) {
+    super(context, attrs);
+  }
 }

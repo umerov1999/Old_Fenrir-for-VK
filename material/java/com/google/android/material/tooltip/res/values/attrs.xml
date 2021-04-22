@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (C) 2019 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,16 +15,16 @@
   ~ limitations under the License.
 -->
 <resources>
-    <declare-styleable name="Tooltip">
-        <attr name="android:text" />
-        <attr name="android:textAppearance" />
-        <attr name="android:layout_margin" />
-        <attr name="android:minWidth" />
-        <attr name="android:minHeight" />
-        <attr name="android:padding" />
-        <attr name="backgroundTint" format="color" />
-    </declare-styleable>
+  <declare-styleable name="Tooltip">
+    <attr name="android:text" />
+    <attr name="android:textAppearance" />
+    <attr name="android:layout_margin" />
+    <attr name="android:minWidth" />
+    <attr name="android:minHeight" />
+    <attr name="android:padding" />
+    <attr name="backgroundTint" format="color" />
+  </declare-styleable>
 
-    <!-- Style to use for Tooltip in this theme. -->
-    <attr name="tooltipStyle" format="reference" />
+  <!-- Style to use for Tooltip in this theme. -->
+  <attr name="tooltipStyle" format="reference" />
 </resources>

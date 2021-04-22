@@ -30,6 +30,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import dev.ragnarok.fenrir.*
@@ -67,6 +68,7 @@ import dev.ragnarok.fenrir.util.Utils.isEmpty
 import dev.ragnarok.fenrir.view.FadeAnimDrawable
 import dev.ragnarok.fenrir.view.FadeDrawable
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieShapeableImageView
+import dev.ragnarok.fenrir.view.pager.WeakPicassoLoadCallback
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
@@ -79,6 +81,8 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener {
+    private val PLAYER_TAG = "PicassoPlayerTag"
+
     // Play and pause button
     private var mPlayPauseButton: PlayPauseButton? = null
 
@@ -161,23 +165,12 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                 howlong
             )
         }
-    private var mAudioInteractor: IAudioInteractor? = null
+    private var mAudioInteractor: IAudioInteractor = InteractorFactory.createAudioInteractor()
     private var mAccountId = 0
     private val mBroadcastDisposable = CompositeDisposable()
     private val mCompositeDisposable = CompositeDisposable()
-    private fun appendDisposable(disposable: Disposable?) {
-        mCompositeDisposable.add(disposable!!)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        mAccountId = requireArguments().getInt(Extra.ACCOUNT_ID)
-        mAudioInteractor = InteractorFactory.createAudioInteractor()
-        mTimeHandler = TimeHandler(this)
-        mPlayerProgressStrings = resources.getStringArray(R.array.player_progress_state)
-        appendDisposable(MusicUtils.observeServiceBinding()
-            .compose(RxUtils.applyObservableIOToMainSchedulers())
-            .subscribe { onServiceBindEvent(it) })
+    private fun appendDisposable(disposable: Disposable) {
+        mCompositeDisposable.add(disposable)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -201,10 +194,10 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                 resolveControlViews()
             }
             PlayerStatus.REPEATMODE_CHANGED -> {
-                mRepeatButton!!.updateRepeatState()
+                mRepeatButton?.updateRepeatState()
             }
             PlayerStatus.SHUFFLEMODE_CHANGED -> {
-                mShuffleButton!!.updateShuffleState()
+                mShuffleButton?.updateShuffleState()
                 updateCovers()
             }
             PlayerStatus.UPDATE_PLAY_LIST -> {
@@ -253,8 +246,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                 val file = File(path, "qr_fenrir_audio_" + audio.ownerId + "_" + audio.id + ".png")
                 try {
                     fOutputStream = FileOutputStream(file)
-                    assert(qr != null)
-                    qr!!.compress(Bitmap.CompressFormat.PNG, 100, fOutputStream)
+                    qr?.compress(Bitmap.CompressFormat.PNG, 100, fOutputStream)
                     fOutputStream.flush()
                     fOutputStream.close()
                     requireActivity().sendBroadcast(
@@ -293,6 +285,8 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_audio_player, container, false)
+        mAccountId = requireArguments().getInt(Extra.ACCOUNT_ID)
+        mPlayerProgressStrings = resources.getStringArray(R.array.player_progress_state)
         playerGradientFirst = root.findViewById(R.id.cover_gradient_top)
         playerGradientSecond = root.findViewById(R.id.cover_gradient)
         mProgress = root.findViewById(android.R.id.progress)
@@ -446,6 +440,11 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         }
 
         resolveAddButton()
+
+        mTimeHandler = TimeHandler(this)
+        appendDisposable(MusicUtils.observeServiceBinding()
+            .toMainThread()
+            .subscribe { onServiceBindEvent(it) })
         return root
     }
 
@@ -466,7 +465,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         )) {
             0 -> {
                 CreateCustomToast(requireActivity()).showToastBottom(R.string.saved_audio)
-                ivSave!!.setImageResource(R.drawable.succ)
+                ivSave?.setImageResource(R.drawable.succ)
             }
             1 -> {
                 Snackbar.make(v, R.string.audio_force_download, Snackbar.LENGTH_LONG).setAction(
@@ -518,7 +517,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                             "#ffffff"
                         ) else Color.parseColor("#000000")
                     ).show()
-                ivSave!!.setImageResource(R.drawable.succ)
+                ivSave?.setImageResource(R.drawable.succ)
             }
             else -> CreateCustomToast(requireActivity()).showToastBottom(R.string.error_audio)
         }
@@ -577,9 +576,10 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
     }
 
     private fun add(accountId: Int, audio: Audio) {
-        appendDisposable(mAudioInteractor!!.add(accountId, audio, null)
-            .compose(RxUtils.applyCompletableIOToMainSchedulers())
-            .subscribe({ onAudioAdded() }) { showErrorInAdapter(it) })
+        appendDisposable(
+            mAudioInteractor.add(accountId, audio, null)
+                .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                .subscribe({ onAudioAdded() }) { showErrorInAdapter(it) })
     }
 
     private fun onAudioAdded() {
@@ -590,35 +590,38 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
     private fun delete(accountId: Int, audio: Audio) {
         val id = audio.id
         val ownerId = audio.ownerId
-        appendDisposable(mAudioInteractor!!.delete(accountId, id, ownerId)
-            .compose(RxUtils.applyCompletableIOToMainSchedulers())
-            .subscribe({
-                onAudioDeletedOrRestored(
-                    id,
-                    ownerId,
-                    true
-                )
-            }) { showErrorInAdapter(it) })
+        appendDisposable(
+            mAudioInteractor.delete(accountId, id, ownerId)
+                .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                .subscribe({
+                    onAudioDeletedOrRestored(
+                        id,
+                        ownerId,
+                        true
+                    )
+                }) { showErrorInAdapter(it) })
     }
 
     private fun restore(accountId: Int, audio: Audio) {
         val id = audio.id
         val ownerId = audio.ownerId
-        appendDisposable(mAudioInteractor!!.restore(accountId, id, ownerId)
-            .compose(RxUtils.applyCompletableIOToMainSchedulers())
-            .subscribe({
-                onAudioDeletedOrRestored(
-                    id,
-                    ownerId,
-                    false
-                )
-            }) { showErrorInAdapter(it) })
+        appendDisposable(
+            mAudioInteractor.restore(accountId, id, ownerId)
+                .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                .subscribe({
+                    onAudioDeletedOrRestored(
+                        id,
+                        ownerId,
+                        false
+                    )
+                }) { showErrorInAdapter(it) })
     }
 
     private fun get_lyrics(audio: Audio) {
-        appendDisposable(mAudioInteractor!!.getLyrics(mAccountId, audio.lyricsId)
-            .compose(RxUtils.applySingleIOToMainSchedulers())
-            .subscribe({ Text: String -> onAudioLyricsReceived(Text) }) { showErrorInAdapter(it) })
+        appendDisposable(
+            mAudioInteractor.getLyrics(mAccountId, audio.lyricsId)
+                .compose(RxUtils.applySingleIOToMainSchedulers())
+                .subscribe({ Text: String -> onAudioLyricsReceived(Text) }) { showErrorInAdapter(it) })
     }
 
     private fun onAudioLyricsReceived(Text: String) {
@@ -679,7 +682,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
     override fun onStartTrackingTouch(bar: SeekBar) {
         mLastSeekEventTime = 0
         mFromTouch = true
-        mCurrentTime!!.visibility = View.VISIBLE
+        mCurrentTime?.visibility = View.VISIBLE
     }
 
     /**
@@ -732,12 +735,12 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
      * {@inheritDoc}
      */
     override fun onDestroy() {
-        PicassoInstance.with().cancelRequest(target)
         playDispose.dispose()
         mCompositeDisposable.dispose()
-        super.onDestroy()
-        mTimeHandler!!.removeMessages(REFRESH_TIME)
+        mTimeHandler?.removeMessages(REFRESH_TIME)
         mBroadcastDisposable.dispose()
+        PicassoInstance.with().cancelTag(PLAYER_TAG)
+        super.onDestroy()
     }
 
     private fun updateCovers() {
@@ -746,25 +749,29 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
 
     val target = object : Target {
         override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
-            playerGradientFirst?.visibility = View.VISIBLE
-            playerGradientSecond?.visibility = View.VISIBLE
-            FadeAnimDrawable.setBitmap(
-                ivBackground!!,
-                requireActivity(),
-                bitmap
-            )
+            if (isAdded) {
+                playerGradientFirst?.visibility = View.VISIBLE
+                playerGradientSecond?.visibility = View.VISIBLE
+                FadeAnimDrawable.setBitmap(
+                    ivBackground!!,
+                    requireActivity(),
+                    bitmap
+                )
+            }
         }
 
         override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
         }
 
         override fun onBitmapFailed(e: Exception, errorDrawable: Drawable?) {
-            if (ivBackground?.drawable is Animatable) {
-                (ivBackground?.drawable as Animatable).stop()
+            if (isAdded) {
+                if (ivBackground?.drawable is Animatable) {
+                    (ivBackground?.drawable as Animatable).stop()
+                }
+                ivBackground?.setImageDrawable(null)
+                playerGradientFirst?.visibility = View.GONE
+                playerGradientSecond?.visibility = View.GONE
             }
-            ivBackground?.setImageDrawable(null)
-            playerGradientFirst?.visibility = View.GONE
-            playerGradientSecond?.visibility = View.GONE
         }
     }
 
@@ -774,13 +781,13 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
     private fun updateNowPlayingInfo() {
         val audioTrack = MusicUtils.getCurrentAudio()
         if (mGetLyrics != null) {
-            if (audioTrack != null && audioTrack.lyricsId != 0) mGetLyrics!!.visibility =
-                View.VISIBLE else mGetLyrics!!.visibility = View.GONE
+            if (audioTrack != null && audioTrack.lyricsId != 0) mGetLyrics?.visibility =
+                View.VISIBLE else mGetLyrics?.visibility = View.GONE
         }
         if (tvAlbum != null) {
             var album = ""
             if (!isEmpty(audioTrack?.album_title)) album += requireActivity().getString(R.string.album) + " " + audioTrack?.album_title
-            tvAlbum!!.text = album
+            tvAlbum?.text = album
         }
         tvTitle?.text = audioTrack?.artist
         tvSubtitle?.text = audioTrack?.title
@@ -791,9 +798,10 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
             if (coverUrl != null) {
                 PicassoInstance.with()
                     .load(coverUrl)
+                    .tag(PLAYER_TAG)
                     .transform(
                         BlurTransformation(
-                            Settings.get().other().playerCoverBackgroundSettings.blur,
+                            Settings.get().other().playerCoverBackgroundSettings.blur.toFloat(),
                             requireActivity()
                         )
                     )
@@ -817,9 +825,9 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                         FadeAnimDrawable.setBitmap(
                             ivBackground!!,
                             requireActivity(),
-                            BlurTransformation.blur(
-                                btm,
+                            BlurTransformation.blurRenderScript(
                                 requireActivity(),
+                                btm,
                                 Settings.get()
                                     .other().playerCoverBackgroundSettings.blur.toFloat()
                             )
@@ -846,17 +854,17 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         if (current != null) {
             when {
                 TrackIsDownloaded(current) == 1 -> {
-                    ivSave!!.setImageResource(R.drawable.succ)
+                    ivSave?.setImageResource(R.drawable.succ)
                 }
                 TrackIsDownloaded(current) == 2 -> {
-                    ivSave!!.setImageResource(R.drawable.remote_cloud)
+                    ivSave?.setImageResource(R.drawable.remote_cloud)
                 }
                 isEmpty(current.url) -> {
-                    ivSave!!.setImageResource(R.drawable.audio_died)
+                    ivSave?.setImageResource(R.drawable.audio_died)
                 }
-                else -> ivSave!!.setImageResource(R.drawable.save)
+                else -> ivSave?.setImageResource(R.drawable.save)
             }
-        } else ivSave!!.setImageResource(R.drawable.save)
+        } else ivSave?.setImageResource(R.drawable.save)
 
         //handle VK actions
         if (current != null && isAudioStreaming) {
@@ -872,7 +880,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
             return
         }
         if (MusicUtils.isInitialized()) {
-            mTotalTime!!.text =
+            mTotalTime?.text =
                 MusicUtils.makeTimeString(requireActivity(), MusicUtils.duration() / 1000)
         }
     }
@@ -886,19 +894,13 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         }
 
         // Set the play and pause image
-        if (Objects.nonNull(mPlayPauseButton)) {
-            mPlayPauseButton!!.updateState()
-        }
+        mPlayPauseButton?.updateState()
 
         // Set the shuffle image
-        if (Objects.nonNull(mShuffleButton)) {
-            mShuffleButton!!.updateShuffleState()
-        }
+        mShuffleButton?.updateShuffleState()
 
         // Set the repeat image
-        if (Objects.nonNull(mRepeatButton)) {
-            mRepeatButton!!.updateRepeatState()
-        }
+        mRepeatButton?.updateRepeatState()
     }
 
     private fun startEffectsPanel() {
@@ -942,7 +944,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         val myAudio = currentAudio.ownerId == mAccountId
         val icon =
             if (myAudio && !currentAudio.isDeleted) R.drawable.ic_outline_delete else R.drawable.plus
-        ivAdd!!.setImageResource(icon)
+        ivAdd?.setImageResource(icon)
     }
 
     private fun broadcastAudio() {
@@ -955,26 +957,29 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         val targetIds: Collection<Int> = setOf(accountId)
         val id = currentAudio.id
         val ownerId = currentAudio.ownerId
-        mBroadcastDisposable.add(mAudioInteractor!!.sendBroadcast(accountId, ownerId, id, targetIds)
-            .compose(RxUtils.applyCompletableIOToMainSchedulers())
-            .subscribe({}) { })
+        mBroadcastDisposable.add(
+            mAudioInteractor.sendBroadcast(accountId, ownerId, id, targetIds)
+                .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                .subscribe({}) { })
     }
 
     /**
      * @param delay When to update
      */
     private fun queueNextRefresh(delay: Long) {
-        val message = mTimeHandler!!.obtainMessage(REFRESH_TIME)
-        mTimeHandler!!.removeMessages(REFRESH_TIME)
-        mTimeHandler!!.sendMessageDelayed(message, delay)
+        val message = mTimeHandler?.obtainMessage(REFRESH_TIME)
+        mTimeHandler?.removeMessages(REFRESH_TIME)
+        if (message != null) {
+            mTimeHandler?.sendMessageDelayed(message, delay)
+        }
     }
 
     private fun resolveControlViews() {
         if (!isAdded || mProgress == null) return
         val preparing = MusicUtils.isPreparing()
         val initialized = MusicUtils.isInitialized()
-        mProgress!!.isEnabled = !preparing && initialized
-        //mProgress!!.isIndeterminate = preparing
+        mProgress?.isEnabled = !preparing && initialized
+        //mProgress?.isIndeterminate = preparing
     }
 
     /**
@@ -1064,15 +1069,15 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
     }
 
     private fun refreshCurrentTimeText(pos: Long) {
-        mCurrentTime!!.text = MusicUtils.makeTimeString(requireActivity(), pos / 1000)
+        mCurrentTime?.text = MusicUtils.makeTimeString(requireActivity(), pos / 1000)
     }
 
     private fun refreshCurrentTime(): Long {
         //Logger.d("refreshTime", String.valueOf(mService == null));
         if (!MusicUtils.isInitialized()) {
-            mCurrentTime!!.text = "--:--"
-            mTotalTime!!.text = "--:--"
-            mProgress!!.progress = 0
+            mCurrentTime?.text = "--:--"
+            mTotalTime?.text = "--:--"
+            mProgress?.progress = 0
             return 500
         }
         try {
@@ -1081,31 +1086,31 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
             if (pos >= 0 && duration > 0) {
                 refreshCurrentTimeText(pos)
                 val progress = (1000 * pos / duration).toInt()
-                mProgress!!.progress = progress
+                mProgress?.progress = progress
                 val bufferProgress = (MusicUtils.bufferPercent().toFloat() * 10f).toInt()
-                mProgress!!.secondaryProgress = bufferProgress
+                mProgress?.secondaryProgress = bufferProgress
                 when {
                     mFromTouch -> {
                         return 500
                     }
                     MusicUtils.isPlaying() -> {
-                        mCurrentTime!!.visibility = View.VISIBLE
+                        mCurrentTime?.visibility = View.VISIBLE
                     }
                     else -> {
                         // blink the counter
-                        val vis = mCurrentTime!!.visibility
-                        mCurrentTime!!.visibility =
+                        val vis = mCurrentTime?.visibility
+                        mCurrentTime?.visibility =
                             if (vis == View.INVISIBLE) View.VISIBLE else View.INVISIBLE
                         return 500
                     }
                 }
             } else {
-                mCurrentTime!!.text = "--:--"
-                mProgress!!.progress = 0
-                val current = if (mTotalTime!!.tag == null) 0 else mTotalTime!!.tag as Int
+                mCurrentTime?.text = "--:--"
+                mProgress?.progress = 0
+                val current = if (mTotalTime?.tag == null) 0 else mTotalTime?.tag as Int
                 val next = if (current == mPlayerProgressStrings.size - 1) 0 else current + 1
-                mTotalTime!!.tag = next
-                mTotalTime!!.text = mPlayerProgressStrings[next]
+                mTotalTime?.tag = next
+                mTotalTime?.text = mPlayerProgressStrings[next]
                 return 500
             }
 
@@ -1140,59 +1145,27 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         override fun handleMessage(msg: Message) {
             if (msg.what == REFRESH_TIME) {
                 if (mAudioPlayer.get() == null) return
-                val next = mAudioPlayer.get()!!.refreshCurrentTime()
-                mAudioPlayer.get()!!.queueNextRefresh(next)
+                val next = mAudioPlayer.get()?.refreshCurrentTime()
+                if (next != null) {
+                    mAudioPlayer.get()?.queueNextRefresh(next)
+                }
             }
         }
 
     }
 
-    private inner class CoverViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    private inner class CoverViewHolder(view: View) : RecyclerView.ViewHolder(view), Callback {
         val ivCover: RLottieShapeableImageView = view.findViewById(R.id.cover)
-
-        val target = object : Target {
-            override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
-                ivCover.scaleType = ImageView.ScaleType.FIT_START
-                FadeDrawable.setBitmap(
-                    ivCover,
-                    requireActivity(),
-                    bitmap
-                )
-            }
-
-            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-            }
-
-            override fun onBitmapFailed(e: Exception, errorDrawable: Drawable?) {
-                ivCover.scaleType = ImageView.ScaleType.CENTER
-                if (FenrirNative.isNativeLoaded()) {
-                    ivCover.fromRes(
-                        R.raw.auidio_no_cover, 450, 450, intArrayOf(
-                            0x333333,
-                            CurrentTheme.getColorSurface(requireActivity()),
-                            0x777777,
-                            CurrentTheme.getColorOnSurface(requireActivity())
-                        )
-                    )
-                    ivCover.playAnimation()
-                } else {
-                    ivCover.setImageResource(R.drawable.itunes)
-                    ivCover.drawable?.setTint(
-                        CurrentTheme.getColorOnSurface(
-                            requireActivity()
-                        )
-                    )
-                }
-            }
-        }
+        val mPicassoLoadCallback = WeakPicassoLoadCallback(this)
 
         fun bind(audioTrack: Audio) {
             val coverUrl =
-                firstNonEmptyString(audioTrack.thumb_image_very_big, audioTrack.thumb_image_big)
+                firstNonEmptyString(audioTrack.thumb_image_big, audioTrack.thumb_image_very_big)
             if (coverUrl != null) {
                 PicassoInstance.with()
                     .load(coverUrl)
-                    .into(target)
+                    .tag(PLAYER_TAG)
+                    .into(ivCover, mPicassoLoadCallback)
             } else {
                 PicassoInstance.with().cancelRequest(target)
                 val audio = audioTrack.url
@@ -1246,6 +1219,32 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                 }
             }
         }
+
+        override fun onSuccess() {
+            ivCover.scaleType = ImageView.ScaleType.FIT_START
+        }
+
+        override fun onError(e: java.lang.Exception?) {
+            ivCover.scaleType = ImageView.ScaleType.CENTER
+            if (FenrirNative.isNativeLoaded()) {
+                ivCover.fromRes(
+                    R.raw.auidio_no_cover, 450, 450, intArrayOf(
+                        0x333333,
+                        CurrentTheme.getColorSurface(requireActivity()),
+                        0x777777,
+                        CurrentTheme.getColorOnSurface(requireActivity())
+                    )
+                )
+                ivCover.playAnimation()
+            } else {
+                ivCover.setImageResource(R.drawable.itunes)
+                ivCover.drawable?.setTint(
+                    CurrentTheme.getColorOnSurface(
+                        requireActivity()
+                    )
+                )
+            }
+        }
     }
 
     private inner class CoverAdapter : RecyclerView.Adapter<CoverViewHolder>() {
@@ -1270,7 +1269,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
 
         override fun onViewDetachedFromWindow(holder: CoverViewHolder) {
             super.onViewDetachedFromWindow(holder)
-            PicassoInstance.with().cancelRequest(holder.target)
+            PicassoInstance.with().cancelRequest(holder.ivCover)
             if (holder.ivCover.drawable is Animatable) {
                 (holder.ivCover.drawable as Animatable).stop()
             }

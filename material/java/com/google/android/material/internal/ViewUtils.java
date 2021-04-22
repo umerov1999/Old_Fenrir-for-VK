@@ -129,10 +129,10 @@ public class ViewUtils {
     }
 
     public RelativePadding(@NonNull RelativePadding other) {
-      start = other.start;
-      top = other.top;
-      end = other.end;
-      bottom = other.bottom;
+      this.start = other.start;
+      this.top = other.top;
+      this.end = other.end;
+      this.bottom = other.bottom;
     }
 
     /** Applies this relative padding to the view. */

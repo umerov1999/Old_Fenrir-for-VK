@@ -96,7 +96,7 @@ class PasswordToggleEndIconDelegate extends EndIconDelegate {
               return;
             }
             // Store the current cursor position
-            int selection = editText.getSelectionEnd();
+            final int selection = editText.getSelectionEnd();
             if (hasPasswordTransformation()) {
               editText.setTransformationMethod(null);
             } else {

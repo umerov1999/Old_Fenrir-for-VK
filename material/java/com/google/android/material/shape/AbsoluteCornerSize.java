@@ -17,49 +17,45 @@
 package com.google.android.material.shape;
 
 import android.graphics.RectF;
-
 import androidx.annotation.NonNull;
-
 import java.util.Arrays;
 
-/**
- * A {@link CornerSize} that always uses the provided size and ignores the bounds.
- */
+/** A {@link CornerSize} that always uses the provided size and ignores the bounds. */
 public final class AbsoluteCornerSize implements CornerSize {
 
-    private final float size;
+  private final float size;
 
-    public AbsoluteCornerSize(float size) {
-        this.size = size;
-    }
+  public AbsoluteCornerSize(float size) {
+    this.size = size;
+  }
 
-    @Override
-    public float getCornerSize(@NonNull RectF bounds) {
-        return size;
-    }
+  @Override
+  public float getCornerSize(@NonNull RectF bounds) {
+    return size;
+  }
 
-    /**
-     * Returns the size of this corner. Bounds aren't required since the result is always the same.
-     */
-    public float getCornerSize() {
-        return size;
-    }
+  /**
+   * Returns the size of this corner. Bounds aren't required since the result is always the same.
+   */
+  public float getCornerSize() {
+    return size;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof AbsoluteCornerSize)) {
-            return false;
-        }
-        AbsoluteCornerSize that = (AbsoluteCornerSize) o;
-        return size == that.size;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
+    if (!(o instanceof AbsoluteCornerSize)) {
+      return false;
+    }
+    AbsoluteCornerSize that = (AbsoluteCornerSize) o;
+    return size == that.size;
+  }
 
-    @Override
-    public int hashCode() {
-        Object[] hashedFields = {size};
-        return Arrays.hashCode(hashedFields);
-    }
+  @Override
+  public int hashCode() {
+    Object[] hashedFields = {size};
+    return Arrays.hashCode(hashedFields);
+  }
 }

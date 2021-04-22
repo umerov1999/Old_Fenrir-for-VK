@@ -21,7 +21,6 @@ import android.content.ContentResolver;
 import android.os.Build.VERSION;
 import android.provider.Settings.Global;
 import android.provider.Settings.System;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 import androidx.annotation.VisibleForTesting;
@@ -35,33 +34,29 @@ import androidx.annotation.VisibleForTesting;
 @RestrictTo(LIBRARY_GROUP)
 public class AnimatorDurationScaleProvider {
 
-    /**
-     * The emulated system animator duration scale setting for SDK_INT < 16.
-     */
-    private static float defaultSystemAnimatorDurationScale = 1f;
+  /** The emulated system animator duration scale setting for SDK_INT < 16. */
+  private static float defaultSystemAnimatorDurationScale = 1f;
 
-    /**
-     * Sets the default system animator duration scale for SDK < 16.
-     *
-     * @param scale New system animator duration scale.
-     * @see android.provider.Settings.Global#ANIMATOR_DURATION_SCALE
-     * @see android.provider.Settings.System#ANIMATOR_DURATION_SCALE
-     */
-    @VisibleForTesting
-    public static void setDefaultSystemAnimatorDurationScale(float scale) {
-        defaultSystemAnimatorDurationScale = scale;
+  /** Returns the animator duration scale from developer options setting. */
+  public float getSystemAnimatorDurationScale(@NonNull ContentResolver contentResolver) {
+    if (VERSION.SDK_INT >= 17) {
+      return Global.getFloat(contentResolver, Global.ANIMATOR_DURATION_SCALE, 1f);
     }
+    if (VERSION.SDK_INT == 16) {
+      return System.getFloat(contentResolver, System.ANIMATOR_DURATION_SCALE, 1f);
+    }
+    return defaultSystemAnimatorDurationScale;
+  }
 
-    /**
-     * Returns the animator duration scale from developer options setting.
-     */
-    public float getSystemAnimatorDurationScale(@NonNull ContentResolver contentResolver) {
-        if (VERSION.SDK_INT >= 17) {
-            return Global.getFloat(contentResolver, Global.ANIMATOR_DURATION_SCALE, 1f);
-        }
-        if (VERSION.SDK_INT == 16) {
-            return System.getFloat(contentResolver, System.ANIMATOR_DURATION_SCALE, 1f);
-        }
-        return defaultSystemAnimatorDurationScale;
-    }
+  /**
+   * Sets the default system animator duration scale for SDK < 16.
+   *
+   * @param scale New system animator duration scale.
+   * @see android.provider.Settings.Global#ANIMATOR_DURATION_SCALE
+   * @see android.provider.Settings.System#ANIMATOR_DURATION_SCALE
+   */
+  @VisibleForTesting
+  public static void setDefaultSystemAnimatorDurationScale(float scale) {
+    defaultSystemAnimatorDurationScale = scale;
+  }
 }

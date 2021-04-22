@@ -33,6 +33,7 @@ import androidx.annotation.RestrictTo;
 public class ParcelableSparseBooleanArray extends SparseBooleanArray implements Parcelable {
 
   public ParcelableSparseBooleanArray() {
+    super();
   }
 
   public ParcelableSparseBooleanArray(int initialCapacity) {

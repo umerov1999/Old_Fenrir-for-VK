@@ -16,18 +16,17 @@
 
 package com.google.android.material.checkbox;
 
+import com.google.android.material.R;
+
 import static com.google.android.material.theme.overlay.MaterialThemeOverlay.wrap;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
-import android.util.AttributeSet;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.core.widget.CompoundButtonCompat;
-
-import com.google.android.material.R;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import android.util.AttributeSet;
+import androidx.annotation.Nullable;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.internal.ThemeEnforcement;
 import com.google.android.material.resources.MaterialResources;
@@ -42,99 +41,96 @@ import com.google.android.material.resources.MaterialResources;
  */
 public class MaterialCheckBox extends AppCompatCheckBox {
 
-    private static final int DEF_STYLE_RES =
-            R.style.Widget_MaterialComponents_CompoundButton_CheckBox;
-    private static final int[][] ENABLED_CHECKED_STATES =
-            {
-                    new int[]{android.R.attr.state_enabled, android.R.attr.state_checked}, // [0]
-                    new int[]{android.R.attr.state_enabled, -android.R.attr.state_checked}, // [1]
-                    new int[]{-android.R.attr.state_enabled, android.R.attr.state_checked}, // [2]
-                    new int[]{-android.R.attr.state_enabled, -android.R.attr.state_checked} // [3]
-            };
-    @Nullable
-    private ColorStateList materialThemeColorsTintList;
-    private boolean useMaterialThemeColors;
+  private static final int DEF_STYLE_RES =
+      R.style.Widget_MaterialComponents_CompoundButton_CheckBox;
+  private static final int[][] ENABLED_CHECKED_STATES =
+      new int[][] {
+        new int[] {android.R.attr.state_enabled, android.R.attr.state_checked}, // [0]
+        new int[] {android.R.attr.state_enabled, -android.R.attr.state_checked}, // [1]
+        new int[] {-android.R.attr.state_enabled, android.R.attr.state_checked}, // [2]
+        new int[] {-android.R.attr.state_enabled, -android.R.attr.state_checked} // [3]
+      };
+  @Nullable private ColorStateList materialThemeColorsTintList;
+  private boolean useMaterialThemeColors;
 
-    public MaterialCheckBox(Context context) {
-        this(context, null);
+  public MaterialCheckBox(Context context) {
+    this(context, null);
+  }
+
+  public MaterialCheckBox(Context context, @Nullable AttributeSet attrs) {
+    this(context, attrs, R.attr.checkboxStyle);
+  }
+
+  public MaterialCheckBox(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(wrap(context, attrs, defStyleAttr, DEF_STYLE_RES), attrs, defStyleAttr);
+    // Ensure we are using the correctly themed context rather than the context that was passed in.
+    context = getContext();
+
+    TypedArray attributes =
+        ThemeEnforcement.obtainStyledAttributes(
+            context, attrs, R.styleable.MaterialCheckBox, defStyleAttr, DEF_STYLE_RES);
+
+    // If buttonTint is specified, read it using MaterialResources to allow themeable attributes in
+    // all API levels.
+    if (attributes.hasValue(R.styleable.MaterialCheckBox_buttonTint)) {
+      CompoundButtonCompat.setButtonTintList(
+          this,
+          MaterialResources.getColorStateList(
+              context, attributes, R.styleable.MaterialCheckBox_buttonTint));
     }
 
-    public MaterialCheckBox(Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, R.attr.checkboxStyle);
+    useMaterialThemeColors =
+        attributes.getBoolean(R.styleable.MaterialCheckBox_useMaterialThemeColors, false);
+
+    attributes.recycle();
+  }
+
+  @Override
+  protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+
+    if (useMaterialThemeColors && CompoundButtonCompat.getButtonTintList(this) == null) {
+      setUseMaterialThemeColors(true);
     }
+  }
 
-    public MaterialCheckBox(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(wrap(context, attrs, defStyleAttr, DEF_STYLE_RES), attrs, defStyleAttr);
-        // Ensure we are using the correctly themed context rather than the context that was passed in.
-        context = getContext();
-
-        TypedArray attributes =
-                ThemeEnforcement.obtainStyledAttributes(
-                        context, attrs, R.styleable.MaterialCheckBox, defStyleAttr, DEF_STYLE_RES);
-
-        // If buttonTint is specified, read it using MaterialResources to allow themeable attributes in
-        // all API levels.
-        if (attributes.hasValue(R.styleable.MaterialCheckBox_buttonTint)) {
-            CompoundButtonCompat.setButtonTintList(
-                    this,
-                    MaterialResources.getColorStateList(
-                            context, attributes, R.styleable.MaterialCheckBox_buttonTint));
-        }
-
-        useMaterialThemeColors =
-                attributes.getBoolean(R.styleable.MaterialCheckBox_useMaterialThemeColors, false);
-
-        attributes.recycle();
+  /**
+   * Forces the {@link MaterialCheckBox} to use colors from a Material Theme. Overrides any
+   * specified ButtonTintList. If set to false, sets the tints to null. Use {@link
+   * MaterialCheckBox#setSupportButtonTintList} to change button tints.
+   */
+  public void setUseMaterialThemeColors(boolean useMaterialThemeColors) {
+    this.useMaterialThemeColors = useMaterialThemeColors;
+    if (useMaterialThemeColors) {
+      CompoundButtonCompat.setButtonTintList(this, getMaterialThemeColorsTintList());
+    } else {
+      CompoundButtonCompat.setButtonTintList(this, null);
     }
+  }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
+  /** Returns true if this {@link MaterialCheckBox} defaults to colors from a Material Theme. */
+  public boolean isUseMaterialThemeColors() {
+    return useMaterialThemeColors;
+  }
 
-        if (useMaterialThemeColors && CompoundButtonCompat.getButtonTintList(this) == null) {
-            setUseMaterialThemeColors(true);
-        }
+  private ColorStateList getMaterialThemeColorsTintList() {
+    if (materialThemeColorsTintList == null) {
+      int[] checkBoxColorsList = new int[ENABLED_CHECKED_STATES.length];
+      int colorControlActivated = MaterialColors.getColor(this, R.attr.colorControlActivated);
+      int colorSurface = MaterialColors.getColor(this, R.attr.colorSurface);
+      int colorOnSurface = MaterialColors.getColor(this, R.attr.colorOnSurface);
+
+      checkBoxColorsList[0] =
+          MaterialColors.layer(colorSurface, colorControlActivated, MaterialColors.ALPHA_FULL);
+      checkBoxColorsList[1] =
+          MaterialColors.layer(colorSurface, colorOnSurface, MaterialColors.ALPHA_MEDIUM);
+      checkBoxColorsList[2] =
+          MaterialColors.layer(colorSurface, colorOnSurface, MaterialColors.ALPHA_DISABLED);
+      checkBoxColorsList[3] =
+          MaterialColors.layer(colorSurface, colorOnSurface, MaterialColors.ALPHA_DISABLED);
+
+      materialThemeColorsTintList = new ColorStateList(ENABLED_CHECKED_STATES, checkBoxColorsList);
     }
-
-    /**
-     * Returns true if this {@link MaterialCheckBox} defaults to colors from a Material Theme.
-     */
-    public boolean isUseMaterialThemeColors() {
-        return useMaterialThemeColors;
-    }
-
-    /**
-     * Forces the {@link MaterialCheckBox} to use colors from a Material Theme. Overrides any
-     * specified ButtonTintList. If set to false, sets the tints to null. Use {@link
-     * MaterialCheckBox#setSupportButtonTintList} to change button tints.
-     */
-    public void setUseMaterialThemeColors(boolean useMaterialThemeColors) {
-        this.useMaterialThemeColors = useMaterialThemeColors;
-        if (useMaterialThemeColors) {
-            CompoundButtonCompat.setButtonTintList(this, getMaterialThemeColorsTintList());
-        } else {
-            CompoundButtonCompat.setButtonTintList(this, null);
-        }
-    }
-
-    private ColorStateList getMaterialThemeColorsTintList() {
-        if (materialThemeColorsTintList == null) {
-            int[] checkBoxColorsList = new int[ENABLED_CHECKED_STATES.length];
-            int colorControlActivated = MaterialColors.getColor(this, R.attr.colorControlActivated);
-            int colorSurface = MaterialColors.getColor(this, R.attr.colorSurface);
-            int colorOnSurface = MaterialColors.getColor(this, R.attr.colorOnSurface);
-
-            checkBoxColorsList[0] =
-                    MaterialColors.layer(colorSurface, colorControlActivated, MaterialColors.ALPHA_FULL);
-            checkBoxColorsList[1] =
-                    MaterialColors.layer(colorSurface, colorOnSurface, MaterialColors.ALPHA_MEDIUM);
-            checkBoxColorsList[2] =
-                    MaterialColors.layer(colorSurface, colorOnSurface, MaterialColors.ALPHA_DISABLED);
-            checkBoxColorsList[3] =
-                    MaterialColors.layer(colorSurface, colorOnSurface, MaterialColors.ALPHA_DISABLED);
-
-            materialThemeColorsTintList = new ColorStateList(ENABLED_CHECKED_STATES, checkBoxColorsList);
-        }
-        return materialThemeColorsTintList;
-    }
+    return materialThemeColorsTintList;
+  }
 }

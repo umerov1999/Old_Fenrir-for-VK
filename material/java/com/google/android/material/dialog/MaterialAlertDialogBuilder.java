@@ -255,14 +255,14 @@ public class MaterialAlertDialogBuilder extends AlertDialog.Builder {
   @NonNull
   @Override
   public MaterialAlertDialogBuilder setPositiveButton(
-      @StringRes int textId, @Nullable OnClickListener listener) {
+      @StringRes int textId, @Nullable final OnClickListener listener) {
     return (MaterialAlertDialogBuilder) super.setPositiveButton(textId, listener);
   }
 
   @NonNull
   @Override
   public MaterialAlertDialogBuilder setPositiveButton(
-      @Nullable CharSequence text, @Nullable OnClickListener listener) {
+      @Nullable CharSequence text, @Nullable final OnClickListener listener) {
     return (MaterialAlertDialogBuilder) super.setPositiveButton(text, listener);
   }
 
@@ -275,14 +275,14 @@ public class MaterialAlertDialogBuilder extends AlertDialog.Builder {
   @NonNull
   @Override
   public MaterialAlertDialogBuilder setNegativeButton(
-      @StringRes int textId, @Nullable OnClickListener listener) {
+      @StringRes int textId, @Nullable final OnClickListener listener) {
     return (MaterialAlertDialogBuilder) super.setNegativeButton(textId, listener);
   }
 
   @NonNull
   @Override
   public MaterialAlertDialogBuilder setNegativeButton(
-      @Nullable CharSequence text, @Nullable OnClickListener listener) {
+      @Nullable CharSequence text, @Nullable final OnClickListener listener) {
     return (MaterialAlertDialogBuilder) super.setNegativeButton(text, listener);
   }
 
@@ -295,14 +295,14 @@ public class MaterialAlertDialogBuilder extends AlertDialog.Builder {
   @NonNull
   @Override
   public MaterialAlertDialogBuilder setNeutralButton(
-      @StringRes int textId, @Nullable OnClickListener listener) {
+      @StringRes int textId, @Nullable final OnClickListener listener) {
     return (MaterialAlertDialogBuilder) super.setNeutralButton(textId, listener);
   }
 
   @NonNull
   @Override
   public MaterialAlertDialogBuilder setNeutralButton(
-      @Nullable CharSequence text, @Nullable OnClickListener listener) {
+      @Nullable CharSequence text, @Nullable final OnClickListener listener) {
     return (MaterialAlertDialogBuilder) super.setNeutralButton(text, listener);
   }
 
@@ -341,29 +341,29 @@ public class MaterialAlertDialogBuilder extends AlertDialog.Builder {
   @NonNull
   @Override
   public MaterialAlertDialogBuilder setItems(
-      @ArrayRes int itemsId, @Nullable OnClickListener listener) {
+      @ArrayRes int itemsId, @Nullable final OnClickListener listener) {
     return (MaterialAlertDialogBuilder) super.setItems(itemsId, listener);
   }
 
   @NonNull
   @Override
   public MaterialAlertDialogBuilder setItems(
-      @Nullable CharSequence[] items, @Nullable OnClickListener listener) {
+      @Nullable CharSequence[] items, @Nullable final OnClickListener listener) {
     return (MaterialAlertDialogBuilder) super.setItems(items, listener);
   }
 
   @NonNull
   @Override
   public MaterialAlertDialogBuilder setAdapter(
-          @Nullable ListAdapter adapter, @Nullable OnClickListener listener) {
+      @Nullable final ListAdapter adapter, @Nullable final OnClickListener listener) {
     return (MaterialAlertDialogBuilder) super.setAdapter(adapter, listener);
   }
 
   @NonNull
   @Override
   public MaterialAlertDialogBuilder setCursor(
-      @Nullable Cursor cursor,
-      @Nullable OnClickListener listener,
+      @Nullable final Cursor cursor,
+      @Nullable final OnClickListener listener,
       @NonNull String labelColumn) {
     return (MaterialAlertDialogBuilder) super.setCursor(cursor, listener, labelColumn);
   }
@@ -373,7 +373,7 @@ public class MaterialAlertDialogBuilder extends AlertDialog.Builder {
   public MaterialAlertDialogBuilder setMultiChoiceItems(
       @ArrayRes int itemsId,
       @Nullable boolean[] checkedItems,
-      @Nullable OnMultiChoiceClickListener listener) {
+      @Nullable final OnMultiChoiceClickListener listener) {
     return (MaterialAlertDialogBuilder) super.setMultiChoiceItems(itemsId, checkedItems, listener);
   }
 
@@ -382,7 +382,7 @@ public class MaterialAlertDialogBuilder extends AlertDialog.Builder {
   public MaterialAlertDialogBuilder setMultiChoiceItems(
       @Nullable CharSequence[] items,
       @Nullable boolean[] checkedItems,
-      @Nullable OnMultiChoiceClickListener listener) {
+      @Nullable final OnMultiChoiceClickListener listener) {
     return (MaterialAlertDialogBuilder) super.setMultiChoiceItems(items, checkedItems, listener);
   }
 
@@ -392,7 +392,7 @@ public class MaterialAlertDialogBuilder extends AlertDialog.Builder {
       @Nullable Cursor cursor,
       @NonNull String isCheckedColumn,
       @NonNull String labelColumn,
-      @Nullable OnMultiChoiceClickListener listener) {
+      @Nullable final OnMultiChoiceClickListener listener) {
     return (MaterialAlertDialogBuilder)
         super.setMultiChoiceItems(cursor, isCheckedColumn, labelColumn, listener);
   }
@@ -400,7 +400,7 @@ public class MaterialAlertDialogBuilder extends AlertDialog.Builder {
   @NonNull
   @Override
   public MaterialAlertDialogBuilder setSingleChoiceItems(
-      @ArrayRes int itemsId, int checkedItem, @Nullable OnClickListener listener) {
+      @ArrayRes int itemsId, int checkedItem, @Nullable final OnClickListener listener) {
     return (MaterialAlertDialogBuilder) super.setSingleChoiceItems(itemsId, checkedItem, listener);
   }
 
@@ -410,7 +410,7 @@ public class MaterialAlertDialogBuilder extends AlertDialog.Builder {
       @Nullable Cursor cursor,
       int checkedItem,
       @NonNull String labelColumn,
-      @Nullable OnClickListener listener) {
+      @Nullable final OnClickListener listener) {
     return (MaterialAlertDialogBuilder)
         super.setSingleChoiceItems(cursor, checkedItem, labelColumn, listener);
   }
@@ -418,21 +418,21 @@ public class MaterialAlertDialogBuilder extends AlertDialog.Builder {
   @NonNull
   @Override
   public MaterialAlertDialogBuilder setSingleChoiceItems(
-      @Nullable CharSequence[] items, int checkedItem, @Nullable OnClickListener listener) {
+      @Nullable CharSequence[] items, int checkedItem, @Nullable final OnClickListener listener) {
     return (MaterialAlertDialogBuilder) super.setSingleChoiceItems(items, checkedItem, listener);
   }
 
   @NonNull
   @Override
   public MaterialAlertDialogBuilder setSingleChoiceItems(
-      @Nullable ListAdapter adapter, int checkedItem, @Nullable OnClickListener listener) {
+      @Nullable ListAdapter adapter, int checkedItem, @Nullable final OnClickListener listener) {
     return (MaterialAlertDialogBuilder) super.setSingleChoiceItems(adapter, checkedItem, listener);
   }
 
   @NonNull
   @Override
   public MaterialAlertDialogBuilder setOnItemSelectedListener(
-      @Nullable AdapterView.OnItemSelectedListener listener) {
+      @Nullable final AdapterView.OnItemSelectedListener listener) {
     return (MaterialAlertDialogBuilder) super.setOnItemSelectedListener(listener);
   }
 

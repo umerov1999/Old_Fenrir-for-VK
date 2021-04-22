@@ -65,9 +65,9 @@ public class TextScale extends Transition {
     final TextView view = (TextView) endValues.view;
     Map<String, Object> startVals = startValues.values;
     Map<String, Object> endVals = endValues.values;
-    float startSize =
+    final float startSize =
         startVals.get(PROPNAME_SCALE) != null ? (float) startVals.get(PROPNAME_SCALE) : 1f;
-    float endSize =
+    final float endSize =
         endVals.get(PROPNAME_SCALE) != null ? (float) endVals.get(PROPNAME_SCALE) : 1f;
     if (startSize == endSize) {
       return null;

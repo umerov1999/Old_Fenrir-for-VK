@@ -17,18 +17,15 @@
 package com.google.android.material.shadow;
 
 import android.graphics.drawable.Drawable;
-
 import androidx.annotation.Nullable;
 
-/**
- * Delegate interface that can be used to facilitate rendering of shadows pre-lollipop.
- */
+/** Delegate interface that can be used to facilitate rendering of shadows pre-lollipop. */
 public interface ShadowViewDelegate {
-    float getRadius();
+  float getRadius();
 
-    void setShadowPadding(int left, int top, int right, int bottom);
+  void setShadowPadding(int left, int top, int right, int bottom);
 
-    void setBackgroundDrawable(@Nullable Drawable background);
+  void setBackgroundDrawable(@Nullable Drawable background);
 
-    boolean isCompatPaddingEnabled();
+  boolean isCompatPaddingEnabled();
 }

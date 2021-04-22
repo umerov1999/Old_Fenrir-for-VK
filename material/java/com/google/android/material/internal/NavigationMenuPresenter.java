@@ -173,7 +173,7 @@ public class NavigationMenuPresenter implements MenuPresenter {
   @NonNull
   @Override
   public Parcelable onSaveInstanceState() {
-    Bundle state = new Bundle();
+    final Bundle state = new Bundle();
     if (menuView != null) {
       SparseArray<Parcelable> hierarchy = new SparseArray<>();
       menuView.saveHierarchyState(hierarchy);
@@ -191,7 +191,7 @@ public class NavigationMenuPresenter implements MenuPresenter {
   }
 
   @Override
-  public void onRestoreInstanceState(Parcelable parcelable) {
+  public void onRestoreInstanceState(final Parcelable parcelable) {
     if (parcelable instanceof Bundle) {
       Bundle state = (Bundle) parcelable;
       SparseArray<Parcelable> hierarchy = state.getSparseParcelableArray(STATE_HIERARCHY);

@@ -16,19 +16,18 @@
 
 package com.google.android.material.progressindicator;
 
+import com.google.android.material.R;
+
 import static com.google.android.material.resources.MaterialResources.getDimensionPixelSize;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-
 import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 import androidx.annotation.StyleRes;
-
-import com.google.android.material.R;
 import com.google.android.material.internal.ThemeEnforcement;
 import com.google.android.material.progressindicator.CircularProgressIndicator.IndicatorDirection;
 
@@ -39,88 +38,79 @@ import com.google.android.material.progressindicator.CircularProgressIndicator.I
  */
 public final class CircularProgressIndicatorSpec extends BaseProgressIndicatorSpec {
 
-    /**
-     * The size (outer diameter) of the spinner.
-     */
-    @Px
-    public int indicatorSize;
+  /** The size (outer diameter) of the spinner. */
+  @Px public int indicatorSize;
 
-    /**
-     * The extra space from the outer edge of the indicator to the edge of the canvas.
-     */
-    @Px
-    public int indicatorInset;
+  /** The extra space from the outer edge of the indicator to the edge of the canvas. */
+  @Px public int indicatorInset;
 
-    /**
-     * The direction in which the indicator will rotate and grow to.
-     */
-    @IndicatorDirection
-    public int indicatorDirection;
+  /** The direction in which the indicator will rotate and grow to. */
+  @IndicatorDirection public int indicatorDirection;
 
-    /**
-     * Instantiates the spec for {@link CircularProgressIndicator}.
-     *
-     * <p>If attributes in {@link R.styleable#CircularProgressIndicator} are missing, the values in
-     * the default style {@link R.style#Widget_MaterialComponents_CircularProgressIndicator} will be
-     * loaded. If attributes in {@link R.styleable#BaseProgressIndicator} are missing, the values in
-     * the default style {@link R.style#Widget_MaterialComponents_ProgressIndicator} will be loaded.
-     *
-     * @param context Current themed context.
-     * @param attrs   Component's attributes set.
-     */
-    public CircularProgressIndicatorSpec(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, R.attr.circularProgressIndicatorStyle);
+  /**
+   * Instantiates the spec for {@link CircularProgressIndicator}.
+   *
+   * <p>If attributes in {@link R.styleable#CircularProgressIndicator} are missing, the values in
+   * the default style {@link R.style#Widget_MaterialComponents_CircularProgressIndicator} will be
+   * loaded. If attributes in {@link R.styleable#BaseProgressIndicator} are missing, the values in
+   * the default style {@link R.style#Widget_MaterialComponents_ProgressIndicator} will be loaded.
+   *
+   * @param context Current themed context.
+   * @param attrs Component's attributes set.
+   */
+  public CircularProgressIndicatorSpec(@NonNull Context context, @Nullable AttributeSet attrs) {
+    this(context, attrs, R.attr.circularProgressIndicatorStyle);
+  }
+
+  public CircularProgressIndicatorSpec(
+      @NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
+    this(context, attrs, defStyleAttr, CircularProgressIndicator.DEF_STYLE_RES);
+  }
+
+  public CircularProgressIndicatorSpec(
+      @NonNull Context context,
+      @Nullable AttributeSet attrs,
+      @AttrRes final int defStyleAttr,
+      @StyleRes final int defStyleRes) {
+    super(context, attrs, defStyleAttr, defStyleRes);
+
+    int defaultIndicatorSize =
+        context.getResources().getDimensionPixelSize(R.dimen.mtrl_progress_circular_size_medium);
+    int defaultIndicatorInset =
+        context.getResources().getDimensionPixelSize(R.dimen.mtrl_progress_circular_inset_medium);
+    TypedArray a =
+        ThemeEnforcement.obtainStyledAttributes(
+            context, attrs, R.styleable.CircularProgressIndicator, defStyleAttr, defStyleRes);
+    indicatorSize =
+        getDimensionPixelSize(
+            context, a, R.styleable.CircularProgressIndicator_indicatorSize, defaultIndicatorSize);
+    indicatorInset =
+        getDimensionPixelSize(
+            context,
+            a,
+            R.styleable.CircularProgressIndicator_indicatorInset,
+            defaultIndicatorInset);
+    indicatorDirection =
+        a.getInt(
+            R.styleable.CircularProgressIndicator_indicatorDirectionCircular,
+            CircularProgressIndicator.INDICATOR_DIRECTION_CLOCKWISE);
+    a.recycle();
+
+    validateSpec();
+  }
+
+  @Override
+  void validateSpec() {
+    if (indicatorSize < trackThickness * 2) {
+      // Throws an exception if indicatorSize is less than twice of the trackThickness, which will
+      // result in a part of the inner side of the indicator overshoots the center, and the visual
+      // becomes undefined.
+      throw new IllegalArgumentException(
+          "The indicatorSize ("
+              + indicatorSize
+              + " px) cannot be less than twice of the trackThickness ("
+              + trackThickness
+              + " px).");
     }
-
-    public CircularProgressIndicatorSpec(
-            @NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
-        this(context, attrs, defStyleAttr, CircularProgressIndicator.DEF_STYLE_RES);
-    }
-
-    public CircularProgressIndicatorSpec(
-            @NonNull Context context,
-            @Nullable AttributeSet attrs,
-            @AttrRes int defStyleAttr,
-            @StyleRes int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-
-        int defaultIndicatorSize =
-                context.getResources().getDimensionPixelSize(R.dimen.mtrl_progress_circular_size_medium);
-        int defaultIndicatorInset =
-                context.getResources().getDimensionPixelSize(R.dimen.mtrl_progress_circular_inset_medium);
-        TypedArray a =
-                ThemeEnforcement.obtainStyledAttributes(
-                        context, attrs, R.styleable.CircularProgressIndicator, defStyleAttr, defStyleRes);
-        indicatorSize =
-                getDimensionPixelSize(
-                        context, a, R.styleable.CircularProgressIndicator_indicatorSize, defaultIndicatorSize);
-        indicatorInset =
-                getDimensionPixelSize(
-                        context,
-                        a,
-                        R.styleable.CircularProgressIndicator_indicatorInset,
-                        defaultIndicatorInset);
-        indicatorDirection =
-                a.getInt(
-                        R.styleable.CircularProgressIndicator_indicatorDirectionCircular,
-                        CircularProgressIndicator.INDICATOR_DIRECTION_CLOCKWISE);
-        a.recycle();
-
-        validateSpec();
-    }
-
-    @Override
-    void validateSpec() {
-        if (indicatorSize < trackThickness * 2) {
-            // Throws an exception if indicatorSize is less than twice of the trackThickness, which will
-            // result in a part of the inner side of the indicator overshoots the center, and the visual
-            // becomes undefined.
-            throw new IllegalArgumentException(
-                    "The indicatorSize ("
-                            + indicatorSize
-                            + " px) cannot be less than twice of the trackThickness ("
-                            + trackThickness
-                            + " px).");
-        }
-    }
+  }
 }

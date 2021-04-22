@@ -28,7 +28,7 @@ class TimeSource {
 
   @Nullable private final TimeZone fixedTimeZone;
 
-  private TimeSource(@Nullable Long fixedTimeMs, @Nullable TimeZone fixedTimeZone) {
+  private TimeSource(@Nullable final Long fixedTimeMs, @Nullable final TimeZone fixedTimeZone) {
     this.fixedTimeMs = fixedTimeMs;
     this.fixedTimeZone = fixedTimeZone;
   }

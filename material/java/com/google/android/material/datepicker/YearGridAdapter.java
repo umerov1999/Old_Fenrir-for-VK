@@ -38,7 +38,7 @@ class YearGridAdapter extends RecyclerView.Adapter<YearGridAdapter.ViewHolder> {
 
     ViewHolder(TextView view) {
       super(view);
-      textView = view;
+      this.textView = view;
     }
   }
 

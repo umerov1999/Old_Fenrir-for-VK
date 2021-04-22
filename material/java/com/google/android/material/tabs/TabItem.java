@@ -16,14 +16,13 @@
 
 package com.google.android.material.tabs;
 
+import com.google.android.material.R;
+
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import androidx.appcompat.widget.TintTypedArray;
 import android.util.AttributeSet;
 import android.view.View;
-
-import androidx.appcompat.widget.TintTypedArray;
-
-import com.google.android.material.R;
 
 /**
  * TabItem is a special 'view' which allows you to declare tab items for a {@link TabLayout} within
@@ -38,25 +37,25 @@ import com.google.android.material.R;
  */
 //TODO(b/76413401): make class final after the widget migration
 public class TabItem extends View {
-    //TODO(b/76413401): make package private after the widget migration
-    public final CharSequence text;
-    //TODO(b/76413401): make package private after the widget migration
-    public final Drawable icon;
-    //TODO(b/76413401): make package private after the widget migration
-    public final int customLayout;
+  //TODO(b/76413401): make package private after the widget migration
+  public final CharSequence text;
+  //TODO(b/76413401): make package private after the widget migration
+  public final Drawable icon;
+  //TODO(b/76413401): make package private after the widget migration
+  public final int customLayout;
 
-    public TabItem(Context context) {
-        this(context, null);
-    }
+  public TabItem(Context context) {
+    this(context, null);
+  }
 
-    public TabItem(Context context, AttributeSet attrs) {
-        super(context, attrs);
+  public TabItem(Context context, AttributeSet attrs) {
+    super(context, attrs);
 
-        TintTypedArray a =
-                TintTypedArray.obtainStyledAttributes(context, attrs, R.styleable.TabItem);
-        text = a.getText(R.styleable.TabItem_android_text);
-        icon = a.getDrawable(R.styleable.TabItem_android_icon);
-        customLayout = a.getResourceId(R.styleable.TabItem_android_layout, 0);
-        a.recycle();
-    }
+    final TintTypedArray a =
+        TintTypedArray.obtainStyledAttributes(context, attrs, R.styleable.TabItem);
+    text = a.getText(R.styleable.TabItem_android_text);
+    icon = a.getDrawable(R.styleable.TabItem_android_icon);
+    customLayout = a.getResourceId(R.styleable.TabItem_android_layout, 0);
+    a.recycle();
+  }
 }

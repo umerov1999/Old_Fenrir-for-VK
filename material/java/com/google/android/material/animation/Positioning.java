@@ -15,29 +15,25 @@
  */
 package com.google.android.material.animation;
 
-/**
- * A representation of the positioning of a view relative to another.
- */
+/** A representation of the positioning of a view relative to another. */
 public class Positioning {
 
-    /**
-     * The alignment between the dependency and the child.
-     */
-    public final int gravity;
-    /**
-     * The x adjustment of the child relative to the dependency. Positive values will adjust the child
-     * to the right.
-     */
-    public final float xAdjustment;
-    /**
-     * The y adjustment of the child relative to the dependency. Positive values will adjust the child
-     * to the bottom.
-     */
-    public final float yAdjustment;
+  /** The alignment between the dependency and the child. */
+  public final int gravity;
+  /**
+   * The x adjustment of the child relative to the dependency. Positive values will adjust the child
+   * to the right.
+   */
+  public final float xAdjustment;
+  /**
+   * The y adjustment of the child relative to the dependency. Positive values will adjust the child
+   * to the bottom.
+   */
+  public final float yAdjustment;
 
-    public Positioning(int gravity, float xAdjustment, float yAdjustment) {
-        this.gravity = gravity;
-        this.xAdjustment = xAdjustment;
-        this.yAdjustment = yAdjustment;
-    }
+  public Positioning(int gravity, float xAdjustment, float yAdjustment) {
+    this.gravity = gravity;
+    this.xAdjustment = xAdjustment;
+    this.yAdjustment = yAdjustment;
+  }
 }

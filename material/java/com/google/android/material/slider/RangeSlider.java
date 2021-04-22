@@ -163,8 +163,8 @@ public class RangeSlider extends BaseSlider<RangeSlider, OnChangeListener, OnSli
     Parcelable superState = super.onSaveInstanceState();
 
     RangeSliderState sliderState = new RangeSliderState(superState);
-    sliderState.minSeparation = minSeparation;
-    sliderState.separationUnit = separationUnit;
+    sliderState.minSeparation = this.minSeparation;
+    sliderState.separationUnit = this.separationUnit;
 
     return sliderState;
   }
@@ -174,8 +174,8 @@ public class RangeSlider extends BaseSlider<RangeSlider, OnChangeListener, OnSli
     RangeSliderState savedState = (RangeSliderState) state;
     super.onRestoreInstanceState(savedState.getSuperState());
 
-    minSeparation = savedState.minSeparation;
-    separationUnit = savedState.separationUnit;
+    this.minSeparation = savedState.minSeparation;
+    this.separationUnit = savedState.separationUnit;
     setSeparationUnit(separationUnit);
   }
 
@@ -189,7 +189,7 @@ public class RangeSlider extends BaseSlider<RangeSlider, OnChangeListener, OnSli
     }
 
     private RangeSliderState(Parcel in) {
-      super(in.readParcelable(RangeSliderState.class.getClassLoader()));
+      super((Parcelable) in.readParcelable(RangeSliderState.class.getClassLoader()));
       minSeparation = in.readFloat();
       separationUnit = in.readInt();
     }

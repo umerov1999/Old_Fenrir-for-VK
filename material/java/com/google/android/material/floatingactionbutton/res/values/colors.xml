@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (C) 2017 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,13 +16,13 @@
 -->
 <resources>
 
-    <!-- Color for the top outer pixels in the stroke: 18% white (these are multiplied) -->
-    <color name="design_fab_stroke_top_outer_color">#2EFFFFFF</color>
-    <!-- Color for the top inner pixels in the stroke: 10% white (these are multiplied) -->
-    <color name="design_fab_stroke_top_inner_color">#1AFFFFFF</color>
-    <!-- Color for the bottom outer pixels in the stroke: 6% black (these are multiplied) -->
-    <color name="design_fab_stroke_end_outer_color">#0F000000</color>
-    <!-- Color for the bottom inner pixels in the stroke: 4% black (these are multiplied) -->
-    <color name="design_fab_stroke_end_inner_color">#0A000000</color>
+  <!-- Color for the top outer pixels in the stroke: 18% white (these are multiplied) -->
+  <color name="design_fab_stroke_top_outer_color">#2EFFFFFF</color>
+  <!-- Color for the top inner pixels in the stroke: 10% white (these are multiplied) -->
+  <color name="design_fab_stroke_top_inner_color">#1AFFFFFF</color>
+  <!-- Color for the bottom outer pixels in the stroke: 6% black (these are multiplied) -->
+  <color name="design_fab_stroke_end_outer_color">#0F000000</color>
+  <!-- Color for the bottom inner pixels in the stroke: 4% black (these are multiplied) -->
+  <color name="design_fab_stroke_end_inner_color">#0A000000</color>
 
 </resources>

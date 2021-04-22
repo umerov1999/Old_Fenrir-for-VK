@@ -16,9 +16,10 @@
 
 package com.google.android.material.progressindicator;
 
+import com.google.android.material.R;
+
 import android.content.Context;
 import android.util.AttributeSet;
-
 import androidx.annotation.AttrRes;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
@@ -26,9 +27,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 import androidx.annotation.RestrictTo;
 import androidx.annotation.RestrictTo.Scope;
-
-import com.google.android.material.R;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -51,151 +49,148 @@ import java.lang.annotation.RetentionPolicy;
  * </ul>
  */
 public final class CircularProgressIndicator
-        extends BaseProgressIndicator<CircularProgressIndicatorSpec> {
-    public static final int DEF_STYLE_RES =
-            R.style.Widget_MaterialComponents_CircularProgressIndicator;
+    extends BaseProgressIndicator<CircularProgressIndicatorSpec> {
+  public static final int DEF_STYLE_RES =
+      R.style.Widget_MaterialComponents_CircularProgressIndicator;
 
-    public static final int INDICATOR_DIRECTION_CLOCKWISE = 0;
-    public static final int INDICATOR_DIRECTION_COUNTERCLOCKWISE = 1;
+  public static final int INDICATOR_DIRECTION_CLOCKWISE = 0;
+  public static final int INDICATOR_DIRECTION_COUNTERCLOCKWISE = 1;
 
-    // **************** Constructors ****************
+  // **************** Constructors ****************
 
-    public CircularProgressIndicator(@NonNull Context context) {
-        this(context, null);
+  public CircularProgressIndicator(@NonNull Context context) {
+    this(context, null);
+  }
+
+  public CircularProgressIndicator(@NonNull Context context, @Nullable AttributeSet attrs) {
+    this(context, attrs, R.attr.circularProgressIndicatorStyle);
+  }
+
+  public CircularProgressIndicator(
+      @NonNull Context context, @Nullable AttributeSet attrs, @AttrRes final int defStyleAttr) {
+    super(context, attrs, defStyleAttr, CircularProgressIndicator.DEF_STYLE_RES);
+
+    initializeDrawables();
+  }
+
+  // **************** Inherited functions ****************
+
+  @Override
+  CircularProgressIndicatorSpec createSpec(@NonNull Context context, @NonNull AttributeSet attrs) {
+    return new CircularProgressIndicatorSpec(context, attrs);
+  }
+
+  // ******************** Initialization **********************
+
+  private void initializeDrawables() {
+    setIndeterminateDrawable(IndeterminateDrawable.createCircularDrawable(getContext(), spec));
+    setProgressDrawable(DeterminateDrawable.createCircularDrawable(getContext(), spec));
+  }
+
+  // **************** Getters and setters ****************
+
+  /**
+   * Sets the track thickness of this progress indicator.
+   *
+   * @param trackThickness The new track/indicator thickness in pixel.
+   * @see #getTrackThickness()
+   * @attr ref
+   *     com.google.android.material.progressindicator.R.stylable#BaseProgressIndicator_trackThickness
+   * @throws IllegalArgumentException if indicator size is less than twice of the track thickness.
+   */
+  @Override
+  public void setTrackThickness(int trackThickness) {
+    super.setTrackThickness(trackThickness);
+    spec.validateSpec();
+  }
+
+  /**
+   * Returns the inset of this progress indicator.
+   *
+   * @see #setIndicatorInset(int)
+   * @attr ref
+   *     com.google.android.material.progressindicator.R.stylable#CircularProgressIndicator_indicatorInset
+   */
+  @Px
+  public int getIndicatorInset() {
+    return spec.indicatorInset;
+  }
+
+  /**
+   * Sets the inset of this progress indicator.
+   *
+   * @param indicatorInset The new inset in pixels.
+   * @see #getIndicatorInset()
+   * @attr ref
+   *     com.google.android.material.progressindicator.R.stylable#CircularProgressIndicator_indicatorInset
+   */
+  public void setIndicatorInset(@Px int indicatorInset) {
+    if (spec.indicatorInset != indicatorInset) {
+      spec.indicatorInset = indicatorInset;
+      invalidate();
     }
+  }
 
-    public CircularProgressIndicator(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, R.attr.circularProgressIndicatorStyle);
+  /**
+   * Returns the size (outer diameter) of this progress indicator.
+   *
+   * @see #setIndicatorSize(int)
+   * @attr ref
+   *     com.google.android.material.progressindicator.R.stylable#CircularProgressIndicator_indicatorSize
+   */
+  @Px
+  public int getIndicatorSize() {
+    return spec.indicatorSize;
+  }
+
+  /**
+   * Sets the size (outer diameter) of this circular progress indicator.
+   *
+   * @param indicatorSize The new size in pixels.
+   * @see #getIndicatorSize()
+   * @attr ref
+   *     com.google.android.material.progressindicator.R.stylable#CircularProgressIndicator_indicatorSize
+   * @throws IllegalArgumentException if new indicator radius is less than half of the indicator
+   *     size.
+   */
+  public void setIndicatorSize(@Px int indicatorSize) {
+    if (spec.indicatorSize != indicatorSize) {
+      spec.indicatorSize = indicatorSize;
+      spec.validateSpec();
+      invalidate();
     }
+  }
 
-    public CircularProgressIndicator(
-            @NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
-        super(context, attrs, defStyleAttr, DEF_STYLE_RES);
+  /**
+   * Returns the indicator animating direction used in this progress indicator.
+   *
+   * @see #setIndicatorDirection(int)
+   * @attr ref
+   *     com.google.android.material.progressindicator.R.stylable#CircularProgressIndicator_indicatorDirectionCircular
+   */
+  @IndicatorDirection
+  public int getIndicatorDirection() {
+    return spec.indicatorDirection;
+  }
 
-        initializeDrawables();
-    }
+  /**
+   * Sets the indicator animating direction used in this progress indicator.
+   *
+   * @param indicatorDirection The new indicator direction.
+   * @see #getIndicatorDirection()
+   * @attr ref
+   *     com.google.android.material.progressindicator.R.stylable#CircularProgressIndicator_indicatorDirectionCircular
+   */
+  public void setIndicatorDirection(@IndicatorDirection int indicatorDirection) {
+    spec.indicatorDirection = indicatorDirection;
+    invalidate();
+  }
 
-    // **************** Inherited functions ****************
+  // **************** Interface ****************
 
-    @Override
-    CircularProgressIndicatorSpec createSpec(@NonNull Context context, @NonNull AttributeSet attrs) {
-        return new CircularProgressIndicatorSpec(context, attrs);
-    }
-
-    // ******************** Initialization **********************
-
-    private void initializeDrawables() {
-        setIndeterminateDrawable(IndeterminateDrawable.createCircularDrawable(getContext(), spec));
-        setProgressDrawable(DeterminateDrawable.createCircularDrawable(getContext(), spec));
-    }
-
-    // **************** Getters and setters ****************
-
-    /**
-     * Sets the track thickness of this progress indicator.
-     *
-     * @param trackThickness The new track/indicator thickness in pixel.
-     * @throws IllegalArgumentException if indicator size is less than twice of the track thickness.
-     * @attr ref
-     * com.google.android.material.progressindicator.R.stylable#BaseProgressIndicator_trackThickness
-     * @see #getTrackThickness()
-     */
-    @Override
-    public void setTrackThickness(int trackThickness) {
-        super.setTrackThickness(trackThickness);
-        spec.validateSpec();
-    }
-
-    /**
-     * Returns the inset of this progress indicator.
-     *
-     * @attr ref
-     * com.google.android.material.progressindicator.R.stylable#CircularProgressIndicator_indicatorInset
-     * @see #setIndicatorInset(int)
-     */
-    @Px
-    public int getIndicatorInset() {
-        return spec.indicatorInset;
-    }
-
-    /**
-     * Sets the inset of this progress indicator.
-     *
-     * @param indicatorInset The new inset in pixels.
-     * @attr ref
-     * com.google.android.material.progressindicator.R.stylable#CircularProgressIndicator_indicatorInset
-     * @see #getIndicatorInset()
-     */
-    public void setIndicatorInset(@Px int indicatorInset) {
-        if (spec.indicatorInset != indicatorInset) {
-            spec.indicatorInset = indicatorInset;
-            invalidate();
-        }
-    }
-
-    /**
-     * Returns the size (outer diameter) of this progress indicator.
-     *
-     * @attr ref
-     * com.google.android.material.progressindicator.R.stylable#CircularProgressIndicator_indicatorSize
-     * @see #setIndicatorSize(int)
-     */
-    @Px
-    public int getIndicatorSize() {
-        return spec.indicatorSize;
-    }
-
-    /**
-     * Sets the size (outer diameter) of this circular progress indicator.
-     *
-     * @param indicatorSize The new size in pixels.
-     * @throws IllegalArgumentException if new indicator radius is less than half of the indicator
-     *                                  size.
-     * @attr ref
-     * com.google.android.material.progressindicator.R.stylable#CircularProgressIndicator_indicatorSize
-     * @see #getIndicatorSize()
-     */
-    public void setIndicatorSize(@Px int indicatorSize) {
-        if (spec.indicatorSize != indicatorSize) {
-            spec.indicatorSize = indicatorSize;
-            spec.validateSpec();
-            invalidate();
-        }
-    }
-
-    /**
-     * Returns the indicator animating direction used in this progress indicator.
-     *
-     * @attr ref
-     * com.google.android.material.progressindicator.R.stylable#CircularProgressIndicator_indicatorDirectionCircular
-     * @see #setIndicatorDirection(int)
-     */
-    @IndicatorDirection
-    public int getIndicatorDirection() {
-        return spec.indicatorDirection;
-    }
-
-    /**
-     * Sets the indicator animating direction used in this progress indicator.
-     *
-     * @param indicatorDirection The new indicator direction.
-     * @attr ref
-     * com.google.android.material.progressindicator.R.stylable#CircularProgressIndicator_indicatorDirectionCircular
-     * @see #getIndicatorDirection()
-     */
-    public void setIndicatorDirection(@IndicatorDirection int indicatorDirection) {
-        spec.indicatorDirection = indicatorDirection;
-        invalidate();
-    }
-
-    // **************** Interface ****************
-
-    /**
-     * @hide
-     */
-    @RestrictTo(Scope.LIBRARY_GROUP)
-    @IntDef({INDICATOR_DIRECTION_CLOCKWISE, INDICATOR_DIRECTION_COUNTERCLOCKWISE})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface IndicatorDirection {
-    }
+  /** @hide */
+  @RestrictTo(Scope.LIBRARY_GROUP)
+  @IntDef({INDICATOR_DIRECTION_CLOCKWISE, INDICATOR_DIRECTION_COUNTERCLOCKWISE})
+  @Retention(RetentionPolicy.SOURCE)
+  public @interface IndicatorDirection {}
 }

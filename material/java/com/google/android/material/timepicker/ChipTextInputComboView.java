@@ -51,8 +51,8 @@ class ChipTextInputComboView extends FrameLayout implements Checkable {
   private final Chip chip;
   private final TextInputLayout textInputLayout;
   private final EditText editText;
-  private final TextWatcher watcher;
-  private final TextView label;
+  private TextWatcher watcher;
+  private TextView label;
 
   public ChipTextInputComboView(@NonNull Context context) {
     this(context, null);
@@ -82,7 +82,7 @@ class ChipTextInputComboView extends FrameLayout implements Checkable {
   private void updateHintLocales() {
     if (VERSION.SDK_INT >= VERSION_CODES.N) {
       Configuration configuration = getContext().getResources().getConfiguration();
-      LocaleList locales = configuration.getLocales();
+      final LocaleList locales = configuration.getLocales();
       editText.setImeHintLocales(locales);
     }
   }

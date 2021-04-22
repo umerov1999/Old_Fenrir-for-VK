@@ -57,7 +57,7 @@ class MonthAdapter extends BaseAdapter {
     this.month = month;
     this.dateSelector = dateSelector;
     this.calendarConstraints = calendarConstraints;
-    previouslySelectedDates = dateSelector.getSelectedDays();
+    this.previouslySelectedDates = dateSelector.getSelectedDays();
   }
 
   @Override
@@ -169,7 +169,7 @@ class MonthAdapter extends BaseAdapter {
     if (day == null) {
       return;
     }
-    CalendarItemStyle style;
+    final CalendarItemStyle style;
     if (calendarConstraints.getDateValidator().isValid(date)) {
       day.setEnabled(true);
       if (isSelected(date)) {

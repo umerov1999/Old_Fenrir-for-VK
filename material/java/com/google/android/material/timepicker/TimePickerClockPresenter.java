@@ -56,12 +56,12 @@ class TimePickerClockPresenter
   private static final int DEGREES_PER_HOUR = 30;
   private static final int DEGREES_PER_MINUTE = 6;
 
-  private final TimePickerView timePickerView;
-  private final TimeModel time;
+  private TimePickerView timePickerView;
+  private TimeModel time;
   private float minuteRotation;
   private float hourRotation;
 
-  private boolean broadcasting;
+  private boolean broadcasting = false;
 
   public TimePickerClockPresenter(TimePickerView timePickerView, TimeModel time) {
     this.timePickerView = timePickerView;

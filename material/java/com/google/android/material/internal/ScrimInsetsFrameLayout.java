@@ -42,7 +42,7 @@ public class ScrimInsetsFrameLayout extends FrameLayout {
 
   Rect insets;
 
-  private final Rect tempRect = new Rect();
+  private Rect tempRect = new Rect();
   private boolean drawTopInsetForeground = true;
   private boolean drawBottomInsetForeground = true;
 
@@ -58,7 +58,7 @@ public class ScrimInsetsFrameLayout extends FrameLayout {
       @NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
 
-    TypedArray a =
+    final TypedArray a =
         ThemeEnforcement.obtainStyledAttributes(
             context,
             attrs,

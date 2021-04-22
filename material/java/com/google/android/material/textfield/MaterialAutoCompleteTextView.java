@@ -180,7 +180,7 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
     // Similar to a Spinner, make sure the view's width is at minimum the width of the largest
     // dropdown item.
     if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.AT_MOST) {
-      int measuredWidth = getMeasuredWidth();
+      final int measuredWidth = getMeasuredWidth();
       setMeasuredDimension(
           Math.min(
               Math.max(measuredWidth, measureContentWidth()),
@@ -199,17 +199,17 @@ public class MaterialAutoCompleteTextView extends AppCompatAutoCompleteTextView 
     int width = 0;
     View itemView = null;
     int itemType = 0;
-    int widthMeasureSpec =
+    final int widthMeasureSpec =
         MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.UNSPECIFIED);
-    int heightMeasureSpec =
+    final int heightMeasureSpec =
         MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.UNSPECIFIED);
 
     // Cap the number of items that will be measured.
     int start = Math.max(0, modalListPopup.getSelectedItemPosition());
-    int end = Math.min(adapter.getCount(), start + MAX_ITEMS_MEASURED);
+    final int end = Math.min(adapter.getCount(), start + MAX_ITEMS_MEASURED);
     start = Math.max(0, end - MAX_ITEMS_MEASURED);
     for (int i = start; i < end; i++) {
-      int positionType = adapter.getItemViewType(i);
+      final int positionType = adapter.getItemViewType(i);
       if (positionType != itemType) {
         itemType = positionType;
         itemView = null;

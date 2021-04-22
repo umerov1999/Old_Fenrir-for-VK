@@ -119,13 +119,13 @@ final class IndicatorViewController {
   private Typeface typeface;
 
   public IndicatorViewController(@NonNull TextInputLayout textInputView) {
-      context = textInputView.getContext();
+    this.context = textInputView.getContext();
     this.textInputView = textInputView;
-      captionTranslationYPx =
+    this.captionTranslationYPx =
         context.getResources().getDimensionPixelSize(R.dimen.design_textinput_caption_translate_y);
   }
 
-  void showHelper(CharSequence helperText) {
+  void showHelper(final CharSequence helperText) {
     cancelCaptionAnimator();
     this.helperText = helperText;
     helperTextView.setText(helperText);
@@ -149,7 +149,7 @@ final class IndicatorViewController {
         captionDisplayed, captionToShow, shouldAnimateCaptionView(helperTextView, null));
   }
 
-  void showError(CharSequence errorText) {
+  void showError(final CharSequence errorText) {
     cancelCaptionAnimator();
     this.errorText = errorText;
     errorView.setText(errorText);
@@ -188,7 +188,7 @@ final class IndicatorViewController {
    * @return Whether the view should animate when setting the caption
    */
   private boolean shouldAnimateCaptionView(
-      @Nullable TextView captionView, @Nullable CharSequence captionText) {
+      @Nullable TextView captionView, @Nullable final CharSequence captionText) {
     return ViewCompat.isLaidOut(textInputView)
         && textInputView.isEnabled()
         && (captionToShow != captionDisplayed
@@ -206,7 +206,7 @@ final class IndicatorViewController {
     }
 
     if (animate) {
-      AnimatorSet captionAnimator = new AnimatorSet();
+      final AnimatorSet captionAnimator = new AnimatorSet();
       this.captionAnimator = captionAnimator;
       List<Animator> captionAnimatorList = new ArrayList<>();
 
@@ -581,14 +581,14 @@ final class IndicatorViewController {
   }
 
   void setErrorTextAppearance(@StyleRes int resId) {
-      errorTextAppearance = resId;
+    this.errorTextAppearance = resId;
     if (errorView != null) {
       textInputView.setTextAppearanceCompatWithErrorFallback(errorView, resId);
     }
   }
 
-  void setErrorContentDescription(@Nullable CharSequence errorContentDescription) {
-      errorViewContentDescription = errorContentDescription;
+  void setErrorContentDescription(@Nullable final CharSequence errorContentDescription) {
+    this.errorViewContentDescription = errorContentDescription;
     if (errorView != null) {
       errorView.setContentDescription(errorContentDescription);
     }
@@ -617,7 +617,7 @@ final class IndicatorViewController {
   }
 
   void setHelperTextAppearance(@StyleRes int resId) {
-      helperTextTextAppearance = resId;
+    this.helperTextTextAppearance = resId;
     if (helperTextView != null) {
       TextViewCompat.setTextAppearance(helperTextView, resId);
     }

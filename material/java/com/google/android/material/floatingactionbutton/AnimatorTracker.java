@@ -17,29 +17,25 @@
 package com.google.android.material.floatingactionbutton;
 
 import android.animation.Animator;
-
 import androidx.annotation.Nullable;
 
-/**
- * Keeps track of what animations need to be cancelled
- */
+/** Keeps track of what animations need to be cancelled */
 class AnimatorTracker {
 
-    @Nullable
-    private Animator currentAnimator;
+  @Nullable private Animator currentAnimator;
 
-    public void onNextAnimationStart(Animator animator) {
-        cancelCurrent();
-        currentAnimator = animator;
-    }
+  public void onNextAnimationStart(Animator animator) {
+    cancelCurrent();
+    currentAnimator = animator;
+  }
 
-    public void cancelCurrent() {
-        if (currentAnimator != null) {
-            currentAnimator.cancel();
-        }
+  public void cancelCurrent() {
+    if (currentAnimator != null) {
+      currentAnimator.cancel();
     }
+  }
 
-    public void clear() {
-        currentAnimator = null;
-    }
+  public void clear() {
+    currentAnimator = null;
+  }
 }

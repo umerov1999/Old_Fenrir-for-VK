@@ -19,7 +19,6 @@ package com.google.android.material.stateful;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.collection.SimpleArrayMap;
@@ -36,78 +35,78 @@ import androidx.customview.view.AbsSavedState;
  */
 public class ExtendableSavedState extends AbsSavedState {
 
-    public static final Parcelable.Creator<ExtendableSavedState> CREATOR =
-            new Parcelable.ClassLoaderCreator<ExtendableSavedState>() {
+  @NonNull public final SimpleArrayMap<String, Bundle> extendableStates;
 
-                @NonNull
-                @Override
-                public ExtendableSavedState createFromParcel(@NonNull Parcel in, ClassLoader loader) {
-                    return new ExtendableSavedState(in, loader);
-                }
+  public ExtendableSavedState(Parcelable superState) {
+    super(superState);
+    extendableStates = new SimpleArrayMap<>();
+  }
 
-                @Nullable
-                @Override
-                public ExtendableSavedState createFromParcel(@NonNull Parcel in) {
-                    return new ExtendableSavedState(in, null);
-                }
+  private ExtendableSavedState(@NonNull Parcel in, ClassLoader loader) {
+    super(in, loader);
 
-                @NonNull
-                @Override
-                public ExtendableSavedState[] newArray(int size) {
-                    return new ExtendableSavedState[size];
-                }
-            };
-    @NonNull
-    public final SimpleArrayMap<String, Bundle> extendableStates;
+    int size = in.readInt();
 
-    public ExtendableSavedState(Parcelable superState) {
-        super(superState);
-        extendableStates = new SimpleArrayMap<>();
+    String[] keys = new String[size];
+    in.readStringArray(keys);
+
+    Bundle[] states = new Bundle[size];
+    in.readTypedArray(states, Bundle.CREATOR);
+
+    extendableStates = new SimpleArrayMap<>(size);
+    for (int i = 0; i < size; i++) {
+      extendableStates.put(keys[i], states[i]);
+    }
+  }
+
+  @Override
+  public void writeToParcel(@NonNull Parcel out, int flags) {
+    super.writeToParcel(out, flags);
+
+    int size = extendableStates.size();
+    out.writeInt(size);
+
+    String[] keys = new String[size];
+    Bundle[] states = new Bundle[size];
+
+    for (int i = 0; i < size; i++) {
+      keys[i] = extendableStates.keyAt(i);
+      states[i] = extendableStates.valueAt(i);
     }
 
-    private ExtendableSavedState(@NonNull Parcel in, ClassLoader loader) {
-        super(in, loader);
+    out.writeStringArray(keys);
+    out.writeTypedArray(states, 0);
+  }
 
-        int size = in.readInt();
+  @NonNull
+  @Override
+  public String toString() {
+    return "ExtendableSavedState{"
+        + Integer.toHexString(System.identityHashCode(this))
+        + " states="
+        + extendableStates
+        + "}";
+  }
 
-        String[] keys = new String[size];
-        in.readStringArray(keys);
+  public static final Parcelable.Creator<ExtendableSavedState> CREATOR =
+      new Parcelable.ClassLoaderCreator<ExtendableSavedState>() {
 
-        Bundle[] states = new Bundle[size];
-        in.readTypedArray(states, Bundle.CREATOR);
-
-        extendableStates = new SimpleArrayMap<>(size);
-        for (int i = 0; i < size; i++) {
-            extendableStates.put(keys[i], states[i]);
+        @NonNull
+        @Override
+        public ExtendableSavedState createFromParcel(@NonNull Parcel in, ClassLoader loader) {
+          return new ExtendableSavedState(in, loader);
         }
-    }
 
-    @Override
-    public void writeToParcel(@NonNull Parcel out, int flags) {
-        super.writeToParcel(out, flags);
-
-        int size = extendableStates.size();
-        out.writeInt(size);
-
-        String[] keys = new String[size];
-        Bundle[] states = new Bundle[size];
-
-        for (int i = 0; i < size; i++) {
-            keys[i] = extendableStates.keyAt(i);
-            states[i] = extendableStates.valueAt(i);
+        @Nullable
+        @Override
+        public ExtendableSavedState createFromParcel(@NonNull Parcel in) {
+          return new ExtendableSavedState(in, null);
         }
 
-        out.writeStringArray(keys);
-        out.writeTypedArray(states, 0);
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "ExtendableSavedState{"
-                + Integer.toHexString(System.identityHashCode(this))
-                + " states="
-                + extendableStates
-                + "}";
-    }
+        @NonNull
+        @Override
+        public ExtendableSavedState[] newArray(int size) {
+          return new ExtendableSavedState[size];
+        }
+      };
 }

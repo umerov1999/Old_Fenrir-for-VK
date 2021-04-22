@@ -61,6 +61,7 @@ import dev.ragnarok.fenrir.model.Document;
 import dev.ragnarok.fenrir.model.EditingPostType;
 import dev.ragnarok.fenrir.model.FriendsCounters;
 import dev.ragnarok.fenrir.model.GroupSettings;
+import dev.ragnarok.fenrir.model.InternalVideoSize;
 import dev.ragnarok.fenrir.model.LocalImageAlbum;
 import dev.ragnarok.fenrir.model.Manager;
 import dev.ragnarok.fenrir.model.Market;
@@ -289,7 +290,7 @@ public class PlaceFactory {
         return new Place(Place.SECURITY);
     }
 
-    public static Place getVkInternalPlayerPlace(Video video, int size, boolean isLocal) {
+    public static Place getVkInternalPlayerPlace(Video video, @InternalVideoSize int size, boolean isLocal) {
         Place place = new Place(Place.VK_INTERNAL_PLAYER);
         place.prepareArguments().putParcelable(VideoPlayerActivity.EXTRA_VIDEO, video);
         place.prepareArguments().putInt(VideoPlayerActivity.EXTRA_SIZE, size);

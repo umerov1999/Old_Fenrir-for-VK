@@ -164,7 +164,7 @@ public class MaterialResources {
       @NonNull Context context,
       @NonNull TypedArray attributes,
       @StyleableRes int index,
-      int defaultValue) {
+      final int defaultValue) {
     TypedValue value = new TypedValue();
     if (!attributes.getValue(index, value) || value.type != TypedValue.TYPE_ATTRIBUTE) {
       return attributes.getDimensionPixelSize(index, defaultValue);

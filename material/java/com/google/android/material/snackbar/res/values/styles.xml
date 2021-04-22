@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (C) 2015 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,57 +16,54 @@
 -->
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="TextAppearance.Design.Snackbar.Message" parent="android:TextAppearance">
-        <item name="android:textSize">@dimen/design_snackbar_text_size</item>
-        <item name="android:textColor">?android:textColorPrimary</item>
-    </style>
+  <style name="TextAppearance.Design.Snackbar.Message" parent="android:TextAppearance">
+    <item name="android:textSize">@dimen/design_snackbar_text_size</item>
+    <item name="android:textColor">?android:textColorPrimary</item>
+  </style>
 
-    <style name="Widget.Design.Snackbar" parent="android:Widget">
-        <item name="android:minWidth">@dimen/design_snackbar_min_width</item>
-        <item name="android:maxWidth">@dimen/design_snackbar_max_width</item>
-        <item name="android:background">@drawable/design_snackbar_background</item>
-        <item name="android:paddingLeft">@dimen/design_snackbar_padding_horizontal</item>
-        <item name="android:paddingRight">@dimen/design_snackbar_padding_horizontal</item>
-        <item name="elevation">@dimen/design_snackbar_elevation</item>
-        <item name="maxActionInlineWidth">@dimen/design_snackbar_action_inline_max_width</item>
-        <item name="animationMode">slide</item>
-        <item name="actionTextColorAlpha">@dimen/design_snackbar_action_text_color_alpha</item>
-    </style>
+  <style name="Widget.Design.Snackbar" parent="android:Widget">
+    <item name="android:minWidth">@dimen/design_snackbar_min_width</item>
+    <item name="android:maxWidth">@dimen/design_snackbar_max_width</item>
+    <item name="android:background">@drawable/design_snackbar_background</item>
+    <item name="android:paddingLeft">@dimen/design_snackbar_padding_horizontal</item>
+    <item name="android:paddingRight">@dimen/design_snackbar_padding_horizontal</item>
+    <item name="elevation">@dimen/design_snackbar_elevation</item>
+    <item name="maxActionInlineWidth">@dimen/design_snackbar_action_inline_max_width</item>
+    <item name="animationMode">slide</item>
+    <item name="actionTextColorAlpha">@dimen/design_snackbar_action_text_color_alpha</item>
+  </style>
 
-    <style name="Base.Widget.MaterialComponents.Snackbar" parent="Widget.Design.Snackbar">
-        <!--
-          The snackbar view has a 8dp padding on left and right. Message Textview has a 8dp margin on left and right.
-        -->
-        <item name="android:paddingLeft">@dimen/mtrl_snackbar_padding_horizontal</item>
-        <item name="android:paddingRight">@dimen/mtrl_snackbar_padding_horizontal</item>
-        <item name="backgroundOverlayColorAlpha">
-            @dimen/mtrl_snackbar_background_overlay_color_alpha
-        </item>
-        <item name="actionTextColorAlpha">@dimen/mtrl_snackbar_action_text_color_alpha</item>
-    </style>
+  <style name="Base.Widget.MaterialComponents.Snackbar" parent="Widget.Design.Snackbar">
+    <!--
+      The snackbar view has a 8dp padding on left and right. Message Textview has a 8dp margin on left and right.
+    -->
+    <item name="android:paddingLeft">@dimen/mtrl_snackbar_padding_horizontal</item>
+    <item name="android:paddingRight">@dimen/mtrl_snackbar_padding_horizontal</item>
+    <item name="backgroundOverlayColorAlpha">@dimen/mtrl_snackbar_background_overlay_color_alpha</item>
+    <item name="actionTextColorAlpha">@dimen/mtrl_snackbar_action_text_color_alpha</item>
+  </style>
 
-    <style name="Widget.MaterialComponents.Snackbar" parent="Base.Widget.MaterialComponents.Snackbar">
-        <!-- Null out the background here so the programmatically defined default Snackbar background
-             will be used, which supports the Material color theming attributes. -->
-        <item name="android:background">@null</item>
-        <item name="android:layout_margin">@dimen/mtrl_snackbar_margin</item>
-        <item name="animationMode">fade</item>
-    </style>
+  <style name="Widget.MaterialComponents.Snackbar" parent="Base.Widget.MaterialComponents.Snackbar">
+    <!-- Null out the background here so the programmatically defined default Snackbar background
+         will be used, which supports the Material color theming attributes. -->
+    <item name="android:background">@null</item>
+    <item name="android:layout_margin">@dimen/mtrl_snackbar_margin</item>
+    <item name="animationMode">fade</item>
+  </style>
 
-    <style name="Widget.MaterialComponents.Snackbar.FullWidth" parent="Base.Widget.MaterialComponents.Snackbar" />
+  <style name="Widget.MaterialComponents.Snackbar.FullWidth" parent="Base.Widget.MaterialComponents.Snackbar"/>
 
-    <style name="Widget.MaterialComponents.Snackbar.TextView" parent="Widget.AppCompat.TextView">
-        <item name="android:alpha">@dimen/material_emphasis_high_type</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:maxLines">@integer/design_snackbar_text_max_lines</item>
-        <item name="android:textAlignment" tools:ignore="NewApi">viewStart</item>
-        <item name="android:textAppearance">?attr/textAppearanceBody2</item>
-        <item name="android:textColor">?attr/colorSurface</item>
-        <item name="android:paddingTop">@dimen/design_snackbar_padding_vertical</item>
-        <item name="android:paddingBottom">@dimen/design_snackbar_padding_vertical</item>
-        <item name="android:layout_marginLeft">@dimen/mtrl_snackbar_message_margin_horizontal</item>
-        <item name="android:layout_marginRight">@dimen/mtrl_snackbar_message_margin_horizontal
-        </item>
-    </style>
+  <style name="Widget.MaterialComponents.Snackbar.TextView" parent="Widget.AppCompat.TextView">
+    <item name="android:alpha">@dimen/material_emphasis_high_type</item>
+    <item name="android:ellipsize">end</item>
+    <item name="android:maxLines">@integer/design_snackbar_text_max_lines</item>
+    <item name="android:textAlignment" tools:ignore="NewApi">viewStart</item>
+    <item name="android:textAppearance">?attr/textAppearanceBody2</item>
+    <item name="android:textColor">?attr/colorSurface</item>
+    <item name="android:paddingTop">@dimen/design_snackbar_padding_vertical</item>
+    <item name="android:paddingBottom">@dimen/design_snackbar_padding_vertical</item>
+    <item name="android:layout_marginLeft">@dimen/mtrl_snackbar_message_margin_horizontal</item>
+    <item name="android:layout_marginRight">@dimen/mtrl_snackbar_message_margin_horizontal</item>
+  </style>
 
 </resources>

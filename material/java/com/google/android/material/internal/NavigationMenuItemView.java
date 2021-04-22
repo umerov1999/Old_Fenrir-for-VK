@@ -40,7 +40,6 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.CheckedTextView;
 import android.widget.FrameLayout;
@@ -139,14 +138,14 @@ public class NavigationMenuItemView extends ForegroundLinearLayout implements Me
       textView.setVisibility(View.GONE);
       if (actionArea != null) {
         LayoutParams params = (LayoutParams) actionArea.getLayoutParams();
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        params.width = LayoutParams.MATCH_PARENT;
         actionArea.setLayoutParams(params);
       }
     } else {
       textView.setVisibility(View.VISIBLE);
       if (actionArea != null) {
         LayoutParams params = (LayoutParams) actionArea.getLayoutParams();
-        params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        params.width = LayoutParams.WRAP_CONTENT;
         actionArea.setLayoutParams(params);
       }
     }
@@ -253,7 +252,7 @@ public class NavigationMenuItemView extends ForegroundLinearLayout implements Me
 
   @Override
   protected int[] onCreateDrawableState(int extraSpace) {
-    int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
+    final int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
     if (itemData != null && itemData.isCheckable() && itemData.isChecked()) {
       mergeDrawableStates(drawableState, CHECKED_STATE_SET);
     }

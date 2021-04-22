@@ -331,6 +331,11 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
                                     EXTRA_PHOTOS
                                 ), Photo.NativeCreator
                             ) else requireArguments().getParcelableArrayList(EXTRA_PHOTOS)!!
+                        if (FenrirNative.isNativeLoaded() && Settings.get()
+                                .other().isNative_parcel
+                        ) {
+                            requireArguments().putLong(EXTRA_PHOTOS, 0)
+                        }
                         return SimplePhotoPresenter(
                             photos,
                             index,
@@ -352,6 +357,11 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
                                     EXTRA_PHOTOS
                                 ), Photo.NativeCreator
                             ) else requireArguments().getParcelableArrayList(EXTRA_PHOTOS)!!
+                        if (FenrirNative.isNativeLoaded() && Settings.get()
+                                .other().isNative_parcel
+                        ) {
+                            requireArguments().putLong(EXTRA_PHOTOS, 0)
+                        }
                         return PhotoAlbumPagerPresenter(
                             indexx,
                             aid,
@@ -372,6 +382,11 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
                                     EXTRA_PHOTOS
                                 ), Photo.NativeCreator
                             ) else requireArguments().getParcelableArrayList(EXTRA_PHOTOS)!!
+                        if (FenrirNative.isNativeLoaded() && Settings.get()
+                                .other().isNative_parcel
+                        ) {
+                            requireArguments().putLong(EXTRA_PHOTOS, 0)
+                        }
                         return FavePhotoPagerPresenter(
                             favePhotos,
                             findex,

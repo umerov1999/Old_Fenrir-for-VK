@@ -189,8 +189,8 @@ class DropdownMenuEndIconDelegate extends EndIconDelegate {
         }
       };
 
-  private boolean dropdownPopupDirty;
-  private boolean isEndIconChecked;
+  private boolean dropdownPopupDirty = false;
+  private boolean isEndIconChecked = false;
   private long dropdownPopupActivatedAt = Long.MAX_VALUE;
   private StateListDrawable filledPopupBackground;
   private MaterialShapeDrawable outlinedPopupBackground;
@@ -316,9 +316,9 @@ class DropdownMenuEndIconDelegate extends EndIconDelegate {
     MaterialShapeDrawable boxBackground = textInputLayout.getBoxBackground();
     int rippleColor = MaterialColors.getColor(editText, R.attr.colorControlHighlight);
     int[][] states =
-            {
-                new int[] {android.R.attr.state_pressed}, new int[] {},
-            };
+        new int[][] {
+            new int[] {android.R.attr.state_pressed}, new int[] {},
+        };
 
     if (boxBackgroundMode == TextInputLayout.BOX_BACKGROUND_OUTLINE) {
       addRippleEffectOnOutlinedLayout(editText, rippleColor, states, boxBackground);
@@ -337,12 +337,12 @@ class DropdownMenuEndIconDelegate extends EndIconDelegate {
     MaterialShapeDrawable rippleBackground =
         new MaterialShapeDrawable(boxBackground.getShapeAppearanceModel());
     int pressedBackgroundColor = MaterialColors.layer(rippleColor, surfaceColor, 0.1f);
-    int[] rippleBackgroundColors = {pressedBackgroundColor, Color.TRANSPARENT};
+    int[] rippleBackgroundColors = new int[] {pressedBackgroundColor, Color.TRANSPARENT};
     rippleBackground.setFillColor(new ColorStateList(states, rippleBackgroundColors));
 
     if (IS_LOLLIPOP) {
       rippleBackground.setTint(surfaceColor);
-      int[] colors = {pressedBackgroundColor, surfaceColor};
+      int[] colors = new int[] {pressedBackgroundColor, surfaceColor};
       ColorStateList rippleColorStateList = new ColorStateList(states, colors);
       MaterialShapeDrawable mask =
           new MaterialShapeDrawable(boxBackground.getShapeAppearanceModel());
@@ -365,7 +365,7 @@ class DropdownMenuEndIconDelegate extends EndIconDelegate {
       @NonNull MaterialShapeDrawable boxBackground) {
     int boxBackgroundColor = textInputLayout.getBoxBackgroundColor();
     int pressedBackgroundColor = MaterialColors.layer(rippleColor, boxBackgroundColor, 0.1f);
-    int[] colors = {pressedBackgroundColor, boxBackgroundColor};
+    int[] colors = new int[] {pressedBackgroundColor, boxBackgroundColor};
 
     if (IS_LOLLIPOP) {
       ColorStateList rippleColorStateList = new ColorStateList(states, colors);

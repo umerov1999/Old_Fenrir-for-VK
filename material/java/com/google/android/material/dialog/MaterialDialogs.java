@@ -40,9 +40,9 @@ import com.google.android.material.internal.ThemeEnforcement;
 @RestrictTo(Scope.LIBRARY_GROUP)
 public class MaterialDialogs {
 
-  private MaterialDialogs() {}
+  private MaterialDialogs() {};
 
-    @NonNull
+  @NonNull
   public static InsetDrawable insetDrawable(
       @Nullable Drawable drawable, @NonNull Rect backgroundInsets) {
     return new InsetDrawable(

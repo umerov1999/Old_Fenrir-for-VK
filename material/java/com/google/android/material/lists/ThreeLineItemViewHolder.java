@@ -16,31 +16,28 @@
 
 package com.google.android.material.lists;
 
+import com.google.android.material.R;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 
-import com.google.android.material.R;
-
-/**
- * A simple three line list item.
- */
+/** A simple three line list item. */
 public class ThreeLineItemViewHolder extends TwoLineItemViewHolder {
 
-    public final TextView tertiary;
+  public final TextView tertiary;
 
-    public ThreeLineItemViewHolder(@NonNull View view) {
-        super(view);
-        tertiary = itemView.findViewById(R.id.mtrl_list_item_tertiary_text);
-    }
+  public ThreeLineItemViewHolder(@NonNull View view) {
+    super(view);
+    this.tertiary = itemView.findViewById(R.id.mtrl_list_item_tertiary_text);
+  }
 
-    @NonNull
-    public static ThreeLineItemViewHolder create(@NonNull ViewGroup parent) {
-        return new ThreeLineItemViewHolder(
-                LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.material_list_item_three_line, parent, false));
-    }
+  @NonNull
+  public static ThreeLineItemViewHolder create(@NonNull ViewGroup parent) {
+    return new ThreeLineItemViewHolder(
+        LayoutInflater.from(parent.getContext())
+            .inflate(R.layout.material_list_item_three_line, parent, false));
+  }
 }

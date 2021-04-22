@@ -25,7 +25,6 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
-
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.google.android.material.shape.ShapeAppearancePathProvider;
 import com.google.android.material.transition.MaterialContainerTransform.ProgressThresholds;
@@ -37,67 +36,63 @@ import com.google.android.material.transition.MaterialContainerTransform.Progres
  */
 class MaskEvaluator {
 
-    private final Path path = new Path();
-    private final Path startPath = new Path();
-    private final Path endPath = new Path();
-    private final ShapeAppearancePathProvider pathProvider =
-            ShapeAppearancePathProvider.getInstance();
+  private final Path path = new Path();
+  private final Path startPath = new Path();
+  private final Path endPath = new Path();
+  private final ShapeAppearancePathProvider pathProvider =
+      ShapeAppearancePathProvider.getInstance();
 
-    private ShapeAppearanceModel currentShapeAppearanceModel;
+  private ShapeAppearanceModel currentShapeAppearanceModel;
 
-    /**
-     * Update the mask used by this evaluator based on a given progress.
-     */
-    void evaluate(
-            float progress,
-            ShapeAppearanceModel startShapeAppearanceModel,
-            ShapeAppearanceModel endShapeAppearanceModel,
-            RectF currentStartBounds,
-            RectF currentStartBoundsMasked,
-            RectF currentEndBoundsMasked,
-            ProgressThresholds shapeMaskThresholds) {
+  /** Update the mask used by this evaluator based on a given progress. */
+  void evaluate(
+      float progress,
+      ShapeAppearanceModel startShapeAppearanceModel,
+      ShapeAppearanceModel endShapeAppearanceModel,
+      RectF currentStartBounds,
+      RectF currentStartBoundsMasked,
+      RectF currentEndBoundsMasked,
+      ProgressThresholds shapeMaskThresholds) {
 
-        // Animate shape appearance corner changes over range of `progress` & use this when
-        // drawing the container background & images
-        float shapeStartFraction = shapeMaskThresholds.getStart();
-        float shapeEndFraction = shapeMaskThresholds.getEnd();
-        currentShapeAppearanceModel =
-                lerp(
-                        startShapeAppearanceModel,
-                        endShapeAppearanceModel,
-                        currentStartBounds,
-                        currentEndBoundsMasked,
-                        shapeStartFraction,
-                        shapeEndFraction,
-                        progress);
+    // Animate shape appearance corner changes over range of `progress` & use this when
+    // drawing the container background & images
+    float shapeStartFraction = shapeMaskThresholds.getStart();
+    float shapeEndFraction = shapeMaskThresholds.getEnd();
+    currentShapeAppearanceModel =
+        lerp(
+            startShapeAppearanceModel,
+            endShapeAppearanceModel,
+            currentStartBounds,
+            currentEndBoundsMasked,
+            shapeStartFraction,
+            shapeEndFraction,
+            progress);
 
-        pathProvider.calculatePath(currentShapeAppearanceModel, 1, currentStartBoundsMasked, startPath);
-        pathProvider.calculatePath(currentShapeAppearanceModel, 1, currentEndBoundsMasked, endPath);
+    pathProvider.calculatePath(currentShapeAppearanceModel, 1, currentStartBoundsMasked, startPath);
+    pathProvider.calculatePath(currentShapeAppearanceModel, 1, currentEndBoundsMasked, endPath);
 
-        // Union the two paths on API 23 and above. API 21 and 22 have problems with this
-        // call and instead use the start and end paths to clip.
-        if (VERSION.SDK_INT >= VERSION_CODES.M) {
-            path.op(startPath, endPath, Op.UNION);
-        }
+    // Union the two paths on API 23 and above. API 21 and 22 have problems with this
+    // call and instead use the start and end paths to clip.
+    if (VERSION.SDK_INT >= VERSION_CODES.M) {
+      path.op(startPath, endPath, Op.UNION);
     }
+  }
 
-    /**
-     * Clip the given Canvas to the mask held by this evaluator.
-     */
-    void clip(Canvas canvas) {
-        if (VERSION.SDK_INT >= VERSION_CODES.M) {
-            canvas.clipPath(path);
-        } else {
-            canvas.clipPath(startPath);
-            canvas.clipPath(endPath, Region.Op.UNION);
-        }
+  /** Clip the given Canvas to the mask held by this evaluator. */
+  void clip(Canvas canvas) {
+    if (VERSION.SDK_INT >= VERSION_CODES.M) {
+      canvas.clipPath(path);
+    } else {
+      canvas.clipPath(startPath);
+      canvas.clipPath(endPath, Region.Op.UNION);
     }
+  }
 
-    Path getPath() {
-        return path;
-    }
+  Path getPath() {
+    return path;
+  }
 
-    ShapeAppearanceModel getCurrentShapeAppearanceModel() {
-        return currentShapeAppearanceModel;
-    }
+  ShapeAppearanceModel getCurrentShapeAppearanceModel() {
+    return currentShapeAppearanceModel;
+  }
 }

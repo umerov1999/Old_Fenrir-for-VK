@@ -206,7 +206,7 @@ final class Month implements Comparable<Month>, Parcelable {
         public Month createFromParcel(@NonNull Parcel source) {
           int year = source.readInt();
           int month = source.readInt();
-          return create(year, month);
+          return Month.create(year, month);
         }
 
         @NonNull

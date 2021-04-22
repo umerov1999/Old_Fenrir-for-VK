@@ -23,7 +23,6 @@ package com.google.android.material.transition.platform;
 import android.animation.Animator;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -34,23 +33,23 @@ import androidx.annotation.Nullable;
 @androidx.annotation.RequiresApi(android.os.Build.VERSION_CODES.LOLLIPOP)
 public interface VisibilityAnimatorProvider {
 
-    /**
-     * Should return an Animator that animates in the appearing target {@code view}.
-     *
-     * @param sceneRoot The root of the transition hierarchy, which can be useful for checking
-     *                  configurations such as RTL
-     * @param view      The view that is appearing
-     */
-    @Nullable
-    Animator createAppear(@NonNull ViewGroup sceneRoot, @NonNull View view);
+  /**
+   * Should return an Animator that animates in the appearing target {@code view}.
+   *
+   * @param sceneRoot The root of the transition hierarchy, which can be useful for checking
+   *     configurations such as RTL
+   * @param view The view that is appearing
+   */
+  @Nullable
+  Animator createAppear(@NonNull ViewGroup sceneRoot, @NonNull View view);
 
-    /**
-     * Should return an Animator that animates out the disappearing target {@code view}.
-     *
-     * @param sceneRoot The root of the transition hierarchy, which can be useful for checking
-     *                  configurations such as RTL
-     * @param view      The view that is disappearing
-     */
-    @Nullable
-    Animator createDisappear(@NonNull ViewGroup sceneRoot, @NonNull View view);
+  /**
+   * Should return an Animator that animates out the disappearing target {@code view}.
+   *
+   * @param sceneRoot The root of the transition hierarchy, which can be useful for checking
+   *     configurations such as RTL
+   * @param view The view that is disappearing
+   */
+  @Nullable
+  Animator createDisappear(@NonNull ViewGroup sceneRoot, @NonNull View view);
 }

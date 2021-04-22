@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (C) 2017 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,26 +16,22 @@
 -->
 <resources>
 
-    <!-- Themes V21 and above specify an android:alertDialogTheme so that text
-         buttons are used instead of filled buttons. The android:alertDialogTheme
-         used by default by the framework pre-21 is not public and therefore we
-         cannot inherit from it, so we leave pre-21 Framework Alert Dialogs as the
-         platform default. -->
+  <!-- Themes V21 and above specify an android:alertDialogTheme so that text
+       buttons are used instead of filled buttons. The android:alertDialogTheme
+       used by default by the framework pre-21 is not public and therefore we
+       cannot inherit from it, so we leave pre-21 Framework Alert Dialogs as the
+       platform default. -->
 
-    <style name="Base.V21.Theme.MaterialComponents" parent="Base.V14.Theme.MaterialComponents">
-        <item name="android:alertDialogTheme">
-            @style/ThemeOverlay.MaterialComponents.Dialog.Alert.Framework
-        </item>
-    </style>
+  <style name="Base.V21.Theme.MaterialComponents" parent="Base.V14.Theme.MaterialComponents">
+    <item name="android:alertDialogTheme">@style/ThemeOverlay.MaterialComponents.Dialog.Alert.Framework</item>
+  </style>
 
-    <style name="Base.V21.Theme.MaterialComponents.Light" parent="Base.V14.Theme.MaterialComponents.Light">
-        <item name="android:alertDialogTheme">
-            @style/ThemeOverlay.MaterialComponents.Light.Dialog.Alert.Framework
-        </item>
-    </style>
+  <style name="Base.V21.Theme.MaterialComponents.Light" parent="Base.V14.Theme.MaterialComponents.Light">
+    <item name="android:alertDialogTheme">@style/ThemeOverlay.MaterialComponents.Light.Dialog.Alert.Framework</item>
+  </style>
 
-    <style name="Base.Theme.MaterialComponents" parent="Base.V21.Theme.MaterialComponents" />
+  <style name="Base.Theme.MaterialComponents" parent="Base.V21.Theme.MaterialComponents"/>
 
-    <style name="Base.Theme.MaterialComponents.Light" parent="Base.V21.Theme.MaterialComponents.Light" />
+  <style name="Base.Theme.MaterialComponents.Light" parent="Base.V21.Theme.MaterialComponents.Light"/>
 
 </resources>

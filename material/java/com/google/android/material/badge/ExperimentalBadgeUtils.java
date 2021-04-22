@@ -20,22 +20,18 @@ import static androidx.annotation.experimental.Experimental.Level.ERROR;
 import static java.lang.annotation.RetentionPolicy.CLASS;
 
 import androidx.annotation.experimental.Experimental;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-/**
- * Annotation denoting this class is experimental
- */
+/** Annotation denoting this class is experimental */
 @Retention(CLASS)
 @Target({
-        ElementType.TYPE,
-        ElementType.METHOD,
-        ElementType.CONSTRUCTOR,
-        ElementType.FIELD,
-        ElementType.PACKAGE
+  ElementType.TYPE,
+  ElementType.METHOD,
+  ElementType.CONSTRUCTOR,
+  ElementType.FIELD,
+  ElementType.PACKAGE
 })
 @Experimental(level = ERROR)
-public @interface ExperimentalBadgeUtils {
-}
+public @interface ExperimentalBadgeUtils {}

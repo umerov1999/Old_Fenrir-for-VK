@@ -64,7 +64,7 @@ class MonthsPagerAdapter extends RecyclerView.Adapter<MonthsPagerAdapter.ViewHol
         MaterialDatePicker.isFullscreen(context) ? MaterialCalendar.getDayHeight(context) : 0;
 
     this.context = context;
-    itemHeight = daysHeight + labelHeight;
+    this.itemHeight = daysHeight + labelHeight;
     this.calendarConstraints = calendarConstraints;
     this.dateSelector = dateSelector;
     this.onDayClickListener = onDayClickListener;
@@ -96,7 +96,7 @@ class MonthsPagerAdapter extends RecyclerView.Adapter<MonthsPagerAdapter.ViewHol
                 .inflate(R.layout.mtrl_calendar_month_labeled, viewGroup, false);
 
     if (MaterialDatePicker.isFullscreen(viewGroup.getContext())) {
-      container.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, itemHeight));
+      container.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, itemHeight));
       return new ViewHolder(container, /* showLabel= */ true);
     } else {
       return new ViewHolder(container, /* showLabel= */ false);

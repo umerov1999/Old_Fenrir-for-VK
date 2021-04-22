@@ -86,9 +86,9 @@ public class DescendantOffsetUtils {
 
   private static void offsetDescendantMatrix(
       ViewParent target, @NonNull View view, @NonNull Matrix m) {
-    ViewParent parent = view.getParent();
+    final ViewParent parent = view.getParent();
     if (parent instanceof View && parent != target) {
-      View vp = (View) parent;
+      final View vp = (View) parent;
       offsetDescendantMatrix(target, vp, m);
       m.preTranslate(-vp.getScrollX(), -vp.getScrollY());
     }

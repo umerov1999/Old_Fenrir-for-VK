@@ -18,27 +18,25 @@ package com.google.android.material.shape;
 
 import androidx.annotation.NonNull;
 
-/**
- * Offsets a different edge treatment by the given amount.
- */
+/** Offsets a different edge treatment by the given amount. */
 public final class OffsetEdgeTreatment extends EdgeTreatment {
 
-    private final EdgeTreatment other;
-    private final float offset;
+  private final EdgeTreatment other;
+  private final float offset;
 
-    public OffsetEdgeTreatment(@NonNull EdgeTreatment other, float offset) {
-        this.other = other;
-        this.offset = offset;
-    }
+  public OffsetEdgeTreatment(@NonNull EdgeTreatment other, float offset) {
+    this.other = other;
+    this.offset = offset;
+  }
 
-    @Override
-    public void getEdgePath(
-            float length, float center, float interpolation, @NonNull ShapePath shapePath) {
-        other.getEdgePath(length, center - offset, interpolation, shapePath);
-    }
+  @Override
+  public void getEdgePath(
+      float length, float center, float interpolation, @NonNull ShapePath shapePath) {
+    other.getEdgePath(length, center - offset, interpolation, shapePath);
+  }
 
-    @Override
-    boolean forceIntersection() {
-        return other.forceIntersection();
-    }
+  @Override
+  boolean forceIntersection() {
+    return other.forceIntersection();
+  }
 }

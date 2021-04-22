@@ -18,78 +18,76 @@ package com.google.android.material.progressindicator;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-
 import androidx.annotation.ColorInt;
 import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
 
-/**
- * A delegate abstract class for drawing the graphics in different drawable classes.
- */
+/** A delegate abstract class for drawing the graphics in different drawable classes. */
 abstract class DrawingDelegate<S extends BaseProgressIndicatorSpec> {
 
-    protected DrawableWithAnimatedVisibilityChange drawable;
-    S spec;
+  S spec;
 
-    public DrawingDelegate(S spec) {
-        this.spec = spec;
-    }
+  public DrawingDelegate(S spec) {
+    this.spec = spec;
+  }
 
-    /**
-     * Returns the preferred width, in pixels, of the drawable based on the drawing type. Returns a
-     * negative value if it depends on the {@link android.view.View}.
-     */
-    abstract int getPreferredWidth();
+  protected DrawableWithAnimatedVisibilityChange drawable;
 
-    /**
-     * Returns the preferred height, in pixels, of the drawable based on the drawing type. Returns a
-     * negative value if it depends on the {@link android.view.View}.
-     */
-    abstract int getPreferredHeight();
+  /**
+   * Returns the preferred width, in pixels, of the drawable based on the drawing type. Returns a
+   * negative value if it depends on the {@link android.view.View}.
+   */
+  abstract int getPreferredWidth();
 
-    /**
-     * Prepares the bound of the canvas for the actual drawing. Should be called before any drawing
-     * (per frame).
-     *
-     * @param canvas                 Canvas to draw.
-     * @param trackThicknessFraction A fraction representing how much portion of the track thickness
-     *                               should be used in the drawing.
-     */
-    abstract void adjustCanvas(
-            @NonNull Canvas canvas, @FloatRange(from = 0.0, to = 1.0) float trackThicknessFraction);
+  /**
+   * Returns the preferred height, in pixels, of the drawable based on the drawing type. Returns a
+   * negative value if it depends on the {@link android.view.View}.
+   */
+  abstract int getPreferredHeight();
 
-    /**
-     * Fills a part of the track with the designated indicator color. The filling part is defined with
-     * two fractions normalized to [0, 1] representing the start and the end of the track.
-     *
-     * @param canvas        Canvas to draw.
-     * @param paint         Paint used to draw.
-     * @param startFraction A fraction representing where to start the drawing along the track.
-     * @param endFraction   A fraction representing where to end the drawing along the track.
-     * @param color         The color used to draw the indicator.
-     */
-    abstract void fillIndicator(
-            @NonNull Canvas canvas,
-            @NonNull Paint paint,
-            @FloatRange(from = 0.0, to = 1.0) float startFraction,
-            @FloatRange(from = 0.0, to = 1.0) float endFraction,
-            @ColorInt int color);
+  /**
+   * Prepares the bound of the canvas for the actual drawing. Should be called before any drawing
+   * (per frame).
+   *
+   * @param canvas Canvas to draw.
+   * @param trackThicknessFraction A fraction representing how much portion of the track thickness
+   *     should be used in the drawing.
+   */
+  abstract void adjustCanvas(
+      @NonNull Canvas canvas, @FloatRange(from = 0.0, to = 1.0) float trackThicknessFraction);
 
-    /**
-     * Fills the whole track with track color.
-     *
-     * @param canvas Canvas to draw.
-     * @param paint  Paint used to draw.
-     */
-    abstract void fillTrack(@NonNull Canvas canvas, @NonNull Paint paint);
+  /**
+   * Fills a part of the track with the designated indicator color. The filling part is defined with
+   * two fractions normalized to [0, 1] representing the start and the end of the track.
+   *
+   * @param canvas Canvas to draw.
+   * @param paint Paint used to draw.
+   * @param startFraction A fraction representing where to start the drawing along the track.
+   * @param endFraction A fraction representing where to end the drawing along the track.
+   * @param color The color used to draw the indicator.
+   */
+  abstract void fillIndicator(
+      @NonNull Canvas canvas,
+      @NonNull Paint paint,
+      @FloatRange(from = 0.0, to = 1.0) float startFraction,
+      @FloatRange(from = 0.0, to = 1.0) float endFraction,
+      @ColorInt int color);
 
-    protected void registerDrawable(@NonNull DrawableWithAnimatedVisibilityChange drawable) {
-        this.drawable = drawable;
-    }
+  /**
+   * Fills the whole track with track color.
+   *
+   * @param canvas Canvas to draw.
+   * @param paint Paint used to draw.
+   */
+  abstract void fillTrack(@NonNull Canvas canvas, @NonNull Paint paint);
 
-    void validateSpecAndAdjustCanvas(
-            @NonNull Canvas canvas, @FloatRange(from = 0.0, to = 1.0) float trackThicknessFraction) {
-        spec.validateSpec();
-        adjustCanvas(canvas, trackThicknessFraction);
-    }
+  protected void registerDrawable(@NonNull DrawableWithAnimatedVisibilityChange drawable) {
+    this.drawable = drawable;
+  }
+
+  void validateSpecAndAdjustCanvas(
+      @NonNull Canvas canvas, @FloatRange(from = 0.0, to = 1.0) float trackThicknessFraction) {
+    spec.validateSpec();
+    adjustCanvas(canvas, trackThicknessFraction);
+  }
 }

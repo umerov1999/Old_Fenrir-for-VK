@@ -1,21 +1,5 @@
 package dev.ragnarok.fenrir.picasso.transforms;
 
-/**
- * Copyright (C) 2018 Wasabeef
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -24,6 +8,7 @@ import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 
+import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
 
 import com.squareup.picasso.Transformation;
@@ -32,29 +17,31 @@ public class BlurTransformation implements Transformation {
 
     private static final String TAG = BlurTransformation.class.getSimpleName();
 
-    private final int mRadius;
+    private final float mRadius;
 
     private final Context mContext;
 
-    public BlurTransformation(int radius, Context mContext) {
+    public BlurTransformation(@FloatRange(from = 0.0f, to = 25.0f) float radius, Context mContext) {
         mRadius = radius;
         this.mContext = mContext;
     }
 
-    public static Bitmap blur(Bitmap image, Context context, float radius) {
+    public static Bitmap blurRenderScript(Context context, Bitmap inputBitmap, @FloatRange(from = 0.0f, to = 25.0f) float radius) {
         if (radius <= 0) {
-            return image;
+            return inputBitmap;
         }
-        Bitmap outputBitmap = Bitmap.createBitmap(image);
+        Bitmap outputBitmap = inputBitmap.copy(inputBitmap.getConfig(), true);
         RenderScript renderScript = RenderScript.create(context);
-        Allocation tmpIn = Allocation.createFromBitmap(renderScript, image);
-        Allocation tmpOut = Allocation.createFromBitmap(renderScript, outputBitmap);
+        Allocation blurInput = Allocation.createFromBitmap(renderScript, inputBitmap, Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);
+        Allocation blurOutput = Allocation.createFromBitmap(renderScript, outputBitmap);
+        ScriptIntrinsicBlur blur = ScriptIntrinsicBlur.create(renderScript,
+                Element.U8_4(renderScript));
+        blur.setInput(blurInput);
+        blur.setRadius(radius); // radius must be 0 < r <= 25
+        blur.forEach(blurOutput);
+        blurOutput.copyTo(outputBitmap);
+        renderScript.destroy();
 
-        ScriptIntrinsicBlur theIntrinsic = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript));
-        theIntrinsic.setRadius(radius);
-        theIntrinsic.setInput(tmpIn);
-        theIntrinsic.forEach(tmpOut);
-        tmpOut.copyTo(outputBitmap);
         return outputBitmap;
     }
 
@@ -73,7 +60,7 @@ public class BlurTransformation implements Transformation {
             source = source.copy(Bitmap.Config.ARGB_8888, true);
         }
 
-        Bitmap bitmap = blur(source, mContext, mRadius);
+        Bitmap bitmap = blurRenderScript(mContext, source, mRadius);
         if (source != bitmap) {
             source.recycle();
         }

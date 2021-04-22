@@ -17,20 +17,16 @@ package com.google.android.material.expandable;
 
 import androidx.annotation.IdRes;
 
-/**
- * An ExpandableWidget that visually transforms into another component when expanded.
- */
+/** An ExpandableWidget that visually transforms into another component when expanded. */
 public interface ExpandableTransformationWidget extends ExpandableWidget {
 
-    /**
-     * Returns the expanded component id hint.
-     */
-    @IdRes
-    int getExpandedComponentIdHint();
+  /** Returns the expanded component id hint. */
+  @IdRes
+  int getExpandedComponentIdHint();
 
-    /**
-     * Sets the expanded component id hint, which may be used by a Behavior to determine whether it
-     * should handle this widget's state change.
-     */
-    void setExpandedComponentIdHint(@IdRes int expandedComponentIdHint);
+  /**
+   * Sets the expanded component id hint, which may be used by a Behavior to determine whether it
+   * should handle this widget's state change.
+   */
+  void setExpandedComponentIdHint(@IdRes int expandedComponentIdHint);
 }

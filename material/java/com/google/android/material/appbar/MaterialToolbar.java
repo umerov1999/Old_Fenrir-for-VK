@@ -16,6 +16,8 @@
 
 package com.google.android.material.appbar;
 
+import com.google.android.material.R;
+
 import static com.google.android.material.theme.overlay.MaterialThemeOverlay.wrap;
 
 import android.content.Context;
@@ -25,17 +27,14 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build.VERSION_CODES;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.view.ViewCompat;
+import androidx.appcompat.widget.Toolbar;
 import android.util.AttributeSet;
-
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.core.view.ViewCompat;
-
-import com.google.android.material.R;
 import com.google.android.material.internal.ThemeEnforcement;
 import com.google.android.material.shape.MaterialShapeDrawable;
 import com.google.android.material.shape.MaterialShapeUtils;
@@ -63,93 +62,92 @@ import com.google.android.material.shape.MaterialShapeUtils;
  */
 public class MaterialToolbar extends Toolbar {
 
-    private static final int DEF_STYLE_RES = R.style.Widget_MaterialComponents_Toolbar;
+  private static final int DEF_STYLE_RES = R.style.Widget_MaterialComponents_Toolbar;
 
-    @Nullable
-    private Integer navigationIconTint;
+  @Nullable private Integer navigationIconTint;
 
-    public MaterialToolbar(@NonNull Context context) {
-        this(context, null);
+  public MaterialToolbar(@NonNull Context context) {
+    this(context, null);
+  }
+
+  public MaterialToolbar(@NonNull Context context, @Nullable AttributeSet attrs) {
+    this(context, attrs, R.attr.toolbarStyle);
+  }
+
+  public MaterialToolbar(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(wrap(context, attrs, defStyleAttr, DEF_STYLE_RES), attrs, defStyleAttr);
+    // Ensure we are using the correctly themed context rather than the context that was passed in.
+    context = getContext();
+
+    final TypedArray a =
+        ThemeEnforcement.obtainStyledAttributes(
+            context, attrs, R.styleable.MaterialToolbar, defStyleAttr, DEF_STYLE_RES);
+
+    if (a.hasValue(R.styleable.MaterialToolbar_navigationIconTint)) {
+      setNavigationIconTint(a.getColor(R.styleable.MaterialToolbar_navigationIconTint, -1));
     }
 
-    public MaterialToolbar(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, R.attr.toolbarStyle);
+    a.recycle();
+
+    initBackground(context);
+  }
+
+  @Override
+  protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+
+    MaterialShapeUtils.setParentAbsoluteElevation(this);
+  }
+
+  @RequiresApi(VERSION_CODES.LOLLIPOP)
+  @Override
+  public void setElevation(float elevation) {
+    super.setElevation(elevation);
+
+    MaterialShapeUtils.setElevation(this, elevation);
+  }
+
+  @Override
+  public void setNavigationIcon(@Nullable Drawable drawable) {
+    super.setNavigationIcon(maybeTintNavigationIcon(drawable));
+  }
+
+  /**
+   * Sets the color of the toolbar's navigation icon.
+   *
+   * @see #setNavigationIcon
+   */
+  public void setNavigationIconTint(@ColorInt int navigationIconTint) {
+    this.navigationIconTint = navigationIconTint;
+    Drawable navigationIcon = getNavigationIcon();
+    if (navigationIcon != null) {
+      // Causes navigation icon to be tinted if needed.
+      setNavigationIcon(navigationIcon);
     }
+  }
 
-    public MaterialToolbar(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(wrap(context, attrs, defStyleAttr, DEF_STYLE_RES), attrs, defStyleAttr);
-        // Ensure we are using the correctly themed context rather than the context that was passed in.
-        context = getContext();
-
-        TypedArray a =
-                ThemeEnforcement.obtainStyledAttributes(
-                        context, attrs, R.styleable.MaterialToolbar, defStyleAttr, DEF_STYLE_RES);
-
-        if (a.hasValue(R.styleable.MaterialToolbar_navigationIconTint)) {
-            setNavigationIconTint(a.getColor(R.styleable.MaterialToolbar_navigationIconTint, -1));
-        }
-
-        a.recycle();
-
-        initBackground(context);
+  private void initBackground(Context context) {
+    Drawable background = getBackground();
+    if (background != null && !(background instanceof ColorDrawable)) {
+      return;
     }
+    MaterialShapeDrawable materialShapeDrawable = new MaterialShapeDrawable();
+    int backgroundColor =
+        background != null ? ((ColorDrawable) background).getColor() : Color.TRANSPARENT;
+    materialShapeDrawable.setFillColor(ColorStateList.valueOf(backgroundColor));
+    materialShapeDrawable.initializeElevationOverlay(context);
+    materialShapeDrawable.setElevation(ViewCompat.getElevation(this));
+    ViewCompat.setBackground(this, materialShapeDrawable);
+  }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-
-        MaterialShapeUtils.setParentAbsoluteElevation(this);
+  @Nullable
+  private Drawable maybeTintNavigationIcon(@Nullable Drawable navigationIcon) {
+    if (navigationIcon != null && navigationIconTint != null) {
+      Drawable wrappedNavigationIcon = DrawableCompat.wrap(navigationIcon);
+      DrawableCompat.setTint(wrappedNavigationIcon, navigationIconTint);
+      return wrappedNavigationIcon;
+    } else {
+      return navigationIcon;
     }
-
-    @RequiresApi(VERSION_CODES.LOLLIPOP)
-    @Override
-    public void setElevation(float elevation) {
-        super.setElevation(elevation);
-
-        MaterialShapeUtils.setElevation(this, elevation);
-    }
-
-    @Override
-    public void setNavigationIcon(@Nullable Drawable drawable) {
-        super.setNavigationIcon(maybeTintNavigationIcon(drawable));
-    }
-
-    /**
-     * Sets the color of the toolbar's navigation icon.
-     *
-     * @see #setNavigationIcon
-     */
-    public void setNavigationIconTint(@ColorInt int navigationIconTint) {
-        this.navigationIconTint = navigationIconTint;
-        Drawable navigationIcon = getNavigationIcon();
-        if (navigationIcon != null) {
-            // Causes navigation icon to be tinted if needed.
-            setNavigationIcon(navigationIcon);
-        }
-    }
-
-    private void initBackground(Context context) {
-        Drawable background = getBackground();
-        if (background != null && !(background instanceof ColorDrawable)) {
-            return;
-        }
-        MaterialShapeDrawable materialShapeDrawable = new MaterialShapeDrawable();
-        int backgroundColor =
-                background != null ? ((ColorDrawable) background).getColor() : Color.TRANSPARENT;
-        materialShapeDrawable.setFillColor(ColorStateList.valueOf(backgroundColor));
-        materialShapeDrawable.initializeElevationOverlay(context);
-        materialShapeDrawable.setElevation(ViewCompat.getElevation(this));
-        ViewCompat.setBackground(this, materialShapeDrawable);
-    }
-
-    @Nullable
-    private Drawable maybeTintNavigationIcon(@Nullable Drawable navigationIcon) {
-        if (navigationIcon != null && navigationIconTint != null) {
-            Drawable wrappedNavigationIcon = DrawableCompat.wrap(navigationIcon);
-            DrawableCompat.setTint(wrappedNavigationIcon, navigationIconTint);
-            return wrappedNavigationIcon;
-        } else {
-            return navigationIcon;
-        }
-    }
+  }
 }

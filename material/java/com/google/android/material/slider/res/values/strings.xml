@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   Copyright 2020 The Android Open Source Project
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +16,6 @@
   -->
 
 <resources>
-    <string name="material_slider_range_start" description="Content description for the thumb with the minimum value in a Range slider. [CHAR_LIMIT=NONE]">Range start, </string>
-    <string name="material_slider_range_end" description="Content description for the thumb with the maximum value in a Range slider. [CHAR_LIMIT=NONE]">Range end, </string>
+  <string name="material_slider_range_start" description="Content description for the thumb with the minimum value in a Range slider. [CHAR_LIMIT=NONE]">Range start, </string>
+  <string name="material_slider_range_end" description="Content description for the thumb with the maximum value in a Range slider. [CHAR_LIMIT=NONE]">Range end, </string>
 </resources>

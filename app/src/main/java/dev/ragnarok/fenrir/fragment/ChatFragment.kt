@@ -133,8 +133,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
 
     private val requestRecordPermission = AppPerms.requestPermissions(
         this, arrayOf(
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.RECORD_AUDIO
         )
     ) { presenter?.fireRecordPermissionsResolved() }
     private val requestCameraEditPermission = AppPerms.requestPermissions(

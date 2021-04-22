@@ -22,13 +22,12 @@ package com.google.android.material.transition.platform;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
-import android.transition.TransitionValues;
-import android.transition.Visibility;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import android.transition.TransitionValues;
+import android.transition.Visibility;
 
 /**
  * A {@link Visibility} {@link android.transition.Transition} that does nothing to the target
@@ -37,23 +36,23 @@ import androidx.annotation.Nullable;
 @androidx.annotation.RequiresApi(android.os.Build.VERSION_CODES.LOLLIPOP)
 public final class Hold extends Visibility {
 
-    @NonNull
-    @Override
-    public Animator onAppear(
-            @NonNull ViewGroup sceneRoot,
-            @NonNull View view,
-            @Nullable TransitionValues startValues,
-            @Nullable TransitionValues endValues) {
-        return ValueAnimator.ofFloat(0);
-    }
+  @NonNull
+  @Override
+  public Animator onAppear(
+      @NonNull ViewGroup sceneRoot,
+      @NonNull View view,
+      @Nullable TransitionValues startValues,
+      @Nullable TransitionValues endValues) {
+    return ValueAnimator.ofFloat(0);
+  }
 
-    @NonNull
-    @Override
-    public Animator onDisappear(
-            @NonNull ViewGroup sceneRoot,
-            @NonNull View view,
-            @Nullable TransitionValues startValues,
-            @Nullable TransitionValues endValues) {
-        return ValueAnimator.ofFloat(0);
-    }
+  @NonNull
+  @Override
+  public Animator onDisappear(
+      @NonNull ViewGroup sceneRoot,
+      @NonNull View view,
+      @Nullable TransitionValues startValues,
+      @Nullable TransitionValues endValues) {
+    return ValueAnimator.ofFloat(0);
+  }
 }

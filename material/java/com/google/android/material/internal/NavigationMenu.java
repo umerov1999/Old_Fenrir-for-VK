@@ -42,8 +42,8 @@ public class NavigationMenu extends MenuBuilder {
   @NonNull
   @Override
   public SubMenu addSubMenu(int group, int id, int categoryOrder, CharSequence title) {
-    MenuItemImpl item = (MenuItemImpl) addInternal(group, id, categoryOrder, title);
-    SubMenuBuilder subMenu = new NavigationSubMenu(getContext(), this, item);
+    final MenuItemImpl item = (MenuItemImpl) addInternal(group, id, categoryOrder, title);
+    final SubMenuBuilder subMenu = new NavigationSubMenu(getContext(), this, item);
     item.setSubMenu(subMenu);
     return subMenu;
   }

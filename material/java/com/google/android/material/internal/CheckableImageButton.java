@@ -38,7 +38,7 @@ import androidx.customview.view.AbsSavedState;
 @RestrictTo(LIBRARY_GROUP)
 public class CheckableImageButton extends AppCompatImageButton implements Checkable {
 
-  private static final int[] DRAWABLE_STATE_CHECKED = {android.R.attr.state_checked};
+  private static final int[] DRAWABLE_STATE_CHECKED = new int[] {android.R.attr.state_checked};
 
   private boolean checked;
   private boolean checkable = true;

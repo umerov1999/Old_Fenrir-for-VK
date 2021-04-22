@@ -16,31 +16,28 @@
 
 package com.google.android.material.lists;
 
+import com.google.android.material.R;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 
-import com.google.android.material.R;
-
-/**
- * A simple two line list item.
- */
+/** A simple two line list item. */
 public class TwoLineItemViewHolder extends SingleLineItemViewHolder {
 
-    public final TextView secondary;
+  public final TextView secondary;
 
-    public TwoLineItemViewHolder(@NonNull View view) {
-        super(view);
-        secondary = itemView.findViewById(R.id.mtrl_list_item_secondary_text);
-    }
+  public TwoLineItemViewHolder(@NonNull View view) {
+    super(view);
+    this.secondary = itemView.findViewById(R.id.mtrl_list_item_secondary_text);
+  }
 
-    @NonNull
-    public static TwoLineItemViewHolder create(@NonNull ViewGroup parent) {
-        return new TwoLineItemViewHolder(
-                LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.material_list_item_two_line, parent, false));
-    }
+  @NonNull
+  public static TwoLineItemViewHolder create(@NonNull ViewGroup parent) {
+    return new TwoLineItemViewHolder(
+        LayoutInflater.from(parent.getContext())
+            .inflate(R.layout.material_list_item_two_line, parent, false));
+  }
 }

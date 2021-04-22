@@ -459,7 +459,7 @@ public final class CollapsingTextHelper {
     }
   }
 
-  public final boolean setState(int[] state) {
+  public final boolean setState(final int[] state) {
     this.state = state;
 
     if (isStateful()) {
@@ -491,7 +491,7 @@ public final class CollapsingTextHelper {
     calculateOffsets(expandedFraction);
   }
 
-  private void calculateOffsets(float fraction) {
+  private void calculateOffsets(final float fraction) {
     interpolateBounds(fraction);
     currentDrawX = lerp(expandedDrawX, collapsedDrawX, fraction, positionInterpolator);
     currentDrawY = lerp(expandedDrawY, collapsedDrawY, fraction, positionInterpolator);
@@ -557,7 +557,7 @@ public final class CollapsingTextHelper {
   }
 
   private void calculateBaseOffsets() {
-    float currentTextSize = this.currentTextSize;
+    final float currentTextSize = this.currentTextSize;
 
     // We then calculate the collapsed text size, using the same logic
     calculateUsingTextSize(collapsedTextSize);
@@ -569,7 +569,7 @@ public final class CollapsingTextHelper {
         textToDrawCollapsed != null
             ? textPaint.measureText(textToDrawCollapsed, 0, textToDrawCollapsed.length())
             : 0;
-    int collapsedAbsGravity =
+    final int collapsedAbsGravity =
         GravityCompat.getAbsoluteGravity(
             collapsedTextGravity,
             isRtl ? ViewCompat.LAYOUT_DIRECTION_RTL : ViewCompat.LAYOUT_DIRECTION_LTR);
@@ -611,7 +611,7 @@ public final class CollapsingTextHelper {
         : measuredWidth;
     expandedFirstLineDrawX = textLayout != null ? textLayout.getLineLeft(0) : 0;
 
-    int expandedAbsGravity =
+    final int expandedAbsGravity =
         GravityCompat.getAbsoluteGravity(
             expandedTextGravity,
             isRtl ? ViewCompat.LAYOUT_DIRECTION_RTL : ViewCompat.LAYOUT_DIRECTION_LTR);
@@ -669,16 +669,16 @@ public final class CollapsingTextHelper {
   }
 
   public void draw(@NonNull Canvas canvas) {
-    int saveCount = canvas.save();
+    final int saveCount = canvas.save();
     // Compute where to draw textLayout for this frame
     if (textToDraw != null && drawTitle) {
-      float currentExpandedX =
+      final float currentExpandedX =
           currentDrawX + textLayout.getLineLeft(0) - expandedFirstLineDrawX * 2;
 
       textPaint.setTextSize(currentTextSize);
       float x = currentDrawX;
       float y = currentDrawY;
-      boolean drawTexture = useTexture && expandedTitleTexture != null;
+      final boolean drawTexture = useTexture && expandedTitleTexture != null;
 
       if (DEBUG_DRAW) {
         // Just a debug tool, which drawn a magenta rect in the text bounds
@@ -751,7 +751,7 @@ public final class CollapsingTextHelper {
   }
 
   private boolean calculateIsRtl(@NonNull CharSequence text) {
-    boolean defaultIsRtl = isDefaultIsRtl();
+    final boolean defaultIsRtl = isDefaultIsRtl();
     return (defaultIsRtl
         ? TextDirectionHeuristicsCompat.FIRSTSTRONG_RTL
         : TextDirectionHeuristicsCompat.FIRSTSTRONG_LTR)
@@ -777,7 +777,7 @@ public final class CollapsingTextHelper {
   }
 
   @SuppressWarnings("ReferenceEquality") // Matches the Typeface comparison in TextView
-  private void calculateUsingTextSize(float textSize) {
+  private void calculateUsingTextSize(final float textSize) {
     if (text == null) {
       return;
     }
@@ -955,7 +955,7 @@ public final class CollapsingTextHelper {
    *     1.0 will return {@code color2}.
    */
   private static int blendColors(int color1, int color2, float ratio) {
-    float inverseRatio = 1f - ratio;
+    final float inverseRatio = 1f - ratio;
     float a = (Color.alpha(color1) * inverseRatio) + (Color.alpha(color2) * ratio);
     float r = (Color.red(color1) * inverseRatio) + (Color.red(color2) * ratio);
     float g = (Color.green(color1) * inverseRatio) + (Color.green(color2) * ratio);

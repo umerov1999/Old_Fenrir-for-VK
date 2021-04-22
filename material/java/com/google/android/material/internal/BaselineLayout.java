@@ -44,7 +44,7 @@ public class BaselineLayout extends ViewGroup {
 
   @Override
   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-    int count = getChildCount();
+    final int count = getChildCount();
     int maxWidth = 0;
     int maxHeight = 0;
     int maxChildBaseline = -1;
@@ -52,13 +52,13 @@ public class BaselineLayout extends ViewGroup {
     int childState = 0;
 
     for (int i = 0; i < count; i++) {
-      View child = getChildAt(i);
+      final View child = getChildAt(i);
       if (child.getVisibility() == GONE) {
         continue;
       }
 
       measureChild(child, widthMeasureSpec, heightMeasureSpec);
-      int baseline = child.getBaseline();
+      final int baseline = child.getBaseline();
       if (baseline != -1) {
         maxChildBaseline = Math.max(maxChildBaseline, baseline);
         maxChildDescent = Math.max(maxChildDescent, child.getMeasuredHeight() - baseline);
@@ -70,7 +70,7 @@ public class BaselineLayout extends ViewGroup {
     if (maxChildBaseline != -1) {
       maxChildDescent = Math.max(maxChildDescent, getPaddingBottom());
       maxHeight = Math.max(maxHeight, maxChildBaseline + maxChildDescent);
-        baseline = maxChildBaseline;
+      this.baseline = maxChildBaseline;
     }
     maxHeight = Math.max(maxHeight, getSuggestedMinimumHeight());
     maxWidth = Math.max(maxWidth, getSuggestedMinimumWidth());
@@ -82,23 +82,23 @@ public class BaselineLayout extends ViewGroup {
 
   @Override
   protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-    int count = getChildCount();
-    int parentLeft = getPaddingLeft();
-    int parentRight = right - left - getPaddingRight();
-    int parentContentWidth = parentRight - parentLeft;
-    int parentTop = getPaddingTop();
+    final int count = getChildCount();
+    final int parentLeft = getPaddingLeft();
+    final int parentRight = right - left - getPaddingRight();
+    final int parentContentWidth = parentRight - parentLeft;
+    final int parentTop = getPaddingTop();
 
     for (int i = 0; i < count; i++) {
-      View child = getChildAt(i);
+      final View child = getChildAt(i);
       if (child.getVisibility() == GONE) {
         continue;
       }
 
-      int width = child.getMeasuredWidth();
-      int height = child.getMeasuredHeight();
+      final int width = child.getMeasuredWidth();
+      final int height = child.getMeasuredHeight();
 
-      int childLeft = parentLeft + (parentContentWidth - width) / 2;
-      int childTop;
+      final int childLeft = parentLeft + (parentContentWidth - width) / 2;
+      final int childTop;
       if (baseline != -1 && child.getBaseline() != -1) {
         childTop = parentTop + baseline - child.getBaseline();
       } else {

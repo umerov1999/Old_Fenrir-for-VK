@@ -78,12 +78,12 @@ final class StaticLayoutBuilderCompat {
     this.source = source;
     this.paint = paint;
     this.width = width;
-      start = 0;
-      end = source.length();
-      alignment = Alignment.ALIGN_NORMAL;
-      maxLines = Integer.MAX_VALUE;
-      includePad = true;
-      ellipsize = null;
+    this.start = 0;
+    this.end = source.length();
+    this.alignment = Alignment.ALIGN_NORMAL;
+    this.maxLines = Integer.MAX_VALUE;
+    this.includePad = true;
+    this.ellipsize = null;
   }
 
   /**
@@ -262,7 +262,7 @@ final class StaticLayoutBuilderCompat {
     }
 
     try {
-      Class<?> textDirClass;
+      final Class<?> textDirClass;
       boolean useRtl = isRtl && Build.VERSION.SDK_INT >= VERSION_CODES.M;
       if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR2) {
         textDirClass = TextDirectionHeuristic.class;
@@ -275,7 +275,7 @@ final class StaticLayoutBuilderCompat {
         textDirection = textDirsClass.getField(textDirClassName).get(textDirsClass);
       }
 
-      Class<?>[] signature =
+      final Class<?>[] signature =
           new Class<?>[] {
             CharSequence.class,
             int.class,

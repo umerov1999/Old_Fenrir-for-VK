@@ -149,7 +149,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             if (Settings.get().other().isShow_wall_cover()) {
                 PicassoInstance.with()
                         .load(photoUrl)
-                        .transform(new BlurTransformation(6, requireActivity()))
+                        .transform(new BlurTransformation(6f, requireActivity()))
                         .into(mHeaderHolder.vgCover);
             }
         }

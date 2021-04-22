@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright 2018 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,20 +17,20 @@
 
 <resources>
 
-    <style name="ShapeAppearance.MaterialComponents" parent="">
-        <item name="cornerFamily">rounded</item>
-    </style>
+  <style name="ShapeAppearance.MaterialComponents" parent="">
+    <item name="cornerFamily">rounded</item>
+  </style>
 
-    <style name="ShapeAppearance.MaterialComponents.SmallComponent">
-        <item name="cornerSize">@dimen/mtrl_shape_corner_size_small_component</item>
-    </style>
+  <style name="ShapeAppearance.MaterialComponents.SmallComponent">
+    <item name="cornerSize">@dimen/mtrl_shape_corner_size_small_component</item>
+  </style>
 
-    <style name="ShapeAppearance.MaterialComponents.MediumComponent">
-        <item name="cornerSize">@dimen/mtrl_shape_corner_size_medium_component</item>
-    </style>
+  <style name="ShapeAppearance.MaterialComponents.MediumComponent">
+    <item name="cornerSize">@dimen/mtrl_shape_corner_size_medium_component</item>
+  </style>
 
-    <style name="ShapeAppearance.MaterialComponents.LargeComponent">
-        <item name="cornerSize">@dimen/mtrl_shape_corner_size_large_component</item>
-    </style>
+  <style name="ShapeAppearance.MaterialComponents.LargeComponent">
+    <item name="cornerSize">@dimen/mtrl_shape_corner_size_large_component</item>
+  </style>
 
 </resources>

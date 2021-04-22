@@ -226,7 +226,7 @@ class TimePickerView extends ConstraintLayout implements TimePickerControls {
   }
 
   void setOnDoubleTapListener(@Nullable OnDoubleTapListener listener) {
-    onDoubleTapListener = listener;
+    this.onDoubleTapListener = listener;
   }
 
   public void showToggle() {

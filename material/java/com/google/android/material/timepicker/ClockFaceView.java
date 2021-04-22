@@ -72,7 +72,7 @@ class ClockFaceView extends RadialViewGroup implements OnRotateListener {
   private final AccessibilityDelegateCompat valueAccessibilityDelegate;
 
   private final int[] gradientColors;
-  private final float[] gradientPositions = {0f, 0.9f, 1f};
+  private final float[] gradientPositions = new float[] {0f, 0.9f, 1f};
   private final int clockHandPadding;
 
   private String[] values;

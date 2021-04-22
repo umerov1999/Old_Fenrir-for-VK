@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (C) 2015 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +17,9 @@
 
 <resources>
 
-    <!-- 38% opacity black text color -->
-    <color name="mtrl_btn_text_color_disabled">#61000000</color>
-    <!-- 0% opacity white container fill -->
-    <color name="mtrl_btn_transparent_bg_color">#00ffffff</color>
+  <!-- 38% opacity black text color -->
+  <color name="mtrl_btn_text_color_disabled">#61000000</color>
+  <!-- 0% opacity white container fill -->
+  <color name="mtrl_btn_transparent_bg_color">#00ffffff</color>
 
 </resources>

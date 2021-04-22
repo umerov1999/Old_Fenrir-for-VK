@@ -17,7 +17,6 @@
 package com.google.android.material.bottomnavigation;
 
 import androidx.annotation.IntDef;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -35,31 +34,25 @@ import java.lang.annotation.RetentionPolicy;
  * items or more.
  */
 @IntDef({
-        LabelVisibilityMode.LABEL_VISIBILITY_AUTO,
-        LabelVisibilityMode.LABEL_VISIBILITY_SELECTED,
-        LabelVisibilityMode.LABEL_VISIBILITY_LABELED,
-        LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED
+  LabelVisibilityMode.LABEL_VISIBILITY_AUTO,
+  LabelVisibilityMode.LABEL_VISIBILITY_SELECTED,
+  LabelVisibilityMode.LABEL_VISIBILITY_LABELED,
+  LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED
 })
 @Retention(RetentionPolicy.SOURCE)
 public @interface LabelVisibilityMode {
-    /**
-     * Label behaves as "labeled" when there are 3 items or less, or "selected" when there are 4 items
-     * or more.
-     */
-    int LABEL_VISIBILITY_AUTO = -1;
+  /**
+   * Label behaves as "labeled" when there are 3 items or less, or "selected" when there are 4 items
+   * or more.
+   */
+  int LABEL_VISIBILITY_AUTO = -1;
 
-    /**
-     * Label is shown on the selected navigation item.
-     */
-    int LABEL_VISIBILITY_SELECTED = 0;
+  /** Label is shown on the selected navigation item. */
+  int LABEL_VISIBILITY_SELECTED = 0;
 
-    /**
-     * Label is shown on all navigation items.
-     */
-    int LABEL_VISIBILITY_LABELED = 1;
+  /** Label is shown on all navigation items. */
+  int LABEL_VISIBILITY_LABELED = 1;
 
-    /**
-     * Label is not shown on any navigation items.
-     */
-    int LABEL_VISIBILITY_UNLABELED = 2;
+  /** Label is not shown on any navigation items. */
+  int LABEL_VISIBILITY_UNLABELED = 2;
 }

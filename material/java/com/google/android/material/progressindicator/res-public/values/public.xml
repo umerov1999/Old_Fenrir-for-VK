@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (C) 2020 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,26 +15,26 @@
   ~ limitations under the License.
 -->
 <resources>
-    <public name="linearProgressIndicatorStyle" type="attr" />
-    <public name="circularProgressIndicatorStyle" type="attr" />
+  <public name="linearProgressIndicatorStyle" type="attr"/>
+  <public name="circularProgressIndicatorStyle" type="attr"/>
 
-    <!-- Base attributes -->
-    <public name="trackThickness" type="attr" />
-    <public name="trackCornerRadius" type="attr" />
-    <public name="indicatorColor" type="attr" />
-    <public name="showAnimationBehavior" type="attr" />
-    <public name="hideAnimationBehavior" type="attr" />
-    <public name="showDelay" type="attr" />
-    <public name="minHideDelay" type="attr" />
-    <!-- LinearProgressIndicator attributes -->
-    <public name="indeterminateAnimationType" type="attr" />
-    <public name="indicatorDirectionLinear" type="attr" />
-    <!-- CircularProgressIndicator attributes -->
-    <public name="indicatorSize" type="attr" />
-    <public name="indicatorInset" type="attr" />
-    <public name="indicatorDirectionCircular" type="attr" />
+  <!-- Base attributes -->
+  <public name="trackThickness" type="attr" />
+  <public name="trackCornerRadius" type="attr" />
+  <public name="indicatorColor" type="attr" />
+  <public name="showAnimationBehavior" type="attr"/>
+  <public name="hideAnimationBehavior" type="attr"/>
+  <public name="showDelay" type="attr"/>
+  <public name="minHideDelay" type="attr"/>
+  <!-- LinearProgressIndicator attributes -->
+  <public name="indeterminateAnimationType" type="attr"/>
+  <public name="indicatorDirectionLinear" type="attr"/>
+  <!-- CircularProgressIndicator attributes -->
+  <public name="indicatorSize" type="attr"/>
+  <public name="indicatorInset" type="attr"/>
+  <public name="indicatorDirectionCircular" type="attr"/>
 
-    <public name="Widget.MaterialComponents.LinearProgressIndicator" type="style" />
-    <public name="Widget.MaterialComponents.CircularProgressIndicator" type="style" />
+  <public name="Widget.MaterialComponents.LinearProgressIndicator" type="style"/>
+  <public name="Widget.MaterialComponents.CircularProgressIndicator" type="style"/>
 
 </resources>

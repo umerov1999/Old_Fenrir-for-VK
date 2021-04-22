@@ -69,7 +69,7 @@ public class FlowLayout extends ViewGroup {
   }
 
   private void loadFromAttributes(@NonNull Context context, @Nullable AttributeSet attrs) {
-    TypedArray array =
+    final TypedArray array =
         context.getTheme().obtainStyledAttributes(attrs, R.styleable.FlowLayout, 0, 0);
     lineSpacing = array.getDimensionPixelSize(R.styleable.FlowLayout_lineSpacing, 0);
     itemSpacing = array.getDimensionPixelSize(R.styleable.FlowLayout_itemSpacing, 0);
@@ -104,13 +104,13 @@ public class FlowLayout extends ViewGroup {
 
   @Override
   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-    int width = MeasureSpec.getSize(widthMeasureSpec);
-    int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+    final int width = MeasureSpec.getSize(widthMeasureSpec);
+    final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
 
-    int height = MeasureSpec.getSize(heightMeasureSpec);
-    int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+    final int height = MeasureSpec.getSize(heightMeasureSpec);
+    final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
 
-    int maxWidth =
+    final int maxWidth =
         widthMode == MeasureSpec.AT_MOST || widthMode == MeasureSpec.EXACTLY
             ? width
             : Integer.MAX_VALUE;
@@ -120,7 +120,7 @@ public class FlowLayout extends ViewGroup {
     int childBottom = childTop;
     int childRight = childLeft;
     int maxChildRight = 0;
-    int maxRight = maxWidth - getPaddingRight();
+    final int maxRight = maxWidth - getPaddingRight();
     for (int i = 0; i < getChildCount(); i++) {
       View child = getChildAt(i);
 
@@ -202,7 +202,7 @@ public class FlowLayout extends ViewGroup {
     int childBottom = childTop;
     int childEnd;
 
-    int maxChildEnd = right - left - paddingEnd;
+    final int maxChildEnd = right - left - paddingEnd;
 
     for (int i = 0; i < getChildCount(); i++) {
       View child = getChildAt(i);

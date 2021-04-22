@@ -37,7 +37,7 @@ class SmoothCalendarLayoutManager extends LinearLayoutManager {
   @Override
   public void smoothScrollToPosition(
       RecyclerView recyclerView, RecyclerView.State state, int position) {
-    LinearSmoothScroller linearSmoothScroller =
+    final LinearSmoothScroller linearSmoothScroller =
         new LinearSmoothScroller(recyclerView.getContext()) {
 
           @Override

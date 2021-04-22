@@ -50,7 +50,7 @@ abstract class DateFormatTextWatcher extends TextWatcherAdapter {
     this.dateFormat = dateFormat;
     this.textInputLayout = textInputLayout;
     this.constraints = constraints;
-      outOfRange = textInputLayout.getContext().getString(R.string.mtrl_picker_out_of_range);
+    this.outOfRange = textInputLayout.getContext().getString(R.string.mtrl_picker_out_of_range);
     setErrorCallback =
         new Runnable() {
           @Override
@@ -89,7 +89,7 @@ abstract class DateFormatTextWatcher extends TextWatcherAdapter {
     try {
       Date date = dateFormat.parse(s.toString());
       textInputLayout.setError(null);
-      long milliseconds = date.getTime();
+      final long milliseconds = date.getTime();
       if (constraints.getDateValidator().isValid(milliseconds)
           && constraints.isWithinBounds(milliseconds)) {
         onValidDate(date.getTime());

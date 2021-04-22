@@ -181,7 +181,7 @@ public final class MaterialCalendar<S> extends PickerFragment<S> {
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setTag(MONTHS_VIEW_GROUP_TAG);
 
-    MonthsPagerAdapter monthsPagerAdapter =
+    final MonthsPagerAdapter monthsPagerAdapter =
         new MonthsPagerAdapter(
             themedContext,
             dateSelector,
@@ -336,7 +336,7 @@ public final class MaterialCalendar<S> extends PickerFragment<S> {
   }
 
   void setSelector(CalendarSelector selector) {
-    calendarSelector = selector;
+    this.calendarSelector = selector;
     if (selector == CalendarSelector.YEAR) {
       yearSelector
           .getLayoutManager()
@@ -362,7 +362,7 @@ public final class MaterialCalendar<S> extends PickerFragment<S> {
   }
 
   private void addActionsToMonthNavigation(
-          @NonNull View root, @NonNull final MonthsPagerAdapter monthsPagerAdapter) {
+      @NonNull final View root, @NonNull final MonthsPagerAdapter monthsPagerAdapter) {
     final MaterialButton monthDropSelect = root.findViewById(R.id.month_navigation_fragment_toggle);
     monthDropSelect.setTag(SELECTOR_TOGGLE_TAG);
     ViewCompat.setAccessibilityDelegate(
@@ -380,9 +380,9 @@ public final class MaterialCalendar<S> extends PickerFragment<S> {
           }
         });
 
-    MaterialButton monthPrev = root.findViewById(R.id.month_navigation_previous);
+    final MaterialButton monthPrev = root.findViewById(R.id.month_navigation_previous);
     monthPrev.setTag(NAVIGATION_PREV_TAG);
-    MaterialButton monthNext = root.findViewById(R.id.month_navigation_next);
+    final MaterialButton monthNext = root.findViewById(R.id.month_navigation_next);
     monthNext.setTag(NAVIGATION_NEXT_TAG);
 
     yearFrame = root.findViewById(R.id.mtrl_calendar_year_selector_frame);

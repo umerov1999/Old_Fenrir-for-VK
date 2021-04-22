@@ -19,10 +19,8 @@ package com.google.android.material.transition;
 import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 import android.view.Gravity;
-
 import androidx.annotation.IntDef;
 import androidx.annotation.RestrictTo;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -45,71 +43,69 @@ import java.lang.annotation.RetentionPolicy;
  */
 public final class MaterialSharedAxis extends MaterialVisibility<VisibilityAnimatorProvider> {
 
-    /**
-     * Indicates that the x-axis should be shared for the transition, meaning a horizontal slide and
-     * fade should be used.
-     *
-     * <p>In the forward direction, targets of this transition will slide left.
-     */
-    public static final int X = 0;
+  /**
+   * Indicates that the x-axis should be shared for the transition, meaning a horizontal slide and
+   * fade should be used.
+   *
+   * <p>In the forward direction, targets of this transition will slide left.
+   */
+  public static final int X = 0;
 
-    /**
-     * Indicates that the y-axis should be shared for the transition, meaning a vertical slide and
-     * fade should be used.
-     *
-     * <p>In the forward direction, targets of this transition will slide up.
-     */
-    public static final int Y = 1;
+  /**
+   * Indicates that the y-axis should be shared for the transition, meaning a vertical slide and
+   * fade should be used.
+   *
+   * <p>In the forward direction, targets of this transition will slide up.
+   */
+  public static final int Y = 1;
 
-    /**
-     * Indicates that the z-axis should be shared for the transition, meaning a scale and fade should
-     * be used.
-     *
-     * <p>In the forward direction, targets of this transition will scale out.
-     */
-    public static final int Z = 2;
-    @Axis
-    private final int axis;
-    private final boolean forward;
-    public MaterialSharedAxis(@Axis int axis, boolean forward) {
-        super(createPrimaryAnimatorProvider(axis, forward), createSecondaryAnimatorProvider());
-        this.axis = axis;
-        this.forward = forward;
+  /**
+   * Indicates that the z-axis should be shared for the transition, meaning a scale and fade should
+   * be used.
+   *
+   * <p>In the forward direction, targets of this transition will scale out.
+   */
+  public static final int Z = 2;
+
+  /** @hide */
+  @RestrictTo(LIBRARY_GROUP)
+  @IntDef({X, Y, Z})
+  @Retention(RetentionPolicy.SOURCE)
+  public @interface Axis {}
+
+  @Axis private final int axis;
+  private final boolean forward;
+
+  public MaterialSharedAxis(@Axis int axis, boolean forward) {
+    super(createPrimaryAnimatorProvider(axis, forward), createSecondaryAnimatorProvider());
+    this.axis = axis;
+    this.forward = forward;
+  }
+
+  @Axis
+  public int getAxis() {
+    return axis;
+  }
+
+  public boolean isForward() {
+    return forward;
+  }
+
+  private static VisibilityAnimatorProvider createPrimaryAnimatorProvider(
+      @Axis int axis, boolean forward) {
+    switch (axis) {
+      case X:
+        return new SlideDistanceProvider(forward ? Gravity.END : Gravity.START);
+      case Y:
+        return new SlideDistanceProvider(forward ? Gravity.BOTTOM : Gravity.TOP);
+      case Z:
+        return new ScaleProvider(forward);
+      default:
+        throw new IllegalArgumentException("Invalid axis: " + axis);
     }
+  }
 
-    private static VisibilityAnimatorProvider createPrimaryAnimatorProvider(
-            @Axis int axis, boolean forward) {
-        switch (axis) {
-            case X:
-                return new SlideDistanceProvider(forward ? Gravity.END : Gravity.START);
-            case Y:
-                return new SlideDistanceProvider(forward ? Gravity.BOTTOM : Gravity.TOP);
-            case Z:
-                return new ScaleProvider(forward);
-            default:
-                throw new IllegalArgumentException("Invalid axis: " + axis);
-        }
-    }
-
-    private static VisibilityAnimatorProvider createSecondaryAnimatorProvider() {
-        return new FadeThroughProvider();
-    }
-
-    @Axis
-    public int getAxis() {
-        return axis;
-    }
-
-    public boolean isForward() {
-        return forward;
-    }
-
-    /**
-     * @hide
-     */
-    @RestrictTo(LIBRARY_GROUP)
-    @IntDef({X, Y, Z})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface Axis {
-    }
+  private static VisibilityAnimatorProvider createSecondaryAnimatorProvider() {
+    return new FadeThroughProvider();
+  }
 }

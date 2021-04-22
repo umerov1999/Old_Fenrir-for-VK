@@ -3,6 +3,7 @@ package dev.ragnarok.fenrir.picasso
 import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.StatFs
@@ -75,6 +76,7 @@ class PicassoInstance @SuppressLint("CheckResult") private constructor(
         ProxyUtil.applyProxyConfig(builder, proxySettings.activeProxy)
         BitmapSafeResize.setMaxResolution(Settings.get().other().maxBitmapResolution)
         return Picasso.Builder(app)
+            .defaultBitmapConfig(Bitmap.Config.ARGB_8888)
             .downloader(OkHttp3Downloader(builder.build()))
             .addRequestHandler(PicassoLocalRequestHandler())
             .build()

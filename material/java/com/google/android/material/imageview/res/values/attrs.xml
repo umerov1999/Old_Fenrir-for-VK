@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (C) 2019 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,27 +16,27 @@
   -->
 
 <resources>
-    <declare-styleable name="ShapeableImageView">
-        <attr name="strokeWidth" />
-        <attr name="strokeColor" />
+  <declare-styleable name="ShapeableImageView">
+    <attr name="strokeWidth" />
+    <attr name="strokeColor" />
 
-        <!-- Shape appearance style reference for ShapeableImageView. Attribute declaration is in the
-             shape package. -->
-        <attr name="shapeAppearance" />
-        <!-- Shape appearance overlay style reference for ShapeableImageView. To be used to augment
-             attributes declared in the shapeAppearance. Attribute declaration is in the shape package.
-             -->
-        <attr name="shapeAppearanceOverlay" />
+    <!-- Shape appearance style reference for ShapeableImageView. Attribute declaration is in the
+         shape package. -->
+    <attr name="shapeAppearance" />
+    <!-- Shape appearance overlay style reference for ShapeableImageView. To be used to augment
+         attributes declared in the shapeAppearance. Attribute declaration is in the shape package.
+         -->
+    <attr name="shapeAppearanceOverlay" />
 
-        <!-- Attributes for padding the image, since android:padding is applied to the background
-             for ShapeableImageView
-             -->
-        <attr name="contentPadding" />
-        <attr name="contentPaddingBottom" />
-        <attr name="contentPaddingEnd" format="dimension" />
-        <attr name="contentPaddingLeft" />
-        <attr name="contentPaddingRight" />
-        <attr name="contentPaddingStart" format="dimension" />
-        <attr name="contentPaddingTop" />
-    </declare-styleable>
+    <!-- Attributes for padding the image, since android:padding is applied to the background
+         for ShapeableImageView
+         -->
+    <attr name="contentPadding" />
+    <attr name="contentPaddingBottom" />
+    <attr name="contentPaddingEnd" format="dimension" />
+    <attr name="contentPaddingLeft" />
+    <attr name="contentPaddingRight" />
+    <attr name="contentPaddingStart" format="dimension" />
+    <attr name="contentPaddingTop" />
+  </declare-styleable>
 </resources>

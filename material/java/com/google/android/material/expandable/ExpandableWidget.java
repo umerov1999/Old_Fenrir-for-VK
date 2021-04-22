@@ -60,19 +60,19 @@ import android.view.View;
  */
 public interface ExpandableWidget {
 
-    /**
-     * Returns whether this widget is expanded.
-     *
-     * <p>Implementations should call {@link ExpandableWidgetHelper#isExpanded()}.
-     */
-    boolean isExpanded();
+  /**
+   * Returns whether this widget is expanded.
+   *
+   * <p>Implementations should call {@link ExpandableWidgetHelper#isExpanded()}.
+   */
+  boolean isExpanded();
 
-    /**
-     * Sets the expanded state on this widget.
-     *
-     * <p>Implementations should call {@link ExpandableWidgetHelper#setExpanded(boolean)}.
-     *
-     * @return true if the expanded state changed as a result of this call.
-     */
-    boolean setExpanded(boolean expanded);
+  /**
+   * Sets the expanded state on this widget.
+   *
+   * <p>Implementations should call {@link ExpandableWidgetHelper#setExpanded(boolean)}.
+   *
+   * @return true if the expanded state changed as a result of this call.
+   */
+  boolean setExpanded(boolean expanded);
 }

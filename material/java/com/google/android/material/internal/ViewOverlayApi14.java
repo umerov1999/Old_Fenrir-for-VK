@@ -49,7 +49,7 @@ class ViewOverlayApi14 implements ViewOverlayImpl {
   static ViewOverlayApi14 createFrom(View view) {
     ViewGroup contentView = ViewUtils.getContentView(view);
     if (contentView != null) {
-      int numChildren = contentView.getChildCount();
+      final int numChildren = contentView.getChildCount();
       for (int i = 0; i < numChildren; ++i) {
         View child = contentView.getChildAt(i);
         if (child instanceof OverlayViewGroup) {
@@ -112,7 +112,7 @@ class ViewOverlayApi14 implements ViewOverlayImpl {
 
     View requestingView;
     /** The set of drawables to draw when the overlay is rendered. */
-    ArrayList<Drawable> drawables;
+    ArrayList<Drawable> drawables = null;
     /** Reference to the hosting overlay object */
     ViewOverlayApi14 viewOverlay;
 
@@ -191,11 +191,11 @@ class ViewOverlayApi14 implements ViewOverlayImpl {
           parent.removeView(child);
         }
       }
-      addView(child);
+      super.addView(child);
     }
 
     public void remove(View view) {
-      removeView(view);
+      super.removeView(view);
       disposeIfEmpty();
     }
 
@@ -231,7 +231,7 @@ class ViewOverlayApi14 implements ViewOverlayImpl {
           hostViewLocation[1] - contentViewLocation[1]);
       canvas.clipRect(new Rect(0, 0, requestingView.getWidth(), requestingView.getHeight()));
       super.dispatchDraw(canvas);
-      int numDrawables = (drawables == null) ? 0 : drawables.size();
+      final int numDrawables = (drawables == null) ? 0 : drawables.size();
       for (int i = 0; i < numDrawables; ++i) {
         drawables.get(i).draw(canvas);
       }

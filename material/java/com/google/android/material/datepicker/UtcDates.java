@@ -153,7 +153,7 @@ class UtcDates {
             .toLocalizedPattern()
             .replaceAll("\\s+", "");
     SimpleDateFormat format = new SimpleDateFormat(pattern, Locale.getDefault());
-    format.setTimeZone(getTimeZone());
+    format.setTimeZone(UtcDates.getTimeZone());
     format.setLenient(false);
     return format;
   }

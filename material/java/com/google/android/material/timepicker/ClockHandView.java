@@ -52,7 +52,7 @@ class ClockHandView extends View {
   private float downX;
   private float downY;
   private boolean isInTapRegion;
-  private final int scaledTouchSlop;
+  private int scaledTouchSlop;
 
   /** A listener whenever the hand is rotated. */
   public interface OnRotateListener {
@@ -210,7 +210,7 @@ class ClockHandView extends View {
   }
 
   public void setOnActionUpListener(OnActionUpListener listener) {
-    onActionUpListener = listener;
+    this.onActionUpListener = listener;
   }
 
   @FloatRange(from = 0f, to = 360f)
@@ -290,8 +290,8 @@ class ClockHandView extends View {
         break;
       case MotionEvent.ACTION_MOVE:
       case MotionEvent.ACTION_UP:
-        int deltaX = (int) (x - downX);
-        int deltaY = (int) (y - downY);
+        final int deltaX = (int) (x - downX);
+        final int deltaY = (int) (y - downY);
         int distance = (deltaX * deltaX) + (deltaY * deltaY);
         isInTapRegion = distance > scaledTouchSlop;
         // If we saw a down/up pair without the value changing, assume

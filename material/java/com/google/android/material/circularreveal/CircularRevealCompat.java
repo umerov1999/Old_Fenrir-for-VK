@@ -24,9 +24,7 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.view.View;
 import android.view.ViewAnimationUtils;
-
 import androidx.annotation.NonNull;
-
 import com.google.android.material.circularreveal.CircularRevealWidget.CircularRevealEvaluator;
 import com.google.android.material.circularreveal.CircularRevealWidget.CircularRevealProperty;
 import com.google.android.material.circularreveal.CircularRevealWidget.RevealInfo;
@@ -38,101 +36,100 @@ import com.google.android.material.circularreveal.CircularRevealWidget.RevealInf
  */
 public final class CircularRevealCompat {
 
-    private CircularRevealCompat() {
-    }
+  private CircularRevealCompat() {}
 
-    /**
-     * Returns an Animator to animate a clipping circle. The startRadius will be the current {@link
-     * CircularRevealWidget#getRevealInfo()}'s {@link RevealInfo#radius} at the start of the
-     * animation.
-     *
-     * <p>This is meant to be used as a drop-in replacement for {@link
-     * ViewAnimationUtils#createCircularReveal(View, int, int, float, float)}. In pre-L APIs, a
-     * backwards compatible version of the Animator will be returned.
-     *
-     * <p>You must also call {@link
-     * CircularRevealCompat#createCircularRevealListener(CircularRevealWidget)} and add the returned
-     * AnimatorListener to this Animator or preferably to the overall AnimatorSet.
-     */
-    @NonNull
-    public static Animator createCircularReveal(
-            @NonNull CircularRevealWidget view, float centerX, float centerY, float endRadius) {
-        Animator revealInfoAnimator =
-                ObjectAnimator.ofObject(
-                        view,
-                        CircularRevealProperty.CIRCULAR_REVEAL,
-                        CircularRevealEvaluator.CIRCULAR_REVEAL,
-                        new RevealInfo(centerX, centerY, endRadius));
-        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-            // Ideally, the start radius would be inferred from the RevealInfo at the time of animation
-            // start (usually on the next event loop iteration). So we approximate.
-            RevealInfo revealInfo = view.getRevealInfo();
-            if (revealInfo == null) {
-                throw new IllegalStateException(
-                        "Caller must set a non-null RevealInfo before calling this.");
-            }
-            float startRadius = revealInfo.radius;
-            Animator circularRevealAnimator =
-                    ViewAnimationUtils.createCircularReveal(
-                            (View) view, (int) centerX, (int) centerY, startRadius, endRadius);
-            AnimatorSet set = new AnimatorSet();
-            set.playTogether(revealInfoAnimator, circularRevealAnimator);
-            return set;
-        } else {
-            return revealInfoAnimator;
-        }
+  /**
+   * Returns an Animator to animate a clipping circle. The startRadius will be the current {@link
+   * CircularRevealWidget#getRevealInfo()}'s {@link RevealInfo#radius} at the start of the
+   * animation.
+   *
+   * <p>This is meant to be used as a drop-in replacement for {@link
+   * ViewAnimationUtils#createCircularReveal(View, int, int, float, float)}. In pre-L APIs, a
+   * backwards compatible version of the Animator will be returned.
+   *
+   * <p>You must also call {@link
+   * CircularRevealCompat#createCircularRevealListener(CircularRevealWidget)} and add the returned
+   * AnimatorListener to this Animator or preferably to the overall AnimatorSet.
+   */
+  @NonNull
+  public static Animator createCircularReveal(
+      @NonNull CircularRevealWidget view, float centerX, float centerY, float endRadius) {
+    Animator revealInfoAnimator =
+        ObjectAnimator.ofObject(
+            view,
+            CircularRevealProperty.CIRCULAR_REVEAL,
+            CircularRevealEvaluator.CIRCULAR_REVEAL,
+            new RevealInfo(centerX, centerY, endRadius));
+    if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+      // Ideally, the start radius would be inferred from the RevealInfo at the time of animation
+      // start (usually on the next event loop iteration). So we approximate.
+      RevealInfo revealInfo = view.getRevealInfo();
+      if (revealInfo == null) {
+        throw new IllegalStateException(
+            "Caller must set a non-null RevealInfo before calling this.");
+      }
+      float startRadius = revealInfo.radius;
+      Animator circularRevealAnimator =
+          ViewAnimationUtils.createCircularReveal(
+              (View) view, (int) centerX, (int) centerY, startRadius, endRadius);
+      AnimatorSet set = new AnimatorSet();
+      set.playTogether(revealInfoAnimator, circularRevealAnimator);
+      return set;
+    } else {
+      return revealInfoAnimator;
     }
+  }
 
-    /**
-     * Returns an Animator to animate a clipping circle.
-     *
-     * <p>This is meant to be used as a drop-in replacement for {@link
-     * ViewAnimationUtils#createCircularReveal(View, int, int, float, float)}. In pre-L APIs, a
-     * backwards compatible version of the Animator will be returned.
-     *
-     * <p>You must also call {@link
-     * CircularRevealCompat#createCircularRevealListener(CircularRevealWidget)} and add the returned
-     * AnimatorListener to this Animator or preferably to the overall AnimatorSet.
-     */
-    @NonNull
-    public static Animator createCircularReveal(
-            CircularRevealWidget view, float centerX, float centerY, float startRadius, float endRadius) {
-        Animator revealInfoAnimator =
-                ObjectAnimator.ofObject(
-                        view,
-                        CircularRevealProperty.CIRCULAR_REVEAL,
-                        CircularRevealEvaluator.CIRCULAR_REVEAL,
-                        new RevealInfo(centerX, centerY, startRadius),
-                        new RevealInfo(centerX, centerY, endRadius));
-        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-            Animator circularRevealAnimator =
-                    ViewAnimationUtils.createCircularReveal(
-                            (View) view, (int) centerX, (int) centerY, startRadius, endRadius);
-            AnimatorSet set = new AnimatorSet();
-            set.playTogether(revealInfoAnimator, circularRevealAnimator);
-            return set;
-        } else {
-            return revealInfoAnimator;
-        }
+  /**
+   * Returns an Animator to animate a clipping circle.
+   *
+   * <p>This is meant to be used as a drop-in replacement for {@link
+   * ViewAnimationUtils#createCircularReveal(View, int, int, float, float)}. In pre-L APIs, a
+   * backwards compatible version of the Animator will be returned.
+   *
+   * <p>You must also call {@link
+   * CircularRevealCompat#createCircularRevealListener(CircularRevealWidget)} and add the returned
+   * AnimatorListener to this Animator or preferably to the overall AnimatorSet.
+   */
+  @NonNull
+  public static Animator createCircularReveal(
+      CircularRevealWidget view, float centerX, float centerY, float startRadius, float endRadius) {
+    Animator revealInfoAnimator =
+        ObjectAnimator.ofObject(
+            view,
+            CircularRevealProperty.CIRCULAR_REVEAL,
+            CircularRevealEvaluator.CIRCULAR_REVEAL,
+            new RevealInfo(centerX, centerY, startRadius),
+            new RevealInfo(centerX, centerY, endRadius));
+    if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+      Animator circularRevealAnimator =
+          ViewAnimationUtils.createCircularReveal(
+              (View) view, (int) centerX, (int) centerY, startRadius, endRadius);
+      AnimatorSet set = new AnimatorSet();
+      set.playTogether(revealInfoAnimator, circularRevealAnimator);
+      return set;
+    } else {
+      return revealInfoAnimator;
     }
+  }
 
-    /**
-     * Creates an AnimatorListener to be applied to either the Animator returned from {@link
-     * #createCircularReveal} or preferably to the overall AnimatorSet.
-     */
-    @NonNull
-    public static AnimatorListener createCircularRevealListener(
-            @NonNull final CircularRevealWidget view) {
-        return new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                view.buildCircularRevealCache();
-            }
+  /**
+   * Creates an AnimatorListener to be applied to either the Animator returned from {@link
+   * #createCircularReveal} or preferably to the overall AnimatorSet.
+   */
+  @NonNull
+  public static AnimatorListener createCircularRevealListener(
+      @NonNull final CircularRevealWidget view) {
+    return new AnimatorListenerAdapter() {
+      @Override
+      public void onAnimationStart(Animator animation) {
+        view.buildCircularRevealCache();
+      }
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                view.destroyCircularRevealCache();
-            }
-        };
-    }
+      @Override
+      public void onAnimationEnd(Animator animation) {
+        view.destroyCircularRevealCache();
+      }
+    };
+  }
 }

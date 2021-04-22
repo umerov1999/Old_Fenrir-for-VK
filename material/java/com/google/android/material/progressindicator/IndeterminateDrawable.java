@@ -21,165 +21,160 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
-
 import androidx.annotation.NonNull;
 
-/**
- * This class draws the graphics for indeterminate mode.
- */
+/** This class draws the graphics for indeterminate mode. */
 public final class IndeterminateDrawable<S extends BaseProgressIndicatorSpec>
-        extends DrawableWithAnimatedVisibilityChange {
+    extends DrawableWithAnimatedVisibilityChange {
 
-    // Drawing delegate object.
-    private DrawingDelegate<S> drawingDelegate;
-    // Animator delegate object.
-    private IndeterminateAnimatorDelegate<ObjectAnimator> animatorDelegate;
+  // Drawing delegate object.
+  private DrawingDelegate<S> drawingDelegate;
+  // Animator delegate object.
+  private IndeterminateAnimatorDelegate<ObjectAnimator> animatorDelegate;
 
-    IndeterminateDrawable(
-            @NonNull Context context,
-            @NonNull BaseProgressIndicatorSpec baseSpec,
-            @NonNull DrawingDelegate<S> drawingDelegate,
-            @NonNull IndeterminateAnimatorDelegate<ObjectAnimator> animatorDelegate) {
-        super(context, baseSpec);
+  IndeterminateDrawable(
+      @NonNull Context context,
+      @NonNull BaseProgressIndicatorSpec baseSpec,
+      @NonNull DrawingDelegate<S> drawingDelegate,
+      @NonNull IndeterminateAnimatorDelegate<ObjectAnimator> animatorDelegate) {
+    super(context, baseSpec);
 
-        setDrawingDelegate(drawingDelegate);
-        setAnimatorDelegate(animatorDelegate);
+    setDrawingDelegate(drawingDelegate);
+    setAnimatorDelegate(animatorDelegate);
+  }
+
+  /**
+   * Creates an instance of {@link IndeterminateDrawable} for {@link LinearProgressIndicator} with
+   * {@link LinearProgressIndicatorSpec}.
+   *
+   * @param context The current context.
+   * @param spec The spec for the linear indicator.
+   */
+  @NonNull
+  public static IndeterminateDrawable<LinearProgressIndicatorSpec> createLinearDrawable(
+      @NonNull Context context, @NonNull LinearProgressIndicatorSpec spec) {
+    return new IndeterminateDrawable<>(
+        context,
+        /*baseSpec=*/ spec,
+        new LinearDrawingDelegate(spec),
+        spec.indeterminateAnimationType
+                == LinearProgressIndicator.INDETERMINATE_ANIMATION_TYPE_CONTIGUOUS
+            ? new LinearIndeterminateContiguousAnimatorDelegate(spec)
+            : new LinearIndeterminateDisjointAnimatorDelegate(context, spec));
+  }
+
+  /**
+   * Creates an instance of {@link IndeterminateDrawable} for {@link CircularProgressIndicator} with
+   * {@link CircularProgressIndicatorSpec}.
+   *
+   * @param context The current context.
+   * @param spec The spec for the circular indicator.
+   */
+  @NonNull
+  public static IndeterminateDrawable<CircularProgressIndicatorSpec> createCircularDrawable(
+      @NonNull Context context, @NonNull CircularProgressIndicatorSpec spec) {
+    return new IndeterminateDrawable<>(
+        context,
+        /*baseSpec=*/ spec,
+        new CircularDrawingDelegate(spec),
+        new CircularIndeterminateAnimatorDelegate(spec));
+  }
+
+  // ******************* Overridden methods *******************
+
+  /**
+   * Sets the visibility of this drawable. It calls the {@link
+   * DrawableWithAnimatedVisibilityChange#setVisible(boolean, boolean, boolean)} to start the
+   * show/hide animation properly. The indeterminate animation will be started if animation is
+   * requested.
+   *
+   * @param visible Whether to make the drawable visible.
+   * @param restart Whether to force starting the animation from the beginning.
+   * @param animate Whether to change the visibility with animation.
+   * @return {@code true}, if the visibility changes or will change after the animation; {@code
+   *     false}, otherwise.
+   */
+  @Override
+  boolean setVisibleInternal(boolean visible, boolean restart, boolean animate) {
+    boolean changed = super.setVisibleInternal(visible, restart, animate);
+
+    // Unless it's showing or hiding, cancels the main animator.
+    if (!isRunning()) {
+      animatorDelegate.cancelAnimatorImmediately();
+    }
+    // Restarts the main animator if it's visible and needs to be animated.
+    float systemAnimatorDurationScale =
+        animatorDurationScaleProvider.getSystemAnimatorDurationScale(context.getContentResolver());
+    if (visible
+        && (animate
+            || (VERSION.SDK_INT <= VERSION_CODES.LOLLIPOP && systemAnimatorDurationScale > 0))) {
+      animatorDelegate.startAnimator();
     }
 
-    /**
-     * Creates an instance of {@link IndeterminateDrawable} for {@link LinearProgressIndicator} with
-     * {@link LinearProgressIndicatorSpec}.
-     *
-     * @param context The current context.
-     * @param spec    The spec for the linear indicator.
-     */
-    @NonNull
-    public static IndeterminateDrawable<LinearProgressIndicatorSpec> createLinearDrawable(
-            @NonNull Context context, @NonNull LinearProgressIndicatorSpec spec) {
-        return new IndeterminateDrawable<>(
-                context,
-                /*baseSpec=*/ spec,
-                new LinearDrawingDelegate(spec),
-                spec.indeterminateAnimationType
-                        == LinearProgressIndicator.INDETERMINATE_ANIMATION_TYPE_CONTIGUOUS
-                        ? new LinearIndeterminateContiguousAnimatorDelegate(spec)
-                        : new LinearIndeterminateDisjointAnimatorDelegate(context, spec));
+    return changed;
+  }
+
+  @Override
+  public int getIntrinsicWidth() {
+    return drawingDelegate.getPreferredWidth();
+  }
+
+  @Override
+  public int getIntrinsicHeight() {
+    return drawingDelegate.getPreferredHeight();
+  }
+
+  // ******************* Drawing methods *******************
+
+  /** Draws the graphics based on the progress indicator's properties and the animation states. */
+  @Override
+  public void draw(@NonNull Canvas canvas) {
+    Rect clipBounds = new Rect();
+
+    if (getBounds().isEmpty() || !isVisible() || !canvas.getClipBounds(clipBounds)) {
+      // Escape if bounds are empty, clip bounds are empty, or currently hidden.
+      return;
     }
 
-    /**
-     * Creates an instance of {@link IndeterminateDrawable} for {@link CircularProgressIndicator} with
-     * {@link CircularProgressIndicatorSpec}.
-     *
-     * @param context The current context.
-     * @param spec    The spec for the circular indicator.
-     */
-    @NonNull
-    public static IndeterminateDrawable<CircularProgressIndicatorSpec> createCircularDrawable(
-            @NonNull Context context, @NonNull CircularProgressIndicatorSpec spec) {
-        return new IndeterminateDrawable<>(
-                context,
-                /*baseSpec=*/ spec,
-                new CircularDrawingDelegate(spec),
-                new CircularIndeterminateAnimatorDelegate(spec));
+    canvas.save();
+    drawingDelegate.validateSpecAndAdjustCanvas(canvas, getGrowFraction());
+
+    // Draws the track.
+    drawingDelegate.fillTrack(canvas, paint);
+    // Draws the indicators.
+    for (int segmentIndex = 0;
+        segmentIndex < animatorDelegate.segmentColors.length;
+        segmentIndex++) {
+      drawingDelegate.fillIndicator(
+          canvas,
+          paint,
+          animatorDelegate.segmentPositions[2 * segmentIndex],
+          animatorDelegate.segmentPositions[2 * segmentIndex + 1],
+          animatorDelegate.segmentColors[segmentIndex]);
     }
+    canvas.restore();
+  }
 
-    // ******************* Overridden methods *******************
+  // ******************* Setter and getter *******************
 
-    /**
-     * Sets the visibility of this drawable. It calls the {@link
-     * DrawableWithAnimatedVisibilityChange#setVisible(boolean, boolean, boolean)} to start the
-     * show/hide animation properly. The indeterminate animation will be started if animation is
-     * requested.
-     *
-     * @param visible Whether to make the drawable visible.
-     * @param restart Whether to force starting the animation from the beginning.
-     * @param animate Whether to change the visibility with animation.
-     * @return {@code true}, if the visibility changes or will change after the animation; {@code
-     * false}, otherwise.
-     */
-    @Override
-    boolean setVisibleInternal(boolean visible, boolean restart, boolean animate) {
-        boolean changed = super.setVisibleInternal(visible, restart, animate);
+  @NonNull
+  IndeterminateAnimatorDelegate<ObjectAnimator> getAnimatorDelegate() {
+    return animatorDelegate;
+  }
 
-        // Unless it's showing or hiding, cancels the main animator.
-        if (!isRunning()) {
-            animatorDelegate.cancelAnimatorImmediately();
-        }
-        // Restarts the main animator if it's visible and needs to be animated.
-        float systemAnimatorDurationScale =
-                animatorDurationScaleProvider.getSystemAnimatorDurationScale(context.getContentResolver());
-        if (visible
-                && (animate
-                || (VERSION.SDK_INT <= VERSION_CODES.LOLLIPOP && systemAnimatorDurationScale > 0))) {
-            animatorDelegate.startAnimator();
-        }
+  void setAnimatorDelegate(
+      @NonNull IndeterminateAnimatorDelegate<ObjectAnimator> animatorDelegate) {
+    this.animatorDelegate = animatorDelegate;
+    animatorDelegate.registerDrawable(this);
+  }
 
-        return changed;
-    }
+  @NonNull
+  DrawingDelegate<S> getDrawingDelegate() {
+    return drawingDelegate;
+  }
 
-    @Override
-    public int getIntrinsicWidth() {
-        return drawingDelegate.getPreferredWidth();
-    }
-
-    @Override
-    public int getIntrinsicHeight() {
-        return drawingDelegate.getPreferredHeight();
-    }
-
-    // ******************* Drawing methods *******************
-
-    /**
-     * Draws the graphics based on the progress indicator's properties and the animation states.
-     */
-    @Override
-    public void draw(@NonNull Canvas canvas) {
-        Rect clipBounds = new Rect();
-
-        if (getBounds().isEmpty() || !isVisible() || !canvas.getClipBounds(clipBounds)) {
-            // Escape if bounds are empty, clip bounds are empty, or currently hidden.
-            return;
-        }
-
-        canvas.save();
-        drawingDelegate.validateSpecAndAdjustCanvas(canvas, getGrowFraction());
-
-        // Draws the track.
-        drawingDelegate.fillTrack(canvas, paint);
-        // Draws the indicators.
-        for (int segmentIndex = 0;
-             segmentIndex < animatorDelegate.segmentColors.length;
-             segmentIndex++) {
-            drawingDelegate.fillIndicator(
-                    canvas,
-                    paint,
-                    animatorDelegate.segmentPositions[2 * segmentIndex],
-                    animatorDelegate.segmentPositions[2 * segmentIndex + 1],
-                    animatorDelegate.segmentColors[segmentIndex]);
-        }
-        canvas.restore();
-    }
-
-    // ******************* Setter and getter *******************
-
-    @NonNull
-    IndeterminateAnimatorDelegate<ObjectAnimator> getAnimatorDelegate() {
-        return animatorDelegate;
-    }
-
-    void setAnimatorDelegate(
-            @NonNull IndeterminateAnimatorDelegate<ObjectAnimator> animatorDelegate) {
-        this.animatorDelegate = animatorDelegate;
-        animatorDelegate.registerDrawable(this);
-    }
-
-    @NonNull
-    DrawingDelegate<S> getDrawingDelegate() {
-        return drawingDelegate;
-    }
-
-    void setDrawingDelegate(@NonNull DrawingDelegate<S> drawingDelegate) {
-        this.drawingDelegate = drawingDelegate;
-        drawingDelegate.registerDrawable(this);
-    }
+  void setDrawingDelegate(@NonNull DrawingDelegate<S> drawingDelegate) {
+    this.drawingDelegate = drawingDelegate;
+    drawingDelegate.registerDrawable(this);
+  }
 }

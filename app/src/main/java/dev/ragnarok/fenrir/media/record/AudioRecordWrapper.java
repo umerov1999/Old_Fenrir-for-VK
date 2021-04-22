@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi;
 import java.io.File;
 import java.io.IOException;
 
+import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Logger;
 
 public class AudioRecordWrapper {
@@ -54,7 +55,11 @@ public class AudioRecordWrapper {
                 mRecorder = null;
             }
         } else {
-            mRecorder.start();
+            try {
+                mRecorder.start();
+            } catch (IllegalStateException e) {
+                CustomToast.CreateCustomToast(mContext).showToastError(e.getLocalizedMessage());
+            }
         }
     }
 
@@ -78,7 +83,11 @@ public class AudioRecordWrapper {
         }
 
         if (mRecorder.getStatus() == Recorder.Status.RECORDING_NOW) {
-            mRecorder.pause();
+            try {
+                mRecorder.pause();
+            } catch (IllegalStateException e) {
+                CustomToast.CreateCustomToast(mContext).showToastError(e.getLocalizedMessage());
+            }
         } else {
             Logger.wtf(TAG, "Recorder status is not RECORDING_NOW");
         }
@@ -88,8 +97,11 @@ public class AudioRecordWrapper {
         if (mRecorder == null) {
             throw new IllegalStateException("Recorder in NULL");
         }
-
-        mRecorder.stopAndRelease();
+        try {
+            mRecorder.stopAndRelease();
+        } catch (IllegalStateException e) {
+            CustomToast.CreateCustomToast(mContext).showToastError(e.getLocalizedMessage());
+        }
         mRecorder = null;
     }
 

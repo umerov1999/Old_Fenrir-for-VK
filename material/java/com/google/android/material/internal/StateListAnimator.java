@@ -38,8 +38,8 @@ public final class StateListAnimator {
 
   private final ArrayList<Tuple> tuples = new ArrayList<>();
 
-  @Nullable private Tuple lastMatch;
-  @Nullable ValueAnimator runningAnimator;
+  @Nullable private Tuple lastMatch = null;
+  @Nullable ValueAnimator runningAnimator = null;
 
   private final ValueAnimator.AnimatorListener animationListener =
       new AnimatorListenerAdapter() {
@@ -67,9 +67,9 @@ public final class StateListAnimator {
   /** Called by View */
   public void setState(int[] state) {
     Tuple match = null;
-    int count = tuples.size();
+    final int count = tuples.size();
     for (int i = 0; i < count; i++) {
-      Tuple tuple = tuples.get(i);
+      final Tuple tuple = tuples.get(i);
       if (StateSet.stateSetMatches(tuple.specs, state)) {
         match = tuple;
         break;

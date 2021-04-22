@@ -15,13 +15,12 @@
  */
 package com.google.android.material.animation;
 
+import com.google.android.material.R;
+
 import android.util.Property;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
-
-import com.google.android.material.R;
 
 /**
  * A Property for the alpha of a ViewGroup's children.
@@ -33,36 +32,36 @@ import com.google.android.material.R;
  */
 public class ChildrenAlphaProperty extends Property<ViewGroup, Float> {
 
-    /**
-     * A Property wrapper around the <code>alpha</code> functionality of a ViewGroup's children.
-     */
-    public static final Property<ViewGroup, Float> CHILDREN_ALPHA =
-            new ChildrenAlphaProperty("childrenAlpha");
+  /**
+   * A Property wrapper around the <code>alpha</code> functionality of a ViewGroup's children.
+   */
+  public static final Property<ViewGroup, Float> CHILDREN_ALPHA =
+      new ChildrenAlphaProperty("childrenAlpha");
 
-    private ChildrenAlphaProperty(String name) {
-        super(Float.class, name);
+  private ChildrenAlphaProperty(String name) {
+    super(Float.class, name);
+  }
+
+  @NonNull
+  @Override
+  public Float get(@NonNull ViewGroup object) {
+    Float alpha = (Float) object.getTag(R.id.mtrl_internal_children_alpha_tag);
+    if (alpha != null) {
+      return alpha;
+    } else {
+      return 1f;
     }
+  }
 
-    @NonNull
-    @Override
-    public Float get(@NonNull ViewGroup object) {
-        Float alpha = (Float) object.getTag(R.id.mtrl_internal_children_alpha_tag);
-        if (alpha != null) {
-            return alpha;
-        } else {
-            return 1f;
-        }
+  @Override
+  public void set(@NonNull ViewGroup object, @NonNull Float value) {
+    float alpha = value;
+
+    object.setTag(R.id.mtrl_internal_children_alpha_tag, alpha);
+
+    for (int i = 0, count = object.getChildCount(); i < count; i++) {
+      View child = object.getChildAt(i);
+      child.setAlpha(alpha);
     }
-
-    @Override
-    public void set(@NonNull ViewGroup object, @NonNull Float value) {
-        float alpha = value;
-
-        object.setTag(R.id.mtrl_internal_children_alpha_tag, alpha);
-
-        for (int i = 0, count = object.getChildCount(); i < count; i++) {
-            View child = object.getChildAt(i);
-            child.setAlpha(alpha);
-        }
-    }
+  }
 }

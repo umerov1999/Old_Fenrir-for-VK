@@ -30,10 +30,12 @@ import androidx.annotation.RestrictTo;
 public class ParcelableSparseArray extends SparseArray<Parcelable> implements Parcelable {
 
   public ParcelableSparseArray() {
+    super();
   }
 
   public ParcelableSparseArray(@NonNull Parcel source, @Nullable ClassLoader loader) {
-      int size = source.readInt();
+    super();
+    int size = source.readInt();
     int[] keys = new int[size];
     source.readIntArray(keys);
     Parcelable[] values = source.readParcelableArray(loader);

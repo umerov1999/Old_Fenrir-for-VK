@@ -44,9 +44,9 @@ public class InsetDialogOnTouchListener implements OnTouchListener {
 
   public InsetDialogOnTouchListener(@NonNull Dialog dialog, @NonNull Rect insets) {
     this.dialog = dialog;
-      leftInset = insets.left;
-      topInset = insets.top;
-      prePieSlop = ViewConfiguration.get(dialog.getContext()).getScaledWindowTouchSlop();
+    this.leftInset = insets.left;
+    this.topInset = insets.top;
+    this.prePieSlop = ViewConfiguration.get(dialog.getContext()).getScaledWindowTouchSlop();
   }
 
   @Override

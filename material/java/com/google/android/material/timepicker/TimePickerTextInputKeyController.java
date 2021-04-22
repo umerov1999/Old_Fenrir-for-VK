@@ -44,7 +44,7 @@ class TimePickerTextInputKeyController implements OnEditorActionListener, OnKeyL
   private final ChipTextInputComboView minuteLayoutComboView;
   private final TimeModel time;
 
-  private boolean keyListenerRunning;
+  private boolean keyListenerRunning = false;
 
   TimePickerTextInputKeyController(
       ChipTextInputComboView hourLayoutComboView,

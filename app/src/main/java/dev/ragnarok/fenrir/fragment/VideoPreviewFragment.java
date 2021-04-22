@@ -732,7 +732,7 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
         }
     }
 
-    private void openInternal(Video video, int size) {
+    private void openInternal(Video video, @InternalVideoSize int size) {
         PlaceFactory.getVkInternalPlayerPlace(video, size, false).tryOpenWith(requireActivity());
     }
 

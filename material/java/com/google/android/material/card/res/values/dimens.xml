@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
     Copyright 2017 The Android Open Source Project
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,18 +17,18 @@
 
 <resources>
 
-    <!-- Cards on mobile default to 8dp margins. {@code layout_margin} needs to be set directly on a
-        {@link View} in its layout and won't work when included as part of a style. -->
-    <dimen name="mtrl_card_spacing">8dp</dimen>
-    <!-- Default elevation for {@link MaterialCardView}. -->
-    <dimen name="mtrl_card_elevation">1dp</dimen>
-    <!-- Default corner radius for {@link MaterialCardView}. -->
-    <dimen name="mtrl_card_corner_radius">4dp</dimen>
-    <!-- Size of the icon to be placed when the card is checked -->
-    <dimen name="mtrl_card_checked_icon_size">24dp</dimen>
-    <!-- Margin between the checked icon and the card -->
-    <dimen name="mtrl_card_checked_icon_margin">8dp</dimen>
-    <!-- TranslationZ for card when it's on dragged state. -->
-    <dimen name="mtrl_card_dragged_z">5dp</dimen>
+  <!-- Cards on mobile default to 8dp margins. {@code layout_margin} needs to be set directly on a
+      {@link View} in its layout and won't work when included as part of a style. -->
+  <dimen name="mtrl_card_spacing">8dp</dimen>
+  <!-- Default elevation for {@link MaterialCardView}. -->
+  <dimen name="mtrl_card_elevation">1dp</dimen>
+  <!-- Default corner radius for {@link MaterialCardView}. -->
+  <dimen name="mtrl_card_corner_radius">4dp</dimen>
+  <!-- Size of the icon to be placed when the card is checked -->
+  <dimen name="mtrl_card_checked_icon_size">24dp</dimen>
+  <!-- Margin between the checked icon and the card -->
+  <dimen name="mtrl_card_checked_icon_margin">8dp</dimen>
+  <!-- TranslationZ for card when it's on dragged state. -->
+  <dimen name="mtrl_card_dragged_z">5dp</dimen>
 
 </resources>

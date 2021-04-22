@@ -1115,9 +1115,7 @@ class ChatPresenter(
 
         val recordPermission =
             ContextCompat.checkSelfPermission(app, Manifest.permission.RECORD_AUDIO)
-        val writePermission =
-            ContextCompat.checkSelfPermission(app, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        return recordPermission == PackageManager.PERMISSION_GRANTED && writePermission == PackageManager.PERMISSION_GRANTED
+        return recordPermission == PackageManager.PERMISSION_GRANTED
     }
 
     private fun syncRecordingLookupState() {

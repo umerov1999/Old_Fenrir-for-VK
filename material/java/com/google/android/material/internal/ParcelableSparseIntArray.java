@@ -33,6 +33,7 @@ import androidx.annotation.RestrictTo;
 public class ParcelableSparseIntArray extends SparseIntArray implements Parcelable {
 
   public ParcelableSparseIntArray() {
+    super();
   }
 
   public ParcelableSparseIntArray(int initialCapacity) {
@@ -40,7 +41,8 @@ public class ParcelableSparseIntArray extends SparseIntArray implements Parcelab
   }
 
   public ParcelableSparseIntArray(@NonNull SparseIntArray sparseIntArray) {
-      for (int i = 0; i < sparseIntArray.size(); i++) {
+    super();
+    for (int i = 0; i < sparseIntArray.size(); i++) {
       put(sparseIntArray.keyAt(i), sparseIntArray.valueAt(i));
     }
   }

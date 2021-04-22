@@ -242,7 +242,7 @@ abstract class BaseSlider<
   @NonNull private final List<T> touchListeners = new ArrayList<>();
 
   // Whether the labels are showing or in the process of animating in.
-  private boolean labelsAreAnimatedIn;
+  private boolean labelsAreAnimatedIn = false;
   private ValueAnimator labelsInAnimator;
   private ValueAnimator labelsOutAnimator;
 
@@ -262,7 +262,7 @@ abstract class BaseSlider<
   private float touchDownX;
   private MotionEvent lastEvent;
   private LabelFormatter formatter;
-  private boolean thumbIsPressed;
+  private boolean thumbIsPressed = false;
   private float valueFrom;
   private float valueTo;
   // Holds the values set to this slider. We keep this array sorted in order to check if the value
@@ -272,12 +272,12 @@ abstract class BaseSlider<
   private int activeThumbIdx = -1;
   // The index of the currently focused thumb.
   private int focusedThumbIdx = -1;
-  private float stepSize;
+  private float stepSize = 0.0f;
   private float[] ticksCoordinates;
   private boolean tickVisible = true;
   private int trackWidth;
   private boolean forceDrawCompatHalo;
-  private boolean isLongPress;
+  private boolean isLongPress = false;
   private boolean dirtyConfig;
 
   @NonNull private ColorStateList haloColor;
@@ -357,7 +357,7 @@ abstract class BaseSlider<
         new TooltipDrawableFactory() {
           @Override
           public TooltipDrawable createTooltipDrawable() {
-            TypedArray a =
+            final TypedArray a =
                 ThemeEnforcement.obtainStyledAttributes(
                     getContext(), attrs, R.styleable.Slider, defStyleAttr, DEF_STYLE_RES);
             TooltipDrawable d = parseLabelDrawable(getContext(), a);
@@ -502,7 +502,7 @@ abstract class BaseSlider<
     if (valueFrom >= valueTo) {
       throw new IllegalStateException(
           String.format(
-              EXCEPTION_ILLEGAL_VALUE_FROM, valueFrom, valueTo));
+              EXCEPTION_ILLEGAL_VALUE_FROM, Float.toString(valueFrom), Float.toString(valueTo)));
     }
   }
 
@@ -510,7 +510,7 @@ abstract class BaseSlider<
     if (valueTo <= valueFrom) {
       throw new IllegalStateException(
           String.format(
-              EXCEPTION_ILLEGAL_VALUE_TO, valueTo, valueFrom));
+              EXCEPTION_ILLEGAL_VALUE_TO, Float.toString(valueTo), Float.toString(valueFrom)));
     }
   }
 
@@ -524,7 +524,7 @@ abstract class BaseSlider<
             .doubleValue();
 
     // If the potentialTickValue is a whole number, it means the value lands on a tick.
-    return abs(Math.round(potentialTickValue) - potentialTickValue) < THRESHOLD;
+    return Math.abs(Math.round(potentialTickValue) - potentialTickValue) < THRESHOLD;
   }
 
   private void validateStepSize() {
@@ -532,9 +532,9 @@ abstract class BaseSlider<
       throw new IllegalStateException(
           String.format(
               EXCEPTION_ILLEGAL_STEP_SIZE,
-                  stepSize,
-                  valueFrom,
-                  valueTo));
+              Float.toString(stepSize),
+              Float.toString(valueFrom),
+              Float.toString(valueTo)));
     }
   }
 
@@ -544,18 +544,18 @@ abstract class BaseSlider<
         throw new IllegalStateException(
             String.format(
                 EXCEPTION_ILLEGAL_VALUE,
-                    value,
-                    valueFrom,
-                    valueTo));
+                Float.toString(value),
+                Float.toString(valueFrom),
+                Float.toString(valueTo)));
       }
       if (stepSize > 0.0f && !valueLandsOnTick(value)) {
         throw new IllegalStateException(
             String.format(
                 EXCEPTION_ILLEGAL_DISCRETE_VALUE,
-                    value,
-                    valueFrom,
-                    stepSize,
-                    stepSize));
+                Float.toString(value),
+                Float.toString(valueFrom),
+                Float.toString(stepSize),
+                Float.toString(stepSize)));
       }
     }
   }
@@ -778,9 +778,9 @@ abstract class BaseSlider<
       throw new IllegalArgumentException(
           String.format(
               EXCEPTION_ILLEGAL_STEP_SIZE,
-                  stepSize,
-                  valueFrom,
-                  valueTo));
+              Float.toString(stepSize),
+              Float.toString(valueFrom),
+              Float.toString(valueTo)));
     }
     if (this.stepSize != stepSize) {
       this.stepSize = stepSize;
@@ -1041,7 +1041,7 @@ abstract class BaseSlider<
    * @see #setHaloRadiusResource(int)
    * @attr ref com.google.android.material.R.styleable#Slider_haloRadius
    */
-  @Dimension
+  @Dimension()
   public int getHaloRadius() {
     return haloRadius;
   }
@@ -1103,13 +1103,13 @@ abstract class BaseSlider<
   }
 
   /** Returns the side padding of the track. */
-  @Dimension
+  @Dimension()
   public int getTrackSidePadding() {
     return trackSidePadding;
   }
 
   /** Returns the width of the track in pixels. */
-  @Dimension
+  @Dimension()
   public int getTrackWidth() {
     return trackWidth;
   }
@@ -1120,7 +1120,7 @@ abstract class BaseSlider<
    * @see #setTrackHeight(int)
    * @attr ref com.google.android.material.R.styleable#Slider_trackHeight
    */
-  @Dimension
+  @Dimension()
   public int getTrackHeight() {
     return trackHeight;
   }
@@ -1490,7 +1490,7 @@ abstract class BaseSlider<
 
   private void updateTrackWidth(int width) {
     // Update the visible track width.
-    trackWidth = max(width - trackSidePadding * 2, 0);
+    trackWidth = Math.max(width - trackSidePadding * 2, 0);
 
     // Update the visible tick coordinates.
     maybeCalculateTicksCoordinates();
@@ -1499,7 +1499,7 @@ abstract class BaseSlider<
   private void updateHaloHotspot() {
     // Set the hotspot as the halo if RippleDrawable is being used.
     if (!shouldDrawCompatHalo() && getMeasuredWidth() > 0) {
-      Drawable background = getBackground();
+      final Drawable background = getBackground();
       if (background instanceof RippleDrawable) {
         int x = (int) (normalizeValue(values.get(focusedThumbIdx)) * trackWidth + trackSidePadding);
         int y = calculateTop();
@@ -1670,7 +1670,7 @@ abstract class BaseSlider<
     }
     float x = event.getX();
     touchPosition = (x - trackSidePadding) / trackWidth;
-    touchPosition = max(0, touchPosition);
+    touchPosition = Math.max(0, touchPosition);
     touchPosition = Math.min(1, touchPosition);
 
     switch (event.getActionMasked()) {
@@ -2229,7 +2229,7 @@ abstract class BaseSlider<
   private boolean moveFocus(int direction) {
     int oldFocusedThumbIdx = focusedThumbIdx;
     // Prevent integer overflow.
-    long newFocusedThumbIdx = (long) oldFocusedThumbIdx + direction;
+    final long newFocusedThumbIdx = (long) oldFocusedThumbIdx + direction;
     focusedThumbIdx = (int) clamp(newFocusedThumbIdx, 0, values.size() - 1);
     if (focusedThumbIdx == oldFocusedThumbIdx) {
       // Move focus to next or previous view.
@@ -2506,7 +2506,7 @@ abstract class BaseSlider<
       info.addAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SET_PROGRESS);
 
       List<Float> values = slider.getValues();
-      float value = values.get(virtualViewId);
+      final float value = values.get(virtualViewId);
       float valueFrom = slider.getValueFrom();
       float valueTo = slider.getValueTo();
 

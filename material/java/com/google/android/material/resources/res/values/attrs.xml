@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (C) 2018 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,26 +15,26 @@
   ~ limitations under the License.
 -->
 <resources>
-    <!-- Type definitions for common attributes used across component packages. -->
-    <attr name="checkedIcon" format="reference" />
-    <attr name="checkedIconTint" format="color" />
-    <attr name="minTouchTargetSize" format="dimension" />
-    <attr name="selectionRequired" format="boolean" />
-    <attr name="singleSelection" format="boolean" />
-    <attr name="strokeColor" format="color" />
-    <attr name="strokeWidth" format="dimension" />
-    <attr name="ensureMinTouchTargetSize" format="boolean" />
-    <attr name="trackColor" format="color" />
+  <!-- Type definitions for common attributes used across component packages. -->
+  <attr name="checkedIcon" format="reference" />
+  <attr name="checkedIconTint" format="color" />
+  <attr name="minTouchTargetSize" format="dimension" />
+  <attr name="selectionRequired" format="boolean" />
+  <attr name="singleSelection" format="boolean" />
+  <attr name="strokeColor" format="color"/>
+  <attr name="strokeWidth" format="dimension" />
+  <attr name="ensureMinTouchTargetSize" format="boolean" />
+  <attr name="trackColor" format="color" />
 
-    <!-- Navigation and Pickers -->
-    <attr name="itemTextColor" format="color" />
-    <attr name="itemShapeAppearance" format="reference" />
-    <attr name="itemShapeAppearanceOverlay" format="reference" />
+  <!-- Navigation and Pickers -->
+  <attr name="itemTextColor" format="color" />
+  <attr name="itemShapeAppearance" format="reference" />
+  <attr name="itemShapeAppearanceOverlay" format="reference" />
 
-    <declare-styleable name="MaterialTextAppearance" parent="TextAppearance">
-        <attr name="android:lineHeight" />
-        <attr name="lineHeight" format="dimension" />
-        <attr name="android:letterSpacing" />
-    </declare-styleable>
+  <declare-styleable name="MaterialTextAppearance" parent="TextAppearance">
+    <attr name="android:lineHeight"/>
+    <attr name="lineHeight" format="dimension"/>
+    <attr name="android:letterSpacing"/>
+  </declare-styleable>
 
 </resources>

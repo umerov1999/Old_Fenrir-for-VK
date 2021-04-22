@@ -80,7 +80,7 @@ public final class MaterialDatePicker<S> extends DialogFragment {
 
   /** @hide */
   @RestrictTo(LIBRARY_GROUP)
-  @IntDef({INPUT_MODE_CALENDAR, INPUT_MODE_TEXT})
+  @IntDef(value = {INPUT_MODE_CALENDAR, INPUT_MODE_TEXT})
   @Retention(RetentionPolicy.SOURCE)
   public @interface InputMode {}
 
@@ -212,12 +212,12 @@ public final class MaterialDatePicker<S> extends DialogFragment {
     if (fullscreen) {
       View frame = root.findViewById(R.id.mtrl_calendar_frame);
       frame.setLayoutParams(
-          new LayoutParams(getPaddedPickerWidth(context), ViewGroup.LayoutParams.WRAP_CONTENT));
+          new LayoutParams(getPaddedPickerWidth(context), LayoutParams.WRAP_CONTENT));
     } else {
       View pane = root.findViewById(R.id.mtrl_calendar_main_pane);
       View frame = root.findViewById(R.id.mtrl_calendar_frame);
       pane.setLayoutParams(
-          new LayoutParams(getPaddedPickerWidth(context), ViewGroup.LayoutParams.MATCH_PARENT));
+          new LayoutParams(getPaddedPickerWidth(context), LayoutParams.MATCH_PARENT));
       frame.setMinimumHeight(getDialogPickerHeight(requireContext()));
     }
 
@@ -234,7 +234,11 @@ public final class MaterialDatePicker<S> extends DialogFragment {
     initHeaderToggle(context);
 
     confirmButton = root.findViewById(R.id.confirm_button);
-    confirmButton.setEnabled(dateSelector.isSelectionComplete());
+    if (dateSelector.isSelectionComplete()) {
+      confirmButton.setEnabled(true);
+    } else {
+      confirmButton.setEnabled(false);
+    }
     confirmButton.setTag(CONFIRM_BUTTON_TAG);
     confirmButton.setOnClickListener(
         new View.OnClickListener() {
@@ -530,12 +534,12 @@ public final class MaterialDatePicker<S> extends DialogFragment {
   public static final class Builder<S> {
 
     final DateSelector<S> dateSelector;
-    int overrideThemeResId;
+    int overrideThemeResId = 0;
 
     CalendarConstraints calendarConstraints;
-    int titleTextResId;
-    CharSequence titleText;
-    @Nullable S selection;
+    int titleTextResId = 0;
+    CharSequence titleText = null;
+    @Nullable S selection = null;
     @InputMode int inputMode = INPUT_MODE_CALENDAR;
 
     private Builder(DateSelector<S> dateSelector) {
@@ -580,14 +584,14 @@ public final class MaterialDatePicker<S> extends DialogFragment {
     /** Sets the theme controlling fullscreen mode as well as other styles. */
     @NonNull
     public Builder<S> setTheme(@StyleRes int themeResId) {
-      overrideThemeResId = themeResId;
+      this.overrideThemeResId = themeResId;
       return this;
     }
 
     /** Sets the first, last, and starting month. */
     @NonNull
     public Builder<S> setCalendarConstraints(CalendarConstraints bounds) {
-      calendarConstraints = bounds;
+      this.calendarConstraints = bounds;
       return this;
     }
 
@@ -598,7 +602,7 @@ public final class MaterialDatePicker<S> extends DialogFragment {
     @NonNull
     public Builder<S> setTitleText(@StringRes int titleTextResId) {
       this.titleTextResId = titleTextResId;
-      titleText = null;
+      this.titleText = null;
       return this;
     }
 
@@ -608,8 +612,8 @@ public final class MaterialDatePicker<S> extends DialogFragment {
      */
     @NonNull
     public Builder<S> setTitleText(@Nullable CharSequence charSequence) {
-      titleText = charSequence;
-      titleTextResId = 0;
+      this.titleText = charSequence;
+      this.titleTextResId = 0;
       return this;
     }
 
@@ -638,7 +642,7 @@ public final class MaterialDatePicker<S> extends DialogFragment {
         calendarConstraints.setOpenAt(createDefaultOpenAt());
       }
 
-      return newInstance(this);
+      return MaterialDatePicker.newInstance(this);
     }
 
     private Month createDefaultOpenAt() {
@@ -655,7 +659,7 @@ public final class MaterialDatePicker<S> extends DialogFragment {
         }
       }
 
-      long today = thisMonthInUtcMilliseconds();
+      long today = MaterialDatePicker.thisMonthInUtcMilliseconds();
       long openAt = start <= today && today <= end ? today : start;
       return Month.create(openAt);
     }

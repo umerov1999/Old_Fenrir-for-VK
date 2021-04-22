@@ -54,10 +54,10 @@ public class RangeDateSelector implements DateSelector<Pair<Long, Long>> {
   private String invalidRangeStartError;
   // "" is not considered an error
   private final String invalidRangeEndError = " ";
-  @Nullable private Long selectedStartItem;
-  @Nullable private Long selectedEndItem;
-  @Nullable private Long proposedTextStart;
-  @Nullable private Long proposedTextEnd;
+  @Nullable private Long selectedStartItem = null;
+  @Nullable private Long selectedEndItem = null;
+  @Nullable private Long proposedTextStart = null;
+  @Nullable private Long proposedTextEnd = null;
 
   @Override
   public void select(long selection) {

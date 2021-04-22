@@ -95,7 +95,7 @@ public class MaterialTextView extends AppCompatTextView {
     context = getContext();
 
     if (canApplyTextAppearanceLineHeight(context)) {
-      Resources.Theme theme = context.getTheme();
+      final Resources.Theme theme = context.getTheme();
 
       if (!viewAttrsHasLineHeight(context, theme, attrs, defStyleAttr, defStyleRes)) {
         int resId = findViewAppearanceResourceId(theme, attrs, defStyleAttr, defStyleRes);

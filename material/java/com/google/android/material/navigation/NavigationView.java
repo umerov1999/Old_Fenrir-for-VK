@@ -128,7 +128,7 @@ public class NavigationView extends ScrimInsetsFrameLayout {
     context = getContext();
 
     // Create the menu
-    menu = new NavigationMenu(context);
+    this.menu = new NavigationMenu(context);
 
     // Custom attributes
     TintTypedArray a =
@@ -165,7 +165,7 @@ public class NavigationView extends ScrimInsetsFrameLayout {
 
     maxWidth = a.getDimensionPixelSize(R.styleable.NavigationView_android_maxWidth, 0);
 
-    ColorStateList itemIconTint;
+    final ColorStateList itemIconTint;
     if (a.hasValue(R.styleable.NavigationView_itemIconTint)) {
       itemIconTint = a.getColorStateList(R.styleable.NavigationView_itemIconTint);
     } else {
@@ -201,16 +201,16 @@ public class NavigationView extends ScrimInsetsFrameLayout {
     }
 
     if (a.hasValue(R.styleable.NavigationView_itemHorizontalPadding)) {
-      int itemHorizontalPadding =
+      final int itemHorizontalPadding =
           a.getDimensionPixelSize(R.styleable.NavigationView_itemHorizontalPadding, 0);
       presenter.setItemHorizontalPadding(itemHorizontalPadding);
     }
-    int itemIconPadding =
+    final int itemIconPadding =
         a.getDimensionPixelSize(R.styleable.NavigationView_itemIconPadding, 0);
 
     setItemMaxLines(a.getInt(R.styleable.NavigationView_itemMaxLines, 1));
 
-    menu.setCallback(
+    this.menu.setCallback(
         new MenuBuilder.Callback() {
           @Override
           public boolean onMenuItemSelected(MenuBuilder menu, MenuItem item) {
@@ -221,7 +221,7 @@ public class NavigationView extends ScrimInsetsFrameLayout {
           public void onMenuModeChange(MenuBuilder menu) {}
         });
     presenter.setId(PRESENTER_NAVIGATION_VIEW_ID);
-    presenter.initForMenu(context, menu);
+    presenter.initForMenu(context, this.menu);
     presenter.setItemIconTintList(itemIconTint);
     presenter.setOverScrollMode(getOverScrollMode());
     if (textAppearanceSet) {
@@ -230,7 +230,7 @@ public class NavigationView extends ScrimInsetsFrameLayout {
     presenter.setItemTextColor(itemTextColor);
     presenter.setItemBackground(itemBackground);
     presenter.setItemIconPadding(itemIconPadding);
-    menu.addMenuPresenter(presenter);
+    this.menu.addMenuPresenter(presenter);
     addView((View) presenter.getMenuView(this));
 
     if (a.hasValue(R.styleable.NavigationView_menu)) {
@@ -640,7 +640,7 @@ public class NavigationView extends ScrimInsetsFrameLayout {
 
   @Nullable
   private ColorStateList createDefaultColorStateList(int baseColorThemeAttr) {
-    TypedValue value = new TypedValue();
+    final TypedValue value = new TypedValue();
     if (!getContext().getTheme().resolveAttribute(baseColorThemeAttr, value, true)) {
       return null;
     }
@@ -709,7 +709,7 @@ public class NavigationView extends ScrimInsetsFrameLayout {
      * @param item The selected item
      * @return true to display the item as the selected item
      */
-    boolean onNavigationItemSelected(@NonNull MenuItem item);
+    public boolean onNavigationItemSelected(@NonNull MenuItem item);
   }
 
   /**

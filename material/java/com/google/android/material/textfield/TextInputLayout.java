@@ -459,7 +459,7 @@ public class TextInputLayout extends LinearLayout {
     collapsingTextHelper.setPositionInterpolator(AnimationUtils.LINEAR_INTERPOLATOR);
     collapsingTextHelper.setCollapsedTextGravity(Gravity.TOP | GravityCompat.START);
 
-    TintTypedArray a =
+    final TintTypedArray a =
         ThemeEnforcement.obtainTintedStyledAttributes(
             context,
             attrs,
@@ -583,16 +583,16 @@ public class TextInputLayout extends LinearLayout {
               context, a, R.styleable.TextInputLayout_boxStrokeErrorColor));
     }
 
-    int hintAppearance = a.getResourceId(R.styleable.TextInputLayout_hintTextAppearance, -1);
+    final int hintAppearance = a.getResourceId(R.styleable.TextInputLayout_hintTextAppearance, -1);
     if (hintAppearance != -1) {
       setHintTextAppearance(a.getResourceId(R.styleable.TextInputLayout_hintTextAppearance, 0));
     }
 
-    int errorTextAppearance =
+    final int errorTextAppearance =
         a.getResourceId(R.styleable.TextInputLayout_errorTextAppearance, 0);
-    CharSequence errorContentDescription =
+    final CharSequence errorContentDescription =
         a.getText(R.styleable.TextInputLayout_errorContentDescription);
-    boolean errorEnabled = a.getBoolean(R.styleable.TextInputLayout_errorEnabled, false);
+    final boolean errorEnabled = a.getBoolean(R.styleable.TextInputLayout_errorEnabled, false);
     // Initialize error icon view.
     errorIconView =
         (CheckableImageButton)
@@ -626,25 +626,25 @@ public class TextInputLayout extends LinearLayout {
     errorIconView.setPressable(false);
     errorIconView.setFocusable(false);
 
-    int helperTextTextAppearance =
+    final int helperTextTextAppearance =
         a.getResourceId(R.styleable.TextInputLayout_helperTextTextAppearance, 0);
-    boolean helperTextEnabled =
+    final boolean helperTextEnabled =
         a.getBoolean(R.styleable.TextInputLayout_helperTextEnabled, false);
-    CharSequence helperText = a.getText(R.styleable.TextInputLayout_helperText);
+    final CharSequence helperText = a.getText(R.styleable.TextInputLayout_helperText);
 
-    int placeholderTextAppearance =
+    final int placeholderTextAppearance =
         a.getResourceId(R.styleable.TextInputLayout_placeholderTextAppearance, 0);
-    CharSequence placeholderText = a.getText(R.styleable.TextInputLayout_placeholderText);
+    final CharSequence placeholderText = a.getText(R.styleable.TextInputLayout_placeholderText);
 
-    int prefixTextAppearance =
+    final int prefixTextAppearance =
         a.getResourceId(R.styleable.TextInputLayout_prefixTextAppearance, 0);
-    CharSequence prefixText = a.getText(R.styleable.TextInputLayout_prefixText);
+    final CharSequence prefixText = a.getText(R.styleable.TextInputLayout_prefixText);
 
-    int suffixTextAppearance =
+    final int suffixTextAppearance =
         a.getResourceId(R.styleable.TextInputLayout_suffixTextAppearance, 0);
-    CharSequence suffixText = a.getText(R.styleable.TextInputLayout_suffixText);
+    final CharSequence suffixText = a.getText(R.styleable.TextInputLayout_suffixText);
 
-    boolean counterEnabled = a.getBoolean(R.styleable.TextInputLayout_counterEnabled, false);
+    final boolean counterEnabled = a.getBoolean(R.styleable.TextInputLayout_counterEnabled, false);
     setCounterMaxLength(a.getInt(R.styleable.TextInputLayout_counterMaxLength, INVALID_MAX_LENGTH));
     counterTextAppearance = a.getResourceId(R.styleable.TextInputLayout_counterTextAppearance, 0);
     counterOverflowTextAppearance =
@@ -840,7 +840,7 @@ public class TextInputLayout extends LinearLayout {
 
   @Override
   public void addView(
-      @NonNull View child, int index, @NonNull ViewGroup.LayoutParams params) {
+      @NonNull View child, int index, @NonNull final ViewGroup.LayoutParams params) {
     if (child instanceof EditText) {
       // Make sure that the EditText is vertically at the bottom, so that it sits on the
       // EditText's underline
@@ -1346,7 +1346,7 @@ public class TextInputLayout extends LinearLayout {
       boolean wasProvidingHint = isProvidingHint;
       // Ensures a child TextInputEditText does not retrieve its hint from this TextInputLayout.
       isProvidingHint = false;
-      CharSequence hint = editText.getHint();
+      final CharSequence hint = editText.getHint();
       editText.setHint(originalHint);
       try {
         super.dispatchProvideAutofillStructure(structure, flags);
@@ -1394,7 +1394,7 @@ public class TextInputLayout extends LinearLayout {
     collapsingTextHelper.setTypefaces(this.editText.getTypeface());
     collapsingTextHelper.setExpandedTextSize(this.editText.getTextSize());
 
-    int editTextGravity = this.editText.getGravity();
+    final int editTextGravity = this.editText.getGravity();
     collapsingTextHelper.setCollapsedTextGravity(
         Gravity.TOP | (editTextGravity & ~Gravity.VERTICAL_GRAVITY_MASK));
     collapsingTextHelper.setExpandedTextGravity(editTextGravity);
@@ -1434,7 +1434,7 @@ public class TextInputLayout extends LinearLayout {
         // Clear the EditText's hint as we will display it ourselves
         this.editText.setHint(null);
       }
-      isProvidingHint = true;
+      this.isProvidingHint = true;
     }
 
     if (counterView != null) {
@@ -1466,8 +1466,8 @@ public class TextInputLayout extends LinearLayout {
     // Create/update the LayoutParams so that we can add enough top margin
     // to the EditText to make room for the label.
     if (boxBackgroundMode != BOX_BACKGROUND_FILLED) {
-      LayoutParams lp = (LayoutParams) inputFrame.getLayoutParams();
-      int newTopMargin = calculateLabelMarginTop();
+      final LayoutParams lp = (LayoutParams) inputFrame.getLayoutParams();
+      final int newTopMargin = calculateLabelMarginTop();
 
       if (newTopMargin != lp.topMargin) {
         lp.topMargin = newTopMargin;
@@ -1490,10 +1490,10 @@ public class TextInputLayout extends LinearLayout {
   }
 
   private void updateLabelState(boolean animate, boolean force) {
-    boolean isEnabled = isEnabled();
-    boolean hasText = editText != null && !TextUtils.isEmpty(editText.getText());
-    boolean hasFocus = editText != null && editText.hasFocus();
-    boolean errorShouldBeShown = indicatorViewController.errorShouldBeShown();
+    final boolean isEnabled = isEnabled();
+    final boolean hasText = editText != null && !TextUtils.isEmpty(editText.getText());
+    final boolean hasFocus = editText != null && editText.hasFocus();
+    final boolean errorShouldBeShown = indicatorViewController.errorShouldBeShown();
 
     // Set the expanded and collapsed labels to the default text color.
     if (defaultHintTextColor != null) {
@@ -1607,7 +1607,7 @@ public class TextInputLayout extends LinearLayout {
         // Now clear out any set hint
         setHintInternal(null);
       } else {
-        CharSequence editTextHint = editText.getHint();
+        final CharSequence editTextHint = editText.getHint();
         if (!TextUtils.isEmpty(editTextHint)) {
           // If the hint is now enabled and the EditText has one set, we'll use it if
           // we don't already have one, and clear the EditText's
@@ -1789,7 +1789,7 @@ public class TextInputLayout extends LinearLayout {
    * @param helperText Helper text to display
    * @see #getHelperText()
    */
-  public void setHelperText(@Nullable CharSequence helperText) {
+  public void setHelperText(@Nullable final CharSequence helperText) {
     // If helper text is null, disable helper if it's enabled.
     if (TextUtils.isEmpty(helperText)) {
       if (isHelperTextEnabled()) {
@@ -1829,7 +1829,7 @@ public class TextInputLayout extends LinearLayout {
    * @param errorContentDecription Content description to set, or null to clear it
    * @attr ref com.google.android.material.R.styleable#TextInputLayout_errorContentDescription
    */
-  public void setErrorContentDescription(@Nullable CharSequence errorContentDecription) {
+  public void setErrorContentDescription(@Nullable final CharSequence errorContentDecription) {
     indicatorViewController.setErrorContentDescription(errorContentDecription);
   }
 
@@ -1853,7 +1853,7 @@ public class TextInputLayout extends LinearLayout {
    * @param errorText Error message to display, or null to clear
    * @see #getError()
    */
-  public void setError(@Nullable CharSequence errorText) {
+  public void setError(@Nullable final CharSequence errorText) {
     if (!indicatorViewController.isErrorEnabled()) {
       if (TextUtils.isEmpty(errorText)) {
         // If error isn't enabled, and the error is empty, just return
@@ -2138,7 +2138,7 @@ public class TextInputLayout extends LinearLayout {
    * @param placeholderText Placeholder text to display
    * @see #getPlaceholderText()
    */
-  public void setPlaceholderText(@Nullable CharSequence placeholderText) {
+  public void setPlaceholderText(@Nullable final CharSequence placeholderText) {
     // If placeholder text is null, disable placeholder if it's enabled.
     if (placeholderEnabled && TextUtils.isEmpty(placeholderText)) {
       setPlaceholderTextEnabled(false);
@@ -2282,7 +2282,7 @@ public class TextInputLayout extends LinearLayout {
    * @param prefixText Prefix text to display
    * @see #getPrefixText()
    */
-  public void setPrefixText(@Nullable CharSequence prefixText) {
+  public void setPrefixText(@Nullable final CharSequence prefixText) {
     this.prefixText = TextUtils.isEmpty(prefixText) ? null : prefixText;
     prefixTextView.setText(prefixText);
     updatePrefixTextVisibility();
@@ -2368,7 +2368,7 @@ public class TextInputLayout extends LinearLayout {
    * @param suffixText Suffix text to display
    * @see #getSuffixText()
    */
-  public void setSuffixText(@Nullable CharSequence suffixText) {
+  public void setSuffixText(@Nullable final CharSequence suffixText) {
     this.suffixText = TextUtils.isEmpty(suffixText) ? null : suffixText;
     suffixTextView.setText(suffixText);
     updateSuffixTextVisibility();
@@ -2461,9 +2461,9 @@ public class TextInputLayout extends LinearLayout {
     super.setEnabled(enabled);
   }
 
-  private static void recursiveSetEnabled(@NonNull ViewGroup vg, boolean enabled) {
+  private static void recursiveSetEnabled(@NonNull final ViewGroup vg, final boolean enabled) {
     for (int i = 0, count = vg.getChildCount(); i < count; i++) {
-      View child = vg.getChildAt(i);
+      final View child = vg.getChildAt(i);
       child.setEnabled(enabled);
       if (child instanceof ViewGroup) {
         recursiveSetEnabled((ViewGroup) child, enabled);
@@ -2952,7 +2952,7 @@ public class TextInputLayout extends LinearLayout {
   private void updatePlaceholderMeasurementsBasedOnEditText() {
     if (placeholderTextView != null && editText != null) {
       // Use the EditText's positioning for the placeholder.
-      int editTextGravity = editText.getGravity();
+      final int editTextGravity = this.editText.getGravity();
       placeholderTextView.setGravity(editTextGravity);
 
       placeholderTextView.setPadding(
@@ -3603,7 +3603,7 @@ public class TextInputLayout extends LinearLayout {
    * @deprecated Use {@link #setEndIconMode(int)} instead.
    */
   @Deprecated
-  public void setPasswordVisibilityToggleEnabled(boolean enabled) {
+  public void setPasswordVisibilityToggleEnabled(final boolean enabled) {
     if (enabled && endIconMode != END_ICON_PASSWORD_TOGGLE) {
       // Set password toggle end icon if it's not already set
       setEndIconMode(END_ICON_PASSWORD_TOGGLE);
@@ -3754,7 +3754,7 @@ public class TextInputLayout extends LinearLayout {
         startDummyDrawableWidth = right;
         startDummyDrawable.setBounds(0, 0, startDummyDrawableWidth, 1);
       }
-      Drawable[] compounds = TextViewCompat.getCompoundDrawablesRelative(editText);
+      final Drawable[] compounds = TextViewCompat.getCompoundDrawablesRelative(editText);
       if (compounds[0] != startDummyDrawable) {
         TextViewCompat.setCompoundDrawablesRelative(
             editText, startDummyDrawable, compounds[1], compounds[2], compounds[3]);
@@ -3762,7 +3762,7 @@ public class TextInputLayout extends LinearLayout {
       }
     } else if (startDummyDrawable != null) {
       // Remove the dummy start compound drawable if it exists and clear it.
-      Drawable[] compounds = TextViewCompat.getCompoundDrawablesRelative(editText);
+      final Drawable[] compounds = TextViewCompat.getCompoundDrawablesRelative(editText);
       TextViewCompat.setCompoundDrawablesRelative(
           editText, null, compounds[1], compounds[2], compounds[3]);
       startDummyDrawable = null;
@@ -3780,7 +3780,7 @@ public class TextInputLayout extends LinearLayout {
                 + MarginLayoutParamsCompat.getMarginStart(
                     ((MarginLayoutParams) iconView.getLayoutParams()));
       }
-      Drawable[] compounds = TextViewCompat.getCompoundDrawablesRelative(editText);
+      final Drawable[] compounds = TextViewCompat.getCompoundDrawablesRelative(editText);
       if (endDummyDrawable != null && endDummyDrawableWidth != right) {
         // If endLayout only changed width, update dummy drawable here so that we don't override
         // the currently saved originalEditTextEndDrawable.
@@ -3805,7 +3805,7 @@ public class TextInputLayout extends LinearLayout {
       }
     } else if (endDummyDrawable != null) {
       // Remove the dummy end compound drawable if it exists and clear it.
-      Drawable[] compounds = TextViewCompat.getCompoundDrawablesRelative(editText);
+      final Drawable[] compounds = TextViewCompat.getCompoundDrawablesRelative(editText);
       if (compounds[2] == endDummyDrawable) {
         TextViewCompat.setCompoundDrawablesRelative(
             editText, compounds[0], compounds[1], originalEditTextEndDrawable, compounds[3]);
@@ -3904,7 +3904,7 @@ public class TextInputLayout extends LinearLayout {
 
       if (hintEnabled) {
         collapsingTextHelper.setExpandedTextSize(editText.getTextSize());
-        int editTextGravity = editText.getGravity();
+        final int editTextGravity = editText.getGravity();
         collapsingTextHelper.setCollapsedTextGravity(
             Gravity.TOP | (editTextGravity & ~Gravity.VERTICAL_GRAVITY_MASK));
         collapsingTextHelper.setExpandedTextGravity(editTextGravity);
@@ -3977,7 +3977,7 @@ public class TextInputLayout extends LinearLayout {
     if (!cutoutEnabled()) {
       return;
     }
-    RectF cutoutBounds = tmpRectF;
+    final RectF cutoutBounds = tmpRectF;
     collapsingTextHelper.getCollapsedTextActualBounds(
         cutoutBounds, editText.getWidth(), editText.getGravity());
     applyCutoutPadding(cutoutBounds);
@@ -4018,7 +4018,7 @@ public class TextInputLayout extends LinearLayout {
 
     super.drawableStateChanged();
 
-    int[] state = getDrawableState();
+    final int[] state = getDrawableState();
     boolean changed = false;
 
     if (collapsingTextHelper != null) {
@@ -4044,8 +4044,8 @@ public class TextInputLayout extends LinearLayout {
       return;
     }
 
-    boolean hasFocus = isFocused() || (editText != null && editText.hasFocus());
-    boolean isHovered = isHovered() || (editText != null && editText.isHovered());
+    final boolean hasFocus = isFocused() || (editText != null && editText.hasFocus());
+    final boolean isHovered = isHovered() || (editText != null && editText.isHovered());
 
     // Update the text box's stroke color based on the current state.
     if (!isEnabled()) {
@@ -4155,7 +4155,7 @@ public class TextInputLayout extends LinearLayout {
   }
 
   private int[] mergeIconState(CheckableImageButton iconView) {
-    int[] textInputStates = getDrawableState();
+    int[] textInputStates = this.getDrawableState();
     int[] iconStates = iconView.getDrawableState();
 
     int index = textInputStates.length;
@@ -4186,15 +4186,15 @@ public class TextInputLayout extends LinearLayout {
   }
 
   @VisibleForTesting
-  void animateToExpansionFraction(float target) {
+  void animateToExpansionFraction(final float target) {
     if (collapsingTextHelper.getExpansionFraction() == target) {
       return;
     }
-    if (animator == null) {
-      animator = new ValueAnimator();
-      animator.setInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR);
-      animator.setDuration(LABEL_SCALE_ANIMATION_DURATION);
-      animator.addUpdateListener(
+    if (this.animator == null) {
+      this.animator = new ValueAnimator();
+      this.animator.setInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR);
+      this.animator.setDuration(LABEL_SCALE_ANIMATION_DURATION);
+      this.animator.addUpdateListener(
           new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(@NonNull ValueAnimator animator) {
@@ -4202,8 +4202,8 @@ public class TextInputLayout extends LinearLayout {
             }
           });
     }
-    animator.setFloatValues(collapsingTextHelper.getExpansionFraction(), target);
-    animator.start();
+    this.animator.setFloatValues(collapsingTextHelper.getExpansionFraction(), target);
+    this.animator.start();
   }
 
   @VisibleForTesting
