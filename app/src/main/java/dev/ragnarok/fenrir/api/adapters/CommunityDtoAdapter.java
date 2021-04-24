@@ -49,9 +49,13 @@ import dev.ragnarok.fenrir.api.model.VkApiCover;
 import dev.ragnarok.fenrir.api.util.VKStringUtils;
 
 public class CommunityDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApiCommunity> {
+    private static final String TAG = CommunityDtoAdapter.class.getSimpleName();
 
     @Override
     public VKApiCommunity deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (!checkObject(json)) {
+            throw new JsonParseException(TAG + " error parse object");
+        }
         JsonObject root = json.getAsJsonObject();
         VKApiCommunity dto = new VKApiCommunity();
 
@@ -79,22 +83,22 @@ public class CommunityDtoAdapter extends AbsAdapter implements JsonDeserializer<
             dto.type = VKApiCommunity.Type.EVENT;
         }
 
-        if (root.has(CITY)) {
+        if (hasObject(root, CITY)) {
             dto.city = context.deserialize(root.get(CITY), VKApiCity.class);
         }
 
-        if (root.has(COUNTRY)) {
+        if (hasObject(root, COUNTRY)) {
             dto.country = context.deserialize(root.get(COUNTRY), VKApiCountry.class);
         }
 
-        if (root.has(BAN_INFO)) {
+        if (hasObject(root, BAN_INFO)) {
             JsonObject banInfo = root.getAsJsonObject(BAN_INFO);
             dto.blacklisted = true;
             dto.ban_end_date = optLong(banInfo, "end_date");
             dto.ban_comment = optString(banInfo, "comment");
         }
 
-        if (root.has(PLACE)) {
+        if (hasObject(root, PLACE)) {
             dto.place = context.deserialize(root.get(PLACE), VKApiPlace.class);
         }
 
@@ -102,13 +106,12 @@ public class CommunityDtoAdapter extends AbsAdapter implements JsonDeserializer<
         dto.wiki_page = optString(root, WIKI_PAGE);
         dto.members_count = optInt(root, MEMBERS_COUNT);
 
-        if (root.has(COUNTERS)) {
-            JsonElement countersJson = root.get(COUNTERS);
-
-            // because api bug "counters":[]
-            if (countersJson.isJsonObject()) {
-                dto.counters = context.deserialize(countersJson, VKApiCommunity.Counters.class);
-            }
+        if (hasObject(root, COUNTERS)) {
+            JsonObject counters = root.getAsJsonObject(COUNTERS);
+            dto.counters = context.deserialize(counters, VKApiCommunity.Counters.class);
+        }
+        if (hasObject(root, "chats_status")) {
+            dto.counters.chats = optInt(root.getAsJsonObject("chats_status"), "count", VKApiCommunity.Counters.NO_COUNTER);
         }
 
         dto.start_date = optLong(root, START_DATE);
@@ -122,7 +125,7 @@ public class CommunityDtoAdapter extends AbsAdapter implements JsonDeserializer<
         dto.is_subscribed = optIntAsBoolean(root, IS_SUBSCRIBED);
         dto.status = VKStringUtils.unescape(optString(root, STATUS));
 
-        if (root.has("status_audio")) {
+        if (hasObject(root, "status_audio")) {
             dto.status_audio = context.deserialize(root.get("status_audio"), VKApiAudio.class);
         }
 
@@ -136,7 +139,7 @@ public class CommunityDtoAdapter extends AbsAdapter implements JsonDeserializer<
         dto.activity = optString(root, ACTIVITY);
         dto.can_message = optIntAsBoolean(root, "can_message");
 
-        if (root.has("cover")) {
+        if (hasObject(root, "cover")) {
             dto.cover = context.deserialize(root.get("cover"), VkApiCover.class);
         }
 

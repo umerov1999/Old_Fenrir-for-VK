@@ -26,6 +26,7 @@ import dev.ragnarok.fenrir.fragment.FeedbackFragment;
 import dev.ragnarok.fenrir.fragment.FriendsByPhonesFragment;
 import dev.ragnarok.fenrir.fragment.FwdsFragment;
 import dev.ragnarok.fenrir.fragment.GifPagerFragment;
+import dev.ragnarok.fenrir.fragment.GroupChatsFragment;
 import dev.ragnarok.fenrir.fragment.LikesFragment;
 import dev.ragnarok.fenrir.fragment.MarketViewFragment;
 import dev.ragnarok.fenrir.fragment.MessagesLookFragment;
@@ -485,6 +486,10 @@ public class PlaceFactory {
 
     public static Place getAudiosTabsSearchPlace(int accountId, int tab) {
         return new Place(Place.AUDIOS_SEARCH_TABS).setArguments(AudioSearchTabsFragment.buildArgs(accountId, tab));
+    }
+
+    public static Place getGroupChatsPlace(int accountId, int groupId) {
+        return new Place(Place.GROUP_CHATS).setArguments(GroupChatsFragment.buildArgs(accountId, groupId));
     }
 
     public static Place getCreatePostPlace(int accountId, int ownerId, @EditingPostType int editingType,

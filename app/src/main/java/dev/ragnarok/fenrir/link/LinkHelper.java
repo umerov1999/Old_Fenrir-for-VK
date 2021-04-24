@@ -80,9 +80,7 @@ public class LinkHelper {
         } else if (link.contains("vk.me")) {
             InteractorFactory.createUtilsInteractor().joinChatByInviteLink(accountId, link)
                     .compose(RxUtils.applySingleIOToMainSchedulers())
-                    .subscribe(t -> {
-                        PlaceFactory.getChatPlace(accountId, accountId, new Peer(Peer.fromChatId(t.chat_id))).tryOpenWith(context);
-                    }, e -> Utils.showErrorInAdapter(context, e));
+                    .subscribe(t -> PlaceFactory.getChatPlace(accountId, accountId, new Peer(Peer.fromChatId(t.chat_id))).tryOpenWith(context), e -> Utils.showErrorInAdapter(context, e));
         } else {
             if (!openVKlink(context, accountId, link)) {
                 PlaceFactory.getExternalLinkPlace(accountId, link).tryOpenWith(context);

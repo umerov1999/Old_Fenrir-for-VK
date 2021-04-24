@@ -611,11 +611,14 @@
     <string name="community_unsubscribe_from_news_success">Вы успешно отписались от новостей</string>
     <string name="community_leave_success">Вы покинули группу</string>
 
+    <string name="counter_chats">беседы</string>
     <string name="counter_topics">обсуждения</string>
     <string name="counter_articles">статьи</string>
     <string name="counter_markets">товары</string>
 
     <string name="topic_comments_counter">последнее обновление: %1$s | %2$d комментариев</string>
+    <string name="group_chats_counter">последнее сообщение: %1$s | %2$d участников</string>
+    <string name="group_chats">Беседы сообщества</string>
     <string name="topics">Обсуждения</string>
     <string name="group_chat_leave">Покинуть беседу</string>
     <string name="delete_chat">Удалить чат</string>

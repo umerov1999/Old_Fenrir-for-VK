@@ -93,7 +93,7 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
         if (isGuiReady()) {
             getView().displayCounters(details.getMembersCount(), details.getTopicsCount(),
                     details.getDocsCount(), details.getPhotosCount(),
-                    details.getAudiosCount(), details.getVideosCount(), details.getArticlesCount(), details.getProductsCount());
+                    details.getAudiosCount(), details.getVideosCount(), details.getArticlesCount(), details.getProductsCount(), details.getChatsCount());
         }
     }
 
@@ -262,6 +262,10 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
 
     public void fireShowComunityLinksInfoClick() {
         getView().goToShowComunityLinksInfo(getAccountId(), community);
+    }
+
+    public void fireGroupChatsClick() {
+        getView().goToGroupChats(getAccountId(), community);
     }
 
     public void fireHeaderStatusClick() {

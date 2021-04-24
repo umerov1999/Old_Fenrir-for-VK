@@ -104,6 +104,7 @@ public class Place implements Parcelable {
     public static final int FRIENDS_BY_PHONES = 91;
     public static final int UNREAD_MESSAGES = 92;
     public static final int AUDIOS_SEARCH_TABS = 93;
+    public static final int GROUP_CHATS = 94;
     public static final Creator<Place> CREATOR = new Creator<Place>() {
         @Override
         public Place createFromParcel(Parcel in) {

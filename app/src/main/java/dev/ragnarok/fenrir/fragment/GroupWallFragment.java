@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -306,6 +307,11 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
     }
 
     @Override
+    public void goToGroupChats(int accountId, Community community) {
+        PlaceFactory.getGroupChatsPlace(accountId, Math.abs(community.getId())).tryOpenWith(requireActivity());
+    }
+
+    @Override
     public void startLoginCommunityActivity(int groupId) {
         Intent intent = LoginActivity.createIntent(requireActivity(), String.valueOf(Constants.API_ID), "messages,photos,docs,manage", Collections.singletonList(groupId));
         requestCommunity.launch(intent);
@@ -317,7 +323,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
     }
 
     @Override
-    public void displayCounters(int members, int topics, int docs, int photos, int audio, int video, int articles, int products) {
+    public void displayCounters(int members, int topics, int docs, int photos, int audio, int video, int articles, int products, int chats) {
         if (isNull(mHeaderHolder)) return;
         setupCounter(mHeaderHolder.bTopics, topics);
         setupCounter(mHeaderHolder.bMembers, members);
@@ -327,6 +333,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
         setupCounter(mHeaderHolder.bVideos, video);
         setupCounter(mHeaderHolder.bArticles, articles);
         setupCounter(mHeaderHolder.bProducts, products);
+        setupCounterFlow(mHeaderHolder.bChats, mHeaderHolder.bChatsContainer, chats);
     }
 
     @Override
@@ -377,6 +384,8 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
 
         final TextView bTopics;
         final TextView bArticles;
+        final TextView bChats;
+        final ViewGroup bChatsContainer;
         final TextView bProducts;
         final TextView bMembers;
         final TextView bDocuments;
@@ -406,6 +415,8 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
             bAudios = root.findViewById(R.id.header_group_baudios);
             bVideos = root.findViewById(R.id.header_group_bvideos);
             bArticles = root.findViewById(R.id.header_group_barticles);
+            bChats = root.findViewById(R.id.header_group_bchats);
+            bChatsContainer = root.findViewById(R.id.header_group_chats_container);
             bProducts = root.findViewById(R.id.header_group_bproducts);
             primaryActionButton = root.findViewById(R.id.header_group_primary_button);
             secondaryActionButton = root.findViewById(R.id.header_group_secondary_button);
@@ -452,6 +463,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
                     .setOnClickListener(v -> getPresenter().fireShowComunityInfoClick());
             root.findViewById(R.id.header_group_links_container)
                     .setOnClickListener(v -> getPresenter().fireShowComunityLinksInfoClick());
+            bChatsContainer.setOnClickListener(v -> getPresenter().fireGroupChatsClick());
         }
     }
 }

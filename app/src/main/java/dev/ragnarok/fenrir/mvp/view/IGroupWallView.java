@@ -38,11 +38,13 @@ public interface IGroupWallView extends IWallView {
 
     void goToShowComunityLinksInfo(int accountId, Community community);
 
+    void goToGroupChats(int accountId, Community community);
+
     void startLoginCommunityActivity(int groupId);
 
     void openCommunityDialogs(int accountId, int groupId, String subtitle);
 
-    void displayCounters(int members, int topics, int docs, int photos, int audio, int video, int articles, int products);
+    void displayCounters(int members, int topics, int docs, int photos, int audio, int video, int articles, int products, int chats);
 
     void InvalidateOptionsMenu();
 

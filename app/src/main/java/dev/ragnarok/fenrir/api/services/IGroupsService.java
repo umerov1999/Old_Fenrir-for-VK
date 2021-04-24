@@ -5,6 +5,7 @@ import java.util.List;
 import dev.ragnarok.fenrir.api.model.GroupSettingsDto;
 import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiCommunity;
+import dev.ragnarok.fenrir.api.model.VKApiGroupChats;
 import dev.ragnarok.fenrir.api.model.VKApiUser;
 import dev.ragnarok.fenrir.api.model.VkApiBanned;
 import dev.ragnarok.fenrir.api.model.VkApiMarket;
@@ -142,5 +143,11 @@ public interface IGroupsService {
     Single<BaseResponse<List<VKApiCommunity>>> getById(@Field("group_ids") String groupIds,
                                                        @Field("group_id") String groupId,
                                                        @Field("fields") String fields);
+
+    @FormUrlEncoded
+    @POST("groups.getChats")
+    Single<BaseResponse<Items<VKApiGroupChats>>> getChats(@Field("group_id") int groupId,
+                                                          @Field("offset") Integer offset,
+                                                          @Field("count") Integer count);
 
 }

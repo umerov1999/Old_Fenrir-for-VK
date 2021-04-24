@@ -16,6 +16,7 @@ import dev.ragnarok.fenrir.api.model.AccessIdPair;
 import dev.ragnarok.fenrir.api.model.GroupSettingsDto;
 import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiCommunity;
+import dev.ragnarok.fenrir.api.model.VKApiGroupChats;
 import dev.ragnarok.fenrir.api.model.VKApiUser;
 import dev.ragnarok.fenrir.api.model.VkApiBanned;
 import dev.ragnarok.fenrir.api.model.VkApiMarket;
@@ -206,6 +207,14 @@ class GroupsApi extends AbsApi implements IGroupsApi {
         return provideService(IGroupsService.class, TokenType.USER, TokenType.COMMUNITY, TokenType.SERVICE)
                 .flatMap(service -> service
                         .getById(join(finalIds, ","), groupId, fields)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<Items<VKApiGroupChats>> getChats(int groupId, Integer offset, Integer count) {
+        return provideService(IGroupsService.class, TokenType.USER)
+                .flatMap(service -> service
+                        .getChats(groupId, offset, count)
                         .map(extractResponseWithErrorHandling()));
     }
 }

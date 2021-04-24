@@ -35,6 +35,8 @@ public class CommunityDetails {
 
     private int productsCount;
 
+    private int chatsCount;
+
     private String status;
 
     private Audio statusAudio;
@@ -47,6 +49,15 @@ public class CommunityDetails {
 
     public CommunityDetails setCover(Cover cover) {
         this.cover = cover;
+        return this;
+    }
+
+    public int getChatsCount() {
+        return chatsCount;
+    }
+
+    public CommunityDetails setChatsCount(int chatsCount) {
+        this.chatsCount = chatsCount;
         return this;
     }
 

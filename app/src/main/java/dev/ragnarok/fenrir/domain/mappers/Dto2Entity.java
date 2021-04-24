@@ -467,7 +467,8 @@ public class Dto2Entity {
                     .setAudiosCount(dto.counters.audios)
                     .setVideosCount(dto.counters.videos)
                     .setProductsCount(dto.counters.market)
-                    .setArticlesCount(dto.counters.articles);
+                    .setArticlesCount(dto.counters.articles)
+                    .setChatsCount(dto.counters.chats);
         }
 
         if (nonNull(dto.cover)) {

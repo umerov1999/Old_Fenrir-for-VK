@@ -740,11 +740,14 @@
     <string name="community_unsubscribe_from_news_success">Successfully unsubscribed</string>
     <string name="community_leave_success">You left the group</string>
 
+    <string name="counter_chats">chats</string>
     <string name="counter_topics">discussions</string>
     <string name="counter_articles">articles</string>
     <string name="counter_markets">products</string>
 
     <string name="topic_comments_counter">last update: %1$s | %2$d comments</string>
+    <string name="group_chats_counter">last message: %1$s | %2$d members</string>
+    <string name="group_chats">Group\'s Chats</string>
     <string name="topics">Discussions</string>
     <string name="group_chat_leave">Leave chat</string>
     <string name="delete_chat">Delete chat</string>

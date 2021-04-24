@@ -30,6 +30,7 @@ import dev.ragnarok.fenrir.api.model.VKApiCommunity;
 import dev.ragnarok.fenrir.api.model.VKApiGift;
 import dev.ragnarok.fenrir.api.model.VKApiGiftItem;
 import dev.ragnarok.fenrir.api.model.VKApiGraffiti;
+import dev.ragnarok.fenrir.api.model.VKApiGroupChats;
 import dev.ragnarok.fenrir.api.model.VKApiLink;
 import dev.ragnarok.fenrir.api.model.VKApiMessage;
 import dev.ragnarok.fenrir.api.model.VKApiNews;
@@ -91,6 +92,7 @@ import dev.ragnarok.fenrir.model.FriendList;
 import dev.ragnarok.fenrir.model.Gift;
 import dev.ragnarok.fenrir.model.GiftItem;
 import dev.ragnarok.fenrir.model.Graffiti;
+import dev.ragnarok.fenrir.model.GroupChats;
 import dev.ragnarok.fenrir.model.IOwnersBundle;
 import dev.ragnarok.fenrir.model.Keyboard;
 import dev.ragnarok.fenrir.model.Link;
@@ -243,7 +245,8 @@ public class Dto2Model {
                     .setAudiosCount(dto.counters.audios)
                     .setVideosCount(dto.counters.videos)
                     .setProductsCount(dto.counters.market)
-                    .setArticlesCount(dto.counters.articles);
+                    .setArticlesCount(dto.counters.articles)
+                    .setChatsCount(dto.counters.chats);
         }
 
         if (nonNull(dto.cover)) {
@@ -263,6 +266,16 @@ public class Dto2Model {
         }
 
         return details;
+    }
+
+    public static GroupChats transformGroupChat(VKApiGroupChats chats) {
+        return new GroupChats(chats.id)
+                .setInvite_link(chats.invite_link)
+                .setIs_closed(chats.is_closed)
+                .setPhoto(chats.photo)
+                .setTitle(chats.title)
+                .setMembers_count(chats.members_count)
+                .setLastUpdateTime(chats.last_message_date);
     }
 
     public static Community transformCommunity(VKApiCommunity community) {
@@ -298,6 +311,10 @@ public class Dto2Model {
 
     public static List<Community> transformCommunities(List<VKApiCommunity> dtos) {
         return mapAll(dtos, Dto2Model::transformCommunity);
+    }
+
+    public static List<GroupChats> transformGroupChats(List<VKApiGroupChats> dtos) {
+        return mapAll(dtos, Dto2Model::transformGroupChat);
     }
 
     public static List<Gift> transformGifts(List<VKApiGift> dtos) {

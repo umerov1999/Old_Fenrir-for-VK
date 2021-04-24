@@ -197,7 +197,8 @@ public class Entity2Model {
                 .setAudiosCount(dbo.getAudiosCount())
                 .setVideosCount(dbo.getVideosCount())
                 .setProductsCount(dbo.getProductsCount())
-                .setArticlesCount(dbo.getArticlesCount());
+                .setArticlesCount(dbo.getArticlesCount())
+                .setChatsCount(dbo.getChatsCount());
 
         if (nonNull(dbo.getCover())) {
             CommunityDetails.Cover cover = new CommunityDetails.Cover()

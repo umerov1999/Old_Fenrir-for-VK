@@ -227,6 +227,34 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/header_group_chats_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:stateListAnimator="@animator/clicked">
+
+                <TextView
+                    android:id="@+id/header_group_bchats"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:textAppearance="@style/ProfileText" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:gravity="center"
+                    android:text="@string/counter_chats"
+                    android:textAppearance="@style/ProfileSubText" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/header_group_articles_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

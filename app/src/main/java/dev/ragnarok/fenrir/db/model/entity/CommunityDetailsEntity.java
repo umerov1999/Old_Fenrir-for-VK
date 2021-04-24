@@ -35,6 +35,8 @@ public class CommunityDetailsEntity {
 
     private int productsCount;
 
+    private int chatsCount;
+
     private String status;
 
     private AudioEntity statusAudio;
@@ -47,6 +49,15 @@ public class CommunityDetailsEntity {
 
     public CommunityDetailsEntity setCover(Cover cover) {
         this.cover = cover;
+        return this;
+    }
+
+    public int getChatsCount() {
+        return chatsCount;
+    }
+
+    public CommunityDetailsEntity setChatsCount(int chatsCount) {
+        this.chatsCount = chatsCount;
         return this;
     }
 

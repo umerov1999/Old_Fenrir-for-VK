@@ -130,6 +130,12 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
         view.setEnabled(count > 0);
     }
 
+    protected static void setupCounterFlow(TextView view, ViewGroup container, int count) {
+        view.setText((count > 0 ? (AppTextUtils.getCounterWithK(count)) : "-"));
+        view.setEnabled(count > 0);
+        container.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
+    }
+
     @SuppressLint("SetTextI18n")
     protected static void setupCounterWith(TextView view, int count, int with) {
         view.setText((count > 0 ? (AppTextUtils.getCounterWithK(count)) : "-") + (with > 0 ? "/" + (AppTextUtils.getCounterWithK(with)) : ""));

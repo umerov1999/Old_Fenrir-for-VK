@@ -14,6 +14,7 @@ import dev.ragnarok.fenrir.fragment.search.criteria.PeopleSearchCriteria;
 import dev.ragnarok.fenrir.model.Community;
 import dev.ragnarok.fenrir.model.CommunityDetails;
 import dev.ragnarok.fenrir.model.Gift;
+import dev.ragnarok.fenrir.model.GroupChats;
 import dev.ragnarok.fenrir.model.IOwnersBundle;
 import dev.ragnarok.fenrir.model.Market;
 import dev.ragnarok.fenrir.model.MarketAlbum;
@@ -77,4 +78,6 @@ public interface IOwnersRepository {
     Single<List<Story>> getStory(int accountId, Integer owner_id);
 
     Single<List<Story>> searchStory(int accountId, String q, Integer mentioned_id);
+
+    Single<List<GroupChats>> getGroupChats(int accountId, int groupId, Integer offset, Integer count);
 }

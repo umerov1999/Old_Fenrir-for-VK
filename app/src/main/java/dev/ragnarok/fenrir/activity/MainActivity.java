@@ -86,6 +86,7 @@ import dev.ragnarok.fenrir.fragment.FriendsByPhonesFragment;
 import dev.ragnarok.fenrir.fragment.FwdsFragment;
 import dev.ragnarok.fenrir.fragment.GifPagerFragment;
 import dev.ragnarok.fenrir.fragment.GiftsFragment;
+import dev.ragnarok.fenrir.fragment.GroupChatsFragment;
 import dev.ragnarok.fenrir.fragment.ImportantMessagesFragment;
 import dev.ragnarok.fenrir.fragment.LikesFragment;
 import dev.ragnarok.fenrir.fragment.LinksInCatalogFragment;
@@ -1099,6 +1100,10 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
 
             case Place.AUDIOS_SEARCH_TABS:
                 attachToFront(AudioSearchTabsFragment.newInstance(args));
+                break;
+
+            case Place.GROUP_CHATS:
+                attachToFront(GroupChatsFragment.newInstance(args));
                 break;
 
             case Place.BUILD_NEW_POST:

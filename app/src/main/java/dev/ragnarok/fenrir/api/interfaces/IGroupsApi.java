@@ -9,6 +9,7 @@ import dev.ragnarok.fenrir.api.model.AccessIdPair;
 import dev.ragnarok.fenrir.api.model.GroupSettingsDto;
 import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiCommunity;
+import dev.ragnarok.fenrir.api.model.VKApiGroupChats;
 import dev.ragnarok.fenrir.api.model.VKApiUser;
 import dev.ragnarok.fenrir.api.model.VkApiBanned;
 import dev.ragnarok.fenrir.api.model.VkApiMarket;
@@ -71,4 +72,7 @@ public interface IGroupsApi {
 
     @CheckResult
     Single<GroupLongpollServer> getLongPollServer(int groupId);
+
+    @CheckResult
+    Single<Items<VKApiGroupChats>> getChats(int groupId, Integer offset, Integer count);
 }

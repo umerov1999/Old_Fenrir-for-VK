@@ -72,6 +72,7 @@ import dev.ragnarok.fenrir.fragment.search.options.SpinnerOption;
 import dev.ragnarok.fenrir.model.Community;
 import dev.ragnarok.fenrir.model.CommunityDetails;
 import dev.ragnarok.fenrir.model.Gift;
+import dev.ragnarok.fenrir.model.GroupChats;
 import dev.ragnarok.fenrir.model.IOwnersBundle;
 import dev.ragnarok.fenrir.model.Market;
 import dev.ragnarok.fenrir.model.MarketAlbum;
@@ -98,7 +99,7 @@ public class OwnersRepository implements IOwnersRepository {
             MAIN_ALBUM_ID, CAN_UPLOAD_DOC, CAN_CTARE_TOPIC, CAN_UPLOAD_VIDEO, BAN_INFO,
             CITY, COUNTRY, PLACE, DESCRIPTION, WIKI_PAGE, MEMBERS_COUNT, COUNTERS, START_DATE,
             FINISH_DATE, CAN_POST, CAN_SEE_ALL_POSTS, STATUS, CONTACTS, LINKS, FIXED_POST,
-            VERIFIED, BLACKLISTED, SITE, ACTIVITY, "member_status", "can_message", "cover");
+            VERIFIED, BLACKLISTED, SITE, ACTIVITY, "member_status", "can_message", "cover", "chats_status");
     private static final BiFunction<List<User>, List<Community>, IOwnersBundle> TO_BUNDLE_FUNCTION = (users, communities) -> {
         SparseArrayOwnersBundle bundle = new SparseArrayOwnersBundle(users.size() + communities.size());
         bundle.putAll(users);
@@ -662,6 +663,15 @@ public class OwnersRepository implements IOwnersRepository {
                     return cache.storeCommunityDbos(accountId, communityEntities)
                             .andThen(Single.just(communities));
                 });
+    }
+
+    @Override
+    public Single<List<GroupChats>> getGroupChats(int accountId, int groupId, Integer offset, Integer count) {
+        return networker.vkDefault(accountId)
+                .groups()
+                .getChats(groupId, offset, count)
+                .map(items -> listEmptyIfNull(items.getItems()))
+                .map(Dto2Model::transformGroupChats);
     }
 
     private Single<List<User>> getUsers(int accountId, List<Integer> uids, int mode) {
