@@ -22,3 +22,13 @@
   2) Выберите тип сборки (fenrir_vk_full) Debug или Release и соберите apk :)
 
 Локальный медиа сервер https://github.com/umerov1999/FenrirMediaServer/releases
+
+Для target sdk 30, добавьте в манифест :
+```
+<uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29" />
+<uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+```
