@@ -9,9 +9,11 @@ public class AdvancedItem {
 
     public static final int TYPE_DEFAULT = 0;
     public static final int TYPE_COPY_DETAILS_ONLY = 1;
+    public static final int TYPE_OPEN_URL = 2;
     private final int key;
     private final int type;
     private final Text title;
+    private String urlPrefix;
     private Icon icon;
     private Text subtitle;
 
@@ -27,6 +29,15 @@ public class AdvancedItem {
         this.key = key;
         this.type = type;
         this.title = title;
+    }
+
+    public String getUrlPrefix() {
+        return urlPrefix;
+    }
+
+    public AdvancedItem setUrlPrefix(String urlPrefix) {
+        this.urlPrefix = urlPrefix;
+        return this;
     }
 
     public Object getTag() {

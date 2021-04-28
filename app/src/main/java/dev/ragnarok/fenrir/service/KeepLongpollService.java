@@ -34,11 +34,19 @@ public class KeepLongpollService extends Service {
     private ILongpollManager longpollManager;
 
     public static void start(@NonNull Context context) {
-        context.startService(new Intent(context, KeepLongpollService.class));
+        try {
+            context.startService(new Intent(context, KeepLongpollService.class));
+        } catch (IllegalStateException | SecurityException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void stop(@NonNull Context context) {
-        context.stopService(new Intent(context, KeepLongpollService.class));
+        try {
+            context.stopService(new Intent(context, KeepLongpollService.class));
+        } catch (IllegalStateException | SecurityException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -22,7 +22,7 @@ public interface IBasicMessageListView extends IMvpView, IAttachmentsPlacesView,
 
     void disableVoicePlaying();
 
-    void showActionMode(String title, Boolean canEdit, Boolean canPin, Boolean canStar, Boolean doStar);
+    void showActionMode(String title, Boolean canEdit, Boolean canPin, Boolean canStar, Boolean doStar, Boolean canSpam);
 
     void finishActionMode();
 

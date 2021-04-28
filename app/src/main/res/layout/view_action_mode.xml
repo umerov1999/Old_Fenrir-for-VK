@@ -107,6 +107,17 @@
             android:src="@drawable/ic_outline_delete"
             app:tint="?colorOnSurface" />
 
+        <ImageView
+            android:id="@+id/buttonSpam"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/reason_spam"
+            android:padding="8dp"
+            android:src="@drawable/report"
+            app:tint="?colorOnSurface" />
+
     </LinearLayout>
 
 </RelativeLayout>

@@ -30,9 +30,8 @@ class App : Application() {
     @SuppressLint("UnsafeExperimentalUsageWarning")
     override fun onCreate() {
         sInstanse = this
+        super.onCreate()
         AppCompatDelegate.setDefaultNightMode(Settings.get().ui().nightMode)
-
-        //CrashConfig.Builder.create().apply()
         if (Settings.get().other().isEnable_native) {
             FenrirNative.loadNativeLibrary { PersistentLogger.logThrowable("NativeError", it) }
         }
@@ -40,7 +39,6 @@ class App : Application() {
         RLottieDrawable.setCacheResourceAnimation(Settings.get().other().isEnable_cache_ui_anim)
         TagOptionSingleton.getInstance().isAndroid = true
         MusicUtils.registerBroadcast(this)
-        super.onCreate()
         PicassoInstance.init(this, Injection.provideProxySettings())
         if (Settings.get().other().isKeepLongpoll) {
             KeepLongpollService.start(this)

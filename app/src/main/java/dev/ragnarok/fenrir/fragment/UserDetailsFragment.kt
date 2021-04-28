@@ -26,6 +26,7 @@ import dev.ragnarok.fenrir.adapter.RecyclerMenuAdapter
 import dev.ragnarok.fenrir.fadeIn
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment
 import dev.ragnarok.fenrir.hide
+import dev.ragnarok.fenrir.link.LinkHelper
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback
 import dev.ragnarok.fenrir.model.*
 import dev.ragnarok.fenrir.model.menu.AdvancedItem
@@ -126,11 +127,12 @@ class UserDetailsFragment : BaseMvpFragment<UserDetailsPresenter, IUserDetailsVi
             val subtitle =
                 if (Objects.nonNull(item.subtitle)) item.subtitle.getText(requireContext()) else null
             val details = Utils.joinNonEmptyStrings("\n", title, subtitle)
-            val clip: ClipData = if (item.type == AdvancedItem.TYPE_COPY_DETAILS_ONLY) {
-                ClipData.newPlainText("Details", subtitle)
-            } else {
-                ClipData.newPlainText("Details", details)
-            }
+            val clip: ClipData =
+                if (item.type == AdvancedItem.TYPE_COPY_DETAILS_ONLY || item.type == AdvancedItem.TYPE_OPEN_URL) {
+                    ClipData.newPlainText("Details", subtitle)
+                } else {
+                    ClipData.newPlainText("Details", details)
+                }
             clipboard.setPrimaryClip(clip)
             CreateCustomToast(requireActivity()).showToast(R.string.copied_to_clipboard)
         }
@@ -181,7 +183,15 @@ class UserDetailsFragment : BaseMvpFragment<UserDetailsPresenter, IUserDetailsVi
     }
 
     override fun onClick(item: AdvancedItem) {
-        presenter!!.fireItemClick(item)
+        if (item.type == AdvancedItem.TYPE_OPEN_URL) {
+            val subtitle =
+                if (Objects.nonNull(item.subtitle)) item.subtitle.getText(requireContext()) else null
+            if (!Utils.isEmpty(subtitle) && !Utils.isEmpty(item.urlPrefix)) {
+                LinkHelper.openLinkInBrowser(requireActivity(), item.urlPrefix + "/" + subtitle)
+            }
+        } else {
+            presenter!!.fireItemClick(item)
+        }
     }
 
     companion object {

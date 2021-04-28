@@ -6,12 +6,12 @@ buildscript {
     ext.fenrirNdk = '22.1.7171670'
     ext.fenrirMinSDK = 21
     ext.fenrirTargetSDK = 29
-    ext.FenrirVersionCode = 88
-    ext.FenrirVersionName = '1.88'
+    ext.FenrirVersionCode = 90
+    ext.FenrirVersionName = '1.90'
 
     ext.kotlin_version = '1.4.32'
     ext.retrofitLibraryVersion = '2.9.0'
-    ext.okhttpLibraryVersion = '5.0.0-alpha.2'
+    ext.okhttpLibraryVersion = '4.9.1'
     ext.okioVersion = '2.10.0'
     ext.RxJavaVersion = '3.0.12'
     ext.GuavaVersion = '30.1.1-android'
@@ -35,7 +35,6 @@ allprojects {
     repositories {
         mavenCentral()
         google()
-        maven { url 'https://dl.bintray.com/google/exoplayer/' }
     }
     /*
     gradle.projectsEvaluated {

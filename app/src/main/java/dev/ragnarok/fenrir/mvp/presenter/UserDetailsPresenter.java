@@ -252,23 +252,26 @@ public class UserDetailsPresenter extends AccountDependencyPresenter<IUserDetail
         }
 
         if (nonEmpty(details.getInstagram())) {
-            items.add(new AdvancedItem(8, AdvancedItem.TYPE_COPY_DETAILS_ONLY, new Text(R.string.instagram))
+            items.add(new AdvancedItem(8, AdvancedItem.TYPE_OPEN_URL, new Text(R.string.instagram))
                     .setSubtitle(new Text(details.getInstagram()))
+                    .setUrlPrefix("https://www.instagram.com")
                     .setIcon(R.drawable.instagram)
                     .setSection(mainSection));
         }
 
         if (nonEmpty(details.getTwitter())) {
-            items.add(new AdvancedItem(9, AdvancedItem.TYPE_COPY_DETAILS_ONLY, new Text(R.string.twitter))
+            items.add(new AdvancedItem(9, AdvancedItem.TYPE_OPEN_URL, new Text(R.string.twitter))
                     .setSubtitle(new Text(details.getTwitter()))
                     .setIcon(R.drawable.twitter)
+                    .setUrlPrefix("https://mobile.twitter.com")
                     .setSection(mainSection));
         }
 
         if (nonEmpty(details.getFacebook())) {
-            items.add(new AdvancedItem(10, AdvancedItem.TYPE_COPY_DETAILS_ONLY, new Text(R.string.facebook))
+            items.add(new AdvancedItem(10, AdvancedItem.TYPE_OPEN_URL, new Text(R.string.facebook))
                     .setSubtitle(new Text(details.getFacebook()))
                     .setIcon(R.drawable.facebook)
+                    .setUrlPrefix("https://m.facebook.com")
                     .setSection(mainSection));
         }
 

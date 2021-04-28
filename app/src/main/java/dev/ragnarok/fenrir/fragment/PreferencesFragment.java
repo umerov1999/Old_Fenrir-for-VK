@@ -162,22 +162,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     new File(cache, child).delete();
                 }
             }
-            cache = new File(context.getCacheDir(), "lottie_network_cache/acache");
-            if (cache.exists() && cache.isDirectory()) {
-                String[] children = cache.list();
-                assert children != null;
-                for (String child : children) {
-                    new File(cache, child).delete();
-                }
-            }
-            cache = new File(context.getCacheDir(), "lottie_network_cache");
-            if (cache.exists() && cache.isDirectory()) {
-                String[] children = cache.list();
-                assert children != null;
-                for (String child : children) {
-                    new File(cache, child).delete();
-                }
-            }
             cache = new File(context.getCacheDir(), "video_network_cache");
             if (cache.exists() && cache.isDirectory()) {
                 String[] children = cache.list();
@@ -196,7 +180,34 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             }
             if (notify)
                 CustomToast.CreateCustomToast(context).showToast(R.string.success);
-        } catch (IOException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (notify)
+                CustomToast.CreateCustomToast(context).showToastError(e.getLocalizedMessage());
+        }
+    }
+
+    public static void CleanUICache(Context context, boolean notify) {
+        try {
+            File cache = new File(context.getCacheDir(), "lottie_network_cache/acache");
+            if (cache.exists() && cache.isDirectory()) {
+                String[] children = cache.list();
+                assert children != null;
+                for (String child : children) {
+                    new File(cache, child).delete();
+                }
+            }
+            cache = new File(context.getCacheDir(), "lottie_network_cache");
+            if (cache.exists() && cache.isDirectory()) {
+                String[] children = cache.list();
+                assert children != null;
+                for (String child : children) {
+                    new File(cache, child).delete();
+                }
+            }
+            if (notify)
+                CustomToast.CreateCustomToast(context).showToast(R.string.success);
+        } catch (Exception e) {
             e.printStackTrace();
             if (notify)
                 CustomToast.CreateCustomToast(context).showToastError(e.getLocalizedMessage());
@@ -778,9 +789,16 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     return true;
                 });
 
+        findPreference("ui_cache_cleaner")
+                .setOnPreferenceClickListener(preference -> {
+                    CleanUICache(requireActivity(), true);
+                    return true;
+                });
+
         findPreference("account_cache_cleaner")
                 .setOnPreferenceClickListener(preference -> {
                     DBHelper.removeDatabaseFor(requireActivity(), getAccountId());
+                    CleanUICache(requireActivity(), false);
                     CleanImageCache(requireActivity(), true);
                     return true;
                 });

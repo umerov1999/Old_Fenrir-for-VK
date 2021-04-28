@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,9 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
@@ -39,7 +41,9 @@ import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.MessagesLookPresenter;
 import dev.ragnarok.fenrir.mvp.view.IMessagesLookView;
+import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.LoadMoreFooterHelper;
 
 public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPresenter, IMessagesLookView>
@@ -47,7 +51,8 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
 
     private static final String TAG = MessagesLookFragment.class.getSimpleName();
     private RecyclerView mRecyclerView;
-    private RelativeLayout mActionRoot;
+    private FrameLayout toolbarRootView;
+    private FrameLayout downMenuGroup;
     private MessagesAdapter mMessagesAdapter;
     private View mHeaderView;
     private View mFooterView;
@@ -77,6 +82,7 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_messages_lookup, container, false);
+        root.setBackground(CurrentTheme.getChatBackground(requireActivity()));
         ((AppCompatActivity) requireActivity()).setSupportActionBar(root.findViewById(R.id.toolbar));
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, true);
 
@@ -87,7 +93,8 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
         mFooterView = inflater.inflate(R.layout.footer_load_more, mRecyclerView, false);
         mHeaderHelper = LoadMoreFooterHelper.createFrom(mHeaderView, this::onHeaderLoadMoreClick);
         mFooterHelper = LoadMoreFooterHelper.createFrom(mFooterView, this::onFooterLoadMoreClick);
-        mActionRoot = root.findViewById(R.id.action_mode);
+        downMenuGroup = root.findViewById(R.id.down_menu);
+        toolbarRootView = root.findViewById(R.id.toolbar_root);
 
         mEndlessRecyclerOnScrollListener = new EndlessRecyclerOnScrollListener() {
             @Override
@@ -171,24 +178,27 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
     }
 
     @Override
-    public void showActionMode(String title, Boolean canEdit, Boolean canPin, Boolean canStar, Boolean doStar) {
-        if (mActionRoot == null) {
+    public void showActionMode(String title, Boolean canEdit, Boolean canPin, Boolean canStar, Boolean doStar, Boolean canSpam) {
+        boolean isDown = Settings.get().main().isMessages_menu_down();
+        if (isDown ? downMenuGroup == null : toolbarRootView == null) {
             return;
         }
-        if (mActionRoot.getChildCount() == 0) {
-            mActionView = new ActionModeHolder(LayoutInflater.from(requireActivity()).inflate(R.layout.view_action_mode, mActionRoot, false));
-            mActionRoot.addView(mActionView.rootView);
-        }
-        if (Settings.get().main().isMessages_menu_down()) {
-            ((RelativeLayout.LayoutParams) mActionView.rootView.getLayoutParams()).removeRule(RelativeLayout.ALIGN_PARENT_TOP);
-            ((RelativeLayout.LayoutParams) mActionView.rootView.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        if (!isDown) {
+            if (toolbarRootView.getChildCount() == Constants.FRAGMENT_CHAT_APP_BAR_VIEW_COUNT) {
+                mActionView = new ActionModeHolder(LayoutInflater.from(requireActivity()).inflate(R.layout.view_action_mode, toolbarRootView, false), this);
+                toolbarRootView.addView(mActionView.rootView);
+            }
         } else {
-            ((RelativeLayout.LayoutParams) mActionView.rootView.getLayoutParams()).removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            ((RelativeLayout.LayoutParams) mActionView.rootView.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            downMenuGroup.setVisibility(View.VISIBLE);
+            if (downMenuGroup.getChildCount() == Constants.FRAGMENT_CHAT_DOWN_MENU_VIEW_COUNT) {
+                mActionView = new ActionModeHolder(LayoutInflater.from(requireActivity()).inflate(R.layout.view_action_mode, downMenuGroup, false), this);
+                downMenuGroup.addView(mActionView.rootView);
+            }
         }
 
         mActionView.show();
         mActionView.titleView.setText(title);
+        mActionView.buttonSpam.setVisibility(canSpam ? View.VISIBLE : View.GONE);
         mActionView.buttonEdit.setVisibility(canEdit ? View.VISIBLE : View.GONE);
         mActionView.buttonPin.setVisibility(canPin ? View.VISIBLE : View.GONE);
         mActionView.buttonStar.setVisibility(canStar ? View.VISIBLE : View.GONE);
@@ -199,6 +209,9 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
     public void finishActionMode() {
         if (nonNull(mActionView)) {
             mActionView.hide();
+        }
+        if (Settings.get().main().isMessages_menu_down() && nonNull(downMenuGroup)) {
+            downMenuGroup.setVisibility(View.GONE);
         }
     }
 
@@ -317,11 +330,14 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
         public View buttonCopy;
         public View buttonDelete;
         public View buttonPin;
+        public View buttonSpam;
         public ImageView buttonStar;
         public TextView titleView;
+        WeakReference<MessagesLookFragment> reference;
 
-        public ActionModeHolder(View rootView) {
+        public ActionModeHolder(View rootView, MessagesLookFragment fragment) {
             this.rootView = rootView;
+            reference = new WeakReference<>(fragment);
             buttonClose = rootView.findViewById(R.id.buttonClose);
             buttonEdit = rootView.findViewById(R.id.buttonEdit);
             buttonForward = rootView.findViewById(R.id.buttonForward);
@@ -330,6 +346,7 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
             buttonPin = rootView.findViewById(R.id.buttonPin);
             buttonStar = rootView.findViewById(R.id.buttonStar);
             titleView = rootView.findViewById(R.id.actionModeTitle);
+            buttonSpam = rootView.findViewById(R.id.buttonSpam);
 
             buttonClose.setOnClickListener(this);
             buttonEdit.setOnClickListener(this);
@@ -338,6 +355,7 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
             buttonDelete.setOnClickListener(this);
             buttonPin.setOnClickListener(this);
             buttonStar.setOnClickListener(this);
+            buttonSpam.setOnClickListener(this);
         }
 
         public void show() {
@@ -350,7 +368,14 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
 
         public void hide() {
             rootView.setVisibility(View.GONE);
-            getPresenter().fireActionModeDestroy();
+            if (Settings.get().main().isMessages_menu_down()) {
+                Utils.safeObjectCall(reference.get(), () -> {
+                    if (reference.get().downMenuGroup != null) {
+                        reference.get().downMenuGroup.setVisibility(View.GONE);
+                    }
+                });
+            }
+            Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireActionModeDestroy());
         }
 
         @Override
@@ -360,16 +385,32 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
                     hide();
                     break;
                 case R.id.buttonForward:
-                    getPresenter().fireForwardClick();
+                    Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireForwardClick());
                     hide();
                     break;
                 case R.id.buttonCopy:
-                    getPresenter().fireActionModeCopyClick();
+                    Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireActionModeCopyClick());
                     hide();
                     break;
                 case R.id.buttonDelete:
-                    getPresenter().fireActionModeDeleteClick();
+                    Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireActionModeDeleteClick());
                     hide();
+                    break;
+                case R.id.buttonSpam:
+                    MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(requireActivity());
+                    dlgAlert.setIcon(R.drawable.report_red);
+                    dlgAlert.setMessage(R.string.do_report);
+                    dlgAlert.setTitle(R.string.select);
+                    dlgAlert.setPositiveButton(R.string.button_yes, (dialog, which) -> {
+                        Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireActionModeSpamClick());
+                        hide();
+                    });
+                    dlgAlert.setNeutralButton(R.string.delete, (dialog, which) -> {
+                        Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireActionModeDeleteClick());
+                        hide();
+                    });
+                    dlgAlert.setCancelable(true);
+                    dlgAlert.create().show();
                     break;
             }
         }

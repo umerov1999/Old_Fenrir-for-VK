@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="MissingTranslation">
     <string name="app_name" translatable="false">Fenrir VK</string>
 
     <string-array name="array_language_names">
@@ -213,6 +213,7 @@
     <string name="about_settings">About application</string>
     <string name="account_cache_cleaner">Clear cache for this account</string>
     <string name="picture_cache_cleaner">Clear image cache</string>
+    <string name="ui_cache_cleaner">Clear UI cache</string>
     <!-- Quick Reply-->
     <string name="go_to_dialog">To dialog</string>
     <string name="send">Send</string>
@@ -1193,8 +1194,7 @@
 
     <string name="section_play_title">Play</string>
     <string name="play_in_external_player">Play in a third-party player</string>
-    <string name="title_play_fullscreen">Play in full screen</string>
-    <string name="title_play_in_dialog">Play (min)</string>
+    <string name="title_play_fullscreen">Play in NewPipe</string>
     <string name="title_play_in_coub">Play in Coub</string>
     <string name="title_play_in_another_software">Play through third-party software</string>
     <string name="title_play_in_browser">Play in browser</string>
@@ -1729,4 +1729,5 @@
     <string name="player_blur">Blur %1$d</string>
     <string name="invert_rotating">Invert rotating</string>
     <string name="player_background">Player background cover settings</string>
+    <string name="do_report">Send report?</string>
 </resources>

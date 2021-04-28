@@ -126,7 +126,7 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
     }
 
     private void deleteSentImpl(Collection<Integer> ids, boolean forAll) {
-        appendDisposable(messagesInteractor.deleteMessages(getAccountId(), peer.getId(), ids, forAll)
+        appendDisposable(messagesInteractor.deleteMessages(getAccountId(), peer.getId(), ids, forAll, false)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
                 .subscribe(RxUtils.dummy(), t -> showError(getView(), t)));
     }
@@ -170,7 +170,25 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
                 .blockingGet();
 
         if (nonEmpty(ids)) {
-            appendDisposable(messagesInteractor.deleteMessages(accountId, peer.getId(), ids, false)
+            appendDisposable(messagesInteractor.deleteMessages(accountId, peer.getId(), ids, false, false)
+                    .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                    .subscribe(() -> onMessagesDeleteSuccessfully(ids), t -> showError(getView(), getCauseIfRuntime(t))));
+        }
+    }
+
+    @Override
+    protected void onActionModeSpamClick() {
+        super.onActionModeDeleteClick();
+        int accountId = getAccountId();
+
+        List<Integer> ids = Observable.fromIterable(getData())
+                .filter(Message::isSelected)
+                .map(Message::getId)
+                .toList()
+                .blockingGet();
+
+        if (nonEmpty(ids)) {
+            appendDisposable(messagesInteractor.deleteMessages(accountId, peer.getId(), ids, false, true)
                     .compose(RxUtils.applyCompletableIOToMainSchedulers())
                     .subscribe(() -> onMessagesDeleteSuccessfully(ids), t -> showError(getView(), getCauseIfRuntime(t))));
         }

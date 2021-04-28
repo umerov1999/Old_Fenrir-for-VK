@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <string-array name="array_language_names">
         <item>По умолчанию</item>
         <item>Английский</item>
@@ -114,6 +114,7 @@
     <string name="about_settings">О приложении</string>
     <string name="account_cache_cleaner">Очистить кэш для данного аккаунта</string>
     <string name="picture_cache_cleaner">Очистить кэш изображений</string>
+    <string name="ui_cache_cleaner">Очистить кэш UI</string>
     <!-- Quick Reply-->
     <string name="go_to_dialog">К диалогу</string>
     <string name="send">Отправить</string>
@@ -1036,8 +1037,7 @@
 
     <string name="section_play_title">Воспроизвести</string>
     <string name="play_in_external_player">Играть в стороннем плеере</string>
-    <string name="title_play_fullscreen">Играть на весь экран</string>
-    <string name="title_play_in_dialog">Играть (min)</string>
+    <string name="title_play_fullscreen">Играть в NewPipe</string>
     <string name="title_play_in_coub">Играть в Coub</string>
     <string name="title_play_in_another_software">Играть через стороннее ПО</string>
     <string name="title_play_in_browser">Играть в браузере</string>
@@ -1555,4 +1555,5 @@
     <string name="player_blur">Blur %1$d</string>
     <string name="invert_rotating">Вращать вдругую сторону</string>
     <string name="player_background">Настройка фона плеера</string>
+    <string name="do_report">Отправить жалобу?</string>
 </resources>

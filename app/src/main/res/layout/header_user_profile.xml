@@ -18,14 +18,17 @@
         layout="@layout/runes_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="@dimen/card_margin" />
+        android:layout_marginStart="@dimen/card_margin_horizontal"
+        android:layout_marginTop="@dimen/card_margin_horizontal"
+        android:layout_marginEnd="@dimen/card_margin_horizontal" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/card_margin"
+        android:layout_marginStart="@dimen/card_margin_horizontal"
+        android:layout_marginTop="@dimen/card_margin"
+        android:layout_marginEnd="@dimen/card_margin_horizontal"
         android:foreground="?android:attr/selectableItemBackground"
         app:cardElevation="0dp"
         tools:ignore="UnusedAttribute">
@@ -206,12 +209,11 @@
         android:id="@+id/horiz_scroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginStart="@dimen/card_margin"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="@dimen/card_margin"
-        android:layout_marginBottom="@dimen/card_margin"
-        android:background="@drawable/background_rectangle_stroke_filled"
+        android:layout_marginStart="@dimen/card_margin_horizontal"
+        android:layout_marginTop="@dimen/card_margin"
+        android:layout_marginEnd="@dimen/card_margin_horizontal"
+        android:layout_marginBottom="@dimen/card_margin_horizontal"
+        android:background="?materialCardBackgroundStyle"
         android:scrollbars="none">
 
         <LinearLayout
@@ -426,17 +428,13 @@
                     android:textAppearance="@style/ProfileSubText" />
 
             </LinearLayout>
-
         </LinearLayout>
-
     </HorizontalScrollView>
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/post_filter_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="none" />
-
 </LinearLayout>
 

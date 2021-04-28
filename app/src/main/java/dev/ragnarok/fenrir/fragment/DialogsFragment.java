@@ -482,7 +482,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
                 .setTitle(R.string.info)
                 .setCancelable(true)
                 .setMessage(R.string.what_search)
-                .setNegativeButton(R.string.search_dialogs, (dialog, which) -> {
+                .setNeutralButton(R.string.search_dialogs, (dialog, which) -> {
                     DialogsSearchCriteria criteria = new DialogsSearchCriteria("");
 
                     PlaceFactory.getSingleTabSearchPlace(accountId, SearchContentType.DIALOGS, criteria)

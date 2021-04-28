@@ -98,6 +98,6 @@ dependencies {
     api 'androidx.viewpager2:viewpager2:1.1.0-alpha01'
     api 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     api 'androidx.vectordrawable:vectordrawable:1.2.0-alpha02'
-    api 'androidx.transition:transition:1.4.0'
+    api 'androidx.transition:transition:1.4.1'
     api 'androidx.lifecycle:lifecycle-runtime:2.3.1'
 }

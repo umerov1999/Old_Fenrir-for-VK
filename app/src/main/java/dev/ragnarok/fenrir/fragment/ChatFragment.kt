@@ -376,6 +376,21 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
                     reference.get()?.presenter?.fireActionModeDeleteClick()
                     hide()
                 }
+                R.id.buttonSpam -> {
+                    val dlgAlert =
+                        reference.get()?.let { MaterialAlertDialogBuilder(it.requireActivity()) }
+                    dlgAlert?.setIcon(R.drawable.report_red)
+                    dlgAlert?.setMessage(R.string.do_report)
+                    dlgAlert?.setTitle(R.string.select)
+                    dlgAlert?.setPositiveButton(
+                        R.string.button_yes
+                    ) { _: DialogInterface?, _: Int -> reference.get()?.presenter?.fireActionModeSpamClick(); hide(); }
+                    dlgAlert?.setNeutralButton(
+                        R.string.delete
+                    ) { _: DialogInterface?, _: Int -> reference.get()?.presenter?.fireActionModeDeleteClick(); hide(); }
+                    dlgAlert?.setCancelable(true)
+                    dlgAlert?.create()?.show()
+                }
                 R.id.buttonPin -> {
                     reference.get()?.presenter?.fireActionModePinClick()
                     hide()
@@ -393,6 +408,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         val buttonForward: View = rootView.findViewById(R.id.buttonForward)
         val buttonCopy: View = rootView.findViewById(R.id.buttonCopy)
         val buttonDelete: View = rootView.findViewById(R.id.buttonDelete)
+        val buttonSpam: View = rootView.findViewById(R.id.buttonSpam)
         val buttonPin: View = rootView.findViewById(R.id.buttonPin)
         val buttonStar: ImageView = rootView.findViewById(R.id.buttonStar)
         val titleView: TextView = rootView.findViewById(R.id.actionModeTitle)
@@ -403,6 +419,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
             buttonForward.setOnClickListener(this)
             buttonCopy.setOnClickListener(this)
             buttonDelete.setOnClickListener(this)
+            buttonSpam.setOnClickListener(this)
             buttonPin.setOnClickListener(this)
             buttonStar.setOnClickListener(this)
         }
@@ -716,7 +733,8 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         canEdit: Boolean,
         canPin: Boolean,
         canStar: Boolean,
-        doStar: Boolean
+        doStar: Boolean,
+        canSpam: Boolean
     ) {
         if (!Settings.get().main().isMessages_menu_down) {
             toolbarRootView?.run {
@@ -747,6 +765,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         actionModeHolder?.run {
             show()
             titleView.text = title
+            buttonSpam.visibility = if (canSpam) View.VISIBLE else View.GONE
             buttonEdit.visibility = if (canEdit) View.VISIBLE else View.GONE
             buttonPin.visibility = if (canPin) View.VISIBLE else View.GONE
             buttonStar.visibility = if (canStar) View.VISIBLE else View.GONE

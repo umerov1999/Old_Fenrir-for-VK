@@ -144,7 +144,7 @@ public interface IMessagesRepository {
 
     Completable deleteDialog(int accountId, int peedId);
 
-    Completable deleteMessages(int accountId, int peerId, @NonNull Collection<Integer> ids, boolean forAll);
+    Completable deleteMessages(int accountId, int peerId, @NonNull Collection<Integer> ids, boolean forAll, boolean spam);
 
     Completable restoreMessage(int accountId, int peerId, int messageId);
 

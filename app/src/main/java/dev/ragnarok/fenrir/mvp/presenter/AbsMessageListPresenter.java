@@ -101,7 +101,7 @@ public abstract class AbsMessageListPresenter<V extends IBasicMessageListView> e
 
         int selectionCount = countOfSelection(getData());
         if (selectionCount > 0) {
-            getView().showActionMode(String.valueOf(selectionCount), false, false, false, false);
+            getView().showActionMode(String.valueOf(selectionCount), false, false, false, false, true);
         } else {
             getView().finishActionMode();
         }
@@ -151,6 +151,14 @@ public abstract class AbsMessageListPresenter<V extends IBasicMessageListView> e
     }
 
     protected void onActionModeDeleteClick() {
+
+    }
+
+    public final void fireActionModeSpamClick() {
+        onActionModeSpamClick();
+    }
+
+    protected void onActionModeSpamClick() {
 
     }
 

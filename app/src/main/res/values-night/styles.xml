@@ -16,6 +16,8 @@
         <item name="colorOnPrimary">#FFF</item>
         <item name="colorOnSecondary">#FFF</item>
         <item name="android:colorBackground">@color/night</item>
+        <item name="materialCardStyle">@style/CardViewMD2</item>
+        <item name="materialCardBackgroundStyle">@drawable/background_rectangle_stroke_filled</item>
 
         <item name="colorBackgroundFloating">@color/night</item>
         <item name="colorOnBackground">#1E1E1E</item>
@@ -141,6 +143,8 @@
         <item name="message_bubble_color">#0B0B0B</item>
         <item name="sticker_hint_color">#DD0B0B0B</item>
         <item name="messages_background_color">#000000</item>
+        <item name="materialCardStyle">@style/CardViewMD</item>
+        <item name="materialCardBackgroundStyle">@drawable/background_rectangle_filled</item>
     </style>
 
     <style name="App.DayNight.BlueRed.Amoled" parent="App.DayNight.BlueRed">
@@ -442,6 +446,10 @@
         <item name="strokeColor">?dividerColor</item>
     </style>
 
+    <style name="CardViewMD" parent="Widget.MaterialComponents.CardView">
+        <item name="cardElevation">1dp</item>
+    </style>
+
     <style name="QuickReply" parent="Theme.MaterialComponents.DayNight.Dialog">
         <item name="colorPrimary">#448AFF</item>
         <item name="colorControlNormal">#448AFF</item>
@@ -456,6 +464,8 @@
         <item name="quick_reply_icon_color">#FFF</item>
         <item name="dividerColor">#313131</item>
         <item name="white_color">#FFFFFF</item>
+        <item name="materialCardStyle">@style/CardViewMD2</item>
+        <item name="materialCardBackgroundStyle">@drawable/background_rectangle_stroke_filled</item>
     </style>
 
     <style name="Theme.MaterialCardView" parent="Widget.MaterialComponents.CardView">

@@ -4,17 +4,14 @@
     package="dev.ragnarok.fenrir"
     android:installLocation="auto">
 
-    <supports-screens
-        android:anyDensity="true"
-        android:largeScreens="true"
-        android:normalScreens="true"
-        android:resizeable="true"
-        android:smallScreens="true"
-        android:xlargeScreens="true" />
-
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
+
+    <queries>
+        <package android:name="com.coub.android" />
+        <package android:name="org.schabi.newpipe" />
+    </queries>
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -499,19 +496,13 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider"
+            android:authorities="${applicationId}.file_provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
-        <provider
-            android:name="androidx.lifecycle.ProcessLifecycleOwnerInitializer"
-            android:authorities="${applicationId}.lifecycle-process"
-            android:exported="false"
-            android:multiprocess="true" />
 
         <activity android:name=".activity.EnterPinActivity" />
 

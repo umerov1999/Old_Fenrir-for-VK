@@ -64,6 +64,8 @@
     <attr name="message_unread_color" format="color" />
     <attr name="buttonAddPhotoBackground" format="reference" />
     <attr name="dividerColor" format="color" />
+    <attr name="materialCardStyle" format="reference" />
+    <attr name="materialCardBackgroundStyle" format="reference" />
 
     <attr name="toolbarElevation" format="reference" />
     <attr name="statusbarNonColoredColor" format="color" />
@@ -218,5 +220,9 @@
         <attr name="fromRes" format="reference" />
         <attr name="w" format="dimension" />
         <attr name="h" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="BottomShadowView">
+        <attr name="android:background" />
+        <attr name="elevation" />
     </declare-styleable>
 </resources>

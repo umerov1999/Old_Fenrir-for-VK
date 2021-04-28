@@ -7,7 +7,6 @@ import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 import android.Manifest;
-import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
@@ -33,7 +32,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.youtube.player.YouTubeStandalonePlayer;
 import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
@@ -49,6 +47,7 @@ import dev.ragnarok.fenrir.activity.SendAttachmentsActivity;
 import dev.ragnarok.fenrir.adapter.MenuAdapter;
 import dev.ragnarok.fenrir.domain.ILikesInteractor;
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
+import dev.ragnarok.fenrir.link.LinkHelper;
 import dev.ragnarok.fenrir.link.internal.LinkActionAdapter;
 import dev.ragnarok.fenrir.link.internal.OwnerLinkSpanFactory;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
@@ -75,7 +74,6 @@ import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.DownloadWorkUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
-import dev.ragnarok.fenrir.util.YoutubeDeveloperKey;
 import dev.ragnarok.fenrir.view.CircleCounterButton;
 
 public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter, IVideoPreviewView> implements View.OnClickListener, View.OnLongClickListener, IVideoPreviewView {
@@ -465,11 +463,7 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
 
         if (nonEmpty(external)) {
             if (external.contains("youtube")) {
-                items.add(new Item(Menu.YOUTUBE_FULL, new Text(R.string.title_play_fullscreen))
-                        .setIcon(R.drawable.ic_play_youtube)
-                        .setSection(SECTION_PLAY));
-
-                items.add(new Item(Menu.YOUTUBE_MIN, new Text(R.string.title_play_in_dialog))
+                items.add(new Item(Menu.YOUTUBE, new Text(R.string.title_play_fullscreen))
                         .setIcon(R.drawable.ic_play_youtube)
                         .setSection(SECTION_PLAY));
 
@@ -548,7 +542,11 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
             openInternal(video, InternalVideoSize.SIZE_240);
         } else if (nonEmpty(video.getExternalLink())) {
             if (video.getExternalLink().contains("youtube")) {
-                playWithYoutube(video, false);
+                if (AppPrefs.isNewPipeInstalled(requireActivity())) {
+                    playWithNewPipe(video);
+                } else {
+                    playWithExternalSoftware(video.getExternalLink());
+                }
             } else if (video.getExternalLink().contains("coub") && AppPrefs.isCoubInstalled(requireActivity())) {
                 playWithCoub(video);
             } else {
@@ -616,12 +614,12 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
                 showPlayExternalPlayerMenu(video);
                 break;
 
-            case Menu.YOUTUBE_FULL:
-                playWithYoutube(video, false);
-                break;
-
-            case Menu.YOUTUBE_MIN:
-                playWithYoutube(video, true);
+            case Menu.YOUTUBE:
+                if (AppPrefs.isNewPipeInstalled(requireActivity())) {
+                    playWithNewPipe(video);
+                } else {
+                    LinkHelper.openLinkInBrowser(requireActivity(), "https://github.com/TeamNewPipe/NewPipe/releases");
+                }
                 break;
 
             case Menu.COUB:
@@ -746,16 +744,14 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
         startActivity(intent);
     }
 
-    private void playWithYoutube(Video video, boolean inFloatWindow) {
-        int index = video.getExternalLink().indexOf("watch?v=");
-        String videoId = video.getExternalLink().substring(index + 8);
+    private void playWithNewPipe(Video video) {
+        String outerLink = video.getExternalLink();
 
-        try {
-            Intent intent = YouTubeStandalonePlayer.createVideoIntent(requireActivity(), YoutubeDeveloperKey.DEVELOPER_KEY, videoId, 0, true, inFloatWindow);
-            startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            Utils.showRedTopToast(requireActivity(), R.string.no_compatible_software_installed);
-        }
+        Intent intent = new Intent();
+        intent.setData(Uri.parse(outerLink));
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setComponent(new ComponentName("org.schabi.newpipe", "org.schabi.newpipe.RouterActivity"));
+        startActivity(intent);
     }
 
     @Override
@@ -828,19 +824,18 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
         static final int P_480 = 480;
         static final int P_720 = 720;
         static final int P_1080 = 1080;
-        static final int HLS = -10;
-        static final int LIVE = -8;
+        static final int HLS = -9;
+        static final int LIVE = -7;
         static final int P_EXTERNAL_PLAYER = -1;
 
-        static final int YOUTUBE_FULL = -2;
-        static final int YOUTUBE_MIN = -3;
-        static final int COUB = -4;
+        static final int YOUTUBE = -2;
+        static final int COUB = -3;
 
-        static final int PLAY_ANOTHER_SOFT = -5;
-        static final int PLAY_BROWSER = -6;
-        static final int DOWNLOAD = -7;
-        static final int COPY_LINK = -9;
+        static final int PLAY_ANOTHER_SOFT = -4;
+        static final int PLAY_BROWSER = -5;
+        static final int DOWNLOAD = -6;
+        static final int COPY_LINK = -8;
 
-        static final int ADD_TO_FAVE = -11;
+        static final int ADD_TO_FAVE = -10;
     }
 }

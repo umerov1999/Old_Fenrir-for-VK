@@ -1236,10 +1236,10 @@ public class MessagesRepository implements IMessagesRepository {
     }
 
     @Override
-    public Completable deleteMessages(int accountId, int peerId, @NonNull Collection<Integer> ids, boolean forAll) {
+    public Completable deleteMessages(int accountId, int peerId, @NonNull Collection<Integer> ids, boolean forAll, boolean spam) {
         return networker.vkDefault(accountId)
                 .messages()
-                .delete(ids, forAll, null)
+                .delete(ids, forAll, spam)
                 .flatMapCompletable(result -> {
                     List<MessagePatch> patches = new ArrayList<>(result.size());
 

@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <dev.ragnarok.fenrir.view.BottomShadowView
+        android:id="@+id/toolbar_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:background="?android:colorBackground"
-        app:elevation="2dp">
+        app:elevation="4dp">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -80,21 +82,21 @@
 
             </LinearLayout>
         </com.google.android.material.appbar.MaterialToolbar>
-
-        <include layout="@layout/line_divider" />
-
-    </com.google.android.material.appbar.AppBarLayout>
+    </dev.ragnarok.fenrir.view.BottomShadowView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_below="@id/toolbar_root"
+        android:scrollbars="vertical" />
 
-    <RelativeLayout
-        android:id="@+id/action_mode"
+    <FrameLayout
+        android:id="@+id/down_menu"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></RelativeLayout>
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:animateLayoutChanges="true"
+        android:visibility="gone" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>

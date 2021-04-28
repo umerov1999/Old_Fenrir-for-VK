@@ -5,12 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
+    <dev.ragnarok.fenrir.view.BottomShadowView
         android:id="@+id/toolbar_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        android:background="?android:colorBackground">
+        android:background="?android:colorBackground"
+        app:elevation="4dp">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -81,13 +82,7 @@
             </LinearLayout>
 
         </com.google.android.material.appbar.MaterialToolbar>
-
-        <include
-            layout="@layout/line_divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_gravity="bottom" />
-    </FrameLayout>
+    </dev.ragnarok.fenrir.view.BottomShadowView>
 
     <LinearLayout
         android:id="@+id/pinned_root_view"
@@ -199,7 +194,7 @@
         android:layout_below="@+id/pinned_root_view"
         android:layout_centerHorizontal="true"
         android:layout_margin="4dp"
-        android:background="@drawable/background_rectangle_stroke_filled">
+        android:background="?materialCardBackgroundStyle">
 
         <ImageView
             android:id="@+id/writingava"
@@ -307,6 +302,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:animateLayoutChanges="true"
         android:visibility="gone" />
 
     <TextView

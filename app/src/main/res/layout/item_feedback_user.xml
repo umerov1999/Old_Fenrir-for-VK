@@ -10,7 +10,7 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/header_root"
-        style="@style/CardViewMD2"
+        style="?materialCardStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"

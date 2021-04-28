@@ -837,6 +837,11 @@
             android:title="@string/picture_cache_cleaner"
             app:iconSpaceReserved="false" />
 
+        <Preference
+            android:key="ui_cache_cleaner"
+            android:title="@string/ui_cache_cleaner"
+            app:iconSpaceReserved="false" />
+
         <SwitchPreference
             android:key="delete_cache_images"
             android:title="@string/delete_cache_images"

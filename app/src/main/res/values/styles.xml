@@ -27,6 +27,9 @@
         <item name="fab_secondary">@style/Theme.FloatingActionButtonSecondary</item>
         <item name="fab_player">@style/Theme.FloatingActionButtonSecondary</item>
 
+        <item name="materialCardStyle">@style/CardViewMD2</item>
+        <item name="materialCardBackgroundStyle">@drawable/background_rectangle_stroke_filled</item>
+
         <item name="dividerColor">#E1E3E7</item>
         <item name="colorPrimary">#448AFF</item>
         <item name="colorControlNormal">#448AFF</item>
@@ -100,6 +103,8 @@
         <item name="colorOnSecondary">#FFF</item>
         <item name="icon_color_active">#AA448AFF</item>
         <item name="icon_color_inactive">#AAFF0000</item>
+        <item name="materialCardStyle">@style/CardViewMD</item>
+        <item name="materialCardBackgroundStyle">@drawable/background_rectangle_filled</item>
     </style>
 
     <style name="App.DayNight.BlueRed" parent="App.DayNight">
@@ -347,6 +352,8 @@
         <item name="quick_reply_icon_color">#151515</item>
         <item name="dividerColor">#E1E3E7</item>
         <item name="white_color">#FFFFFF</item>
+        <item name="materialCardStyle">@style/CardViewMD2</item>
+        <item name="materialCardBackgroundStyle">@drawable/background_rectangle_stroke_filled</item>
     </style>
 
     <style name="QuickReply.Amoled" parent="QuickReply" />
@@ -482,6 +489,10 @@
         <item name="cardElevation">0dp</item>
         <item name="strokeWidth">1dp</item>
         <item name="strokeColor">?dividerColor</item>
+    </style>
+
+    <style name="CardViewMD" parent="Widget.MaterialComponents.CardView">
+        <item name="cardElevation">1dp</item>
     </style>
 
     <style name="ShapeAppearance.RoundedPlayerCover" parent="ShapeAppearance.MaterialComponents.LargeComponent">

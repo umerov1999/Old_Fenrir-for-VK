@@ -25,7 +25,7 @@ public class Constants {
     int DEFAULT_ACCOUNT_TYPE = BuildConfig.DEFAULT_ACCOUNT_TYPE;
 
     public static final boolean IS_HAS_LOGIN_WEB = BuildConfig.DEFAULT_ACCOUNT_TYPE == Account_Types.KATE;
-    public static final String FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".fileprovider";
+    public static final String FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".file_provider";
 
     public static final String VK_ANDROID_APP_VERSION_NAME = "6.34";
     public static final String VK_ANDROID_APP_VERSION_CODE = "7753";
@@ -39,7 +39,7 @@ public class Constants {
     public static final int AUDIO_PLAYER_SERVICE_IDLE = 300000;
     public static final int PIN_DIGITS_COUNT = 4;
     public static final int MAX_RECENT_CHAT_COUNT = 4;
-    public static final int FRAGMENT_CHAT_APP_BAR_VIEW_COUNT = 2;
+    public static final int FRAGMENT_CHAT_APP_BAR_VIEW_COUNT = 1;
     public static final int FRAGMENT_CHAT_DOWN_MENU_VIEW_COUNT = 0;
     public static final String PICASSO_TAG = "picasso_tag";
     public static final boolean IS_DEBUG = BuildConfig.DEBUG;

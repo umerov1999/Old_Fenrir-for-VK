@@ -1301,6 +1301,10 @@ class ChatPresenter(
                 && !message.isSticker && !message.isVoiceMessage && !message.isGraffity && !message.isCall
     }
 
+    private fun canSpam(message: Message): Boolean {
+        return !message.isOut
+    }
+
     private fun canChangePin(): Boolean {
         return conversation?.run {
             hasFlag(acl, Conversation.AclFlags.CAN_CHANGE_PIN)
@@ -1356,10 +1360,18 @@ class ChatPresenter(
                     canEdit(message),
                     canChangePin(),
                     canStar(),
-                    doStar()
+                    doStar(),
+                    !message.isOut
                 )
             } else {
-                view?.showActionMode(selectionCount.toString(), false, false, canStar(), doStar())
+                view?.showActionMode(
+                    selectionCount.toString(),
+                    false,
+                    false,
+                    canStar(),
+                    doStar(),
+                    false
+                )
             }
         } else {
             view?.finishActionMode()
@@ -1552,6 +1564,11 @@ class ChatPresenter(
         deleteSelectedMessages()
     }
 
+    override fun onActionModeSpamClick() {
+        super.onActionModeSpamClick()
+        spamDelete()
+    }
+
     fun fireActionModeStarClick() {
         val sent = ArrayList<Int>(0)
         val iterator = data.iterator()
@@ -1641,9 +1658,58 @@ class ChatPresenter(
         }
     }
 
+    private fun spamDelete() {
+        val sent = ArrayList<Int>(0)
+
+        var hasChanged = false
+        val iterator = data.iterator()
+
+        while (iterator.hasNext()) {
+            val message = iterator.next()
+
+            if (!message.isSelected) {
+                continue
+            }
+
+            when (message.status) {
+                MessageStatus.SENT -> {
+                    if (!message.isOut) {
+                        sent.add(message.id)
+                    }
+                }
+                MessageStatus.QUEUE, MessageStatus.ERROR, MessageStatus.SENDING -> {
+                    deleteMessageFromDbAsync(message)
+                    iterator.remove()
+                    hasChanged = true
+                }
+                MessageStatus.WAITING_FOR_UPLOAD -> {
+                    cancelWaitingForUploadMessage(message.id)
+                    deleteMessageFromDbAsync(message)
+                    iterator.remove()
+                    hasChanged = true
+                }
+                MessageStatus.EDITING -> {
+                    TODO()
+                }
+            }
+        }
+
+        if (sent.nonEmpty()) {
+            appendDisposable(
+                messagesRepository.deleteMessages(messagesOwnerId, peerId, sent, false, true)
+                    .fromIOToMain()
+                    .subscribe(dummy(), { t -> showError(view, t) })
+            )
+        }
+
+        if (hasChanged) {
+            view?.notifyDataChanged()
+        }
+    }
+
     private fun normalDelete(ids: Collection<Int>, forAll: Boolean) {
         appendDisposable(
-            messagesRepository.deleteMessages(messagesOwnerId, peerId, ids, forAll)
+            messagesRepository.deleteMessages(messagesOwnerId, peerId, ids, forAll, false)
                 .fromIOToMain()
                 .subscribe(dummy(), { t -> showError(view, t) })
         )

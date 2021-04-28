@@ -32,6 +32,7 @@ import dev.ragnarok.fenrir.mvp.presenter.LocalJsonToChatPresenter
 import dev.ragnarok.fenrir.mvp.view.ILocalJsonToChatView
 import dev.ragnarok.fenrir.picasso.PicassoInstance
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation
+import dev.ragnarok.fenrir.settings.CurrentTheme
 import dev.ragnarok.fenrir.util.Objects
 import dev.ragnarok.fenrir.util.Utils
 import dev.ragnarok.fenrir.util.ViewUtils
@@ -55,6 +56,7 @@ class LocalJsonToChatFragment :
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_json_chat, container, false)
+        root.background = CurrentTheme.getChatBackground(activity)
         (requireActivity() as AppCompatActivity).setSupportActionBar(root.findViewById(R.id.toolbar))
         mEmpty = root.findViewById(R.id.empty)
         val mAttachment: FloatingActionButton = root.findViewById(R.id.goto_button)

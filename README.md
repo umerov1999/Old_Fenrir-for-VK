@@ -23,6 +23,7 @@
 
 Локальный медиа сервер https://github.com/umerov1999/FenrirMediaServer/releases
 
+
 Для target sdk 30, добавьте в манифест :
 ```
 <uses-permission
