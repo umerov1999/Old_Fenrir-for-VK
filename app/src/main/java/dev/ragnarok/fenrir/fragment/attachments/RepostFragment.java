@@ -64,11 +64,10 @@ public class RepostFragment extends AbsAttachmentsEditFragment<RepostPresenter, 
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.ready:
-                getPresenter().fireReadyClick();
-                return true;
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.ready) {
+            getPresenter().fireReadyClick();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

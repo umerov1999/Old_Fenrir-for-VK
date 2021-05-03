@@ -35,7 +35,7 @@ public class SelectedProfilesAdapter extends RecyclerView.Adapter<RecyclerView.V
     public SelectedProfilesAdapter(Context context, List<Owner> data) {
         mContext = context;
         mData = data;
-        mTransformation = CurrentTheme.createTransformationForAvatar(context);
+        mTransformation = CurrentTheme.createTransformationForAvatar();
     }
 
     @NonNull

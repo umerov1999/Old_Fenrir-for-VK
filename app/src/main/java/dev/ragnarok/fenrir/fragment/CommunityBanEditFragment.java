@@ -126,7 +126,7 @@ public class CommunityBanEditFragment extends BaseMvpFragment<CommunityBanEditPr
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_save) {
             getPresenter().fireButtonSaveClick();
             return true;

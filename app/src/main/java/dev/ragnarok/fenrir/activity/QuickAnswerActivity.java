@@ -1,10 +1,5 @@
 package dev.ragnarok.fenrir.activity;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.RxUtils.ignore;
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -75,6 +70,11 @@ import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.emoji.BotKeyboardView;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.RxUtils.ignore;
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 
 public class QuickAnswerActivity extends AppCompatActivity {
 
@@ -155,7 +155,7 @@ public class QuickAnswerActivity extends AppCompatActivity {
         tvMessage.setText(getIntent().getStringExtra(PARAM_BODY), TextView.BufferType.SPANNABLE);
         tvTime.setText(messageTime);
 
-        Transformation transformation = CurrentTheme.createTransformationForAvatar(this);
+        Transformation transformation = CurrentTheme.createTransformationForAvatar();
         String imgUrl = getIntent().getStringExtra(Extra.IMAGE);
         if (ivAvatar != null) {
             ViewUtils.displayAvatar(ivAvatar, transformation, imgUrl, null);

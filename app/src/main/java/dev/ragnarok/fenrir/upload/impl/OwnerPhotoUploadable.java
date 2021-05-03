@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.upload.impl;
 
-import static dev.ragnarok.fenrir.util.Utils.safelyClose;
-
 import android.content.Context;
 
 import androidx.annotation.NonNull;
@@ -20,6 +18,8 @@ import dev.ragnarok.fenrir.upload.Upload;
 import dev.ragnarok.fenrir.upload.UploadResult;
 import dev.ragnarok.fenrir.upload.UploadUtils;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.Utils.safelyClose;
 
 public class OwnerPhotoUploadable implements IUploadable<Post> {
 

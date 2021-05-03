@@ -706,6 +706,7 @@
     <string name="show_profile">Профиль</string>
     <string name="unknown_photos_count">неизвестно</string>
     <string name="photos_count">%1$d фото</string>
+    <string name="local_audios_count">%1$d аудио</string>
     <string name="markets_count">%1$d товаров</string>
     <string name="markets_available">Доступен</string>
     <string name="markets_not_available">Недоступен</string>
@@ -819,6 +820,7 @@
     <string name="owner_s_posts">Записи владельца</string>
     <string name="scheduled">Отложенные</string>
     <string name="all_posts">Все записи</string>
+    <string name="all_audios">Все аудио</string>
     <string name="news_feed">Лента</string>
     <string name="subscriptions">Подписки</string>
     <string name="account_manager">Менеджер аккаунтов</string>

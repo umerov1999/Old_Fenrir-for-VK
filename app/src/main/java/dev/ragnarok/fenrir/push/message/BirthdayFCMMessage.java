@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.push.message;
 
-import static dev.ragnarok.fenrir.push.NotificationUtils.configOtherPushNotification;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -33,6 +30,9 @@ import dev.ragnarok.fenrir.push.NotificationUtils;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
+
+import static dev.ragnarok.fenrir.push.NotificationUtils.configOtherPushNotification;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 
 public class BirthdayFCMMessage {
 

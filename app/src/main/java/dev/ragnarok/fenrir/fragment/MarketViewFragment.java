@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -37,6 +35,8 @@ import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.AspectRatioImageView;
 import dev.ragnarok.fenrir.view.CircleCounterButton;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class MarketViewFragment extends BaseMvpFragment<MarketViewPresenter, IMarketViewView>
         implements IMarketViewView {

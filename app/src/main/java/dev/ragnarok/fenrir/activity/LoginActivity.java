@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.activity;
 
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -29,6 +27,8 @@ import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Logger;
 import dev.ragnarok.fenrir.util.Utils;
+
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class LoginActivity extends Activity {
 

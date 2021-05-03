@@ -1,13 +1,5 @@
 package dev.ragnarok.fenrir.domain.mappers;
 
-import static dev.ragnarok.fenrir.domain.mappers.MapUtil.calculateConversationAcl;
-import static dev.ragnarok.fenrir.domain.mappers.MapUtil.mapAll;
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
-
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -139,6 +131,14 @@ import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.MessageStatus;
 import dev.ragnarok.fenrir.model.feedback.FeedbackType;
 import dev.ragnarok.fenrir.util.Utils;
+
+import static dev.ragnarok.fenrir.domain.mappers.MapUtil.calculateConversationAcl;
+import static dev.ragnarok.fenrir.domain.mappers.MapUtil.mapAll;
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 
 public class Dto2Entity {

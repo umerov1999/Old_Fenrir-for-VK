@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter.base;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.content.Context;
 import android.os.Bundle;
 
@@ -25,6 +22,9 @@ import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public abstract class RxSupportPresenter<V extends IMvpView> extends AbsPresenter<V> {
 

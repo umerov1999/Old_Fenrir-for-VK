@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +17,8 @@ import dev.ragnarok.fenrir.api.model.VKApiCommunity;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.util.Objects;
+
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class CommunityInfoLinksAdapter extends RecyclerView.Adapter<CommunityInfoLinksAdapter.Holder> {
 
@@ -57,7 +57,7 @@ public class CommunityInfoLinksAdapter extends RecyclerView.Adapter<CommunityInf
             holder.icon.setVisibility(View.VISIBLE);
             PicassoInstance.with()
                     .load(photoUrl)
-                    .transform(CurrentTheme.createTransformationForAvatar(context))
+                    .transform(CurrentTheme.createTransformationForAvatar())
                     .into(holder.icon);
         } else {
             PicassoInstance.with()

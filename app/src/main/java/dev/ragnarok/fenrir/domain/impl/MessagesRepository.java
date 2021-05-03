@@ -1,17 +1,5 @@
 package dev.ragnarok.fenrir.domain.impl;
 
-import static dev.ragnarok.fenrir.longpoll.NotificationHelper.tryCancelNotificationForPeer;
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.RxUtils.ignore;
-import static dev.ragnarok.fenrir.util.RxUtils.safelyCloseAction;
-import static dev.ragnarok.fenrir.util.Utils.hasFlag;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
-import static dev.ragnarok.fenrir.util.Utils.safelyClose;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -137,6 +125,18 @@ import io.reactivex.rxjava3.core.SingleTransformer;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.processors.PublishProcessor;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+
+import static dev.ragnarok.fenrir.longpoll.NotificationHelper.tryCancelNotificationForPeer;
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.RxUtils.ignore;
+import static dev.ragnarok.fenrir.util.RxUtils.safelyCloseAction;
+import static dev.ragnarok.fenrir.util.Utils.hasFlag;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
+import static dev.ragnarok.fenrir.util.Utils.safelyClose;
 
 public class MessagesRepository implements IMessagesRepository {
 

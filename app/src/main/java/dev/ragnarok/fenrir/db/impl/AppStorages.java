@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.db.impl;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-
 import android.content.Context;
 import android.content.ContextWrapper;
 
@@ -30,6 +28,8 @@ import dev.ragnarok.fenrir.db.interfaces.ITopicsStore;
 import dev.ragnarok.fenrir.db.interfaces.IVideoAlbumsStorage;
 import dev.ragnarok.fenrir.db.interfaces.IVideoStorage;
 import dev.ragnarok.fenrir.db.interfaces.IWallStorage;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
 
 public class AppStorages extends ContextWrapper implements IStorages {
 

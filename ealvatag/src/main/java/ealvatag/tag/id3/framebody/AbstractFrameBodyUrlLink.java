@@ -18,8 +18,6 @@
  */
 package ealvatag.tag.id3.framebody;
 
-import static ealvatag.utils.Check.checkArgNotNull;
-
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -31,6 +29,8 @@ import ealvatag.tag.datatype.DataTypes;
 import ealvatag.tag.datatype.StringSizeTerminated;
 import ealvatag.utils.StandardCharsets;
 import okio.Buffer;
+
+import static ealvatag.utils.Check.checkArgNotNull;
 
 /**
  * Abstract super class of all URL Frames

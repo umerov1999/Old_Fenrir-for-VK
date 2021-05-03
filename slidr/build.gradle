@@ -35,5 +35,5 @@ dependencies {
     implementation 'androidx.fragment:fragment-ktx:1.3.3'
     implementation project(path: ':material')
     implementation 'androidx.preference:preference-ktx:1.1.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.0-beta01'
 }

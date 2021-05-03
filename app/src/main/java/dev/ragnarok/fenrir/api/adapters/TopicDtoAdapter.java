@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.api.adapters;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -12,6 +10,8 @@ import java.lang.reflect.Type;
 
 import dev.ragnarok.fenrir.api.model.CommentsDto;
 import dev.ragnarok.fenrir.api.model.VKApiTopic;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class TopicDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApiTopic> {
     private static final String TAG = TopicDtoAdapter.class.getSimpleName();

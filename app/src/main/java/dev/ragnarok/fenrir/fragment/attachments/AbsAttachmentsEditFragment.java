@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.fragment.attachments;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -62,6 +59,9 @@ import dev.ragnarok.fenrir.view.DateTimePicker;
 import dev.ragnarok.fenrir.view.WeakRunnable;
 import dev.ragnarok.fenrir.view.YoutubeButton;
 import me.minetsh.imaging.IMGEditActivity;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public abstract class AbsAttachmentsEditFragment<P extends AbsAttachmentsEditPresenter<V>, V extends IBaseAttachmentsEditView>
         extends BaseMvpFragment<P, V> implements IBaseAttachmentsEditView, AttchmentsEditorAdapter.Callback, BackPressCallback {

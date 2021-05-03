@@ -1,9 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.isLandscape;
-
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -71,6 +67,10 @@ import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.LoadMoreFooterHelper;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.isLandscape;
 
 public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPresenter<V>>
         extends PlaceSupportMvpFragment<P, V> implements IWallView, WallAdapter.ClickListener, WallAdapter.NonPublishedPostActionListener {
@@ -316,53 +316,48 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_refresh:
-                getPresenter().fireRefresh();
-                return true;
-            case R.id.action_edit:
-                getPresenter().fireEdit(requireActivity());
-                return true;
-            case R.id.action_copy_url:
-                getPresenter().fireCopyUrlClick();
-                return true;
-            case R.id.action_copy_id:
-                getPresenter().fireCopyIdClick();
-                return true;
-            case R.id.action_add_to_news:
-                getPresenter().fireAddToNewsClick();
-                return true;
-            case R.id.action_search:
-                getPresenter().fireSearchClick();
-                return true;
-            case R.id.wall_attachments:
-                getPresenter().openConversationAttachments();
-                return true;
-            case R.id.search_stories:
-                ModalBottomSheetDialogFragment.Builder menus = new ModalBottomSheetDialogFragment.Builder();
-                menus.add(new OptionRequest(R.id.button_ok, getString(R.string.by_name), R.drawable.pencil));
-                menus.add(new OptionRequest(R.id.button_cancel, getString(R.string.by_owner), R.drawable.person));
-                menus.show(requireActivity().getSupportFragmentManager(), "search_story_options", option -> {
-                    switch (option.getId()) {
-                        case R.id.button_ok:
-                            getPresenter().searchStory(true);
-                            break;
-                        case R.id.button_cancel:
-                            getPresenter().searchStory(false);
-                            break;
-                    }
-                });
-                return true;
-            case R.id.action_open_url:
-                ClipboardManager clipBoard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                if (clipBoard != null && clipBoard.getPrimaryClip() != null && clipBoard.getPrimaryClip().getItemCount() > 0) {
-                    String temp = clipBoard.getPrimaryClip().getItemAt(0).getText().toString();
-                    LinkHelper.openUrl(getActivity(), getPresenter().getAccountId(), temp);
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_refresh) {
+            getPresenter().fireRefresh();
+            return true;
+        } else if (item.getItemId() == R.id.action_edit) {
+            getPresenter().fireEdit(requireActivity());
+            return true;
+        } else if (item.getItemId() == R.id.action_copy_url) {
+            getPresenter().fireCopyUrlClick();
+            return true;
+        } else if (item.getItemId() == R.id.action_copy_id) {
+            getPresenter().fireCopyIdClick();
+            return true;
+        } else if (item.getItemId() == R.id.action_add_to_news) {
+            getPresenter().fireAddToNewsClick();
+            return true;
+        } else if (item.getItemId() == R.id.action_search) {
+            getPresenter().fireSearchClick();
+            return true;
+        } else if (item.getItemId() == R.id.wall_attachments) {
+            getPresenter().openConversationAttachments();
+            return true;
+        } else if (item.getItemId() == R.id.search_stories) {
+            ModalBottomSheetDialogFragment.Builder menus = new ModalBottomSheetDialogFragment.Builder();
+            menus.add(new OptionRequest(R.id.button_ok, getString(R.string.by_name), R.drawable.pencil));
+            menus.add(new OptionRequest(R.id.button_cancel, getString(R.string.by_owner), R.drawable.person));
+            menus.show(requireActivity().getSupportFragmentManager(), "search_story_options", option -> {
+                if (item.getItemId() == R.id.button_ok) {
+                    getPresenter().searchStory(true);
+                } else if (item.getItemId() == R.id.button_cancel) {
+                    getPresenter().searchStory(false);
                 }
-                return true;
+            });
+            return true;
+        } else if (item.getItemId() == R.id.action_open_url) {
+            ClipboardManager clipBoard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+            if (clipBoard != null && clipBoard.getPrimaryClip() != null && clipBoard.getPrimaryClip().getItemCount() > 0) {
+                String temp = clipBoard.getPrimaryClip().getItemAt(0).getText().toString();
+                LinkHelper.openUrl(getActivity(), getPresenter().getAccountId(), temp);
+            }
+            return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

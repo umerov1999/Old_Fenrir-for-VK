@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +31,8 @@ import dev.ragnarok.fenrir.model.VoiceMessage;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.FwdsPresenter;
 import dev.ragnarok.fenrir.mvp.view.IFwdsView;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class FwdsFragment extends PlaceSupportMvpFragment<FwdsPresenter, IFwdsView>
         implements MessagesAdapter.OnMessageActionListener, IFwdsView, AttachmentsViewBinder.VoiceActionListener {
@@ -89,12 +89,12 @@ public class FwdsFragment extends PlaceSupportMvpFragment<FwdsPresenter, IFwdsVi
     }
 
     @Override
-    public void onAvatarClick(@NonNull Message message, int userId) {
+    public void onAvatarClick(@NonNull Message message, int userId, int position) {
         onOpenOwner(userId);
     }
 
     @Override
-    public void onLongAvatarClick(@NonNull Message message, int userId) {
+    public void onLongAvatarClick(@NonNull Message message, int userId, int position) {
         onOpenOwner(userId);
     }
 
@@ -109,13 +109,13 @@ public class FwdsFragment extends PlaceSupportMvpFragment<FwdsPresenter, IFwdsVi
     }
 
     @Override
-    public boolean onMessageLongClick(@NonNull Message message) {
+    public boolean onMessageLongClick(@NonNull Message message, int position) {
         // not supported
         return false;
     }
 
     @Override
-    public void onMessageClicked(@NonNull Message message) {
+    public void onMessageClicked(@NonNull Message message, int position) {
         // not supported
     }
 
@@ -177,6 +177,13 @@ public class FwdsFragment extends PlaceSupportMvpFragment<FwdsPresenter, IFwdsVi
     @Override
     public void finishActionMode() {
         // not supported
+    }
+
+    @Override
+    public void notifyItemChanged(int index) {
+        if (nonNull(mAdapter)) {
+            mAdapter.notifyItemBindableChanged(index);
+        }
     }
 
     @NonNull

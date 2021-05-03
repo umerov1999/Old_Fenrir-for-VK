@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import static dev.ragnarok.fenrir.util.AppTextUtils.getDateFromUnixTime;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ShapeDrawable;
@@ -51,6 +48,9 @@ import dev.ragnarok.fenrir.view.emoji.BotKeyboardView;
 import dev.ragnarok.fenrir.view.emoji.EmojiconTextView;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 
+import static dev.ragnarok.fenrir.util.AppTextUtils.getDateFromUnixTime;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerView.ViewHolder> {
 
     private static final int TYPE_MY_MESSAGE = 1;
@@ -94,7 +94,7 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
         this.lastReadId = lastReadId;
         attachmentsActionCallback = callback;
         attachmentsViewBinder = new AttachmentsViewBinder(context, callback);
-        avatarTransformation = CurrentTheme.createTransformationForAvatar(context);
+        avatarTransformation = CurrentTheme.createTransformationForAvatar();
         selectedDrawable = new ShapeDrawable(new OvalShape());
         selectedDrawable.getPaint().setColor(CurrentTheme.getColorPrimary(context));
         unreadColor = CurrentTheme.getMessageUnreadColor(context);
@@ -107,27 +107,27 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
         Message message = getItem(position);
         switch (type) {
             case TYPE_SERVICE:
-                bindServiceHolder((ServiceMessageHolder) viewHolder, message);
+                bindServiceHolder((ServiceMessageHolder) viewHolder, message, position);
                 break;
             case TYPE_GRAFFITY_FRIEND:
             case TYPE_GRAFFITY_MY:
             case TYPE_MY_MESSAGE:
             case TYPE_FRIEND_MESSAGE:
-                bindNormalMessage((MessageHolder) viewHolder, message);
+                bindNormalMessage((MessageHolder) viewHolder, message, position);
                 break;
             case TYPE_STICKER_FRIEND:
             case TYPE_STICKER_MY:
-                bindStickerHolder((StickerMessageHolder) viewHolder, message);
+                bindStickerHolder((StickerMessageHolder) viewHolder, message, position);
                 break;
             case TYPE_GIFT_FRIEND:
             case TYPE_GIFT_MY:
-                bindGiftHolder((GiftMessageHolder) viewHolder, message);
+                bindGiftHolder((GiftMessageHolder) viewHolder, message, position);
                 break;
         }
     }
 
-    private void bindStickerHolder(StickerMessageHolder holder, Message message) {
-        bindBaseMessageHolder(holder, message);
+    private void bindStickerHolder(StickerMessageHolder holder, Message message, int position) {
+        bindBaseMessageHolder(holder, message, position);
 
         if (message.isDeleted()) {
             holder.root.setAlpha(0.6f);
@@ -178,8 +178,8 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
         setItems(messages);
     }
 
-    private void bindGiftHolder(GiftMessageHolder holder, Message message) {
-        bindBaseMessageHolder(holder, message);
+    private void bindGiftHolder(GiftMessageHolder holder, Message message, int position) {
+        bindBaseMessageHolder(holder, message, position);
 
         if (message.isDeleted()) {
             holder.root.setAlpha(0.6f);
@@ -240,7 +240,7 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
         root.getBackground().setAlpha(60);
     }
 
-    private void bindBaseMessageHolder(BaseMessageHolder holder, Message message) {
+    private void bindBaseMessageHolder(BaseMessageHolder holder, Message message, int position) {
         holder.important.setVisibility(message.isImportant() ? View.VISIBLE : View.GONE);
 
         bindStatusText(holder.status, message.getStatus(), message.getDate(), message.getUpdateTime());
@@ -267,29 +267,29 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
 
         holder.avatar.setOnClickListener(v -> {
             if (nonNull(onMessageActionListener)) {
-                onMessageActionListener.onAvatarClick(message, message.getSenderId());
+                onMessageActionListener.onAvatarClick(message, message.getSenderId(), position);
             }
         });
 
         holder.avatar.setOnLongClickListener(v -> {
             if (nonNull(onMessageActionListener)) {
-                onMessageActionListener.onLongAvatarClick(message, message.getSenderId());
+                onMessageActionListener.onLongAvatarClick(message, message.getSenderId(), position);
             }
             return true;
         });
 
         holder.itemView.setOnClickListener(v -> {
             if (nonNull(onMessageActionListener)) {
-                onMessageActionListener.onMessageClicked(message);
+                onMessageActionListener.onMessageClicked(message, position);
             }
         });
 
         holder.itemView.setOnLongClickListener(v -> nonNull(onMessageActionListener)
-                && onMessageActionListener.onMessageLongClick(message));
+                && onMessageActionListener.onMessageLongClick(message, position));
     }
 
-    private void bindNormalMessage(MessageHolder holder, Message message) {
-        bindBaseMessageHolder(holder, message);
+    private void bindNormalMessage(MessageHolder holder, Message message, int position) {
+        bindBaseMessageHolder(holder, message, position);
 
         if (nonNull(holder.botKeyboardView)) {
             if (nonNull(message.getKeyboard()) && message.getKeyboard().getInline() && message.getKeyboard().getButtons().size() > 0) {
@@ -370,7 +370,7 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
         }
     }
 
-    private void bindServiceHolder(ServiceMessageHolder holder, Message message) {
+    private void bindServiceHolder(ServiceMessageHolder holder, Message message, int position) {
         if (message.isDeleted()) {
             holder.root.setAlpha(0.6f);
             holder.Restore.setVisibility(View.VISIBLE);
@@ -406,7 +406,7 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
         holder.tvAction.setText(message.getServiceText(context));
         holder.itemView.setOnClickListener(v -> {
             if (nonNull(onMessageActionListener)) {
-                onMessageActionListener.onMessageClicked(message);
+                onMessageActionListener.onMessageClicked(message, position);
             }
         });
         holder.itemView.setOnLongClickListener(v -> {
@@ -514,17 +514,17 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
     }
 
     public interface OnMessageActionListener {
-        void onAvatarClick(@NonNull Message message, int userId);
+        void onAvatarClick(@NonNull Message message, int userId, int position);
 
-        void onLongAvatarClick(@NonNull Message message, int userId);
+        void onLongAvatarClick(@NonNull Message message, int userId, int position);
 
         void onRestoreClick(@NonNull Message message, int position);
 
         void onBotKeyboardClick(@NonNull Keyboard.Button button);
 
-        boolean onMessageLongClick(@NonNull Message message);
+        boolean onMessageLongClick(@NonNull Message message, int position);
 
-        void onMessageClicked(@NonNull Message message);
+        void onMessageClicked(@NonNull Message message, int position);
 
         void onMessageDelete(@NonNull Message message);
     }

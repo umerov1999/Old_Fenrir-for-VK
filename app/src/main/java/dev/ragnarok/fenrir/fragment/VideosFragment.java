@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.ClipData;
@@ -64,6 +61,9 @@ import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.MySearchView;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideosListView>
         implements IVideosListView, DocsUploadAdapter.ActionListener, VideosAdapter.VideoOnClickListener {

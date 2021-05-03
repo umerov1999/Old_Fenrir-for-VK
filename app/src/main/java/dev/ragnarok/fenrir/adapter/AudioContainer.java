@@ -1,10 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import static dev.ragnarok.fenrir.player.util.MusicUtils.observeServiceBinding;
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
-
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -66,6 +61,11 @@ import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleOnSubscribe;
 import io.reactivex.rxjava3.disposables.Disposable;
 
+import static dev.ragnarok.fenrir.player.util.MusicUtils.observeServiceBinding;
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
+
 public class AudioContainer extends LinearLayout {
     private final Context mContext;
     private final IAudioInteractor mAudioInteractor = InteractorFactory.createAudioInteractor();
@@ -123,9 +123,7 @@ public class AudioContainer extends LinearLayout {
     }
 
     private void deleteTrack(int accountId, Audio audio) {
-        audioListDisposable = mAudioInteractor.delete(accountId, audio.getId(), audio.getOwnerId()).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() -> {
-            CustomToast.CreateCustomToast(mContext).showToast(R.string.deleted);
-        }, t -> Utils.showErrorInAdapter((Activity) mContext, t));
+        audioListDisposable = mAudioInteractor.delete(accountId, audio.getId(), audio.getOwnerId()).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() -> CustomToast.CreateCustomToast(mContext).showToast(R.string.deleted), t -> Utils.showErrorInAdapter((Activity) mContext, t));
     }
 
     private void addTrack(int accountId, Audio audio) {

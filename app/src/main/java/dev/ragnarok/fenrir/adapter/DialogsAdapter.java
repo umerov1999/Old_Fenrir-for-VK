@@ -72,7 +72,7 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public DialogsAdapter(Context context, @NonNull List<Dialog> dialogs) {
         mContext = context;
         mDialogs = dialogs;
-        mTransformation = CurrentTheme.createTransformationForAvatar(context);
+        mTransformation = CurrentTheme.createTransformationForAvatar();
         mForegroundColorSpan = new ForegroundColorSpan(CurrentTheme.getPrimaryTextColorCode(context));
         mDataObserver = new RecyclerView.AdapterDataObserver() {
             @Override

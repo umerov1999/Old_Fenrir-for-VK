@@ -15,15 +15,15 @@
  */
 package com.squareup.picasso;
 
-import static android.content.ContentResolver.SCHEME_ANDROID_RESOURCE;
-import static com.squareup.picasso.Picasso.LoadedFrom.DISK;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import java.io.IOException;
+
+import static android.content.ContentResolver.SCHEME_ANDROID_RESOURCE;
+import static com.squareup.picasso.Picasso.LoadedFrom.DISK;
 
 class ResourceRequestHandler extends RequestHandler {
     private final Context context;

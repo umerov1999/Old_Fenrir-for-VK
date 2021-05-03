@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.settings;
 
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -17,6 +15,8 @@ import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Optional;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.PublishSubject;
+
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class ProxySettingsImpl implements IProxySettings {
 

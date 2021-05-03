@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.os.Bundle;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
@@ -43,6 +41,8 @@ import dev.ragnarok.fenrir.mvp.presenter.ImportantMessagesPresenter;
 import dev.ragnarok.fenrir.mvp.view.IImportantMessagesView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.util.ViewUtils;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class ImportantMessagesFragment extends PlaceSupportMvpFragment<ImportantMessagesPresenter, IImportantMessagesView>
         implements MessagesAdapter.OnMessageActionListener, IImportantMessagesView, AttachmentsViewBinder.VoiceActionListener {
@@ -126,12 +126,19 @@ public class ImportantMessagesFragment extends PlaceSupportMvpFragment<Important
     }
 
     @Override
-    public void onAvatarClick(@NonNull Message message, int userId) {
+    public void notifyItemChanged(int index) {
+        if (nonNull(mAdapter)) {
+            mAdapter.notifyItemBindableChanged(index);
+        }
+    }
+
+    @Override
+    public void onAvatarClick(@NonNull Message message, int userId, int position) {
         onOpenOwner(userId);
     }
 
     @Override
-    public void onLongAvatarClick(@NonNull Message message, int userId) {
+    public void onLongAvatarClick(@NonNull Message message, int userId, int position) {
         onOpenOwner(userId);
     }
 
@@ -149,13 +156,13 @@ public class ImportantMessagesFragment extends PlaceSupportMvpFragment<Important
     }
 
     @Override
-    public boolean onMessageLongClick(@NonNull Message message) {
+    public boolean onMessageLongClick(@NonNull Message message, int position) {
         getPresenter().fireForwardClick();
         return true;
     }
 
     @Override
-    public void onMessageClicked(@NonNull Message message) {
+    public void onMessageClicked(@NonNull Message message, int position) {
         getPresenter().fireMessagesLookup(message);
     }
 

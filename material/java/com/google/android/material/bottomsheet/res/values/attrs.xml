@@ -20,6 +20,8 @@
   <attr name="bottomSheetDialogTheme" format="reference"/>
   <!-- Style to use for modal bottom sheets in this theme. -->
   <attr name="bottomSheetStyle" format="reference"/>
+  <!-- Determines if the BottomSheetDialog should be shown in edge to edge mode. -->
+  <attr name="enableEdgeToEdge" format="boolean" />
 
   <declare-styleable name="BottomSheetBehavior_Layout">
     <!-- The height of the bottom sheet when it is collapsed. -->
@@ -75,6 +77,10 @@
     <!-- Sets whether this bottom sheet should adjust it's position based on the system gesture area
     on Android Q and above. Value is false (insets respected) by default. -->
     <attr name="gestureInsetBottomIgnored" format="boolean"/>
+    <attr name="paddingBottomSystemWindowInsets" />
+    <attr name="paddingLeftSystemWindowInsets" />
+    <attr name="paddingRightSystemWindowInsets" />
+    <attr name="paddingTopSystemWindowInsets" />
     <attr name="android:elevation"/>
 
   </declare-styleable>

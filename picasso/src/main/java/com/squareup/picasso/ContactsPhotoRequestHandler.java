@@ -15,10 +15,6 @@
  */
 package com.squareup.picasso;
 
-import static android.content.ContentResolver.SCHEME_CONTENT;
-import static android.provider.ContactsContract.Contacts.openContactPhotoInputStream;
-import static com.squareup.picasso.Picasso.LoadedFrom.DISK;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.UriMatcher;
@@ -29,6 +25,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import okio.Okio;
+
+import static android.content.ContentResolver.SCHEME_CONTENT;
+import static android.provider.ContactsContract.Contacts.openContactPhotoInputStream;
+import static com.squareup.picasso.Picasso.LoadedFrom.DISK;
 
 class ContactsPhotoRequestHandler extends RequestHandler {
     /**

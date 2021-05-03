@@ -1,11 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -75,6 +69,12 @@ import dev.ragnarok.fenrir.util.DownloadWorkUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.CircleCounterButton;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter, IVideoPreviewView> implements View.OnClickListener, View.OnLongClickListener, IVideoPreviewView {
 
@@ -153,7 +153,7 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_add_to_my_videos) {
             getPresenter().fireAddToMyClick();
             return true;
@@ -197,7 +197,7 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
         mOwnerGroup = mRootView.findViewById(R.id.item_owner);
         mOwnerGroup.setOnClickListener(v -> getPresenter().fireOpenOwnerClicked());
 
-        mTransformation = CurrentTheme.createTransformationForAvatar(requireActivity());
+        mTransformation = CurrentTheme.createTransformationForAvatar();
 
         if (Settings.get().other().isDo_auto_play_video()) {
             mRootView.findViewById(R.id.cover_cardview).setOnClickListener(v -> getPresenter().fireAutoPlayClick());
@@ -777,18 +777,12 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.like_button:
-                getPresenter().fireLikeClick();
-                break;
-
-            case R.id.comments_button:
-                getPresenter().fireCommentsClick();
-                break;
-
-            case R.id.share_button:
-                getPresenter().fireShareClick();
-                break;
+        if (v.getId() == R.id.like_button) {
+            getPresenter().fireLikeClick();
+        } else if (v.getId() == R.id.comments_button) {
+            getPresenter().fireCommentsClick();
+        } else if (v.getId() == R.id.share_button) {
+            getPresenter().fireShareClick();
         }
     }
 

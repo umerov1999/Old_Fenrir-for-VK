@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +16,8 @@ import dev.ragnarok.fenrir.mvp.presenter.base.PlaceSupportPresenter;
 import dev.ragnarok.fenrir.mvp.view.INewsfeedCommentsView;
 import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.RxUtils;
+
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 
 public class NewsfeedMentionsPresenter extends PlaceSupportPresenter<INewsfeedCommentsView> {
 

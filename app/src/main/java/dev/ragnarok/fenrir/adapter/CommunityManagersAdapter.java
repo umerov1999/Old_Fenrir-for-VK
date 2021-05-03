@@ -43,7 +43,7 @@ public class CommunityManagersAdapter extends RecyclerView.Adapter<CommunityMana
 
     public CommunityManagersAdapter(Context context, List<Manager> users) {
         this.users = users;
-        transformation = CurrentTheme.createTransformationForAvatar(context);
+        transformation = CurrentTheme.createTransformationForAvatar();
     }
 
     @NonNull

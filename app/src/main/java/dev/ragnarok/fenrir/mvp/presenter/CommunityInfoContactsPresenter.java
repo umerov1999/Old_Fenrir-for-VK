@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -28,6 +25,9 @@ import dev.ragnarok.fenrir.mvp.view.ICommunityInfoContactsView;
 import dev.ragnarok.fenrir.util.Analytics;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
 
 
 public class CommunityInfoContactsPresenter extends AccountDependencyPresenter<ICommunityInfoContactsView> {

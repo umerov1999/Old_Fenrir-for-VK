@@ -1,9 +1,5 @@
 package dev.ragnarok.fenrir.api.impl;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,6 +23,10 @@ import dev.ragnarok.fenrir.api.services.IGroupsService;
 import dev.ragnarok.fenrir.exception.NotFoundException;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 
 class GroupsApi extends AbsApi implements IGroupsApi {

@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -34,6 +31,9 @@ import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.OnlineView;
 import dev.ragnarok.fenrir.view.WeakViewAnimatorAdapter;
 
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 public class ChatMembersListDomainAdapter extends RecyclerView.Adapter<ChatMembersListDomainAdapter.ViewHolder> {
 
     private final Transformation transformation;
@@ -43,7 +43,7 @@ public class ChatMembersListDomainAdapter extends RecyclerView.Adapter<ChatMembe
 
     public ChatMembersListDomainAdapter(Context context, List<AppChatUser> users) {
         data = users;
-        transformation = CurrentTheme.createTransformationForAvatar(context);
+        transformation = CurrentTheme.createTransformationForAvatar();
         paddingForFirstLast = Utils.is600dp(context) ? (int) Utils.dpToPx(16, context) : 0;
     }
 

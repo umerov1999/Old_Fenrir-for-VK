@@ -1,5 +1,23 @@
 package dev.ragnarok.fenrir.api.adapters;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+
+import java.lang.reflect.Type;
+import java.util.Locale;
+import java.util.Objects;
+
+import dev.ragnarok.fenrir.api.model.VKApiAudio;
+import dev.ragnarok.fenrir.api.model.VKApiCity;
+import dev.ragnarok.fenrir.api.model.VKApiCommunity;
+import dev.ragnarok.fenrir.api.model.VKApiCountry;
+import dev.ragnarok.fenrir.api.model.VKApiPlace;
+import dev.ragnarok.fenrir.api.model.VkApiCover;
+import dev.ragnarok.fenrir.api.util.VKStringUtils;
+
 import static dev.ragnarok.fenrir.api.model.VKApiCommunity.ACTIVITY;
 import static dev.ragnarok.fenrir.api.model.VKApiCommunity.BAN_INFO;
 import static dev.ragnarok.fenrir.api.model.VKApiCommunity.CAN_CTARE_TOPIC;
@@ -30,23 +48,6 @@ import static dev.ragnarok.fenrir.api.model.VKApiCommunity.TYPE_GROUP;
 import static dev.ragnarok.fenrir.api.model.VKApiCommunity.TYPE_PAGE;
 import static dev.ragnarok.fenrir.api.model.VKApiCommunity.VERIFIED;
 import static dev.ragnarok.fenrir.api.model.VKApiCommunity.WIKI_PAGE;
-
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-
-import java.lang.reflect.Type;
-import java.util.Locale;
-
-import dev.ragnarok.fenrir.api.model.VKApiAudio;
-import dev.ragnarok.fenrir.api.model.VKApiCity;
-import dev.ragnarok.fenrir.api.model.VKApiCommunity;
-import dev.ragnarok.fenrir.api.model.VKApiCountry;
-import dev.ragnarok.fenrir.api.model.VKApiPlace;
-import dev.ragnarok.fenrir.api.model.VkApiCover;
-import dev.ragnarok.fenrir.api.util.VKStringUtils;
 
 public class CommunityDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApiCommunity> {
     private static final String TAG = CommunityDtoAdapter.class.getSimpleName();
@@ -111,6 +112,9 @@ public class CommunityDtoAdapter extends AbsAdapter implements JsonDeserializer<
             dto.counters = context.deserialize(counters, VKApiCommunity.Counters.class);
         }
         if (hasObject(root, "chats_status")) {
+            if (Objects.isNull(dto.counters)) {
+                dto.counters = new VKApiCommunity.Counters();
+            }
             dto.counters.chats = optInt(root.getAsJsonObject("chats_status"), "count", VKApiCommunity.Counters.NO_COUNTER);
         }
 

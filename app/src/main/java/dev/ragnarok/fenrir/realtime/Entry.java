@@ -1,9 +1,9 @@
 package dev.ragnarok.fenrir.realtime;
 
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
-
 import dev.ragnarok.fenrir.api.model.longpoll.AddMessageUpdate;
 import dev.ragnarok.fenrir.longpoll.FullAndNonFullUpdates;
+
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 public final class Entry {
 

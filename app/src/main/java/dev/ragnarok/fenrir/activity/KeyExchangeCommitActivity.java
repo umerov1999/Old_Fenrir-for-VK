@@ -53,7 +53,7 @@ public class KeyExchangeCommitActivity extends AppCompatActivity {
         ExchangeMessage message = getIntent().getParcelableExtra(Extra.MESSAGE);
 
         ImageView avatar = findViewById(R.id.avatar);
-        ViewUtils.displayAvatar(avatar, CurrentTheme.createTransformationForAvatar(this), user.getMaxSquareAvatar(), null);
+        ViewUtils.displayAvatar(avatar, CurrentTheme.createTransformationForAvatar(), user.getMaxSquareAvatar(), null);
 
         TextView userName = findViewById(R.id.user_name);
         userName.setText(user.getFullName());

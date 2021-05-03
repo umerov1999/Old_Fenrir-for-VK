@@ -1,9 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -62,6 +58,10 @@ import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWallPresenter> implements IGroupWallView {
 
     private final ActivityResultLauncher<Intent> requestCommunity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -117,7 +117,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
         String photoUrl = community.getMaxSquareAvatar();
         if (nonEmpty(photoUrl)) {
             PicassoInstance.with()
-                    .load(photoUrl).transform(CurrentTheme.createTransformationForAvatar(requireActivity()))
+                    .load(photoUrl).transform(CurrentTheme.createTransformationForAvatar())
                     .tag(Constants.PICASSO_TAG)
                     .into(mHeaderHolder.ivAvatar);
         }
@@ -254,7 +254,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_community_control) {
             getPresenter().fireCommunityControlClick();
             return true;

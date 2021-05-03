@@ -155,7 +155,7 @@ public class InputViewController {
     }
 
     public boolean updateBotKeyboard(Keyboard currentKeyboard, boolean show) {
-        boolean ret = false;
+        boolean ret;
         if (Objects.isNull(currentKeyboard) || currentKeyboard.getButtons().size() <= 0) {
             botKeyboard.setVisibility(View.GONE);
             ret = botKeyboard.setButtons(null, false);

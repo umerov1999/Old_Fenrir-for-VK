@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import static dev.ragnarok.fenrir.util.Utils.safeLenghtOf;
-
 import android.view.View;
 import android.widget.TextView;
 
@@ -15,6 +13,8 @@ import dev.ragnarok.fenrir.adapter.base.RecyclerBindableAdapter;
 import dev.ragnarok.fenrir.model.LogEvent;
 import dev.ragnarok.fenrir.model.LogEventWrapper;
 import dev.ragnarok.fenrir.util.AppTextUtils;
+
+import static dev.ragnarok.fenrir.util.Utils.safeLenghtOf;
 
 public class LogsAdapter extends RecyclerBindableAdapter<LogEventWrapper, LogsAdapter.Holder> {
 

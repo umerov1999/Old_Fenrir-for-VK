@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.View;
@@ -21,6 +19,8 @@ import dev.ragnarok.fenrir.model.Document;
 import dev.ragnarok.fenrir.model.PhotoSize;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.util.AppTextUtils;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class DocsAdapter extends RecyclerBindableAdapter<Document, DocsAdapter.DocViewHolder> {
 

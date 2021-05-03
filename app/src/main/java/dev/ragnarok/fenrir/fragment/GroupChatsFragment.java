@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +32,8 @@ import dev.ragnarok.fenrir.mvp.view.IGroupChatsView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.LoadMoreFooterHelper;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class GroupChatsFragment extends BaseMvpFragment<GroupChatsPresenter, IGroupChatsView>
         implements SwipeRefreshLayout.OnRefreshListener, IGroupChatsView, GroupChatsAdapter.ActionListener {

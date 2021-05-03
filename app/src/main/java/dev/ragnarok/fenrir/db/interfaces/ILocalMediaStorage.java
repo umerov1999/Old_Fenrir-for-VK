@@ -3,8 +3,6 @@ package dev.ragnarok.fenrir.db.interfaces;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
-import androidx.annotation.NonNull;
-
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -25,12 +23,13 @@ public interface ILocalMediaStorage extends IStorage {
 
     Single<List<LocalImageAlbum>> getImageAlbums();
 
+    Single<List<LocalImageAlbum>> getAudioAlbums();
+
     Single<List<LocalVideo>> getVideos();
 
     Single<List<Audio>> getAudios(int accountId);
 
-    @Nullable
-    Bitmap getMetadataAudioThumbnail(@NonNull Uri uri, int x, int y);
+    Single<List<Audio>> getAudios(int accountId, long albumId);
 
     @Nullable
     Bitmap getOldThumbnail(@Content_Local int type, long content_Id);

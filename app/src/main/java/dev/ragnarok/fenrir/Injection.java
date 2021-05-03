@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-
 import android.content.Context;
 
 import dev.ragnarok.fenrir.api.CaptchaProvider;
@@ -33,6 +31,8 @@ import dev.ragnarok.fenrir.upload.UploadManagerImpl;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Scheduler;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
 
 public class Injection {
 

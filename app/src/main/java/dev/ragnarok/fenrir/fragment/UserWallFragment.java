@@ -1,9 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -77,6 +73,10 @@ import dev.ragnarok.fenrir.view.OnlineView;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 import me.minetsh.imaging.IMGEditActivity;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPresenter>
         implements IUserWallView {
 
@@ -143,7 +143,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
         if (nonEmpty(photoUrl)) {
             PicassoInstance.with()
                     .load(photoUrl)
-                    .transform(CurrentTheme.createTransformationForAvatar(requireActivity()))
+                    .transform(CurrentTheme.createTransformationForAvatar())
                     .into(mHeaderHolder.ivAvatar);
 
             if (Settings.get().other().isShow_wall_cover()) {

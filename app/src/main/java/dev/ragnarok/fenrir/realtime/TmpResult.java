@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.realtime;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -12,6 +10,8 @@ import java.util.List;
 import dev.ragnarok.fenrir.api.model.Identificable;
 import dev.ragnarok.fenrir.api.model.VKApiMessage;
 import dev.ragnarok.fenrir.model.Message;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class TmpResult {
 

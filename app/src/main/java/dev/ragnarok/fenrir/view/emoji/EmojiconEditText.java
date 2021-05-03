@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.view.emoji;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
@@ -25,7 +26,7 @@ public class EmojiconEditText extends TextInputEditText {
     private void init(AttributeSet attrs) {
         mEmojiconSize = (int) getTextSize();
 
-        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.Emojicon);
+        @SuppressLint("CustomViewStyleable") TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.Emojicon);
         mEmojiconSize = (int) a.getDimension(R.styleable.Emojicon_emojiconSize, getTextSize());
         a.recycle();
         setText(getText());

@@ -15,26 +15,6 @@
  */
 package com.squareup.picasso;
 
-import static android.content.Context.CONNECTIVITY_SERVICE;
-import static android.content.Intent.ACTION_AIRPLANE_MODE_CHANGED;
-import static android.net.ConnectivityManager.CONNECTIVITY_ACTION;
-import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
-import static com.squareup.picasso.BitmapHunter.forRequest;
-import static com.squareup.picasso.MemoryPolicy.shouldWriteToMemoryCache;
-import static com.squareup.picasso.Utils.OWNER_DISPATCHER;
-import static com.squareup.picasso.Utils.VERB_BATCHED;
-import static com.squareup.picasso.Utils.VERB_CANCELED;
-import static com.squareup.picasso.Utils.VERB_DELIVERED;
-import static com.squareup.picasso.Utils.VERB_ENQUEUED;
-import static com.squareup.picasso.Utils.VERB_IGNORED;
-import static com.squareup.picasso.Utils.VERB_PAUSED;
-import static com.squareup.picasso.Utils.VERB_REPLAYING;
-import static com.squareup.picasso.Utils.VERB_RETRYING;
-import static com.squareup.picasso.Utils.getLogIdsForHunter;
-import static com.squareup.picasso.Utils.getService;
-import static com.squareup.picasso.Utils.hasPermission;
-import static com.squareup.picasso.Utils.log;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
@@ -57,6 +37,26 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ExecutorService;
+
+import static android.content.Context.CONNECTIVITY_SERVICE;
+import static android.content.Intent.ACTION_AIRPLANE_MODE_CHANGED;
+import static android.net.ConnectivityManager.CONNECTIVITY_ACTION;
+import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
+import static com.squareup.picasso.BitmapHunter.forRequest;
+import static com.squareup.picasso.MemoryPolicy.shouldWriteToMemoryCache;
+import static com.squareup.picasso.Utils.OWNER_DISPATCHER;
+import static com.squareup.picasso.Utils.VERB_BATCHED;
+import static com.squareup.picasso.Utils.VERB_CANCELED;
+import static com.squareup.picasso.Utils.VERB_DELIVERED;
+import static com.squareup.picasso.Utils.VERB_ENQUEUED;
+import static com.squareup.picasso.Utils.VERB_IGNORED;
+import static com.squareup.picasso.Utils.VERB_PAUSED;
+import static com.squareup.picasso.Utils.VERB_REPLAYING;
+import static com.squareup.picasso.Utils.VERB_RETRYING;
+import static com.squareup.picasso.Utils.getLogIdsForHunter;
+import static com.squareup.picasso.Utils.getService;
+import static com.squareup.picasso.Utils.hasPermission;
+import static com.squareup.picasso.Utils.log;
 
 class Dispatcher {
     static final int REQUEST_SUBMIT = 1;

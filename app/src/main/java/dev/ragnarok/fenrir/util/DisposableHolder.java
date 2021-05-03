@@ -1,8 +1,8 @@
 package dev.ragnarok.fenrir.util;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import io.reactivex.rxjava3.disposables.Disposable;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 
 public class DisposableHolder<T> {

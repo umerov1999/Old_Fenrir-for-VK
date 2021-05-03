@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.domain.impl;
 
-import static dev.ragnarok.fenrir.util.Utils.join;
-import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,6 +28,9 @@ import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.Utils.join;
+import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
 
 public class VideosInteractor implements IVideosInteractor {
 

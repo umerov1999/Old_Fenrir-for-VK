@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.activity;
 
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,6 +30,8 @@ import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
 
 public class PostPublishPrepareActivity extends AppCompatActivity implements RecyclerMenuAdapter.ActionListener {
 

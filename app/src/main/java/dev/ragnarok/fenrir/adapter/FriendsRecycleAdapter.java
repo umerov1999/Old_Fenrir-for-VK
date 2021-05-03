@@ -37,7 +37,7 @@ public class FriendsRecycleAdapter extends RecyclerView.Adapter<FriendsRecycleAd
     public FriendsRecycleAdapter(List<UsersPart> data, Context context) {
         this.data = data;
         this.context = context;
-        transformation = CurrentTheme.createTransformationForAvatar(context);
+        transformation = CurrentTheme.createTransformationForAvatar();
     }
 
     @NonNull

@@ -30,7 +30,6 @@ public class SelectChairsDialog extends AccountDependencyDialogFragment implemen
     private int mAccountId;
     private int facultyId;
     private ArrayList<Chair> mData;
-    private RecyclerView mRecyclerView;
     private ChairsAdapter mAdapter;
     private IDatabaseInteractor mDatabaseInteractor;
 
@@ -56,7 +55,7 @@ public class SelectChairsDialog extends AccountDependencyDialogFragment implemen
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View root = View.inflate(requireActivity(), R.layout.dialog_simple_recycler_view, null);
-        mRecyclerView = root.findViewById(R.id.list);
+        RecyclerView mRecyclerView = root.findViewById(R.id.list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false));
 
         boolean firstRun = false;

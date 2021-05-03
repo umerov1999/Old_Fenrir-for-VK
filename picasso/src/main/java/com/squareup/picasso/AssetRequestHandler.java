@@ -15,9 +15,6 @@
  */
 package com.squareup.picasso;
 
-import static android.content.ContentResolver.SCHEME_FILE;
-import static com.squareup.picasso.Picasso.LoadedFrom.DISK;
-
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.net.Uri;
@@ -26,6 +23,9 @@ import java.io.IOException;
 
 import okio.Okio;
 import okio.Source;
+
+import static android.content.ContentResolver.SCHEME_FILE;
+import static com.squareup.picasso.Picasso.LoadedFrom.DISK;
 
 class AssetRequestHandler extends RequestHandler {
     protected static final String ANDROID_ASSET = "android_asset";

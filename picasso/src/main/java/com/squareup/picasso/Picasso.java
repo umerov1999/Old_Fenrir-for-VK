@@ -15,23 +15,6 @@
  */
 package com.squareup.picasso;
 
-import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
-import static com.squareup.picasso.Action.RequestWeakReference;
-import static com.squareup.picasso.Dispatcher.HUNTER_BATCH_COMPLETE;
-import static com.squareup.picasso.Dispatcher.REQUEST_BATCH_RESUME;
-import static com.squareup.picasso.Dispatcher.REQUEST_GCED;
-import static com.squareup.picasso.MemoryPolicy.shouldReadFromMemoryCache;
-import static com.squareup.picasso.Picasso.LoadedFrom.MEMORY;
-import static com.squareup.picasso.Utils.OWNER_MAIN;
-import static com.squareup.picasso.Utils.THREAD_LEAK_CLEANING_MS;
-import static com.squareup.picasso.Utils.THREAD_PREFIX;
-import static com.squareup.picasso.Utils.VERB_CANCELED;
-import static com.squareup.picasso.Utils.VERB_COMPLETED;
-import static com.squareup.picasso.Utils.VERB_ERRORED;
-import static com.squareup.picasso.Utils.VERB_RESUMED;
-import static com.squareup.picasso.Utils.checkMain;
-import static com.squareup.picasso.Utils.log;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -57,6 +40,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ExecutorService;
+
+import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
+import static com.squareup.picasso.Action.RequestWeakReference;
+import static com.squareup.picasso.Dispatcher.HUNTER_BATCH_COMPLETE;
+import static com.squareup.picasso.Dispatcher.REQUEST_BATCH_RESUME;
+import static com.squareup.picasso.Dispatcher.REQUEST_GCED;
+import static com.squareup.picasso.MemoryPolicy.shouldReadFromMemoryCache;
+import static com.squareup.picasso.Picasso.LoadedFrom.MEMORY;
+import static com.squareup.picasso.Utils.OWNER_MAIN;
+import static com.squareup.picasso.Utils.THREAD_LEAK_CLEANING_MS;
+import static com.squareup.picasso.Utils.THREAD_PREFIX;
+import static com.squareup.picasso.Utils.VERB_CANCELED;
+import static com.squareup.picasso.Utils.VERB_COMPLETED;
+import static com.squareup.picasso.Utils.VERB_ERRORED;
+import static com.squareup.picasso.Utils.VERB_RESUMED;
+import static com.squareup.picasso.Utils.checkMain;
+import static com.squareup.picasso.Utils.log;
 
 /**
  * Image downloading, transformation, and caching manager.

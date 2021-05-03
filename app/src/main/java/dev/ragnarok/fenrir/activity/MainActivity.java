@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.activity;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
@@ -177,6 +174,9 @@ import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.zoomhelper.ZoomHelper;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class MainActivity extends AppCompatActivity implements AdditionalNavigationFragment.NavigationDrawerCallbacks,
         OnSectionResumeCallback, AppStyleable, PlaceProvider, ServiceConnection, BottomNavigationView.OnNavigationItemSelectedListener {
@@ -448,26 +448,22 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                     menus.add(new OptionRequest(R.id.button_cancel, getString(R.string.open_clipboard_url), R.drawable.web));
                     menus.add(new OptionRequest(R.id.button_camera, getString(R.string.scan_qr), R.drawable.qr_code));
                     menus.show(getSupportFragmentManager(), "left_options", option -> {
-                        switch (option.getId()) {
-                            case R.id.button_ok:
-                                mCompositeDisposable.add(InteractorFactory.createAccountInteractor().setOffline(Settings.get().accounts().getCurrent())
-                                        .compose(RxUtils.applySingleIOToMainSchedulers())
-                                        .subscribe(this::OnSetOffline, t -> OnSetOffline(false)));
-                                break;
-                            case R.id.button_cancel:
-                                ClipboardManager clipBoard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                                if (clipBoard != null && clipBoard.getPrimaryClip() != null && clipBoard.getPrimaryClip().getItemCount() > 0 && clipBoard.getPrimaryClip().getItemAt(0).getText() != null) {
-                                    String temp = clipBoard.getPrimaryClip().getItemAt(0).getText().toString();
-                                    LinkHelper.openUrl(this, mAccountId, temp);
-                                }
-                                break;
-                            case R.id.button_camera:
-                                IntentIntegrator integrator = new IntentIntegrator(this);
-                                integrator.setCameraId(0);
-                                integrator.setBeepEnabled(true);
-                                integrator.setBarcodeImageEnabled(false);
-                                requestQRScan.launch(integrator.createScanIntent());
-                                break;
+                        if (option.getId() == R.id.button_ok) {
+                            mCompositeDisposable.add(InteractorFactory.createAccountInteractor().setOffline(Settings.get().accounts().getCurrent())
+                                    .compose(RxUtils.applySingleIOToMainSchedulers())
+                                    .subscribe(this::OnSetOffline, t -> OnSetOffline(false)));
+                        } else if (option.getId() == R.id.button_cancel) {
+                            ClipboardManager clipBoard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                            if (clipBoard != null && clipBoard.getPrimaryClip() != null && clipBoard.getPrimaryClip().getItemCount() > 0 && clipBoard.getPrimaryClip().getItemAt(0).getText() != null) {
+                                String temp = clipBoard.getPrimaryClip().getItemAt(0).getText().toString();
+                                LinkHelper.openUrl(this, mAccountId, temp);
+                            }
+                        } else if (option.getId() == R.id.button_camera) {
+                            IntentIntegrator integrator = new IntentIntegrator(this);
+                            integrator.setCameraId(0);
+                            integrator.setBeepEnabled(true);
+                            integrator.setBarcodeImageEnabled(false);
+                            requestQRScan.launch(integrator.createScanIntent());
                         }
                     });
                 });
@@ -544,7 +540,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                             Artist = arr[0];
                             TrackName = TrackName.replace(Artist + " - ", "");
                         }
-                        Audio tmp = new Audio().setIsLocal(true).setUrl(i.toString()).setOwnerId(mAccountId).setArtist(Artist).setTitle(TrackName).setId(i.toString().hashCode());
+                        Audio tmp = new Audio().setIsLocal(true).setThumb_image_big("share_" + i).setThumb_image_little("share_" + i).setUrl(i.toString()).setOwnerId(mAccountId).setArtist(Artist).setTitle(TrackName).setId(i.toString().hashCode());
                         playlist.add(tmp);
                     }
                     intent.removeExtra(Intent.EXTRA_STREAM);
@@ -616,7 +612,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                     Artist = arr[0];
                     TrackName = TrackName.replace(Artist + " - ", "");
                 }
-                Audio tmp = new Audio().setIsLocal(true).setUrl(data.toString()).setOwnerId(mAccountId).setArtist(Artist).setTitle(TrackName).setId(data.toString().hashCode());
+                Audio tmp = new Audio().setIsLocal(true).setThumb_image_big("share_" + data).setThumb_image_little("share_" + data).setUrl(data.toString()).setOwnerId(mAccountId).setArtist(Artist).setTitle(TrackName).setId(data.toString().hashCode());
                 MusicPlaybackService.startForPlayList(this, new ArrayList<>(Collections.singletonList(tmp)), 0, false);
                 PlaceFactory.getPlayerPlace(mAccountId).tryOpenWith(this);
                 return false;
@@ -973,14 +969,14 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
         int statusbarNonColored = CurrentTheme.getStatusBarNonColored(this);
         int statusbarColored = CurrentTheme.getStatusBarColor(this);
 
-        if (Utils.hasLollipop()) {
-            Window w = getWindow();
-            w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            w.setStatusBarColor(colored ? statusbarColored : statusbarNonColored);
-            int navigationColor = colored ? CurrentTheme.getNavigationBarColor(this) : Color.BLACK;
-            w.setNavigationBarColor(navigationColor);
-        }
+
+        Window w = getWindow();
+        w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        w.setStatusBarColor(colored ? statusbarColored : statusbarNonColored);
+        @ColorInt
+        int navigationColor = colored ? CurrentTheme.getNavigationBarColor(this) : Color.BLACK;
+        w.setNavigationBarColor(navigationColor);
 
         if (Utils.hasMarshmallow()) {
             int flags = getWindow().getDecorView().getSystemUiVisibility();
@@ -993,7 +989,6 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
         }
 
         if (Utils.hasOreo()) {
-            Window w = getWindow();
             int flags = getWindow().getDecorView().getSystemUiVisibility();
             if (invertIcons) {
                 flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
@@ -1002,10 +997,6 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
             } else {
                 flags &= ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
                 w.getDecorView().setSystemUiVisibility(flags);
-                @ColorInt
-                int navigationColor = colored ?
-                        CurrentTheme.getNavigationBarColor(this) : Color.BLACK;
-                w.setNavigationBarColor(navigationColor);
             }
         }
     }
@@ -1561,26 +1552,25 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_feed:
-                openPageAndCloseSheet(AdditionalNavigationFragment.SECTION_ITEM_FEED);
-                return true;
-            case R.id.menu_search:
-                openPageAndCloseSheet(AdditionalNavigationFragment.SECTION_ITEM_SEARCH);
-                return true;
-            case R.id.menu_messages:
-                openPageAndCloseSheet(AdditionalNavigationFragment.SECTION_ITEM_DIALOGS);
-                return true;
-            case R.id.menu_feedback:
-                openPageAndCloseSheet(AdditionalNavigationFragment.SECTION_ITEM_FEEDBACK);
-                return true;
-            case R.id.menu_other:
-                if (getNavigationFragment().isSheetOpen()) {
-                    getNavigationFragment().closeSheet();
-                } else {
-                    getNavigationFragment().openSheet();
-                }
-                return true;
+        if (item.getItemId() == R.id.menu_feed) {
+            openPageAndCloseSheet(AdditionalNavigationFragment.SECTION_ITEM_FEED);
+            return true;
+        } else if (item.getItemId() == R.id.menu_search) {
+            openPageAndCloseSheet(AdditionalNavigationFragment.SECTION_ITEM_SEARCH);
+            return true;
+        } else if (item.getItemId() == R.id.menu_messages) {
+            openPageAndCloseSheet(AdditionalNavigationFragment.SECTION_ITEM_DIALOGS);
+            return true;
+        } else if (item.getItemId() == R.id.menu_feedback) {
+            openPageAndCloseSheet(AdditionalNavigationFragment.SECTION_ITEM_FEEDBACK);
+            return true;
+        } else if (item.getItemId() == R.id.menu_other) {
+            if (getNavigationFragment().isSheetOpen()) {
+                getNavigationFragment().closeSheet();
+            } else {
+                getNavigationFragment().openSheet();
+            }
+            return true;
         }
         return false;
     }

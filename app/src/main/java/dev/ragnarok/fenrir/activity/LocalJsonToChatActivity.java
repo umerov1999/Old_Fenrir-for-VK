@@ -152,14 +152,14 @@ public class LocalJsonToChatActivity extends NoMainActivity implements PlaceProv
         int statusbarNonColored = CurrentTheme.getStatusBarNonColored(this);
         int statusbarColored = CurrentTheme.getStatusBarColor(this);
 
-        if (Utils.hasLollipop()) {
-            Window w = getWindow();
-            w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            w.setStatusBarColor(colored ? statusbarColored : statusbarNonColored);
-            int navigationColor = colored ? CurrentTheme.getNavigationBarColor(this) : Color.BLACK;
-            w.setNavigationBarColor(navigationColor);
-        }
+
+        Window w = getWindow();
+        w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        w.setStatusBarColor(colored ? statusbarColored : statusbarNonColored);
+        @ColorInt
+        int navigationColor = colored ? CurrentTheme.getNavigationBarColor(this) : Color.BLACK;
+        w.setNavigationBarColor(navigationColor);
 
         if (Utils.hasMarshmallow()) {
             int flags = getWindow().getDecorView().getSystemUiVisibility();
@@ -172,7 +172,6 @@ public class LocalJsonToChatActivity extends NoMainActivity implements PlaceProv
         }
 
         if (Utils.hasOreo()) {
-            Window w = getWindow();
             int flags = getWindow().getDecorView().getSystemUiVisibility();
             if (invertIcons) {
                 flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
@@ -181,10 +180,6 @@ public class LocalJsonToChatActivity extends NoMainActivity implements PlaceProv
             } else {
                 flags &= ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
                 w.getDecorView().setSystemUiVisibility(flags);
-                @ColorInt
-                int navigationColor = colored ?
-                        CurrentTheme.getNavigationBarColor(this) : Color.BLACK;
-                w.setNavigationBarColor(navigationColor);
             }
         }
     }

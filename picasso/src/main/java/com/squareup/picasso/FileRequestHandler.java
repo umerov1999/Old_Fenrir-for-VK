@@ -15,11 +15,6 @@
  */
 package com.squareup.picasso;
 
-import static android.content.ContentResolver.SCHEME_FILE;
-import static androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL;
-import static androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION;
-import static com.squareup.picasso.Picasso.LoadedFrom.DISK;
-
 import android.content.Context;
 import android.net.Uri;
 
@@ -29,6 +24,11 @@ import java.io.IOException;
 
 import okio.Okio;
 import okio.Source;
+
+import static android.content.ContentResolver.SCHEME_FILE;
+import static androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL;
+import static androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION;
+import static com.squareup.picasso.Picasso.LoadedFrom.DISK;
 
 class FileRequestHandler extends ContentStreamRequestHandler {
 

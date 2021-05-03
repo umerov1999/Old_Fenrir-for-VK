@@ -39,7 +39,7 @@ public class MenuListAdapter extends RecyclerBindableAdapter<AbsMenuItem, Recycl
         colorOnPrimary = CurrentTheme.getColorOnPrimary(context);
         colorOnSurface = CurrentTheme.getColorOnSurface(context);
         dp = (int) Utils.dpToPx(1, context);
-        transformation = CurrentTheme.createTransformationForAvatar(context);
+        transformation = CurrentTheme.createTransformationForAvatar();
         this.actionListener = actionListener;
     }
 

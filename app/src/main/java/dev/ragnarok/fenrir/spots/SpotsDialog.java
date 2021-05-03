@@ -103,7 +103,7 @@ public class SpotsDialog extends AlertDialog {
             @SuppressLint("Recycle") Animator move = ObjectAnimator.ofFloat(animatedView, "xFactor", 0, 1);
             move.setDuration(DURATION);
             move.setInterpolator(new HesitateInterpolator());
-            move.setStartDelay(DELAY * i);
+            move.setStartDelay((long) DELAY * i);
             move.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {

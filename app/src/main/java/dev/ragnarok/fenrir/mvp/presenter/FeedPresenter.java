@@ -1,12 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.RxUtils.applySingleIOToMainSchedulers;
-import static dev.ragnarok.fenrir.util.RxUtils.ignore;
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.text.InputType;
@@ -41,6 +34,13 @@ import dev.ragnarok.fenrir.util.DisposableHolder;
 import dev.ragnarok.fenrir.util.InputTextDialog;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.RxUtils.applySingleIOToMainSchedulers;
+import static dev.ragnarok.fenrir.util.RxUtils.ignore;
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class FeedPresenter extends PlaceSupportPresenter<IFeedView> {
 

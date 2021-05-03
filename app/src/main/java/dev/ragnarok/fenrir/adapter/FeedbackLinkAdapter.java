@@ -44,7 +44,7 @@ public class FeedbackLinkAdapter extends RecyclerView.Adapter<FeedbackLinkAdapte
         mContext = context;
         mActionListener = actionListener;
         mData = objects;
-        transformation = CurrentTheme.createTransformationForAvatar(context);
+        transformation = CurrentTheme.createTransformationForAvatar();
     }
 
     @NonNull

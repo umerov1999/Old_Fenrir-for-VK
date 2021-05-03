@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import static dev.ragnarok.fenrir.player.util.MusicUtils.observeServiceBinding;
-
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -55,6 +53,8 @@ import dev.ragnarok.fenrir.view.WeakViewAnimatorAdapter;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.Disposable;
+
+import static dev.ragnarok.fenrir.player.util.MusicUtils.observeServiceBinding;
 
 public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRecyclerAdapter.AudioHolder> {
 

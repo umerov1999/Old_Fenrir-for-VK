@@ -16,6 +16,7 @@
 
 package dev.ragnarok.fenrir.view.emoji;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -75,7 +76,7 @@ public class EmojiconTextView extends WrapWidthTextView implements ClickableFore
         if (attrs == null) {
             mEmojiconSize = (int) getTextSize();
         } else {
-            TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.Emojicon);
+            @SuppressLint("CustomViewStyleable") TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.Emojicon);
 
             try {
                 mEmojiconSize = (int) a.getDimension(R.styleable.Emojicon_emojiconSize, getTextSize());

@@ -15,10 +15,10 @@
  */
 package com.squareup.picasso;
 
-import static com.squareup.picasso.Picasso.LoadedFrom;
-
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+
+import static com.squareup.picasso.Picasso.LoadedFrom;
 
 /**
  * Represents an arbitrary listener for image loading.

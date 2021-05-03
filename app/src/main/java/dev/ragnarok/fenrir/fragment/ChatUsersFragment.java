@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -44,6 +42,8 @@ import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.ViewUtils;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class ChatUsersFragment extends BaseMvpFragment<ChatMembersPresenter, IChatMembersView>
         implements IChatMembersView, ChatMembersListAdapter.ActionListener {

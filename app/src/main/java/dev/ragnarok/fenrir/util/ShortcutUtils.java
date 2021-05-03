@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.util;
 
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +17,7 @@ import com.squareup.picasso.Transformation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import dev.ragnarok.fenrir.Extra;
@@ -31,6 +29,9 @@ import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class ShortcutUtils {
 
@@ -166,7 +167,7 @@ public class ShortcutUtils {
                     List<String> mustBeRemoved = new ArrayList<>(1);
 
                     if (infos.size() >= MAX_DYNAMIC_COUNT) {
-                        Collections.sort(infos, (o1, o2) -> Integer.compare(o1.getRank(), o2.getRank()));
+                        Collections.sort(infos, Comparator.comparingInt(ShortcutInfo::getRank));
 
                         ShortcutInfo infoWhichMustBeRemoved = infos.get(infos.size() - 1);
                         mustBeRemoved.add(infoWhichMustBeRemoved.getId());

@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -53,6 +50,9 @@ import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.CircleCounterButton;
 import dev.ragnarok.fenrir.view.emoji.EmojiconTextView;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 public class WallPostFragment extends PlaceSupportMvpFragment<WallPostPresenter, IWallPostView>
         implements EmojiconTextView.OnHashTagClickListener, IWallPostView {
 
@@ -93,7 +93,7 @@ public class WallPostFragment extends PlaceSupportMvpFragment<WallPostPresenter,
 
         attachmentsViewBinder = new AttachmentsViewBinder(requireActivity(), this);
         attachmentsViewBinder.setOnHashTagClickListener(this);
-        transformation = CurrentTheme.createTransformationForAvatar(requireActivity());
+        transformation = CurrentTheme.createTransformationForAvatar();
     }
 
     @Override
@@ -161,58 +161,45 @@ public class WallPostFragment extends PlaceSupportMvpFragment<WallPostPresenter,
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.delete_post:
-                getPresenter().fireDeleteClick();
-                return true;
-
-            case R.id.restore_post:
-                getPresenter().fireRestoreClick();
-                return true;
-
-            case R.id.pin_post:
-                getPresenter().firePinClick();
-                return true;
-
-            case R.id.unpin_post:
-                getPresenter().fireUnpinClick();
-                return true;
-
-            case R.id.goto_user_post:
-                getPresenter().fireGoToOwnerClick();
-                return true;
-
-            case R.id.copy_url_post:
-                getPresenter().fireCopyLinkClink();
-                return true;
-
-            case R.id.report:
-                getPresenter().fireReport();
-                return true;
-
-            case R.id.copy_text:
-                getPresenter().fireCopyTextClick();
-                return true;
-
-            case R.id.action_allow_text_selection:
-                mTextSelectionAllowed = true;
-                resolveTextSelection();
-                return true;
-
-            case R.id.add_to_bookmarks:
-                getPresenter().fireAddBookmark();
-                return true;
-
-            case R.id.edit_post:
-                getPresenter().firePostEditClick();
-                return true;
-
-            case R.id.refresh:
-                getPresenter().fireRefresh();
-                return true;
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.delete_post) {
+            getPresenter().fireDeleteClick();
+            return true;
+        } else if (item.getItemId() == R.id.restore_post) {
+            getPresenter().fireRestoreClick();
+            return true;
+        } else if (item.getItemId() == R.id.pin_post) {
+            getPresenter().firePinClick();
+            return true;
+        } else if (item.getItemId() == R.id.unpin_post) {
+            getPresenter().fireUnpinClick();
+            return true;
+        } else if (item.getItemId() == R.id.goto_user_post) {
+            getPresenter().fireGoToOwnerClick();
+            return true;
+        } else if (item.getItemId() == R.id.copy_url_post) {
+            getPresenter().fireCopyLinkClink();
+            return true;
+        } else if (item.getItemId() == R.id.report) {
+            getPresenter().fireReport();
+            return true;
+        } else if (item.getItemId() == R.id.copy_text) {
+            getPresenter().fireCopyTextClick();
+            return true;
+        } else if (item.getItemId() == R.id.action_allow_text_selection) {
+            mTextSelectionAllowed = true;
+            resolveTextSelection();
+            return true;
+        } else if (item.getItemId() == R.id.add_to_bookmarks) {
+            getPresenter().fireAddBookmark();
+            return true;
+        } else if (item.getItemId() == R.id.edit_post) {
+            getPresenter().firePostEditClick();
+            return true;
+        } else if (item.getItemId() == R.id.refresh) {
+            getPresenter().fireRefresh();
+            return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

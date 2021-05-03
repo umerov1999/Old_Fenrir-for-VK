@@ -56,12 +56,12 @@ public class MessagesSearchFragment extends AbsSearchFragment<MessagesSearchPres
     }
 
     @Override
-    public void onAvatarClick(@NonNull Message message, int userId) {
+    public void onAvatarClick(@NonNull Message message, int userId, int position) {
         getPresenter().fireOwnerClick(userId);
     }
 
     @Override
-    public void onLongAvatarClick(@NonNull Message message, int userId) {
+    public void onLongAvatarClick(@NonNull Message message, int userId, int position) {
         getPresenter().fireOwnerClick(userId);
     }
 
@@ -76,12 +76,12 @@ public class MessagesSearchFragment extends AbsSearchFragment<MessagesSearchPres
     }
 
     @Override
-    public boolean onMessageLongClick(@NonNull Message message) {
+    public boolean onMessageLongClick(@NonNull Message message, int position) {
         return false;
     }
 
     @Override
-    public void onMessageClicked(@NonNull Message message) {
+    public void onMessageClicked(@NonNull Message message, int position) {
         getPresenter().fireMessageClick(message);
     }
 

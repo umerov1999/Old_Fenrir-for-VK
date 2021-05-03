@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
-
 import android.content.Context;
 import android.os.Bundle;
 
@@ -22,6 +20,8 @@ import dev.ragnarok.fenrir.mvp.view.base.ISteppersView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.view.steppers.impl.CreatePhotoAlbumStepsHost;
+
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 
 public class EditPhotoAlbumPresenter extends AccountDependencyPresenter<IEditPhotoAlbumView> {
 

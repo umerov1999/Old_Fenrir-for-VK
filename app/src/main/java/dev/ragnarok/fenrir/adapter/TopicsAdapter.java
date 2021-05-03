@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -28,6 +26,8 @@ import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
 
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+
 public class TopicsAdapter extends RecyclerBindableAdapter<Topic, TopicsAdapter.ViewHolder> {
 
     private final Transformation transformation;
@@ -37,7 +37,7 @@ public class TopicsAdapter extends RecyclerBindableAdapter<Topic, TopicsAdapter.
     public TopicsAdapter(Context context, List<Topic> topics, @NonNull ActionListener actionListener) {
         super(topics);
         mActionListener = actionListener;
-        transformation = CurrentTheme.createTransformationForAvatar(context);
+        transformation = CurrentTheme.createTransformationForAvatar();
 
         if (Utils.is600dp(context)) {
             firstLastPadding = (int) Utils.dpToPx(16, context);

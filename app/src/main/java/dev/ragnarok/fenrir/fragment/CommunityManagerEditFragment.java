@@ -103,18 +103,12 @@ public class CommunityManagerEditFragment extends BaseMvpFragment<CommunityManag
 
         mRadioGroupRoles = root.findViewById(R.id.radio_group_roles);
         mRadioGroupRoles.setOnCheckedChangeListener((group, checkedId) -> {
-            switch (checkedId) {
-                case R.id.button_moderator:
-                    getPresenter().fireModeratorChecked();
-                    break;
-
-                case R.id.button_editor:
-                    getPresenter().fireEditorChecked();
-                    break;
-
-                case R.id.button_admin:
-                    getPresenter().fireAdminChecked();
-                    break;
+            if (checkedId == R.id.button_moderator) {
+                getPresenter().fireModeratorChecked();
+            } else if (checkedId == R.id.button_editor) {
+                getPresenter().fireEditorChecked();
+            } else if (checkedId == R.id.button_admin) {
+                getPresenter().fireAdminChecked();
             }
         });
 
@@ -158,7 +152,7 @@ public class CommunityManagerEditFragment extends BaseMvpFragment<CommunityManag
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_save) {
             getPresenter().fireButtonSaveClick();
             return true;

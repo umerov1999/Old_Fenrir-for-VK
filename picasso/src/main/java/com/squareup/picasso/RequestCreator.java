@@ -15,23 +15,6 @@
  */
 package com.squareup.picasso;
 
-import static com.squareup.picasso.BitmapHunter.forRequest;
-import static com.squareup.picasso.MemoryPolicy.shouldReadFromMemoryCache;
-import static com.squareup.picasso.Picasso.LoadedFrom.MEMORY;
-import static com.squareup.picasso.Picasso.Priority;
-import static com.squareup.picasso.PicassoDrawable.setBitmap;
-import static com.squareup.picasso.PicassoDrawable.setPlaceholder;
-import static com.squareup.picasso.RemoteViewsAction.AppWidgetAction;
-import static com.squareup.picasso.RemoteViewsAction.NotificationAction;
-import static com.squareup.picasso.Utils.OWNER_MAIN;
-import static com.squareup.picasso.Utils.VERB_CHANGED;
-import static com.squareup.picasso.Utils.VERB_COMPLETED;
-import static com.squareup.picasso.Utils.VERB_CREATED;
-import static com.squareup.picasso.Utils.checkMain;
-import static com.squareup.picasso.Utils.checkNotMain;
-import static com.squareup.picasso.Utils.createKey;
-import static com.squareup.picasso.Utils.log;
-
 import android.app.Notification;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -53,6 +36,23 @@ import androidx.annotation.VisibleForTesting;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.squareup.picasso.BitmapHunter.forRequest;
+import static com.squareup.picasso.MemoryPolicy.shouldReadFromMemoryCache;
+import static com.squareup.picasso.Picasso.LoadedFrom.MEMORY;
+import static com.squareup.picasso.Picasso.Priority;
+import static com.squareup.picasso.PicassoDrawable.setBitmap;
+import static com.squareup.picasso.PicassoDrawable.setPlaceholder;
+import static com.squareup.picasso.RemoteViewsAction.AppWidgetAction;
+import static com.squareup.picasso.RemoteViewsAction.NotificationAction;
+import static com.squareup.picasso.Utils.OWNER_MAIN;
+import static com.squareup.picasso.Utils.VERB_CHANGED;
+import static com.squareup.picasso.Utils.VERB_COMPLETED;
+import static com.squareup.picasso.Utils.VERB_CREATED;
+import static com.squareup.picasso.Utils.checkMain;
+import static com.squareup.picasso.Utils.checkNotMain;
+import static com.squareup.picasso.Utils.createKey;
+import static com.squareup.picasso.Utils.log;
 
 /**
  * Fluent API for building an image download request.

@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -44,6 +41,9 @@ import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.emoji.EmojiconTextView;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class PhotoAllCommentFragment extends PlaceSupportMvpFragment<PhotoAllCommentPresenter, IPhotoAllCommentView>
         implements IPhotoAllCommentView, SwipeRefreshLayout.OnRefreshListener, CommentsAdapter.OnCommentActionListener, EmojiconTextView.OnHashTagClickListener {

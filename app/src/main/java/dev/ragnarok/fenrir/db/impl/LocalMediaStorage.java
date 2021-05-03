@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.db.impl;
 
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
-
 import android.content.ContentUris;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -33,6 +31,8 @@ import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 class LocalMediaStorage extends AbsStorage implements ILocalMediaStorage {
 
@@ -123,6 +123,28 @@ class LocalMediaStorage extends AbsStorage implements ILocalMediaStorage {
     }
 
     @Override
+    public Single<List<Audio>> getAudios(int accountId, long albumId) {
+        return Single.create(e -> {
+            Cursor cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                    AUDIO_PROJECTION, MediaStore.MediaColumns.BUCKET_ID + " = ?", new String[]{String.valueOf(albumId)}, MediaStore.MediaColumns.DATE_MODIFIED + " DESC");
+
+            ArrayList<Audio> data = new ArrayList<>(safeCountOf(cursor));
+            if (Objects.nonNull(cursor)) {
+                while (cursor.moveToNext()) {
+                    Audio audio = mapAudio(accountId, cursor);
+                    if (audio == null) {
+                        continue;
+                    }
+                    data.add(audio);
+                }
+                cursor.close();
+            }
+
+            e.onSuccess(data);
+        });
+    }
+
+    @Override
     public Single<List<LocalPhoto>> getPhotos(long albumId) {
         return Single.create(e -> {
             Cursor cursor = getContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -188,13 +210,43 @@ class LocalMediaStorage extends AbsStorage implements ILocalMediaStorage {
     }
 
     @Override
+    public Single<List<LocalImageAlbum>> getAudioAlbums() {
+        return Single.create(e -> {
+            final String album = MediaStore.MediaColumns.BUCKET_DISPLAY_NAME;
+            final String albumId = MediaStore.MediaColumns.BUCKET_ID;
+            final String coverId = BaseColumns._ID;
+            String[] projection = {album, albumId, coverId};
+
+            Cursor cursor = getContext().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                    projection, null, null, MediaStore.MediaColumns.DATE_MODIFIED + " DESC");
+
+            List<LocalImageAlbum> albums = new ArrayList<>(safeCountOf(cursor));
+
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    if (e.isDisposed()) break;
+
+                    if (!hasAlbumById(cursor.getInt(1), albums)) {
+                        albums.add(new LocalImageAlbum()
+                                .setId(cursor.getInt(1))
+                                .setName(cursor.getString(0))
+                                .setCoverId(cursor.getLong(2))
+                                .setPhotoCount(1));
+                    }
+                }
+                cursor.close();
+            }
+            e.onSuccess(albums);
+        });
+    }
+
+    @Override
     public Single<List<LocalImageAlbum>> getImageAlbums() {
         return Single.create(e -> {
             final String album = MediaStore.MediaColumns.BUCKET_DISPLAY_NAME;
             final String albumId = MediaStore.MediaColumns.BUCKET_ID;
-            final String data = MediaStore.MediaColumns.DATA;
             final String coverId = BaseColumns._ID;
-            String[] projection = {album, albumId, data, coverId};
+            String[] projection = {album, albumId, coverId};
 
             Cursor cursor = getContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     projection, null, null, MediaStore.MediaColumns.DATE_MODIFIED + " DESC");
@@ -209,37 +261,14 @@ class LocalMediaStorage extends AbsStorage implements ILocalMediaStorage {
                         albums.add(new LocalImageAlbum()
                                 .setId(cursor.getInt(1))
                                 .setName(cursor.getString(0))
-                                .setCoverPath(cursor.getString(2))
-                                .setCoverId(cursor.getLong(3))
+                                .setCoverId(cursor.getLong(2))
                                 .setPhotoCount(1));
                     }
                 }
-
                 cursor.close();
             }
-
             e.onSuccess(albums);
         });
-    }
-
-    @Override
-    public @Nullable
-    Bitmap getMetadataAudioThumbnail(@NonNull Uri uri, int x, int y) {
-        MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
-        try {
-            mediaMetadataRetriever.setDataSource(getContext(), uri);
-            byte[] cover = mediaMetadataRetriever.getEmbeddedPicture();
-            if (cover == null) {
-                return null;
-            }
-            InputStream is = new ByteArrayInputStream(cover);
-            Bitmap bitmap = BitmapFactory.decodeStream(is);
-            bitmap = Bitmap.createScaledBitmap(bitmap, x, y, false);
-            return bitmap;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     @Override

@@ -49,7 +49,7 @@ public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOffici
     public AnswerVKOfficialAdapter(AnswerVKOfficialList data, Context context) {
         this.data = data;
         this.context = context;
-        transformation = CurrentTheme.createTransformationForAvatar(context);
+        transformation = CurrentTheme.createTransformationForAvatar();
         mStartOfToday = Utils.startOfTodayMillis();
     }
 

@@ -17,9 +17,9 @@
 
 package ealvatag.utils;
 
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
-
 import java.util.concurrent.TimeUnit;
+
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 /**
  * {@link TimeUnit} utilities. Need to support rounding conversion

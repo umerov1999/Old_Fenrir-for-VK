@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.api.impl;
 
-import static dev.ragnarok.fenrir.util.Utils.intValueIn;
-
 import android.annotation.SuppressLint;
 
 import java.util.Arrays;
@@ -37,6 +35,8 @@ import dev.ragnarok.fenrir.api.interfaces.IUtilsApi;
 import dev.ragnarok.fenrir.api.interfaces.IVideoApi;
 import dev.ragnarok.fenrir.api.interfaces.IWallApi;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.Utils.intValueIn;
 
 class VkApies implements IAccountApis {
 

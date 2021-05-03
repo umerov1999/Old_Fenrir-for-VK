@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
@@ -69,6 +67,8 @@ import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.InputTextDialog;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsView>
         implements IDialogsView, DialogsAdapter.ClickListener {
@@ -192,7 +192,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
         OptionView optionView = new OptionView();
         getPresenter().fireOptionViewCreated(optionView);
@@ -200,14 +200,11 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_search:
-                getPresenter().fireSearchClick();
-                break;
-            case R.id.action_star:
-                getPresenter().fireImportantClick();
-                break;
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_search) {
+            getPresenter().fireSearchClick();
+        } else if (item.getItemId() == R.id.action_star) {
+            getPresenter().fireImportantClick();
         }
         return true;
     }
@@ -386,9 +383,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
     public void askToReload() {
         View view = getView();
         if (nonNull(view)) {
-            Snackbar.make(view, R.string.update_dialogs, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.button_yes, v -> {
-                getPresenter().fireRefresh();
-            }).show();
+            Snackbar.make(view, R.string.update_dialogs, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.button_yes, v -> getPresenter().fireRefresh()).show();
         }
     }
 

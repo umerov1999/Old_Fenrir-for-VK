@@ -15,11 +15,6 @@
  */
 package ealvatag.tag.id3;
 
-import static ealvatag.logging.ErrorMessage.MP3_UNABLE_TO_ADJUST_PADDING;
-import static ealvatag.utils.Check.CANNOT_BE_NULL;
-import static ealvatag.utils.Check.checkArgNotNull;
-import static ealvatag.utils.Check.checkVarArg0NotNull;
-
 import androidx.annotation.NonNull;
 
 import com.google.common.base.Optional;
@@ -99,6 +94,11 @@ import ealvatag.tag.images.ArtworkFactory;
 import ealvatag.tag.reference.Languages;
 import ealvatag.utils.Check;
 import okio.Buffer;
+
+import static ealvatag.logging.ErrorMessage.MP3_UNABLE_TO_ADJUST_PADDING;
+import static ealvatag.utils.Check.CANNOT_BE_NULL;
+import static ealvatag.utils.Check.checkArgNotNull;
+import static ealvatag.utils.Check.checkVarArg0NotNull;
 
 
 /**

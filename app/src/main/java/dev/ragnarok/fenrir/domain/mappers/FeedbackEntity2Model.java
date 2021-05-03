@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.domain.mappers;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -33,6 +31,8 @@ import dev.ragnarok.fenrir.model.feedback.MentionFeedback;
 import dev.ragnarok.fenrir.model.feedback.PostPublishFeedback;
 import dev.ragnarok.fenrir.model.feedback.ReplyCommentFeedback;
 import dev.ragnarok.fenrir.model.feedback.UsersFeedback;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class FeedbackEntity2Model {
 

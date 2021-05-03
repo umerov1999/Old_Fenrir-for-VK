@@ -29,7 +29,7 @@ public class OwnersListAdapter extends ArrayAdapter<Owner> {
     public OwnersListAdapter(Activity context, ArrayList<Owner> owners) {
         super(context, R.layout.item_simple_owner, owners);
         data = owners;
-        transformation = CurrentTheme.createTransformationForAvatar(context);
+        transformation = CurrentTheme.createTransformationForAvatar();
     }
 
     @Override

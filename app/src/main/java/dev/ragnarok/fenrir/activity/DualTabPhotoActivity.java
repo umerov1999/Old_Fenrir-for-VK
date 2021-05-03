@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.activity;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +18,8 @@ import dev.ragnarok.fenrir.model.selection.Sources;
 import dev.ragnarok.fenrir.mvp.view.IVkPhotosView;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceProvider;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
 
 public class DualTabPhotoActivity extends NoMainActivity implements PlaceProvider {
 

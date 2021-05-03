@@ -222,6 +222,13 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
 
   private int gestureInsetBottom;
   private boolean gestureInsetBottomIgnored;
+  private boolean paddingBottomSystemWindowInsets;
+  private boolean paddingLeftSystemWindowInsets;
+  private boolean paddingRightSystemWindowInsets;
+  private boolean paddingTopSystemWindowInsets;
+
+  private int insetBottom;
+  private int insetTop;
 
   /** Default Shape Appearance to be used in bottomsheet */
   private ShapeAppearanceModel shapeAppearanceModelDefault;
@@ -337,6 +344,19 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
           a.getDimensionPixelOffset(
               R.styleable.BottomSheetBehavior_Layout_behavior_expandedOffset, 0));
     }
+
+    // Reading out if we are handling padding, so we can apply it to the content.
+    paddingBottomSystemWindowInsets =
+        a.getBoolean(R.styleable.BottomSheetBehavior_Layout_paddingBottomSystemWindowInsets, false);
+    paddingLeftSystemWindowInsets =
+        a.getBoolean(R.styleable.BottomSheetBehavior_Layout_paddingLeftSystemWindowInsets, false);
+    paddingRightSystemWindowInsets =
+        a.getBoolean(R.styleable.BottomSheetBehavior_Layout_paddingRightSystemWindowInsets, false);
+    // Setting this to false will prevent the bottomsheet from going below the status bar. Since
+    // this is a breaking change from the old behavior the default is true.
+    paddingTopSystemWindowInsets =
+        a.getBoolean(R.styleable.BottomSheetBehavior_Layout_paddingTopSystemWindowInsets, true);
+
     a.recycle();
     ViewConfiguration configuration = ViewConfiguration.get(context);
     maximumVelocity = configuration.getScaledMaximumFlingVelocity();
@@ -391,7 +411,7 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
       // First layout with this behavior.
       peekHeightMin =
           parent.getResources().getDimensionPixelSize(R.dimen.design_bottom_sheet_peek_height_min);
-      setSystemGestureInsets(child);
+      setWindowInsetsListener(child);
       viewRef = new WeakReference<>(child);
       // Only set MaterialShapeDrawable as background if shapeTheming is enabled, otherwise will
       // default to android:background declared in styles or layout.
@@ -424,6 +444,16 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
     parentWidth = parent.getWidth();
     parentHeight = parent.getHeight();
     childHeight = child.getHeight();
+    if (parentHeight - childHeight < insetTop) {
+      if (paddingTopSystemWindowInsets) {
+        // If the bottomsheet would land in the middle of the status bar when fully expanded add
+        // extra space to make sure it goes all the way.
+        childHeight = parentHeight;
+      } else {
+        // If we don't want the bottomsheet to go under the status bar we cap its height
+        childHeight = parentHeight - insetTop;
+      }
+    }
     fitToContentsOffset = max(0, parentHeight - childHeight);
     calculateHalfExpandedOffset();
     calculateCollapsedOffset();
@@ -635,7 +665,7 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
           top = halfExpandedOffset;
           targetState = STATE_HALF_EXPANDED;
         } else {
-          top = expandedOffset;
+          top = getExpandedOffset();
           targetState = STATE_EXPANDED;
         }
       }
@@ -655,7 +685,7 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
       } else {
         if (currentTop < halfExpandedOffset) {
           if (currentTop < Math.abs(currentTop - collapsedOffset)) {
-            top = expandedOffset;
+            top = getExpandedOffset();
             targetState = STATE_EXPANDED;
           } else {
             top = halfExpandedOffset;
@@ -882,7 +912,9 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
    *     com.google.android.material.R.styleable#BottomSheetBehavior_Layout_behavior_expandedOffset
    */
   public int getExpandedOffset() {
-    return fitToContents ? fitToContentsOffset : expandedOffset;
+    return fitToContents
+        ? fitToContentsOffset
+        : Math.max(expandedOffset, paddingTopSystemWindowInsets ? 0 : insetTop);
   }
 
   /**
@@ -1084,7 +1116,7 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
    * Gets the current state of the bottom sheet.
    *
    * @return One of {@link #STATE_EXPANDED}, {@link #STATE_HALF_EXPANDED}, {@link #STATE_COLLAPSED},
-   *     {@link #STATE_DRAGGING}, {@link #STATE_SETTLING}, or {@link #STATE_HALF_EXPANDED}.
+   *     {@link #STATE_DRAGGING}, or {@link #STATE_SETTLING}.
    */
   @State
   public int getState() {
@@ -1144,12 +1176,14 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
   private int calculatePeekHeight() {
     if (peekHeightAuto) {
       int desiredHeight = max(peekHeightMin, parentHeight - parentWidth * 9 / 16);
-      return min(desiredHeight, childHeight);
+      return min(desiredHeight, childHeight) + insetBottom;
     }
-    if (!gestureInsetBottomIgnored && gestureInsetBottom > 0) {
+    // Only make sure the peek height is above the gesture insets if we're not applying system
+    // insets.
+    if (!gestureInsetBottomIgnored && !paddingBottomSystemWindowInsets && gestureInsetBottom > 0) {
       return max(peekHeight, gestureInsetBottom + peekHeightGestureInsetBuffer);
     }
-    return peekHeight;
+    return peekHeight + insetBottom;
   }
 
   private void calculateCollapsedOffset() {
@@ -1274,6 +1308,10 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
     }
   }
 
+  MaterialShapeDrawable getMaterialShapeDrawable() {
+    return materialShapeDrawable;
+  }
+
   private void createShapeValueAnimator() {
     interpolatorAnimator = ValueAnimator.ofFloat(0f, 1f);
     interpolatorAnimator.setDuration(CORNER_ANIMATION_DURATION);
@@ -1289,24 +1327,62 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
         });
   }
 
-  /**
-   * Ensure the peek height is at least as large as the bottom gesture inset size so that the sheet
-   * can always be dragged, but only when the inset is required by the system.
-   */
-  private void setSystemGestureInsets(@NonNull View child) {
-    if (VERSION.SDK_INT >= VERSION_CODES.Q && !isGestureInsetBottomIgnored() && !peekHeightAuto) {
-      ViewUtils.doOnApplyWindowInsets(
-          child,
-          new ViewUtils.OnApplyWindowInsetsListener() {
-            @Override
-            public WindowInsetsCompat onApplyWindowInsets(
-                View view, WindowInsetsCompat insets, RelativePadding initialPadding) {
-              gestureInsetBottom = insets.getMandatorySystemGestureInsets().bottom;
-              updatePeekHeight(/* animate= */ false);
-              return insets;
-            }
-          });
+  private void setWindowInsetsListener(@NonNull View child) {
+    // Ensure the peek height is at least as large as the bottom gesture inset size so that
+    // the sheet can always be dragged, but only when the inset is required by the system.
+    final boolean shouldHandleGestureInsets =
+        VERSION.SDK_INT >= VERSION_CODES.Q && !isGestureInsetBottomIgnored() && !peekHeightAuto;
+
+    // If were not handling insets at all, don't apply the listener.
+    if (!paddingBottomSystemWindowInsets
+        && !paddingLeftSystemWindowInsets
+        && !paddingRightSystemWindowInsets
+        && !shouldHandleGestureInsets) {
+      return;
     }
+    ViewUtils.doOnApplyWindowInsets(
+        child,
+        new ViewUtils.OnApplyWindowInsetsListener() {
+          @Override
+          public WindowInsetsCompat onApplyWindowInsets(
+              View view, WindowInsetsCompat insets, RelativePadding initialPadding) {
+            insetTop = insets.getSystemWindowInsetTop();
+
+            boolean isRtl = ViewUtils.isLayoutRtl(view);
+
+            int bottomPadding = view.getPaddingBottom();
+            int leftPadding = view.getPaddingLeft();
+            int rightPadding = view.getPaddingRight();
+
+            if (paddingBottomSystemWindowInsets) {
+              insetBottom = insets.getSystemWindowInsetBottom();
+              bottomPadding = initialPadding.bottom + insetBottom;
+            }
+
+            if (paddingLeftSystemWindowInsets) {
+              leftPadding = isRtl ? initialPadding.end : initialPadding.start;
+              leftPadding += insets.getSystemWindowInsetLeft();
+            }
+
+            if (paddingRightSystemWindowInsets) {
+              rightPadding = isRtl ? initialPadding.start : initialPadding.end;
+              rightPadding += insets.getSystemWindowInsetRight();
+            }
+
+            view.setPadding(leftPadding, view.getPaddingTop(), rightPadding, bottomPadding);
+
+            if (shouldHandleGestureInsets) {
+              gestureInsetBottom = insets.getMandatorySystemGestureInsets().bottom;
+            }
+
+            // Don't update the peek height to be above the navigation bar or gestures if these
+            // flags are off. It means the client is already handling it.
+            if (paddingBottomSystemWindowInsets || shouldHandleGestureInsets) {
+              updatePeekHeight(/* animate= */ false);
+            }
+            return insets;
+          }
+        });
   }
 
   private float getYVelocity() {
@@ -1419,7 +1495,7 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
                 top = halfExpandedOffset;
                 targetState = STATE_HALF_EXPANDED;
               } else {
-                top = expandedOffset;
+                top = getExpandedOffset();
                 targetState = STATE_EXPANDED;
               }
             }
@@ -1433,9 +1509,9 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
             } else if (fitToContents) {
               top = fitToContentsOffset;
               targetState = STATE_EXPANDED;
-            } else if (Math.abs(releasedChild.getTop() - expandedOffset)
+            } else if (Math.abs(releasedChild.getTop() - getExpandedOffset())
                 < Math.abs(releasedChild.getTop() - halfExpandedOffset)) {
-              top = expandedOffset;
+              top = getExpandedOffset();
               targetState = STATE_EXPANDED;
             } else {
               top = halfExpandedOffset;
@@ -1457,7 +1533,7 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
             } else {
               if (currentTop < halfExpandedOffset) {
                 if (currentTop < Math.abs(currentTop - collapsedOffset)) {
-                  top = expandedOffset;
+                  top = getExpandedOffset();
                   targetState = STATE_EXPANDED;
                 } else {
                   top = halfExpandedOffset;
@@ -1751,7 +1827,7 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
     if (expandHalfwayActionId != View.NO_ID) {
       ViewCompat.removeAccessibilityAction(child, expandHalfwayActionId);
     }
-    if (state != STATE_HALF_EXPANDED) {
+    if (!fitToContents && state != STATE_HALF_EXPANDED) {
       expandHalfwayActionId =
           addAccessibilityActionForState(
               child, R.string.bottomsheet_action_expand_halfway, STATE_HALF_EXPANDED);

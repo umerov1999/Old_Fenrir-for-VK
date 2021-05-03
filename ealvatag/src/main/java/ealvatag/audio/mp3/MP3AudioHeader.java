@@ -17,8 +17,6 @@
  */
 package ealvatag.audio.mp3;
 
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
-
 import androidx.annotation.NonNull;
 
 import com.google.common.base.MoreObjects;
@@ -33,6 +31,8 @@ import ealvatag.audio.io.FileOperator;
 import ealvatag.logging.ErrorMessage;
 import ealvatag.utils.TimeUnits;
 import okio.Buffer;
+
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 /**
  * Represents the audio header of an MP3 File

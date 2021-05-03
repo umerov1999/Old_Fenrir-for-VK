@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.media.voice;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.content.Context;
 
 import androidx.annotation.NonNull;
@@ -26,6 +23,9 @@ import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Logger;
 import dev.ragnarok.fenrir.util.Optional;
 import dev.ragnarok.fenrir.util.Utils;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class ExoVoicePlayer implements IVoicePlayer {
 

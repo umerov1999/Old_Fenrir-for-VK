@@ -15,26 +15,6 @@
  */
 package com.squareup.picasso;
 
-import static androidx.exifinterface.media.ExifInterface.ORIENTATION_FLIP_HORIZONTAL;
-import static androidx.exifinterface.media.ExifInterface.ORIENTATION_FLIP_VERTICAL;
-import static androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180;
-import static androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270;
-import static androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90;
-import static androidx.exifinterface.media.ExifInterface.ORIENTATION_TRANSPOSE;
-import static androidx.exifinterface.media.ExifInterface.ORIENTATION_TRANSVERSE;
-import static com.squareup.picasso.MemoryPolicy.shouldReadFromMemoryCache;
-import static com.squareup.picasso.Picasso.LoadedFrom.MEMORY;
-import static com.squareup.picasso.Picasso.Priority;
-import static com.squareup.picasso.Picasso.Priority.LOW;
-import static com.squareup.picasso.Utils.OWNER_HUNTER;
-import static com.squareup.picasso.Utils.VERB_DECODED;
-import static com.squareup.picasso.Utils.VERB_EXECUTING;
-import static com.squareup.picasso.Utils.VERB_JOINED;
-import static com.squareup.picasso.Utils.VERB_REMOVED;
-import static com.squareup.picasso.Utils.VERB_TRANSFORMED;
-import static com.squareup.picasso.Utils.getLogIdsForHunter;
-import static com.squareup.picasso.Utils.log;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -54,6 +34,26 @@ import java.util.concurrent.atomic.AtomicInteger;
 import okio.BufferedSource;
 import okio.Okio;
 import okio.Source;
+
+import static androidx.exifinterface.media.ExifInterface.ORIENTATION_FLIP_HORIZONTAL;
+import static androidx.exifinterface.media.ExifInterface.ORIENTATION_FLIP_VERTICAL;
+import static androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180;
+import static androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270;
+import static androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90;
+import static androidx.exifinterface.media.ExifInterface.ORIENTATION_TRANSPOSE;
+import static androidx.exifinterface.media.ExifInterface.ORIENTATION_TRANSVERSE;
+import static com.squareup.picasso.MemoryPolicy.shouldReadFromMemoryCache;
+import static com.squareup.picasso.Picasso.LoadedFrom.MEMORY;
+import static com.squareup.picasso.Picasso.Priority;
+import static com.squareup.picasso.Picasso.Priority.LOW;
+import static com.squareup.picasso.Utils.OWNER_HUNTER;
+import static com.squareup.picasso.Utils.VERB_DECODED;
+import static com.squareup.picasso.Utils.VERB_EXECUTING;
+import static com.squareup.picasso.Utils.VERB_JOINED;
+import static com.squareup.picasso.Utils.VERB_REMOVED;
+import static com.squareup.picasso.Utils.VERB_TRANSFORMED;
+import static com.squareup.picasso.Utils.getLogIdsForHunter;
+import static com.squareup.picasso.Utils.log;
 
 class BitmapHunter implements Runnable {
     /**

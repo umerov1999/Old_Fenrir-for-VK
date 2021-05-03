@@ -14,8 +14,6 @@
 
 package com.google.firebase.installations.remote;
 
-import static com.google.android.gms.common.internal.Preconditions.checkArgument;
-
 import android.content.Context;
 import android.net.TrafficStats;
 import android.text.TextUtils;
@@ -50,6 +48,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPOutputStream;
+
+import static com.google.android.gms.common.internal.Preconditions.checkArgument;
 
 /**
  * Http client that sends request to Firebase Installations backend API.

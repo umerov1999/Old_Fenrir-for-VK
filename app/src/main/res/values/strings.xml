@@ -841,6 +841,7 @@
     <string name="show_profile">Profile</string>
     <string name="unknown_photos_count">unknown</string>
     <string name="photos_count">%1$d photo</string>
+    <string name="local_audios_count">%1$d audio</string>
     <string name="markets_count">%1$d products</string>
     <string name="markets_available">Available</string>
     <string name="markets_not_available">Not available</string>
@@ -956,6 +957,7 @@
     <string name="owner_s_posts">Owner records</string>
     <string name="scheduled">Scheduled</string>
     <string name="all_posts">All posts</string>
+    <string name="all_audios">All audios</string>
     <string name="news_feed">Feed</string>
     <string name="subscriptions">Subscriptions</string>
     <string name="account_manager">Manager accounts</string>

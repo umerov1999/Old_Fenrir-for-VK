@@ -1,12 +1,5 @@
 package dev.ragnarok.fenrir.adapter.fave;
 
-import static dev.ragnarok.fenrir.api.model.VkApiPostSource.Data.PROFILE_ACTIVITY;
-import static dev.ragnarok.fenrir.api.model.VkApiPostSource.Data.PROFILE_PHOTO;
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeAllIsEmpty;
-
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.ContextMenu;
@@ -37,6 +30,13 @@ import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.CircleCounterButton;
 import dev.ragnarok.fenrir.view.emoji.EmojiconTextView;
 
+import static dev.ragnarok.fenrir.api.model.VkApiPostSource.Data.PROFILE_ACTIVITY;
+import static dev.ragnarok.fenrir.api.model.VkApiPostSource.Data.PROFILE_PHOTO;
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeAllIsEmpty;
+
 public class FavePostAdapter extends RecyclerBindableAdapter<Post, RecyclerView.ViewHolder> {
 
     private static final int TYPE_SCHEDULED = 2;
@@ -56,7 +56,7 @@ public class FavePostAdapter extends RecyclerBindableAdapter<Post, RecyclerView.
         super(items);
         mContext = context;
         attachmentsViewBinder = new AttachmentsViewBinder(context, attachmentsActionCallback);
-        transformation = CurrentTheme.createTransformationForAvatar(context);
+        transformation = CurrentTheme.createTransformationForAvatar();
         clickListener = adapterListener;
         mLinkActionAdapter = new LinkActionAdapter() {
             @Override

@@ -1,9 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -68,6 +64,10 @@ import dev.ragnarok.fenrir.view.LoadMoreFooterHelperComment;
 import dev.ragnarok.fenrir.view.emoji.EmojiconTextView;
 import dev.ragnarok.fenrir.view.emoji.EmojiconsPopup;
 import dev.ragnarok.fenrir.view.emoji.StickersKeyWordsAdapter;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter, ICommentsView> implements
         ICommentsView, EmojiconsPopup.OnStickerClickedListener, CommentsInputViewController.OnInputActionCallback,
@@ -630,24 +630,22 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.refresh:
-                getPresenter().fireRefreshClick();
-                return true;
-            case R.id.open_poll:
-                getPresenter().fireTopicPollClick();
-                return true;
-            case R.id.to_commented:
-                getPresenter().fireGotoSourceClick();
-                return true;
-            case R.id.direction:
-                boolean decs = Settings.get().other().toggleCommentsDirection();
-                item.setIcon(getDirectionIcon(decs));
-                getPresenter().fireDirectionChanged();
-                return true;
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.refresh) {
+            getPresenter().fireRefreshClick();
+            return true;
+        } else if (item.getItemId() == R.id.open_poll) {
+            getPresenter().fireTopicPollClick();
+            return true;
+        } else if (item.getItemId() == R.id.to_commented) {
+            getPresenter().fireGotoSourceClick();
+            return true;
+        } else if (item.getItemId() == R.id.direction) {
+            boolean decs = Settings.get().other().toggleCommentsDirection();
+            item.setIcon(getDirectionIcon(decs));
+            getPresenter().fireDirectionChanged();
+            return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

@@ -158,11 +158,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
         Utils.prepareDensity(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
-
-        if (Utils.hasLollipop()) {
-            getWindow().setStatusBarColor(Color.BLACK);
-        }
-
+        getWindow().setStatusBarColor(Color.BLACK);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         mDecorView = getWindow().getDecorView();

@@ -114,7 +114,7 @@ public class PostCreateFragment extends AbsPostEditFragment<PostCreatePresenter,
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.ready) {
             getPresenter().fireReadyClick();
             return true;

@@ -159,7 +159,7 @@ public class AudioSelectTabsFragment extends BaseFragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
             AudioSearchCriteria criteria = new AudioSearchCriteria("", false, true);
             PlaceFactory.getSingleTabSearchPlace(getAccountId(), SearchContentType.AUDIOS_SELECT, criteria).tryOpenWith(requireActivity());

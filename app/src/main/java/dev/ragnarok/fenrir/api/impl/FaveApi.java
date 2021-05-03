@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.api.impl;
 
-import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +17,8 @@ import dev.ragnarok.fenrir.api.model.response.FavePostsResponse;
 import dev.ragnarok.fenrir.api.services.IFaveService;
 import dev.ragnarok.fenrir.db.column.UserColumns;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
 
 
 class FaveApi extends AbsApi implements IFaveApi {

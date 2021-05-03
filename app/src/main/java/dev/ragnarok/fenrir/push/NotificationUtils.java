@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.push;
 
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
-
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -22,6 +19,9 @@ import dev.ragnarok.fenrir.settings.ISettings;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
 
 public class NotificationUtils {
 
@@ -50,7 +50,7 @@ public class NotificationUtils {
 
     public static Bitmap loadRoundedImage(Context context, String url, @DrawableRes int ifErrorOrEmpty) {
         Context app = context.getApplicationContext();
-        Transformation transformation = CurrentTheme.createTransformationForAvatar(app);
+        Transformation transformation = CurrentTheme.createTransformationForAvatar();
 
         int size = (int) Utils.dpToPx(64, app);
 

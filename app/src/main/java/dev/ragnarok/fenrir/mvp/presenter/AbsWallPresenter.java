@@ -1,15 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.RxUtils.dummy;
-import static dev.ragnarok.fenrir.util.RxUtils.ignore;
-import static dev.ragnarok.fenrir.util.Utils.findIndexByPredicate;
-import static dev.ragnarok.fenrir.util.Utils.findInfoByPredicate;
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
-import static dev.ragnarok.fenrir.util.Utils.intValueNotIn;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -64,6 +54,16 @@ import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.RxUtils.dummy;
+import static dev.ragnarok.fenrir.util.RxUtils.ignore;
+import static dev.ragnarok.fenrir.util.Utils.findIndexByPredicate;
+import static dev.ragnarok.fenrir.util.Utils.findInfoByPredicate;
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+import static dev.ragnarok.fenrir.util.Utils.intValueNotIn;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupportPresenter<V> {
 

@@ -31,7 +31,7 @@ public class DialogPreviewAdapter extends RecyclerView.Adapter<DialogPreviewAdap
 
     public DialogPreviewAdapter(Context context, List<Conversation> items, ActionListener actionListener) {
         mData = items;
-        mTransformation = CurrentTheme.createTransformationForAvatar(context);
+        mTransformation = CurrentTheme.createTransformationForAvatar();
         this.actionListener = actionListener;
     }
 

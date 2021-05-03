@@ -98,7 +98,7 @@ public class EnterPinFragment extends BaseMvpFragment<EnterPinPresenter, IEnterP
             PicassoInstance.with()
                     .load(url)
                     .error(R.drawable.ic_avatar_unknown)
-                    .transform(CurrentTheme.createTransformationForAvatar(requireActivity()))
+                    .transform(CurrentTheme.createTransformationForAvatar())
                     .into(mAvatar);
         }
     }
@@ -108,7 +108,7 @@ public class EnterPinFragment extends BaseMvpFragment<EnterPinPresenter, IEnterP
         if (Objects.nonNull(mAvatar)) {
             PicassoInstance.with()
                     .load(R.drawable.ic_avatar_unknown)
-                    .transform(CurrentTheme.createTransformationForAvatar(requireActivity()))
+                    .transform(CurrentTheme.createTransformationForAvatar())
                     .into(mAvatar);
         }
     }

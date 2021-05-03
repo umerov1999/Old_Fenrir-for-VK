@@ -128,7 +128,9 @@ public class AudiosTabsFragment extends BaseFragment {
         } else if (option_menu == CATALOG)
             return AudioCatalogFragment.newInstance(getAccountId(), null, true);
         else if (option_menu == LOCAL) {
-            return AudiosLocalFragment.newInstance(getAccountId());
+            AudiosLocalFragment fragment = AudiosLocalFragment.newInstance(getAccountId());
+            fragment.requireArguments().putBoolean(AudiosFragment.EXTRA_IN_TABS_CONTAINER, true);
+            return fragment;
         } else if (option_menu == LOCAL_SERVER) {
             return AudiosLocalServerFragment.newInstance(getAccountId());
         } else if (option_menu == LOCAL_DISCOGRAPHY) {
@@ -202,7 +204,7 @@ public class AudiosTabsFragment extends BaseFragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
             PlaceFactory.getAudiosTabsSearchPlace(getAccountId(), AudioSearchTabsFragment.TAB_MUSIC).tryOpenWith(requireActivity());
             return true;

@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.domain.impl;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.util.LongSparseArray;
 
 import java.util.ArrayList;
@@ -18,6 +15,9 @@ import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.util.Pair;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleTransformer;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class MessagesDecryptor implements IMessagesDecryptor {
 

@@ -35,7 +35,6 @@ import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import dev.ragnarok.fenrir.*
 import dev.ragnarok.fenrir.activity.SendAttachmentsActivity
-import dev.ragnarok.fenrir.db.Stores
 import dev.ragnarok.fenrir.domain.IAudioInteractor
 import dev.ragnarok.fenrir.domain.InteractorFactory
 import dev.ragnarok.fenrir.fragment.search.SearchContentType
@@ -66,7 +65,6 @@ import dev.ragnarok.fenrir.util.Utils
 import dev.ragnarok.fenrir.util.Utils.firstNonEmptyString
 import dev.ragnarok.fenrir.util.Utils.isEmpty
 import dev.ragnarok.fenrir.view.FadeAnimDrawable
-import dev.ragnarok.fenrir.view.FadeDrawable
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieShapeableImageView
 import dev.ragnarok.fenrir.view.pager.WeakPicassoLoadCallback
 import io.reactivex.rxjava3.core.Observable
@@ -808,39 +806,12 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                     .into(target)
             } else {
                 PicassoInstance.with().cancelRequest(target)
-                val audio = audioTrack?.url
-                if (!isEmpty(audio) && (audio!!.contains("content://") || audio.contains("file://"))) {
-                    val btm = Stores.getInstance().localMedia()
-                        .getMetadataAudioThumbnail(Uri.parse(audio), 512, 512)
-                    if (btm == null) {
-                        if (ivBackground?.drawable is Animatable) {
-                            (ivBackground?.drawable as Animatable).stop()
-                        }
-                        ivBackground?.setImageDrawable(null)
-                        playerGradientFirst?.visibility = View.GONE
-                        playerGradientSecond?.visibility = View.GONE
-                    } else {
-                        playerGradientFirst?.visibility = View.VISIBLE
-                        playerGradientSecond?.visibility = View.VISIBLE
-                        FadeAnimDrawable.setBitmap(
-                            ivBackground!!,
-                            requireActivity(),
-                            BlurTransformation.blurRenderScript(
-                                requireActivity(),
-                                btm,
-                                Settings.get()
-                                    .other().playerCoverBackgroundSettings.blur.toFloat()
-                            )
-                        )
-                    }
-                } else {
-                    if (ivBackground?.drawable is Animatable) {
-                        (ivBackground?.drawable as Animatable).stop()
-                    }
-                    ivBackground?.setImageDrawable(null)
-                    playerGradientFirst?.visibility = View.GONE
-                    playerGradientSecond?.visibility = View.GONE
+                if (ivBackground?.drawable is Animatable) {
+                    (ivBackground?.drawable as Animatable).stop()
                 }
+                ivBackground?.setImageDrawable(null)
+                playerGradientFirst?.visibility = View.GONE
+                playerGradientSecond?.visibility = View.GONE
             }
         }
 
@@ -1168,54 +1139,23 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                     .into(ivCover, mPicassoLoadCallback)
             } else {
                 PicassoInstance.with().cancelRequest(target)
-                val audio = audioTrack.url
-                if (!isEmpty(audio) && (audio!!.contains("content://") || audio.contains("file://"))) {
-                    val btm = Stores.getInstance().localMedia()
-                        .getMetadataAudioThumbnail(Uri.parse(audio), 512, 512)
-                    if (btm == null) {
-                        ivCover.scaleType = ImageView.ScaleType.CENTER
-                        if (FenrirNative.isNativeLoaded()) {
-                            ivCover.fromRes(
-                                R.raw.auidio_no_cover, 450, 450, intArrayOf(
-                                    0x333333,
-                                    CurrentTheme.getColorSurface(requireActivity()),
-                                    0x777777,
-                                    CurrentTheme.getColorOnSurface(requireActivity())
-                                )
-                            )
-                            ivCover.playAnimation()
-                        } else {
-                            ivCover.setImageResource(R.drawable.itunes)
-                            ivCover.drawable.setTint(
-                                CurrentTheme.getColorOnSurface(
-                                    requireActivity()
-                                )
-                            )
-                        }
-                    } else {
-                        ivCover.scaleType = ImageView.ScaleType.FIT_START
-                        FadeDrawable.setBitmap(
-                            ivCover,
-                            requireActivity(),
-                            btm
+                ivCover.scaleType = ImageView.ScaleType.CENTER
+                if (FenrirNative.isNativeLoaded()) {
+                    ivCover.fromRes(
+                        R.raw.auidio_no_cover,
+                        450,
+                        450,
+                        intArrayOf(
+                            0x333333,
+                            CurrentTheme.getColorSurface(requireActivity()),
+                            0x777777,
+                            CurrentTheme.getColorOnSurface(requireActivity())
                         )
-                    }
+                    )
+                    ivCover.playAnimation()
                 } else {
-                    ivCover.scaleType = ImageView.ScaleType.CENTER
-                    if (FenrirNative.isNativeLoaded()) {
-                        ivCover.fromRes(
-                            R.raw.auidio_no_cover, 450, 450, intArrayOf(
-                                0x333333,
-                                CurrentTheme.getColorSurface(requireActivity()),
-                                0x777777,
-                                CurrentTheme.getColorOnSurface(requireActivity())
-                            )
-                        )
-                        ivCover.playAnimation()
-                    } else {
-                        ivCover.setImageResource(R.drawable.itunes)
-                        ivCover.drawable.setTint(CurrentTheme.getColorOnSurface(requireActivity()))
-                    }
+                    ivCover.setImageResource(R.drawable.itunes)
+                    ivCover.drawable.setTint(CurrentTheme.getColorOnSurface(requireActivity()))
                 }
             }
         }

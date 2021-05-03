@@ -1,5 +1,25 @@
 package dev.ragnarok.fenrir.db.impl;
 
+import android.content.ContentProviderOperation;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
+
+import androidx.annotation.NonNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import dev.ragnarok.fenrir.db.DatabaseIdRange;
+import dev.ragnarok.fenrir.db.MessengerContentProvider;
+import dev.ragnarok.fenrir.db.column.VideoColumns;
+import dev.ragnarok.fenrir.db.interfaces.IVideoStorage;
+import dev.ragnarok.fenrir.db.model.entity.PrivacyEntity;
+import dev.ragnarok.fenrir.db.model.entity.VideoEntity;
+import dev.ragnarok.fenrir.model.VideoCriteria;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
+
 import static android.provider.BaseColumns._ID;
 import static dev.ragnarok.fenrir.db.column.VideoColumns.ACCESS_KEY;
 import static dev.ragnarok.fenrir.db.column.VideoColumns.ADDING_DATE;
@@ -34,26 +54,6 @@ import static dev.ragnarok.fenrir.db.column.VideoColumns.VIEWS;
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
-
-import android.content.ContentProviderOperation;
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.net.Uri;
-
-import androidx.annotation.NonNull;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import dev.ragnarok.fenrir.db.DatabaseIdRange;
-import dev.ragnarok.fenrir.db.MessengerContentProvider;
-import dev.ragnarok.fenrir.db.column.VideoColumns;
-import dev.ragnarok.fenrir.db.interfaces.IVideoStorage;
-import dev.ragnarok.fenrir.db.model.entity.PrivacyEntity;
-import dev.ragnarok.fenrir.db.model.entity.VideoEntity;
-import dev.ragnarok.fenrir.model.VideoCriteria;
-import io.reactivex.rxjava3.core.Completable;
-import io.reactivex.rxjava3.core.Single;
 
 
 class VideoStorage extends AbsStorage implements IVideoStorage {

@@ -16,9 +16,6 @@
  */
 package ealvatag.audio;
 
-import static ealvatag.utils.StandardCharsets.ISO_8859_1;
-import static ealvatag.utils.StandardCharsets.US_ASCII;
-
 import com.google.common.io.Files;
 
 import java.io.DataInput;
@@ -34,6 +31,9 @@ import java.nio.charset.Charset;
 import ealvatag.utils.ArrayUtil;
 import ealvatag.utils.FileTypeUtil;
 import okio.Buffer;
+
+import static ealvatag.utils.StandardCharsets.ISO_8859_1;
+import static ealvatag.utils.StandardCharsets.US_ASCII;
 
 /**
  * Contains various frequently used static functions in the different tag formats.

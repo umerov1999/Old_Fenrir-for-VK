@@ -15,8 +15,6 @@
  */
 package com.squareup.picasso;
 
-import static java.util.Collections.unmodifiableList;
-
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.view.Gravity;
@@ -31,6 +29,8 @@ import com.squareup.picasso.Picasso.Priority;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static java.util.Collections.unmodifiableList;
 
 /**
  * Immutable data about an image and the transformations that will be applied to it.

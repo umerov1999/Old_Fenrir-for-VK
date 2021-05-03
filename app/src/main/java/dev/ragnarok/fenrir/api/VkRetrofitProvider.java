@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.api;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.annotation.SuppressLint;
 
 import com.google.gson.Gson;
@@ -95,6 +92,9 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class VkRetrofitProvider implements IVkRetrofitProvider {
 

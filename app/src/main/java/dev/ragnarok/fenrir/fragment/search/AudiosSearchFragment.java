@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment.search;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -33,6 +31,8 @@ import dev.ragnarok.fenrir.player.util.MusicUtils;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 
 public class AudiosSearchFragment extends AbsSearchFragment<AudiosSearchPresenter, IAudioSearchView, Audio, AudioRecyclerAdapter> implements IAudioSearchView {

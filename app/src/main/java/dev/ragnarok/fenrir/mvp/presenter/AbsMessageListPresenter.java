@@ -1,9 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
-import static dev.ragnarok.fenrir.util.Utils.countOfSelection;
-import static dev.ragnarok.fenrir.util.Utils.getSelected;
-import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
-
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -31,6 +27,10 @@ import dev.ragnarok.fenrir.mvp.view.IBasicMessageListView;
 import dev.ragnarok.fenrir.util.Lookup;
 import dev.ragnarok.fenrir.util.Optional;
 import dev.ragnarok.fenrir.util.Utils;
+
+import static dev.ragnarok.fenrir.util.Utils.countOfSelection;
+import static dev.ragnarok.fenrir.util.Utils.getSelected;
+import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
 
 public abstract class AbsMessageListPresenter<V extends IBasicMessageListView> extends
         PlaceSupportPresenter<V> implements IVoicePlayer.IPlayerStatusListener {
@@ -113,19 +113,25 @@ public abstract class AbsMessageListPresenter<V extends IBasicMessageListView> e
         }
     }
 
-    public void fireMessageLongClick(Message message) {
-        message.setSelected(!message.isSelected());
-        resolveActionMode();
-        safeNotifyDataChanged();
+    protected void safeNotifyItemChanged(int index) {
+        if (isGuiReady()) {
+            getView().notifyItemChanged(index);
+        }
     }
 
-    public void fireMessageClick(@NonNull Message message) {
+    public void fireMessageLongClick(@NonNull Message message, int position) {
+        message.setSelected(!message.isSelected());
+        resolveActionMode();
+        safeNotifyItemChanged(position);
+    }
+
+    public void fireMessageClick(@NonNull Message message, int position) {
         int actionModeActive = countOfSelection(getData());
 
         if (actionModeActive > 0) {
             message.setSelected(!message.isSelected());
             resolveActionMode();
-            safeNotifyDataChanged();
+            safeNotifyItemChanged(position);
         } else {
             onMessageClick(message);
         }

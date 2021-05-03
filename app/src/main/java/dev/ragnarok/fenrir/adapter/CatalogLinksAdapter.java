@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
@@ -26,6 +24,8 @@ import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 
 public class CatalogLinksAdapter extends RecyclerBindableAdapter<Link, CatalogLinksAdapter.LinkViewHolder> {
 
@@ -34,7 +34,7 @@ public class CatalogLinksAdapter extends RecyclerBindableAdapter<Link, CatalogLi
 
     public CatalogLinksAdapter(List<Link> data, Context context) {
         super(data);
-        transformation = CurrentTheme.createTransformationForAvatar(context);
+        transformation = CurrentTheme.createTransformationForAvatar();
     }
 
     public void setActionListener(ActionListener listener) {

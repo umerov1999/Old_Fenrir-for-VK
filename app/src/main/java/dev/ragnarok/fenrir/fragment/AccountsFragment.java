@@ -594,18 +594,14 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_proxy) {
             startProxySettings();
             return true;
-        }
-
-        if (item.getItemId() == R.id.action_preferences) {
+        } else if (item.getItemId() == R.id.action_preferences) {
             PlaceFactory.getPreferencesPlace(Settings.get().accounts().getCurrent()).tryOpenWith(requireActivity());
             return true;
-        }
-
-        if (item.getItemId() == R.id.entry_account) {
+        } else if (item.getItemId() == R.id.entry_account) {
             View root = View.inflate(requireActivity(), R.layout.entry_account, null);
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity())
                     .setTitle(R.string.entry_account)
@@ -626,9 +622,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                     .setNegativeButton(R.string.button_cancel, null);
             builder.create().show();
             return true;
-        }
-
-        if (item.getItemId() == R.id.export_accounts) {
+        } else if (item.getItemId() == R.id.export_accounts) {
             if (Settings.get().accounts() == null || Settings.get().accounts().getRegistered() == null || Settings.get().accounts().getRegistered().size() <= 0)
                 return true;
             if (!AppPerms.hasReadWriteStoragePermission(requireActivity())) {
@@ -640,9 +634,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
             } else
                 startExportAccounts();
             return true;
-        }
-
-        if (item.getItemId() == R.id.import_accounts) {
+        } else if (item.getItemId() == R.id.import_accounts) {
             if (!AppPerms.hasReadStoragePermission(requireActivity())) {
                 requestReadPermission.launch();
                 return true;

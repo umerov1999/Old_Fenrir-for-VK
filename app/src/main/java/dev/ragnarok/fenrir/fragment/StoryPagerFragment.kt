@@ -73,7 +73,7 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         if (savedInstanceState != null) {
             mFullscreen = savedInstanceState.getBoolean("mFullscreen")
         }
-        transformation = CurrentTheme.createTransformationForAvatar(requireActivity())
+        transformation = CurrentTheme.createTransformationForAvatar()
     }
 
     private val requestWritePermission = AppPerms.requestPermissions(

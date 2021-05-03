@@ -1,15 +1,5 @@
 package dev.ragnarok.fenrir.db.impl;
 
-import static dev.ragnarok.fenrir.db.column.StikerSetColumns.ACTIVE;
-import static dev.ragnarok.fenrir.db.column.StikerSetColumns.ICON;
-import static dev.ragnarok.fenrir.db.column.StikerSetColumns.POSITION;
-import static dev.ragnarok.fenrir.db.column.StikerSetColumns.PROMOTED;
-import static dev.ragnarok.fenrir.db.column.StikerSetColumns.PURCHASED;
-import static dev.ragnarok.fenrir.db.column.StikerSetColumns.STICKERS;
-import static dev.ragnarok.fenrir.db.column.StikerSetColumns.TITLE;
-import static dev.ragnarok.fenrir.db.column.StikerSetColumns._ID;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -33,6 +23,16 @@ import dev.ragnarok.fenrir.db.model.entity.StickersKeywordsEntity;
 import dev.ragnarok.fenrir.util.Exestime;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.db.column.StikerSetColumns.ACTIVE;
+import static dev.ragnarok.fenrir.db.column.StikerSetColumns.ICON;
+import static dev.ragnarok.fenrir.db.column.StikerSetColumns.POSITION;
+import static dev.ragnarok.fenrir.db.column.StikerSetColumns.PROMOTED;
+import static dev.ragnarok.fenrir.db.column.StikerSetColumns.PURCHASED;
+import static dev.ragnarok.fenrir.db.column.StikerSetColumns.STICKERS;
+import static dev.ragnarok.fenrir.db.column.StikerSetColumns.TITLE;
+import static dev.ragnarok.fenrir.db.column.StikerSetColumns._ID;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 
 class StickersStorage extends AbsStorage implements IStickersStorage {

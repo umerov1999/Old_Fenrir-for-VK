@@ -79,6 +79,7 @@ class PicassoInstance @SuppressLint("CheckResult") private constructor(
             .defaultBitmapConfig(Bitmap.Config.ARGB_8888)
             .downloader(OkHttp3Downloader(builder.build()))
             .addRequestHandler(PicassoLocalRequestHandler())
+            .addRequestHandler(PicassoMediaMetadataHandler())
             .build()
     }
 

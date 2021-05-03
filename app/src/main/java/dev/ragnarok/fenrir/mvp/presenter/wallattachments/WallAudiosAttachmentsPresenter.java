@@ -1,11 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter.wallattachments;
 
-import static dev.ragnarok.fenrir.util.RxUtils.dummy;
-import static dev.ragnarok.fenrir.util.RxUtils.ignore;
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -26,6 +20,12 @@ import dev.ragnarok.fenrir.mvp.view.wallattachments.IWallAudiosAttachmentsView;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+
+import static dev.ragnarok.fenrir.util.RxUtils.dummy;
+import static dev.ragnarok.fenrir.util.RxUtils.ignore;
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 public class WallAudiosAttachmentsPresenter extends PlaceSupportPresenter<IWallAudiosAttachmentsView> {
 

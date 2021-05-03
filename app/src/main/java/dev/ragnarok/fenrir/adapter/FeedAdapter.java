@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import static dev.ragnarok.fenrir.util.Utils.safeLenghtOf;
-
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.ContextMenu;
@@ -30,6 +28,8 @@ import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.CircleCounterButton;
 
+import static dev.ragnarok.fenrir.util.Utils.safeLenghtOf;
+
 public class FeedAdapter extends RecyclerBindableAdapter<News, FeedAdapter.PostHolder> {
 
     private final Context context;
@@ -43,7 +43,7 @@ public class FeedAdapter extends RecyclerBindableAdapter<News, FeedAdapter.PostH
         super(data);
         this.context = context;
         attachmentsViewBinder = new AttachmentsViewBinder(context, attachmentsActionCallback);
-        transformation = CurrentTheme.createTransformationForAvatar(context);
+        transformation = CurrentTheme.createTransformationForAvatar();
     }
 
     @Override

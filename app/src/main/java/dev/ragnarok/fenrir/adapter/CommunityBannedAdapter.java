@@ -39,7 +39,7 @@ public class CommunityBannedAdapter extends RecyclerView.Adapter<CommunityBanned
 
     public CommunityBannedAdapter(Context context, List<Banned> data) {
         this.data = data;
-        transformation = CurrentTheme.createTransformationForAvatar(context);
+        transformation = CurrentTheme.createTransformationForAvatar();
     }
 
     @NonNull

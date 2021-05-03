@@ -46,15 +46,10 @@ public class RepeatingImageButton extends AppCompatImageButton implements OnClic
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.action_button_previous:
-                MusicUtils.previous(getContext());
-                break;
-            case R.id.action_button_next:
-                MusicUtils.next();
-                break;
-            default:
-                break;
+        if (view.getId() == R.id.action_button_previous) {
+            MusicUtils.previous(getContext());
+        } else if (view.getId() == R.id.action_button_next) {
+            MusicUtils.next();
         }
     }
 
@@ -126,15 +121,10 @@ public class RepeatingImageButton extends AppCompatImageButton implements OnClic
     }
 
     public void updateState() {
-        switch (getId()) {
-            case R.id.action_button_next:
-                setImageResource(R.drawable.page_last);
-                break;
-            case R.id.action_button_previous:
-                setImageResource(R.drawable.page_first);
-                break;
-            default:
-                break;
+        if (getId() == R.id.action_button_next) {
+            setImageResource(R.drawable.page_last);
+        } else if (getId() == R.id.action_button_previous) {
+            setImageResource(R.drawable.page_first);
         }
     }
 

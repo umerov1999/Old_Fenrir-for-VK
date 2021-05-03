@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.link.internal;
 
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.text.Spannable;
 import android.text.Spanned;
 import android.text.style.ClickableSpan;
@@ -20,9 +17,12 @@ import java.util.regex.Pattern;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
 
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 public class OwnerLinkSpanFactory {
 
-    private static final Comparator<AbsInternalLink> LINK_COMPARATOR = (link1, link2) -> link1.start - link2.start;
+    private static final Comparator<AbsInternalLink> LINK_COMPARATOR = Comparator.comparingInt(link -> link.start);
     private static final Pattern ownerPattern;
     private static final Pattern topicCommentPattern;
     private static final Pattern linkPattern;

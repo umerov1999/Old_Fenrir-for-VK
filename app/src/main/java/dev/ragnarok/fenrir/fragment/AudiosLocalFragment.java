@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.Manifest;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -39,6 +37,8 @@ import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.MySearchView;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class AudiosLocalFragment extends BaseMvpFragment<AudiosLocalPresenter, IAudiosLocalView>
         implements MySearchView.OnQueryTextListener, DocsUploadAdapter.ActionListener, AudioLocalRecyclerAdapter.ClickListener, IAudiosLocalView {
@@ -78,9 +78,15 @@ public class AudiosLocalFragment extends BaseMvpFragment<AudiosLocalPresenter, I
 
         MySearchView searchView = root.findViewById(R.id.searchview);
         searchView.setOnQueryTextListener(this);
-        searchView.setRightButtonVisibility(false);
+        searchView.setRightButtonVisibility(true);
+        searchView.setRightIcon(R.drawable.ic_menu_24_white);
         searchView.setLeftIcon(R.drawable.magnify);
         searchView.setQuery("", true);
+        searchView.setOnAdditionalButtonClickListener(() -> LocalAudioAlbumsFragment.newInstance(bucket_id -> {
+            if (isPresenterPrepared()) {
+                getPresenter().fireBucketSelected(bucket_id);
+            }
+        }).show(getChildFragmentManager(), "audio_albums_local"));
 
         RecyclerView uploadRecyclerView = root.findViewById(R.id.uploads_recycler_view);
         uploadRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false));

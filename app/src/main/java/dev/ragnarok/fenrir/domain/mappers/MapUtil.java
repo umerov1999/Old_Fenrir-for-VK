@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.domain.mappers;
 
-import static dev.ragnarok.fenrir.util.Utils.addFlagIf;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -12,6 +10,8 @@ import java.util.List;
 
 import dev.ragnarok.fenrir.api.model.VkApiConversation;
 import dev.ragnarok.fenrir.model.Conversation;
+
+import static dev.ragnarok.fenrir.util.Utils.addFlagIf;
 
 public class MapUtil {
 

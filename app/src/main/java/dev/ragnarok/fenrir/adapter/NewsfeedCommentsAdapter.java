@@ -1,12 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import static dev.ragnarok.fenrir.util.AppTextUtils.getDateFromUnixTime;
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.ViewUtils.displayAvatar;
-
 import android.content.Context;
 import android.text.Spannable;
 import android.view.LayoutInflater;
@@ -46,6 +39,13 @@ import dev.ragnarok.fenrir.view.AspectRatioImageView;
 import dev.ragnarok.fenrir.view.VideoServiceIcons;
 import dev.ragnarok.fenrir.view.emoji.EmojiconTextView;
 
+import static dev.ragnarok.fenrir.util.AppTextUtils.getDateFromUnixTime;
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.ViewUtils.displayAvatar;
+
 public class NewsfeedCommentsAdapter extends AbsRecyclerViewAdapter<NewsfeedCommentsAdapter.AbsHolder> {
 
     private static final int VTYPE_POST = 1;
@@ -65,7 +65,7 @@ public class NewsfeedCommentsAdapter extends AbsRecyclerViewAdapter<NewsfeedComm
                                    AttachmentsViewBinder.OnAttachmentsActionCallback callback) {
         this.context = context;
         this.data = data;
-        transformation = CurrentTheme.createTransformationForAvatar(context);
+        transformation = CurrentTheme.createTransformationForAvatar();
         attachmentsViewBinder = new AttachmentsViewBinder(context, callback);
 
         colorTextSecondary = CurrentTheme.getSecondaryTextColorCode(context);

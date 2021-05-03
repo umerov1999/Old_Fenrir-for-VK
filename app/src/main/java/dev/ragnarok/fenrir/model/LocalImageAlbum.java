@@ -19,7 +19,6 @@ public class LocalImageAlbum implements Parcelable {
     private int id;
     private String name;
     private long coverImageId;
-    private String coverPath;
     private int photoCount;
 
     public LocalImageAlbum() {
@@ -30,7 +29,6 @@ public class LocalImageAlbum implements Parcelable {
         id = in.readInt();
         name = in.readString();
         coverImageId = in.readLong();
-        coverPath = in.readString();
         photoCount = in.readInt();
     }
 
@@ -61,15 +59,6 @@ public class LocalImageAlbum implements Parcelable {
         return this;
     }
 
-    public String getCoverPath() {
-        return coverPath;
-    }
-
-    public LocalImageAlbum setCoverPath(String coverPath) {
-        this.coverPath = coverPath;
-        return this;
-    }
-
     public int getPhotoCount() {
         return photoCount;
     }
@@ -89,7 +78,6 @@ public class LocalImageAlbum implements Parcelable {
         dest.writeInt(id);
         dest.writeString(name);
         dest.writeLong(coverImageId);
-        dest.writeString(coverPath);
         dest.writeInt(photoCount);
     }
 }

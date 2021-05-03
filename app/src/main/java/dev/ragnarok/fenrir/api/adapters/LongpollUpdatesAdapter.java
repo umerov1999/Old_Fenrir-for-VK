@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.api.adapters;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -14,6 +12,8 @@ import java.lang.reflect.Type;
 import dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent;
 import dev.ragnarok.fenrir.api.model.longpoll.VkApiLongpollUpdates;
 import dev.ragnarok.fenrir.util.Logger;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class LongpollUpdatesAdapter extends AbsAdapter implements JsonDeserializer<VkApiLongpollUpdates> {
 

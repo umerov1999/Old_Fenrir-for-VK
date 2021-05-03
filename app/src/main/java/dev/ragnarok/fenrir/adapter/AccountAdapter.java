@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
@@ -24,6 +22,7 @@ import dev.ragnarok.fenrir.fragment.UserInfoResolveUtil;
 import dev.ragnarok.fenrir.model.Account;
 import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.User;
+import dev.ragnarok.fenrir.module.FenrirNative;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Objects;
@@ -31,6 +30,8 @@ import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.OnlineView;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
+
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class AccountAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -46,7 +47,7 @@ public class AccountAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public AccountAdapter(Context context, List<Account> items, Callback callback) {
         this.context = context;
         data = items;
-        transformation = CurrentTheme.createTransformationForAvatar(context);
+        transformation = CurrentTheme.createTransformationForAvatar();
         this.callback = callback;
         showHidden = Settings.get().security().IsShow_hidden_accounts();
     }
@@ -124,11 +125,17 @@ public class AccountAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 .getCurrent();
 
         holder.active.setVisibility(isCurrent ? View.VISIBLE : View.INVISIBLE);
-        if (isCurrent) {
-            holder.active.fromRes(R.raw.select_check_box, Utils.dp(40), Utils.dp(40), new int[]{0x333333, CurrentTheme.getColorPrimary(context), 0x777777, CurrentTheme.getColorSecondary(context)});
-            holder.active.playAnimation();
+        if (Utils.hasMarshmallow() && FenrirNative.isNativeLoaded()) {
+            if (isCurrent) {
+                holder.active.fromRes(R.raw.select_check_box, Utils.dp(40), Utils.dp(40), new int[]{0x333333, CurrentTheme.getColorPrimary(context), 0x777777, CurrentTheme.getColorSecondary(context)});
+                holder.active.playAnimation();
+            } else {
+                holder.active.stopAnimation();
+            }
         } else {
-            holder.active.stopAnimation();
+            if (isCurrent) {
+                holder.active.setImageResource(R.drawable.check);
+            }
         }
         holder.account.setOnClickListener(v -> callback.onClick(account));
     }

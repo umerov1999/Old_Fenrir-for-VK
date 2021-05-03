@@ -1,9 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -34,6 +30,10 @@ import dev.ragnarok.fenrir.mvp.view.IGroupWallView;
 import dev.ragnarok.fenrir.settings.ISettings;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 
 public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
 
@@ -415,22 +415,18 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
                 break;
 
             case VKApiCommunity.MemberStatus.DECLINED_INVITATION:
-                switch (community.getType()) {
-                    case VKApiCommunity.Type.GROUP:
-                        community.setMember(false);
-                        community.setMemberStatus(VKApiCommunity.MemberStatus.SENT_REQUEST);
-                        resultMessage = R.string.community_send_request_success;
-                        break;
+                if (community.getType() == VKApiCommunity.Type.GROUP) {
+                    community.setMember(false);
+                    community.setMemberStatus(VKApiCommunity.MemberStatus.SENT_REQUEST);
+                    resultMessage = R.string.community_send_request_success;
                 }
                 break;
 
             case VKApiCommunity.MemberStatus.INVITED:
-                switch (community.getType()) {
-                    case VKApiCommunity.Type.GROUP:
-                        community.setMember(true);
-                        community.setMemberStatus(VKApiCommunity.MemberStatus.IS_MEMBER);
-                        resultMessage = R.string.community_join_success;
-                        break;
+                if (community.getType() == VKApiCommunity.Type.GROUP) {
+                    community.setMember(true);
+                    community.setMemberStatus(VKApiCommunity.MemberStatus.IS_MEMBER);
+                    resultMessage = R.string.community_join_success;
                 }
                 break;
         }

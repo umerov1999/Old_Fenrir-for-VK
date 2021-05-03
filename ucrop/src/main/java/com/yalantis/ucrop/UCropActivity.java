@@ -190,7 +190,7 @@ public class UCropActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_crop) {
             cropAndSaveImage();
             return true;

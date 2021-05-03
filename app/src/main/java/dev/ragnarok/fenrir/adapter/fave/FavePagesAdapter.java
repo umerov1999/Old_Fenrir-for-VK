@@ -39,7 +39,7 @@ public class FavePagesAdapter extends RecyclerView.Adapter<FavePagesAdapter.Hold
     public FavePagesAdapter(List<FavePage> data, Context context) {
         this.data = data;
         this.context = context;
-        transformation = CurrentTheme.createTransformationForAvatar(context);
+        transformation = CurrentTheme.createTransformationForAvatar();
     }
 
     @NonNull

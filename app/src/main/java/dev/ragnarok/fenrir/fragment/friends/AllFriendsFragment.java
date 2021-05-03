@@ -1,9 +1,6 @@
 package dev.ragnarok.fenrir.fragment.friends;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +37,8 @@ import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.MySearchView;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class AllFriendsFragment extends BaseMvpFragment<AllFriendsPresenter, IAllFriendsView>
         implements FriendsRecycleAdapter.Listener, IAllFriendsView {
@@ -96,10 +95,6 @@ public class AllFriendsFragment extends BaseMvpFragment<AllFriendsPresenter, IAl
 
         InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mySearchView.getWindowToken(), 0);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            root.findViewById(R.id.appbar).setElevation(0);
-        }
 
         mAdapter = new FriendsRecycleAdapter(Collections.emptyList(), requireActivity());
         mAdapter.setListener(this);

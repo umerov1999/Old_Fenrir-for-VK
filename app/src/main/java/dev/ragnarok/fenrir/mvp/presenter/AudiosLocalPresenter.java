@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
-import static dev.ragnarok.fenrir.Injection.provideMainThreadScheduler;
-import static dev.ragnarok.fenrir.util.Utils.findIndexById;
-
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,6 +31,9 @@ import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
+import static dev.ragnarok.fenrir.Injection.provideMainThreadScheduler;
+import static dev.ragnarok.fenrir.util.Utils.findIndexById;
+
 public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLocalView> {
 
     private final ArrayList<Audio> origin_audios;
@@ -47,6 +47,7 @@ public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLoca
     private String query;
     private boolean errorPermissions;
     private boolean doAudioLoadTabs;
+    private int bucket_id;
 
     public AudiosLocalPresenter(int accountId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
@@ -55,6 +56,11 @@ public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLoca
         uploadsData = new ArrayList<>(0);
         audios = new ArrayList<>();
         origin_audios = new ArrayList<>();
+    }
+
+    public void fireBucketSelected(int bucket_id) {
+        this.bucket_id = bucket_id;
+        fireRefresh();
     }
 
     public void firePrepared() {
@@ -140,11 +146,19 @@ public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLoca
 
     public void requestList() {
         setLoadingNow(true);
-        audioListDisposable.add(Stores.getInstance()
-                .localMedia()
-                .getAudios(getAccountId())
-                .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(this::onListReceived, this::onListGetError));
+        if (bucket_id == 0) {
+            audioListDisposable.add(Stores.getInstance()
+                    .localMedia()
+                    .getAudios(getAccountId())
+                    .compose(RxUtils.applySingleIOToMainSchedulers())
+                    .subscribe(this::onListReceived, this::onListGetError));
+        } else {
+            audioListDisposable.add(Stores.getInstance()
+                    .localMedia()
+                    .getAudios(getAccountId(), bucket_id)
+                    .compose(RxUtils.applySingleIOToMainSchedulers())
+                    .subscribe(this::onListReceived, this::onListGetError));
+        }
     }
 
     private void onListReceived(List<Audio> data) {

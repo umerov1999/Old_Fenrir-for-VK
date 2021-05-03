@@ -159,21 +159,20 @@ public class SecurityPreferencesFragment extends PreferenceFragmentCompat implem
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-        switch (preference.getKey()) {
-            case SecuritySettings.KEY_USE_PIN_FOR_SECURITY:
-                Boolean usePinForSecurity = (Boolean) newValue;
-                if (usePinForSecurity) {
-                    if (!Settings.get().security().hasPinHash()) {
-                        startCreatePinActivity();
-                        return false;
-                    } else {
-                        // при вызове mUsePinForSecurityPreference.setChecked(true) мы опять попадем в этот блок
-                        return true;
-                    }
+        if (SecuritySettings.KEY_USE_PIN_FOR_SECURITY.equals(preference.getKey())) {
+            Boolean usePinForSecurity = (Boolean) newValue;
+            if (usePinForSecurity) {
+                if (!Settings.get().security().hasPinHash()) {
+                    startCreatePinActivity();
+                    return false;
                 } else {
-                    Settings.get().security().setPin(null);
+                    // при вызове mUsePinForSecurityPreference.setChecked(true) мы опять попадем в этот блок
                     return true;
                 }
+            } else {
+                Settings.get().security().setPin(null);
+                return true;
+            }
         }
 
         return false;

@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +22,9 @@ import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.ColorFilterImageView;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class MenuAdapter extends ArrayAdapter<Item> {
 
@@ -114,7 +114,7 @@ public class MenuAdapter extends ArrayAdapter<Item> {
                 imageView.setColorFilterEnabled(false);
                 PicassoInstance.with()
                         .load(icon.getUrl())
-                        .transform(CurrentTheme.createTransformationForAvatar(imageView.getContext()))
+                        .transform(CurrentTheme.createTransformationForAvatar())
                         .into(imageView);
             } else {
                 imageView.setColorFilterEnabled(true);

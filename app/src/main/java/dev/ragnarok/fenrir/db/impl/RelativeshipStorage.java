@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.db.impl;
 
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
-
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -23,6 +21,8 @@ import dev.ragnarok.fenrir.db.model.entity.UserEntity;
 import dev.ragnarok.fenrir.util.Objects;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 class RelativeshipStorage extends AbsStorage implements IRelativeshipStorage {
 

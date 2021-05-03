@@ -31,7 +31,6 @@ public class SelectFacultyDialog extends AccountDependencyDialogFragment impleme
     private int universityId;
     private IDatabaseInteractor mDatabaseInteractor;
     private ArrayList<Faculty> mData;
-    private RecyclerView mRecyclerView;
     private FacultiesAdapter mAdapter;
 
     public static SelectFacultyDialog newInstance(int aid, int universityId, Bundle additional) {
@@ -55,7 +54,7 @@ public class SelectFacultyDialog extends AccountDependencyDialogFragment impleme
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View root = View.inflate(requireActivity(), R.layout.dialog_simple_recycler_view, null);
-        mRecyclerView = root.findViewById(R.id.list);
+        RecyclerView mRecyclerView = root.findViewById(R.id.list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false));
 
         boolean firstRun = false;

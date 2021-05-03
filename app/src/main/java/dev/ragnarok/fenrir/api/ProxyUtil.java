@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.api;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -13,6 +11,8 @@ import dev.ragnarok.fenrir.util.ValidationUtil;
 import okhttp3.Authenticator;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 
 public class ProxyUtil {

@@ -8,9 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.util.TypedValue;
 
-import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
 import com.squareup.picasso.Transformation;
@@ -51,7 +49,7 @@ public class CurrentTheme {
             return new GradientDrawable(GradientDrawable.Orientation.TL_BR,
                     new int[]{Settings.get().other().getColorChat(), Settings.get().other().getSecondColorChat()});
         }
-        int color = getColorFromAttrs(activity, R.attr.messages_background_color, Color.WHITE);
+        int color = getColorFromAttrs(R.attr.messages_background_color, activity, Color.WHITE);
         return new ColorDrawable(color);
     }
 
@@ -95,7 +93,7 @@ public class CurrentTheme {
         return ret;
     }
 
-    public static Transformation createTransformationForAvatar(Context context) {
+    public static Transformation createTransformationForAvatar() {
         int style = Settings.get()
                 .ui()
                 .getAvatarStyle();
@@ -170,11 +168,11 @@ public class CurrentTheme {
     }
 
     public static int getPrimaryTextColorCode(Context context) {
-        return getColorFromSystemAttrs(android.R.attr.textColorPrimary, context);
+        return getColorFromAttrs(android.R.attr.textColorPrimary, context, "#000000");
     }
 
     public static int getSecondaryTextColorCode(Context context) {
-        return getColorFromSystemAttrs(android.R.attr.textColorSecondary, context);
+        return getColorFromAttrs(android.R.attr.textColorSecondary, context, "#000000");
     }
 
     public static int getDialogsUnreadColor(Context context) {
@@ -186,52 +184,26 @@ public class CurrentTheme {
     }
 
     public static int getColorFromAttrs(int resId, Context context, String defaultColor) {
-        TypedValue a = new TypedValue();
-        context.getTheme().resolveAttribute(resId, a, true);
-        if (a.type >= TypedValue.TYPE_FIRST_COLOR_INT && a.type <= TypedValue.TYPE_LAST_COLOR_INT) {
-            return a.data;
-        } else {
-            return Color.parseColor(defaultColor);
-        }
+        int[] attribute = new int[]{resId};
+        TypedArray array = context.getTheme().obtainStyledAttributes(attribute);
+        int color = array.getColor(0, Color.parseColor(defaultColor));
+        array.recycle();
+        return color;
     }
 
-    public static int getColorFromAttrs(Context context, int resId, int defaultColor) {
-        TypedValue a = new TypedValue();
-        context.getTheme().resolveAttribute(resId, a, true);
-        if (a.type >= TypedValue.TYPE_FIRST_COLOR_INT && a.type <= TypedValue.TYPE_LAST_COLOR_INT) {
-            return a.data;
-        } else {
-            return defaultColor;
-        }
+    public static int getColorFromAttrs(int resId, Context context, int defaultColor) {
+        int[] attribute = new int[]{resId};
+        TypedArray array = context.getTheme().obtainStyledAttributes(attribute);
+        int color = array.getColor(0, defaultColor);
+        array.recycle();
+        return color;
     }
 
-    public static int getColorFromSystemAttrs(int resId, Context context) {
-        TypedValue a = new TypedValue();
-        context.getTheme().resolveAttribute(resId, a, true);
-        TypedArray arr = context.obtainStyledAttributes(a.data, new int[]{resId});
-        int result = arr.getColor(0, -1);
-        arr.recycle();
-        return result;
+    public static Drawable getDrawableFromAttribute(Context context, int attr) {
+        int[] attribute = new int[]{attr};
+        TypedArray array = context.getTheme().obtainStyledAttributes(attribute);
+        Drawable ret = array.getDrawable(0);
+        array.recycle();
+        return ret;
     }
-
-    public static int getResIdFromAttribute(Activity activity, int attr) {
-        if (attr == 0) {
-            return 0;
-        }
-
-        TypedValue typedvalueattr = new TypedValue();
-        activity.getTheme().resolveAttribute(attr, typedvalueattr, true);
-        return typedvalueattr.resourceId;
-    }
-
-    public static Drawable getDrawableFromAttribute(Activity activity, int attr) {
-        int resId = getResIdFromAttribute(activity, attr);
-        return ContextCompat.getDrawable(activity, resId);
-    }
-
-    private static String intToHexColor(int color) {
-        return String.format("#%06X", (0xFFFFFF & color));
-    }
-
-
 }

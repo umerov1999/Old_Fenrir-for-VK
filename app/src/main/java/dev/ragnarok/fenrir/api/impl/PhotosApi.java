@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.api.impl;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-
 import androidx.annotation.NonNull;
 
 import java.util.Collection;
@@ -29,6 +27,8 @@ import dev.ragnarok.fenrir.api.model.server.VkApiUploadServer;
 import dev.ragnarok.fenrir.api.model.server.VkApiWallUploadServer;
 import dev.ragnarok.fenrir.api.services.IPhotosService;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
 
 class PhotosApi extends AbsApi implements IPhotosApi {
 

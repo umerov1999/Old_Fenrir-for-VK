@@ -1,13 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.dpToPx;
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeLenghtOf;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.method.LinkMovementMethod;
@@ -79,6 +71,14 @@ import dev.ragnarok.fenrir.view.WaveFormView;
 import dev.ragnarok.fenrir.view.emoji.EmojiconTextView;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.dpToPx;
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeLenghtOf;
+
 public class AttachmentsViewBinder {
 
     private static final int PREFFERED_STICKER_SIZE = 120;
@@ -98,7 +98,7 @@ public class AttachmentsViewBinder {
     public AttachmentsViewBinder(Context context, @NonNull OnAttachmentsActionCallback attachmentsActionCallback) {
         mContext = context;
         mVoiceSharedHolders = new SharedHolders<>(true);
-        mAvatarTransformation = CurrentTheme.createTransformationForAvatar(context);
+        mAvatarTransformation = CurrentTheme.createTransformationForAvatar();
         photosViewHelper = new PhotosViewHelper(context, attachmentsActionCallback);
         mAttachmentsActionCallback = attachmentsActionCallback;
         mActiveWaveFormColor = CurrentTheme.getColorPrimary(context);

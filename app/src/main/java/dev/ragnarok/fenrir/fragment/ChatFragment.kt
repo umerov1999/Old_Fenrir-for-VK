@@ -324,7 +324,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         }
         Writing_msg_Type?.setImageResource(if (is_text) R.drawable.pencil else R.drawable.voice)
         ViewUtils.displayAvatar(
-            Writing_msg_Ava!!, CurrentTheme.createTransformationForAvatar(requireContext()),
+            Writing_msg_Ava!!, CurrentTheme.createTransformationForAvatar(),
             owner.get100photoOrSmaller(), null
         )
     }
@@ -480,6 +480,10 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
 
     override fun notifyDataChanged() {
         adapter?.notifyDataSetChanged()
+    }
+
+    override fun notifyItemChanged(index: Int) {
+        adapter?.notifyItemBindableChanged(index)
     }
 
     override fun notifyMessagesDownAdded(count: Int) {
@@ -683,7 +687,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
             isVisible = pinned != null
             pinned?.run {
                 ViewUtils.displayAvatar(
-                    pinnedAvatar!!, CurrentTheme.createTransformationForAvatar(requireContext()),
+                    pinnedAvatar!!, CurrentTheme.createTransformationForAvatar(),
                     sender.get100photoOrSmaller(), null
                 )
 
@@ -1678,9 +1682,9 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         presenter?.fireDeleteForMeClick(ids)
     }
 
-    override fun onAvatarClick(message: Message, userId: Int) {
+    override fun onAvatarClick(message: Message, userId: Int, position: Int) {
         if (isActionModeVisible()) {
-            presenter?.fireMessageClick(message)
+            presenter?.fireMessageClick(message, position)
         } else {
             presenter?.fireOwnerClick(userId)
         }
@@ -1694,16 +1698,16 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         presenter?.fireBotSendClick(button, requireActivity())
     }
 
-    override fun onMessageLongClick(message: Message): Boolean {
-        presenter?.fireMessageLongClick(message)
+    override fun onMessageLongClick(message: Message, position: Int): Boolean {
+        presenter?.fireMessageLongClick(message, position)
         return true
     }
 
-    override fun onMessageClicked(message: Message) {
-        presenter?.fireMessageClick(message)
+    override fun onMessageClicked(message: Message, position: Int) {
+        presenter?.fireMessageClick(message, position)
     }
 
-    override fun onLongAvatarClick(message: Message, userId: Int) {
+    override fun onLongAvatarClick(message: Message, userId: Int, position: Int) {
         presenter?.fireLongAvatarClick(userId)
     }
 

@@ -287,19 +287,19 @@ class LocalJsonToChatFragment :
             .apply(requireActivity())
     }
 
-    override fun onAvatarClick(message: Message, userId: Int) {
+    override fun onAvatarClick(message: Message, userId: Int, position: Int) {
         presenter!!.fireOwnerClick(userId)
     }
 
-    override fun onLongAvatarClick(message: Message, userId: Int) {}
+    override fun onLongAvatarClick(message: Message, userId: Int, position: Int) {}
     override fun onRestoreClick(message: Message, position: Int) {}
     override fun onBotKeyboardClick(button: Keyboard.Button) {}
 
-    override fun onMessageLongClick(message: Message): Boolean {
+    override fun onMessageLongClick(message: Message, position: Int): Boolean {
         return false
     }
 
-    override fun onMessageClicked(message: Message) {}
+    override fun onMessageClicked(message: Message, position: Int) {}
     override fun onMessageDelete(message: Message) {}
 
     companion object {

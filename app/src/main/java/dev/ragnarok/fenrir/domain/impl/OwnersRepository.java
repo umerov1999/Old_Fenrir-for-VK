@@ -1,38 +1,5 @@
 package dev.ragnarok.fenrir.domain.impl;
 
-import static java.util.Collections.singletonList;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.ACTIVITY;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.BAN_INFO;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.BLACKLISTED;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.CAN_CTARE_TOPIC;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.CAN_POST;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.CAN_SEE_ALL_POSTS;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.CAN_UPLOAD_DOC;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.CAN_UPLOAD_VIDEO;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.CITY;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.CONTACTS;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.COUNTERS;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.COUNTRY;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.DESCRIPTION;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.FINISH_DATE;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.FIXED_POST;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.IS_FAVORITE;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.IS_SUBSCRIBED;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.LINKS;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.MAIN_ALBUM_ID;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.MEMBERS_COUNT;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.PLACE;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.SITE;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.START_DATE;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.STATUS;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.VERIFIED;
-import static dev.ragnarok.fenrir.api.model.VKApiCommunity.WIKI_PAGE;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.join;
-import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.stringJoin;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -92,6 +59,39 @@ import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.functions.BiFunction;
 import io.reactivex.rxjava3.processors.PublishProcessor;
+
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.ACTIVITY;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.BAN_INFO;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.BLACKLISTED;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.CAN_CTARE_TOPIC;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.CAN_POST;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.CAN_SEE_ALL_POSTS;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.CAN_UPLOAD_DOC;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.CAN_UPLOAD_VIDEO;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.CITY;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.CONTACTS;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.COUNTERS;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.COUNTRY;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.DESCRIPTION;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.FINISH_DATE;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.FIXED_POST;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.IS_FAVORITE;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.IS_SUBSCRIBED;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.LINKS;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.MAIN_ALBUM_ID;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.MEMBERS_COUNT;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.PLACE;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.SITE;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.START_DATE;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.STATUS;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.VERIFIED;
+import static dev.ragnarok.fenrir.api.model.VKApiCommunity.WIKI_PAGE;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.join;
+import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.stringJoin;
+import static java.util.Collections.singletonList;
 
 public class OwnersRepository implements IOwnersRepository {
 

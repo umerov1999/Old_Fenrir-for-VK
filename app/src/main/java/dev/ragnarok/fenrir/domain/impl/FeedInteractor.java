@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.domain.impl;
 
-import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,6 +33,8 @@ import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.VKOwnIds;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
 
 
 public class FeedInteractor implements IFeedInteractor {

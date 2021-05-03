@@ -11,7 +11,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.media.audiofx.AudioEffect
-import android.net.Uri
 import android.os.IBinder
 import android.os.SystemClock
 import android.support.v4.media.MediaMetadataCompat
@@ -32,7 +31,6 @@ import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import com.squareup.picasso.Picasso.LoadedFrom
 import com.squareup.picasso.Target
 import dev.ragnarok.fenrir.*
-import dev.ragnarok.fenrir.db.Stores
 import dev.ragnarok.fenrir.domain.IAudioInteractor
 import dev.ragnarok.fenrir.domain.InteractorFactory
 import dev.ragnarok.fenrir.media.exo.ExoUtil
@@ -434,16 +432,6 @@ class MusicPlaybackService : Service() {
     private fun fetchCoverAndUpdateMetadata() {
         updateMetadata()
         if (CoverBitmap != null || Utils.isEmpty(albumCover)) {
-            val audio = currentTrack ?: return
-            audio.url ?: return
-            if (audio.url.contains("content://") || audio.url.contains("file://")) {
-                val btm = Stores.getInstance().localMedia()
-                    .getMetadataAudioThumbnail(Uri.parse(audio.url), 512, 512)
-                btm ?: return
-                CoverBitmap = btm
-                updateMetadata()
-                return
-            }
             return
         }
         PicassoInstance.with()

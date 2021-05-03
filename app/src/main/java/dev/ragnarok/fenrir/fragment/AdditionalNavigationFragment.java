@@ -1,18 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.model.SwitchableCategory.BOOKMARKS;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.DOCS;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.FRIENDS;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.GROUPS;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.MUSIC;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.NEWSFEED_COMMENTS;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.PHOTOS;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.VIDEOS;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.RxUtils.ignore;
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -53,6 +40,19 @@ import dev.ragnarok.fenrir.settings.NightMode;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.RxUtils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+
+import static dev.ragnarok.fenrir.model.SwitchableCategory.BOOKMARKS;
+import static dev.ragnarok.fenrir.model.SwitchableCategory.DOCS;
+import static dev.ragnarok.fenrir.model.SwitchableCategory.FRIENDS;
+import static dev.ragnarok.fenrir.model.SwitchableCategory.GROUPS;
+import static dev.ragnarok.fenrir.model.SwitchableCategory.MUSIC;
+import static dev.ragnarok.fenrir.model.SwitchableCategory.NEWSFEED_COMMENTS;
+import static dev.ragnarok.fenrir.model.SwitchableCategory.PHOTOS;
+import static dev.ragnarok.fenrir.model.SwitchableCategory.VIDEOS;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.RxUtils.ignore;
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class AdditionalNavigationFragment extends BaseFragment implements MenuListAdapter.ActionListener {
 
@@ -314,7 +314,7 @@ public class AdditionalNavigationFragment extends BaseFragment implements MenuLi
 
         String avaUrl = user.getMaxSquareAvatar();
 
-        Transformation transformation = CurrentTheme.createTransformationForAvatar(requireActivity());
+        Transformation transformation = CurrentTheme.createTransformationForAvatar();
         if (nonNull(avaUrl)) {
             PicassoInstance.with()
                     .load(avaUrl)

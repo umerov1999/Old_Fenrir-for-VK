@@ -33,7 +33,7 @@ public class CommunitiesAdapter extends MultyDataAdapter<Community, CommunitiesA
 
     public CommunitiesAdapter(Context context, List<DataWrapper<Community>> dataWrappers, Integer[] titles) {
         super(dataWrappers, titles);
-        transformation = CurrentTheme.createTransformationForAvatar(context);
+        transformation = CurrentTheme.createTransformationForAvatar();
         this.context = context;
     }
 

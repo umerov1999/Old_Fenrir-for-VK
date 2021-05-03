@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.longpoll;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import java.util.concurrent.TimeUnit;
 
 import dev.ragnarok.fenrir.Injection;
@@ -15,6 +12,9 @@ import dev.ragnarok.fenrir.util.PersistentLogger;
 import dev.ragnarok.fenrir.util.RxUtils;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.Disposable;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 class UserLongpoll implements ILongpoll {
 

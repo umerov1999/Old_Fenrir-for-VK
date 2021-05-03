@@ -26,6 +26,7 @@ import dev.ragnarok.fenrir.model.LocalImageAlbum;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.LocalPhotoAlbumsPresenter;
 import dev.ragnarok.fenrir.mvp.view.ILocalPhotoAlbumsView;
+import dev.ragnarok.fenrir.picasso.Content_Local;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.Objects;
@@ -86,7 +87,7 @@ public class LocalImageAlbumsFragment extends BaseMvpFragment<LocalPhotoAlbumsPr
         mRecyclerView.setLayoutManager(manager);
         mRecyclerView.addOnScrollListener(new PicassoPauseOnScrollListener(LocalPhotoAlbumsAdapter.PICASSO_TAG));
 
-        mAlbumsAdapter = new LocalPhotoAlbumsAdapter(Collections.emptyList());
+        mAlbumsAdapter = new LocalPhotoAlbumsAdapter(requireActivity(), Collections.emptyList(), Content_Local.PHOTO);
         mAlbumsAdapter.setClickListener(this);
 
         mRecyclerView.setAdapter(mAlbumsAdapter);

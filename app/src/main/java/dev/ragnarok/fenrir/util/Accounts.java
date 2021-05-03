@@ -49,7 +49,7 @@ public class Accounts {
 
         PicassoInstance.with()
                 .load(user.getMaxSquareAvatar())
-                .transform(CurrentTheme.createTransformationForAvatar(context))
+                .transform(CurrentTheme.createTransformationForAvatar())
                 .into(avatar);
 
         subtitle.setText(user.getFullName());

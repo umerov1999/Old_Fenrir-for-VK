@@ -104,7 +104,7 @@ public class DrawerEditFragment extends AbsMvpFragment<DrawerEditPresenter, IDra
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_save) {
             getPresenter().fireSaveClick();
             return true;

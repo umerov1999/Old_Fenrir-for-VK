@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +43,8 @@ import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.LoadMoreFooterHelper;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPresenter, IMessagesLookView>
         implements IMessagesLookView, MessagesAdapter.OnMessageActionListener, BackPressCallback {
@@ -223,6 +223,13 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
     }
 
     @Override
+    public void notifyItemChanged(int index) {
+        if (nonNull(mMessagesAdapter)) {
+            mMessagesAdapter.notifyItemBindableChanged(index);
+        }
+    }
+
+    @Override
     public void setupHeaders(@LoadMoreState int upHeaderState, @LoadMoreState int downHeaderState) {
         if (nonNull(mFooterHelper)) {
             mFooterHelper.switchToState(upHeaderState);
@@ -251,18 +258,18 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
     }
 
     @Override
-    public void onAvatarClick(@NonNull Message message, int userId) {
+    public void onAvatarClick(@NonNull Message message, int userId, int position) {
         if (nonNull(mActionView) && mActionView.isVisible()) {
-            getPresenter().fireMessageClick(message);
+            getPresenter().fireMessageClick(message, position);
         } else {
             getPresenter().fireOwnerClick(userId);
         }
     }
 
     @Override
-    public void onLongAvatarClick(@NonNull Message message, int userId) {
+    public void onLongAvatarClick(@NonNull Message message, int userId, int position) {
         if (nonNull(mActionView) && mActionView.isVisible()) {
-            getPresenter().fireMessageClick(message);
+            getPresenter().fireMessageClick(message, position);
         } else {
             getPresenter().fireOwnerClick(userId);
         }
@@ -279,14 +286,14 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
     }
 
     @Override
-    public boolean onMessageLongClick(@NonNull Message message) {
-        getPresenter().fireMessageLongClick(message);
+    public boolean onMessageLongClick(@NonNull Message message, int position) {
+        getPresenter().fireMessageLongClick(message, position);
         return true;
     }
 
     @Override
-    public void onMessageClicked(@NonNull Message message) {
-        getPresenter().fireMessageClick(message);
+    public void onMessageClicked(@NonNull Message message, int position) {
+        getPresenter().fireMessageClick(message, position);
     }
 
     @Override
@@ -380,38 +387,32 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
 
         @Override
         public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.buttonClose:
+            if (v.getId() == R.id.buttonClose) {
+                hide();
+            } else if (v.getId() == R.id.buttonForward) {
+                Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireForwardClick());
+                hide();
+            } else if (v.getId() == R.id.buttonCopy) {
+                Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireActionModeCopyClick());
+                hide();
+            } else if (v.getId() == R.id.buttonDelete) {
+                Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireActionModeDeleteClick());
+                hide();
+            } else if (v.getId() == R.id.buttonSpam) {
+                MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(requireActivity());
+                dlgAlert.setIcon(R.drawable.report_red);
+                dlgAlert.setMessage(R.string.do_report);
+                dlgAlert.setTitle(R.string.select);
+                dlgAlert.setPositiveButton(R.string.button_yes, (dialog, which) -> {
+                    Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireActionModeSpamClick());
                     hide();
-                    break;
-                case R.id.buttonForward:
-                    Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireForwardClick());
-                    hide();
-                    break;
-                case R.id.buttonCopy:
-                    Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireActionModeCopyClick());
-                    hide();
-                    break;
-                case R.id.buttonDelete:
+                });
+                dlgAlert.setNeutralButton(R.string.delete, (dialog, which) -> {
                     Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireActionModeDeleteClick());
                     hide();
-                    break;
-                case R.id.buttonSpam:
-                    MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(requireActivity());
-                    dlgAlert.setIcon(R.drawable.report_red);
-                    dlgAlert.setMessage(R.string.do_report);
-                    dlgAlert.setTitle(R.string.select);
-                    dlgAlert.setPositiveButton(R.string.button_yes, (dialog, which) -> {
-                        Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireActionModeSpamClick());
-                        hide();
-                    });
-                    dlgAlert.setNeutralButton(R.string.delete, (dialog, which) -> {
-                        Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireActionModeDeleteClick());
-                        hide();
-                    });
-                    dlgAlert.setCancelable(true);
-                    dlgAlert.create().show();
-                    break;
+                });
+                dlgAlert.setCancelable(true);
+                dlgAlert.create().show();
             }
         }
     }

@@ -32,7 +32,7 @@ public class CommunityInfoContactsAdapter extends RecyclerView.Adapter<Community
 
     public CommunityInfoContactsAdapter(Context context, List<Manager> users) {
         this.users = users;
-        transformation = CurrentTheme.createTransformationForAvatar(context);
+        transformation = CurrentTheme.createTransformationForAvatar();
     }
 
     @NonNull

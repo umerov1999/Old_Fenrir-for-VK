@@ -30,7 +30,6 @@ public class SelectSchoolClassesDialog extends AccountDependencyDialogFragment i
     private int countryId;
     private IDatabaseInteractor mDatabaseInteractor;
     private ArrayList<SchoolClazz> mData;
-    private RecyclerView mRecyclerView;
     private SchoolClassesAdapter mAdapter;
 
     public static SelectSchoolClassesDialog newInstance(int aid, int countryId, Bundle additional) {
@@ -55,7 +54,7 @@ public class SelectSchoolClassesDialog extends AccountDependencyDialogFragment i
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View root = View.inflate(requireActivity(), R.layout.dialog_simple_recycler_view, null);
-        mRecyclerView = root.findViewById(R.id.list);
+        RecyclerView mRecyclerView = root.findViewById(R.id.list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false));
 
         boolean firstRun = false;
