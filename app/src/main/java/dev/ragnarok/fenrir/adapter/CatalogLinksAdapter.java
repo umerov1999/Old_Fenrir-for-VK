@@ -1,6 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,7 +31,7 @@ public class CatalogLinksAdapter extends RecyclerBindableAdapter<Link, CatalogLi
     private final Transformation transformation;
     private ActionListener mActionListner;
 
-    public CatalogLinksAdapter(List<Link> data, Context context) {
+    public CatalogLinksAdapter(List<Link> data) {
         super(data);
         transformation = CurrentTheme.createTransformationForAvatar();
     }

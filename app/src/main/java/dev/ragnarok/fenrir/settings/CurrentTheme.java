@@ -184,7 +184,7 @@ public class CurrentTheme {
     }
 
     public static int getColorFromAttrs(int resId, Context context, String defaultColor) {
-        int[] attribute = new int[]{resId};
+        int[] attribute = {resId};
         TypedArray array = context.getTheme().obtainStyledAttributes(attribute);
         int color = array.getColor(0, Color.parseColor(defaultColor));
         array.recycle();
@@ -192,7 +192,7 @@ public class CurrentTheme {
     }
 
     public static int getColorFromAttrs(int resId, Context context, int defaultColor) {
-        int[] attribute = new int[]{resId};
+        int[] attribute = {resId};
         TypedArray array = context.getTheme().obtainStyledAttributes(attribute);
         int color = array.getColor(0, defaultColor);
         array.recycle();
@@ -200,7 +200,7 @@ public class CurrentTheme {
     }
 
     public static Drawable getDrawableFromAttribute(Context context, int attr) {
-        int[] attribute = new int[]{attr};
+        int[] attribute = {attr};
         TypedArray array = context.getTheme().obtainStyledAttributes(attribute);
         Drawable ret = array.getDrawable(0);
         array.recycle();

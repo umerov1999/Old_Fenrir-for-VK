@@ -57,7 +57,7 @@ public class CommunityInfoContactsFragment extends BaseMvpFragment<CommunityInfo
 
         root.findViewById(R.id.button_add).setVisibility(View.INVISIBLE);
 
-        mAdapter = new CommunityInfoContactsAdapter(requireActivity(), Collections.emptyList());
+        mAdapter = new CommunityInfoContactsAdapter(Collections.emptyList());
         mAdapter.setActionListener(manager -> getPresenter().fireManagerClick(manager));
 
         recyclerView.setAdapter(mAdapter);

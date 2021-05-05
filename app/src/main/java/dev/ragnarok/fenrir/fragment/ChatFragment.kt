@@ -1039,7 +1039,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         val reference = WeakReference(fragment)
         val recyclerView: RecyclerView = rootView.findViewById(R.id.recyclerView)
         val emptyView: View = rootView.findViewById(R.id.no_attachments_text)
-        val adapter = AttachmentsBottomSheetAdapter(rootView.context, attachments, this)
+        val adapter = AttachmentsBottomSheetAdapter(attachments, this)
 
         init {
             recyclerView.layoutManager =

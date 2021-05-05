@@ -37,7 +37,7 @@ public class CommunityBannedAdapter extends RecyclerView.Adapter<CommunityBanned
     private List<Banned> data;
     private ActionListener actionListener;
 
-    public CommunityBannedAdapter(Context context, List<Banned> data) {
+    public CommunityBannedAdapter(List<Banned> data) {
         this.data = data;
         transformation = CurrentTheme.createTransformationForAvatar();
     }

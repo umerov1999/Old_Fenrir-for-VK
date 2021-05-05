@@ -327,7 +327,6 @@ public class AttachmentsViewBinder {
                     .tag(Constants.PICASSO_TAG)
                     .into(imageView);
         }
-        stickersContainer.setOnClickListener(e -> openSticker(sticker));
     }
 
     public void displayCopyHistory(List<Post> posts, ViewGroup container, boolean reduce, int layout) {
@@ -879,10 +878,6 @@ public class AttachmentsViewBinder {
         }
     }
 
-    private void openSticker(Sticker sticker) {
-
-    }
-
     private void openDocLink(DocLink link) {
         switch (link.getType()) {
             case Types.DOC:
@@ -959,8 +954,6 @@ public class AttachmentsViewBinder {
         void onFaveArticle(@NonNull Article article);
 
         void onWikiPageOpen(@NonNull WikiPage page);
-
-        void onStickerOpen(@NonNull Sticker sticker);
 
         void onPhotosOpen(@NonNull ArrayList<Photo> photos, int index, boolean refresh);
 

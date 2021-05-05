@@ -33,7 +33,6 @@ import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.PhotoAlbum;
 import dev.ragnarok.fenrir.model.Poll;
 import dev.ragnarok.fenrir.model.Post;
-import dev.ragnarok.fenrir.model.Sticker;
 import dev.ragnarok.fenrir.model.Story;
 import dev.ragnarok.fenrir.model.Video;
 import dev.ragnarok.fenrir.model.WallReply;
@@ -212,11 +211,6 @@ public abstract class PlaceSupportMvpFragment<P extends PlaceSupportPresenter<V>
     public void openWikiPage(int accountId, @NonNull WikiPage page) {
         PlaceFactory.getWikiPagePlace(accountId, page.getViewUrl())
                 .tryOpenWith(requireActivity());
-    }
-
-    @Override
-    public void onStickerOpen(@NonNull Sticker sticker) {
-
     }
 
     @Override

@@ -399,7 +399,7 @@ public class AttchmentsEditorAdapter extends RecyclerBindableAdapter<AttachmenEn
         holder.tvTitle.setText(context.getString(R.string.title_messages));
     }
 
-    private void bindWallReplies(ViewHolder holder, WallReply messages) {
+    private void bindWallReplies(ViewHolder holder) {
         PicassoInstance.with()
                 .load(R.drawable.background_gray)
                 .into(holder.photoImageView);
@@ -455,7 +455,7 @@ public class AttchmentsEditorAdapter extends RecyclerBindableAdapter<AttachmenEn
         } else if (model instanceof PhotoAlbum) {
             bindPhotoAlbum(holder, (PhotoAlbum) model);
         } else if (model instanceof WallReply) {
-            bindWallReplies(holder, (WallReply) model);
+            bindWallReplies(holder);
         } else {
             throw new UnsupportedOperationException("Type " + model.getClass() + " in not supported");
         }

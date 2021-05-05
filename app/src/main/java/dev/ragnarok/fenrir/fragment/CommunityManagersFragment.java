@@ -77,7 +77,7 @@ public class CommunityManagersFragment extends BaseMvpFragment<CommunityManagers
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
-        mAdapter = new CommunityManagersAdapter(requireActivity(), Collections.emptyList());
+        mAdapter = new CommunityManagersAdapter(Collections.emptyList());
         mAdapter.setActionListener(new CommunityManagersAdapter.ActionListener() {
             @Override
             public void onManagerClick(Manager manager) {

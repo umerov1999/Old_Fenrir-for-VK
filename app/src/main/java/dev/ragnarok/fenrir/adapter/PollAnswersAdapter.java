@@ -107,7 +107,6 @@ public class PollAnswersAdapter extends RecyclerBindableAdapter<Poll.Answer, Pol
         final MaterialCheckBox rbButton;
         final TextView tvTitle;
         final ProgressBar pbRate;
-        final View mVotedRoot;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -115,7 +114,6 @@ public class PollAnswersAdapter extends RecyclerBindableAdapter<Poll.Answer, Pol
             tvCount = itemView.findViewById(R.id.item_poll_answer_count);
             tvTitle = itemView.findViewById(R.id.item_poll_answer_title);
             pbRate = itemView.findViewById(R.id.item_poll_answer_progress);
-            mVotedRoot = itemView.findViewById(R.id.voted_root);
         }
     }
 }

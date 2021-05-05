@@ -196,6 +196,9 @@ object DownloadWorkUtils {
 
     @JvmStatic
     fun TrackIsDownloaded(audio: Audio): Int {
+        if (audio.isLocal) {
+            return 1
+        }
         val audioName = makeLegalFilename(audio.artist + " - " + audio.title, "mp3")
         for (i in MusicUtils.CachedAudios) {
             if (i.equals(audioName, true))

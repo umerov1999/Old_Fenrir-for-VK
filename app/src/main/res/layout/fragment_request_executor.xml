@@ -133,24 +133,23 @@
                             android:layout_centerVertical="true"
                             android:orientation="horizontal">
 
-                            <dev.ragnarok.fenrir.view.ColorFilterImageView
+                            <ImageView
                                 android:id="@+id/button_copy"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="?attr/selectableItemBackgroundBorderless"
-
                                 android:padding="8dp"
                                 android:src="@drawable/content_copy"
-                                app:filter_color="?attr/colorAccent" />
+                                app:tint="?attr/colorAccent" />
 
-                            <dev.ragnarok.fenrir.view.ColorFilterImageView
+                            <ImageView
                                 android:id="@+id/button_save"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="?attr/selectableItemBackgroundBorderless"
                                 android:padding="8dp"
                                 android:src="@drawable/file"
-                                app:filter_color="?attr/colorPrimary" />
+                                app:tint="?attr/colorPrimary" />
 
                         </LinearLayout>
 

@@ -7,8 +7,6 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.card.MaterialCardView;
-
 import java.util.Calendar;
 import java.util.List;
 
@@ -81,14 +79,12 @@ public class HorizontalStoryAdapter extends RecyclerBindableAdapter<Story, Horiz
 
     static class Holder extends RecyclerView.ViewHolder {
 
-        final MaterialCardView background;
         final ImageView story_image;
         final TextView name;
         final TextView expires;
 
         Holder(View itemView) {
             super(itemView);
-            background = itemView.findViewById(R.id.card_view);
             name = itemView.findViewById(R.id.item_story_name);
             expires = itemView.findViewById(R.id.item_story_expires);
             story_image = itemView.findViewById(R.id.item_story_pic);

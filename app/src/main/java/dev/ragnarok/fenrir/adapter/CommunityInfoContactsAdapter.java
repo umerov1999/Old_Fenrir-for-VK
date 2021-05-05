@@ -1,6 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +29,7 @@ public class CommunityInfoContactsAdapter extends RecyclerView.Adapter<Community
     private List<Manager> users;
     private ActionListener actionListener;
 
-    public CommunityInfoContactsAdapter(Context context, List<Manager> users) {
+    public CommunityInfoContactsAdapter(List<Manager> users) {
         this.users = users;
         transformation = CurrentTheme.createTransformationForAvatar();
     }

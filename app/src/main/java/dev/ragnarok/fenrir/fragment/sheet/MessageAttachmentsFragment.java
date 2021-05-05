@@ -171,7 +171,7 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
     @Override
     public void displayAttachments(List<AttachmenEntry> entries) {
         if (nonNull(mRecyclerView)) {
-            mAdapter = new AttachmentsBottomSheetAdapter(requireActivity(), entries, this);
+            mAdapter = new AttachmentsBottomSheetAdapter(entries, this);
             mRecyclerView.setAdapter(mAdapter);
         }
     }

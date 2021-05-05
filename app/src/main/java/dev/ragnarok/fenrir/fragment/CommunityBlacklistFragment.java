@@ -83,7 +83,7 @@ public class CommunityBlacklistFragment extends BaseMvpFragment<CommunityBlackli
             }
         });
 
-        mAdapter = new CommunityBannedAdapter(requireActivity(), Collections.emptyList());
+        mAdapter = new CommunityBannedAdapter(Collections.emptyList());
         mAdapter.setActionListener(this);
 
         recyclerView.setAdapter(mAdapter);

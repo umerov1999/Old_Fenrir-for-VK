@@ -243,7 +243,6 @@ public class BigVkPhotosAdapter extends DifferentDataAdapter {
     private static class UploadViewHolder extends RecyclerView.ViewHolder implements IdentificableHolder {
 
         final ImageView image;
-        final ImageView tint;
         final View progressRoot;
         final CircleRoadProgress progress;
         final TextView title;
@@ -253,7 +252,6 @@ public class BigVkPhotosAdapter extends DifferentDataAdapter {
             super.itemView.setTag(generateNextHolderId());
 
             image = itemView.findViewById(R.id.image);
-            tint = itemView.findViewById(R.id.tint);
             progressRoot = itemView.findViewById(R.id.progress_root);
             progress = itemView.findViewById(R.id.progress);
             title = itemView.findViewById(R.id.title);

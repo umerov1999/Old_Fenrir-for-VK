@@ -49,7 +49,6 @@ import dev.ragnarok.fenrir.model.PhotoAlbum;
 import dev.ragnarok.fenrir.model.Poll;
 import dev.ragnarok.fenrir.model.Post;
 import dev.ragnarok.fenrir.model.SaveMessageBuilder;
-import dev.ragnarok.fenrir.model.Sticker;
 import dev.ragnarok.fenrir.model.Story;
 import dev.ragnarok.fenrir.model.Video;
 import dev.ragnarok.fenrir.model.VoiceMessage;
@@ -256,11 +255,6 @@ public class QuickAnswerActivity extends AppCompatActivity {
 
                 @Override
                 public void onWikiPageOpen(@NonNull WikiPage page) {
-
-                }
-
-                @Override
-                public void onStickerOpen(@NonNull Sticker sticker) {
 
                 }
 

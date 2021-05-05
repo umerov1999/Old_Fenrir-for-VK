@@ -326,7 +326,6 @@ public class FeedbackAdapter extends RecyclerBindableAdapter<Feedback, FeedbackA
         final TextView cOwnerText;
         final TextView cOwnerTime;
         final ImageView cReplyOwnerAvatar;
-        final ImageView cReplyChangable;
         final TextView cReplyName;
         final TextView cReplyText;
         final TextView cReplyTime;
@@ -343,7 +342,6 @@ public class FeedbackAdapter extends RecyclerBindableAdapter<Feedback, FeedbackA
             cOwnerText = root.findViewById(R.id.item_comment_text);
             cOwnerTime = root.findViewById(R.id.item_comment_time);
             cReplyOwnerAvatar = root.findViewById(R.id.item_comment_reply_owner_avatar);
-            cReplyChangable = root.findViewById(R.id.item_circle_reply);
             cReplyName = root.findViewById(R.id.item_comment_reply_owner_name);
             cReplyText = root.findViewById(R.id.item_comment_reply_text);
             cReplyTime = root.findViewById(R.id.item_comment_reply_time);

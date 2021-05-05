@@ -1,7 +1,6 @@
 package dev.ragnarok.fenrir.adapter.fave;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.ContextMenu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import dev.ragnarok.fenrir.adapter.AttachmentsViewBinder;
 import dev.ragnarok.fenrir.adapter.base.RecyclerBindableAdapter;
 import dev.ragnarok.fenrir.link.internal.LinkActionAdapter;
 import dev.ragnarok.fenrir.link.internal.OwnerLinkSpanFactory;
-import dev.ragnarok.fenrir.model.Attachments;
 import dev.ragnarok.fenrir.model.Post;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.util.AppTextUtils;
@@ -32,15 +30,10 @@ import dev.ragnarok.fenrir.view.emoji.EmojiconTextView;
 
 import static dev.ragnarok.fenrir.api.model.VkApiPostSource.Data.PROFILE_ACTIVITY;
 import static dev.ragnarok.fenrir.api.model.VkApiPostSource.Data.PROFILE_PHOTO;
-import static dev.ragnarok.fenrir.util.Objects.isNull;
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeAllIsEmpty;
 
 public class FavePostAdapter extends RecyclerBindableAdapter<Post, RecyclerView.ViewHolder> {
 
-    private static final int TYPE_SCHEDULED = 2;
-    private static final int TYPE_DELETED = 1;
     private static final int TYPE_NORMAL = 0;
 
     private final Context mContext;
@@ -64,24 +57,6 @@ public class FavePostAdapter extends RecyclerBindableAdapter<Post, RecyclerView.
                 clickListener.onAvatarClick(ownerId);
             }
         };
-    }
-
-    public static boolean needToShowTopDivider(Post post) {
-        if (!TextUtils.isEmpty(post.getText())) {
-            return true;
-        }
-
-        Attachments attachments = post.getAttachments();
-        // если есть копи-хистори и нет вложений фото-видео в главном посте
-        if (nonEmpty(post.getCopyHierarchy()) && (isNull(attachments) || safeAllIsEmpty(attachments.getPhotos(), attachments.getVideos()))) {
-            return true;
-        }
-
-        if (post.getAttachments() == null) {
-            return true;
-        }
-
-        return safeAllIsEmpty(attachments.getPhotos(), attachments.getVideos());
     }
 
     @Override
@@ -224,8 +199,6 @@ public class FavePostAdapter extends RecyclerBindableAdapter<Post, RecyclerView.
         void onShareClick(Post post);
 
         void onPostClick(Post post);
-
-        void onRestoreClick(Post post);
 
         void onCommentsClick(Post post);
 

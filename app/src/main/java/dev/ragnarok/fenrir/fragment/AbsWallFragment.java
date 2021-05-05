@@ -162,7 +162,7 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
                 paganSymbol.setImageResource(R.drawable.ic_celtic_knot);
                 break;
             case 5:
-                paganSymbol.setImageResource(R.drawable.ic_igdr2);
+                paganSymbol.setImageResource(R.drawable.ic_slepnir);
                 break;
             case 6:
                 paganSymbol.fromRes(R.raw.fenrir, Utils.dp(140), Utils.dp(140), new int[]{

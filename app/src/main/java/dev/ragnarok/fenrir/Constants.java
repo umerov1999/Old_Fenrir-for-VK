@@ -28,7 +28,7 @@ public class Constants {
     public static final String FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".file_provider";
 
     public static final String VK_ANDROID_APP_VERSION_NAME = "6.35";
-    public static final String VK_ANDROID_APP_VERSION_CODE = "7827";
+    public static final String VK_ANDROID_APP_VERSION_CODE = "7835";
     public static final String KATE_APP_VERSION_NAME = "73.2 lite";
     public static final String KATE_APP_VERSION_CODE = "491";
     public static final String KATE_RECEIPT_GMS_TOKEN = BuildConfig.KATE_RECEIPT_GMS_TOKEN;

@@ -109,11 +109,6 @@ public class FavePostsFragment extends PlaceSupportMvpFragment<FavePostsPresente
     }
 
     @Override
-    public void onRestoreClick(Post post) {
-        // not supported ?
-    }
-
-    @Override
     public void onCommentsClick(Post post) {
         getPresenter().fireCommentsClick(post);
     }

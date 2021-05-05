@@ -98,13 +98,13 @@
                             android:contentDescription="@string/play"
                             android:stateListAnimator="@animator/clicked" />
 
-                        <dev.ragnarok.fenrir.view.ColorFilterImageView
+                        <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_gravity="center"
+                            android:contentDescription="@string/play"
                             android:src="@drawable/video"
-                            android:stateListAnimator="@animator/clicked"
-                            app:filter_color="@color/white" />
+                            android:stateListAnimator="@animator/clicked" />
 
                     </com.google.android.material.card.MaterialCardView>
 

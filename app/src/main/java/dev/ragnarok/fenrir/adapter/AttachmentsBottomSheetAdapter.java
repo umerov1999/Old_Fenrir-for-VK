@@ -1,6 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,7 +57,7 @@ public class AttachmentsBottomSheetAdapter extends RecyclerView.Adapter<Recycler
     private final SharedHolders<EntryHolder> holders;
     private int nextHolderId;
 
-    public AttachmentsBottomSheetAdapter(Context context, List<AttachmenEntry> data, ActionListener actionListener) {
+    public AttachmentsBottomSheetAdapter(List<AttachmenEntry> data, ActionListener actionListener) {
         this.data = data;
         this.actionListener = actionListener;
         holders = new SharedHolders<>(false);
@@ -109,7 +108,7 @@ public class AttachmentsBottomSheetAdapter extends RecyclerView.Adapter<Recycler
         } else if (model instanceof FwdMessages) {
             bindMessages(holder, (FwdMessages) model);
         } else if (model instanceof WallReply) {
-            bindWallReplies(holder, (WallReply) model);
+            bindWallReplies(holder);
         } else if (model instanceof Document) {
             bindDoc(holder, (Document) model);
         } else if (model instanceof Audio) {
@@ -158,7 +157,7 @@ public class AttachmentsBottomSheetAdapter extends RecyclerView.Adapter<Recycler
         bindImageView(holder, null);
     }
 
-    private void bindWallReplies(EntryHolder holder, WallReply messages) {
+    private void bindWallReplies(EntryHolder holder) {
         holder.progress.setVisibility(View.INVISIBLE);
         holder.Retry.setVisibility(View.GONE);
         holder.tintView.setVisibility(View.GONE);

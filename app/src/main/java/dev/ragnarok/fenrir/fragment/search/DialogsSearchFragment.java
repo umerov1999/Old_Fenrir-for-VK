@@ -52,7 +52,7 @@ public class DialogsSearchFragment extends AbsSearchFragment<DialogsSearchPresen
 
     @Override
     DialogPreviewAdapter createAdapter(List<Conversation> data) {
-        return new DialogPreviewAdapter(requireActivity(), data, this);
+        return new DialogPreviewAdapter(data, this);
     }
 
     @Override

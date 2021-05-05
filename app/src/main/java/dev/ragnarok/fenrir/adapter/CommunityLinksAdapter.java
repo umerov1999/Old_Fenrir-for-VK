@@ -1,6 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +37,6 @@ public class CommunityLinksAdapter extends RecyclerView.Adapter<CommunityLinksAd
 
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int position) {
-        Context context = holder.itemView.getContext();
-
         VKApiCommunity.Link link = links.get(position);
 
         holder.title.setText(link.name);

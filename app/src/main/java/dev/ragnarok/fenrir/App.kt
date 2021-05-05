@@ -92,6 +92,7 @@ class App : Application() {
     }
 
     companion object {
+        @Volatile
         private var sInstanse: App? = null
 
         @JvmStatic

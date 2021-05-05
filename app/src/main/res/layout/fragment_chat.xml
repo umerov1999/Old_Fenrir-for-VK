@@ -244,7 +244,7 @@
             android:paddingEnd="4dp"
             android:paddingBottom="8dp">
 
-            <dev.ragnarok.fenrir.view.ColorFilterImageView
+            <ImageView
                 android:id="@+id/iconEdit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -252,7 +252,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="8dp"
                 android:src="@drawable/pencil"
-                app:filter_color="?attr/colorOnSurface" />
+                app:tint="?attr/colorOnSurface" />
 
             <TextView
                 android:id="@+id/editMessageTitle"
@@ -289,6 +289,10 @@
                 app:tint="?attr/colorOnSurface" />
 
         </RelativeLayout>
+
+        <dev.ragnarok.fenrir.view.MiniPlayerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <include
             layout="@layout/fragment_input"

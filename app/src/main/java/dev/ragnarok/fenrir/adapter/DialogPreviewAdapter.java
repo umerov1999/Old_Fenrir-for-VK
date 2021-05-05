@@ -1,6 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +28,7 @@ public class DialogPreviewAdapter extends RecyclerView.Adapter<DialogPreviewAdap
     private final Transformation mTransformation;
     private List<Conversation> mData;
 
-    public DialogPreviewAdapter(Context context, List<Conversation> items, ActionListener actionListener) {
+    public DialogPreviewAdapter(List<Conversation> items, ActionListener actionListener) {
         mData = items;
         mTransformation = CurrentTheme.createTransformationForAvatar();
         this.actionListener = actionListener;

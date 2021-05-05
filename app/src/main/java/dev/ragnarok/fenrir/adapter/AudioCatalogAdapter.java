@@ -126,7 +126,7 @@ public class AudioCatalogAdapter extends RecyclerView.Adapter<AudioCatalogAdapte
             holder.list.addOnScrollListener(new PicassoPauseOnScrollListener(Constants.PICASSO_TAG));
             holder.list.setAdapter(adapter);
         } else if (!Utils.isEmpty(category.getLinks())) {
-            CatalogLinksAdapter adapter = new CatalogLinksAdapter(category.getLinks(), mContext);
+            CatalogLinksAdapter adapter = new CatalogLinksAdapter(category.getLinks());
             adapter.setActionListener(this);
             holder.list.setVisibility(View.VISIBLE);
             holder.list.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));

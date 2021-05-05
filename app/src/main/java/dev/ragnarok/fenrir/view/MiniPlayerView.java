@@ -304,8 +304,10 @@ public class MiniPlayerView extends FrameLayout implements SeekBar.OnSeekBarChan
         super.onDetachedFromWindow();
         mPlayerDisposable.dispose();
         mAccountDisposable.dispose();
-
-        mTimeHandler.removeMessages(REFRESH_TIME);
+        if (mTimeHandler != null) {
+            mTimeHandler.removeMessages(REFRESH_TIME);
+            mTimeHandler = null;
+        }
     }
 
     private static final class TimeHandler extends Handler {

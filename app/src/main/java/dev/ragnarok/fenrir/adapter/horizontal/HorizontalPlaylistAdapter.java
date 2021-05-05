@@ -111,7 +111,6 @@ public class HorizontalPlaylistAdapter extends RecyclerBindableAdapter<AudioPlay
         final TextView artist;
         final TextView genre;
         final TextView update;
-        final View playlist_container;
         final FloatingActionButton add;
 
         public Holder(View itemView) {
@@ -119,7 +118,6 @@ public class HorizontalPlaylistAdapter extends RecyclerBindableAdapter<AudioPlay
             thumb = itemView.findViewById(R.id.item_thumb);
             name = itemView.findViewById(R.id.item_name);
             count = itemView.findViewById(R.id.item_count);
-            playlist_container = itemView.findViewById(R.id.playlist_container);
             description = itemView.findViewById(R.id.item_description);
             update = itemView.findViewById(R.id.item_time);
             year = itemView.findViewById(R.id.item_year);
