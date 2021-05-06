@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 import dev.ragnarok.fenrir.Extra;
+import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.adapter.AudioPlaylistsAdapter;
 import dev.ragnarok.fenrir.fragment.search.criteria.AudioPlaylistSearchCriteria;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
@@ -74,7 +75,8 @@ public class AudioPlaylistSearchFragment extends AbsSearchFragment<AudioPlaylist
 
     @Override
     protected RecyclerView.LayoutManager createLayoutManager() {
-        return new GridLayoutManager(requireActivity(), 2);
+        int columnCount = getResources().getInteger(R.integer.photos_albums_column_count);
+        return new GridLayoutManager(requireActivity(), columnCount);
     }
 
     @NonNull

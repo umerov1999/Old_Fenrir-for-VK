@@ -32,12 +32,13 @@ import dev.ragnarok.fenrir.upload.UploadIntent;
 import dev.ragnarok.fenrir.upload.UploadResult;
 import dev.ragnarok.fenrir.util.Analytics;
 import dev.ragnarok.fenrir.util.AppPerms;
-import dev.ragnarok.fenrir.util.FindAt;
+import dev.ragnarok.fenrir.util.FindAtWithContent;
 import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 import static dev.ragnarok.fenrir.Injection.provideMainThreadScheduler;
 import static dev.ragnarok.fenrir.util.Utils.findIndexById;
@@ -47,7 +48,8 @@ import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 public class VideosListPresenter extends AccountDependencyPresenter<IVideosListView> {
 
     private static final int COUNT = 50;
-    private static final int SEARCH_COUNT = 20;
+    private static final int SEARCH_VIEW_COUNT = 15;
+    private static final int SEARCH_COUNT = 100;
     private static final int WEB_SEARCH_DELAY = 1000;
 
     private final int ownerId;
@@ -61,9 +63,10 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
     private final List<Upload> uploadsData;
     private final CompositeDisposable netDisposable = new CompositeDisposable();
     private final CompositeDisposable cacheDisposable = new CompositeDisposable();
+    private final FindVideo searcher;
+    private Disposable sleepDataDisposable = Disposable.disposed();
     private boolean endOfContent;
     private IntNextFrom intNextFrom;
-    private FindAt search_at;
     private boolean hasActualNetData;
     private boolean requestNow;
     private boolean cacheNowLoading;
@@ -75,6 +78,7 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
         uploadManager = Injection.provideUploadManager();
         destination = UploadDestination.forVideo(IVideosListView.ACTION_SELECT.equalsIgnoreCase(action) ? 0 : 1, ownerId);
         uploadsData = new ArrayList<>(0);
+        searcher = new FindVideo(netDisposable);
 
         this.ownerId = ownerId;
         this.albumId = albumId;
@@ -82,7 +86,6 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
         this.albumTitle = albumTitle;
 
         intNextFrom = new IntNextFrom(0);
-        search_at = new FindAt();
 
         data = new ArrayList<>();
 
@@ -113,11 +116,7 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
 
 
         loadAllFromCache();
-        if (search_at.isSearchMode()) {
-            search(false);
-        } else {
-            request(false);
-        }
+        request(false);
         if (IVideosListView.ACTION_SELECT.equalsIgnoreCase(action)) {
             new MaterialAlertDialogBuilder(context)
                     .setTitle(R.string.confirmation)
@@ -128,19 +127,24 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
         }
     }
 
-    public void fireSearchRequestChanged(String q) {
-        String query = q == null ? null : q.trim();
-        if (!search_at.do_compare(query)) {
-            setRequestNow(false);
-            if (Utils.isEmpty(query)) {
-                cacheDisposable.clear();
-                cacheNowLoading = false;
-                netDisposable.clear();
-                loadAllFromCache();
-            } else {
-                fireRefresh(true);
+    private void sleep_search(String q) {
+        if (requestNow || cacheNowLoading) return;
+
+        sleepDataDisposable.dispose();
+        if (Utils.isEmpty(q)) {
+            if (searcher.cancel()) {
+                fireRefresh();
             }
+        } else {
+            sleepDataDisposable = (Single.just(new Object())
+                    .delay(WEB_SEARCH_DELAY, TimeUnit.MILLISECONDS)
+                    .compose(RxUtils.applySingleIOToMainSchedulers())
+                    .subscribe(videos -> searcher.do_search(q), this::onListGetError));
         }
+    }
+
+    public void fireSearchRequestChanged(String q) {
+        sleep_search(q == null ? null : q.trim());
     }
 
     public Integer getOwnerId() {
@@ -168,7 +172,7 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
             if (IVideosListView.ACTION_SELECT.equalsIgnoreCase(action)) {
                 getView().onUploaded(obj);
             } else
-                fireRefresh(false);
+                fireRefresh();
         }
 
     }
@@ -272,55 +276,10 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
                 }, this::onListGetError));
     }
 
-    private void doSearch(int accountId) {
-        setRequestNow(true);
-        netDisposable.add(interactor.search_owner_video(accountId, search_at.getQuery(), ownerId, albumId, SEARCH_COUNT, search_at.getOffset(), 0)
-                .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(videos -> onSearched(videos.getFirst(), videos.getSecond()), this::onListGetError));
-    }
-
-    private void search(boolean sleep_search) {
-        if (requestNow) return;
-        int accountId = getAccountId();
-
-        if (!sleep_search) {
-            doSearch(accountId);
-            return;
-        }
-
-        netDisposable.add(Single.just(new Object())
-                .delay(WEB_SEARCH_DELAY, TimeUnit.MILLISECONDS)
-                .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(videos -> doSearch(accountId), this::onListGetError));
-    }
-
     private void onListGetError(Throwable throwable) {
+        hasActualNetData = false;
         setRequestNow(false);
         showError(getView(), throwable);
-    }
-
-    private void onSearched(FindAt search_at, List<Video> videos) {
-        cacheDisposable.clear();
-        cacheNowLoading = false;
-
-        hasActualNetData = true;
-        endOfContent = search_at.isEnded();
-
-        if (this.search_at.getOffset() == 0) {
-            data.clear();
-            data.addAll(videos);
-
-            callView(IVideosListView::notifyDataSetChanged);
-        } else {
-            if (nonEmpty(videos)) {
-                int startSize = data.size();
-                data.addAll(videos);
-                callView(view -> view.notifyDataAdded(startSize, videos.size()));
-            }
-        }
-        this.search_at = search_at;
-
-        setRequestNow(false);
     }
 
     private void onRequestResposnse(List<Video> videos, IntNextFrom startFrom, IntNextFrom nextFrom) {
@@ -383,17 +342,17 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
     public void onDestroyed() {
         cacheDisposable.dispose();
         netDisposable.dispose();
+        sleepDataDisposable.dispose();
         super.onDestroyed();
     }
 
-    public void fireRefresh(boolean sleep_search) {
-        cacheDisposable.clear();
-        cacheNowLoading = false;
-        netDisposable.clear();
+    public void fireRefresh() {
+        if (requestNow || cacheNowLoading) {
+            return;
+        }
 
-        if (search_at.isSearchMode()) {
-            search_at.reset();
-            search(sleep_search);
+        if (searcher.isSearchMode()) {
+            searcher.reset();
         } else {
             request(false);
         }
@@ -403,15 +362,11 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
         callView(v -> v.doVideoLongClick(getAccountId(), ownerId, ownerId == getAccountId(), position, video));
     }
 
-    private boolean canLoadMore() {
-        return !endOfContent && !requestNow && hasActualNetData && !cacheNowLoading && nonEmpty(data);
-    }
-
     public void fireScrollToEnd() {
-        if (canLoadMore()) {
-            if (search_at.isSearchMode()) {
-                search(false);
-            } else {
+        if (nonEmpty(data) && hasActualNetData && !cacheNowLoading && !requestNow) {
+            if (searcher.isSearchMode()) {
+                searcher.do_search();
+            } else if (!endOfContent) {
                 request(true);
             }
         }
@@ -467,6 +422,47 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
                     }, t -> showError(getView(), getCauseIfRuntime(t))));
         } else if (id == R.id.share_button) {
             getView().displayShareDialog(getAccountId(), video, getAccountId() != ownerId);
+        }
+    }
+
+    private class FindVideo extends FindAtWithContent<Video> {
+        public FindVideo(CompositeDisposable disposable) {
+            super(disposable, SEARCH_VIEW_COUNT, SEARCH_COUNT);
+        }
+
+        @Override
+        protected Single<List<Video>> search(int offset, int count) {
+            return interactor.get(getAccountId(), ownerId, albumId, count, offset);
+        }
+
+        @Override
+        protected void onError(@NonNull Throwable e) {
+            onListGetError(e);
+        }
+
+        @Override
+        protected void onResult(@NonNull List<Video> data) {
+            hasActualNetData = true;
+            int startSize = VideosListPresenter.this.data.size();
+            VideosListPresenter.this.data.addAll(data);
+            callView(view -> view.notifyDataAdded(startSize, data.size()));
+        }
+
+        @Override
+        protected void updateLoading(boolean loading) {
+            setRequestNow(loading);
+        }
+
+        @Override
+        protected void clean() {
+            data.clear();
+            callView(IVideosListView::notifyDataSetChanged);
+        }
+
+        @Override
+        protected boolean compare(@NonNull Video data, @NonNull String q) {
+            return Utils.safeCheck(data.getTitle(), () -> data.getTitle().toLowerCase().contains(q.toLowerCase()))
+                    || Utils.safeCheck(data.getDescription(), () -> data.getDescription().toLowerCase().contains(q.toLowerCase()));
         }
     }
 }

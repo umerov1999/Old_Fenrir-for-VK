@@ -43,6 +43,7 @@ import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.ParcelableOwnerWrapper;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.PhotoAlbum;
+import dev.ragnarok.fenrir.model.TmpSource;
 import dev.ragnarok.fenrir.model.wrappers.SelectablePhotoWrapper;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.VkPhotosPresenter;
@@ -291,7 +292,12 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
     }
 
     @Override
-    public void displayGallery(int accountId, int albumId, int ownerId, ArrayList<Photo> photos, int position) {
+    public void displayGallery(int accountId, int albumId, int ownerId, @NonNull TmpSource source, int position) {
+        PlaceFactory.getPhotoAlbumGalleryPlace(accountId, albumId, ownerId, source, position).tryOpenWith(requireActivity());
+    }
+
+    @Override
+    public void displayGalleryUnSafe(int accountId, int albumId, int ownerId, ArrayList<Photo> photos, int position) {
         PlaceFactory.getPhotoAlbumGalleryPlace(accountId, albumId, ownerId, photos, position).tryOpenWith(requireActivity());
     }
 

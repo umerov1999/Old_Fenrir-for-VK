@@ -9,10 +9,14 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import dev.ragnarok.fenrir.db.Stores;
+import dev.ragnarok.fenrir.db.serialize.Serializers;
 import dev.ragnarok.fenrir.domain.IPhotosInteractor;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
 import dev.ragnarok.fenrir.model.Photo;
+import dev.ragnarok.fenrir.model.TmpSource;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.Analytics;
 import dev.ragnarok.fenrir.util.RxUtils;
 
 import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
@@ -26,7 +30,7 @@ public class PhotoAlbumPagerPresenter extends PhotoPagerPresenter {
     private final boolean invertPhotoRev;
     private boolean canLoad;
 
-    public PhotoAlbumPagerPresenter(int indexx, int accountId, int ownerId, int albumId, ArrayList<Photo> photos, Context context,
+    public PhotoAlbumPagerPresenter(int index, int accountId, int ownerId, int albumId, ArrayList<Photo> photos, Context context,
                                     @Nullable Bundle savedInstanceState) {
         super(new ArrayList<>(0), accountId, false, context, savedInstanceState);
         photosInteractor = InteractorFactory.createPhotosInteractor();
@@ -36,7 +40,40 @@ public class PhotoAlbumPagerPresenter extends PhotoPagerPresenter {
         invertPhotoRev = Settings.get().other().isInvertPhotoRev();
 
         getData().addAll(photos);
-        setCurrentIndex(indexx);
+        setCurrentIndex(index);
+
+        refreshPagerView();
+        resolveButtonsBarVisible();
+        resolveToolbarVisibility();
+        refreshInfoViews(true);
+    }
+
+    public PhotoAlbumPagerPresenter(int index, int accountId, int ownerId, int albumId, @NonNull TmpSource source, Context context,
+                                    @Nullable Bundle savedInstanceState) {
+        super(new ArrayList<>(0), accountId, false, context, savedInstanceState);
+        photosInteractor = InteractorFactory.createPhotosInteractor();
+        mOwnerId = ownerId;
+        mAlbumId = albumId;
+        canLoad = true;
+        invertPhotoRev = Settings.get().other().isInvertPhotoRev();
+
+        setCurrentIndex(index);
+        loadDataFromDatabase(source);
+    }
+
+    private void loadDataFromDatabase(TmpSource source) {
+        changeLoadingNowState(true);
+        appendDisposable(Stores.getInstance()
+                .tempStore()
+                .getData(source.getOwnerId(), source.getSourceId(), Serializers.PHOTOS_SERIALIZER)
+                .compose(RxUtils.applySingleIOToMainSchedulers())
+                .subscribe(this::onInitialLoadingFinished, Analytics::logUnexpectedError));
+    }
+
+    private void onInitialLoadingFinished(List<Photo> photos) {
+        changeLoadingNowState(false);
+
+        getData().addAll(photos);
 
         refreshPagerView();
         resolveButtonsBarVisible();

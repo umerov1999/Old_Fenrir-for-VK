@@ -430,7 +430,7 @@ class OtherSettings implements ISettings.IOtherSettings {
 
     @Override
     public boolean isNative_parcel() {
-        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("native_parcel_enable", true);
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("native_parcel_enable", false);
     }
 
     @Override

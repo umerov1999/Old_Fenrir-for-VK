@@ -9,7 +9,6 @@ import java.util.List;
 
 import dev.ragnarok.fenrir.api.interfaces.INetworker;
 import dev.ragnarok.fenrir.api.model.AccessIdPair;
-import dev.ragnarok.fenrir.api.model.VKApiAudioPlaylist;
 import dev.ragnarok.fenrir.api.model.VkApiArtist;
 import dev.ragnarok.fenrir.api.model.response.AddToPlaylistResponse;
 import dev.ragnarok.fenrir.domain.IAudioInteractor;
@@ -26,8 +25,6 @@ import dev.ragnarok.fenrir.model.IdPair;
 import dev.ragnarok.fenrir.player.util.MusicUtils;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppPerms;
-import dev.ragnarok.fenrir.util.FindAt;
-import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
@@ -390,35 +387,5 @@ public class AudioInteractor implements IAudioInteractor {
                     MusicUtils.CachedAudios.add(u.getName());
             }
         });
-    }
-
-    @Override
-    public Single<Pair<FindAt, List<AudioPlaylist>>> search_owner_playlist(int accountId, String q, int ownerId, int count, int offset, int loaded) {
-        return networker.vkDefault(accountId)
-                .audio()
-                .getPlaylists(ownerId, offset, count)
-                .flatMap(items -> {
-                    List<VKApiAudioPlaylist> dtos = listEmptyIfNull(items.getItems());
-                    List<AudioPlaylist> playlists = new ArrayList<>(dtos.size());
-
-                    for (VKApiAudioPlaylist dto : dtos) {
-                        if (Utils.safeCheck(dto.title, () -> dto.title.toLowerCase().contains(q.toLowerCase()))
-                                || Utils.safeCheck(dto.artist_name, () -> dto.artist_name.toLowerCase().contains(q.toLowerCase()))
-                                || Utils.safeCheck(dto.description, () -> dto.description.toLowerCase().contains(q.toLowerCase()))) {
-                            playlists.add(Dto2Model.transform(dto));
-                        }
-                    }
-                    int ld = loaded + playlists.size();
-
-                    if (ld >= count || Utils.isEmpty(dtos)) {
-                        return Single.just(new Pair<>(new FindAt(q, offset + count, Utils.isEmpty(dtos)), playlists));
-                    }
-
-                    return search_owner_playlist(accountId, q, ownerId, count, offset + count, ld).flatMap(t -> {
-                        playlists.addAll(t.getSecond());
-                        return Single.just(new Pair<>(t.getFirst(), playlists));
-
-                    });
-                });
     }
 }

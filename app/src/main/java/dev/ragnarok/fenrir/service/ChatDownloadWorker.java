@@ -1,6 +1,5 @@
 package dev.ragnarok.fenrir.service;
 
-import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -32,7 +31,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import dev.ragnarok.fenrir.Constants;
@@ -66,8 +64,7 @@ import dev.ragnarok.fenrir.util.Utils;
 public class ChatDownloadWorker extends Worker {
 
     private static final String TAG = ChatDownloadWorker.class.getSimpleName();
-    @SuppressLint("ConstantLocale")
-    private static final DateFormat DOWNLOAD_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+    private final DateFormat DOWNLOAD_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd_HHmmss", Utils.getAppLocale());
     private final Map<Integer, String> Avatars = new HashMap<>();
     private final StringBuilder avatars_styles = new StringBuilder();
     private final IMessagesRepository messagesRepository;

@@ -1,6 +1,5 @@
 package dev.ragnarok.fenrir.view.media;
 
-import android.annotation.SuppressLint;
 import android.content.res.ColorStateList;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -17,6 +16,8 @@ import android.view.animation.DecelerateInterpolator;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import java.util.Locale;
 
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.util.Utils;
@@ -278,7 +279,6 @@ public class MediaActionDrawable extends Drawable {
         }
     }
 
-    @SuppressLint("DefaultLocale")
     @Override
     public void draw(Canvas canvas) {
         android.graphics.Rect bounds = getBounds();
@@ -624,7 +624,7 @@ public class MediaActionDrawable extends Drawable {
             int newPercent = (int) (animatedDownloadProgress * 100);
             if (percentString == null || newPercent != lastPercent) {
                 lastPercent = newPercent;
-                percentString = String.format("%d%%", lastPercent);
+                percentString = String.format(Locale.getDefault(), "%d%%", lastPercent);
                 percentStringWidth = (int) Math.ceil(textPaint.measureText(percentString));
             }
             canvas.drawText(percentString, x, y, textPaint);

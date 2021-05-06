@@ -44,6 +44,8 @@ import dev.ragnarok.fenrir.fragment.base.PlaceSupportMvpFragment
 import dev.ragnarok.fenrir.fragment.search.SearchContentType
 import dev.ragnarok.fenrir.fragment.search.criteria.MessageSeachCriteria
 import dev.ragnarok.fenrir.fragment.sheet.MessageAttachmentsFragment
+import dev.ragnarok.fenrir.link.internal.OwnerLinkSpanFactory
+import dev.ragnarok.fenrir.link.internal.TopicLink
 import dev.ragnarok.fenrir.listener.BackPressCallback
 import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback
@@ -695,7 +697,23 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
                 if (Utils.isEmpty(body) && pinned.isHasAttachments) {
                     body = getString(R.string.attachments)
                 }
-                pinnedSubtitle?.text = body
+                pinnedSubtitle?.text = OwnerLinkSpanFactory.withSpans(
+                    body,
+                    true,
+                    false,
+                    object : OwnerLinkSpanFactory.ActionListener {
+                        override fun onTopicLinkClicked(link: TopicLink?) {
+                            TODO("Not yet implemented")
+                        }
+
+                        override fun onOwnerClick(ownerId: Int) {
+                            presenter?.fireOwnerClick(ownerId)
+                        }
+
+                        override fun onOtherClick(URL: String?) {
+                            TODO("Not yet implemented")
+                        }
+                    })
                 buttonUnpin?.visibility = if (canChange) View.VISIBLE else View.GONE
                 pinnedView?.setOnClickListener { presenter?.fireMessagesLookup(pinned); }
             }
@@ -1633,6 +1651,13 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         presenter?.fireChatDownloadClick(requireActivity(), action)
     }
 
+    override fun onMyStickerClick(file: Sticker.LocalSticker) {
+        if (!CheckDonate.isFullVersion(requireActivity())) {
+            return
+        }
+        presenter?.fireSendMyStickerClick(file)
+    }
+
     override fun onInputTextChanged(s: String) {
         presenter?.fireDraftMessageTextEdited(s)
         presenter?.fireTextEdited(s)
@@ -1640,13 +1665,6 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
 
     override fun onSendClicked(body: String) {
         presenter?.fireSendClick()
-    }
-
-    override fun onMyStickerClick(file: Sticker.LocalSticker) {
-        if (!CheckDonate.isFullVersion(requireActivity())) {
-            return
-        }
-        presenter?.fireSendMyStickerClick(file)
     }
 
     override fun onAttachClick() {

@@ -6,8 +6,7 @@
     style="?materialCardStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="4dp"
-    android:layout_marginBottom="4dp"
+    android:layout_margin="4dp"
     android:foreground="?android:attr/selectableItemBackground"
     tools:ignore="UnusedAttribute">
 

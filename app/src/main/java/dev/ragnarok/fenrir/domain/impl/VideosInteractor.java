@@ -23,7 +23,6 @@ import dev.ragnarok.fenrir.model.Video;
 import dev.ragnarok.fenrir.model.VideoAlbum;
 import dev.ragnarok.fenrir.model.VideoAlbumCriteria;
 import dev.ragnarok.fenrir.model.VideoCriteria;
-import dev.ragnarok.fenrir.util.FindAt;
 import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Completable;
@@ -87,35 +86,6 @@ public class VideosInteractor implements IVideosInteractor {
                     return cache.videos()
                             .insertData(accountId, ownerId, albumId, dbos, offset == 0)
                             .andThen(Single.just(videos));
-                });
-    }
-
-    @Override
-    public Single<Pair<FindAt, List<Video>>> search_owner_video(int accountId, String q, int ownerId, int albumId, int count, int offset, int loaded) {
-        return networker.vkDefault(accountId)
-                .video()
-                .get(ownerId, null, albumId, count, offset, true)
-                .flatMap(items -> {
-                    List<VKApiVideo> dtos = listEmptyIfNull(items.getItems());
-                    List<Video> videos = new ArrayList<>(dtos.size());
-
-                    for (VKApiVideo dto : dtos) {
-                        if (Utils.safeCheck(dto.title, () -> dto.title.toLowerCase().contains(q.toLowerCase()))
-                                || Utils.safeCheck(dto.description, () -> dto.description.toLowerCase().contains(q.toLowerCase()))) {
-                            videos.add(Dto2Model.transform(dto));
-                        }
-                    }
-                    int ld = loaded + videos.size();
-
-                    if (ld >= count || Utils.isEmpty(dtos)) {
-                        return Single.just(new Pair<>(new FindAt(q, offset + count, Utils.isEmpty(dtos)), videos));
-                    }
-
-                    return search_owner_video(accountId, q, ownerId, albumId, count, offset + count, ld).flatMap(t -> {
-                        videos.addAll(t.getSecond());
-                        return Single.just(new Pair<>(t.getFirst(), videos));
-
-                    });
                 });
     }
 

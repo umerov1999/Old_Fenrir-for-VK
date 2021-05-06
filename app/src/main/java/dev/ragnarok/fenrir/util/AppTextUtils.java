@@ -1,6 +1,5 @@
 package dev.ragnarok.fenrir.util;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -17,7 +16,6 @@ import java.util.regex.Pattern;
 import dev.ragnarok.fenrir.R;
 
 public class AppTextUtils {
-
     public static final long ONE_DAY_SEC = 24 * 60 * 60;
     private static final Date DATE = new Date();
     private static final Calendar CALENDAR = Calendar.getInstance();
@@ -26,12 +24,15 @@ public class AppTextUtils {
     private static final String TWO_ZERO = "00";
     private static final String POINT = ".";
     private static final String EMPTY = "";
-    @SuppressLint("ConstantLocale")
-    private static final SimpleDateFormat SHORT_DATE = new SimpleDateFormat("HH:mm", Locale.getDefault());
-    @SuppressLint("ConstantLocale")
-    private static final SimpleDateFormat FULL_DATE = new SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault());
-    @SuppressLint("ConstantLocale")
-    private static final SimpleDateFormat FULL_LITTLE_DATE = new SimpleDateFormat("dd.MM.yy HH:mm", Locale.getDefault());
+    private static SimpleDateFormat SHORT_DATE = new SimpleDateFormat("HH:mm", Utils.getAppLocale());
+    private static SimpleDateFormat FULL_DATE = new SimpleDateFormat("dd MMM yyyy HH:mm", Utils.getAppLocale());
+    private static SimpleDateFormat FULL_LITTLE_DATE = new SimpleDateFormat("dd.MM.yy HH:mm", Utils.getAppLocale());
+
+    public static void updateDateLang(Locale locale) {
+        SHORT_DATE = new SimpleDateFormat("HH:mm", locale);
+        FULL_DATE = new SimpleDateFormat("dd MMM yyyy HH:mm", locale);
+        FULL_LITTLE_DATE = new SimpleDateFormat("dd.MM.yy HH:mm", locale);
+    }
 
     public static String safeTrim(String text, @Nullable String ifNull) {
         return text == null ? ifNull : text.trim();

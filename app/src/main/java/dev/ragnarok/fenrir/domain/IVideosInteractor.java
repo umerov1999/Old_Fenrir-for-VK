@@ -5,7 +5,6 @@ import java.util.List;
 import dev.ragnarok.fenrir.fragment.search.criteria.VideoSearchCriteria;
 import dev.ragnarok.fenrir.model.Video;
 import dev.ragnarok.fenrir.model.VideoAlbum;
-import dev.ragnarok.fenrir.util.FindAt;
 import dev.ragnarok.fenrir.util.Pair;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
@@ -13,8 +12,6 @@ import io.reactivex.rxjava3.core.Single;
 
 public interface IVideosInteractor {
     Single<List<Video>> get(int accountId, int ownerId, int albumId, int count, int offset);
-
-    Single<Pair<FindAt, List<Video>>> search_owner_video(int accountId, String q, int ownerId, int albumId, int count, int offset, int loaded);
 
     Single<List<Video>> getCachedVideos(int accountId, int ownerId, int albumId);
 

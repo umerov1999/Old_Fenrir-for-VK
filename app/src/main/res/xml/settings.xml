@@ -776,7 +776,7 @@
             app:useSimpleSummaryProvider="false" />
 
         <SwitchPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="native_parcel_enable"
             android:summary="@string/native_parcel_summary"
             android:title="@string/native_parcel_enable"

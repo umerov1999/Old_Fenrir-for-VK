@@ -1,6 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.text.Spannable;
@@ -24,7 +23,6 @@ import java.util.Date;
 import java.util.EventListener;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import dev.ragnarok.fenrir.R;
@@ -55,10 +53,8 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int DIV_OLD = 4;
     private static final int DATA_TYPE_NORMAL = 0;
     private static final int DATA_TYPE_HIDDEN = 1;
-    @SuppressLint("ConstantLocale")
-    private static final SimpleDateFormat DF_TODAY = new SimpleDateFormat("HH:mm", Locale.getDefault());
-    @SuppressLint("ConstantLocale")
-    private static final SimpleDateFormat DF_OLD = new SimpleDateFormat("dd/MM", Locale.getDefault());
+    private final SimpleDateFormat DF_TODAY = new SimpleDateFormat("HH:mm", Utils.getAppLocale());
+    private final SimpleDateFormat DF_OLD = new SimpleDateFormat("dd/MM", Utils.getAppLocale());
     private final Context mContext;
     private final Transformation mTransformation;
     private final ForegroundColorSpan mForegroundColorSpan;

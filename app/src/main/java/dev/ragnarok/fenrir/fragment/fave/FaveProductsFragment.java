@@ -56,8 +56,8 @@ public class FaveProductsFragment extends BaseMvpFragment<FaveProductsPresenter,
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         mEmpty = root.findViewById(R.id.empty);
-
-        recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 2));
+        int columnCount = getResources().getInteger(R.integer.photos_albums_column_count);
+        recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), columnCount));
         recyclerView.addOnScrollListener(new PicassoPauseOnScrollListener(Constants.PICASSO_TAG));
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override

@@ -61,7 +61,8 @@ public class WallPhotoAlbumAttachmentsFragment extends PlaceSupportMvpFragment<W
         mLoadMore = root.findViewById(R.id.goto_button);
 
         RecyclerView recyclerView = root.findViewById(android.R.id.list);
-        recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 2));
+        int columnCount = getResources().getInteger(R.integer.photos_albums_column_count);
+        recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), columnCount));
         recyclerView.addOnScrollListener(new PicassoPauseOnScrollListener(Constants.PICASSO_TAG));
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override

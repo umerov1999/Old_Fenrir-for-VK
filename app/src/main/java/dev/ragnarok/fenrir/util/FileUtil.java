@@ -1,6 +1,5 @@
 package dev.ragnarok.fenrir.util;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
@@ -19,10 +18,12 @@ import dev.ragnarok.fenrir.Constants;
 
 
 public class FileUtil {
-
-    @SuppressLint("ConstantLocale")
-    private static final DateFormat PHOTO_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
     private static final Random Random = new Random();
+    private static DateFormat PHOTO_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd_HHmmss", Utils.getAppLocale());
+
+    public static void updateDateLang(Locale locale) {
+        PHOTO_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd_HHmmss", Utils.getAppLocale());
+    }
 
     public static Uri getExportedUriForFile(Context context, File file) {
         return FileProvider.getUriForFile(context, Constants.FILE_PROVIDER_AUTHORITY, file);

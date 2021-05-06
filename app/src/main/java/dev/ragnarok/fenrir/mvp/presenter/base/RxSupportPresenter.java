@@ -98,6 +98,10 @@ public abstract class RxSupportPresenter<V extends IMvpView> extends AbsPresente
         compositeDisposable.add(disposable);
     }
 
+    protected CompositeDisposable getCompositeDisposable() {
+        return compositeDisposable;
+    }
+
     protected void showError(IErrorView view, Throwable throwable) {
         if (isNull(view)) {
             return;

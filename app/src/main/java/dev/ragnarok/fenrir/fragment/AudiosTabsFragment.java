@@ -27,7 +27,6 @@ import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
 import dev.ragnarok.fenrir.api.model.VKApiAudio;
 import dev.ragnarok.fenrir.fragment.base.BaseFragment;
-import dev.ragnarok.fenrir.fragment.search.AudioSearchTabsFragment;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
@@ -206,7 +205,7 @@ public class AudiosTabsFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
-            PlaceFactory.getAudiosTabsSearchPlace(getAccountId(), AudioSearchTabsFragment.TAB_MUSIC).tryOpenWith(requireActivity());
+            PlaceFactory.getAudiosTabsSearchPlace(getAccountId(), ownerId).tryOpenWith(requireActivity());
             return true;
         }
 

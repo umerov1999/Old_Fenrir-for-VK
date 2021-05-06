@@ -19,6 +19,7 @@ import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
 import dev.ragnarok.fenrir.fragment.AdditionalNavigationFragment;
+import dev.ragnarok.fenrir.fragment.AudiosSearchMyPageFragment;
 import dev.ragnarok.fenrir.fragment.search.criteria.AudioSearchCriteria;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.place.Place;
@@ -27,16 +28,15 @@ import dev.ragnarok.fenrir.util.Accounts;
 
 public class AudioSearchTabsFragment extends Fragment {
 
-    public static final int TAB_MUSIC = 0;
-    public static final int TAB_AUDIO_PLAYLISTS = 1;
-    public static final int TAB_ARTISTS = 2;
+    public static final int TAB_MY_MUSIC = 0;
+    public static final int TAB_MUSIC = 1;
+    public static final int TAB_AUDIO_PLAYLISTS = 2;
+    public static final int TAB_ARTISTS = 3;
     private static final String TAG = AudioSearchTabsFragment.class.getSimpleName();
-    private static final String SAVE_CURRENT_TAB = "save_current_tab";
-    private int mCurrentTab;
 
-    public static Bundle buildArgs(int accountId, int tab) {
+    public static Bundle buildArgs(int accountId, int ownerId) {
         Bundle args = new Bundle();
-        args.putInt(Extra.TAB, tab);
+        args.putInt(Extra.OWNER_ID, ownerId);
         args.putInt(Extra.ACCOUNT_ID, accountId);
         return args;
     }
@@ -45,15 +45,6 @@ public class AudioSearchTabsFragment extends Fragment {
         AudioSearchTabsFragment fragment = new AudioSearchTabsFragment();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            mCurrentTab = savedInstanceState.getInt(SAVE_CURRENT_TAB);
-        }
     }
 
     @Override
@@ -68,6 +59,9 @@ public class AudioSearchTabsFragment extends Fragment {
 
         new TabLayoutMediator(root.findViewById(R.id.tablayout), mViewPager, (tab, position) -> {
             switch (position) {
+                case TAB_MY_MUSIC:
+                    tab.setText(R.string.my);
+                    break;
                 case TAB_MUSIC:
                     tab.setText(R.string.music);
                     break;
@@ -79,20 +73,8 @@ public class AudioSearchTabsFragment extends Fragment {
                     break;
             }
         }).attach();
-
-        if (getArguments().containsKey(Extra.TAB)) {
-            mCurrentTab = getArguments().getInt(Extra.TAB);
-
-            getArguments().remove(Extra.TAB);
-            mViewPager.setCurrentItem(mCurrentTab);
-        }
+        mViewPager.setCurrentItem(TAB_MY_MUSIC);
         return root;
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(SAVE_CURRENT_TAB, mCurrentTab);
     }
 
     @Override
@@ -125,10 +107,13 @@ public class AudioSearchTabsFragment extends Fragment {
         @Override
         public Fragment createFragment(int position) {
             int accountId = Accounts.fromArgs(getArguments());
+            int ownerId = requireArguments().getInt(Extra.OWNER_ID);
 
             Fragment fragment;
-
             switch (position) {
+                case TAB_MY_MUSIC:
+                    fragment = AudiosSearchMyPageFragment.newInstance(accountId, ownerId, false);
+                    break;
                 case TAB_MUSIC:
                     fragment = SingleTabSearchFragment.newInstance(accountId, SearchContentType.AUDIOS, new AudioSearchCriteria("", false, true));
                     break;
@@ -144,14 +129,14 @@ public class AudioSearchTabsFragment extends Fragment {
                 default:
                     throw new IllegalArgumentException();
             }
-
-            fragment.getArguments().putInt(Extra.POSITION, position);
             return fragment;
         }
 
         @Override
         public int getItemCount() {
-            return 3;
+            int accountId = Accounts.fromArgs(getArguments());
+            int ownerId = requireArguments().getInt(Extra.OWNER_ID);
+            return accountId == ownerId ? 4 : 1;
         }
     }
 }

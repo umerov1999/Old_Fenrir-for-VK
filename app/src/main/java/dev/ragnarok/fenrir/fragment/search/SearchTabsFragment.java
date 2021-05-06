@@ -199,8 +199,6 @@ public class SearchTabsFragment extends Fragment {
                 default:
                     throw new IllegalArgumentException();
             }
-
-            fragment.getArguments().putInt(Extra.POSITION, position);
             return fragment;
         }
 

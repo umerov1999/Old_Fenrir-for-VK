@@ -18,15 +18,11 @@ import dev.ragnarok.fenrir.util.RxUtils;
 
 public class TmpGalleryPagerPresenter extends PhotoPagerPresenter {
 
-    private final TmpSource source;
-
     public TmpGalleryPagerPresenter(int accountId, @NonNull TmpSource source, int index, Context context,
                                     @Nullable Bundle savedInstanceState) {
         super(new ArrayList<>(0), accountId, false, context, savedInstanceState);
-        this.source = source;
         setCurrentIndex(index);
-
-        loadDataFromDatabase();
+        loadDataFromDatabase(source);
     }
 
     @Override
@@ -39,7 +35,7 @@ public class TmpGalleryPagerPresenter extends PhotoPagerPresenter {
         // no saving
     }
 
-    private void loadDataFromDatabase() {
+    private void loadDataFromDatabase(TmpSource source) {
         changeLoadingNowState(true);
         appendDisposable(Stores.getInstance()
                 .tempStore()

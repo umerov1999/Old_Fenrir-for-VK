@@ -200,17 +200,22 @@ public class PlaceFactory {
                 .withStringExtra(Extra.BODY, body);
     }
 
-    public static Place getPhotoAlbumGalleryPlace(int accountId, int albumId, int ownerId, ArrayList<Photo> photos, int position) {
+    public static Place getPhotoAlbumGalleryPlace(int accountId, int albumId, int ownerId, @NonNull ArrayList<Photo> photos, int position) {
         return new Place(Place.VK_PHOTO_ALBUM_GALLERY)
                 .setArguments(PhotoPagerFragment.buildArgsForAlbum(accountId, albumId, ownerId, photos, position));
     }
 
-    public static Place getSimpleGalleryPlace(int accountId, ArrayList<Photo> photos, int position, boolean needRefresh) {
+    public static Place getPhotoAlbumGalleryPlace(int accountId, int albumId, int ownerId, @NonNull TmpSource source, int position) {
+        return new Place(Place.VK_PHOTO_ALBUM_GALLERY_SAVED)
+                .setArguments(PhotoPagerFragment.buildArgsForAlbum(accountId, albumId, ownerId, source, position));
+    }
+
+    public static Place getSimpleGalleryPlace(int accountId, @NonNull ArrayList<Photo> photos, int position, boolean needRefresh) {
         return new Place(Place.SIMPLE_PHOTO_GALLERY)
                 .setArguments(PhotoPagerFragment.buildArgsForSimpleGallery(accountId, position, photos, needRefresh));
     }
 
-    public static Place getFavePhotosGallery(int accountId, ArrayList<Photo> photos, int position) {
+    public static Place getFavePhotosGallery(int accountId, @NonNull ArrayList<Photo> photos, int position) {
         return new Place(Place.FAVE_PHOTOS_GALLERY)
                 .setArguments(PhotoPagerFragment.buildArgsForFave(accountId, photos, position));
     }
@@ -484,8 +489,8 @@ public class PlaceFactory {
         return new Place(Place.SEARCH).setArguments(SearchTabsFragment.buildArgs(accountId, tab));
     }
 
-    public static Place getAudiosTabsSearchPlace(int accountId, int tab) {
-        return new Place(Place.AUDIOS_SEARCH_TABS).setArguments(AudioSearchTabsFragment.buildArgs(accountId, tab));
+    public static Place getAudiosTabsSearchPlace(int accountId, int ownerId) {
+        return new Place(Place.AUDIOS_SEARCH_TABS).setArguments(AudioSearchTabsFragment.buildArgs(accountId, ownerId));
     }
 
     public static Place getGroupChatsPlace(int accountId, int groupId) {

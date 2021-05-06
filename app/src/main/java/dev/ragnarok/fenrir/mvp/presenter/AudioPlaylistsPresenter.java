@@ -22,10 +22,11 @@ import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IAudioPlaylistsView;
-import dev.ragnarok.fenrir.util.FindAt;
+import dev.ragnarok.fenrir.util.FindAtWithContent;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 
 import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
@@ -33,21 +34,22 @@ import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPlaylistsView> {
 
-    private static final int SEARCH_COUNT = 20;
+    private static final int SEARCH_COUNT = 50;
+    private static final int SEARCH_VIEW_COUNT = 10;
     private static final int GET_COUNT = 50;
     private static final int WEB_SEARCH_DELAY = 1000;
     private final List<AudioPlaylist> addon;
     private final List<AudioPlaylist> playlists;
     private final IAudioInteractor fInteractor;
     private final int owner_id;
+    private final FindPlaylist searcher;
     private Disposable actualDataDisposable = Disposable.disposed();
     private AudioPlaylist pending_to_add;
     private int Foffset;
-    private boolean actualDataReceived;
     private boolean endOfContent;
     private boolean actualDataLoading;
-    private FindAt search_at;
     private boolean doAudioLoadTabs;
+    private boolean actualDataReceived;
 
     public AudioPlaylistsPresenter(int accountId, int ownerId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
@@ -55,7 +57,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
         playlists = new ArrayList<>();
         addon = new ArrayList<>();
         fInteractor = InteractorFactory.createAudioInteractor();
-        search_at = new FindAt();
+        searcher = new FindPlaylist(getCompositeDisposable());
     }
 
     public int getOwner_id() {
@@ -82,16 +84,17 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
 
     private void onActualDataGetError(Throwable t) {
         actualDataLoading = false;
+        actualDataReceived = false;
         showError(getView(), getCauseIfRuntime(t));
 
         resolveRefreshingView();
     }
 
     private void onActualDataReceived(int offset, List<AudioPlaylist> data) {
+        actualDataReceived = true;
         Foffset = offset + GET_COUNT;
         actualDataLoading = false;
         endOfContent = data.isEmpty();
-        actualDataReceived = true;
 
         if (offset == 0) {
             playlists.clear();
@@ -142,10 +145,10 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
     }
 
     public boolean fireScrollToEnd() {
-        if (!endOfContent && nonEmpty(playlists) && actualDataReceived && !actualDataLoading) {
-            if (search_at.isSearchMode()) {
-                search(false);
-            } else {
+        if (nonEmpty(playlists) && actualDataReceived && !actualDataLoading) {
+            if (searcher.isSearchMode()) {
+                searcher.do_search();
+            } else if (!endOfContent) {
                 loadActualData(Foffset);
             }
             return false;
@@ -153,61 +156,24 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
         return true;
     }
 
-    private void doSearch(int accountId) {
-        actualDataLoading = true;
-        resolveRefreshingView();
-        appendDisposable(fInteractor.search_owner_playlist(accountId, search_at.getQuery(), owner_id, SEARCH_COUNT, search_at.getOffset(), 0)
-                .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(playlist -> onSearched(playlist.getFirst(), playlist.getSecond()), this::onActualDataGetError));
-    }
-
-    private void onSearched(FindAt search_at, List<AudioPlaylist> playlist) {
-        actualDataLoading = false;
-        actualDataReceived = true;
-        endOfContent = search_at.isEnded();
-
-        if (this.search_at.getOffset() == 0) {
-            playlists.clear();
-            playlists.addAll(playlist);
-            callView(IAudioPlaylistsView::notifyDataSetChanged);
-        } else {
-            if (nonEmpty(playlist)) {
-                int startSize = playlists.size();
-                playlists.addAll(playlist);
-                callView(view -> view.notifyDataAdded(startSize, playlist.size()));
-            }
-        }
-        this.search_at = search_at;
-        resolveRefreshingView();
-    }
-
-    private void search(boolean sleep_search) {
+    private void sleep_search(String q) {
         if (actualDataLoading) return;
-        int accountId = getAccountId();
-
-        if (!sleep_search) {
-            doSearch(accountId);
-            return;
-        }
 
         actualDataDisposable.dispose();
-        actualDataDisposable = (Single.just(new Object())
-                .delay(WEB_SEARCH_DELAY, TimeUnit.MILLISECONDS)
-                .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(videos -> doSearch(accountId), this::onActualDataGetError));
+        if (Utils.isEmpty(q)) {
+            if (searcher.cancel()) {
+                fireRefresh();
+            }
+        } else {
+            actualDataDisposable = (Single.just(new Object())
+                    .delay(WEB_SEARCH_DELAY, TimeUnit.MILLISECONDS)
+                    .compose(RxUtils.applySingleIOToMainSchedulers())
+                    .subscribe(videos -> searcher.do_search(q), this::onActualDataGetError));
+        }
     }
 
     public void fireSearchRequestChanged(String q) {
-        String query = q == null ? null : q.trim();
-        if (!search_at.do_compare(query)) {
-            actualDataLoading = false;
-            if (Utils.isEmpty(query)) {
-                actualDataDisposable.dispose();
-                fireRefresh(false);
-            } else {
-                fireRefresh(true);
-            }
-        }
+        sleep_search(q == null ? null : q.trim());
     }
 
     public void onDelete(int index, AudioPlaylist album) {
@@ -232,7 +198,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
                 .setPositiveButton(R.string.button_ok, (dialog, which) -> appendDisposable(fInteractor.editPlaylist(getAccountId(), album.getOwnerId(), album.getId(),
                         ((TextInputEditText) root.findViewById(R.id.edit_title)).getText().toString(),
                         ((TextInputEditText) root.findViewById(R.id.edit_description)).getText().toString()).compose(RxUtils.applySingleIOToMainSchedulers())
-                        .subscribe(v -> fireRefresh(false), t -> showError(getView(), getCauseIfRuntime(t)))))
+                        .subscribe(v -> fireRefresh(), t -> showError(getView(), getCauseIfRuntime(t)))))
                 .setNegativeButton(R.string.button_cancel, null);
         builder.create().show();
     }
@@ -283,16 +249,58 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
         callView(v -> v.doAddAudios(getAccountId()));
     }
 
-    public void fireRefresh(boolean sleep_search) {
+    public void fireRefresh() {
         if (actualDataLoading) {
             return;
         }
 
-        if (search_at.isSearchMode()) {
-            search_at.reset();
-            search(sleep_search);
+        if (searcher.isSearchMode()) {
+            searcher.reset();
         } else {
             loadActualData(0);
+        }
+    }
+
+    private class FindPlaylist extends FindAtWithContent<AudioPlaylist> {
+        public FindPlaylist(CompositeDisposable disposable) {
+            super(disposable, SEARCH_VIEW_COUNT, SEARCH_COUNT);
+        }
+
+        @Override
+        protected Single<List<AudioPlaylist>> search(int offset, int count) {
+            return fInteractor.getPlaylists(getAccountId(), owner_id, offset, count);
+        }
+
+        @Override
+        protected void onError(@NonNull Throwable e) {
+            onActualDataGetError(e);
+        }
+
+        @Override
+        protected void onResult(@NonNull List<AudioPlaylist> data) {
+            actualDataReceived = true;
+            int startSize = playlists.size();
+            playlists.addAll(data);
+            callView(view -> view.notifyDataAdded(startSize, data.size()));
+        }
+
+        @Override
+        protected void updateLoading(boolean loading) {
+            actualDataLoading = loading;
+            resolveRefreshingView();
+        }
+
+        @Override
+        protected void clean() {
+            playlists.clear();
+            callView(IAudioPlaylistsView::notifyDataSetChanged);
+        }
+
+        @Override
+        protected boolean compare(@NonNull AudioPlaylist data, @NonNull String q) {
+            return (Utils.safeCheck(data.getTitle(), () -> data.getTitle().toLowerCase().contains(q.toLowerCase()))
+                    || Utils.safeCheck(data.getArtist_name(), () -> data.getArtist_name().toLowerCase().contains(q.toLowerCase()))
+                    || Utils.safeCheck(data.getDescription(), () -> data.getDescription().toLowerCase().contains(q.toLowerCase())));
         }
     }
 }

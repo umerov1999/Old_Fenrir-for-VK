@@ -18,8 +18,6 @@ import dev.ragnarok.fenrir.model.AudioCatalog;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.CatalogBlock;
 import dev.ragnarok.fenrir.model.IdPair;
-import dev.ragnarok.fenrir.util.FindAt;
-import dev.ragnarok.fenrir.util.Pair;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
 
@@ -81,6 +79,4 @@ public interface IAudioInteractor {
     Single<CatalogBlock> getCatalogBlockById(int accountId, String block_id, String start_from);
 
     Completable PlaceToAudioCache(Context context);
-
-    Single<Pair<FindAt, List<AudioPlaylist>>> search_owner_playlist(int accountId, String q, int ownerId, int count, int offset, int loaded);
 }

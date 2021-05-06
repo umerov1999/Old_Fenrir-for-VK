@@ -147,7 +147,7 @@ class SinglePhotoFragment : BaseFragment(), GoBackCallback, BackPressCallback {
             dir = dir_final
         }
         val DOWNLOAD_DATE_FORMAT: DateFormat =
-            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+            SimpleDateFormat("yyyyMMdd_HHmmss", Utils.getAppLocale())
         doDownloadPhoto(
             requireActivity(),
             url!!,

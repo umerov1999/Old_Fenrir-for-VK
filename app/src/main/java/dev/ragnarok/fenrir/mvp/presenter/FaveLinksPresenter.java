@@ -20,6 +20,7 @@ import dev.ragnarok.fenrir.model.FaveLink;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IFaveLinksView;
 import dev.ragnarok.fenrir.util.RxUtils;
+import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
@@ -27,8 +28,8 @@ import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class FaveLinksPresenter extends AccountDependencyPresenter<IFaveLinksView> {
 
+    private static final int getCount = 50;
     private final IFaveInteractor faveInteractor;
-
     private final List<FaveLink> links;
     private final CompositeDisposable cacheDisposable = new CompositeDisposable();
     private final CompositeDisposable actualDisposable = new CompositeDisposable();
@@ -59,9 +60,9 @@ public class FaveLinksPresenter extends AccountDependencyPresenter<IFaveLinksVie
         int accountId = getAccountId();
 
         resolveRefreshingView();
-        actualDisposable.add(faveInteractor.getLinks(accountId, 50, offset)
+        actualDisposable.add(faveInteractor.getLinks(accountId, getCount, offset)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(data -> onActualDataReceived(data.get(), offset, data.hasNext()), this::onActualGetError));
+                .subscribe(data -> onActualDataReceived(data, offset), this::onActualGetError));
     }
 
     private void onActualGetError(Throwable t) {
@@ -70,12 +71,12 @@ public class FaveLinksPresenter extends AccountDependencyPresenter<IFaveLinksVie
         showError(getView(), getCauseIfRuntime(t));
     }
 
-    private void onActualDataReceived(List<FaveLink> data, int offset, boolean hasNext) {
+    private void onActualDataReceived(List<FaveLink> data, int offset) {
         cacheDisposable.clear();
         cacheLoading = false;
 
         actualLoading = false;
-        endOfContent = !hasNext;
+        endOfContent = Utils.safeCountOf(data) < getCount;
         actualDataReceived = true;
 
         if (offset == 0) {

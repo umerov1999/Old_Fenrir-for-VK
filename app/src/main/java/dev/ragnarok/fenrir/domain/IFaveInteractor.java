@@ -3,7 +3,6 @@ package dev.ragnarok.fenrir.domain;
 import java.util.List;
 
 import dev.ragnarok.fenrir.model.Article;
-import dev.ragnarok.fenrir.model.EndlessData;
 import dev.ragnarok.fenrir.model.FaveLink;
 import dev.ragnarok.fenrir.model.FavePage;
 import dev.ragnarok.fenrir.model.Market;
@@ -38,13 +37,13 @@ public interface IFaveInteractor {
 
     Single<List<FavePage>> getCachedPages(int accountId, boolean isUser);
 
-    Single<EndlessData<FavePage>> getPages(int accountId, int count, int offset, boolean isUser);
+    Single<List<FavePage>> getPages(int accountId, int count, int offset, boolean isUser);
 
     Completable removePage(int accountId, int ownerId, boolean isUser);
 
     Single<List<FaveLink>> getCachedLinks(int accountId);
 
-    Single<EndlessData<FaveLink>> getLinks(int accountId, int count, int offset);
+    Single<List<FaveLink>> getLinks(int accountId, int count, int offset);
 
     Completable removeLink(int accountId, String id);
 

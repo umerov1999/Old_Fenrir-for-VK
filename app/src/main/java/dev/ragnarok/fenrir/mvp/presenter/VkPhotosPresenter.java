@@ -13,6 +13,8 @@ import java.util.List;
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.api.model.VKApiCommunity;
+import dev.ragnarok.fenrir.db.Stores;
+import dev.ragnarok.fenrir.db.serialize.Serializers;
 import dev.ragnarok.fenrir.domain.IOwnersRepository;
 import dev.ragnarok.fenrir.domain.IPhotosInteractor;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
@@ -23,7 +25,9 @@ import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.ParcelableOwnerWrapper;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.PhotoAlbum;
+import dev.ragnarok.fenrir.model.TmpSource;
 import dev.ragnarok.fenrir.model.wrappers.SelectablePhotoWrapper;
+import dev.ragnarok.fenrir.module.FenrirNative;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.IVkPhotosView;
@@ -34,6 +38,7 @@ import dev.ragnarok.fenrir.upload.UploadDestination;
 import dev.ragnarok.fenrir.upload.UploadIntent;
 import dev.ragnarok.fenrir.upload.UploadResult;
 import dev.ragnarok.fenrir.upload.UploadUtils;
+import dev.ragnarok.fenrir.util.Analytics;
 import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.RxUtils;
@@ -503,7 +508,18 @@ public class VkPhotosPresenter extends AccountDependencyPresenter<IVkPhotosView>
                 trig = true;
             }
         }
-        getView().displayGallery(getAccountId(), albumId, ownerId, photos_ret, Index);
+        int finalIndex = Index;
+        if (!FenrirNative.isNativeLoaded() || !Settings.get().other().isNative_parcel()) {
+            TmpSource source = new TmpSource(getInstanceId(), 0);
+            fireTempDataUsage();
+            appendDisposable(Stores.getInstance()
+                    .tempStore()
+                    .put(source.getOwnerId(), source.getSourceId(), photos_ret, Serializers.PHOTOS_SERIALIZER)
+                    .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                    .subscribe(() -> callView(view -> view.displayGallery(getAccountId(), albumId, ownerId, source, finalIndex)), Analytics::logUnexpectedError));
+        } else {
+            callView(view -> view.displayGalleryUnSafe(getAccountId(), albumId, ownerId, photos_ret, finalIndex));
+        }
     }
 
     public void fireSelectionCommitClick() {

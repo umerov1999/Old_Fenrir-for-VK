@@ -17,7 +17,6 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import dev.ragnarok.fenrir.Constants;
@@ -32,6 +31,7 @@ import dev.ragnarok.fenrir.mvp.presenter.PollPresenter;
 import dev.ragnarok.fenrir.mvp.view.IPollView;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.util.AssertUtils;
+import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.AspectRatioImageView;
 import dev.ragnarok.fenrir.view.ProgressButton;
@@ -116,7 +116,7 @@ public class PollFragment extends BaseMvpFragment<PollPresenter, IPollView>
     public void displayCreationTime(long unixtime) {
         ActionBar actionBar = ActivityUtils.supportToolbarFor(this);
         if (nonNull(actionBar)) {
-            String formattedDate = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
+            String formattedDate = new SimpleDateFormat("dd.MM.yyyy HH:mm", Utils.getAppLocale())
                     .format(new Date(unixtime * 1000));
             actionBar.setSubtitle(formattedDate);
         }

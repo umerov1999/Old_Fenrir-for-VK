@@ -255,7 +255,6 @@ public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView
 
         mAudioRecyclerAdapter = new AudioRecyclerAdapter(requireActivity(), Collections.emptyList(), getPresenter().isMyAudio(), isSelectMode, 0, getPresenter().getPlaylistId());
 
-
         headerPlaylist = inflater.inflate(R.layout.header_audio_playlist, recyclerView, false);
         RecyclerView headerPlaylistRecyclerView = headerPlaylist.findViewById(R.id.header_audio_playlist);
         headerPlaylistRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false));

@@ -4,7 +4,6 @@ import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Locale;
 
 import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.Constants;
@@ -22,7 +21,7 @@ public class Auth {
 
         url = url + "&display=mobile&scope="
                 + scope + "&redirect_uri=" + URLEncoder.encode(redirect_url, "utf-8") + "&response_type=token"
-                + "&v=" + URLEncoder.encode(Constants.API_VERSION, "utf-8") + "&lang=" + URLEncoder.encode(Locale.getDefault().getLanguage(), "utf-8") + "&device_id=" + URLEncoder.encode(Utils.getDeviceId(Injection.provideApplicationContext()), "utf-8");
+                + "&v=" + URLEncoder.encode(Constants.API_VERSION, "utf-8") + "&lang=" + URLEncoder.encode(Constants.DEVICE_COUNTRY_CODE, "utf-8") + "&device_id=" + URLEncoder.encode(Utils.getDeviceId(Injection.provideApplicationContext()), "utf-8");
 
         if (Utils.nonEmpty(groupIds)) {
             url = url + "&group_ids=" + groupIds;

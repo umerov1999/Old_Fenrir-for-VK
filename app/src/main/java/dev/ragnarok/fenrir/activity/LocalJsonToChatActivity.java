@@ -97,6 +97,7 @@ public class LocalJsonToChatActivity extends NoMainActivity implements PlaceProv
             case Place.FAVE_PHOTOS_GALLERY:
             case Place.SIMPLE_PHOTO_GALLERY:
             case Place.VK_PHOTO_TMP_SOURCE:
+            case Place.VK_PHOTO_ALBUM_GALLERY_SAVED:
                 attachFrontFragment(PhotoPagerFragment.newInstance(place.type, args));
                 break;
 

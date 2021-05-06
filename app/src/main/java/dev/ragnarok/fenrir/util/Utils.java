@@ -28,7 +28,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.SparseArray;
@@ -98,6 +97,7 @@ import dev.ragnarok.fenrir.module.rlottie.RLottieDrawable;
 import dev.ragnarok.fenrir.player.util.MusicUtils;
 import dev.ragnarok.fenrir.service.ErrorLocalizer;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
+import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.view.emoji.EmojiconTextView;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 import io.reactivex.rxjava3.core.Completable;
@@ -884,17 +884,17 @@ public class Utils {
     }
 
     public static boolean isHiddenCurrent() {
-        return isHiddenType(dev.ragnarok.fenrir.settings.Settings.get().accounts().getType(dev.ragnarok.fenrir.settings.Settings.get().accounts().getCurrent()));
+        return isHiddenType(Settings.get().accounts().getType(Settings.get().accounts().getCurrent()));
     }
 
     public static boolean isHiddenAccount(int account_id) {
-        return isHiddenType(dev.ragnarok.fenrir.settings.Settings.get().accounts().getType(account_id));
+        return isHiddenType(Settings.get().accounts().getType(account_id));
     }
 
     @SuppressLint("HardwareIds")
     public static String getDeviceId(Context context) {
         if (isEmpty(device_id)) {
-            device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+            device_id = android.provider.Settings.Secure.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
             if (isEmpty(device_id))
                 device_id = "0123456789A";
         }
@@ -1086,7 +1086,7 @@ public class Utils {
     }
 
     public static int getThemeColor(boolean isOfReadToast) {
-        switch (dev.ragnarok.fenrir.settings.Settings.get().ui().getMainThemeKey()) {
+        switch (Settings.get().ui().getMainThemeKey()) {
             case "fire":
             case "yellow_violet":
             case "fire_gray":
@@ -1453,6 +1453,11 @@ public class Utils {
         return Locale.getDefault();
     }
 
+    public static @NonNull
+    Locale getAppLocale() {
+        return getLocaleSettings(Settings.get().other().getLanguage());
+    }
+
     @SuppressWarnings("deprecation")
     private static Locale getSystemLocale(Configuration config) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
@@ -1476,8 +1481,11 @@ public class Utils {
         } else {
             Constants.DEVICE_COUNTRY_CODE = "ru";
         }
-        int size = dev.ragnarok.fenrir.settings.Settings.get().main().getFontSize();
-        @Lang int lang = dev.ragnarok.fenrir.settings.Settings.get().other().getLanguage();
+        int size = Settings.get().main().getFontSize();
+        @Lang int lang = Settings.get().other().getLanguage();
+        Locale locale = getLocaleSettings(lang);
+        AppTextUtils.updateDateLang(locale);
+        FileUtil.updateDateLang(locale);
         if (size == 0) {
             if (lang == Lang.DEFAULT) {
                 return base;
@@ -1553,19 +1561,20 @@ public class Utils {
                 if (response.isSuccessful()) {
                     String resp = response.body().string();
                     String result = context.getString(R.string.error);
+                    Locale locale = getAppLocale();
                     try {
                         String registered = null, auth = null, changes = null;
                         String tmp = parseResponse(resp, Pattern.compile("ya:created dc:date=\"(.*?)\""));
                         if (!isEmpty(tmp)) {
-                            registered = DateFormat.getDateInstance(1).format(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ").parse(tmp));
+                            registered = DateFormat.getDateInstance(1).format(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ", locale).parse(tmp));
                         }
                         tmp = parseResponse(resp, Pattern.compile("ya:lastLoggedIn dc:date=\"(.*?)\""));
                         if (!isEmpty(tmp)) {
-                            auth = DateFormat.getDateInstance(1).format(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ").parse(tmp));
+                            auth = DateFormat.getDateInstance(1).format(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ", locale).parse(tmp));
                         }
                         tmp = parseResponse(resp, Pattern.compile("ya:modified dc:date=\"(.*?)\""));
                         if (!isEmpty(tmp)) {
-                            changes = DateFormat.getDateInstance(1).format(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ").parse(tmp));
+                            changes = DateFormat.getDateInstance(1).format(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ", locale).parse(tmp));
                         }
                         result = context.getString(R.string.registration_date_info, registered, auth, changes);
                     } catch (ParseException e) {
@@ -1589,7 +1598,7 @@ public class Utils {
     public static void checkMusicInPC(Context context) {
         if (!AppPerms.hasReadStoragePermissionSimple(context))
             return;
-        File audios = new File(dev.ragnarok.fenrir.settings.Settings.get().other().getMusicDir(), "local_server_audio_list.json");
+        File audios = new File(Settings.get().other().getMusicDir(), "local_server_audio_list.json");
         if (!audios.exists())
             return;
         try {

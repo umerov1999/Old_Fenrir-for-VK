@@ -1,4 +1,5 @@
 <resources>
+    <integer name="articles_column_count">2</integer>
     <integer name="videos_column_count">3</integer>
     <integer name="photos_column_count">4</integer>
     <integer name="local_gallery_column_count">5</integer>

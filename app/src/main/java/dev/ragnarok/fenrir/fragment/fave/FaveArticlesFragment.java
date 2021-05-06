@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -60,7 +60,8 @@ public class FaveArticlesFragment extends BaseMvpFragment<FaveArticlesPresenter,
 
         mEmpty = root.findViewById(R.id.empty);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
+        int columnCount = getResources().getInteger(R.integer.articles_column_count);
+        recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), columnCount));
         recyclerView.addOnScrollListener(new PicassoPauseOnScrollListener(Constants.PICASSO_TAG));
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override

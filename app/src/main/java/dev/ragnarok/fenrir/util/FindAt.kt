@@ -27,10 +27,12 @@ class FindAt {
     }
 
     fun do_compare(q: String?): Boolean {
-        if (Utils.isEmpty(q) && Utils.isEmpty(this.q)) {
+        if (Utils.isEmpty(q) && Utils.isEmpty(this.q) || !Utils.isEmpty(this.q) && !Utils.isEmpty(q) && this.q.equals(
+                q,
+                ignoreCase = true
+            )
+        ) {
             return true
-        } else if (!Utils.isEmpty(this.q) && !Utils.isEmpty(q)) {
-            if (this.q!!.equals(q!!, ignoreCase = true)) return true
         }
         this.q = q
         this.offset = 0

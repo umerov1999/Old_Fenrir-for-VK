@@ -284,7 +284,7 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
         }
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh(false));
+        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
 
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 

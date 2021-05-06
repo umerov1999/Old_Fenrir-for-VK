@@ -39,7 +39,7 @@ abstract class SectionedRecyclerViewAdapter<H : RecyclerView.ViewHolder, VH : Re
     private fun countItems(): Int {
         val sections = sectionCount
 
-        return (0 until sections).sumBy { getItemCountForSection(it) + 1 }
+        return (0 until sections).sumOf { getItemCountForSection(it) + 1 }
     }
 
     private fun precomputeIndices() {

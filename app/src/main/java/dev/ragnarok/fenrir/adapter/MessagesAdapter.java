@@ -21,7 +21,6 @@ import com.squareup.picasso.Transformation;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
@@ -52,7 +51,6 @@ import static dev.ragnarok.fenrir.util.AppTextUtils.getDateFromUnixTime;
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerView.ViewHolder> {
-
     private static final int TYPE_MY_MESSAGE = 1;
     private static final int TYPE_FRIEND_MESSAGE = 2;
     private static final int TYPE_SERVICE = 3;
@@ -63,7 +61,7 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
     private static final int TYPE_GRAFFITY_MY = 8;
     private static final int TYPE_GRAFFITY_FRIEND = 9;
     private static final Date DATE = new Date();
-    private final SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
+    private final SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm", Utils.getAppLocale());
     private final Context context;
     private final AttachmentsViewBinder attachmentsViewBinder;
     private final Transformation avatarTransformation;

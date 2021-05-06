@@ -7,18 +7,21 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import dev.ragnarok.fenrir.domain.IFaveInteractor;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
-import dev.ragnarok.fenrir.model.EndlessData;
 import dev.ragnarok.fenrir.model.FavePage;
 import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IFaveUsersView;
+import dev.ragnarok.fenrir.util.FindAtWithContent;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 import static dev.ragnarok.fenrir.util.Utils.findIndexById;
 import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
@@ -26,18 +29,19 @@ import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 
 public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersView> {
-
+    private static final int SEARCH_COUNT = 20;
+    private static final int SEARCH_VIEW_COUNT = 20;
+    private static final int GET_COUNT = 50;
+    private static final int WEB_SEARCH_DELAY = 1000;
     private final List<FavePage> pages;
-
-    private final List<FavePage> search_pages;
-
     private final IFaveInteractor faveInteractor;
     private final boolean isUser;
     private final CompositeDisposable cacheDisposable = new CompositeDisposable();
     private final CompositeDisposable actualDataDisposable = new CompositeDisposable();
+    private final FindPage searcher;
+    private Disposable sleepDataDisposable = Disposable.disposed();
     private boolean actualDataReceived;
     private boolean endOfContent;
-    private String q;
     private boolean cacheLoadingNow;
     private boolean actualDataLoading;
     private boolean doLoadTabs;
@@ -45,48 +49,37 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
     public FavePagesPresenter(int accountId, boolean isUser, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
         pages = new ArrayList<>();
-        search_pages = new ArrayList<>();
         faveInteractor = InteractorFactory.createFaveInteractor();
         this.isUser = isUser;
+        searcher = new FindPage(actualDataDisposable);
 
         loadAllCachedData();
     }
 
-    private boolean isSearchNow() {
-        return nonEmpty(q);
+    private void sleep_search(String q) {
+        if (actualDataLoading || cacheLoadingNow) return;
+
+        sleepDataDisposable.dispose();
+        if (Utils.isEmpty(q)) {
+            if (searcher.cancel()) {
+                fireRefresh();
+            }
+        } else {
+            sleepDataDisposable = (Single.just(new Object())
+                    .delay(WEB_SEARCH_DELAY, TimeUnit.MILLISECONDS)
+                    .compose(RxUtils.applySingleIOToMainSchedulers())
+                    .subscribe(videos -> searcher.do_search(q), this::onActualDataGetError));
+        }
     }
 
     public void fireSearchRequestChanged(String q) {
-        String query = q == null ? null : q.trim();
-
-        if (Objects.safeEquals(query, this.q)) {
-            return;
-        }
-        this.q = query;
-        search_pages.clear();
-        for (FavePage i : pages) {
-            if (i.getOwner() == null || Utils.isEmpty(i.getOwner().getFullName())) {
-                continue;
-            }
-            if (i.getOwner().getFullName().toLowerCase().contains(query.toLowerCase())) {
-                search_pages.add(i);
-            }
-        }
-
-        if (isSearchNow())
-            callView(v -> v.displayData(search_pages));
-        else
-            callView(v -> v.displayData(pages));
+        sleep_search(q == null ? null : q.trim());
     }
 
     @Override
     public void onGuiCreated(@NonNull IFaveUsersView view) {
         super.onGuiCreated(view);
-        if (isSearchNow()) {
-            view.displayData(search_pages);
-        } else {
-            view.displayData(pages);
-        }
+        view.displayData(pages);
     }
 
     private void loadActualData(int offset) {
@@ -95,40 +88,38 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
         resolveRefreshingView();
 
         int accountId = getAccountId();
-        actualDataDisposable.add(faveInteractor.getPages(accountId, 500, offset, isUser)
+        actualDataDisposable.add(faveInteractor.getPages(accountId, GET_COUNT, offset, isUser)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(data -> onActualDataReceived(offset, data), this::onActualDataGetError));
-
-
     }
 
     private void onActualDataGetError(Throwable t) {
         actualDataLoading = false;
+        actualDataReceived = false;
         showError(getView(), getCauseIfRuntime(t));
 
         resolveRefreshingView();
     }
 
-    private void onActualDataReceived(int offset, EndlessData<FavePage> data) {
+    private void onActualDataReceived(int offset, List<FavePage> data) {
         cacheDisposable.clear();
         cacheLoadingNow = false;
 
         actualDataLoading = false;
-        endOfContent = !data.hasNext();
+        endOfContent = Utils.safeCountOf(data) < GET_COUNT;
         actualDataReceived = true;
 
         if (offset == 0) {
             pages.clear();
-            pages.addAll(data.get());
+            pages.addAll(data);
             callView(IFaveUsersView::notifyDataSetChanged);
         } else {
             int startSize = pages.size();
-            pages.addAll(data.get());
-            callView(view -> view.notifyDataAdded(startSize, data.get().size()));
+            pages.addAll(data);
+            callView(view -> view.notifyDataAdded(startSize, data.size()));
         }
 
         resolveRefreshingView();
-        fireScrollToEnd();
     }
 
     @Override
@@ -174,25 +165,30 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
     public void onDestroyed() {
         cacheDisposable.dispose();
         actualDataDisposable.dispose();
+        sleepDataDisposable.dispose();
         super.onDestroyed();
     }
 
-    public boolean fireScrollToEnd() {
-        if (!endOfContent && nonEmpty(pages) && actualDataReceived && !cacheLoadingNow && !actualDataLoading && !isSearchNow()) {
-            loadActualData(pages.size());
-            return false;
+    public void fireScrollToEnd() {
+        if (nonEmpty(pages) && actualDataReceived && !cacheLoadingNow && !actualDataLoading) {
+            if (searcher.isSearchMode()) {
+                searcher.do_search();
+            } else if (!endOfContent) {
+                loadActualData(pages.size());
+            }
         }
-        return true;
     }
 
     public void fireRefresh() {
-        cacheDisposable.clear();
-        cacheLoadingNow = false;
+        if (actualDataLoading || cacheLoadingNow) {
+            return;
+        }
 
-        actualDataDisposable.clear();
-        actualDataLoading = false;
-
-        loadActualData(0);
+        if (searcher.isSearchMode()) {
+            searcher.reset();
+        } else {
+            loadActualData(0);
+        }
     }
 
     public void fireOwnerClick(Owner owner) {
@@ -217,5 +213,46 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
         appendDisposable(faveInteractor.removePage(accountId, owner.getOwnerId(), isUser)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
                 .subscribe(() -> onUserRemoved(accountId, owner.getOwnerId()), t -> showError(getView(), getCauseIfRuntime(t))));
+    }
+
+    private class FindPage extends FindAtWithContent<FavePage> {
+        public FindPage(CompositeDisposable disposable) {
+            super(disposable, SEARCH_VIEW_COUNT, SEARCH_COUNT);
+        }
+
+        @Override
+        protected Single<List<FavePage>> search(int offset, int count) {
+            return faveInteractor.getPages(getAccountId(), count, offset, isUser);
+        }
+
+        @Override
+        protected void onError(@NonNull Throwable e) {
+            onActualDataGetError(e);
+        }
+
+        @Override
+        protected void onResult(@NonNull List<FavePage> data) {
+            actualDataReceived = true;
+            int startSize = pages.size();
+            pages.addAll(data);
+            callView(view -> view.notifyDataAdded(startSize, data.size()));
+        }
+
+        @Override
+        protected void updateLoading(boolean loading) {
+            actualDataLoading = loading;
+            resolveRefreshingView();
+        }
+
+        @Override
+        protected void clean() {
+            pages.clear();
+            callView(IFaveUsersView::notifyDataSetChanged);
+        }
+
+        @Override
+        protected boolean compare(@NonNull FavePage data, @NonNull String q) {
+            return Objects.nonNull(data.getOwner()) && Utils.safeCheck(data.getOwner().getFullName(), () -> data.getOwner().getFullName().toLowerCase().contains(q.toLowerCase()));
+        }
     }
 }

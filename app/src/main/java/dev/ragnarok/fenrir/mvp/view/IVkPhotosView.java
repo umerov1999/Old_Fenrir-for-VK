@@ -1,9 +1,12 @@
 package dev.ragnarok.fenrir.mvp.view;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import dev.ragnarok.fenrir.model.Photo;
+import dev.ragnarok.fenrir.model.TmpSource;
 import dev.ragnarok.fenrir.model.wrappers.SelectablePhotoWrapper;
 import dev.ragnarok.fenrir.mvp.core.IMvpView;
 import dev.ragnarok.fenrir.mvp.view.base.IAccountDependencyView;
@@ -32,7 +35,9 @@ public interface IVkPhotosView extends IMvpView, IAccountDependencyView, IErrorV
 
     void notifyUploadProgressChanged(int id, int progress);
 
-    void displayGallery(int accountId, int albumId, int ownerId, ArrayList<Photo> photos, int position);
+    void displayGallery(int accountId, int albumId, int ownerId, @NonNull TmpSource source, int position);
+
+    void displayGalleryUnSafe(int accountId, int albumId, int ownerId, ArrayList<Photo> photos, int position);
 
     void displayDefaultToolbarTitle();
 

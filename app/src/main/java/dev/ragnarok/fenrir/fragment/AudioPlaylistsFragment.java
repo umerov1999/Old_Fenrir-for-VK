@@ -117,7 +117,8 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
         }
 
         RecyclerView recyclerView = root.findViewById(R.id.recycleView);
-        recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 2));
+        int columnCount = getResources().getInteger(R.integer.photos_albums_column_count);
+        recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), columnCount));
         recyclerView.addOnScrollListener(new PicassoPauseOnScrollListener(Constants.PICASSO_TAG));
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
@@ -144,7 +145,7 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
         });
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh(false));
+        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         mAdapter = new AudioPlaylistsAdapter(Collections.emptyList(), requireActivity());

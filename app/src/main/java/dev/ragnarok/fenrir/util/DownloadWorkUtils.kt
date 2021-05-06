@@ -44,7 +44,7 @@ import java.util.*
 object DownloadWorkUtils {
     @SuppressLint("ConstantLocale")
     private val DOWNLOAD_DATE_FORMAT: DateFormat =
-        SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+        SimpleDateFormat("yyyyMMdd_HHmmss", Utils.getAppLocale())
 
     private fun createNotification(
         context: Context,

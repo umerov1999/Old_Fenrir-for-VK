@@ -30,7 +30,6 @@ import dev.ragnarok.fenrir.domain.mappers.Dto2Entity;
 import dev.ragnarok.fenrir.domain.mappers.Dto2Model;
 import dev.ragnarok.fenrir.domain.mappers.Entity2Model;
 import dev.ragnarok.fenrir.model.Article;
-import dev.ragnarok.fenrir.model.EndlessData;
 import dev.ragnarok.fenrir.model.FaveLink;
 import dev.ragnarok.fenrir.model.FavePage;
 import dev.ragnarok.fenrir.model.FavePageType;
@@ -309,13 +308,11 @@ public class FaveInteractor implements IFaveInteractor {
     }
 
     @Override
-    public Single<EndlessData<FavePage>> getPages(int accountId, int count, int offset, boolean isUser) {
+    public Single<List<FavePage>> getPages(int accountId, int count, int offset, boolean isUser) {
         return networker.vkDefault(accountId)
                 .fave()
                 .getPages(offset, count, UserColumns.API_FIELDS, isUser ? "users" : "groups")
                 .flatMap(items -> {
-                    boolean hasNext = count + offset < items.count;
-
                     List<FavePageResponse> dtos = listEmptyIfNull(items.getItems());
 
                     List<UserEntity> userEntities = new ArrayList<>();
@@ -338,12 +335,12 @@ public class FaveInteractor implements IFaveInteractor {
                         return cache.fave()
                                 .storePages(accountId, entities, offset == 0)
                                 .andThen(cache.owners().storeOwnerEntities(accountId, new OwnerEntities(userEntities, communityEntities)))
-                                .andThen(Single.just(EndlessData.create(pages, hasNext)));
+                                .andThen(Single.just(pages));
                     } else {
                         return cache.fave()
                                 .storeGroups(accountId, entities, offset == 0)
                                 .andThen(cache.owners().storeOwnerEntities(accountId, new OwnerEntities(userEntities, communityEntities)))
-                                .andThen(Single.just(EndlessData.create(pages, hasNext)));
+                                .andThen(Single.just(pages));
                     }
                 });
     }
@@ -364,12 +361,11 @@ public class FaveInteractor implements IFaveInteractor {
     }
 
     @Override
-    public Single<EndlessData<FaveLink>> getLinks(int accountId, int count, int offset) {
+    public Single<List<FaveLink>> getLinks(int accountId, int count, int offset) {
         return networker.vkDefault(accountId)
                 .fave()
                 .getLinks(offset, count)
                 .flatMap(items -> {
-                    boolean hasNext = offset + count < items.count;
                     List<FaveLinkDto> dtos = listEmptyIfNull(items.getItems());
                     List<FaveLink> links = new ArrayList<>(dtos.size());
                     List<FaveLinkEntity> entities = new ArrayList<>(dtos.size());
@@ -382,7 +378,7 @@ public class FaveInteractor implements IFaveInteractor {
 
                     return cache.fave()
                             .storeLinks(accountId, entities, offset == 0)
-                            .andThen(Single.just(EndlessData.create(links, hasNext)));
+                            .andThen(Single.just(links));
                 });
     }
 

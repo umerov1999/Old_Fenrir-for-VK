@@ -24,9 +24,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import java.lang.ref.WeakReference;
-import java.util.Locale;
 
 import dev.ragnarok.fenrir.R;
+import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.media.MaterialPlayPauseFab;
 import dev.ragnarok.fenrir.view.media.MediaActionDrawable;
 
@@ -418,9 +418,9 @@ public class VideoControllerView extends FrameLayout {
         int hours = totalSeconds / 3600;
 
         if (hours > 0) {
-            return String.format(Locale.getDefault(), "%d:%02d:%02d", hours, minutes, seconds);
+            return String.format(Utils.getAppLocale(), "%d:%02d:%02d", hours, minutes, seconds);
         } else {
-            return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+            return String.format(Utils.getAppLocale(), "%02d:%02d", minutes, seconds);
         }
     }
 
