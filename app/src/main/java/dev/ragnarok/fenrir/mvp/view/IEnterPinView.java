@@ -14,4 +14,6 @@ public interface IEnterPinView extends IMvpView, IErrorView, IToastView {
     void displayAvatarFromUrl(@NonNull String url);
 
     void displayDefaultAvatar();
+
+    void showBiometricPrompt();
 }

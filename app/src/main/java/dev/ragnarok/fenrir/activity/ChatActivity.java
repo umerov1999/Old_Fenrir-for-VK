@@ -165,7 +165,6 @@ public class ChatActivity extends NoMainActivity implements PlaceProvider, AppSt
         int statusbarNonColored = CurrentTheme.getStatusBarNonColored(this);
         int statusbarColored = CurrentTheme.getStatusBarColor(this);
 
-
         Window w = getWindow();
         w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);

@@ -277,7 +277,6 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
     }
 
     private void onListGetError(Throwable throwable) {
-        hasActualNetData = false;
         setRequestNow(false);
         showError(getView(), throwable);
     }

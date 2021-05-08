@@ -19,7 +19,6 @@ import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
 import dev.ragnarok.fenrir.fragment.AdditionalNavigationFragment;
-import dev.ragnarok.fenrir.fragment.AudiosSearchMyPageFragment;
 import dev.ragnarok.fenrir.fragment.search.criteria.AudioSearchCriteria;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.place.Place;
@@ -28,15 +27,13 @@ import dev.ragnarok.fenrir.util.Accounts;
 
 public class AudioSearchTabsFragment extends Fragment {
 
-    public static final int TAB_MY_MUSIC = 0;
-    public static final int TAB_MUSIC = 1;
-    public static final int TAB_AUDIO_PLAYLISTS = 2;
-    public static final int TAB_ARTISTS = 3;
+    public static final int TAB_MUSIC = 0;
+    public static final int TAB_AUDIO_PLAYLISTS = 1;
+    public static final int TAB_ARTISTS = 2;
     private static final String TAG = AudioSearchTabsFragment.class.getSimpleName();
 
-    public static Bundle buildArgs(int accountId, int ownerId) {
+    public static Bundle buildArgs(int accountId) {
         Bundle args = new Bundle();
-        args.putInt(Extra.OWNER_ID, ownerId);
         args.putInt(Extra.ACCOUNT_ID, accountId);
         return args;
     }
@@ -59,9 +56,6 @@ public class AudioSearchTabsFragment extends Fragment {
 
         new TabLayoutMediator(root.findViewById(R.id.tablayout), mViewPager, (tab, position) -> {
             switch (position) {
-                case TAB_MY_MUSIC:
-                    tab.setText(R.string.my);
-                    break;
                 case TAB_MUSIC:
                     tab.setText(R.string.music);
                     break;
@@ -73,7 +67,7 @@ public class AudioSearchTabsFragment extends Fragment {
                     break;
             }
         }).attach();
-        mViewPager.setCurrentItem(TAB_MY_MUSIC);
+        mViewPager.setCurrentItem(TAB_MUSIC);
         return root;
     }
 
@@ -107,13 +101,9 @@ public class AudioSearchTabsFragment extends Fragment {
         @Override
         public Fragment createFragment(int position) {
             int accountId = Accounts.fromArgs(getArguments());
-            int ownerId = requireArguments().getInt(Extra.OWNER_ID);
 
             Fragment fragment;
             switch (position) {
-                case TAB_MY_MUSIC:
-                    fragment = AudiosSearchMyPageFragment.newInstance(accountId, ownerId, false);
-                    break;
                 case TAB_MUSIC:
                     fragment = SingleTabSearchFragment.newInstance(accountId, SearchContentType.AUDIOS, new AudioSearchCriteria("", false, true));
                     break;
@@ -134,9 +124,7 @@ public class AudioSearchTabsFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            int accountId = Accounts.fromArgs(getArguments());
-            int ownerId = requireArguments().getInt(Extra.OWNER_ID);
-            return accountId == ownerId ? 4 : 1;
+            return 3;
         }
     }
 }

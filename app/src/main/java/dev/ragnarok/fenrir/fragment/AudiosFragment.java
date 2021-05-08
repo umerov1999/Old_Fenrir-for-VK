@@ -54,6 +54,7 @@ import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.DownloadWorkUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
+import dev.ragnarok.fenrir.view.MySearchView;
 
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
@@ -89,7 +90,7 @@ public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView
 
         @Override
         public boolean isLongPressDragEnabled() {
-            return !Settings.get().main().isUse_long_click_download() && getPresenter().isMyAudio();
+            return !Settings.get().main().isUse_long_click_download() && getPresenter().isMyAudio() && getPresenter().isNotSearch();
         }
     };
     private boolean isSelectMode;
@@ -97,39 +98,27 @@ public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView
     private View headerPlaylist;
     private HorizontalPlaylistAdapter mPlaylistAdapter;
 
-    public static AudiosFragment newInstance(int accountId, int ownerId, int option_menu_id, int isAlbum, String access_key) {
+    public static Bundle buildArgs(int accountId, int ownerId, Integer albumId, String access_key) {
         Bundle args = new Bundle();
         args.putInt(Extra.OWNER_ID, ownerId);
         args.putInt(Extra.ACCOUNT_ID, accountId);
-        args.putInt(Extra.ID, option_menu_id);
-        args.putInt(Extra.ALBUM, isAlbum);
-        args.putString(Extra.ACCESS_KEY, access_key);
+        if (nonNull(albumId)) {
+            args.putInt(Extra.ALBUM_ID, albumId);
+        }
+        if (!Utils.isEmpty(access_key)) {
+            args.putString(Extra.ACCESS_KEY, access_key);
+        }
+        return args;
+    }
+
+    public static AudiosFragment newInstance(@NonNull Bundle args) {
         AudiosFragment fragment = new AudiosFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public static AudiosFragment newInstanceSelect(int accountId, int option_menu_id, int isAlbum, String access_key) {
-        Bundle args = new Bundle();
-        args.putInt(Extra.OWNER_ID, accountId);
-        args.putInt(Extra.ACCOUNT_ID, accountId);
-        args.putInt(Extra.ID, option_menu_id);
-        args.putInt(Extra.ALBUM, isAlbum);
-        args.putString(Extra.ACCESS_KEY, access_key);
-        args.putBoolean(ACTION_SELECT, true);
-        AudiosFragment fragment = new AudiosFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public static AudiosFragment newInstanceAlbumSelect(int accountId, int ownerId, int option_menu_id, int isAlbum, String access_key) {
-        Bundle args = new Bundle();
-        args.putInt(Extra.OWNER_ID, ownerId);
-        args.putInt(Extra.ACCOUNT_ID, accountId);
-        args.putInt(Extra.ID, option_menu_id);
-        args.putInt(Extra.ALBUM, isAlbum);
-        args.putString(Extra.ACCESS_KEY, access_key);
-        args.putBoolean(ACTION_SELECT, true);
+    public static AudiosFragment newInstance(@NonNull Bundle args, boolean isSelect) {
+        args.putBoolean(ACTION_SELECT, isSelect);
         AudiosFragment fragment = new AudiosFragment();
         fragment.setArguments(args);
         return fragment;
@@ -145,15 +134,31 @@ public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_music, container, false);
+        View root = inflater.inflate(R.layout.fragment_music_main, container, false);
         Toolbar toolbar = root.findViewById(R.id.toolbar);
-
         if (!inTabsContainer) {
             toolbar.setVisibility(View.VISIBLE);
             ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
         } else {
             toolbar.setVisibility(View.GONE);
         }
+
+        MySearchView searchView = root.findViewById(R.id.searchview);
+        searchView.setRightButtonVisibility(false);
+        searchView.setLeftIcon(R.drawable.magnify);
+        searchView.setOnQueryTextListener(new MySearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                getPresenter().fireSearchRequestChanged(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                getPresenter().fireSearchRequestChanged(newText);
+                return false;
+            }
+        });
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
         mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
@@ -329,13 +334,16 @@ public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView
     @NonNull
     @Override
     public IPresenterFactory<AudiosPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
+        String accessKey = requireArguments().containsKey(Extra.ACCESS_KEY)
+                ? requireArguments().getString(Extra.ACCESS_KEY) : null;
+        Integer albumId = requireArguments().containsKey(Extra.ALBUM_ID)
+                ? requireArguments().getInt(Extra.ALBUM_ID) : null;
         return () -> new AudiosPresenter(
                 requireArguments().getInt(Extra.ACCOUNT_ID),
                 requireArguments().getInt(Extra.OWNER_ID),
-                requireArguments().getInt(Extra.ID),
-                requireArguments().getInt(Extra.ALBUM),
+                albumId,
+                accessKey,
                 requireArguments().getBoolean(ACTION_SELECT),
-                requireArguments().getString(Extra.ACCESS_KEY),
                 saveInstanceState
         );
     }

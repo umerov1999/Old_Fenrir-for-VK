@@ -22,7 +22,7 @@ import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class OwnerLinkSpanFactory {
 
-    private static final Comparator<AbsInternalLink> LINK_COMPARATOR = Comparator.comparingInt(link -> link.start);
+    private static final Comparator<AbsInternalLink> LINK_COMPARATOR = (link1, link2) -> link1.start - link2.start;
     private static final Pattern ownerPattern;
     private static final Pattern topicCommentPattern;
     private static final Pattern linkPattern;

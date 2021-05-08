@@ -165,6 +165,7 @@ public class MediaActionDrawable extends Drawable {
         paint.setStrokeWidth(Utils.dp(isMini ? 2 : 3));
     }
 
+    @Deprecated
     @Override
     public int getOpacity() {
         return PixelFormat.TRANSPARENT;

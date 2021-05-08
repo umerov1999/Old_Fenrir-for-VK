@@ -26,14 +26,16 @@ public class AudioPlaylistsAdapter extends RecyclerView.Adapter<AudioPlaylistsAd
 
     private final Context context;
     private final boolean isDark;
+    private final boolean isSelect;
     private List<AudioPlaylist> data;
     private RecyclerView recyclerView;
     private ClickListener clickListener;
 
-    public AudioPlaylistsAdapter(List<AudioPlaylist> data, Context context) {
+    public AudioPlaylistsAdapter(List<AudioPlaylist> data, Context context, boolean isSelect) {
         this.data = data;
         this.context = context;
         isDark = Settings.get().ui().isDarkModeEnabled(context);
+        this.isSelect = isSelect;
     }
 
     @NonNull
@@ -117,6 +119,8 @@ public class AudioPlaylistsAdapter extends RecyclerView.Adapter<AudioPlaylistsAd
 
         void onDelete(int index, AudioPlaylist album);
 
+        void onShare(int index, AudioPlaylist album);
+
         void onEdit(int index, AudioPlaylist album);
 
         void onAddAudios(int index, AudioPlaylist album);
@@ -155,34 +159,44 @@ public class AudioPlaylistsAdapter extends RecyclerView.Adapter<AudioPlaylistsAd
             int position = recyclerView.getChildAdapterPosition(v);
             AudioPlaylist playlist = data.get(position);
 
-            if (Settings.get().accounts().getCurrent() == playlist.getOwnerId()) {
-                menu.add(0, v.getId(), 0, R.string.delete).setOnMenuItemClickListener(item -> {
-                    if (clickListener != null) {
-                        clickListener.onDelete(position, playlist);
-                    }
-                    return true;
-                });
-                if (Utils.isEmpty(playlist.getOriginal_access_key()) || playlist.getOriginal_id() == 0 || playlist.getOriginal_owner_id() == 0) {
-                    menu.add(0, v.getId(), 0, R.string.edit).setOnMenuItemClickListener(item -> {
+            if (playlist.getId() != -21 && playlist.getId() != -22) {
+                if (Settings.get().accounts().getCurrent() == playlist.getOwnerId()) {
+                    menu.add(0, v.getId(), 0, R.string.delete).setOnMenuItemClickListener(item -> {
                         if (clickListener != null) {
-                            clickListener.onEdit(position, playlist);
+                            clickListener.onDelete(position, playlist);
                         }
                         return true;
                     });
-                    menu.add(0, v.getId(), 0, R.string.action_add_audios).setOnMenuItemClickListener(item -> {
+                    if (Utils.isEmpty(playlist.getOriginal_access_key()) || playlist.getOriginal_id() == 0 || playlist.getOriginal_owner_id() == 0) {
+                        menu.add(0, v.getId(), 0, R.string.edit).setOnMenuItemClickListener(item -> {
+                            if (clickListener != null) {
+                                clickListener.onEdit(position, playlist);
+                            }
+                            return true;
+                        });
+                        menu.add(0, v.getId(), 0, R.string.action_add_audios).setOnMenuItemClickListener(item -> {
+                            if (clickListener != null) {
+                                clickListener.onAddAudios(position, playlist);
+                            }
+                            return true;
+                        });
+                    }
+                } else {
+                    menu.add(0, v.getId(), 0, R.string.save).setOnMenuItemClickListener(item -> {
                         if (clickListener != null) {
-                            clickListener.onAddAudios(position, playlist);
+                            clickListener.onAdd(position, playlist);
                         }
                         return true;
                     });
                 }
-            } else {
-                menu.add(0, v.getId(), 0, R.string.save).setOnMenuItemClickListener(item -> {
-                    if (clickListener != null) {
-                        clickListener.onAdd(position, playlist);
-                    }
-                    return true;
-                });
+                if (!isSelect) {
+                    menu.add(0, v.getId(), 0, R.string.share).setOnMenuItemClickListener(item -> {
+                        if (clickListener != null) {
+                            clickListener.onShare(position, playlist);
+                        }
+                        return true;
+                    });
+                }
             }
             menu.add(0, v.getId(), 0, R.string.open).setOnMenuItemClickListener(item -> {
                 if (clickListener != null) {

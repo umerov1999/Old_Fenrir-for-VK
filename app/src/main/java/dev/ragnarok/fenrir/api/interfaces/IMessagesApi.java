@@ -80,7 +80,7 @@ public interface IMessagesApi {
                                                        Integer max_msg_id);
 
     @CheckResult
-    Single<AttachmentsHistoryResponse> getHistoryAttachments(int peerId, String mediaType, String startFrom,
+    Single<AttachmentsHistoryResponse> getHistoryAttachments(int peerId, String mediaType, String startFrom, Integer photoSizes,
                                                              Integer count, String fields);
 
 

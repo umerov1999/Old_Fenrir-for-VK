@@ -2,6 +2,7 @@ package dev.ragnarok.fenrir.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
@@ -132,6 +133,15 @@ public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOffici
         return DIV_OLD;
     }
 
+    @SuppressWarnings("deprecation")
+    private CharSequence fromHtml(@NonNull String source) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            return Html.fromHtml(source);
+        }
+    }
+
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int position) {
         AnswerVKOfficial Page = data.items.get(position);
@@ -166,7 +176,7 @@ public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOffici
         holder.small.setVisibility(View.INVISIBLE);
         if (!Utils.isEmpty(Page.header)) {
             holder.name.setVisibility(View.VISIBLE);
-            SpannableStringBuilder replace = new SpannableStringBuilder(Html.fromHtml(Page.header));
+            SpannableStringBuilder replace = new SpannableStringBuilder(fromHtml(Page.header));
             holder.name.setText(LinkParser.parseLinks(context, replace), TextView.BufferType.SPANNABLE);
 
             Matcher matcher = LinkParser.MENTIONS_AVATAR_PATTERN.matcher(Page.header);
@@ -201,14 +211,14 @@ public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOffici
         }
         if (!Utils.isEmpty(Page.text)) {
             holder.description.setVisibility(View.VISIBLE);
-            SpannableStringBuilder replace = new SpannableStringBuilder(Html.fromHtml(Page.text));
+            SpannableStringBuilder replace = new SpannableStringBuilder(fromHtml(Page.text));
             holder.description.setText(LinkParser.parseLinks(context, replace), TextView.BufferType.SPANNABLE);
         } else
             holder.description.setVisibility(View.GONE);
 
         if (!Utils.isEmpty(Page.footer)) {
             holder.footer.setVisibility(View.VISIBLE);
-            SpannableStringBuilder replace = new SpannableStringBuilder(Html.fromHtml(Page.footer));
+            SpannableStringBuilder replace = new SpannableStringBuilder(fromHtml(Page.footer));
             holder.footer.setText(LinkParser.parseLinks(context, replace), TextView.BufferType.SPANNABLE);
         } else
             holder.footer.setVisibility(View.GONE);

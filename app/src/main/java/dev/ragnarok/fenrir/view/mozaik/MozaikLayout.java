@@ -1,12 +1,9 @@
 package dev.ragnarok.fenrir.view.mozaik;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.TypedValue;
-import android.view.Display;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -28,7 +25,7 @@ public class MozaikLayout extends RelativeLayout {
     public MozaikLayout(Context context) {
         super(context);
         //this.maxSingleImageHeight = (int) context.getResources().getDimension(R.dimen.max_single_image_height);
-        maxSingleImageHeight = getDisplayHeight(context);
+        maxSingleImageHeight = getDisplayHeight();
         prefImageSize = (int) context.getResources().getDimension(R.dimen.pref_image_size);
         spacing = (int) dpToPx(1F);
     }
@@ -43,11 +40,8 @@ public class MozaikLayout extends RelativeLayout {
         initDimensions(context, attrs);
     }
 
-    private static int getDisplayHeight(Context context) {
-        Display display = ((Activity) context).getWindowManager().getDefaultDisplay();
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        display.getMetrics(outMetrics);
-        return outMetrics.heightPixels;
+    private int getDisplayHeight() {
+        return getResources().getDisplayMetrics().heightPixels;
     }
 
     private void initDimensions(Context context, AttributeSet attrs) {
@@ -55,7 +49,7 @@ public class MozaikLayout extends RelativeLayout {
 
         try {
             //maxSingleImageHeight = a.getDimensionPixelSize(R.styleable.MozaikLayout_maxSingleImageHeight, (int) context.getResources().getDimension(R.dimen.max_single_image_height));
-            maxSingleImageHeight = a.getDimensionPixelSize(R.styleable.MozaikLayout_maxSingleImageHeight, getDisplayHeight(context));
+            maxSingleImageHeight = a.getDimensionPixelSize(R.styleable.MozaikLayout_maxSingleImageHeight, getDisplayHeight());
             prefImageSize = (int) a.getDimension(R.styleable.MozaikLayout_prefImageSize, context.getResources().getDimension(R.dimen.pref_image_size));
             spacing = a.getDimensionPixelSize(R.styleable.MozaikLayout_spacing, (int) dpToPx(1));
         } finally {

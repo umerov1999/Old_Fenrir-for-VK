@@ -38,7 +38,7 @@ public class ChatAttachmentDocsPresenter extends BaseChatAttachmentsPresenter<Do
     Single<Pair<String, List<Document>>> requestAttachments(int peerId, String nextFrom) {
         return Apis.get().vkDefault(getAccountId())
                 .messages()
-                .getHistoryAttachments(peerId, VKApiAttachment.TYPE_DOC, nextFrom, 50, null)
+                .getHistoryAttachments(peerId, VKApiAttachment.TYPE_DOC, nextFrom, 1, 50, null)
                 .map(response -> {
                     List<Document> docs = new ArrayList<>(safeCountOf(response.items));
 

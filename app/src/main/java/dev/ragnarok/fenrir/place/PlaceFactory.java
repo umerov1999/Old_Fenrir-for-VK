@@ -14,6 +14,7 @@ import dev.ragnarok.fenrir.dialog.ResolveDomainDialog;
 import dev.ragnarok.fenrir.fragment.AbsWallFragment;
 import dev.ragnarok.fenrir.fragment.AudioCatalogFragment;
 import dev.ragnarok.fenrir.fragment.AudioPlayerFragment;
+import dev.ragnarok.fenrir.fragment.AudiosFragment;
 import dev.ragnarok.fenrir.fragment.BrowserFragment;
 import dev.ragnarok.fenrir.fragment.ChatUsersFragment;
 import dev.ragnarok.fenrir.fragment.CommentsFragment;
@@ -411,8 +412,8 @@ public class PlaceFactory {
         return new Place(Place.MENTIONS).withIntExtra(Extra.ACCOUNT_ID, accountId).withIntExtra(Extra.OWNER_ID, ownerId);
     }
 
-    public static Place getAudiosInAlbumPlace(int accountId, int ownerId, int album_id, String access_key) {
-        return new Place(Place.AUDIOS_IN_ALBUM).withIntExtra(Extra.ACCOUNT_ID, accountId).withIntExtra(Extra.OWNER_ID, ownerId).withIntExtra(Extra.ID, album_id).withStringExtra(Extra.ACCESS_KEY, access_key);
+    public static Place getAudiosInAlbumPlace(int accountId, int ownerId, Integer albumId, String access_key) {
+        return new Place(Place.AUDIOS_IN_ALBUM).setArguments(AudiosFragment.buildArgs(accountId, ownerId, albumId, access_key));
     }
 
     public static Place SearchByAudioPlace(int accountId, int audio_ownerId, int audio_id) {
@@ -489,8 +490,8 @@ public class PlaceFactory {
         return new Place(Place.SEARCH).setArguments(SearchTabsFragment.buildArgs(accountId, tab));
     }
 
-    public static Place getAudiosTabsSearchPlace(int accountId, int ownerId) {
-        return new Place(Place.AUDIOS_SEARCH_TABS).setArguments(AudioSearchTabsFragment.buildArgs(accountId, ownerId));
+    public static Place getAudiosTabsSearchPlace(int accountId) {
+        return new Place(Place.AUDIOS_SEARCH_TABS).setArguments(AudioSearchTabsFragment.buildArgs(accountId));
     }
 
     public static Place getGroupChatsPlace(int accountId, int groupId) {

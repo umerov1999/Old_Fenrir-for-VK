@@ -31,6 +31,7 @@ import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
 import dev.ragnarok.fenrir.activity.AudioSelectActivity;
+import dev.ragnarok.fenrir.activity.SendAttachmentsActivity;
 import dev.ragnarok.fenrir.adapter.AudioPlaylistsAdapter;
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
 import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener;
@@ -148,7 +149,7 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
         mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
-        mAdapter = new AudioPlaylistsAdapter(Collections.emptyList(), requireActivity());
+        mAdapter = new AudioPlaylistsAdapter(Collections.emptyList(), requireActivity(), isSelectMode);
         mAdapter.setClickListener(this);
 
         recyclerView.setAdapter(mAdapter);
@@ -256,6 +257,11 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
     @Override
     public void onDelete(int index, AudioPlaylist album) {
         getPresenter().onDelete(index, album);
+    }
+
+    @Override
+    public void onShare(int index, AudioPlaylist album) {
+        SendAttachmentsActivity.startForSendAttachments(requireActivity(), getPresenter().getAccountId(), album);
     }
 
     @Override

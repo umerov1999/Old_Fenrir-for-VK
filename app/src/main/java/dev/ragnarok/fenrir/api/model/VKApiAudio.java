@@ -95,7 +95,7 @@ public class VKApiAudio implements VKApiAttachment {
      * Audio object genres.
      */
     public static final class Genre {
-
+        public static final int TOP_ALL = 0;
         public static final int ROCK = 1;
         public static final int POP = 2;
         public static final int EASY_LISTENING = 4;
@@ -120,6 +120,8 @@ public class VKApiAudio implements VKApiAttachment {
 
         public static String getTitleByGenre(@NonNull Context context, int genre) {
             switch (genre) {
+                case TOP_ALL:
+                    return context.getString(R.string.top);
                 case ACOUSTIC_AND_VOCAL:
                     return "#" + context.getString(R.string.acoustic);
                 case ALTERNATIVE:

@@ -37,7 +37,7 @@ public class ChatAttachmentAudioPresenter extends BaseChatAttachmentsPresenter<A
     Single<Pair<String, List<Audio>>> requestAttachments(int peerId, String nextFrom) {
         return Apis.get().vkDefault(getAccountId())
                 .messages()
-                .getHistoryAttachments(peerId, "audio", nextFrom, 50, null)
+                .getHistoryAttachments(peerId, "audio", nextFrom, 0, 50, null)
                 .map(response -> {
                     List<Audio> audios = new ArrayList<>(safeCountOf(response.items));
 

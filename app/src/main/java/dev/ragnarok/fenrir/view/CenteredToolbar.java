@@ -7,19 +7,19 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.textview.MaterialTextView;
 
 import dev.ragnarok.fenrir.R;
 
 public class CenteredToolbar extends MaterialToolbar {
 
-    private TextView tvTitle;
-    private TextView tvSubtitle;
+    private MaterialTextView tvTitle;
+    private MaterialTextView tvSubtitle;
 
     public CenteredToolbar(Context context) {
         super(context);
@@ -73,11 +73,11 @@ public class CenteredToolbar extends MaterialToolbar {
     }
 
     private void setupTextViews() {
-        tvTitle = new TextView(getContext());
+        tvTitle = new MaterialTextView(getContext());
         tvTitle.setSingleLine();
         tvTitle.setEllipsize(TextUtils.TruncateAt.END);
 
-        tvSubtitle = new TextView(getContext());
+        tvSubtitle = new MaterialTextView(getContext());
         tvSubtitle.setSingleLine();
         tvSubtitle.setEllipsize(TextUtils.TruncateAt.END);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

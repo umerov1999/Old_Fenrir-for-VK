@@ -60,6 +60,7 @@ import dev.ragnarok.fenrir.fragment.AudioPlayerFragment;
 import dev.ragnarok.fenrir.fragment.AudiosByArtistFragment;
 import dev.ragnarok.fenrir.fragment.AudiosFragment;
 import dev.ragnarok.fenrir.fragment.AudiosInCatalogFragment;
+import dev.ragnarok.fenrir.fragment.AudiosRecommendationFragment;
 import dev.ragnarok.fenrir.fragment.AudiosTabsFragment;
 import dev.ragnarok.fenrir.fragment.BrowserFragment;
 import dev.ragnarok.fenrir.fragment.ChatFragment;
@@ -969,7 +970,6 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
         int statusbarNonColored = CurrentTheme.getStatusBarNonColored(this);
         int statusbarColored = CurrentTheme.getStatusBarColor(this);
 
-
         Window w = getWindow();
         w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -1160,11 +1160,11 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                 break;
 
             case Place.AUDIOS_IN_ALBUM:
-                attachToFront(AudiosFragment.newInstance(args.getInt(Extra.ACCOUNT_ID), args.getInt(Extra.OWNER_ID), args.getInt(Extra.ID), 1, args.getString(Extra.ACCESS_KEY)));
+                attachToFront(AudiosFragment.newInstance(args));
                 break;
 
             case Place.SEARCH_BY_AUDIO:
-                attachToFront(AudiosFragment.newInstance(args.getInt(Extra.ACCOUNT_ID), args.getInt(Extra.OWNER_ID), args.getInt(Extra.ID), 2, null));
+                attachToFront(AudiosRecommendationFragment.newInstance(args.getInt(Extra.ACCOUNT_ID), args.getInt(Extra.OWNER_ID), false, args.getInt(Extra.ID)));
                 break;
 
             case Place.VIDEO_ALBUM:

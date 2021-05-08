@@ -41,7 +41,6 @@ public class AudiosTabsFragment extends BaseFragment {
     public static final int PLAYLISTS = -3;
     public static final int MY_RECOMMENDATIONS = -2;
     public static final int MY_AUDIO = -1;
-    public static final int TOP_ALL = 0;
     private int accountId;
     private int ownerId;
 
@@ -92,8 +91,6 @@ public class AudiosTabsFragment extends BaseFragment {
                 tab.setText(getString(R.string.playlists));
             else if (fid == MY_RECOMMENDATIONS)
                 tab.setText(getString(R.string.recommendation));
-            else if (fid == TOP_ALL)
-                tab.setText(getString(R.string.top));
             else if (fid == CATALOG)
                 tab.setText(getString(R.string.audio_catalog));
             else if (fid == LOCAL)
@@ -134,8 +131,16 @@ public class AudiosTabsFragment extends BaseFragment {
             return AudiosLocalServerFragment.newInstance(getAccountId());
         } else if (option_menu == LOCAL_DISCOGRAPHY) {
             return DiscographyLocalServerFragment.newInstance(getAccountId());
+        } else if (option_menu == MY_AUDIO) {
+            Bundle args = AudiosFragment.buildArgs(getAccountId(), ownerId, null, null);
+            args.putBoolean(AudiosFragment.EXTRA_IN_TABS_CONTAINER, true);
+            return AudiosFragment.newInstance(args);
+        } else if (option_menu == MY_RECOMMENDATIONS) {
+            AudiosRecommendationFragment fragment = AudiosRecommendationFragment.newInstance(getAccountId(), ownerId, false, 0);
+            fragment.requireArguments().putBoolean(AudiosFragment.EXTRA_IN_TABS_CONTAINER, true);
+            return fragment;
         } else {
-            AudiosFragment fragment = AudiosFragment.newInstance(getAccountId(), ownerId, option_menu, 0, null);
+            AudiosRecommendationFragment fragment = AudiosRecommendationFragment.newInstance(getAccountId(), ownerId, true, option_menu);
             fragment.requireArguments().putBoolean(AudiosFragment.EXTRA_IN_TABS_CONTAINER, true);
             return fragment;
         }
@@ -158,7 +163,7 @@ public class AudiosTabsFragment extends BaseFragment {
             adapter.addFragment(MY_RECOMMENDATIONS);
         }
         if (getAccountId() == ownerId && Settings.get().other().isEnable_show_audio_top()) {
-            adapter.addFragment(TOP_ALL);
+            adapter.addFragment(VKApiAudio.Genre.TOP_ALL);
             adapter.addFragment(VKApiAudio.Genre.ETHNIC);
             adapter.addFragment(VKApiAudio.Genre.INSTRUMENTAL);
             adapter.addFragment(VKApiAudio.Genre.ACOUSTIC_AND_VOCAL);
@@ -205,7 +210,7 @@ public class AudiosTabsFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
-            PlaceFactory.getAudiosTabsSearchPlace(getAccountId(), ownerId).tryOpenWith(requireActivity());
+            PlaceFactory.getAudiosTabsSearchPlace(getAccountId()).tryOpenWith(requireActivity());
             return true;
         }
 

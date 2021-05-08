@@ -84,7 +84,6 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
 
     private void onActualDataGetError(Throwable t) {
         actualDataLoading = false;
-        actualDataReceived = false;
         showError(getView(), getCauseIfRuntime(t));
 
         resolveRefreshingView();

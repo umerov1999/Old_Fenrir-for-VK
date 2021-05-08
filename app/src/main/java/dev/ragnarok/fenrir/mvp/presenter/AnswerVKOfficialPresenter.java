@@ -30,6 +30,7 @@ public class AnswerVKOfficialPresenter extends AccountDependencyPresenter<IAnswe
     private boolean actualDataReceived;
     private boolean endOfContent;
     private boolean actualDataLoading;
+    private boolean requestedView;
 
     public AnswerVKOfficialPresenter(int accountId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
@@ -45,6 +46,7 @@ public class AnswerVKOfficialPresenter extends AccountDependencyPresenter<IAnswe
     public void onGuiCreated(@NonNull IAnswerVKOfficialView view) {
         super.onGuiCreated(view);
         view.displayData(pages);
+        safelyMarkAsViewed();
     }
 
     private void loadActualData(int offset) {
@@ -59,6 +61,11 @@ public class AnswerVKOfficialPresenter extends AccountDependencyPresenter<IAnswe
     }
 
     private void safelyMarkAsViewed() {
+        if (!requestedView) {
+            requestedView = true;
+        } else {
+            return;
+        }
         int accountId = getAccountId();
         if (Utils.isHiddenAccount(accountId))
             return;
@@ -82,7 +89,6 @@ public class AnswerVKOfficialPresenter extends AccountDependencyPresenter<IAnswe
         actualDataReceived = true;
 
         if (offset == 0) {
-            safelyMarkAsViewed();
             pages.items.clear();
             pages.fields.clear();
             pages.items.addAll(data.items);

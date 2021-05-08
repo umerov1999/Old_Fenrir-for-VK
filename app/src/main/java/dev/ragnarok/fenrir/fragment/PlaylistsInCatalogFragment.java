@@ -22,6 +22,7 @@ import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
+import dev.ragnarok.fenrir.activity.SendAttachmentsActivity;
 import dev.ragnarok.fenrir.adapter.AudioPlaylistsAdapter;
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
 import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener;
@@ -91,7 +92,7 @@ public class PlaylistsInCatalogFragment extends BaseMvpFragment<PlaylistsInCatal
                 getPresenter().fireScrollToEnd();
             }
         });
-        mAdapter = new AudioPlaylistsAdapter(Collections.emptyList(), requireActivity());
+        mAdapter = new AudioPlaylistsAdapter(Collections.emptyList(), requireActivity(), false);
         mAdapter.setClickListener(this);
         recyclerView.setAdapter(mAdapter);
         return root;
@@ -171,6 +172,11 @@ public class PlaylistsInCatalogFragment extends BaseMvpFragment<PlaylistsInCatal
     @Override
     public void onDelete(int index, AudioPlaylist album) {
 
+    }
+
+    @Override
+    public void onShare(int index, AudioPlaylist album) {
+        SendAttachmentsActivity.startForSendAttachments(requireActivity(), getPresenter().getAccountId(), album);
     }
 
     @Override

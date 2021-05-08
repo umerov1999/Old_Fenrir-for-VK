@@ -24,7 +24,6 @@ import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
-import dev.ragnarok.fenrir.api.model.VKApiAudio;
 import dev.ragnarok.fenrir.fragment.base.BaseFragment;
 import dev.ragnarok.fenrir.fragment.search.SearchContentType;
 import dev.ragnarok.fenrir.fragment.search.criteria.AudioSearchCriteria;
@@ -35,10 +34,8 @@ import dev.ragnarok.fenrir.settings.Settings;
 
 public class AudioSelectTabsFragment extends BaseFragment {
 
-    public static final int PLAYLISTS = -3;
-    public static final int MY_RECOMMENDATIONS = -2;
-    public static final int MY_AUDIO = -1;
-    public static final int TOP_ALL = 0;
+    public static final int MY_AUDIO = 0;
+    public static final int PLAYLISTS = 1;
     private int accountId;
 
     public static Bundle buildArgs(int accountId) {
@@ -84,12 +81,6 @@ public class AudioSelectTabsFragment extends BaseFragment {
                 tab.setText(getString(R.string.my_saved));
             else if (fid == PLAYLISTS)
                 tab.setText(getString(R.string.playlists));
-            else if (fid == MY_RECOMMENDATIONS)
-                tab.setText(getString(R.string.recommendation));
-            else if (fid == TOP_ALL)
-                tab.setText(getString(R.string.top));
-            else
-                tab.setText(VKApiAudio.Genre.getTitleByGenre(requireActivity(), fid));
         }).attach();
     }
 
@@ -103,35 +94,15 @@ public class AudioSelectTabsFragment extends BaseFragment {
             fragment.requireArguments().putBoolean(AudiosFragment.EXTRA_IN_TABS_CONTAINER, true);
             return fragment;
         } else {
-            AudiosFragment fragment = AudiosFragment.newInstanceSelect(getAccountId(), option_menu, 0, null);
-            fragment.requireArguments().putBoolean(AudiosFragment.EXTRA_IN_TABS_CONTAINER, true);
-            return fragment;
+            Bundle args = AudiosFragment.buildArgs(getAccountId(), getAccountId(), null, null);
+            args.putBoolean(AudiosFragment.EXTRA_IN_TABS_CONTAINER, true);
+            return AudiosFragment.newInstance(args, true);
         }
     }
 
     private void setupViewPager(ViewPager2 viewPager, Adapter adapter) {
         adapter.addFragment(MY_AUDIO);
         adapter.addFragment(PLAYLISTS);
-        adapter.addFragment(MY_RECOMMENDATIONS);
-        if (Settings.get().other().isEnable_show_audio_top()) {
-            adapter.addFragment(TOP_ALL);
-            adapter.addFragment(VKApiAudio.Genre.ETHNIC);
-            adapter.addFragment(VKApiAudio.Genre.INSTRUMENTAL);
-            adapter.addFragment(VKApiAudio.Genre.ACOUSTIC_AND_VOCAL);
-            adapter.addFragment(VKApiAudio.Genre.ALTERNATIVE);
-            adapter.addFragment(VKApiAudio.Genre.CLASSICAL);
-            adapter.addFragment(VKApiAudio.Genre.DANCE_AND_HOUSE);
-            adapter.addFragment(VKApiAudio.Genre.DRUM_AND_BASS);
-            adapter.addFragment(VKApiAudio.Genre.EASY_LISTENING);
-            adapter.addFragment(VKApiAudio.Genre.ELECTROPOP_AND_DISCO);
-            adapter.addFragment(VKApiAudio.Genre.INDIE_POP);
-            adapter.addFragment(VKApiAudio.Genre.METAL);
-            adapter.addFragment(VKApiAudio.Genre.OTHER);
-            adapter.addFragment(VKApiAudio.Genre.POP);
-            adapter.addFragment(VKApiAudio.Genre.REGGAE);
-            adapter.addFragment(VKApiAudio.Genre.ROCK);
-            adapter.addFragment(VKApiAudio.Genre.TRANCE);
-        }
         viewPager.setAdapter(adapter);
     }
 

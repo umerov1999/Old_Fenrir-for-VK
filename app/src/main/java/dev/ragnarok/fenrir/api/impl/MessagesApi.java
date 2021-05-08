@@ -192,10 +192,10 @@ class MessagesApi extends AbsApi implements IMessagesApi {
     }
 
     @Override
-    public Single<AttachmentsHistoryResponse> getHistoryAttachments(int peerId, String mediaType, String startFrom, Integer count, String fields) {
+    public Single<AttachmentsHistoryResponse> getHistoryAttachments(int peerId, String mediaType, String startFrom, Integer photoSizes, Integer count, String fields) {
         return serviceRx(TokenType.USER, TokenType.COMMUNITY)
                 .flatMap(service -> service
-                        .getHistoryAttachments(peerId, mediaType, startFrom, count, 1, fields)
+                        .getHistoryAttachments(peerId, mediaType, startFrom, count, photoSizes, fields)
                         .map(extractResponseWithErrorHandling()));
     }
 

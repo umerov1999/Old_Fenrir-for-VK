@@ -1460,18 +1460,19 @@ public class Utils {
 
     @SuppressWarnings("deprecation")
     private static Locale getSystemLocale(Configuration config) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            return config.locale;
-        } else {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             return config.getLocales().get(0);
+        } else {
+            return config.locale;
         }
     }
 
+    @SuppressWarnings("deprecation")
     private static void setSystemLocaleLegacy(Configuration config, Locale locale) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            config.locale = locale;
-        } else {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             config.setLocale(locale);
+        } else {
+            config.locale = locale;
         }
     }
 

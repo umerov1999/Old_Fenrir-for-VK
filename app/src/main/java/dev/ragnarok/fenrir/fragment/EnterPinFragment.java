@@ -11,6 +11,9 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.biometric.BiometricManager;
+import androidx.biometric.BiometricPrompt;
+import androidx.core.content.ContextCompat;
 
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
@@ -56,10 +59,43 @@ public class EnterPinFragment extends BaseMvpFragment<EnterPinPresenter, IEnterP
         return root;
     }
 
+    private BiometricPrompt.AuthenticationCallback getAuthenticationCallback() {
+        return new BiometricPrompt.AuthenticationCallback() {
+
+            @Override
+            public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+                super.onAuthenticationSucceeded(result);
+                sendSuccessAndClose();
+            }
+
+            @Override
+            public void onAuthenticationError(@BiometricPrompt.AuthenticationError int errorCode, @NonNull CharSequence errString) {
+                super.onAuthenticationError(errorCode, errString);
+                getCustomToast().showToastError(errString.toString());
+            }
+        };
+    }
+
+    @Override
+    public void showBiometricPrompt() {
+        if (BiometricManager.from(requireActivity()).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) != BiometricManager.BIOMETRIC_SUCCESS) {
+            getCustomToast().showToastError(R.string.biometric_not_support);
+            return;
+        }
+        BiometricPrompt.AuthenticationCallback authenticationCallback = getAuthenticationCallback();
+        BiometricPrompt mBiometricPrompt = new BiometricPrompt(this, ContextCompat.getMainExecutor(requireActivity()), authenticationCallback);
+
+        BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle(getString(R.string.biometric))
+                .setNegativeButtonText(getString(R.string.cancel))
+                .build();
+        mBiometricPrompt.authenticate(promptInfo);
+    }
+
     @NonNull
     @Override
     public IPresenterFactory<EnterPinPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
-        return () -> new EnterPinPresenter(this, saveInstanceState);
+        return () -> new EnterPinPresenter(saveInstanceState);
     }
 
     @Override

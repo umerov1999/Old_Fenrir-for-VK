@@ -6,10 +6,6 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.biometric.BiometricManager;
-import androidx.biometric.BiometricPrompt;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,14 +34,13 @@ public class EnterPinPresenter extends RxSupportPresenter<IEnterPinView> {
     private final IOwnersRepository ownersRepository;
     private final ISettings.ISecuritySettings securitySettings;
     private final int[] mValues;
-    private final Fragment myContext;
     private final Handler mHandler = new Handler(Looper.getMainLooper());
     private final Runnable mOnFullyEnteredRunnable = this::onFullyEntered;
+    private boolean onShowedFirstFingerPrint;
     private Owner mOwner;
 
-    public EnterPinPresenter(Fragment Context, @Nullable Bundle savedState) {
+    public EnterPinPresenter(@Nullable Bundle savedState) {
         super(savedState);
-        myContext = Context;
         securitySettings = Settings.get().security();
         ownersRepository = Repository.INSTANCE.getOwners();
 
@@ -58,10 +53,6 @@ public class EnterPinPresenter extends RxSupportPresenter<IEnterPinView> {
 
         if (Objects.isNull(mOwner)) {
             loadOwnerInfo();
-        }
-
-        if (securitySettings.isEntranceByFingerprintAllowed() && canAuthenticateWithBiometrics()) {
-            showBiometricPrompt();
         }
     }
 
@@ -87,16 +78,7 @@ public class EnterPinPresenter extends RxSupportPresenter<IEnterPinView> {
             getView().getCustomToast().showToastError(R.string.error_login_by_fingerprint_not_allowed);
             return;
         }
-        if (canAuthenticateWithBiometrics())
-            showBiometricPrompt();
-        else
-            getView().getCustomToast().showToastError(R.string.biometric_not_support);
-    }
-
-    private void onFingerprintRecognizeSuccess() {
-        if (isGuiReady()) {
-            getView().sendSuccessAndClose();
-        }
+        getView().showBiometricPrompt();
     }
 
     @OnGuiCreated
@@ -213,6 +195,17 @@ public class EnterPinPresenter extends RxSupportPresenter<IEnterPinView> {
         return -1;
     }
 
+    @Override
+    public void onGuiCreated(@NonNull IEnterPinView view) {
+        super.onGuiCreated(view);
+        if (!onShowedFirstFingerPrint) {
+            onShowedFirstFingerPrint = true;
+            if (securitySettings.isEntranceByFingerprintAllowed()) {
+                view.showBiometricPrompt();
+            }
+        }
+    }
+
     private void resetPin() {
         Arrays.fill(mValues, NO_VALUE);
     }
@@ -221,33 +214,5 @@ public class EnterPinPresenter extends RxSupportPresenter<IEnterPinView> {
     public void saveState(@NonNull Bundle outState) {
         super.saveState(outState);
         outState.putIntArray(SAVE_VALUE, mValues);
-    }
-
-    private void showBiometricPrompt() {
-
-        BiometricPrompt.AuthenticationCallback authenticationCallback = getAuthenticationCallback();
-        BiometricPrompt mBiometricPrompt = new BiometricPrompt(myContext, ContextCompat.getMainExecutor(getApplicationContext()), authenticationCallback);
-
-        BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                .setTitle(getApplicationContext().getString(R.string.biometric))
-                .setNegativeButtonText(getApplicationContext().getString(R.string.cancel))
-                .build();
-        mBiometricPrompt.authenticate(promptInfo);
-    }
-
-    private boolean canAuthenticateWithBiometrics() {
-        BiometricManager biometricManager = BiometricManager.from(getApplicationContext());
-        return biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS;
-    }
-
-    private BiometricPrompt.AuthenticationCallback getAuthenticationCallback() {
-        return new BiometricPrompt.AuthenticationCallback() {
-
-            @Override
-            public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
-                super.onAuthenticationSucceeded(result);
-                onFingerprintRecognizeSuccess();
-            }
-        };
     }
 }

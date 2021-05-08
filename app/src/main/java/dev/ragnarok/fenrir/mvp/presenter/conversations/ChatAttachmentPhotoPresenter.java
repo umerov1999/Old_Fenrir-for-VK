@@ -39,7 +39,7 @@ public class ChatAttachmentPhotoPresenter extends BaseChatAttachmentsPresenter<P
     Single<Pair<String, List<Photo>>> requestAttachments(int peerId, String nextFrom) {
         return Apis.get().vkDefault(getAccountId())
                 .messages()
-                .getHistoryAttachments(peerId, "photo", nextFrom, 50, null)
+                .getHistoryAttachments(peerId, "photo", nextFrom, 1, 50, null)
                 .map(response -> {
                     List<Photo> photos = new ArrayList<>();
 

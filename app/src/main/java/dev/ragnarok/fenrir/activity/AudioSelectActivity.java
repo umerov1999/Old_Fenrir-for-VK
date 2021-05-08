@@ -60,7 +60,7 @@ public class AudioSelectActivity extends NoMainActivity implements PlaceProvider
             getSupportFragmentManager()
                     .beginTransaction()
                     .setCustomAnimations(R.anim.fragment_enter_pop, R.anim.fragment_exit_pop)
-                    .replace(getMainContainerViewId(), AudiosFragment.newInstanceAlbumSelect(args.getInt(Extra.ACCOUNT_ID), args.getInt(Extra.OWNER_ID), args.getInt(Extra.ID), 1, args.getString(Extra.ACCESS_KEY)))
+                    .replace(getMainContainerViewId(), AudiosFragment.newInstance(args, true))
                     .addToBackStack("audio-in_playlist-select")
                     .commit();
         }

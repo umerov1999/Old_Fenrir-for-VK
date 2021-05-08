@@ -17,7 +17,6 @@ import com.squareup.picasso.Transformation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import dev.ragnarok.fenrir.Extra;
@@ -167,7 +166,7 @@ public class ShortcutUtils {
                     List<String> mustBeRemoved = new ArrayList<>(1);
 
                     if (infos.size() >= MAX_DYNAMIC_COUNT) {
-                        Collections.sort(infos, Comparator.comparingInt(ShortcutInfo::getRank));
+                        Collections.sort(infos, (o1, o2) -> Integer.compare(o1.getRank(), o2.getRank()));
 
                         ShortcutInfo infoWhichMustBeRemoved = infos.get(infos.size() - 1);
                         mustBeRemoved.add(infoWhichMustBeRemoved.getId());

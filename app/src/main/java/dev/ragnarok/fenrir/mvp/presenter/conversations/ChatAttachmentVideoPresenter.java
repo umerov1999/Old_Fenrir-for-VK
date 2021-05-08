@@ -37,7 +37,7 @@ public class ChatAttachmentVideoPresenter extends BaseChatAttachmentsPresenter<V
     Single<Pair<String, List<Video>>> requestAttachments(int peerId, String nextFrom) {
         return Apis.get().vkDefault(getAccountId())
                 .messages()
-                .getHistoryAttachments(peerId, "video", nextFrom, 50, null)
+                .getHistoryAttachments(peerId, "video", nextFrom, 1, 50, null)
                 .map(response -> {
                     List<Video> videos = new ArrayList<>(safeCountOf(response.items));
 

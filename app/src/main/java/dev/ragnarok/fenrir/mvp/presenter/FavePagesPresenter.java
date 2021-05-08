@@ -95,7 +95,6 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
 
     private void onActualDataGetError(Throwable t) {
         actualDataLoading = false;
-        actualDataReceived = false;
         showError(getView(), getCauseIfRuntime(t));
 
         resolveRefreshingView();

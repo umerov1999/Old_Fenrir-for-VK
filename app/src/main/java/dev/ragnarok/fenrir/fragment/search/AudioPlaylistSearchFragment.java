@@ -16,6 +16,7 @@ import java.util.List;
 
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
+import dev.ragnarok.fenrir.activity.SendAttachmentsActivity;
 import dev.ragnarok.fenrir.adapter.AudioPlaylistsAdapter;
 import dev.ragnarok.fenrir.fragment.search.criteria.AudioPlaylistSearchCriteria;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
@@ -68,7 +69,7 @@ public class AudioPlaylistSearchFragment extends AbsSearchFragment<AudioPlaylist
 
     @Override
     AudioPlaylistsAdapter createAdapter(List<AudioPlaylist> data) {
-        AudioPlaylistsAdapter ret = new AudioPlaylistsAdapter(data, requireActivity());
+        AudioPlaylistsAdapter ret = new AudioPlaylistsAdapter(data, requireActivity(), isSelectMode);
         ret.setClickListener(this);
         return ret;
     }
@@ -115,6 +116,11 @@ public class AudioPlaylistSearchFragment extends AbsSearchFragment<AudioPlaylist
     @Override
     public void onDelete(int index, AudioPlaylist album) {
 
+    }
+
+    @Override
+    public void onShare(int index, AudioPlaylist album) {
+        SendAttachmentsActivity.startForSendAttachments(requireActivity(), getPresenter().getAccountId(), album);
     }
 
     @Override
