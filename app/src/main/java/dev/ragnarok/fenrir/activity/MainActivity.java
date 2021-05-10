@@ -35,6 +35,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -43,6 +44,7 @@ import com.google.zxing.integration.android.IntentResult;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.Extra;
@@ -180,7 +182,7 @@ import static dev.ragnarok.fenrir.util.Objects.isNull;
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class MainActivity extends AppCompatActivity implements AdditionalNavigationFragment.NavigationDrawerCallbacks,
-        OnSectionResumeCallback, AppStyleable, PlaceProvider, ServiceConnection, BottomNavigationView.OnNavigationItemSelectedListener {
+        OnSectionResumeCallback, AppStyleable, PlaceProvider, ServiceConnection, NavigationBarView.OnItemSelectedListener {
 
     public static final String ACTION_MAIN = "android.intent.action.MAIN";
     public static final String ACTION_CHAT_FROM_SHORTCUT = "dev.ragnarok.fenrir.ACTION_CHAT_FROM_SHORTCUT";
@@ -330,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
         setStatusbarColored(true, Settings.get().ui().isDarkModeEnabled(this));
 
         mBottomNavigation = findViewById(R.id.bottom_navigation_menu);
-        mBottomNavigation.setOnNavigationItemSelectedListener(this);
+        mBottomNavigation.setOnItemSelectedListener(this);
 
         mBottomNavigationContainer = findViewById(R.id.bottom_navigation_menu_container);
         mViewFragment = findViewById(R.id.fragment);
@@ -371,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                     }
                 }
 
-                UpdateNotificationCount(mAccountId);
+                updateNotificationCount(mAccountId);
                 boolean needPin = Settings.get().security().isUsePinForEntrance()
                         && !getIntent().getBooleanExtra(EXTRA_NO_REQUIRE_PIN, false);
                 if (needPin) {
@@ -381,7 +383,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
         }
     }
 
-    public void UpdateNotificationCount(int account) {
+    private void updateNotificationCount(int account) {
         mCompositeDisposable.add(new CountersInteractor(Injection.provideNetworkInterfaces()).getApiCounters(account)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(this::updateNotificationsBagde, t -> removeNotificationsBagde()));
@@ -489,7 +491,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
     private void onCurrentAccountChange(int newAccountId) {
         mAccountId = newAccountId;
         Accounts.showAccountSwitchedToast(this);
-        UpdateNotificationCount(newAccountId);
+        updateNotificationCount(newAccountId);
         MusicUtils.stop();
     }
 
@@ -948,6 +950,15 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
     public void onClearSelection() {
         resetNavigationSelection();
         mCurrentFrontSection = null;
+    }
+
+    @Override
+    public void readAllNotifications() {
+        if (Utils.isHiddenAccount(mAccountId))
+            return;
+        mCompositeDisposable.add(InteractorFactory.createFeedbackInteractor().maskAaViewed(mAccountId)
+                .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                .subscribe(() -> mBottomNavigation.removeBadge(R.id.menu_feedback), RxUtils.ignore()));
     }
 
     private void attachToFront(Fragment fragment) {

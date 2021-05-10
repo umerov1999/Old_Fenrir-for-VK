@@ -903,7 +903,7 @@ class ChatPresenter(
                 ) {
                     val temp = it.attachments.toList()
                     val att: ArrayList<AbsModel> = ArrayList()
-                    for (i in 10 until temp.size - 1) {
+                    for (i in 10 until temp.size) {
                         att.add(temp[i])
                     }
                     outConfig.appendAll(att)

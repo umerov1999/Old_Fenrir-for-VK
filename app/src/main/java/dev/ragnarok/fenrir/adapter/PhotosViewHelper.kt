@@ -88,21 +88,38 @@ class PhotosViewHelper internal constructor(
         if (photos.isEmpty()) {
             return
         }
+        var images = photos
+        if (container is MozaikLayout) {
+            if (photos.size > 10) {
+                images = ArrayList<PostImage>(10)
+                for (s in 0..9) images.add(photos[s])
+            }
+        }
         val roundedMode = Settings.get().main().photoRoundMode
-        if (roundedMode == 1) container.removeAllViews()
-        val i = photos.size - container.childCount
+        if (roundedMode == 1) {
+            if (images.size > 1 && container.childCount == 1 || images.size == 1 && container.childCount > 1) {
+                container.removeAllViews()
+            }
+        }
+        val i = images.size - container.childCount
         for (j in 0 until i) {
             val root: View = when (roundedMode) {
-                1 -> if (photos.size > 1) LayoutInflater.from(context).inflate(
-                    R.layout.item_photo_gif_not_round,
-                    container,
-                    false
-                ) else LayoutInflater.from(context)
-                    .inflate(R.layout.item_photo_gif, container, false)
-                2 -> LayoutInflater.from(context)
-                    .inflate(R.layout.item_photo_gif_not_round, container, false)
-                else -> LayoutInflater.from(context)
-                    .inflate(R.layout.item_photo_gif, container, false)
+                1 -> {
+                    if (images.size > 1) LayoutInflater.from(context).inflate(
+                        R.layout.item_photo_gif_not_round,
+                        container,
+                        false
+                    ) else LayoutInflater.from(context)
+                        .inflate(R.layout.item_photo_gif, container, false)
+                }
+                2 -> {
+                    LayoutInflater.from(context)
+                        .inflate(R.layout.item_photo_gif_not_round, container, false)
+                }
+                else -> {
+                    LayoutInflater.from(context)
+                        .inflate(R.layout.item_photo_gif, container, false)
+                }
             }
             val holder = Holder(root)
             root.tag = holder
@@ -110,17 +127,13 @@ class PhotosViewHelper internal constructor(
             addZoomableView(root, holder)
         }
         if (container is MozaikLayout) {
-            if (photos.size > 10) {
-                val images = ArrayList<PostImage>(10)
-                for (s in 0..9) images.add(photos[s])
-                container.setPhotos(images)
-            } else container.setPhotos(photos)
+            container.setPhotos(images)
         }
         for (g in 0 until container.childCount) {
             val tmpV = container.getChildAt(g)
             val holder = tmpV.tag as Holder
-            if (g < photos.size) {
-                val image = photos[g]
+            if (g < images.size) {
+                val image = images[g]
                 holder.ivPlay.visibility =
                     if (image.type == PostImage.TYPE_IMAGE) View.GONE else View.VISIBLE
                 if (image.type != PostImage.TYPE_IMAGE) Utils.setColorFilter(
@@ -197,11 +210,17 @@ class PhotosViewHelper internal constructor(
     }
 
     private fun openImages(photos: List<PostImage>, index: Int) {
+        if(Utils.isEmpty(photos) || photos.size <= index) {
+            return
+        }
         val models = ArrayList<Photo>()
         for (postImage in photos) {
             if (postImage.type == PostImage.TYPE_IMAGE) {
                 models.add(postImage.attachment as Photo)
             }
+        }
+        if(Utils.isEmpty(models)) {
+            return
         }
         attachmentsActionCallback.onPhotosOpen(models, index, true)
     }

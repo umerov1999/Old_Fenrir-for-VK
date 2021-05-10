@@ -8,4 +8,6 @@ public interface OnSectionResumeCallback {
     void onChatResume(int accountId, int peerId, String title, String imgUrl);
 
     void onClearSelection();
+
+    void readAllNotifications();
 }

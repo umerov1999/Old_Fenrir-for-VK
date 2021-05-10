@@ -69,7 +69,7 @@ public class EnterPinFragment extends BaseMvpFragment<EnterPinPresenter, IEnterP
             }
 
             @Override
-            public void onAuthenticationError(@BiometricPrompt.AuthenticationError int errorCode, @NonNull CharSequence errString) {
+            public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
                 super.onAuthenticationError(errorCode, errString);
                 getCustomToast().showToastError(errString.toString());
             }

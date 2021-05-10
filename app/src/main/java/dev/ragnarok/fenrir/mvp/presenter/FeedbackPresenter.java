@@ -101,21 +101,7 @@ public class FeedbackPresenter extends PlaceSupportPresenter<IFeedbackView> {
         resolveSwiperefreshLoadingView();
     }
 
-    private void safelyMarkAsViewed() {
-        int accountId = getAccountId();
-        if (Utils.isHiddenAccount(accountId))
-            return;
-
-        appendDisposable(feedbackInteractor.maskAaViewed(accountId)
-                .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(() -> callView(IFeedbackView::notifyUpdateCounter), ignore()));
-    }
-
     private void onActualDataReceived(String startFrom, List<Feedback> feedbacks, String nextFrom) {
-        if (isEmpty(startFrom)) {
-            safelyMarkAsViewed();
-        }
-
         cacheDisposable.clear();
         cacheLoadingNow = false;
         netLoadingNow = false;
@@ -127,7 +113,7 @@ public class FeedbackPresenter extends PlaceSupportPresenter<IFeedbackView> {
         if (isEmpty(startFrom)) {
             mData.clear();
             mData.addAll(feedbacks);
-            callView(IFeedbackView::notifyDataSetChanged);
+            callView(IFeedbackView::notifyFirstListReceived);
         } else {
             int sizeBefore = mData.size();
             mData.addAll(feedbacks);

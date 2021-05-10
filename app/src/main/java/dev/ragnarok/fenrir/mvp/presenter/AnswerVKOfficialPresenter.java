@@ -30,7 +30,6 @@ public class AnswerVKOfficialPresenter extends AccountDependencyPresenter<IAnswe
     private boolean actualDataReceived;
     private boolean endOfContent;
     private boolean actualDataLoading;
-    private boolean requestedView;
 
     public AnswerVKOfficialPresenter(int accountId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
@@ -46,33 +45,16 @@ public class AnswerVKOfficialPresenter extends AccountDependencyPresenter<IAnswe
     public void onGuiCreated(@NonNull IAnswerVKOfficialView view) {
         super.onGuiCreated(view);
         view.displayData(pages);
-        safelyMarkAsViewed();
     }
 
     private void loadActualData(int offset) {
         actualDataLoading = true;
-
         resolveRefreshingView();
 
         int accountId = getAccountId();
         actualDataDisposable.add(fInteractor.getOfficial(accountId, 100, offset)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(data -> onActualDataReceived(offset, data), this::onActualDataGetError));
-    }
-
-    private void safelyMarkAsViewed() {
-        if (!requestedView) {
-            requestedView = true;
-        } else {
-            return;
-        }
-        int accountId = getAccountId();
-        if (Utils.isHiddenAccount(accountId))
-            return;
-
-        appendDisposable(fInteractor.maskAaViewed(accountId)
-                .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(() -> callView(IAnswerVKOfficialView::notifyUpdateCounter), ignore()));
     }
 
     private void onActualDataGetError(Throwable t) {
@@ -83,7 +65,6 @@ public class AnswerVKOfficialPresenter extends AccountDependencyPresenter<IAnswe
     }
 
     private void onActualDataReceived(int offset, AnswerVKOfficialList data) {
-
         actualDataLoading = false;
         endOfContent = (data.items.size() < 100);
         actualDataReceived = true;
@@ -93,10 +74,9 @@ public class AnswerVKOfficialPresenter extends AccountDependencyPresenter<IAnswe
             pages.fields.clear();
             pages.items.addAll(data.items);
             pages.fields.addAll(data.fields);
-            callView(IAnswerVKOfficialView::notifyDataSetChanged);
+            callView(IAnswerVKOfficialView::notifyFirstListReceived);
         } else {
             int startSize = pages.items.size();
-
             pages.items.addAll(data.items);
             pages.fields.addAll(data.fields);
             callView(view -> view.notifyDataAdded(startSize, data.items.size()));

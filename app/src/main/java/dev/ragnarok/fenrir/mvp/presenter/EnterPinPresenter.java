@@ -152,6 +152,7 @@ public class EnterPinPresenter extends RxSupportPresenter<IEnterPinView> {
                 .security()
                 .clearPinHistory();
 
+        if (!isGuiReady()) return;
         getView().sendSuccessAndClose();
     }
 
@@ -159,6 +160,7 @@ public class EnterPinPresenter extends RxSupportPresenter<IEnterPinView> {
         resetPin();
         refreshViewCirclesVisibility();
 
+        if (!isGuiReady()) return;
         getView().showError(R.string.pin_is_invalid_message);
         getView().displayErrorAnimation();
     }

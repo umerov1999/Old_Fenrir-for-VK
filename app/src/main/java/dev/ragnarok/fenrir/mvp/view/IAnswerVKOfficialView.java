@@ -8,9 +8,7 @@ import dev.ragnarok.fenrir.mvp.view.base.IAccountDependencyView;
 public interface IAnswerVKOfficialView extends IAccountDependencyView, IMvpView, IErrorView {
     void displayData(AnswerVKOfficialList pages);
 
-    void notifyDataSetChanged();
-
-    void notifyUpdateCounter();
+    void notifyFirstListReceived();
 
     void notifyDataAdded(int position, int count);
 

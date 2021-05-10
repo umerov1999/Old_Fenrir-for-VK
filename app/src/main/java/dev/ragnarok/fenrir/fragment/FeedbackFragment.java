@@ -141,11 +141,6 @@ public class FeedbackFragment extends PlaceSupportMvpFragment<FeedbackPresenter,
         }
     }
 
-    @Override
-    public void notifyUpdateCounter() {
-        ((MainActivity) requireActivity()).UpdateNotificationCount(Settings.get().accounts().getCurrent());
-    }
-
     private void resolveEmptyTextVisibility() {
         if (nonNull(mEmptyText) && nonNull(mAdapter)) {
             mEmptyText.setVisibility(mAdapter.getRealItemCount() == 0 ? View.VISIBLE : View.GONE);
@@ -157,6 +152,17 @@ public class FeedbackFragment extends PlaceSupportMvpFragment<FeedbackPresenter,
         if (nonNull(mAdapter)) {
             mAdapter.notifyItemRangeInserted(position, count);
             resolveEmptyTextVisibility();
+        }
+    }
+
+    @Override
+    public void notifyFirstListReceived() {
+        if (nonNull(mAdapter)) {
+            mAdapter.notifyDataSetChanged();
+            resolveEmptyTextVisibility();
+        }
+        if (requireActivity() instanceof OnSectionResumeCallback) {
+            ((OnSectionResumeCallback) requireActivity()).readAllNotifications();
         }
     }
 

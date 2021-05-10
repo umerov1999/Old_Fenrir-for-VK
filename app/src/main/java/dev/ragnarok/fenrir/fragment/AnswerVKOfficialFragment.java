@@ -36,7 +36,7 @@ import dev.ragnarok.fenrir.util.ViewUtils;
 
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
-public class AnswerVKOfficialFragment extends BaseMvpFragment<AnswerVKOfficialPresenter, IAnswerVKOfficialView> implements IAnswerVKOfficialView, AnswerVKOfficialAdapter.ClickListener {
+public class AnswerVKOfficialFragment extends BaseMvpFragment<AnswerVKOfficialPresenter, IAnswerVKOfficialView> implements SwipeRefreshLayout.OnRefreshListener, IAnswerVKOfficialView, AnswerVKOfficialAdapter.ClickListener {
 
     private TextView mEmpty;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -68,7 +68,7 @@ public class AnswerVKOfficialFragment extends BaseMvpFragment<AnswerVKOfficialPr
         });
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(this);
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         mAdapter = new AnswerVKOfficialAdapter(null, requireActivity());
@@ -118,15 +118,13 @@ public class AnswerVKOfficialFragment extends BaseMvpFragment<AnswerVKOfficialPr
     }
 
     @Override
-    public void notifyUpdateCounter() {
-        ((MainActivity) requireActivity()).UpdateNotificationCount(Settings.get().accounts().getCurrent());
-    }
-
-    @Override
-    public void notifyDataSetChanged() {
+    public void notifyFirstListReceived() {
         if (nonNull(mAdapter)) {
             mAdapter.notifyDataSetChanged();
             resolveEmptyText();
+        }
+        if (requireActivity() instanceof OnSectionResumeCallback) {
+            ((OnSectionResumeCallback) requireActivity()).readAllNotifications();
         }
     }
 
@@ -148,6 +146,11 @@ public class AnswerVKOfficialFragment extends BaseMvpFragment<AnswerVKOfficialPr
     @Override
     public void openOwnerWall(int owner_id) {
         PlaceFactory.getOwnerWallPlace(Settings.get().accounts().getCurrent(), owner_id, null).tryOpenWith(requireActivity());
+    }
+
+    @Override
+    public void onRefresh() {
+        getPresenter().fireRefresh();
     }
 
     @NonNull
