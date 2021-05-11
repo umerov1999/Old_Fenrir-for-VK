@@ -53,7 +53,7 @@ public abstract class AbsMessageListPresenter<V extends IBasicMessageListView> e
 
     @OnGuiCreated
     private void syncVoiceLookupState() {
-        boolean needLookup = mVoicePlayer.isSupposedToPlay() && isGuiReady();
+        boolean needLookup = mVoicePlayer.isSupposedToPlay() && getGuiIsReady();
 
         if (needLookup) {
             mVoiceMessageLookup.start();
@@ -64,9 +64,7 @@ public abstract class AbsMessageListPresenter<V extends IBasicMessageListView> e
 
     @OnGuiCreated
     public void resolveListView() {
-        if (isGuiReady()) {
-            getView().displayMessages(mData, lastReadId);
-        }
+        callView(v -> v.displayMessages(mData, lastReadId));
     }
 
     @NonNull
@@ -97,26 +95,20 @@ public abstract class AbsMessageListPresenter<V extends IBasicMessageListView> e
 
     @OnGuiCreated
     protected void resolveActionMode() {
-        if (!isGuiReady()) return;
-
         int selectionCount = countOfSelection(getData());
         if (selectionCount > 0) {
-            getView().showActionMode(String.valueOf(selectionCount), false, false, false, false, true);
+            callView(v -> v.showActionMode(String.valueOf(selectionCount), false, false, false, false, true));
         } else {
-            getView().finishActionMode();
+            callView(IBasicMessageListView::finishActionMode);
         }
     }
 
     protected void safeNotifyDataChanged() {
-        if (isGuiReady()) {
-            getView().notifyDataChanged();
-        }
+        callView(IBasicMessageListView::notifyDataChanged);
     }
 
     protected void safeNotifyItemChanged(int index) {
-        if (isGuiReady()) {
-            getView().notifyItemChanged(index);
-        }
+        callView(v -> v.notifyItemChanged(index));
     }
 
     public void fireMessageLongClick(@NonNull Message message, int position) {
@@ -189,7 +181,7 @@ public abstract class AbsMessageListPresenter<V extends IBasicMessageListView> e
                 .getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("messages", result);
         clipboard.setPrimaryClip(clip);
-        getView().getCustomToast().setDuration(Toast.LENGTH_LONG).showToast(R.string.copied_to_clipboard);
+        callView(v -> v.getCustomToast().setDuration(Toast.LENGTH_LONG).showToast(R.string.copied_to_clipboard));
     }
 
     public final void fireForwardClick() {
@@ -208,7 +200,7 @@ public abstract class AbsMessageListPresenter<V extends IBasicMessageListView> e
             } else {
                 boolean paused = !mVoicePlayer.isSupposedToPlay();
                 float progress = mVoicePlayer.getProgress();
-                getView().bindVoiceHolderById(voiceHolderId, true, paused, progress, false);
+                callView(v -> v.bindVoiceHolderById(voiceHolderId, true, paused, progress, false));
             }
         } catch (PrepareException ignored) {
 
@@ -218,17 +210,16 @@ public abstract class AbsMessageListPresenter<V extends IBasicMessageListView> e
     }
 
     private void resolveVoiceMessagePlayingState(boolean anim) {
-        if (isGuiReady()) {
-            Optional<Integer> optionalVoiceMessageId = mVoicePlayer.getPlayingVoiceId();
 
-            if (optionalVoiceMessageId.isEmpty()) {
-                getView().disableVoicePlaying();
-            } else {
-                float progress = mVoicePlayer.getProgress();
-                boolean paused = !mVoicePlayer.isSupposedToPlay();
+        Optional<Integer> optionalVoiceMessageId = mVoicePlayer.getPlayingVoiceId();
 
-                getView().configNowVoiceMessagePlaying(optionalVoiceMessageId.get(), progress, paused, anim);
-            }
+        if (optionalVoiceMessageId.isEmpty()) {
+            callView(IBasicMessageListView::disableVoicePlaying);
+        } else {
+            float progress = mVoicePlayer.getProgress();
+            boolean paused = !mVoicePlayer.isSupposedToPlay();
+
+            callView(v -> v.configNowVoiceMessagePlaying(optionalVoiceMessageId.get(), progress, paused, anim));
         }
     }
 
@@ -247,7 +238,7 @@ public abstract class AbsMessageListPresenter<V extends IBasicMessageListView> e
         boolean play = currentVoiceId.nonEmpty() && currentVoiceId.get() == voiceMessageId;
         boolean paused = play && !mVoicePlayer.isSupposedToPlay();
 
-        getView().bindVoiceHolderById(voiceHolderId, play, paused, mVoicePlayer.getProgress(), false);
+        callView(v -> v.bindVoiceHolderById(voiceHolderId, play, paused, mVoicePlayer.getProgress(), false));
     }
 
     @Override

@@ -67,9 +67,7 @@ public class StoryPagerPresenter extends AccountDependencyPresenter<IStoryPagerV
 
     @OnGuiCreated
     private void resolveData() {
-        if (isGuiReady()) {
-            getView().displayData(mStories.size(), mCurrentIndex);
-        }
+        callView(v -> v.displayData(mStories.size(), mCurrentIndex));
     }
 
     public void fireSurfaceCreated(int adapterPosition) {
@@ -80,15 +78,13 @@ public class StoryPagerPresenter extends AccountDependencyPresenter<IStoryPagerV
 
     @OnGuiCreated
     private void resolveToolbarTitle() {
-        if (isGuiReady()) {
-            getView().setToolbarTitle(R.string.image_number, mCurrentIndex + 1, mStories.size());
-        }
+        callView(v -> v.setToolbarTitle(R.string.image_number, mCurrentIndex + 1, mStories.size()));
     }
 
     @OnGuiCreated
     private void resolvePlayerDisplay() {
-        if (isGuiReady()) {
-            getView().attachDisplayToPlayer(mCurrentIndex, mGifPlayer);
+        if (getGuiIsReady()) {
+            callView(v -> v.attachDisplayToPlayer(mCurrentIndex, mGifPlayer));
         } else {
             mGifPlayer.setDisplay(null);
         }
@@ -111,7 +107,7 @@ public class StoryPagerPresenter extends AccountDependencyPresenter<IStoryPagerV
         String url = Utils.firstNonEmptyString(story.getVideo().getMp4link1080(), story.getVideo().getMp4link720(), story.getVideo().getMp4link480(),
                 story.getVideo().getMp4link360(), story.getVideo().getMp4link240());
         if (url == null) {
-            safeShowError(getView(), R.string.unable_to_play_file);
+            callView(v -> v.showError(R.string.unable_to_play_file));
             return;
         }
 
@@ -122,7 +118,7 @@ public class StoryPagerPresenter extends AccountDependencyPresenter<IStoryPagerV
         try {
             mGifPlayer.play();
         } catch (PlayerPrepareException e) {
-            safeShowError(getView(), R.string.unable_to_play_file);
+            callView(v -> v.showError(R.string.unable_to_play_file));
         }
     }
 
@@ -141,27 +137,24 @@ public class StoryPagerPresenter extends AccountDependencyPresenter<IStoryPagerV
 
     @OnGuiCreated
     private void resolveAspectRatio() {
-        if (isGuiReady()) {
-            VideoSize size = mGifPlayer.getVideoSize();
-            if (size != null) {
-                getView().setAspectRatioAt(mCurrentIndex, size.getWidth(), size.getHeight());
-            }
+        if (mGifPlayer == null) {
+            return;
+        }
+        VideoSize size = mGifPlayer.getVideoSize();
+        if (size != null) {
+            callView(v -> v.setAspectRatioAt(mCurrentIndex, size.getWidth(), size.getHeight()));
         }
     }
 
     @OnGuiCreated
     private void resolvePreparingProgress() {
         boolean preparing = !Objects.isNull(mGifPlayer) && mGifPlayer.getPlayerStatus() == IGifPlayer.IStatus.PREPARING;
-        if (isGuiReady()) {
-            getView().setPreparingProgressVisible(mCurrentIndex, preparing);
-        }
+        callView(v -> v.setPreparingProgressVisible(mCurrentIndex, preparing));
     }
 
     @OnGuiCreated
     private void resolveToolbarSubtitle() {
-        if (isGuiReady()) {
-            getView().setToolbarSubtitle(mStories.get(mCurrentIndex), getAccountId());
-        }
+        callView(v -> v.setToolbarSubtitle(mStories.get(mCurrentIndex), getAccountId()));
     }
 
     public void firePageSelected(int position) {
@@ -185,12 +178,13 @@ public class StoryPagerPresenter extends AccountDependencyPresenter<IStoryPagerV
             size = DEF_SIZE;
         }
 
-        getView().configHolder(adapterPosition, isProgress, size.getWidth(), size.getWidth());
+        VideoSize finalSize = size;
+        callView(v -> v.configHolder(adapterPosition, isProgress, finalSize.getWidth(), finalSize.getWidth()));
     }
 
     public void fireDownloadButtonClick() {
         if (!AppPerms.hasReadWriteStoragePermission(App.getInstance())) {
-            getView().requestWriteExternalStoragePermission();
+            callView(IStoryPagerView::requestWriteExternalStoragePermission);
             return;
         }
 
@@ -255,7 +249,7 @@ public class StoryPagerPresenter extends AccountDependencyPresenter<IStoryPagerV
         if (!dir.isDirectory()) {
             boolean created = dir.mkdirs();
             if (!created) {
-                safeShowError(getView(), "Can't create directory " + dir);
+                callView(v -> v.showError("Can't create directory " + dir));
                 return;
             }
         } else
@@ -277,7 +271,7 @@ public class StoryPagerPresenter extends AccountDependencyPresenter<IStoryPagerV
             if (!dir_final.isDirectory()) {
                 boolean created = dir_final.mkdirs();
                 if (!created) {
-                    safeShowError(getView(), "Can't create directory " + dir_final);
+                    callView(v -> v.showError("Can't create directory " + dir_final));
                     return;
                 }
             } else

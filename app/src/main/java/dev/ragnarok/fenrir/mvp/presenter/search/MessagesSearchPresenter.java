@@ -61,6 +61,6 @@ public class MessagesSearchPresenter extends AbsSearchPresenter<IMessagesSearchV
     }
 
     public void fireMessageClick(Message message) {
-        getView().goToMessagesLookup(getAccountId(), message.getPeerId(), message.getId());
+        callView(v -> v.goToMessagesLookup(getAccountId(), message.getPeerId(), message.getId()));
     }
 }

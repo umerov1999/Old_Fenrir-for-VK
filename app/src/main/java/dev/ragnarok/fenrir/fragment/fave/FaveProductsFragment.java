@@ -62,7 +62,7 @@ public class FaveProductsFragment extends BaseMvpFragment<FaveProductsPresenter,
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(FaveProductsPresenter::fireScrollToEnd);
             }
         });
 
@@ -80,7 +80,7 @@ public class FaveProductsFragment extends BaseMvpFragment<FaveProductsPresenter,
 
     @Override
     public void onRefresh() {
-        getPresenter().fireRefresh();
+        callPresenter(FaveProductsPresenter::fireRefresh);
     }
 
     @Override
@@ -133,6 +133,6 @@ public class FaveProductsFragment extends BaseMvpFragment<FaveProductsPresenter,
 
     @Override
     public void onOpenClick(int index, Market market) {
-        getPresenter().fireMarketOpen(market);
+        callPresenter(p -> p.fireMarketOpen(market));
     }
 }

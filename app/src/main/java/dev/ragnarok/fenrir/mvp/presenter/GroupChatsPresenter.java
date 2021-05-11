@@ -67,7 +67,7 @@ public class GroupChatsPresenter extends AccountDependencyPresenter<IGroupChatsV
         resolveRefreshingView();
         resolveLoadMoreFooter();
 
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onActualDataReceived(int offset, List<GroupChats> rec_chats) {
@@ -105,25 +105,21 @@ public class GroupChatsPresenter extends AccountDependencyPresenter<IGroupChatsV
 
     @OnGuiCreated
     private void resolveRefreshingView() {
-        if (isGuiReady()) {
-            getView().showRefreshing(netLoadingNow);
-        }
+        callView(v -> v.showRefreshing(netLoadingNow));
     }
 
     @OnGuiCreated
     private void resolveLoadMoreFooter() {
-        if (isGuiReady()) {
-            if (netLoadingNow && netLoadingNowOffset > 0) {
-                getView().setupLoadMore(LoadMoreState.LOADING);
-                return;
-            }
-
-            if (actualDataReceived && !netLoadingNow) {
-                getView().setupLoadMore(LoadMoreState.CAN_LOAD_MORE);
-            }
-
-            getView().setupLoadMore(LoadMoreState.END_OF_LIST);
+        if (netLoadingNow && netLoadingNowOffset > 0) {
+            callView(v -> v.setupLoadMore(LoadMoreState.LOADING));
+            return;
         }
+
+        if (actualDataReceived && !netLoadingNow) {
+            callView(v -> v.setupLoadMore(LoadMoreState.CAN_LOAD_MORE));
+        }
+
+        callView(v -> v.setupLoadMore(LoadMoreState.END_OF_LIST));
     }
 
     public void fireLoadMoreClick() {
@@ -137,7 +133,7 @@ public class GroupChatsPresenter extends AccountDependencyPresenter<IGroupChatsV
     }
 
     public void fireButtonCreateClick() {
-        safeShowError(getView(), R.string.not_yet_implemented_message);
+        callView(v -> v.showError(R.string.not_yet_implemented_message));
     }
 
     public void fireRefresh() {

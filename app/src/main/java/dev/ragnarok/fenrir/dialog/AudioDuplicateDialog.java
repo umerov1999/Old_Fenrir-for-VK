@@ -135,7 +135,7 @@ public class AudioDuplicateDialog extends BaseMvpDialogFragment<AudioDuplicatePr
         oldBitrate = view.findViewById(R.id.item_old_bitrate);
         bBitrate = view.findViewById(R.id.item_get_bitrate);
         bBitrate.setOnClickListener(v -> {
-            getPresenter().getBitrateAll(requireActivity());
+            callPresenter(p -> p.getBitrateAll(requireActivity()));
             bBitrate.setVisibility(View.GONE);
         });
 

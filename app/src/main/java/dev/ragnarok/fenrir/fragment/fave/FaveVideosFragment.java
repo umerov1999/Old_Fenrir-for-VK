@@ -57,14 +57,14 @@ public class FaveVideosFragment extends BaseMvpFragment<FaveVideosPresenter, IFa
 
         mEmpty = root.findViewById(R.id.empty);
 
-        int columns = getContext().getResources().getInteger(R.integer.videos_column_count);
+        int columns = getResources().getInteger(R.integer.videos_column_count);
         StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(columns, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
         recyclerView.addOnScrollListener(new PicassoPauseOnScrollListener(Constants.PICASSO_TAG));
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(FaveVideosPresenter::fireScrollToEnd);
             }
         });
 
@@ -82,17 +82,17 @@ public class FaveVideosFragment extends BaseMvpFragment<FaveVideosPresenter, IFa
 
     @Override
     public void onRefresh() {
-        getPresenter().fireRefresh();
+        callPresenter(FaveVideosPresenter::fireRefresh);
     }
 
     @Override
     public void onVideoClick(int position, Video video) {
-        getPresenter().fireVideoClick(video);
+        callPresenter(p -> p.fireVideoClick(video));
     }
 
     @Override
     public void onDelete(int index, Video video) {
-        getPresenter().fireVideoDelete(index, video);
+        callPresenter(p -> p.fireVideoDelete(index, video));
     }
 
     @Override

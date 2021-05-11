@@ -37,6 +37,7 @@ import dev.ragnarok.fenrir.model.LoadMoreState;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.Peer;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
+import dev.ragnarok.fenrir.mvp.presenter.AbsMessageListPresenter;
 import dev.ragnarok.fenrir.mvp.presenter.NotReadMessagesPresenter;
 import dev.ragnarok.fenrir.mvp.view.INotReadMessagesView;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
@@ -130,17 +131,17 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
                 .setTitle(R.string.confirmation)
                 .setMessage(R.string.messages_delete_for_all_question_message)
                 .setNeutralButton(R.string.button_cancel, null)
-                .setPositiveButton(R.string.button_for_all, (dialog, which) -> getPresenter().fireDeleteForAllClick(ids))
-                .setNegativeButton(R.string.button_for_me, (dialog, which) -> getPresenter().fireDeleteForMeClick(ids))
+                .setPositiveButton(R.string.button_for_all, (dialog, which) -> callPresenter(p -> p.fireDeleteForAllClick(ids)))
+                .setNegativeButton(R.string.button_for_me, (dialog, which) -> callPresenter(p -> p.fireDeleteForMeClick(ids)))
                 .show();
     }
 
     private void onFooterLoadMoreClick() {
-        getPresenter().fireFooterLoadMoreClick();
+        callPresenter(NotReadMessagesPresenter::fireFooterLoadMoreClick);
     }
 
     private void onHeaderLoadMoreClick() {
-        getPresenter().fireHeaderLoadMoreClick();
+        callPresenter(NotReadMessagesPresenter::fireHeaderLoadMoreClick);
     }
 
     @Override
@@ -258,7 +259,7 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
     }
 
     public void fireFinish() {
-        getPresenter().fireFinish();
+        callPresenter(NotReadMessagesPresenter::fireFinish);
     }
 
     @Override
@@ -290,24 +291,24 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
     @Override
     public void onAvatarClick(@NonNull Message message, int userId, int position) {
         if (nonNull(mActionView) && mActionView.isVisible()) {
-            getPresenter().fireMessageClick(message, position);
+            callPresenter(p -> p.fireMessageClick(message, position));
         } else {
-            getPresenter().fireOwnerClick(userId);
+            callPresenter(p -> p.fireOwnerClick(userId));
         }
     }
 
     @Override
     public void onLongAvatarClick(@NonNull Message message, int userId, int position) {
         if (nonNull(mActionView) && mActionView.isVisible()) {
-            getPresenter().fireMessageClick(message, position);
+            callPresenter(p -> p.fireMessageClick(message, position));
         } else {
-            getPresenter().fireOwnerClick(userId);
+            callPresenter(p -> p.fireOwnerClick(userId));
         }
     }
 
     @Override
     public void onRestoreClick(@NonNull Message message, int position) {
-        getPresenter().fireMessageRestoreClick(message, position);
+        callPresenter(p -> p.fireMessageRestoreClick(message, position));
     }
 
     @Override
@@ -317,20 +318,20 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
 
     @Override
     public boolean onMessageLongClick(@NonNull Message message, int position) {
-        getPresenter().fireMessageLongClick(message, position);
+        callPresenter(p -> p.fireMessageLongClick(message, position));
         return true;
     }
 
     @Override
     public void onMessageClicked(@NonNull Message message, int position) {
-        getPresenter().fireMessageClick(message, position);
+        callPresenter(p -> p.fireMessageClick(message, position));
     }
 
     @Override
     public void onMessageDelete(@NonNull Message message) {
         ArrayList<Integer> ids = new ArrayList<>();
         ids.add(message.getId());
-        getPresenter().fireDeleteForMeClick(ids);
+        callPresenter(p -> p.fireDeleteForMeClick(ids));
     }
 
     @Override
@@ -444,7 +445,7 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
                     }
                 });
             }
-            Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireActionModeDestroy());
+            Utils.safeObjectCall(reference.get(), () -> reference.get().callPresenter(AbsMessageListPresenter::fireActionModeDestroy));
         }
 
         @Override
@@ -452,13 +453,13 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
             if (v.getId() == R.id.buttonClose) {
                 hide();
             } else if (v.getId() == R.id.buttonForward) {
-                Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireForwardClick());
+                Utils.safeObjectCall(reference.get(), () -> reference.get().callPresenter(AbsMessageListPresenter::fireForwardClick));
                 hide();
             } else if (v.getId() == R.id.buttonCopy) {
-                Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireActionModeCopyClick());
+                Utils.safeObjectCall(reference.get(), () -> reference.get().callPresenter(AbsMessageListPresenter::fireActionModeCopyClick));
                 hide();
             } else if (v.getId() == R.id.buttonDelete) {
-                Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireActionModeDeleteClick());
+                Utils.safeObjectCall(reference.get(), () -> reference.get().callPresenter(AbsMessageListPresenter::fireActionModeDeleteClick));
                 hide();
             } else if (v.getId() == R.id.buttonSpam) {
                 MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(requireActivity());
@@ -466,11 +467,11 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
                 dlgAlert.setMessage(R.string.do_report);
                 dlgAlert.setTitle(R.string.select);
                 dlgAlert.setPositiveButton(R.string.button_yes, (dialog, which) -> {
-                    Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireActionModeSpamClick());
+                    Utils.safeObjectCall(reference.get(), () -> reference.get().callPresenter(AbsMessageListPresenter::fireActionModeSpamClick));
                     hide();
                 });
                 dlgAlert.setNeutralButton(R.string.delete, (dialog, which) -> {
-                    Utils.safeObjectCall(reference.get(), () -> reference.get().getPresenter().fireActionModeDeleteClick());
+                    Utils.safeObjectCall(reference.get(), () -> reference.get().callPresenter(AbsMessageListPresenter::fireActionModeDeleteClick));
                     hide();
                 });
                 dlgAlert.setCancelable(true);

@@ -54,7 +54,7 @@ public class FavePhotoPagerPresenter extends PhotoPagerPresenter {
 
     private void onRefreshFailed(int index, Throwable t) {
         refreshing[index] = false;
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void onPhotoUpdateReceived(List<Photo> result, int index) {

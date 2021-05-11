@@ -41,9 +41,7 @@ public class ArtistSearchPresenter extends AbsSearchPresenter<IArtistSearchView,
     @Override
     void onSeacrhError(Throwable throwable) {
         super.onSeacrhError(throwable);
-        if (isGuiResumed()) {
-            showError(getView(), Utils.getCauseIfRuntime(throwable));
-        }
+        callResumedView(v -> showError(v, Utils.getCauseIfRuntime(throwable)));
     }
 
     @Override
@@ -57,8 +55,8 @@ public class ArtistSearchPresenter extends AbsSearchPresenter<IArtistSearchView,
         int accountId = getAccountId();
         appendDisposable(audioInteractor.followPlaylist(accountId, album.getId(), album.getOwnerId(), album.getAccess_key())
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(data -> getView().getCustomToast().showToast(R.string.success), throwable ->
-                        showError(getView(), throwable)));
+                .subscribe(data -> callView(v -> v.getCustomToast().showToast(R.string.success)), throwable ->
+                        callView(v -> showError(v, throwable))));
     }
 
     @Override

@@ -62,7 +62,7 @@ public class VideosLocalServerFragment extends BaseMvpFragment<VideosLocalServer
         searchView.setQuery("", true);
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh(false));
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(p -> p.fireRefresh(false)));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
@@ -73,7 +73,7 @@ public class VideosLocalServerFragment extends BaseMvpFragment<VideosLocalServer
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(VideosLocalServerPresenter::fireScrollToEnd);
             }
         });
         mAudioRecyclerAdapter = new LocalServerVideosAdapter(requireActivity(), Collections.emptyList());
@@ -128,13 +128,13 @@ public class VideosLocalServerFragment extends BaseMvpFragment<VideosLocalServer
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        getPresenter().fireSearchRequestChanged(query);
+        callPresenter(p -> p.fireSearchRequestChanged(query));
         return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        getPresenter().fireSearchRequestChanged(newText);
+        callPresenter(p -> p.fireSearchRequestChanged(newText));
         return false;
     }
 

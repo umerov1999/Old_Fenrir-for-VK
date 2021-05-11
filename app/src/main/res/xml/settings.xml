@@ -699,14 +699,8 @@
             android:key="runes_show"
             android:title="@string/runes_show"
             app:iconSpaceReserved="false" />
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="show_pagan_symbol"
-            android:title="@string/show_pagan_symbol"
-            app:iconSpaceReserved="false" />
         <ListPreference
-            android:defaultValue="0"
-            android:dependency="show_pagan_symbol"
+            android:defaultValue="1"
             android:entries="@array/array_pagan_symbol_names"
             android:entryValues="@array/array_pagan_symbol_items"
             android:key="pagan_symbol"

@@ -99,7 +99,7 @@ public class AudioCatalogPresenter extends AccountDependencyPresenter<IAudioCata
 
     private void onActualDataGetError(Throwable t) {
         actualDataLoading = false;
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
 
         resolveRefreshingView();
     }
@@ -116,17 +116,14 @@ public class AudioCatalogPresenter extends AccountDependencyPresenter<IAudioCata
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().showRefreshing(actualDataLoading);
-        }
+        callResumedView(v -> v.showRefreshing(actualDataLoading));
     }
 
     public void onAdd(AudioPlaylist album) {
         int accountId = getAccountId();
         appendDisposable(fInteractor.followPlaylist(accountId, album.getId(), album.getOwnerId(), album.getAccess_key())
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(data -> getView().getCustomToast().showToast(R.string.success), throwable ->
-                        showError(getView(), throwable)));
+                .subscribe(data -> callView(v -> v.getCustomToast().showToast(R.string.success)), throwable -> callView(v -> showError(v, throwable))));
     }
 
     @Override

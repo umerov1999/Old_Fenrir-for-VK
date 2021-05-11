@@ -45,7 +45,7 @@ public abstract class SimpleOwnersPresenter<V extends ISimpleOwnersView> extends
     }
 
     void onUserOwnerClicked(Owner owner) {
-        getView().showOwnerWall(getAccountId(), owner);
+        callView(v -> v.showOwnerWall(getAccountId(), owner));
     }
 
     public final void fireOwnerClick(Owner owner) {

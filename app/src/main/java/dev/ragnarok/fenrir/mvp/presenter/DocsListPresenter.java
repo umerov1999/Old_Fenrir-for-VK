@@ -181,9 +181,7 @@ public class DocsListPresenter extends AccountDependencyPresenter<IDocListView> 
 
     @OnGuiCreated
     private void resolveUploadDataVisiblity() {
-        if (isGuiReady()) {
-            getView().setUploadDataVisible(!uploadsData.isEmpty());
-        }
+        callView(v -> v.setUploadDataVisible(!uploadsData.isEmpty()));
     }
 
     private void setCacheLoadingNow(boolean cacheLoadingNow) {
@@ -219,7 +217,7 @@ public class DocsListPresenter extends AccountDependencyPresenter<IDocListView> 
 
     private void onRequestError(Throwable throwable) {
         setRequestNow(false);
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
     }
 
     private void onCacheDataReceived(List<Document> data) {
@@ -266,9 +264,7 @@ public class DocsListPresenter extends AccountDependencyPresenter<IDocListView> 
 
     @OnGuiCreated
     private void resolveRefreshingView() {
-        if (isGuiReady()) {
-            getView().showRefreshing(isNowLoading());
-        }
+        callView(v -> v.showRefreshing(isNowLoading()));
     }
 
     private boolean isNowLoading() {
@@ -281,9 +277,7 @@ public class DocsListPresenter extends AccountDependencyPresenter<IDocListView> 
 
     @OnGuiCreated
     private void resolveDocsListData() {
-        if (isGuiReady()) {
-            getView().displayData(mDocuments, isImagesOnly());
-        }
+        callView(v -> v.displayData(mDocuments, isImagesOnly()));
     }
 
     private boolean isImagesOnly() {
@@ -294,7 +288,7 @@ public class DocsListPresenter extends AccountDependencyPresenter<IDocListView> 
         throwable.printStackTrace();
         setCacheLoadingNow(false);
 
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
 
         resolveRefreshingView();
     }
@@ -315,9 +309,9 @@ public class DocsListPresenter extends AccountDependencyPresenter<IDocListView> 
 
     public void fireButtonAddClick() {
         if (AppPerms.hasReadStoragePermission(getApplicationContext())) {
-            getView().startSelectUploadFileActivity(getAccountId());
+            callView(v -> v.startSelectUploadFileActivity(getAccountId()));
         } else {
-            getView().requestReadExternalStoragePermission();
+            callView(IDocListView::requestReadExternalStoragePermission);
         }
     }
 
@@ -326,7 +320,7 @@ public class DocsListPresenter extends AccountDependencyPresenter<IDocListView> 
             ArrayList<Document> selected = new ArrayList<>(1);
             selected.add(doc);
 
-            getView().returnSelection(selected);
+            callView(v -> v.returnSelection(selected));
         } else {
             if (doc.isGif() && doc.hasValidGifVideoLink()) {
                 ArrayList<Document> gifs = new ArrayList<>();
@@ -343,16 +337,17 @@ public class DocsListPresenter extends AccountDependencyPresenter<IDocListView> 
                     }
                 }
 
-                getView().goToGifPlayer(getAccountId(), gifs, selectedIndex);
+                int finalSelectedIndex = selectedIndex;
+                callView(v -> v.goToGifPlayer(getAccountId(), gifs, finalSelectedIndex));
             } else {
-                getView().openDocument(getAccountId(), doc);
+                callView(v -> v.openDocument(getAccountId(), doc));
             }
         }
     }
 
     public void fireReadPermissionResolved() {
         if (AppPerms.hasReadStoragePermission(getApplicationContext())) {
-            getView().startSelectUploadFileActivity(getAccountId());
+            callView(v -> v.startSelectUploadFileActivity(getAccountId()));
         }
     }
 
@@ -373,14 +368,14 @@ public class DocsListPresenter extends AccountDependencyPresenter<IDocListView> 
             filter.setActive(entry.getType() == filter.getType());
         }
 
-        getView().notifyFiltersChanged();
+        callView(IDocListView::notifyFiltersChanged);
 
         loadAll();
         requestAll();
     }
 
     public void pleaseNotifyViewAboutAdapterType() {
-        getViewHost().setAdapterType(isImagesOnly());
+        callView(v -> v.setAdapterType(isImagesOnly()));
     }
 
     public void fireLocalPhotosForUploadSelected(ArrayList<LocalPhoto> photos) {

@@ -47,16 +47,12 @@ public class AudiosLocalFragment extends BaseMvpFragment<AudiosLocalPresenter, I
             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, new AppPerms.onPermissionsResult() {
                 @Override
                 public void granted() {
-                    if (isPresenterPrepared()) {
-                        getPresenter().firePrepared();
-                    }
+                    callPresenter(AudiosLocalPresenter::firePrepared);
                 }
 
                 @Override
                 public void not_granted() {
-                    if (isPresenterPrepared()) {
-                        getPresenter().firePermissionsCanceled();
-                    }
+                    callPresenter(AudiosLocalPresenter::firePermissionsCanceled);
                 }
             });
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -82,11 +78,7 @@ public class AudiosLocalFragment extends BaseMvpFragment<AudiosLocalPresenter, I
         searchView.setRightIcon(R.drawable.ic_menu_24_white);
         searchView.setLeftIcon(R.drawable.magnify);
         searchView.setQuery("", true);
-        searchView.setOnAdditionalButtonClickListener(() -> LocalAudioAlbumsFragment.newInstance(bucket_id -> {
-            if (isPresenterPrepared()) {
-                getPresenter().fireBucketSelected(bucket_id);
-            }
-        }).show(getChildFragmentManager(), "audio_albums_local"));
+        searchView.setOnAdditionalButtonClickListener(() -> LocalAudioAlbumsFragment.newInstance(bucket_id -> callPresenter(p -> p.fireBucketSelected(bucket_id))).show(getChildFragmentManager(), "audio_albums_local"));
 
         RecyclerView uploadRecyclerView = root.findViewById(R.id.uploads_recycler_view);
         uploadRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false));
@@ -95,7 +87,7 @@ public class AudiosLocalFragment extends BaseMvpFragment<AudiosLocalPresenter, I
         mUploadRoot = root.findViewById(R.id.uploads_root);
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(AudiosLocalPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
@@ -104,7 +96,7 @@ public class AudiosLocalFragment extends BaseMvpFragment<AudiosLocalPresenter, I
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(AudiosLocalPresenter::fireScrollToEnd);
             }
         });
 
@@ -122,7 +114,7 @@ public class AudiosLocalFragment extends BaseMvpFragment<AudiosLocalPresenter, I
         Goto.setOnClickListener(v -> {
             Audio curr = MusicUtils.getCurrentAudio();
             if (curr != null) {
-                int index = getPresenter().getAudioPos(curr);
+                int index = callPresenter(p -> p.getAudioPos(curr), -1);
                 if (index >= 0) {
                     recyclerView.scrollToPosition(index);
                 } else
@@ -171,7 +163,7 @@ public class AudiosLocalFragment extends BaseMvpFragment<AudiosLocalPresenter, I
         if (!AppPerms.hasReadStoragePermission(requireActivity())) {
             requestReadPermission.launch();
         } else {
-            getPresenter().firePrepared();
+            callPresenter(AudiosLocalPresenter::firePrepared);
         }
     }
 
@@ -240,33 +232,33 @@ public class AudiosLocalFragment extends BaseMvpFragment<AudiosLocalPresenter, I
 
     @Override
     public void onRemoveClick(Upload upload) {
-        getPresenter().fireRemoveClick(upload);
+        callPresenter(p -> p.fireRemoveClick(upload));
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        getPresenter().fireQuery(query);
+        callPresenter(p -> p.fireQuery(query));
         return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        getPresenter().fireQuery(newText);
+        callPresenter(p -> p.fireQuery(newText));
         return false;
     }
 
     @Override
     public void onClick(int position, Audio audio) {
-        getPresenter().playAudio(requireActivity(), position);
+        callPresenter(p -> p.playAudio(requireActivity(), position));
     }
 
     @Override
     public void onDelete(int position) {
-        getPresenter().fireDelete(position);
+        callPresenter(p -> p.fireDelete(position));
     }
 
     @Override
     public void onUpload(int position, Audio audio) {
-        getPresenter().fireFileForUploadSelected(audio.getUrl());
+        callPresenter(p -> p.fireFileForUploadSelected(audio.getUrl()));
     }
 }

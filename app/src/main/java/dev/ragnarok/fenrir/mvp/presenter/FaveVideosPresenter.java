@@ -40,9 +40,7 @@ public class FaveVideosPresenter extends AccountDependencyPresenter<IFaveVideosV
     }
 
     private void resolveRefreshingView() {
-        if (isGuiReady()) {
-            getView().showRefreshing(netLoadingNow);
-        }
+        callView(v -> v.showRefreshing(netLoadingNow));
     }
 
     @Override
@@ -68,7 +66,7 @@ public class FaveVideosPresenter extends AccountDependencyPresenter<IFaveVideosV
 
     private void onCacheGetError(Throwable t) {
         cacheLoadingNow = false;
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onCachedDataReceived(List<Video> videos) {
@@ -100,7 +98,7 @@ public class FaveVideosPresenter extends AccountDependencyPresenter<IFaveVideosV
     private void onNetDataGetError(Throwable t) {
         netLoadingNow = false;
         resolveRefreshingView();
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onNetDataReceived(int offset, List<Video> videos) {
@@ -150,7 +148,7 @@ public class FaveVideosPresenter extends AccountDependencyPresenter<IFaveVideosV
     }
 
     public void fireVideoClick(Video video) {
-        getView().goToPreview(getAccountId(), video);
+        callView(v -> v.goToPreview(getAccountId(), video));
     }
 
     public void fireVideoDelete(int index, Video video) {

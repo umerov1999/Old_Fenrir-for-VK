@@ -69,7 +69,7 @@ public class GiftsFragment extends BaseMvpFragment<GiftsPresenter, IGiftsView>
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(GiftsPresenter::fireScrollToEnd);
             }
         });
 
@@ -87,7 +87,7 @@ public class GiftsFragment extends BaseMvpFragment<GiftsPresenter, IGiftsView>
 
     @Override
     public void onRefresh() {
-        getPresenter().fireRefresh();
+        callPresenter(GiftsPresenter::fireRefresh);
     }
 
     @Override
@@ -156,6 +156,6 @@ public class GiftsFragment extends BaseMvpFragment<GiftsPresenter, IGiftsView>
 
     @Override
     public void onOpenClick(int index, Gift gift) {
-        getPresenter().fireOpenWall(gift.getFromId());
+        callPresenter(p -> p.fireOpenWall(gift.getFromId()));
     }
 }

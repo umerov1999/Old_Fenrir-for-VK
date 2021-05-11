@@ -166,9 +166,7 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
             Manifest.permission.READ_EXTERNAL_STORAGE
         )
     ) {
-        if (isPresenterPrepared) {
-            presenter?.fireWriteExternalStoragePermissionResolved()
-        }
+        presenter?.fireWriteExternalStoragePermissionResolved()
     }
 
     private val mGoBackAnimationAdapter = WeakGoBackAnimationAdapter(this)
@@ -266,13 +264,13 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
         when (item.itemId) {
             R.id.photo_size -> onPhotoSizeClicked()
             R.id.save_on_drive -> {
-                if (isPresenterPrepared) presenter?.fireSaveOnDriveClick()
+                presenter?.fireSaveOnDriveClick()
                 return true
             }
-            R.id.save_yourself -> if (isPresenterPrepared) presenter?.fireSaveYourselfClick()
-            R.id.action_delete -> if (isPresenterPrepared) presenter?.fireDeleteClick()
-            R.id.info -> if (isPresenterPrepared) presenter?.fireInfoButtonClick()
-            R.id.detect_qr -> if (isPresenterPrepared) presenter?.fireDetectQRClick(requireActivity())
+            R.id.save_yourself -> presenter?.fireSaveYourselfClick()
+            R.id.action_delete -> presenter?.fireDeleteClick()
+            R.id.info -> presenter?.fireInfoButtonClick()
+            R.id.detect_qr -> presenter?.fireDetectQRClick(requireActivity())
         }
         return super.onOptionsItemSelected(item)
     }
@@ -719,7 +717,7 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
             }
             if (Settings.get().other().isDownload_photo_tap) {
                 ret.photo.setOnLongClickListener {
-                    if (isPresenterPrepared) presenter?.fireSaveOnDriveClick()
+                    presenter?.fireSaveOnDriveClick()
                     true
                 }
             }

@@ -41,9 +41,7 @@ public class FaveArticlesPresenter extends AccountDependencyPresenter<IFaveArtic
     }
 
     private void resolveRefreshingView() {
-        if (isGuiReady()) {
-            getView().showRefreshing(netLoadingNow);
-        }
+        callView(v -> v.showRefreshing(netLoadingNow));
     }
 
     @Override
@@ -69,7 +67,7 @@ public class FaveArticlesPresenter extends AccountDependencyPresenter<IFaveArtic
 
     private void onCacheGetError(Throwable t) {
         cacheLoadingNow = false;
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onCachedDataReceived(List<Article> articles) {
@@ -101,7 +99,7 @@ public class FaveArticlesPresenter extends AccountDependencyPresenter<IFaveArtic
     private void onNetDataGetError(Throwable t) {
         netLoadingNow = false;
         resolveRefreshingView();
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onNetDataReceived(int offset, List<Article> articles) {
@@ -160,11 +158,11 @@ public class FaveArticlesPresenter extends AccountDependencyPresenter<IFaveArtic
     }
 
     public void fireArticleClick(String url) {
-        getView().goToArticle(getAccountId(), url);
+        callView(v -> v.goToArticle(getAccountId(), url));
     }
 
     public void firePhotoClick(Photo photo) {
-        getView().goToPhoto(getAccountId(), photo);
+        callView(v -> v.goToPhoto(getAccountId(), photo));
     }
 
     public void fireScrollToEnd() {

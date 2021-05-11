@@ -68,9 +68,9 @@ public class NewsFeedSearchPresenter extends AbsSearchPresenter<INewsFeedSearchV
     @Override
     public void firePostClick(@NonNull Post post) {
         if (post.getPostType() == VKApiPost.Type.REPLY) {
-            getView().openComments(getAccountId(), Commented.from(post), post.getVkid());
+            callView(v -> v.openComments(getAccountId(), Commented.from(post), post.getVkid()));
         } else {
-            getView().openPost(getAccountId(), post);
+            callView(v -> v.openPost(getAccountId(), post));
         }
     }
 
@@ -84,6 +84,6 @@ public class NewsFeedSearchPresenter extends AbsSearchPresenter<INewsFeedSearchV
 
         appendDisposable(walls.like(accountId, post.getOwnerId(), post.getVkid(), !post.isUserLikes())
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(RxUtils.ignore(), t -> showError(getView(), t)));
+                .subscribe(RxUtils.ignore(), t -> callView(v -> showError(v, t))));
     }
 }

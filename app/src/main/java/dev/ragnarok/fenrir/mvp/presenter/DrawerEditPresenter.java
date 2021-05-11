@@ -92,7 +92,7 @@ public class DrawerEditPresenter extends AbsPresenter<IDrawerEditView> {
 
     public void fireSaveClick() {
         save();
-        getView().goBackAndApplyChanges();
+        callView(IDrawerEditView::goBackAndApplyChanges);
     }
 
     public void fireItemMoved(int fromPosition, int toPosition) {

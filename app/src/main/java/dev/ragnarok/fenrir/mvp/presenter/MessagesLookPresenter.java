@@ -16,6 +16,7 @@ import dev.ragnarok.fenrir.domain.IMessagesRepository;
 import dev.ragnarok.fenrir.domain.Repository;
 import dev.ragnarok.fenrir.model.LoadMoreState;
 import dev.ragnarok.fenrir.model.Message;
+import dev.ragnarok.fenrir.mvp.view.IBasicMessageListView;
 import dev.ragnarok.fenrir.mvp.view.IMessagesLookView;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
@@ -40,36 +41,35 @@ public class MessagesLookPresenter extends AbsMessageListPresenter<IMessagesLook
         messagesInteractor = Repository.INSTANCE.getMessages();
         mPeerId = peerId;
         loadingState = new LOADING_STATE((Header, Footer) -> {
-            if (isGuiReady()) {
-                @LoadMoreState int header;
-                @LoadMoreState int footer;
-                switch (Header) {
-                    case Side.LOADING:
-                        header = LoadMoreState.LOADING;
-                        break;
-                    case Side.NO_LOADING:
-                        header = LoadMoreState.CAN_LOAD_MORE;
-                        break;
-                    default:
-                        header = LoadMoreState.INVISIBLE;
-                        break;
-                }
-                switch (Footer) {
-                    case Side.DISABLED:
-                        footer = LoadMoreState.END_OF_LIST;
-                        break;
-                    case Side.LOADING:
-                        footer = LoadMoreState.LOADING;
-                        break;
-                    case Side.NO_LOADING:
-                        footer = LoadMoreState.CAN_LOAD_MORE;
-                        break;
-                    default:
-                        footer = LoadMoreState.INVISIBLE;
-                        break;
-                }
-                getView().setupHeaders(footer, header);
+
+            @LoadMoreState int header;
+            @LoadMoreState int footer;
+            switch (Header) {
+                case Side.LOADING:
+                    header = LoadMoreState.LOADING;
+                    break;
+                case Side.NO_LOADING:
+                    header = LoadMoreState.CAN_LOAD_MORE;
+                    break;
+                default:
+                    header = LoadMoreState.INVISIBLE;
+                    break;
             }
+            switch (Footer) {
+                case Side.DISABLED:
+                    footer = LoadMoreState.END_OF_LIST;
+                    break;
+                case Side.LOADING:
+                    footer = LoadMoreState.LOADING;
+                    break;
+                case Side.NO_LOADING:
+                    footer = LoadMoreState.CAN_LOAD_MORE;
+                    break;
+                default:
+                    footer = LoadMoreState.INVISIBLE;
+                    break;
+            }
+            callView(v -> v.setupHeaders(footer, header));
         });
 
         if (savedInstanceState == null) {
@@ -78,10 +78,8 @@ public class MessagesLookPresenter extends AbsMessageListPresenter<IMessagesLook
                 getData().clear();
                 getData().add(message);
 
-                if (isGuiReady()) {
-                    getView().notifyDataChanged();
-                    getView().focusTo(0);
-                }
+                callView(IBasicMessageListView::notifyDataChanged);
+                callView(v -> v.focusTo(0));
             } else {
                 mFocusMessageId = focusTo;
                 initRequest();
@@ -108,17 +106,17 @@ public class MessagesLookPresenter extends AbsMessageListPresenter<IMessagesLook
         loadingState.FooterDisable();
         loadingState.HeaderDisable();
 
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void onUpDataGetError(Throwable t) {
         loadingState.FooterEnable();
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void onDownDataGetError(Throwable t) {
         loadingState.HeaderEnable();
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     public void fireDeleteForAllClick(ArrayList<Integer> ids) {
@@ -132,7 +130,7 @@ public class MessagesLookPresenter extends AbsMessageListPresenter<IMessagesLook
     private void deleteSentImpl(Collection<Integer> ids, boolean forAll) {
         appendDisposable(messagesInteractor.deleteMessages(getAccountId(), mPeerId, ids, forAll, false)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(RxUtils.dummy(), t -> showError(getView(), t)));
+                .subscribe(RxUtils.dummy(), t -> callView(v -> showError(v, t))));
     }
 
     public void fireFooterLoadMoreClick() {
@@ -176,7 +174,7 @@ public class MessagesLookPresenter extends AbsMessageListPresenter<IMessagesLook
         if (nonEmpty(ids)) {
             appendDisposable(messagesInteractor.deleteMessages(accountId, mPeerId, ids, false, false)
                     .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                    .subscribe(() -> onMessagesDeleteSuccessfully(ids), t -> showError(getView(), getCauseIfRuntime(t))));
+                    .subscribe(() -> onMessagesDeleteSuccessfully(ids), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
         }
     }
 
@@ -194,7 +192,7 @@ public class MessagesLookPresenter extends AbsMessageListPresenter<IMessagesLook
         if (nonEmpty(ids)) {
             appendDisposable(messagesInteractor.deleteMessages(accountId, mPeerId, ids, false, true)
                     .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                    .subscribe(() -> onMessagesDeleteSuccessfully(ids), t -> showError(getView(), getCauseIfRuntime(t))));
+                    .subscribe(() -> onMessagesDeleteSuccessfully(ids), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
         }
     }
 
@@ -230,7 +228,7 @@ public class MessagesLookPresenter extends AbsMessageListPresenter<IMessagesLook
         ArrayList<Message> selected = getSelected(getData());
 
         if (nonEmpty(selected)) {
-            getView().forwardMessages(getAccountId(), selected);
+            callView(v -> v.forwardMessages(getAccountId(), selected));
         }
     }
 
@@ -241,7 +239,7 @@ public class MessagesLookPresenter extends AbsMessageListPresenter<IMessagesLook
 
         appendDisposable(messagesInteractor.restoreMessage(accountId, mPeerId, id)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(() -> onMessageRestoredSuccessfully(id), t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(() -> onMessageRestoredSuccessfully(id), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     private void onMessageRestoredSuccessfully(int id) {
@@ -268,20 +266,14 @@ public class MessagesLookPresenter extends AbsMessageListPresenter<IMessagesLook
     private void onInitDataLoaded(List<Message> messages) {
         getData().clear();
         getData().addAll(messages);
-
-        if (isGuiReady()) {
-            getView().notifyDataChanged();
-        }
+        callView(IBasicMessageListView::notifyDataChanged);
         loadingState.reset();
 
         int index = Utils.indexOf(messages, mFocusMessageId);
-
-        if (isGuiReady()) {
-            if (index != -1) {
-                getView().focusTo(index);
-            } else if (mFocusMessageId == 0) {
-                getView().focusTo(messages.size() - 1);
-            }
+        if (index != -1) {
+            callView(v -> v.focusTo(index));
+        } else if (mFocusMessageId == 0) {
+            callView(v -> v.focusTo(messages.size() - 1));
         }
     }
 
@@ -294,10 +286,7 @@ public class MessagesLookPresenter extends AbsMessageListPresenter<IMessagesLook
         int size = getData().size();
 
         getData().addAll(messages);
-
-        if (isGuiReady()) {
-            getView().notifyMessagesUpAdded(size, messages.size());
-        }
+        callView(v -> v.notifyMessagesUpAdded(size, messages.size()));
     }
 
     private void onDownDataLoaded(List<Message> messages) {
@@ -307,10 +296,7 @@ public class MessagesLookPresenter extends AbsMessageListPresenter<IMessagesLook
             loadingState.HeaderEnable();
         }
         getData().addAll(0, messages);
-
-        if (isGuiReady()) {
-            getView().notifyMessagesDownAdded(messages.size());
-        }
+        callView(v -> v.notifyMessagesDownAdded(messages.size()));
     }
 
     @IntDef({Side.DISABLED, Side.NO_LOADING,

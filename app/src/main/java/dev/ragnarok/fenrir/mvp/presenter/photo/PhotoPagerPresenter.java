@@ -115,15 +115,11 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
     }
 
     private void resolveLoadingView() {
-        if (isGuiReady()) {
-            getView().displayPhotoListLoading(mLoadingNow);
-        }
+        callView(v -> v.displayPhotoListLoading(mLoadingNow));
     }
 
     void refreshPagerView() {
-        if (isGuiReady()) {
-            getView().displayPhotos(mPhotos, mCurrentIndex);
-        }
+        callView(v -> v.displayPhotos(mPhotos, mCurrentIndex));
     }
 
     @NonNull
@@ -142,9 +138,7 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
     }
 
     private void resolveOptionMenu() {
-        if (isViewHostAttached()) {
-            getViewHost().setupOptionMenu(canSaveYourself(), canDelete());
-        }
+        callView(v -> v.setupOptionMenu(canSaveYourself(), canDelete()));
     }
 
     private boolean canDelete() {
@@ -158,7 +152,7 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
     @Override
     public void onGuiCreated(@NonNull IPhotoPagerView viewHost) {
         super.onGuiCreated(viewHost);
-        getView().displayPhotos(mPhotos, mCurrentIndex);
+        callView(v -> v.displayPhotos(mPhotos, mCurrentIndex));
 
         refreshInfoViews(true);
         resolveRestoreButtonVisibility();
@@ -185,38 +179,38 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
     }
 
     private void resolveLikeView() {
-        if (isGuiReady() && hasPhotos()) {
+        if (hasPhotos()) {
             if (read_only) {
-                getView().setupLikeButton(false, false, 0);
+                callView(v -> v.setupLikeButton(false, false, 0));
                 return;
             }
             Photo photo = getCurrent();
-            getView().setupLikeButton(true, photo.isUserLikes(), photo.getLikesCount());
+            callView(v -> v.setupLikeButton(true, photo.isUserLikes(), photo.getLikesCount()));
         }
     }
 
     private void resolveWithUserView() {
-        if (isGuiReady() && hasPhotos()) {
+        if (hasPhotos()) {
             Photo photo = getCurrent();
-            getView().setupWithUserButton(photo.getTagsCount());
+            callView(v -> v.setupWithUserButton(photo.getTagsCount()));
         }
     }
 
     private void resolveShareView() {
-        if (isGuiReady() && hasPhotos()) {
-            getView().setupShareButton(!read_only);
+        if (hasPhotos()) {
+            callView(v -> v.setupShareButton(!read_only));
         }
     }
 
     private void resolveCommentsView() {
-        if (isGuiReady() && hasPhotos()) {
+        if (hasPhotos()) {
             Photo photo = getCurrent();
             if (read_only) {
-                getView().setupCommentsButton(false, 0);
+                callView(v -> v.setupCommentsButton(false, 0));
                 return;
             }
             //boolean visible = photo.isCanComment() || photo.getCommentsCount() > 0;
-            getView().setupCommentsButton(true, photo.getCommentsCount());
+            callView(v -> v.setupCommentsButton(true, photo.getCommentsCount()));
         }
     }
 
@@ -225,11 +219,11 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
     }
 
     void resolveToolbarTitleSubtitleView() {
-        if (!isGuiReady() || !hasPhotos()) return;
+        if (!hasPhotos()) return;
 
-        String title = App.getInstance().getString(R.string.image_number, mCurrentIndex + 1, count());
-        getView().setToolbarTitle(title);
-        getView().setToolbarSubtitle(getCurrent().getText());
+        String title = context.getString(R.string.image_number, mCurrentIndex + 1, count());
+        callView(v -> v.setToolbarTitle(title));
+        callView(v -> v.setToolbarSubtitle(getCurrent().getText()));
     }
 
     @NonNull
@@ -282,12 +276,12 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
 
     public void fireShareButtonClick() {
         Photo current = getCurrent();
-        getView().sharePhoto(getAccountId(), current);
+        callView(v -> v.sharePhoto(getAccountId(), current));
     }
 
     public void firePostToMyWallClick() {
         Photo photo = getCurrent();
-        getView().postToMyWall(photo, getAccountId());
+        callView(v -> v.postToMyWall(photo, getAccountId()));
     }
 
     void refreshInfoViews(boolean need_update) {
@@ -337,7 +331,7 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
 
         appendDisposable(photosInteractor.like(accountId, ownerId, photoId, add, photo.getAccessKey())
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(count -> interceptLike(ownerId, photoId, count, add), t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(count -> interceptLike(ownerId, photoId, count, add), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     private void onDeleteOrRestoreResult(int photoId, int ownerId, boolean deleted) {
@@ -366,7 +360,7 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
 
     public void fireSaveOnDriveClick() {
         if (!AppPerms.hasReadWriteStoragePermission(App.getInstance())) {
-            getView().requestWriteToExternalStoragePermission();
+            callView(IPhotoPagerView::requestWriteToExternalStoragePermission);
             return;
         }
 
@@ -378,7 +372,7 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
         if (!dir.isDirectory()) {
             boolean created = dir.mkdirs();
             if (!created) {
-                safeShowError(getView(), "Can't create directory " + dir);
+                callView(v -> v.showError("Can't create directory " + dir));
                 return;
             }
         } else
@@ -404,7 +398,7 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
             if (!dir_final.isDirectory()) {
                 boolean created = dir_final.mkdirs();
                 if (!created) {
-                    safeShowError(getView(), "Can't create directory " + dir_final);
+                    callView(v -> v.showError("Can't create directory " + dir_final));
                     return;
                 }
             } else
@@ -421,7 +415,7 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
 
         appendDisposable(photosInteractor.copy(accountId, photo.getOwnerId(), photo.getId(), photo.getAccessKey())
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(ignored -> onPhotoCopied(), t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(ignored -> onPhotoCopied(), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     public void fireDetectQRClick(Activity context) {
@@ -458,7 +452,7 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
     }
 
     private void onPhotoCopied() {
-        safeShowLongToast(getView(), R.string.photo_saved_yourself);
+        callView(v -> v.showToast(R.string.photo_saved_yourself, true));
     }
 
     public void fireDeleteClick() {
@@ -476,9 +470,7 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
     }
 
     private void resolveRestoreButtonVisibility() {
-        if (isGuiReady()) {
-            getView().setButtonRestoreVisible(hasPhotos() && getCurrent().isDeleted());
-        }
+        callView(v -> v.setButtonRestoreVisible(hasPhotos() && getCurrent().isDeleted()));
     }
 
     private void restore() {
@@ -499,7 +491,7 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
         }
 
         appendDisposable(completable.compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(() -> onDeleteOrRestoreResult(photoId, ownerId, detele), t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(() -> onDeleteOrRestoreResult(photoId, ownerId, detele), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     private void delete() {
@@ -508,7 +500,7 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
 
     public void fireCommentsButtonClick() {
         Photo photo = getCurrent();
-        getView().goToComments(getAccountId(), Commented.from(photo));
+        callView(v -> v.goToComments(getAccountId(), Commented.from(photo)));
     }
 
     public void fireWithUserClick() {
@@ -533,7 +525,7 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
                                     .setCancelable(true);
                             dlg.setView(Utils.createAlertRecycleFrame(context, adapter, null));
                             dlg.show();
-                        }, throwable -> showError(getView(), throwable)));
+                        }, throwable -> callView(v -> showError(v, throwable))));
     }
 
     private boolean hasPhotos() {
@@ -550,15 +542,11 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
     }
 
     void resolveButtonsBarVisible() {
-        if (isGuiReady()) {
-            getView().setButtonsBarVisible(hasPhotos() && !mFullScreen);
-        }
+        callView(v -> v.setButtonsBarVisible(hasPhotos() && !mFullScreen));
     }
 
     void resolveToolbarVisibility() {
-        if (isGuiReady()) {
-            getView().setToolbarVisible(hasPhotos() && !mFullScreen);
-        }
+        callView(v -> v.setToolbarVisible(hasPhotos() && !mFullScreen));
     }
 
     int getCurrentIndex() {
@@ -573,7 +561,7 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
         if (!hasPhotos()) return;
 
         Photo photo = getCurrent();
-        getView().goToLikesList(getAccountId(), photo.getOwnerId(), photo.getId());
+        callView(v -> v.goToLikesList(getAccountId(), photo.getOwnerId(), photo.getId()));
     }
 
     private static class ButtonAdapter extends RecyclerView.Adapter<ButtonHolder> {

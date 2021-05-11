@@ -36,12 +36,12 @@ public class ConversationVideosFragment extends AbsChatAttachmentsFragment<Video
 
     @Override
     public void onVideoClick(int position, Video video) {
-        getPresenter().fireVideoClick(video);
+        callPresenter(p -> p.fireVideoClick(video));
     }
 
     @Override
     public boolean onVideoLongClick(int position, Video video) {
-        getPresenter().fireGoToMessagesLookup(video.getMsgPeerId(), video.getMsgId());
+        callPresenter(p -> p.fireGoToMessagesLookup(video.getMsgPeerId(), video.getMsgId()));
         return true;
     }
 

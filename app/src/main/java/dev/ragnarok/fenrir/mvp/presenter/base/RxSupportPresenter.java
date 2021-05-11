@@ -14,7 +14,6 @@ import dev.ragnarok.fenrir.db.Stores;
 import dev.ragnarok.fenrir.mvp.core.AbsPresenter;
 import dev.ragnarok.fenrir.mvp.core.IMvpView;
 import dev.ragnarok.fenrir.mvp.view.IErrorView;
-import dev.ragnarok.fenrir.mvp.view.IToastView;
 import dev.ragnarok.fenrir.service.ErrorLocalizer;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.InstancesCounter;
@@ -45,12 +44,6 @@ public abstract class RxSupportPresenter<V extends IMvpView> extends AbsPresente
             tempDataUsage = savedInstanceState.getBoolean(SAVE_TEMP_DATA_USAGE);
         } else {
             instanceId = instancesCounter.incrementAndGet(getClass());
-        }
-    }
-
-    protected static void safeShowError(IErrorView view, String text) {
-        if (nonNull(view)) {
-            view.showError(text);
         }
     }
 
@@ -117,22 +110,6 @@ public abstract class RxSupportPresenter<V extends IMvpView> extends AbsPresente
             view.showThrowable(throwable);
         } else {
             view.showError(ErrorLocalizer.localizeThrowable(getApplicationContext(), throwable));
-        }
-    }
-
-    protected void safeShowError(IErrorView view, @StringRes int text, Object... params) {
-        if (isGuiReady()) {
-            view.showError(text, params);
-        }
-    }
-
-    protected void safeShowLongToast(IToastView view, @StringRes int text, Object... params) {
-        safeShowToast(view, text, true, params);
-    }
-
-    protected void safeShowToast(IToastView view, @StringRes int text, boolean isLong, Object... params) {
-        if (nonNull(view)) {
-            view.showToast(text, isLong, params);
         }
     }
 

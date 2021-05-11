@@ -161,17 +161,15 @@ public class CommentCreatePresenter extends AbsAttachmentsEditPresenter<ICreateC
 
     @OnGuiCreated
     private void resolveButtonsVisibility() {
-        if (isGuiReady()) {
-            getView().setSupportedButtons(true, true, true, true, false, false);
-        }
+        callView(v -> v.setSupportedButtons(true, true, true, true, false, false));
     }
 
     private void returnDataToParent() {
-        getView().returnDataToParent(getTextBody());
+        callView(v -> v.returnDataToParent(getTextBody()));
     }
 
     public void fireReadyClick() {
-        getView().goBack();
+        callView(ICreateCommentView::goBack);
     }
 
     public boolean onBackPressed() {

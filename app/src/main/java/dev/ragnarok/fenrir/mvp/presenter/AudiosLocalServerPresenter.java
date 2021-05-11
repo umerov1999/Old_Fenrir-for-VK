@@ -69,7 +69,7 @@ public class AudiosLocalServerPresenter extends AccountDependencyPresenter<IAudi
 
     private void onActualDataGetError(Throwable t) {
         actualDataLoading = false;
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
 
         resolveRefreshingView();
     }
@@ -106,9 +106,7 @@ public class AudiosLocalServerPresenter extends AccountDependencyPresenter<IAudi
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().displayLoading(actualDataLoading);
-        }
+        callResumedView(v -> v.displayLoading(actualDataLoading));
     }
 
     @Override

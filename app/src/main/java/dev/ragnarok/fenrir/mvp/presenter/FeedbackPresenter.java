@@ -16,10 +16,8 @@ import dev.ragnarok.fenrir.mvp.presenter.base.PlaceSupportPresenter;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.IFeedbackView;
 import dev.ragnarok.fenrir.util.RxUtils;
-import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
-import static dev.ragnarok.fenrir.util.RxUtils.ignore;
 import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
@@ -53,24 +51,22 @@ public class FeedbackPresenter extends PlaceSupportPresenter<IFeedbackView> {
 
     @OnGuiCreated
     private void resolveLoadMoreFooter() {
-        if (!isGuiReady()) return;
-
         if (isEmpty(mData)) {
-            getView().configLoadMore(LoadMoreState.INVISIBLE);
+            callView(v -> v.configLoadMore(LoadMoreState.INVISIBLE));
             return;
         }
 
         if (nonEmpty(mData) && netLoadingNow && nonEmpty(netLoadingStartFrom)) {
-            getView().configLoadMore(LoadMoreState.LOADING);
+            callView(v -> v.configLoadMore(LoadMoreState.LOADING));
             return;
         }
 
         if (canLoadMore()) {
-            getView().configLoadMore(LoadMoreState.CAN_LOAD_MORE);
+            callView(v -> v.configLoadMore(LoadMoreState.CAN_LOAD_MORE));
             return;
         }
 
-        getView().configLoadMore(LoadMoreState.END_OF_LIST);
+        callView(v -> v.configLoadMore(LoadMoreState.END_OF_LIST));
     }
 
     private void requestActualData(String startFrom) {
@@ -95,7 +91,7 @@ public class FeedbackPresenter extends PlaceSupportPresenter<IFeedbackView> {
         netLoadingNow = false;
         netLoadingStartFrom = null;
 
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
 
         resolveLoadMoreFooter();
         resolveSwiperefreshLoadingView();
@@ -126,9 +122,7 @@ public class FeedbackPresenter extends PlaceSupportPresenter<IFeedbackView> {
 
     @OnGuiCreated
     private void resolveSwiperefreshLoadingView() {
-        if (isGuiReady()) {
-            getView().showLoading(netLoadingNow && isEmpty(netLoadingStartFrom));
-        }
+        callView(v -> v.showLoading(netLoadingNow && isEmpty(netLoadingStartFrom)));
     }
 
     private boolean canLoadMore() {
@@ -166,7 +160,7 @@ public class FeedbackPresenter extends PlaceSupportPresenter<IFeedbackView> {
     }
 
     public void fireItemClick(@NonNull Feedback notification) {
-        getView().showLinksDialog(getAccountId(), notification);
+        callView(v -> v.showLinksDialog(getAccountId(), notification));
     }
 
     public void fireLoadMoreClick() {

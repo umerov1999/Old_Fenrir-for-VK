@@ -66,13 +66,13 @@ public class WallLinksAttachmentsFragment extends PlaceSupportMvpFragment<WallLi
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(WallLinksAttachmentsPresenter::fireScrollToEnd);
             }
         });
-        mLoadMore.setOnClickListener(v -> getPresenter().fireScrollToEnd());
+        mLoadMore.setOnClickListener(v -> callPresenter(WallLinksAttachmentsPresenter::fireScrollToEnd));
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(WallLinksAttachmentsPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         mAdapter = new LinksAdapter(Collections.emptyList());
@@ -175,6 +175,6 @@ public class WallLinksAttachmentsFragment extends PlaceSupportMvpFragment<WallLi
 
     @Override
     public void onLinkClick(int index, @NonNull Link link) {
-        getPresenter().fireLinkClick(link);
+        callPresenter(p -> p.fireLinkClick(link));
     }
 }

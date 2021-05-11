@@ -64,13 +64,13 @@ public class LocalVideosFragment extends BaseMvpFragment<LocalVideosPresenter, I
         mySearchView.setOnQueryTextListener(new MySearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                getPresenter().fireSearchRequestChanged(query, false);
+                callPresenter(p -> p.fireSearchRequestChanged(query, false));
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                getPresenter().fireSearchRequestChanged(newText, false);
+                callPresenter(p -> p.fireSearchRequestChanged(newText, false));
                 return false;
             }
         });
@@ -89,14 +89,14 @@ public class LocalVideosFragment extends BaseMvpFragment<LocalVideosPresenter, I
         mEmptyTextView = view.findViewById(R.id.empty);
 
         fabAttach = view.findViewById(R.id.fr_video_gallery_attach);
-        fabAttach.setOnClickListener(v -> getPresenter().fireFabClick());
+        fabAttach.setOnClickListener(v -> callPresenter(LocalVideosPresenter::fireFabClick));
 
         return view;
     }
 
     @Override
     public void onVideoClick(LocalVideosAdapter.ViewHolder holder, LocalVideo video) {
-        getPresenter().fireVideoClick(video);
+        callPresenter(p -> p.fireVideoClick(video));
     }
 
     @Override
@@ -109,7 +109,7 @@ public class LocalVideosFragment extends BaseMvpFragment<LocalVideosPresenter, I
 
     @Override
     public void onRefresh() {
-        getPresenter().fireRefresh();
+        callPresenter(LocalVideosPresenter::fireRefresh);
     }
 
     @Override

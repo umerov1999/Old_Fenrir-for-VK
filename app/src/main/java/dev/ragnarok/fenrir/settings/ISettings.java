@@ -192,8 +192,6 @@ public interface ISettings {
 
         boolean isRunes_show();
 
-        boolean isShow_pagan_symbol();
-
         @NonNull
         String getKateGMSToken();
 

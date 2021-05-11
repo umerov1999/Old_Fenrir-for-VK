@@ -89,7 +89,7 @@ public class RequestsPresenter extends AccountDependencyPresenter<IRequestsView>
     private void onActualDataGetError(Throwable t) {
         actualDataLoadingNow = false;
         resolveRefreshingView();
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     @Override
@@ -99,9 +99,7 @@ public class RequestsPresenter extends AccountDependencyPresenter<IRequestsView>
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().showRefreshing(!isSeacrhNow() && actualDataLoadingNow);
-        }
+        callResumedView(v -> v.showRefreshing(!isSeacrhNow() && actualDataLoadingNow));
     }
 
     @Override
@@ -155,7 +153,7 @@ public class RequestsPresenter extends AccountDependencyPresenter<IRequestsView>
 
     private void onCacheGetError(Throwable t) {
         cacheLoadingNow = false;
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onCachedDataReceived(List<User> users) {
@@ -168,9 +166,7 @@ public class RequestsPresenter extends AccountDependencyPresenter<IRequestsView>
     }
 
     private void safelyNotifyDataSetChanged() {
-        if (isGuiReady()) {
-            getView().notifyDatasetChanged(isSeacrhNow());
-        }
+        callView(v -> v.notifyDatasetChanged(isSeacrhNow()));
     }
 
     private List<User> getAllData() {
@@ -252,7 +248,7 @@ public class RequestsPresenter extends AccountDependencyPresenter<IRequestsView>
 
     private void onSearchError(Throwable t) {
         searchRunNow = false;
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void onSearchDataReceived(int offset, List<User> users, int fullCount) {
@@ -298,9 +294,7 @@ public class RequestsPresenter extends AccountDependencyPresenter<IRequestsView>
 
     @OnGuiCreated
     private void resolveSwipeRefreshAvailability() {
-        if (isGuiReady()) {
-            getView().setSwipeRefreshEnabled(!isSeacrhNow());
-        }
+        callView(v -> v.setSwipeRefreshEnabled(!isSeacrhNow()));
     }
 
     public void fireSearchRequestChanged(String q) {
@@ -345,7 +339,6 @@ public class RequestsPresenter extends AccountDependencyPresenter<IRequestsView>
     }
 
     public void fireUserClick(User user) {
-
-        getView().showUserWall(getAccountId(), user);
+        callView(v -> v.showUserWall(getAccountId(), user));
     }
 }

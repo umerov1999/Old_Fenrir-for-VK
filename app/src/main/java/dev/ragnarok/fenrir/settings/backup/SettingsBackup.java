@@ -125,7 +125,6 @@ public class SettingsBackup {
         settings.add(new SettingCollector("kate_gms_token", SettingTypes.TYPE_STRING));
         settings.add(new SettingCollector("language_ui", SettingTypes.TYPE_STRING));
         settings.add(new SettingCollector("end_list_anim", SettingTypes.TYPE_STRING));
-        settings.add(new SettingCollector("show_pagan_symbol", SettingTypes.TYPE_BOOL));
         settings.add(new SettingCollector("runes_show", SettingTypes.TYPE_BOOL));
         settings.add(new SettingCollector("player_background_json", SettingTypes.TYPE_STRING));
     }

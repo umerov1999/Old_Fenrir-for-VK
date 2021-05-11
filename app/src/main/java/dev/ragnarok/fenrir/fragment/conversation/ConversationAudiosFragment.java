@@ -43,7 +43,7 @@ public class ConversationAudiosFragment extends AbsChatAttachmentsFragment<Audio
 
     @Override
     public void onClick(int position, int catalog, Audio audio) {
-        getPresenter().fireAudioPlayClick(position, audio);
+        callPresenter(p -> p.fireAudioPlayClick(position, audio));
     }
 
     @Override

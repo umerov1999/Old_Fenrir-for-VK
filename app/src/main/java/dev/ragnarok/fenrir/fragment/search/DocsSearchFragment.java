@@ -54,7 +54,7 @@ public class DocsSearchFragment extends AbsSearchFragment<DocsSearchPresenter, I
 
     @Override
     public void onDocClick(int index, @NonNull Document doc) {
-        getPresenter().fireDocClick(doc);
+        callPresenter(p -> p.fireDocClick(doc));
     }
 
     @Override

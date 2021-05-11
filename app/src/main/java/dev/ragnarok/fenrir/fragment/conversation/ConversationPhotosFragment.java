@@ -39,7 +39,7 @@ public class ConversationPhotosFragment extends AbsChatAttachmentsFragment<Photo
 
     @Override
     public void onPhotoClicked(int position, Photo photo) {
-        getPresenter().firePhotoClick(position, photo);
+        callPresenter(p -> p.firePhotoClick(position, photo));
     }
 
     @NonNull
@@ -65,6 +65,6 @@ public class ConversationPhotosFragment extends AbsChatAttachmentsFragment<Photo
 
     @Override
     public void onGoPhotoConversation(@NonNull Photo photo) {
-        getPresenter().fireGoToMessagesLookup(photo.getMsgPeerId(), photo.getMsgId());
+        callPresenter(p -> p.fireGoToMessagesLookup(photo.getMsgPeerId(), photo.getMsgId()));
     }
 }

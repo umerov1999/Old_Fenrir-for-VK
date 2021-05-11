@@ -35,7 +35,6 @@ import dev.ragnarok.fenrir.media.record.AudioRecordException
 import dev.ragnarok.fenrir.media.record.AudioRecordWrapper
 import dev.ragnarok.fenrir.media.record.Recorder
 import dev.ragnarok.fenrir.model.*
-import dev.ragnarok.fenrir.mvp.presenter.base.RxSupportPresenter
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated
 import dev.ragnarok.fenrir.mvp.view.IChatView
 import dev.ragnarok.fenrir.place.PlaceFactory
@@ -690,9 +689,7 @@ class ChatPresenter(
         if (incoming != -1 && outgoing != -1) {
             lastReadId.incoming = incoming
             lastReadId.outgoing = outgoing
-            if (isGuiReady) {
-                view?.notifyDataChanged()
-            }
+            view?.notifyDataChanged()
         }
         if (Settings.get().other().isAuto_read) {
             appendDisposable(
@@ -793,16 +790,14 @@ class ChatPresenter(
         }
         stickersWordsDisplayDisposable.dispose()
         if (isEmpty(s)) {
-            if (isGuiReady) {
-                view?.updateStickers(Collections.emptyList())
-            }
+            view?.updateStickers(Collections.emptyList())
             return
         }
         stickersWordsDisplayDisposable =
             stickersInteractor.getKeywordsStickers(accountId, s!!.trim())
                 .delay(500, TimeUnit.MILLISECONDS)
                 .fromIOToMain()
-                .subscribe({ stickers -> if (isGuiReady) view?.updateStickers(stickers) }, ignore())
+                .subscribe({ stickers -> view?.updateStickers(stickers) }, ignore())
     }
 
     fun fireDraftMessageTextEdited(s: String) {
@@ -920,12 +915,9 @@ class ChatPresenter(
     private fun onMessageSaveError(throwable: Throwable) {
         view?.run {
             when (throwable) {
-                is KeyPairDoesNotExistException -> safeShowError(view, R.string.no_encryption_keys)
-                is UploadNotResolvedException -> safeShowError(
-                    view,
-                    R.string.upload_not_resolved_exception_message
-                )
-                else -> RxSupportPresenter.safeShowError(view, throwable.message)
+                is KeyPairDoesNotExistException -> showError(R.string.no_encryption_keys)
+                is UploadNotResolvedException -> showError(R.string.upload_not_resolved_exception_message)
+                else -> showError(throwable.message)
             }
         }
     }
@@ -1389,7 +1381,7 @@ class ChatPresenter(
     }
 
     private fun checkLongpoll() {
-        if (isGuiResumed && accountId != ISettings.IAccountsSettings.INVALID_ID) {
+        if (accountId != ISettings.IAccountsSettings.INVALID_ID) {
             longpollManager.keepAlive(accountId)
         }
     }
@@ -2460,7 +2452,7 @@ class ChatPresenter(
                 view?.startCamera(this)
             }
         } catch (e: IOException) {
-            safeShowError(view, e.message)
+            view?.showError(e.message)
         }
     }
 

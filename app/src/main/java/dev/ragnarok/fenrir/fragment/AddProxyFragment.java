@@ -46,7 +46,7 @@ public class AddProxyFragment extends BaseMvpFragment<AddProxyPresenter, IAddPro
         mAddress.addTextChangedListener(new TextWatcherAdapter() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                getPresenter().fireAddressEdit(s);
+                callPresenter(p -> p.fireAddressEdit(s));
             }
         });
 
@@ -54,18 +54,18 @@ public class AddProxyFragment extends BaseMvpFragment<AddProxyPresenter, IAddPro
         mPort.addTextChangedListener(new TextWatcherAdapter() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                getPresenter().firePortEdit(s);
+                callPresenter(p -> p.firePortEdit(s));
             }
         });
 
         mAuth = root.findViewById(R.id.authorization);
-        mAuth.setOnCheckedChangeListener((buttonView, isChecked) -> getPresenter().fireAuthChecked(isChecked));
+        mAuth.setOnCheckedChangeListener((buttonView, isChecked) -> callPresenter(p -> p.fireAuthChecked(isChecked)));
 
         TextInputEditText mUsername = root.findViewById(R.id.username);
         mUsername.addTextChangedListener(new TextWatcherAdapter() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                getPresenter().fireUsernameEdit(s);
+                callPresenter(p -> p.fireUsernameEdit(s));
             }
         });
 
@@ -73,11 +73,11 @@ public class AddProxyFragment extends BaseMvpFragment<AddProxyPresenter, IAddPro
         mPassword.addTextChangedListener(new TextWatcherAdapter() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                getPresenter().firePassEdit(s);
+                callPresenter(p -> p.firePassEdit(s));
             }
         });
 
-        root.findViewById(R.id.button_save).setOnClickListener(v -> getPresenter().fireSaveClick());
+        root.findViewById(R.id.button_save).setOnClickListener(v -> callPresenter(AddProxyPresenter::fireSaveClick));
         return root;
     }
 

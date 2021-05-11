@@ -111,21 +111,21 @@ public class CreatePinFragment extends BaseMvpFragment<CreatePinPresenter, ICrea
 
     @Override
     public void onButtonClick(int number) {
-        if (isPresenterPrepared()) getPresenter().fireDigitClick(number);
+        callPresenter(p -> p.fireDigitClick(number));
     }
 
     @Override
     public void onBackspaceClick() {
-        if (isPresenterPrepared()) getPresenter().fireBackspaceClick();
+        callPresenter(CreatePinPresenter::fireBackspaceClick);
     }
 
     @Override
     public void onFingerPrintClick() {
-        if (isPresenterPrepared()) getPresenter().fireFingerPrintClick();
+        callPresenter(CreatePinPresenter::fireFingerPrintClick);
     }
 
     @Override
     public boolean onBackPressed() {
-        return isPresenterPrepared() && getPresenter().fireBackButtonClick();
+        return callPresenter(CreatePinPresenter::fireBackButtonClick, false);
     }
 }

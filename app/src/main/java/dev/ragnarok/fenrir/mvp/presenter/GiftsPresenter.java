@@ -42,9 +42,7 @@ public class GiftsPresenter extends AccountDependencyPresenter<IGiftsView> {
 
     @OnGuiCreated
     private void resolveRefreshingView() {
-        if (isGuiReady()) {
-            getView().showRefreshing(netLoadingNow);
-        }
+        callView(v -> v.showRefreshing(netLoadingNow));
     }
 
     @Override
@@ -67,7 +65,7 @@ public class GiftsPresenter extends AccountDependencyPresenter<IGiftsView> {
     private void onNetDataGetError(Throwable t) {
         netLoadingNow = false;
         resolveRefreshingView();
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onNetDataReceived(int offset, List<Gift> gifts) {
@@ -121,6 +119,6 @@ public class GiftsPresenter extends AccountDependencyPresenter<IGiftsView> {
     }
 
     public void fireOpenWall(int ownerId) {
-        getView().onOpenWall(getAccountId(), ownerId);
+        callView(v -> v.onOpenWall(getAccountId(), ownerId));
     }
 }

@@ -68,7 +68,7 @@ public class ImportantMessagesPresenter extends AbsMessageListPresenter<IImporta
 
     private void onActualDataGetError(Throwable t) {
         actualDataLoading = false;
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
 
         resolveRefreshingView();
     }
@@ -79,7 +79,7 @@ public class ImportantMessagesPresenter extends AbsMessageListPresenter<IImporta
         ArrayList<Message> selected = getSelected(getData());
 
         if (nonEmpty(selected)) {
-            getView().forwardMessages(getAccountId(), selected);
+            callView(v -> v.forwardMessages(getAccountId(), selected));
         }
     }
 
@@ -90,9 +90,7 @@ public class ImportantMessagesPresenter extends AbsMessageListPresenter<IImporta
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().showRefreshing(actualDataLoading);
-        }
+        callResumedView(v -> v.showRefreshing(actualDataLoading));
     }
 
     public boolean fireScrollToEnd() {
@@ -123,7 +121,7 @@ public class ImportantMessagesPresenter extends AbsMessageListPresenter<IImporta
     }
 
     public void fireMessagesLookup(@NonNull Message message) {
-        getView().goToMessagesLookup(getAccountId(), message.getPeerId(), message.getId());
+        callView(v -> v.goToMessagesLookup(getAccountId(), message.getPeerId(), message.getId()));
     }
 
     public void fireTranscript(String voiceMessageId, int messageId) {

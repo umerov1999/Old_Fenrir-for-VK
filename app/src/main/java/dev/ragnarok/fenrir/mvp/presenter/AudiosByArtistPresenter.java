@@ -61,9 +61,7 @@ public class AudiosByArtistPresenter extends AccountDependencyPresenter<IAudiosB
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().displayRefreshing(loadingNow);
-        }
+        callResumedView(v -> v.displayRefreshing(loadingNow));
     }
 
     private void requestNext() {
@@ -110,10 +108,7 @@ public class AudiosByArtistPresenter extends AccountDependencyPresenter<IAudiosB
 
     private void onListGetError(Throwable t) {
         setLoadingNow(false);
-
-        if (isGuiResumed()) {
-            showError(getView(), getCauseIfRuntime(t));
-        }
+        callResumedView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     public void fireSelectAll() {
@@ -173,8 +168,8 @@ public class AudiosByArtistPresenter extends AccountDependencyPresenter<IAudiosB
         int accountId = getAccountId();
         audioListDisposable.add(audioInteractor.followPlaylist(accountId, album.getId(), album.getOwnerId(), album.getAccess_key())
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(data -> getView().getCustomToast().showToast(R.string.success), throwable ->
-                        showError(getView(), throwable)));
+                .subscribe(data -> callView(v -> v.getCustomToast().showToast(R.string.success)), throwable ->
+                        callView(v -> showError(v, throwable))));
     }
 
     public void fireScrollToEnd() {

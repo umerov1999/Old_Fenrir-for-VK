@@ -55,9 +55,6 @@ public class ChatUsersDomainPresenter extends AccountDependencyPresenter<IChatUs
         }
         for (AppChatUser i : original) {
             Owner user = i.getMember();
-            if (i == null) {
-                continue;
-            }
             if (user.getFullName().toLowerCase().contains(query.toLowerCase()) || user.getDomain().toLowerCase().contains(query.toLowerCase())) {
                 users.add(i);
             }
@@ -82,9 +79,7 @@ public class ChatUsersDomainPresenter extends AccountDependencyPresenter<IChatUs
     }
 
     private void resolveRefreshing() {
-        if (isGuiResumed()) {
-            getView().displayRefreshing(refreshing);
-        }
+        callView(v -> v.displayRefreshing(refreshing));
     }
 
     @Override
@@ -109,7 +104,7 @@ public class ChatUsersDomainPresenter extends AccountDependencyPresenter<IChatUs
 
     private void onDataGetError(Throwable t) {
         setRefreshing(false);
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onDataReceived(List<AppChatUser> users) {
@@ -127,10 +122,10 @@ public class ChatUsersDomainPresenter extends AccountDependencyPresenter<IChatUs
     }
 
     public void fireUserClick(AppChatUser user) {
-        getView().addDomain(getAccountId(), user.getMember());
+        callView(v -> v.addDomain(getAccountId(), user.getMember()));
     }
 
     public void fireUserLongClick(AppChatUser user) {
-        getView().openUserWall(getAccountId(), user.getMember());
+        callView(v -> v.openUserWall(getAccountId(), user.getMember()));
     }
 }

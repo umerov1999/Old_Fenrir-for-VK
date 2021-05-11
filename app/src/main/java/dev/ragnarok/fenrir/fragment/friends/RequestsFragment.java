@@ -57,7 +57,7 @@ public class RequestsFragment extends BaseMvpFragment<RequestsPresenter, IReques
         View root = inflater.inflate(R.layout.fragment_friends, container, false);
         RecyclerView mRecyclerView = root.findViewById(R.id.list);
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(RequestsPresenter::fireRefresh));
 
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
@@ -67,7 +67,7 @@ public class RequestsFragment extends BaseMvpFragment<RequestsPresenter, IReques
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(RequestsPresenter::fireScrollToEnd);
             }
         });
 
@@ -77,13 +77,13 @@ public class RequestsFragment extends BaseMvpFragment<RequestsPresenter, IReques
         mySearchView.setOnQueryTextListener(new MySearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                getPresenter().fireSearchRequestChanged(query);
+                callPresenter(p -> p.fireSearchRequestChanged(query));
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                getPresenter().fireSearchRequestChanged(newText);
+                callPresenter(p -> p.fireSearchRequestChanged(newText));
                 return false;
             }
         });
@@ -149,6 +149,6 @@ public class RequestsFragment extends BaseMvpFragment<RequestsPresenter, IReques
 
     @Override
     public void onUserClick(User user) {
-        getPresenter().fireUserClick(user);
+        callPresenter(p -> p.fireUserClick(user));
     }
 }

@@ -64,7 +64,7 @@ public class AudioInteractor implements IAudioInteractor {
     public Completable add(int accountId, Audio orig, Integer groupId) {
         return networker.vkDefault(accountId)
                 .audio()
-                .add(orig.getId(), orig.getOwnerId(), groupId)
+                .add(orig.getId(), orig.getOwnerId(), groupId, orig.getAccessKey())
                 .ignoreElement();
     }
 

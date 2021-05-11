@@ -57,9 +57,7 @@ public class CommunityLinksPresenter extends AccountDependencyPresenter<ICommuni
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().displayRefreshing(loadingNow);
-        }
+        callResumedView(v -> v.displayRefreshing(loadingNow));
     }
 
     private void requestLinks() {
@@ -83,7 +81,7 @@ public class CommunityLinksPresenter extends AccountDependencyPresenter<ICommuni
 
     private void onRequestError(Throwable throwable) {
         setLoadingNow(false);
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
     }
 
     private void onLinksReceived(List<VKApiCommunity.Link> links) {
@@ -100,7 +98,7 @@ public class CommunityLinksPresenter extends AccountDependencyPresenter<ICommuni
     }
 
     public void fireLinkClick(VKApiCommunity.Link link) {
-        getView().openLink(link.url);
+        callView(v -> v.openLink(link.url));
     }
 
     public void fireLinkEditClick(VKApiCommunity.Link link) {

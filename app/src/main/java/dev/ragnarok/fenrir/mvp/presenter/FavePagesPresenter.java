@@ -95,7 +95,7 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
 
     private void onActualDataGetError(Throwable t) {
         actualDataLoading = false;
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
 
         resolveRefreshingView();
     }
@@ -134,9 +134,7 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().showRefreshing(actualDataLoading);
-        }
+        callResumedView(v -> v.showRefreshing(actualDataLoading));
     }
 
     private void loadAllCachedData() {
@@ -149,7 +147,7 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
     }
 
     private void onCachedGetError(Throwable t) {
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void onCachedDataReceived(List<FavePage> data) {
@@ -191,7 +189,7 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
     }
 
     public void fireOwnerClick(Owner owner) {
-        getView().openOwnerWall(getAccountId(), owner);
+        callView(v -> v.openOwnerWall(getAccountId(), owner));
     }
 
     private void onUserRemoved(int accountId, int ownerId) {
@@ -211,7 +209,7 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
         int accountId = getAccountId();
         appendDisposable(faveInteractor.removePage(accountId, owner.getOwnerId(), isUser)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(() -> onUserRemoved(accountId, owner.getOwnerId()), t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(() -> onUserRemoved(accountId, owner.getOwnerId()), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     private class FindPage extends FindAtWithContent<FavePage> {

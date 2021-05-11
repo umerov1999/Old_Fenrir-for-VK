@@ -103,7 +103,7 @@ public class VKPhotoAlbumsFragment extends BaseMvpFragment<PhotoAlbumsPresenter,
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(PhotoAlbumsPresenter::fireScrollToEnd);
             }
         });
 
@@ -113,7 +113,7 @@ public class VKPhotoAlbumsFragment extends BaseMvpFragment<PhotoAlbumsPresenter,
         recyclerView.setAdapter(mAdapter);
 
         mFab = view.findViewById(R.id.fab);
-        mFab.setOnClickListener(v -> getPresenter().fireCreateAlbumClick());
+        mFab.setOnClickListener(v -> callPresenter(PhotoAlbumsPresenter::fireCreateAlbumClick));
         return view;
     }
 
@@ -140,14 +140,14 @@ public class VKPhotoAlbumsFragment extends BaseMvpFragment<PhotoAlbumsPresenter,
         new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(R.string.remove_confirm)
                 .setMessage(R.string.album_remove_confirm_message)
-                .setPositiveButton(R.string.button_yes, (dialog, which) -> getPresenter().fireAlbumDeletingConfirmed(album))
+                .setPositiveButton(R.string.button_yes, (dialog, which) -> callPresenter(p -> p.fireAlbumDeletingConfirmed(album)))
                 .setNegativeButton(R.string.button_cancel, null)
                 .show();
     }
 
     @Override
     public void onRefresh() {
-        getPresenter().fireRefresh();
+        callPresenter(PhotoAlbumsPresenter::fireRefresh);
     }
 
     @Override
@@ -203,10 +203,10 @@ public class VKPhotoAlbumsFragment extends BaseMvpFragment<PhotoAlbumsPresenter,
                 .setItems(items, (dialog, which) -> {
                     switch (which) {
                         case 0:
-                            getPresenter().fireAlbumDeleteClick(album);
+                            callPresenter(p -> p.fireAlbumDeleteClick(album));
                             break;
                         case 1:
-                            getPresenter().fireAlbumEditClick(album);
+                            callPresenter(p -> p.fireAlbumEditClick(album));
                             break;
                     }
                 })
@@ -298,7 +298,7 @@ public class VKPhotoAlbumsFragment extends BaseMvpFragment<PhotoAlbumsPresenter,
             if (!CheckDonate.isFullVersion(requireActivity())) {
                 return false;
             }
-            getPresenter().fireAllComments();
+            callPresenter(PhotoAlbumsPresenter::fireAllComments);
             return true;
         }
 
@@ -330,11 +330,11 @@ public class VKPhotoAlbumsFragment extends BaseMvpFragment<PhotoAlbumsPresenter,
 
     @Override
     public void onVkPhotoAlbumClick(@NonNull PhotoAlbum album) {
-        getPresenter().fireAlbumClick(album);
+        callPresenter(p -> p.fireAlbumClick(album));
     }
 
     @Override
     public boolean onVkPhotoAlbumLongClick(@NonNull PhotoAlbum album) {
-        return getPresenter().fireAlbumLongClick(album);
+        return callPresenter(p -> p.fireAlbumLongClick(album), false);
     }
 }

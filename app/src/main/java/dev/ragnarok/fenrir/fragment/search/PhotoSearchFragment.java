@@ -75,6 +75,6 @@ public class PhotoSearchFragment extends AbsSearchFragment<PhotoSearchPresenter,
 
     @Override
     public void onPhotoClick(SearchPhotosAdapter.PhotoViewHolder holder, Photo photo) {
-        getPresenter().firePhotoClick(photo);
+        callPresenter(p -> p.firePhotoClick(photo));
     }
 }

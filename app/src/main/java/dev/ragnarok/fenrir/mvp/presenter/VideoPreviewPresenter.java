@@ -74,14 +74,13 @@ public class VideoPreviewPresenter extends AccountDependencyPresenter<IVideoPrev
     }
 
     private void onVideoAddedToBookmarks() {
-        if (isGuiReady())
-            getView().showSuccessToast();
+        callView(IVideoPreviewView::showSuccessToast);
     }
 
     public void fireAddFaveVideo() {
         appendDisposable(faveInteractor.addVideo(getAccountId(), video.getOwnerId(), video.getId(), video.getAccessKey())
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(this::onVideoAddedToBookmarks, t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(this::onVideoAddedToBookmarks, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     public void fireEditVideo(Context context) {
@@ -95,14 +94,14 @@ public class VideoPreviewPresenter extends AccountDependencyPresenter<IVideoPrev
                 .setPositiveButton(R.string.button_ok, (dialog, which) -> appendDisposable(interactor.edit(getAccountId(), video.getOwnerId(), video.getId(),
                         ((TextInputEditText) root.findViewById(R.id.edit_title)).getText().toString(),
                         ((TextInputEditText) root.findViewById(R.id.edit_description)).getText().toString()).compose(RxUtils.applyCompletableIOToMainSchedulers())
-                        .subscribe(this::refreshVideoInfo, t -> showError(getView(), getCauseIfRuntime(t)))))
+                        .subscribe(this::refreshVideoInfo, t -> callView(v -> showError(v, getCauseIfRuntime(t))))))
                 .setNegativeButton(R.string.button_cancel, null);
         builder.create().show();
     }
 
     @OnGuiCreated
     private void resolveSubtitle() {
-        if (isGuiReady()) getView().showSubtitle(nonNull(video) ? video.getTitle() : null);
+        callView(v -> v.showSubtitle(nonNull(video) ? video.getTitle() : null));
     }
 
     @Override
@@ -126,7 +125,7 @@ public class VideoPreviewPresenter extends AccountDependencyPresenter<IVideoPrev
         if (isNull(owner)) {
             appendDisposable(ownerInteractor.getBaseOwnerInfo(getAccountId(), ownerId, IOwnersRepository.MODE_ANY)
                     .compose(RxUtils.applySingleIOToMainSchedulers())
-                    .subscribe(this::onOwnerReceived, e -> showError(getView(), e)));
+                    .subscribe(this::onOwnerReceived, e -> callView(v -> showError(v, e))));
         } else {
             callView(v -> v.displayOwner(owner));
         }
@@ -145,7 +144,7 @@ public class VideoPreviewPresenter extends AccountDependencyPresenter<IVideoPrev
 
     private void onVideoInfoGetError(Throwable throwable) {
         setRefreshingNow(false);
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
 
         if (isNull(video)) {
             callView(IVideoPreviewView::displayLoadingError);
@@ -195,7 +194,7 @@ public class VideoPreviewPresenter extends AccountDependencyPresenter<IVideoPrev
     }
 
     private void onAddError(Throwable throwable) {
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
     }
 
     public void fireAddToMyClick() {
@@ -223,19 +222,19 @@ public class VideoPreviewPresenter extends AccountDependencyPresenter<IVideoPrev
     }
 
     public void fireOwnerClick(int ownerId) {
-        getView().showOwnerWall(getAccountId(), ownerId);
+        callView(v -> v.showOwnerWall(getAccountId(), ownerId));
     }
 
     public void fireShareClick() {
         AssertUtils.requireNonNull(video);
 
-        getView().displayShareDialog(getAccountId(), video, !isMy());
+        callView(v -> v.displayShareDialog(getAccountId(), video, !isMy()));
     }
 
     public void fireCommentsClick() {
         Commented commented = Commented.from(video);
 
-        getView().showComments(getAccountId(), commented);
+        callView(v -> v.showComments(getAccountId(), commented));
     }
 
     private void onLikesResponse(int count, boolean userLikes) {
@@ -246,7 +245,7 @@ public class VideoPreviewPresenter extends AccountDependencyPresenter<IVideoPrev
     }
 
     private void onLikeError(Throwable throwable) {
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
     }
 
     public void fireLikeClick() {
@@ -264,15 +263,15 @@ public class VideoPreviewPresenter extends AccountDependencyPresenter<IVideoPrev
     public void fireLikeLongClick() {
         AssertUtils.requireNonNull(video);
 
-        getView().goToLikes(getAccountId(), "video", video.getOwnerId(), video.getId());
+        callView(v -> v.goToLikes(getAccountId(), "video", video.getOwnerId(), video.getId()));
     }
 
     public void firePlayClick() {
-        getView().showVideoPlayMenu(getAccountId(), video);
+        callView(v -> v.showVideoPlayMenu(getAccountId(), video));
     }
 
     public void fireAutoPlayClick() {
-        getView().doAutoPlayVideo(getAccountId(), video);
+        callView(v -> v.doAutoPlayVideo(getAccountId(), video));
     }
 
     public void fireTryAgainClick() {

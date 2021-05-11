@@ -78,7 +78,7 @@ public class CreatePollFragment extends BaseMvpFragment<CreatePollPresenter, ICr
             editText.addTextChangedListener(new TextWatcherAdapter() {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    getPresenter().fireOptionEdited(position, s);
+                    callPresenter(p -> p.fireOptionEdited(position, s));
                 }
 
                 @Override
@@ -98,12 +98,12 @@ public class CreatePollFragment extends BaseMvpFragment<CreatePollPresenter, ICr
         mQuestion.addTextChangedListener(new TextWatcherAdapter() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                getPresenter().fireQuestionEdited(s);
+                callPresenter(p -> p.fireQuestionEdited(s));
             }
         });
 
-        mAnonymous.setOnCheckedChangeListener((ignored, isChecked) -> getPresenter().fireAnonyamousChecked(isChecked));
-        mMultiply.setOnCheckedChangeListener((ignored, isChecked) -> getPresenter().fireMultiplyChecked(isChecked));
+        mAnonymous.setOnCheckedChangeListener((ignored, isChecked) -> callPresenter(p -> p.fireAnonyamousChecked(isChecked)));
+        mMultiply.setOnCheckedChangeListener((ignored, isChecked) -> callPresenter(p -> p.fireMultiplyChecked(isChecked)));
         return root;
     }
 
@@ -181,7 +181,7 @@ public class CreatePollFragment extends BaseMvpFragment<CreatePollPresenter, ICr
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.add_menu) {
-            getPresenter().fireDoneClick();
+            callPresenter(CreatePollPresenter::fireDoneClick);
             return true;
         }
         return super.onOptionsItemSelected(item);

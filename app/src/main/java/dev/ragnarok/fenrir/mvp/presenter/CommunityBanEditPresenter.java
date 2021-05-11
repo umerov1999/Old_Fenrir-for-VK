@@ -20,6 +20,7 @@ import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.ICommunityBanEditView;
+import dev.ragnarok.fenrir.mvp.view.IProgressView;
 import dev.ragnarok.fenrir.util.Logger;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
@@ -78,90 +79,81 @@ public class CommunityBanEditPresenter extends AccountDependencyPresenter<ICommu
 
     @OnGuiCreated
     private void resolveCommentViews() {
-        if (isGuiReady()) {
-            getView().diplayComment(comment);
-            getView().setShowCommentChecked(showCommentToUser);
-        }
+        callView(v -> v.diplayComment(comment));
+        callView(v -> v.setShowCommentChecked(showCommentToUser));
     }
 
     @OnGuiCreated
     private void resolveBanStatusView() {
-        if (isGuiReady()) {
-            if (nonNull(banned)) {
-                getView().displayBanStatus(banned.getAdmin().getId(), banned.getAdmin().getFullName(), banned.getInfo().getEndDate());
-            }
+        if (nonNull(banned)) {
+            callView(v -> v.displayBanStatus(banned.getAdmin().getId(), banned.getAdmin().getFullName(), banned.getInfo().getEndDate()));
         }
     }
 
     @OnGuiCreated
     private void resolveUserInfoViews() {
-        if (isGuiReady()) {
-            getView().displayUserInfo(currentBanned());
-        }
+        callView(v -> v.displayUserInfo(currentBanned()));
     }
 
     @OnGuiCreated
     private void resolveBlockForView() {
-        if (isGuiReady()) {
-            String blockForText;
 
-            switch (blockFor.type) {
-                case BlockFor.FOREVER:
-                    blockForText = getString(R.string.block_for_forever);
-                    break;
+        String blockForText;
 
-                case BlockFor.YEAR:
-                    blockForText = getString(R.string.block_for_year);
-                    break;
+        switch (blockFor.type) {
+            case BlockFor.FOREVER:
+                blockForText = getString(R.string.block_for_forever);
+                break;
 
-                case BlockFor.MONTH:
-                    blockForText = getString(R.string.block_for_month);
-                    break;
+            case BlockFor.YEAR:
+                blockForText = getString(R.string.block_for_year);
+                break;
 
-                case BlockFor.WEEK:
-                    blockForText = getString(R.string.block_for_week);
-                    break;
+            case BlockFor.MONTH:
+                blockForText = getString(R.string.block_for_month);
+                break;
 
-                case BlockFor.DAY:
-                    blockForText = getString(R.string.block_for_day);
-                    break;
+            case BlockFor.WEEK:
+                blockForText = getString(R.string.block_for_week);
+                break;
 
-                case BlockFor.HOUR:
-                    blockForText = getString(R.string.block_for_hour);
-                    break;
+            case BlockFor.DAY:
+                blockForText = getString(R.string.block_for_day);
+                break;
 
-                case BlockFor.CUSTOM:
-                    blockForText = formatBlockFor();
-                    break;
+            case BlockFor.HOUR:
+                blockForText = getString(R.string.block_for_hour);
+                break;
 
-                default:
-                    throw new IllegalStateException();
-            }
+            case BlockFor.CUSTOM:
+                blockForText = formatBlockFor();
+                break;
 
-            getView().displayBlockFor(blockForText);
+            default:
+                throw new IllegalStateException();
         }
+
+        callView(v -> v.displayBlockFor(blockForText));
     }
 
     @OnGuiCreated
     private void resolveResonView() {
-        if (isGuiReady()) {
-            switch (reason) {
-                case BlockReason.SPAM:
-                    getView().displayReason(getString(R.string.reason_spam));
-                    break;
-                case BlockReason.IRRELEVANT_MESSAGES:
-                    getView().displayReason(getString(R.string.reason_irrelevant_messages));
-                    break;
-                case BlockReason.STRONG_LANGUAGE:
-                    getView().displayReason(getString(R.string.reason_strong_language));
-                    break;
-                case BlockReason.VERBAL_ABUSE:
-                    getView().displayReason(getString(R.string.reason_verbal_abuse));
-                    break;
-                default:
-                    getView().displayReason(getString(R.string.reason_other));
-                    break;
-            }
+        switch (reason) {
+            case BlockReason.SPAM:
+                callView(v -> v.displayReason(getString(R.string.reason_spam)));
+                break;
+            case BlockReason.IRRELEVANT_MESSAGES:
+                callView(v -> v.displayReason(getString(R.string.reason_irrelevant_messages)));
+                break;
+            case BlockReason.STRONG_LANGUAGE:
+                callView(v -> v.displayReason(getString(R.string.reason_strong_language)));
+                break;
+            case BlockReason.VERBAL_ABUSE:
+                callView(v -> v.displayReason(getString(R.string.reason_verbal_abuse)));
+                break;
+            default:
+                callView(v -> v.displayReason(getString(R.string.reason_other)));
+                break;
         }
     }
 
@@ -172,12 +164,10 @@ public class CommunityBanEditPresenter extends AccountDependencyPresenter<ICommu
 
     @OnGuiCreated
     private void resolveProgressView() {
-        if (isGuiReady()) {
-            if (requestNow) {
-                getView().displayProgressDialog(R.string.please_wait, R.string.saving, false);
-            } else {
-                getView().dismissProgressDialog();
-            }
+        if (requestNow) {
+            callView(v -> v.displayProgressDialog(R.string.please_wait, R.string.saving, false));
+        } else {
+            callView(IProgressView::dismissProgressDialog);
         }
     }
 
@@ -197,7 +187,7 @@ public class CommunityBanEditPresenter extends AccountDependencyPresenter<ICommu
 
     private void onAddBanComplete() {
         setRequestNow(false);
-        safeShowToast(getView(), R.string.success, false);
+        callView(v -> v.showToast(R.string.success, false));
 
         if (index == users.size() - 1) {
             callView(ICommunityBanEditView::goBack);
@@ -212,7 +202,7 @@ public class CommunityBanEditPresenter extends AccountDependencyPresenter<ICommu
     private void onAddBanError(Throwable throwable) {
         setRequestNow(false);
         throwable.printStackTrace();
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
     }
 
     public void fireShowCommentCheck(boolean isChecked) {
@@ -236,7 +226,7 @@ public class CommunityBanEditPresenter extends AccountDependencyPresenter<ICommu
         options.add(new IdOption(BlockFor.DAY, getString(R.string.block_for_day)));
         options.add(new IdOption(BlockFor.HOUR, getString(R.string.block_for_hour)));
 
-        getView().displaySelectOptionDialog(REQUEST_CODE_BLOCK_FOR, options);
+        callView(v -> v.displaySelectOptionDialog(REQUEST_CODE_BLOCK_FOR, options));
     }
 
     public void fireOptionSelected(int requestCode, IdOption idOption) {
@@ -276,11 +266,11 @@ public class CommunityBanEditPresenter extends AccountDependencyPresenter<ICommu
         options.add(new IdOption(BlockReason.VERBAL_ABUSE, getString(R.string.reason_verbal_abuse)));
         options.add(new IdOption(BlockReason.OTHER, getString(R.string.reason_other)));
 
-        getView().displaySelectOptionDialog(REQUEST_CODE_REASON, options);
+        callView(v -> v.displaySelectOptionDialog(REQUEST_CODE_REASON, options));
     }
 
     public void fireAvatarClick() {
-        getView().openProfile(getAccountId(), currentBanned());
+        callView(v -> v.openProfile(getAccountId(), currentBanned()));
     }
 
     private static final class BlockFor {

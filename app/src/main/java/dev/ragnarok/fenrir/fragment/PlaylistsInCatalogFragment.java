@@ -31,6 +31,7 @@ import dev.ragnarok.fenrir.listener.PicassoPauseOnScrollListener;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.PlaylistsInCatalogPresenter;
+import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IPlaylistsInCatalogView;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
@@ -79,7 +80,7 @@ public class PlaylistsInCatalogFragment extends BaseMvpFragment<PlaylistsInCatal
         }
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(PlaylistsInCatalogPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
@@ -89,7 +90,7 @@ public class PlaylistsInCatalogFragment extends BaseMvpFragment<PlaylistsInCatal
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(PlaylistsInCatalogPresenter::fireScrollToEnd);
             }
         });
         mAdapter = new AudioPlaylistsAdapter(Collections.emptyList(), requireActivity(), false);
@@ -156,17 +157,17 @@ public class PlaylistsInCatalogFragment extends BaseMvpFragment<PlaylistsInCatal
     @Override
     public void onAlbumClick(int index, AudioPlaylist album) {
         if (Utils.isEmpty(album.getOriginal_access_key()) || album.getOriginal_id() == 0 || album.getOriginal_owner_id() == 0)
-            PlaceFactory.getAudiosInAlbumPlace(getPresenter().getAccountId(), album.getOwnerId(), album.getId(), album.getAccess_key()).tryOpenWith(requireActivity());
+            PlaceFactory.getAudiosInAlbumPlace(callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent()), album.getOwnerId(), album.getId(), album.getAccess_key()).tryOpenWith(requireActivity());
         else
-            PlaceFactory.getAudiosInAlbumPlace(getPresenter().getAccountId(), album.getOriginal_owner_id(), album.getOriginal_id(), album.getOriginal_access_key()).tryOpenWith(requireActivity());
+            PlaceFactory.getAudiosInAlbumPlace(callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent()), album.getOriginal_owner_id(), album.getOriginal_id(), album.getOriginal_access_key()).tryOpenWith(requireActivity());
     }
 
     @Override
     public void onOpenClick(int index, AudioPlaylist album) {
         if (Utils.isEmpty(album.getOriginal_access_key()) || album.getOriginal_id() == 0 || album.getOriginal_owner_id() == 0)
-            PlaceFactory.getAudiosInAlbumPlace(getPresenter().getAccountId(), album.getOwnerId(), album.getId(), album.getAccess_key()).tryOpenWith(requireActivity());
+            PlaceFactory.getAudiosInAlbumPlace(callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent()), album.getOwnerId(), album.getId(), album.getAccess_key()).tryOpenWith(requireActivity());
         else
-            PlaceFactory.getAudiosInAlbumPlace(getPresenter().getAccountId(), album.getOriginal_owner_id(), album.getOriginal_id(), album.getOriginal_access_key()).tryOpenWith(requireActivity());
+            PlaceFactory.getAudiosInAlbumPlace(callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent()), album.getOriginal_owner_id(), album.getOriginal_id(), album.getOriginal_access_key()).tryOpenWith(requireActivity());
     }
 
     @Override
@@ -176,7 +177,7 @@ public class PlaylistsInCatalogFragment extends BaseMvpFragment<PlaylistsInCatal
 
     @Override
     public void onShare(int index, AudioPlaylist album) {
-        SendAttachmentsActivity.startForSendAttachments(requireActivity(), getPresenter().getAccountId(), album);
+        SendAttachmentsActivity.startForSendAttachments(requireActivity(), callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent()), album);
     }
 
     @Override
@@ -191,6 +192,6 @@ public class PlaylistsInCatalogFragment extends BaseMvpFragment<PlaylistsInCatal
 
     @Override
     public void onAdd(int index, AudioPlaylist album) {
-        getPresenter().onAdd(album);
+        callPresenter(p -> p.onAdd(album));
     }
 }

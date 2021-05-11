@@ -33,7 +33,7 @@ public abstract class AbsSearchFragment<P extends AbsSearchPresenter<V, ?, T, ?>
     private TextView mEmptyText;
 
     private void onSeachOptionsChanged() {
-        getPresenter().fireOptionsChanged();
+        callPresenter(p -> p.fireOptionsChanged());
     }
 
     public View createViewLayout(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
@@ -51,7 +51,7 @@ public abstract class AbsSearchFragment<P extends AbsSearchPresenter<V, ?, T, ?>
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(p -> p.fireScrollToEnd());
             }
         });
 
@@ -59,7 +59,7 @@ public abstract class AbsSearchFragment<P extends AbsSearchPresenter<V, ?, T, ?>
         recyclerView.setAdapter(mAdapter);
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(p -> p.fireRefresh()));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         mEmptyText = root.findViewById(R.id.empty);
@@ -74,7 +74,7 @@ public abstract class AbsSearchFragment<P extends AbsSearchPresenter<V, ?, T, ?>
     }
 
     public void fireTextQueryEdit(String q) {
-        getPresenter().fireTextQueryEdit(q);
+        callPresenter(p -> p.fireTextQueryEdit(q));
     }
 
     @Override
@@ -120,7 +120,7 @@ public abstract class AbsSearchFragment<P extends AbsSearchPresenter<V, ?, T, ?>
     }
 
     public void openSearchFilter() {
-        getPresenter().fireOpenFilterClick();
+        callPresenter(p -> p.fireOpenFilterClick());
     }
 
     @Override

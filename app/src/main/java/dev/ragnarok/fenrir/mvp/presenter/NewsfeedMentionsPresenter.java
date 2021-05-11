@@ -51,9 +51,7 @@ public class NewsfeedMentionsPresenter extends PlaceSupportPresenter<INewsfeedCo
     }
 
     private void resolveLoadingView() {
-        if (isGuiResumed()) {
-            getView().showLoading(loadingNow);
-        }
+        callResumedView(v -> v.showLoading(loadingNow));
     }
 
     private void loadAtLast() {
@@ -69,7 +67,7 @@ public class NewsfeedMentionsPresenter extends PlaceSupportPresenter<INewsfeedCo
     }
 
     private void onRequestError(Throwable throwable) {
-        showError(getView(), getCauseIfRuntime(throwable));
+        callView(v -> showError(v, getCauseIfRuntime(throwable)));
         setLoadingNow(false);
     }
 
@@ -117,6 +115,6 @@ public class NewsfeedMentionsPresenter extends PlaceSupportPresenter<INewsfeedCo
         Comment comment = newsfeedComment.getComment();
         AssertUtils.requireNonNull(comment);
 
-        getView().openComments(getAccountId(), comment.getCommented(), null);
+        callView(v -> v.openComments(getAccountId(), comment.getCommented(), null));
     }
 }

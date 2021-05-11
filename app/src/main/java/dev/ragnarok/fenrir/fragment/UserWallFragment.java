@@ -32,7 +32,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import dev.ragnarok.fenrir.CheckDonate;
 import dev.ragnarok.fenrir.Extra;
@@ -82,7 +81,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
 
     private final ActivityResultLauncher<Intent> openRequestResizeAvatar = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
-            getPresenter().fireNewAvatarPhotoSelected(UCrop.getOutput(result.getData()).getPath());
+            callPresenter(p -> p.fireNewAvatarPhotoSelected(UCrop.getOutput(result.getData()).getPath()));
         } else if (result.getResultCode() == UCrop.RESULT_ERROR) {
             showThrowable(UCrop.getError(result.getData()));
         }
@@ -103,20 +102,20 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
     });
     private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-            () -> getPresenter().fireShowQR(requireActivity()));
+            () -> callPresenter(p -> p.fireShowQR(requireActivity())));
     private final ActivityResultLauncher<Intent> openRequestPhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getData() != null && result.getResultCode() == Activity.RESULT_OK) {
             ArrayList<LocalPhoto> localPhotos = result.getData().getParcelableArrayListExtra(Extra.PHOTOS);
             String file = result.getData().getStringExtra(FileManagerFragment.returnFileParameter);
             LocalVideo video = result.getData().getParcelableExtra(Extra.VIDEO);
-            getPresenter().firePhotosSelected(localPhotos, file, video);
+            callPresenter(p -> p.firePhotosSelected(localPhotos, file, video));
         }
     });
 
     private final ActivityResultLauncher<Intent> openRequestResizePhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
             assert result.getData() != null;
-            getPresenter().doUploadFile(result.getData().getStringExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH), Upload.IMAGE_SIZE_FULL, false);
+            callPresenter(p -> p.doUploadFile(result.getData().getStringExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH), Upload.IMAGE_SIZE_FULL, false));
         }
     });
     private UserHeaderHolder mHeaderHolder;
@@ -289,7 +288,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
     @Override
     protected void onHeaderInflated(View headerRootView) {
         mHeaderHolder = new UserHeaderHolder(headerRootView);
-        mHeaderHolder.ivAvatar.setOnClickListener(v -> getPresenter().fireAvatarClick());
+        mHeaderHolder.ivAvatar.setOnClickListener(v -> callPresenter(UserWallPresenter::fireAvatarClick));
         setupPaganContent(mHeaderHolder.Runes, mHeaderHolder.paganSymbol);
     }
 
@@ -360,7 +359,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
                 .setHint(R.string.enter_your_status)
                 .setValue(initialValue)
                 .setAllowEmpty(true)
-                .setCallback(newValue -> getPresenter().fireNewStatusEntered(newValue))
+                .setCallback(newValue -> callPresenter(p -> p.fireNewStatusEntered(newValue)))
                 .show();
     }
 
@@ -371,7 +370,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
                 .setTitleRes(R.string.add_to_friends)
                 .setHint(R.string.attach_message)
                 .setAllowEmpty(true)
-                .setCallback(newValue -> getPresenter().fireAddToFrindsClick(newValue))
+                .setCallback(newValue -> callPresenter(p -> p.fireAddToFrindsClick(newValue)))
                 .show();
     }
 
@@ -379,7 +378,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
     public void showDeleteFromFriendsMessageDialog() {
         new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(R.string.delete_from_friends)
-                .setPositiveButton(R.string.button_yes, (dialogInterface, i) -> getPresenter().fireDeleteFromFriends())
+                .setPositiveButton(R.string.button_yes, (dialogInterface, i) -> callPresenter(UserWallPresenter::fireDeleteFromFriends))
                 .setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss())
                 .show();
     }
@@ -388,7 +387,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
     public void showUnbanMessageDialog() {
         new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(R.string.is_to_blacklist)
-                .setPositiveButton(R.string.button_yes, (dialogInterface, i) -> getPresenter().fireRemoveBlacklistClick())
+                .setPositiveButton(R.string.button_yes, (dialogInterface, i) -> callPresenter(UserWallPresenter::fireRemoveBlacklistClick))
                 .setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss())
                 .show();
     }
@@ -405,10 +404,13 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
         new MaterialAlertDialogBuilder(requireActivity()).setItems(items, (dialogInterface, i) -> {
             switch (i) {
                 case 0:
-                    getPresenter().fireOpenAvatarsPhotoAlbum();
+                    callPresenter(UserWallPresenter::fireOpenAvatarsPhotoAlbum);
                     break;
                 case 1:
-                    User usr = Objects.requireNonNull(getPresenter()).getUser();
+                    User usr = callPresenter(UserWallPresenter::getUser, null);
+                    if (usr == null) {
+                        break;
+                    }
                     PlaceFactory.getSingleURLPhotoPlace(usr.getOriginalAvatar(), usr.getFullName(), "id" + usr.getId()).tryOpenWith(requireActivity());
                     break;
                 case 2:
@@ -446,41 +448,41 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         OptionView view = new OptionView();
-        getPresenter().fireOptionViewCreated(view);
+        callPresenter(p -> p.fireOptionViewCreated(view));
         menu.add(R.string.registration_date).setOnMenuItemClickListener(item -> {
-            getPresenter().fireGetRegistrationDate();
+            callPresenter(UserWallPresenter::fireGetRegistrationDate);
             return true;
         });
         if (!view.isMy) {
             menu.add(R.string.report).setOnMenuItemClickListener(item -> {
-                getPresenter().fireReport();
+                callPresenter(UserWallPresenter::fireReport);
                 return true;
             });
             if (!view.isBlacklistedByMe) {
                 menu.add(R.string.add_to_blacklist).setOnMenuItemClickListener(item -> {
-                    getPresenter().fireAddToBlacklistClick();
+                    callPresenter(UserWallPresenter::fireAddToBlacklistClick);
                     return true;
                 });
             }
             if (!view.isSubscribed) {
                 menu.add(R.string.notify_wall_added).setOnMenuItemClickListener(item -> {
-                    getPresenter().fireSubscribe();
+                    callPresenter(UserWallPresenter::fireSubscribe);
                     return true;
                 });
             } else {
                 menu.add(R.string.unnotify_wall_added).setOnMenuItemClickListener(item -> {
-                    getPresenter().fireUnSubscribe();
+                    callPresenter(UserWallPresenter::fireUnSubscribe);
                     return true;
                 });
             }
             if (!view.isFavorite) {
                 menu.add(R.string.add_to_bookmarks).setOnMenuItemClickListener(item -> {
-                    getPresenter().fireAddToBookmarks();
+                    callPresenter(UserWallPresenter::fireAddToBookmarks);
                     return true;
                 });
             } else {
                 menu.add(R.string.remove_from_bookmarks).setOnMenuItemClickListener(item -> {
-                    getPresenter().fireRemoveFromBookmarks();
+                    callPresenter(UserWallPresenter::fireRemoveFromBookmarks);
                     return true;
                 });
             }
@@ -489,7 +491,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             if (!AppPerms.hasReadWriteStoragePermission(requireActivity())) {
                 requestWritePermission.launch();
             } else {
-                getPresenter().fireShowQR(requireActivity());
+                callPresenter(p -> p.fireShowQR(requireActivity()));
             }
             return true;
         });
@@ -497,7 +499,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             if (!CheckDonate.isFullVersion(requireActivity())) {
                 return true;
             }
-            getPresenter().fireMentions();
+            callPresenter(UserWallPresenter::fireMentions);
             return true;
         });
     }
@@ -563,28 +565,28 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             filtersList.setLayoutManager(new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false));
 
             mPostFilterAdapter = new HorizontalOptionsAdapter<>(Collections.emptyList());
-            mPostFilterAdapter.setListener(entry -> getPresenter().fireFilterClick(entry));
+            mPostFilterAdapter.setListener(entry -> callPresenter(p -> p.fireFilterClick(entry)));
             filtersList.setAdapter(mPostFilterAdapter);
 
-            tvStatus.setOnClickListener(v -> getPresenter().fireStatusClick());
+            tvStatus.setOnClickListener(v -> callPresenter(UserWallPresenter::fireStatusClick));
 
-            fabMoreInfo.setOnClickListener(v -> getPresenter().fireMoreInfoClick());
-            bPrimaryAction.setOnClickListener(v -> getPresenter().firePrimaryActionsClick());
-            fabMessage.setOnClickListener(v -> getPresenter().fireChatClick());
+            fabMoreInfo.setOnClickListener(v -> callPresenter(UserWallPresenter::fireMoreInfoClick));
+            bPrimaryAction.setOnClickListener(v -> callPresenter(UserWallPresenter::firePrimaryActionsClick));
+            fabMessage.setOnClickListener(v -> callPresenter(UserWallPresenter::fireChatClick));
 
             root.findViewById(R.id.horiz_scroll).setClipToOutline(true);
-            root.findViewById(R.id.header_user_profile_photos_container).setOnClickListener(v -> getPresenter().fireHeaderPhotosClick());
-            root.findViewById(R.id.header_user_profile_friends_container).setOnClickListener(v -> getPresenter().fireHeaderFriendsClick());
-            root.findViewById(R.id.header_user_profile_audios_container).setOnClickListener(v -> getPresenter().fireHeaderAudiosClick());
-            root.findViewById(R.id.header_user_profile_articles_container).setOnClickListener(v -> getPresenter().fireHeaderArticlesClick());
+            root.findViewById(R.id.header_user_profile_photos_container).setOnClickListener(v -> callPresenter(UserWallPresenter::fireHeaderPhotosClick));
+            root.findViewById(R.id.header_user_profile_friends_container).setOnClickListener(v -> callPresenter(UserWallPresenter::fireHeaderFriendsClick));
+            root.findViewById(R.id.header_user_profile_audios_container).setOnClickListener(v -> callPresenter(UserWallPresenter::fireHeaderAudiosClick));
+            root.findViewById(R.id.header_user_profile_articles_container).setOnClickListener(v -> callPresenter(UserWallPresenter::fireHeaderArticlesClick));
             root.findViewById(R.id.header_user_profile_products_container).setOnClickListener(v -> {
                 if (CheckDonate.isFullVersion(requireActivity())) {
-                    getPresenter().fireHeaderProductsClick();
+                    callPresenter(UserWallPresenter::fireHeaderProductsClick);
                 }
             });
-            root.findViewById(R.id.header_user_profile_groups_container).setOnClickListener(v -> getPresenter().fireHeaderGroupsClick());
-            root.findViewById(R.id.header_user_profile_videos_container).setOnClickListener(v -> getPresenter().fireHeaderVideosClick());
-            root.findViewById(R.id.header_user_profile_gifts_container).setOnClickListener(v -> getPresenter().fireHeaderGiftsClick());
+            root.findViewById(R.id.header_user_profile_groups_container).setOnClickListener(v -> callPresenter(UserWallPresenter::fireHeaderGroupsClick));
+            root.findViewById(R.id.header_user_profile_videos_container).setOnClickListener(v -> callPresenter(UserWallPresenter::fireHeaderVideosClick));
+            root.findViewById(R.id.header_user_profile_gifts_container).setOnClickListener(v -> callPresenter(UserWallPresenter::fireHeaderGiftsClick));
         }
     }
 }

@@ -65,7 +65,7 @@ public class VideoAlbumsByVideoFragment extends BaseMvpFragment<VideoAlbumsByVid
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(VideoAlbumsByVideoPresenter::fireRefresh));
 
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
@@ -87,7 +87,7 @@ public class VideoAlbumsByVideoFragment extends BaseMvpFragment<VideoAlbumsByVid
 
     @Override
     public void onClick(VideoAlbum album) {
-        getPresenter().fireItemClick(album);
+        callPresenter(p -> p.fireItemClick(album));
     }
 
     @Override

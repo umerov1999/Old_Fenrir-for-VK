@@ -63,7 +63,7 @@ public class CreatePinPresenter extends RxSupportPresenter<ICreatePinView> {
     }
 
     public void fireFingerPrintClick() {
-        getView().showError(R.string.not_yet_implemented_message);
+        callView(v -> v.showError(R.string.not_yet_implemented_message));
     }
 
     public void fireBackspaceClick() {
@@ -86,9 +86,9 @@ public class CreatePinPresenter extends RxSupportPresenter<ICreatePinView> {
     @OnGuiCreated
     private void resolveTitles() {
         if (mCurrentStep == STEP_CREATE) {
-            getView().displayTitle(R.string.create_pin_code_title);
+            callView(v -> v.displayTitle(R.string.create_pin_code_title));
         } else {
-            getView().displayTitle(R.string.repeat_pin_code_title);
+            callView(v -> v.displayTitle(R.string.repeat_pin_code_title));
         }
     }
 
@@ -116,19 +116,12 @@ public class CreatePinPresenter extends RxSupportPresenter<ICreatePinView> {
             resetPin(mRepeatedPin);
             resetPin(mCreatedPin);
             mCurrentStep = STEP_CREATE;
-
-            if (isGuiReady()) {
-                getView().showError(R.string.entered_pin_codes_do_not_match);
-                resolveAllViews();
-                getView().displayErrorAnimation();
-            }
-
+            callView(v -> v.showError(R.string.entered_pin_codes_do_not_match));
+            resolveAllViews();
+            callView(ICreatePinView::displayErrorAnimation);
             return;
         }
-
-        if (isGuiReady()) {
-            getView().sendSuccessAndClose(mCreatedPin);
-        }
+        callView(v -> v.sendSuccessAndClose(mCreatedPin));
     }
 
     private void onCreatedPinFullyEntered() {
@@ -138,7 +131,7 @@ public class CreatePinPresenter extends RxSupportPresenter<ICreatePinView> {
     }
 
     public void fireSkipButtonClick() {
-        getView().sendSkipAndClose();
+        callView(ICreatePinView::sendSkipAndClose);
     }
 
     private boolean isPinsMatch() {
@@ -174,9 +167,9 @@ public class CreatePinPresenter extends RxSupportPresenter<ICreatePinView> {
     @OnGuiCreated
     private void refreshViewCirclesVisibility() {
         if (mCurrentStep == STEP_CREATE) {
-            getView().displayPin(mCreatedPin, NO_VALUE);
+            callView(v -> v.displayPin(mCreatedPin, NO_VALUE));
         } else {
-            getView().displayPin(mRepeatedPin, NO_VALUE);
+            callView(v -> v.displayPin(mRepeatedPin, NO_VALUE));
         }
     }
 

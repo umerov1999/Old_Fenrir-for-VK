@@ -71,12 +71,12 @@ public class FriendsTabsPresenter extends AccountDependencyPresenter<IFriendsTab
     @Override
     public void onGuiResumed() {
         super.onGuiResumed();
-        getView().setDrawerFriendsSectionSelected(userId == getAccountId());
+        callView(v -> v.setDrawerFriendsSectionSelected(userId == getAccountId()));
     }
 
     private void onCountersGetError(Throwable t) {
         callView(view -> view.displayConters(counters));
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onCountersReceived(FriendsCounters counters) {

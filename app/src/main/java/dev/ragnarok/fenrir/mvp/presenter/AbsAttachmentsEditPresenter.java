@@ -102,16 +102,12 @@ public abstract class AbsAttachmentsEditPresenter<V extends IBaseAttachmentsEdit
 
     @OnGuiCreated
     void resolveTimerInfoView() {
-        if (isGuiReady()) {
-            getView().setTimerValue(timerValue);
-        }
+        callView(v -> v.setTimerValue(timerValue));
     }
 
     @OnGuiCreated
     void resolveTextView() {
-        if (isGuiReady()) {
-            getView().setTextBody(textBody);
-        }
+        callView(v -> v.setTextBody(textBody));
     }
 
     String getTextBody() {
@@ -184,9 +180,7 @@ public abstract class AbsAttachmentsEditPresenter<V extends IBaseAttachmentsEdit
     }
 
     void safelyNotifyItemsAdded(int position, int count) {
-        if (isGuiReady()) {
-            getView().notifyItemRangeInsert(position, count);
-        }
+        callView(v -> v.notifyItemRangeInsert(position, count));
     }
 
     List<AttachmenEntry> combine(List<AttachmenEntry> first, List<AttachmenEntry> second) {
@@ -220,9 +214,7 @@ public abstract class AbsAttachmentsEditPresenter<V extends IBaseAttachmentsEdit
     }
 
     void safelyNotifyItemRemoved(int position) {
-        if (isGuiReady()) {
-            getView().notifyItemRemoved(position);
-        }
+        callView(v -> v.notifyItemRemoved(position));
     }
 
     void onAttachmentRemoveClick(int index, @NonNull AttachmenEntry attachment) {
@@ -254,30 +246,30 @@ public abstract class AbsAttachmentsEditPresenter<V extends IBaseAttachmentsEdit
     }
 
     public final void firePhotoFromVkChoose() {
-        getView().openAddVkPhotosWindow(getMaxFutureAttachmentCount(), getAccountId(), getAccountId());
+        callView(v -> v.openAddVkPhotosWindow(getMaxFutureAttachmentCount(), getAccountId(), getAccountId()));
     }
 
     private boolean checkAbilityToAttachMore() {
         if (canAttachMore()) {
             return true;
         } else {
-            safeShowError(getView(), R.string.reached_maximum_count_of_attachments);
+            callView(v -> v.showError(R.string.reached_maximum_count_of_attachments));
             return false;
         }
     }
 
     public final void firePhotoFromLocalGalleryChoose() {
         if (!hasReadStoragePermission(getApplicationContext())) {
-            getView().requestReadExternalStoragePermission();
+            callView(IBaseAttachmentsEditView::requestReadExternalStoragePermission);
             return;
         }
 
-        getView().openAddPhotoFromGalleryWindow(getMaxFutureAttachmentCount());
+        callView(v -> v.openAddPhotoFromGalleryWindow(getMaxFutureAttachmentCount()));
     }
 
     public final void firePhotoFromCameraChoose() {
         if (!hasCameraPermission(getApplicationContext())) {
-            getView().requestCameraPermission();
+            callView(IBaseAttachmentsEditView::requestCameraPermission);
             return;
         }
 
@@ -289,14 +281,14 @@ public abstract class AbsAttachmentsEditPresenter<V extends IBaseAttachmentsEdit
             File photoFile = FileUtil.createImageFile();
             currentPhotoCameraUri = FileUtil.getExportedUriForFile(getApplicationContext(), photoFile);
 
-            getView().openCamera(currentPhotoCameraUri);
+            callView(v -> v.openCamera(currentPhotoCameraUri));
         } catch (IOException e) {
-            safeShowError(getView(), e.getMessage());
+            callView(v -> v.showError(e.getMessage()));
         }
     }
 
     public final void firePhotoMaked() {
-        getView().notifySystemAboutNewPhoto(currentPhotoCameraUri);
+        callView(v -> v.notifySystemAboutNewPhoto(currentPhotoCameraUri));
 
         LocalPhoto makedPhoto = new LocalPhoto().setFullImageUri(currentPhotoCameraUri);
         doUploadPhotos(Collections.singletonList(makedPhoto));
@@ -320,7 +312,8 @@ public abstract class AbsAttachmentsEditPresenter<V extends IBaseAttachmentsEdit
             if (new File(to_up.getPath()).isFile()) {
                 to_up = Uri.fromFile(new File(to_up.getPath()));
             }
-            getView().displayCropPhotoDialog(to_up);
+            Uri finalTo_up = to_up;
+            callView(v -> v.displayCropPhotoDialog(finalTo_up));
         } else {
             doUploadPhotos(photos, size);
         }
@@ -332,7 +325,7 @@ public abstract class AbsAttachmentsEditPresenter<V extends IBaseAttachmentsEdit
                 .getUploadImageSize();
 
         if (isNull(size)) {
-            getView().displaySelectUploadPhotoSizeDialog(photos);
+            callView(v -> v.displaySelectUploadPhotoSizeDialog(photos));
         } else {
             doFinalUploadPhotos(photos, size);
         }
@@ -344,25 +337,25 @@ public abstract class AbsAttachmentsEditPresenter<V extends IBaseAttachmentsEdit
 
     public final void fireButtonPhotoClick() {
         if (checkAbilityToAttachMore()) {
-            getView().displayChoosePhotoTypeDialog();
+            callView(IBaseAttachmentsEditView::displayChoosePhotoTypeDialog);
         }
     }
 
     public final void fireButtonAudioClick() {
         if (checkAbilityToAttachMore()) {
-            getView().openAddAudiosWindow(getMaxFutureAttachmentCount(), getAccountId());
+            callView(v -> v.openAddAudiosWindow(getMaxFutureAttachmentCount(), getAccountId()));
         }
     }
 
     public final void fireButtonVideoClick() {
         if (checkAbilityToAttachMore()) {
-            getView().openAddVideosWindow(getMaxFutureAttachmentCount(), getAccountId());
+            callView(v -> v.openAddVideosWindow(getMaxFutureAttachmentCount(), getAccountId()));
         }
     }
 
     public final void fireButtonDocClick() {
         if (checkAbilityToAttachMore()) {
-            getView().openAddDocumentsWindow(getMaxFutureAttachmentCount(), getAccountId());
+            callView(v -> v.openAddDocumentsWindow(getMaxFutureAttachmentCount(), getAccountId()));
         }
     }
 
@@ -403,9 +396,7 @@ public abstract class AbsAttachmentsEditPresenter<V extends IBaseAttachmentsEdit
     }
 
     protected void safeNotifyDataSetChanged() {
-        if (isGuiReady()) {
-            getView().notifyDataSetChanged();
-        }
+        callView(IBaseAttachmentsEditView::notifyDataSetChanged);
     }
 
     public final void fireTextChanged(CharSequence s) {
@@ -424,7 +415,7 @@ public abstract class AbsAttachmentsEditPresenter<V extends IBaseAttachmentsEdit
 
     public void fireReadStoragePermissionResolved() {
         if (hasReadStoragePermission(getApplicationContext())) {
-            getView().openAddPhotoFromGalleryWindow(getMaxFutureAttachmentCount());
+            callView(v -> v.openAddPhotoFromGalleryWindow(getMaxFutureAttachmentCount()));
         }
     }
 

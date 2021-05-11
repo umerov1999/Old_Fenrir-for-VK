@@ -30,11 +30,7 @@ public class RequestExecuteFragment extends BaseMvpFragment<RequestExecutePresen
 
     private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-            () -> {
-                if (isPresenterPrepared()) {
-                    getPresenter().fireWritePermissionResolved();
-                }
-            });
+            () -> callPresenter(RequestExecutePresenter::fireWritePermissionResolved));
     private TextInputEditText mResposeBody;
 
     public static RequestExecuteFragment newInstance(int accountId) {
@@ -57,7 +53,7 @@ public class RequestExecuteFragment extends BaseMvpFragment<RequestExecutePresen
         methodEditText.addTextChangedListener(new TextWatcherAdapter() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                getPresenter().fireMethodEdit(s);
+                callPresenter(p -> p.fireMethodEdit(s));
             }
         });
 
@@ -65,13 +61,13 @@ public class RequestExecuteFragment extends BaseMvpFragment<RequestExecutePresen
         bodyEditText.addTextChangedListener(new TextWatcherAdapter() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                getPresenter().fireBodyEdit(s);
+                callPresenter(p -> p.fireBodyEdit(s));
             }
         });
 
-        root.findViewById(R.id.button_copy).setOnClickListener(v -> getPresenter().fireCopyClick());
-        root.findViewById(R.id.button_save).setOnClickListener(v -> getPresenter().fireSaveClick());
-        root.findViewById(R.id.button_execute).setOnClickListener(v -> getPresenter().fireExecuteClick());
+        root.findViewById(R.id.button_copy).setOnClickListener(v -> callPresenter(RequestExecutePresenter::fireCopyClick));
+        root.findViewById(R.id.button_save).setOnClickListener(v -> callPresenter(RequestExecutePresenter::fireSaveClick));
+        root.findViewById(R.id.button_execute).setOnClickListener(v -> callPresenter(RequestExecutePresenter::fireExecuteClick));
         return root;
     }
 

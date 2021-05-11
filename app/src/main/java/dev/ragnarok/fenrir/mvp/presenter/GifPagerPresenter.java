@@ -18,6 +18,7 @@ import dev.ragnarok.fenrir.media.gif.PlayerPrepareException;
 import dev.ragnarok.fenrir.model.Document;
 import dev.ragnarok.fenrir.model.VideoSize;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
+import dev.ragnarok.fenrir.mvp.view.IBasicDocumentView;
 import dev.ragnarok.fenrir.mvp.view.IGifPagerView;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.AssertUtils;
@@ -54,9 +55,7 @@ public class GifPagerPresenter extends BaseDocumentPresenter<IGifPagerView> impl
 
     @OnGuiCreated
     private void resolveData() {
-        if (isGuiReady()) {
-            getView().displayData(mDocuments.size(), mCurrentIndex);
-        }
+        callView(v -> v.displayData(mDocuments.size(), mCurrentIndex));
     }
 
     public void fireSurfaceCreated(int adapterPosition) {
@@ -67,22 +66,18 @@ public class GifPagerPresenter extends BaseDocumentPresenter<IGifPagerView> impl
 
     @OnGuiCreated
     private void resolveToolbarTitle() {
-        if (isGuiReady()) {
-            getView().setToolbarTitle(R.string.gif_player);
-        }
+        callView(v -> v.setToolbarTitle(R.string.gif_player));
     }
 
     @OnGuiCreated
     private void resolveToolbarSubtitle() {
-        if (isGuiReady()) {
-            getView().setToolbarSubtitle(R.string.image_number, mCurrentIndex + 1, mDocuments.size());
-        }
+        callView(v -> v.setToolbarSubtitle(R.string.image_number, mCurrentIndex + 1, mDocuments.size()));
     }
 
     @OnGuiCreated
     private void resolvePlayerDisplay() {
-        if (isGuiReady()) {
-            getView().attachDisplayToPlayer(mCurrentIndex, mGifPlayer);
+        if (getGuiIsReady()) {
+            callView(v -> v.attachDisplayToPlayer(mCurrentIndex, mGifPlayer));
         } else {
             mGifPlayer.setDisplay(null);
         }
@@ -107,7 +102,7 @@ public class GifPagerPresenter extends BaseDocumentPresenter<IGifPagerView> impl
         try {
             mGifPlayer.play();
         } catch (PlayerPrepareException e) {
-            safeShowLongToast(getView(), R.string.unable_to_play_file);
+            callView(v -> v.showToast(R.string.unable_to_play_file, true));
         }
     }
 
@@ -122,9 +117,7 @@ public class GifPagerPresenter extends BaseDocumentPresenter<IGifPagerView> impl
 
     @OnGuiCreated
     private void resolveAddDeleteButton() {
-        if (isGuiReady()) {
-            getView().setupAddRemoveButton(!isMy());
-        }
+        callView(v -> v.setupAddRemoveButton(!isMy()));
     }
 
     private boolean isMy() {
@@ -133,20 +126,16 @@ public class GifPagerPresenter extends BaseDocumentPresenter<IGifPagerView> impl
 
     @OnGuiCreated
     private void resolveAspectRatio() {
-        if (isGuiReady()) {
-            VideoSize size = mGifPlayer.getVideoSize();
-            if (size != null) {
-                getView().setAspectRatioAt(mCurrentIndex, size.getWidth(), size.getHeight());
-            }
+        VideoSize size = mGifPlayer.getVideoSize();
+        if (size != null) {
+            callView(v -> v.setAspectRatioAt(mCurrentIndex, size.getWidth(), size.getHeight()));
         }
     }
 
     @OnGuiCreated
     private void resolvePreparingProgress() {
         boolean preparing = !Objects.isNull(mGifPlayer) && mGifPlayer.getPlayerStatus() == IGifPlayer.IStatus.PREPARING;
-        if (isGuiReady()) {
-            getView().setPreparingProgressVisible(mCurrentIndex, preparing);
-        }
+        callView(v -> v.setPreparingProgressVisible(mCurrentIndex, preparing));
     }
 
     public void firePageSelected(int position) {
@@ -176,16 +165,17 @@ public class GifPagerPresenter extends BaseDocumentPresenter<IGifPagerView> impl
             size = DEF_SIZE;
         }
 
-        getView().configHolder(adapterPosition, isProgress, size.getWidth(), size.getWidth());
+        VideoSize finalSize = size;
+        callView(v -> v.configHolder(adapterPosition, isProgress, finalSize.getWidth(), finalSize.getWidth()));
     }
 
     public void fireShareButtonClick() {
-        getView().shareDocument(getAccountId(), mDocuments.get(mCurrentIndex));
+        callView(v -> v.shareDocument(getAccountId(), mDocuments.get(mCurrentIndex)));
     }
 
     public void fireDownloadButtonClick(Context context, View view) {
         if (!AppPerms.hasReadWriteStoragePermission(context)) {
-            getView().requestWriteExternalStoragePermission();
+            callView(IBasicDocumentView::requestWriteExternalStoragePermission);
             return;
         }
 

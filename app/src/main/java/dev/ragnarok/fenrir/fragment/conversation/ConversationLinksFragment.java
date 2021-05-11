@@ -52,11 +52,11 @@ public class ConversationLinksFragment extends AbsChatAttachmentsFragment<Link, 
 
     @Override
     public void onLinkClick(int index, @NonNull Link link) {
-        getPresenter().fireLinkClick(link);
+        callPresenter(p -> p.fireLinkClick(link));
     }
 
     @Override
     public void onGoLinkConversation(@NonNull Link doc) {
-        getPresenter().fireGoToMessagesLookup(doc.getMsgPeerId(), doc.getMsgId());
+        callPresenter(p -> p.fireGoToMessagesLookup(doc.getMsgPeerId(), doc.getMsgId()));
     }
 }

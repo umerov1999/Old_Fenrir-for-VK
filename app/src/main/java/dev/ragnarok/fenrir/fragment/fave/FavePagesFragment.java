@@ -54,7 +54,7 @@ public class FavePagesFragment extends BaseMvpFragment<FavePagesPresenter, IFave
         mEmpty = root.findViewById(R.id.empty);
 
         RecyclerView recyclerView = root.findViewById(R.id.list);
-        int columns = getContext().getResources().getInteger(R.integer.photos_column_count);
+        int columns = getResources().getInteger(R.integer.photos_column_count);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(requireActivity(), columns);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -62,7 +62,7 @@ public class FavePagesFragment extends BaseMvpFragment<FavePagesPresenter, IFave
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(FavePagesPresenter::fireScrollToEnd);
             }
         });
 
@@ -72,19 +72,19 @@ public class FavePagesFragment extends BaseMvpFragment<FavePagesPresenter, IFave
         mySearchView.setOnQueryTextListener(new MySearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                getPresenter().fireSearchRequestChanged(query);
+                callPresenter(p -> p.fireSearchRequestChanged(query));
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                getPresenter().fireSearchRequestChanged(newText);
+                callPresenter(p -> p.fireSearchRequestChanged(newText));
                 return false;
             }
         });
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(FavePagesPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         mAdapter = new FavePagesAdapter(Collections.emptyList(), requireActivity());
@@ -158,11 +158,11 @@ public class FavePagesFragment extends BaseMvpFragment<FavePagesPresenter, IFave
 
     @Override
     public void onPageClick(int index, Owner owner) {
-        getPresenter().fireOwnerClick(owner);
+        callPresenter(p -> p.fireOwnerClick(owner));
     }
 
     @Override
     public void onDelete(int index, Owner owner) {
-        getPresenter().fireOwnerDelete(owner);
+        callPresenter(p -> p.fireOwnerDelete(owner));
     }
 }

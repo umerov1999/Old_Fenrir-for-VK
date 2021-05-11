@@ -60,9 +60,9 @@ class LocalJsonToChatFragment :
         (requireActivity() as AppCompatActivity).setSupportActionBar(root.findViewById(R.id.toolbar))
         mEmpty = root.findViewById(R.id.empty)
         val mAttachment: FloatingActionButton = root.findViewById(R.id.goto_button)
-        mAttachment.setOnClickListener { presenter!!.toggleAttachment() }
+        mAttachment.setOnClickListener { presenter?.toggleAttachment() }
         mAttachment.setOnLongClickListener {
-            val my = presenter!!.updateMessages(true)
+            val my = presenter?.updateMessages(true) ?: return@setOnLongClickListener false
             mAttachment.setImageResource(if (my) R.drawable.account_circle else R.drawable.attachment)
             true
         }
@@ -183,9 +183,7 @@ class LocalJsonToChatFragment :
     }
 
     override fun scroll_pos(pos: Int) {
-        if (Objects.nonNull(recyclerView)) {
-            recyclerView!!.scrollToPosition(pos)
-        }
+        recyclerView?.scrollToPosition(pos)
     }
 
     private fun resolveEmptyText() {
@@ -288,7 +286,7 @@ class LocalJsonToChatFragment :
     }
 
     override fun onAvatarClick(message: Message, userId: Int, position: Int) {
-        presenter!!.fireOwnerClick(userId)
+        presenter?.fireOwnerClick(userId)
     }
 
     override fun onLongAvatarClick(message: Message, userId: Int, position: Int) {}

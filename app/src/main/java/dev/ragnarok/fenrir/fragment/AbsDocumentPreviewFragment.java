@@ -24,11 +24,7 @@ public abstract class AbsDocumentPreviewFragment<P extends BaseDocumentPresenter
 
     private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-            () -> {
-                if (isPresenterPrepared()) {
-                    getPresenter().fireWritePermissionResolved(requireActivity(), requireView());
-                }
-            });
+            () -> callPresenter(p -> p.fireWritePermissionResolved(requireActivity(), requireView())));
 
     @Override
     public void requestWriteExternalStoragePermission() {

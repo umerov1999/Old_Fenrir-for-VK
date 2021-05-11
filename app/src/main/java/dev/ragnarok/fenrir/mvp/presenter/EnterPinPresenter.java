@@ -75,21 +75,19 @@ public class EnterPinPresenter extends RxSupportPresenter<IEnterPinView> {
 
     public void onFingerprintClicked() {
         if (!securitySettings.isEntranceByFingerprintAllowed()) {
-            getView().getCustomToast().showToastError(R.string.error_login_by_fingerprint_not_allowed);
+            callView(v -> v.getCustomToast().showToastError(R.string.error_login_by_fingerprint_not_allowed));
             return;
         }
-        getView().showBiometricPrompt();
+        callView(IEnterPinView::showBiometricPrompt);
     }
 
     @OnGuiCreated
     private void resolveAvatarView() {
-        if (!isGuiReady()) return;
-
         String avatar = Objects.isNull(mOwner) ? null : mOwner.getMaxSquareAvatar();
         if (isEmpty(avatar)) {
-            getView().displayDefaultAvatar();
+            callView(IEnterPinView::displayDefaultAvatar);
         } else {
-            getView().displayAvatarFromUrl(avatar);
+            callView(v -> v.displayAvatarFromUrl(avatar));
         }
     }
 
@@ -108,9 +106,7 @@ public class EnterPinPresenter extends RxSupportPresenter<IEnterPinView> {
 
     @OnGuiCreated
     private void refreshViewCirclesVisibility() {
-        if (isGuiReady()) {
-            getView().displayPin(mValues, NO_VALUE);
-        }
+        callView(v -> v.displayPin(mValues, NO_VALUE));
     }
 
     public void onBackspaceClicked() {
@@ -129,7 +125,7 @@ public class EnterPinPresenter extends RxSupportPresenter<IEnterPinView> {
 
         long timeout = getNextPinAttemptTimeout();
         if (timeout > 0) {
-            safeShowError(getView(), R.string.limit_exceeded_number_of_attempts_message, timeout / 1000);
+            callView(view -> view.showError(R.string.limit_exceeded_number_of_attempts_message, timeout / 1000));
 
             resetPin();
             refreshViewCirclesVisibility();
@@ -152,17 +148,17 @@ public class EnterPinPresenter extends RxSupportPresenter<IEnterPinView> {
                 .security()
                 .clearPinHistory();
 
-        if (!isGuiReady()) return;
-        getView().sendSuccessAndClose();
+        callView(IEnterPinView::sendSuccessAndClose);
     }
 
     private void onEnteredWrongPin() {
         resetPin();
         refreshViewCirclesVisibility();
 
-        if (!isGuiReady()) return;
-        getView().showError(R.string.pin_is_invalid_message);
-        getView().displayErrorAnimation();
+        callView(v -> {
+            v.showError(R.string.pin_is_invalid_message);
+            v.displayErrorAnimation();
+        });
     }
 
     public void onNumberClicked(int value) {

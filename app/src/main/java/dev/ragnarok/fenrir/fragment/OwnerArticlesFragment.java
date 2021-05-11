@@ -73,7 +73,7 @@ public class OwnerArticlesFragment extends BaseMvpFragment<OwnerArticlesPresente
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(OwnerArticlesPresenter::fireScrollToEnd);
             }
         });
 
@@ -91,7 +91,7 @@ public class OwnerArticlesFragment extends BaseMvpFragment<OwnerArticlesPresente
 
     @Override
     public void onRefresh() {
-        getPresenter().fireRefresh();
+        callPresenter(OwnerArticlesPresenter::fireRefresh);
     }
 
     @Override
@@ -171,21 +171,21 @@ public class OwnerArticlesFragment extends BaseMvpFragment<OwnerArticlesPresente
 
     @Override
     public void onUrlClick(String url) {
-        getPresenter().fireArticleClick(url);
+        callPresenter(p -> p.fireArticleClick(url));
     }
 
     @Override
     public void onPhotosOpen(Photo photo) {
-        getPresenter().firePhotoClick(photo);
+        callPresenter(p -> p.firePhotoClick(photo));
     }
 
     @Override
     public void onDelete(int index, Article article) {
-        getPresenter().fireArticleDelete(index, article);
+        callPresenter(p -> p.fireArticleDelete(index, article));
     }
 
     @Override
     public void onAdd(int index, Article article) {
-        getPresenter().fireArticleAdd(index, article);
+        callPresenter(p -> p.fireArticleAdd(index, article));
     }
 }

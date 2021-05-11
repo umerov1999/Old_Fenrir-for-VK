@@ -36,6 +36,7 @@ import dev.ragnarok.fenrir.model.AudioCatalog;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.AudioCatalogPresenter;
+import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IAudioCatalogView;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
@@ -113,13 +114,13 @@ public class AudioCatalogFragment extends BaseMvpFragment<AudioCatalogPresenter,
             mySearchView.setOnQueryTextListener(new MySearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
-                    getPresenter().fireSearchRequestChanged(query);
+                    callPresenter(p -> p.fireSearchRequestChanged(query));
                     return false;
                 }
 
                 @Override
                 public boolean onQueryTextChange(String newText) {
-                    getPresenter().fireSearchRequestChanged(newText);
+                    callPresenter(p -> p.fireSearchRequestChanged(newText));
                     return false;
                 }
             });
@@ -133,10 +134,10 @@ public class AudioCatalogFragment extends BaseMvpFragment<AudioCatalogPresenter,
         recyclerView.addOnScrollListener(new PicassoPauseOnScrollListener(Constants.PICASSO_TAG));
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(AudioCatalogPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
-        mAdapter = new AudioCatalogAdapter(Collections.emptyList(), getPresenter().getAccountId(), requireActivity());
+        mAdapter = new AudioCatalogAdapter(Collections.emptyList(), callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent()), requireActivity());
         mAdapter.setClickListener(this);
 
         recyclerView.setAdapter(mAdapter);
@@ -209,7 +210,7 @@ public class AudioCatalogFragment extends BaseMvpFragment<AudioCatalogPresenter,
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_share) {
-            getPresenter().fireRepost(requireActivity());
+            callPresenter(p -> p.fireRepost(requireActivity()));
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -233,21 +234,20 @@ public class AudioCatalogFragment extends BaseMvpFragment<AudioCatalogPresenter,
 
     @Override
     public void onClick(int index, AudioCatalog value) {
-
         if (!Utils.isEmpty(value.getAudios())) {
-            PlaceFactory.getAudiosInCatalogBlock(getPresenter().getAccountId(), value.getId(), value.getTitle()).tryOpenWith(requireActivity());
+            PlaceFactory.getAudiosInCatalogBlock(callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent()), value.getId(), value.getTitle()).tryOpenWith(requireActivity());
         } else if (!Utils.isEmpty(value.getPlaylists())) {
-            PlaceFactory.getPlaylistsInCatalogBlock(getPresenter().getAccountId(), value.getId(), value.getTitle()).tryOpenWith(requireActivity());
+            PlaceFactory.getPlaylistsInCatalogBlock(callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent()), value.getId(), value.getTitle()).tryOpenWith(requireActivity());
         } else if (!Utils.isEmpty(value.getVideos())) {
-            PlaceFactory.getVideosInCatalogBlock(getPresenter().getAccountId(), value.getId(), value.getTitle()).tryOpenWith(requireActivity());
+            PlaceFactory.getVideosInCatalogBlock(callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent()), value.getId(), value.getTitle()).tryOpenWith(requireActivity());
         } else if (!Utils.isEmpty(value.getLinks())) {
-            PlaceFactory.getLinksInCatalogBlock(getPresenter().getAccountId(), value.getId(), value.getTitle()).tryOpenWith(requireActivity());
+            PlaceFactory.getLinksInCatalogBlock(callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent()), value.getId(), value.getTitle()).tryOpenWith(requireActivity());
         }
     }
 
     @Override
     public void onAddPlayList(int index, AudioPlaylist album) {
-        getPresenter().onAdd(album);
+        callPresenter(p -> p.onAdd(album));
     }
 
     @Override

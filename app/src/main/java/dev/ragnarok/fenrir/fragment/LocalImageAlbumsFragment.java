@@ -38,11 +38,7 @@ public class LocalImageAlbumsFragment extends BaseMvpFragment<LocalPhotoAlbumsPr
 
     private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-            () -> {
-                if (isPresenterPrepared()) {
-                    getPresenter().fireReadExternalStoregePermissionResolved();
-                }
-            });
+            () -> callPresenter(LocalPhotoAlbumsPresenter::fireReadExternalStoregePermissionResolved));
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView mEmptyTextView;
@@ -65,13 +61,13 @@ public class LocalImageAlbumsFragment extends BaseMvpFragment<LocalPhotoAlbumsPr
         mySearchView.setOnQueryTextListener(new MySearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                getPresenter().fireSearchRequestChanged(query, false);
+                callPresenter(p -> p.fireSearchRequestChanged(query, false));
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                getPresenter().fireSearchRequestChanged(newText, false);
+                callPresenter(p -> p.fireSearchRequestChanged(newText, false));
                 return false;
             }
         });
@@ -98,12 +94,12 @@ public class LocalImageAlbumsFragment extends BaseMvpFragment<LocalPhotoAlbumsPr
 
     @Override
     public void onClick(LocalImageAlbum album) {
-        getPresenter().fireAlbumClick(album);
+        callPresenter(p -> p.fireAlbumClick(album));
     }
 
     @Override
     public void onRefresh() {
-        getPresenter().fireRefresh();
+        callPresenter(LocalPhotoAlbumsPresenter::fireRefresh);
     }
 
     @Override

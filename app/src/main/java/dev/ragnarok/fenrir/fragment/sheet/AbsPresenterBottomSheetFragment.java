@@ -12,6 +12,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import dev.ragnarok.fenrir.mvp.compat.ViewHostDelegate;
 import dev.ragnarok.fenrir.mvp.core.IMvpView;
 import dev.ragnarok.fenrir.mvp.core.IPresenter;
+import dev.ragnarok.fenrir.mvp.core.PresenterAction;
+import dev.ragnarok.fenrir.mvp.core.RetPresenterAction;
 
 public abstract class AbsPresenterBottomSheetFragment<P extends IPresenter<V>, V extends IMvpView>
         extends BottomSheetDialogFragment implements ViewHostDelegate.IFactoryProvider<P, V> {
@@ -73,5 +75,13 @@ public abstract class AbsPresenterBottomSheetFragment<P extends IPresenter<V>, V
 
     protected P getPresenter() {
         return delegate.getPresenter();
+    }
+
+    protected void callPresenter(PresenterAction<P, V> action) {
+        delegate.callPresenter(action);
+    }
+
+    protected <T> T callPresenter(RetPresenterAction<P, V, T> action, T onDefault) {
+        return delegate.callPresenter(action, onDefault);
     }
 }

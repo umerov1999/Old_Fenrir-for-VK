@@ -59,16 +59,16 @@ public class FaveLinksFragment extends BaseMvpFragment<FaveLinksPresenter, IFave
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(FaveLinksPresenter::fireScrollToEnd);
             }
         });
 
         FloatingActionButton add = root.findViewById(R.id.add_button);
-        add.setOnClickListener(v -> getPresenter().fireAdd(requireActivity()));
+        add.setOnClickListener(v -> callPresenter(p -> p.fireAdd(requireActivity())));
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(FaveLinksPresenter::fireRefresh));
 
         mAdapter = new FaveLinksAdapter(Collections.emptyList(), requireActivity());
         mAdapter.setClickListener(this);
@@ -87,7 +87,7 @@ public class FaveLinksFragment extends BaseMvpFragment<FaveLinksPresenter, IFave
 
     @Override
     public void onLinkClick(int index, FaveLink link) {
-        getPresenter().fireLinkClick(link);
+        callPresenter(p -> p.fireLinkClick(link));
     }
 
     @Override
@@ -105,7 +105,7 @@ public class FaveLinksFragment extends BaseMvpFragment<FaveLinksPresenter, IFave
 
     @Override
     public void onLinkDelete(int index, FaveLink link) {
-        getPresenter().fireDeleteClick(link);
+        callPresenter(p -> p.fireDeleteClick(link));
     }
 
     @Override

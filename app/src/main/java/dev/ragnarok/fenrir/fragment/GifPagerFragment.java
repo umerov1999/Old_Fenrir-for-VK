@@ -82,7 +82,7 @@ public class GifPagerFragment extends AbsDocumentPreviewFragment<GifPagerPresent
         mButtonsRoot = root.findViewById(R.id.buttons);
 
         mButtonAddOrDelete = root.findViewById(R.id.button_add_or_delete);
-        mButtonAddOrDelete.setOnClickListener(v -> getPresenter().fireAddDeleteButtonClick());
+        mButtonAddOrDelete.setOnClickListener(v -> callPresenter(GifPagerPresenter::fireAddDeleteButtonClick));
 
         mViewPager = root.findViewById(R.id.view_pager);
         mViewPager.setOffscreenPageLimit(1);
@@ -91,12 +91,12 @@ public class GifPagerFragment extends AbsDocumentPreviewFragment<GifPagerPresent
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                getPresenter().firePageSelected(position);
+                callPresenter(p -> p.firePageSelected(position));
             }
         });
 
-        root.findViewById(R.id.button_share).setOnClickListener(v -> getPresenter().fireShareButtonClick());
-        root.findViewById(R.id.button_download).setOnClickListener(v -> getPresenter().fireDownloadButtonClick(requireActivity(), requireView()));
+        root.findViewById(R.id.button_share).setOnClickListener(v -> callPresenter(GifPagerPresenter::fireShareButtonClick));
+        root.findViewById(R.id.button_download).setOnClickListener(v -> callPresenter(p -> p.fireDownloadButtonClick(requireActivity(), requireView())));
 
 
         resolveFullscreenViews();
@@ -228,7 +228,7 @@ public class GifPagerFragment extends AbsDocumentPreviewFragment<GifPagerPresent
     }
 
     private void fireHolderCreate(@NonNull Holder holder) {
-        getPresenter().fireHolderCreate(holder.getBindingAdapterPosition());
+        callPresenter(p -> p.fireHolderCreate(holder.getBindingAdapterPosition()));
     }
 
     public Holder findByPosition(int position) {
@@ -267,9 +267,7 @@ public class GifPagerFragment extends AbsDocumentPreviewFragment<GifPagerPresent
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
             mSurfaceReady = true;
-            if (isPresenterPrepared()) {
-                getPresenter().fireSurfaceCreated(getBindingAdapterPosition());
-            }
+            callPresenter(p -> p.fireSurfaceCreated(getBindingAdapterPosition()));
         }
 
         @Override

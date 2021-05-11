@@ -58,7 +58,7 @@ public class NewsfeedCommentsFragment extends PlaceSupportMvpFragment<NewsfeedCo
         ((AppCompatActivity) requireActivity()).setSupportActionBar(root.findViewById(R.id.toolbar));
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(NewsfeedCommentsPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
@@ -74,7 +74,7 @@ public class NewsfeedCommentsFragment extends PlaceSupportMvpFragment<NewsfeedCo
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(NewsfeedCommentsPresenter::fireScrollToEnd);
             }
         });
 
@@ -145,11 +145,11 @@ public class NewsfeedCommentsFragment extends PlaceSupportMvpFragment<NewsfeedCo
 
     @Override
     public void onPostBodyClick(NewsfeedComment comment) {
-        getPresenter().firePostClick((Post) comment.getModel());
+        callPresenter(p -> p.firePostClick((Post) comment.getModel()));
     }
 
     @Override
     public void onCommentBodyClick(NewsfeedComment comment) {
-        getPresenter().fireCommentBodyClick(comment);
+        callPresenter(p -> p.fireCommentBodyClick(comment));
     }
 }

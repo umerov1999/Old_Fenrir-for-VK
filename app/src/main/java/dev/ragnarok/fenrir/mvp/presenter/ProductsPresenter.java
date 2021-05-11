@@ -44,9 +44,7 @@ public class ProductsPresenter extends AccountDependencyPresenter<IProductsView>
 
     @OnGuiCreated
     private void resolveRefreshingView() {
-        if (isGuiReady()) {
-            getView().showRefreshing(netLoadingNow);
-        }
+        callView(v -> v.showRefreshing(netLoadingNow));
     }
 
     @Override
@@ -69,7 +67,7 @@ public class ProductsPresenter extends AccountDependencyPresenter<IProductsView>
     private void onNetDataGetError(Throwable t) {
         netLoadingNow = false;
         resolveRefreshingView();
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onNetDataReceived(int offset, List<Market> markets) {
@@ -117,7 +115,7 @@ public class ProductsPresenter extends AccountDependencyPresenter<IProductsView>
     }
 
     public void fireMarketOpen(Market market) {
-        getView().onOpenMarket(getAccountId(), market);
+        callView(v -> v.onOpenMarket(getAccountId(), market));
     }
 
     public void fireScrollToEnd() {

@@ -100,7 +100,7 @@ public class UserBannedPresenter extends AccountDependencyPresenter<IUserBannedV
 
     private void onBannedPartGetError(Throwable throwable) {
         setLoadinNow(false);
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
     }
 
     private void setLoadinNow(boolean loadinNow) {
@@ -115,9 +115,7 @@ public class UserBannedPresenter extends AccountDependencyPresenter<IUserBannedV
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().displayRefreshing(loadinNow);
-        }
+        callResumedView(v -> v.displayRefreshing(loadinNow));
     }
 
     private void loadNextPart(int offset) {
@@ -137,7 +135,7 @@ public class UserBannedPresenter extends AccountDependencyPresenter<IUserBannedV
     }
 
     public void fireButtonAddClick() {
-        getView().startUserSelection(getAccountId());
+        callView(v -> v.startUserSelection(getAccountId()));
     }
 
     private void onAddingComplete() {
@@ -145,7 +143,7 @@ public class UserBannedPresenter extends AccountDependencyPresenter<IUserBannedV
     }
 
     private void onAddError(Throwable throwable) {
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
     }
 
     public void fireUsersSelected(ArrayList<Owner> owners) {
@@ -175,7 +173,7 @@ public class UserBannedPresenter extends AccountDependencyPresenter<IUserBannedV
     }
 
     private void onRemoveError(Throwable throwable) {
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
     }
 
     public void fireRemoveClick(User user) {
@@ -187,6 +185,6 @@ public class UserBannedPresenter extends AccountDependencyPresenter<IUserBannedV
     }
 
     public void fireUserClick(User user) {
-        getView().showUserProfile(getAccountId(), user);
+        callView(v -> v.showUserProfile(getAccountId(), user));
     }
 }

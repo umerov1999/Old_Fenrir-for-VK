@@ -19,7 +19,6 @@ import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
-import dev.ragnarok.fenrir.activity.MainActivity;
 import dev.ragnarok.fenrir.adapter.AnswerVKOfficialAdapter;
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
 import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener;
@@ -63,7 +62,7 @@ public class AnswerVKOfficialFragment extends BaseMvpFragment<AnswerVKOfficialPr
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(AnswerVKOfficialPresenter::fireScrollToEnd);
             }
         });
 
@@ -150,7 +149,7 @@ public class AnswerVKOfficialFragment extends BaseMvpFragment<AnswerVKOfficialPr
 
     @Override
     public void onRefresh() {
-        getPresenter().fireRefresh();
+        callPresenter(AnswerVKOfficialPresenter::fireRefresh);
     }
 
     @NonNull

@@ -58,7 +58,7 @@ public class MarketViewPresenter extends AccountDependencyPresenter<IMarketViewV
     }
 
     private void onLoadingError(Throwable t) {
-        showError(getView(), t);
+        callView(v -> showError(v, t));
         setLoadingNow(false);
     }
 
@@ -73,20 +73,16 @@ public class MarketViewPresenter extends AccountDependencyPresenter<IMarketViewV
 
     @OnGuiCreated
     private void resolveLoadingView() {
-        if (isGuiReady()) {
-            getView().displayLoading(loadingNow);
-        }
+        callView(v -> v.displayLoading(loadingNow));
     }
 
     @OnGuiCreated
     private void resolveMarketView() {
-        if (isGuiReady()) {
-            getView().displayMarket(mMarket);
-        }
+        callView(v -> v.displayMarket(mMarket));
     }
 
     public void fireSendMarket(Market market) {
-        getView().sendMarket(getAccountId(), market);
+        callView(v -> v.sendMarket(getAccountId(), market));
     }
 
     public void fireWriteToMarketer(Market market, Context context) {
@@ -96,12 +92,12 @@ public class MarketViewPresenter extends AccountDependencyPresenter<IMarketViewV
                     Peer peer = new Peer(Peer.fromOwnerId(userInfo.getOwner().getOwnerId()))
                             .setAvaUrl(userInfo.getOwner().getMaxSquareAvatar())
                             .setTitle(userInfo.getOwner().getFullName());
-                    getView().onWriteToMarketer(getAccountId(), market, peer);
+                    callView(v -> v.onWriteToMarketer(getAccountId(), market, peer));
                 }, throwable -> {
                     Peer peer = new Peer(Peer.fromOwnerId(market.getOwner_id()))
                             .setAvaUrl(market.getThumb_photo())
                             .setTitle(market.getTitle());
-                    getView().onWriteToMarketer(getAccountId(), market, peer);
+                    callView(v -> v.onWriteToMarketer(getAccountId(), market, peer));
                 }));
     }
 

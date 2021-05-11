@@ -503,6 +503,26 @@ public class Utils {
         toast.show();
     }
 
+    public static void showYellowTopToast(@NonNull Context activity, String text) {
+        View view = View.inflate(activity, R.layout.toast_warrning, null);
+        ((TextView) view.findViewById(R.id.text)).setText(text);
+
+        Toast toast = Toast.makeText(activity, text, Toast.LENGTH_SHORT);
+        toast.setView(view);
+        toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP, 0, 15);
+        toast.show();
+    }
+
+    public static void showYellowTopToast(@NonNull Context activity, @StringRes int text, Object... params) {
+        View view = View.inflate(activity, R.layout.toast_warrning, null);
+        ((TextView) view.findViewById(R.id.text)).setText(activity.getString(text, params));
+
+        Toast toast = Toast.makeText(activity, text, Toast.LENGTH_SHORT);
+        toast.setView(view);
+        toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP, 0, 15);
+        toast.show();
+    }
+
     public static int safeCountOf(SparseArray<?> sparseArray) {
         return sparseArray == null ? 0 : sparseArray.size();
     }

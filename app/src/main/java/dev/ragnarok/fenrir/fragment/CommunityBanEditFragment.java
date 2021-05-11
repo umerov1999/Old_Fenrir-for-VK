@@ -92,7 +92,7 @@ public class CommunityBanEditFragment extends BaseMvpFragment<CommunityBanEditPr
         ((AppCompatActivity) requireActivity()).setSupportActionBar(root.findViewById(R.id.toolbar));
 
         mAvatar = root.findViewById(R.id.avatar);
-        mAvatar.setOnClickListener(v -> getPresenter().fireAvatarClick());
+        mAvatar.setOnClickListener(v -> callPresenter(CommunityBanEditPresenter::fireAvatarClick));
 
         mOnlineView = root.findViewById(R.id.online);
         mName = root.findViewById(R.id.name);
@@ -101,21 +101,21 @@ public class CommunityBanEditFragment extends BaseMvpFragment<CommunityBanEditPr
         mBanStatus = root.findViewById(R.id.status);
 
         mBlockFor = root.findViewById(R.id.spinner_block_for);
-        mBlockFor.setIconOnClickListener(v -> getPresenter().fireBlockForClick());
+        mBlockFor.setIconOnClickListener(v -> callPresenter(CommunityBanEditPresenter::fireBlockForClick));
 
         mReason = root.findViewById(R.id.spinner_reason);
-        mReason.setIconOnClickListener(v -> getPresenter().fireResonClick());
+        mReason.setIconOnClickListener(v -> callPresenter(CommunityBanEditPresenter::fireResonClick));
 
         mComment = root.findViewById(R.id.community_ban_comment);
         mComment.addTextChangedListener(new TextWatcherAdapter() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                getPresenter().fireCommentEdit(s);
+                callPresenter(p -> p.fireCommentEdit(s));
             }
         });
 
         mShowComment = root.findViewById(R.id.community_ban_show_comment_to_user);
-        mShowComment.setOnCheckedChangeListener((buttonView, checked) -> getPresenter().fireShowCommentCheck(checked));
+        mShowComment.setOnCheckedChangeListener((buttonView, checked) -> callPresenter(p -> p.fireShowCommentCheck(checked)));
         return root;
     }
 
@@ -128,7 +128,7 @@ public class CommunityBanEditFragment extends BaseMvpFragment<CommunityBanEditPr
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_save) {
-            getPresenter().fireButtonSaveClick();
+            callPresenter(CommunityBanEditPresenter::fireButtonSaveClick);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -252,7 +252,7 @@ public class CommunityBanEditFragment extends BaseMvpFragment<CommunityBanEditPr
 
         new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(R.string.select_from_list_title)
-                .setItems(strings, (dialog, which) -> getPresenter().fireOptionSelected(requestCode, options.get(which)))
+                .setItems(strings, (dialog, which) -> callPresenter(p -> p.fireOptionSelected(requestCode, options.get(which))))
                 .setNegativeButton(R.string.button_cancel, null)
                 .show();
     }

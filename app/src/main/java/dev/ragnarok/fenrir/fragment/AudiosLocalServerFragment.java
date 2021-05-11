@@ -70,7 +70,7 @@ public class AudiosLocalServerFragment extends BaseMvpFragment<AudiosLocalServer
         searchView.setOnAdditionalButtonLongClickListener(() -> Utils.checkMusicInPC(requireActivity()));
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh(false));
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(p -> p.fireRefresh(false)));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
@@ -79,7 +79,7 @@ public class AudiosLocalServerFragment extends BaseMvpFragment<AudiosLocalServer
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(AudiosLocalServerPresenter::fireScrollToEnd);
             }
         });
 
@@ -97,7 +97,7 @@ public class AudiosLocalServerFragment extends BaseMvpFragment<AudiosLocalServer
         Goto.setOnClickListener(v -> {
             Audio curr = MusicUtils.getCurrentAudio();
             if (curr != null) {
-                int index = getPresenter().getAudioPos(curr);
+                int index = callPresenter(p -> p.getAudioPos(curr), -1);
                 if (index >= 0) {
                     recyclerView.scrollToPosition(index);
                 } else
@@ -157,19 +157,19 @@ public class AudiosLocalServerFragment extends BaseMvpFragment<AudiosLocalServer
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        getPresenter().fireSearchRequestChanged(query);
+        callPresenter(p -> p.fireSearchRequestChanged(query));
         return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        getPresenter().fireSearchRequestChanged(newText);
+        callPresenter(p -> p.fireSearchRequestChanged(newText));
         return false;
     }
 
     @Override
     public void onClick(int position, Audio audio) {
-        getPresenter().playAudio(requireActivity(), position);
+        callPresenter(p -> p.playAudio(requireActivity(), position));
     }
 
     @Override

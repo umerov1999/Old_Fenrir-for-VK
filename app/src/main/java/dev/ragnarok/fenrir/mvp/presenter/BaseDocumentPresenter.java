@@ -44,7 +44,7 @@ public class BaseDocumentPresenter<V extends IBasicDocumentView> extends Account
 
         appendDisposable(docsInteractor.add(accountId, docId, ownerId, document.getAccessKey())
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(id -> onDocAddedSuccessfully(docId, ownerId, id), t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(id -> onDocAddedSuccessfully(docId, ownerId, id), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     protected void delete(int id, int ownerId) {
@@ -55,16 +55,16 @@ public class BaseDocumentPresenter<V extends IBasicDocumentView> extends Account
     }
 
     private void onDocDeleteError(Throwable t) {
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     @SuppressWarnings("unused")
     protected void onDocDeleteSuccessfully(int id, int ownerId) {
-        safeShowLongToast(getView(), R.string.deleted);
+        callView(v -> v.showToast(R.string.deleted, true));
     }
 
     @SuppressWarnings("unused")
     protected void onDocAddedSuccessfully(int id, int ownerId, int resultDocId) {
-        safeShowLongToast(getView(), R.string.added);
+        callView(v -> v.showToast(R.string.added, true));
     }
 }

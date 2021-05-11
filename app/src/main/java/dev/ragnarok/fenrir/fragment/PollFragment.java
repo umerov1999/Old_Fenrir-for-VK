@@ -80,7 +80,7 @@ public class PollFragment extends BaseMvpFragment<PollPresenter, IPollView>
         photo = root.findViewById(R.id.item_poll_image);
 
         mButton = root.findViewById(R.id.vote);
-        mButton.setOnClickListener(view -> getPresenter().fireButtonClick());
+        mButton.setOnClickListener(view -> callPresenter(PollPresenter::fireButtonClick));
 
         recyclerView.setAdapter(mAnswersAdapter);
         return root;
@@ -163,6 +163,6 @@ public class PollFragment extends BaseMvpFragment<PollPresenter, IPollView>
 
     @Override
     public void onAnswerChanged(Set<Integer> checked) {
-        getPresenter().fireVoteChecked(checked);
+        callPresenter(p -> p.fireVoteChecked(checked));
     }
 }

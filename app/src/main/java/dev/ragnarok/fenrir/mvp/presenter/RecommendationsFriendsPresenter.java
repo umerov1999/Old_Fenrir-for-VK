@@ -27,9 +27,7 @@ public class RecommendationsFriendsPresenter extends SimpleOwnersPresenter<ISimp
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().displayRefreshing(actualDataLoading);
-        }
+        callResumedView(v -> v.displayRefreshing(actualDataLoading));
     }
 
     @Override
@@ -58,7 +56,7 @@ public class RecommendationsFriendsPresenter extends SimpleOwnersPresenter<ISimp
         actualDataLoading = false;
         resolveRefreshingView();
 
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onDataReceived(List<User> users) {

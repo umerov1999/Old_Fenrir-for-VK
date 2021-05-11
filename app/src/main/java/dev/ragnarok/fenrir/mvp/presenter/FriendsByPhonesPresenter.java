@@ -36,9 +36,7 @@ public class FriendsByPhonesPresenter extends AccountDependencyPresenter<IFriend
 
     @OnGuiCreated
     private void resolveRefreshingView() {
-        if (isGuiReady()) {
-            getView().displayLoading(netLoadingNow);
-        }
+        callView(v -> v.displayLoading(netLoadingNow));
     }
 
     private void requestActualData() {
@@ -56,7 +54,7 @@ public class FriendsByPhonesPresenter extends AccountDependencyPresenter<IFriend
         netLoadingNow = false;
         resolveRefreshingView();
 
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onActualDataReceived(List<User> owners) {
@@ -79,6 +77,6 @@ public class FriendsByPhonesPresenter extends AccountDependencyPresenter<IFriend
     }
 
     public void onUserOwnerClicked(Owner owner) {
-        getView().showOwnerWall(getAccountId(), owner);
+        callView(v -> v.showOwnerWall(getAccountId(), owner));
     }
 }

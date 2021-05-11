@@ -58,9 +58,7 @@ public abstract class BaseChatAttachmentsPresenter<T, V extends IBaseChatAttachm
     }
 
     private void resolveLoadingView() {
-        if (isGuiReady()) {
-            getView().showLoading(loadingHolder.isActive());
-        }
+        callView(v -> v.showLoading(loadingHolder.isActive()));
     }
 
     private void initLoading() {
@@ -79,7 +77,7 @@ public abstract class BaseChatAttachmentsPresenter<T, V extends IBaseChatAttachm
         loadingHolder.dispose();
         resolveLoadingView();
 
-        safeShowError(getView(), throwable.getMessage());
+        callView(v -> v.showError(throwable.getMessage()));
     }
 
     private void onDataReceived(String startFrom, Pair<String, List<T>> result) {
@@ -93,19 +91,12 @@ public abstract class BaseChatAttachmentsPresenter<T, V extends IBaseChatAttachm
 
         if (nonNull(startFrom)) {
             int startSize = data.size();
-
             data.addAll(newData);
-
-            if (isGuiReady()) {
-                getView().notifyDataAdded(startSize, newData.size());
-            }
+            callView(v -> v.notifyDataAdded(startSize, newData.size()));
         } else {
             data.clear();
             data.addAll(newData);
-
-            if (isGuiReady()) {
-                getView().notifyDatasetChanged();
-            }
+            callView(IBaseChatAttachmentsView::notifyDatasetChanged);
         }
 
         resolveEmptyTextVisiblity();
@@ -114,9 +105,7 @@ public abstract class BaseChatAttachmentsPresenter<T, V extends IBaseChatAttachm
 
     @OnGuiCreated
     private void resolveEmptyTextVisiblity() {
-        if (isGuiReady()) {
-            getView().setEmptyTextVisible(safeIsEmpty(data));
-        }
+        callView(v -> v.setEmptyTextVisible(safeIsEmpty(data)));
     }
 
     void onDataChanged() {

@@ -21,9 +21,11 @@ import dev.ragnarok.fenrir.adapter.AudioPlaylistsAdapter;
 import dev.ragnarok.fenrir.fragment.search.criteria.AudioPlaylistSearchCriteria;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
+import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.presenter.search.AudioPlaylistSearchPresenter;
 import dev.ragnarok.fenrir.mvp.view.search.IAudioPlaylistSearchView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
+import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
 
 public class AudioPlaylistSearchFragment extends AbsSearchFragment<AudioPlaylistSearchPresenter, IAudioPlaylistSearchView, AudioPlaylist, AudioPlaylistsAdapter>
@@ -99,18 +101,18 @@ public class AudioPlaylistSearchFragment extends AbsSearchFragment<AudioPlaylist
             requireActivity().finish();
         } else {
             if (Utils.isEmpty(album.getOriginal_access_key()) || album.getOriginal_id() == 0 || album.getOriginal_owner_id() == 0)
-                PlaceFactory.getAudiosInAlbumPlace(getPresenter().getAccountId(), album.getOwnerId(), album.getId(), album.getAccess_key()).tryOpenWith(requireActivity());
+                PlaceFactory.getAudiosInAlbumPlace(callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent()), album.getOwnerId(), album.getId(), album.getAccess_key()).tryOpenWith(requireActivity());
             else
-                PlaceFactory.getAudiosInAlbumPlace(getPresenter().getAccountId(), album.getOriginal_owner_id(), album.getOriginal_id(), album.getOriginal_access_key()).tryOpenWith(requireActivity());
+                PlaceFactory.getAudiosInAlbumPlace(callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent()), album.getOriginal_owner_id(), album.getOriginal_id(), album.getOriginal_access_key()).tryOpenWith(requireActivity());
         }
     }
 
     @Override
     public void onOpenClick(int index, AudioPlaylist album) {
         if (Utils.isEmpty(album.getOriginal_access_key()) || album.getOriginal_id() == 0 || album.getOriginal_owner_id() == 0)
-            PlaceFactory.getAudiosInAlbumPlace(getPresenter().getAccountId(), album.getOwnerId(), album.getId(), album.getAccess_key()).tryOpenWith(requireActivity());
+            PlaceFactory.getAudiosInAlbumPlace(callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent()), album.getOwnerId(), album.getId(), album.getAccess_key()).tryOpenWith(requireActivity());
         else
-            PlaceFactory.getAudiosInAlbumPlace(getPresenter().getAccountId(), album.getOriginal_owner_id(), album.getOriginal_id(), album.getOriginal_access_key()).tryOpenWith(requireActivity());
+            PlaceFactory.getAudiosInAlbumPlace(callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent()), album.getOriginal_owner_id(), album.getOriginal_id(), album.getOriginal_access_key()).tryOpenWith(requireActivity());
     }
 
     @Override
@@ -120,7 +122,7 @@ public class AudioPlaylistSearchFragment extends AbsSearchFragment<AudioPlaylist
 
     @Override
     public void onShare(int index, AudioPlaylist album) {
-        SendAttachmentsActivity.startForSendAttachments(requireActivity(), getPresenter().getAccountId(), album);
+        SendAttachmentsActivity.startForSendAttachments(requireActivity(), callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent()), album);
     }
 
     @Override
@@ -135,6 +137,6 @@ public class AudioPlaylistSearchFragment extends AbsSearchFragment<AudioPlaylist
 
     @Override
     public void onAdd(int index, AudioPlaylist album) {
-        getPresenter().onAdd(album);
+        callPresenter(p -> p.onAdd(album));
     }
 }

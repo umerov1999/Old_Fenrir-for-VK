@@ -62,7 +62,7 @@ public class CommentEditFragment extends AbsAttachmentsEditFragment<CommentEditP
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.ready) {
-            getPresenter().fireReadyClick();
+            callPresenter(CommentEditPresenter::fireReadyClick);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -85,7 +85,7 @@ public class CommentEditFragment extends AbsAttachmentsEditFragment<CommentEditP
 
     @Override
     public boolean onBackPressed() {
-        return getPresenter().onBackPressed();
+        return callPresenter(CommentEditPresenter::onBackPressed, false);
     }
 
     @Override
@@ -103,8 +103,8 @@ public class CommentEditFragment extends AbsAttachmentsEditFragment<CommentEditP
         new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(R.string.confirmation)
                 .setMessage(R.string.save_changes_question)
-                .setPositiveButton(R.string.button_yes, (dialog, which) -> getPresenter().fireReadyClick())
-                .setNegativeButton(R.string.button_no, (dialog, which) -> getPresenter().fireSavingCancelClick())
+                .setPositiveButton(R.string.button_yes, (dialog, which) -> callPresenter(CommentEditPresenter::fireReadyClick))
+                .setNegativeButton(R.string.button_no, (dialog, which) -> callPresenter(CommentEditPresenter::fireSavingCancelClick))
                 .setNeutralButton(R.string.button_cancel, null)
                 .show();
     }

@@ -50,10 +50,7 @@ public abstract class AccountDependencyPresenter<V extends IMvpView & IAccountDe
             afterAccountChange(oldAccountId, newAccountId);
         } else {
             mInvalidAccountContext = true;
-
-            if (isGuiReady()) {
-                getView().displayAccountNotSupported();
-            }
+            callView(IAccountDependencyView::displayAccountNotSupported);
         }
     }
 

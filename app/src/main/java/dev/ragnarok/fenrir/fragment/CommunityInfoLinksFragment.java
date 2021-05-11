@@ -50,7 +50,7 @@ public class CommunityInfoLinksFragment extends BaseMvpFragment<CommunityInfoLin
         View root = inflater.inflate(R.layout.fragment_community_links, container, false);
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(CommunityInfoLinksPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
@@ -104,6 +104,6 @@ public class CommunityInfoLinksFragment extends BaseMvpFragment<CommunityInfoLin
 
     @Override
     public void onClick(VKApiCommunity.Link link) {
-        getPresenter().fireLinkClick(link);
+        callPresenter(p -> p.fireLinkClick(link));
     }
 }

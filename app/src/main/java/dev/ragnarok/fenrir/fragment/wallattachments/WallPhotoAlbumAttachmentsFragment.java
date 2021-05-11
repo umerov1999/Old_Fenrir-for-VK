@@ -67,13 +67,13 @@ public class WallPhotoAlbumAttachmentsFragment extends PlaceSupportMvpFragment<W
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(WallPhotoAlbumAttachmentsPresenter::fireScrollToEnd);
             }
         });
-        mLoadMore.setOnClickListener(v -> getPresenter().fireScrollToEnd());
+        mLoadMore.setOnClickListener(v -> callPresenter(WallPhotoAlbumAttachmentsPresenter::fireScrollToEnd));
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(WallPhotoAlbumAttachmentsPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         mAdapter = new PhotoAlbumsAdapter(Collections.emptyList(), requireActivity());
@@ -176,6 +176,6 @@ public class WallPhotoAlbumAttachmentsFragment extends PlaceSupportMvpFragment<W
 
     @Override
     public void onAlbumClick(int index, PhotoAlbum album) {
-        getPresenter().firePhotoAlbumClick(album);
+        callPresenter(p -> p.firePhotoAlbumClick(album));
     }
 }

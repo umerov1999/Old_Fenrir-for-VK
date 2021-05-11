@@ -117,7 +117,7 @@ public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedVi
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.refresh) {
-            getPresenter().fireRefresh();
+            callPresenter(FeedPresenter::fireRefresh);
             return true;
         } else if (item.getItemId() == R.id.action_create_list) {
             requestProfileSelect.launch(SelectProfilesActivity.startFaveSelection(requireActivity()));
@@ -154,7 +154,7 @@ public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedVi
         mRecycleView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToBottom();
+                callPresenter(FeedPresenter::fireScrollToBottom);
             }
         });
 
@@ -166,7 +166,7 @@ public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedVi
         Goto.setOnLongClickListener(v -> {
             mRecycleView.stopScroll();
             mFeedLayoutManager.scrollToPosition(0);
-            getPresenter().fireRefresh();
+            callPresenter(FeedPresenter::fireRefresh);
             return true;
         });
 
@@ -174,7 +174,7 @@ public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedVi
 
         ViewGroup footerView = (ViewGroup) inflater.inflate(R.layout.footer_load_more, mRecycleView, false);
 
-        mLoadMoreFooterHelper = LoadMoreFooterHelper.createFrom(footerView, () -> getPresenter().fireLoadMoreClick());
+        mLoadMoreFooterHelper = LoadMoreFooterHelper.createFrom(footerView, () -> callPresenter(FeedPresenter::fireLoadMoreClick));
 
         //ViewGroup headerView = (ViewGroup) inflater.inflate(R.layout.header_feed, mRecycleView, false);
         RecyclerView headerRecyclerView = root.findViewById(R.id.header_list);
@@ -264,48 +264,48 @@ public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedVi
 
     @Override
     public void onRepostClick(News news) {
-        getPresenter().fireNewsRepostClick(news);
+        callPresenter(p -> p.fireNewsRepostClick(news));
     }
 
     @Override
     public void onPostClick(News news) {
-        getPresenter().fireNewsBodyClick(news);
+        callPresenter(p -> p.fireNewsBodyClick(news));
     }
 
     @Override
     public void onBanClick(News news) {
-        getPresenter().fireBanClick(news);
+        callPresenter(p -> p.fireBanClick(news));
     }
 
     @Override
     public void onIgnoreClick(News news) {
-        getPresenter().fireIgnoreClick(news);
+        callPresenter(p -> p.fireIgnoreClick(news));
     }
 
     @Override
     public void onFaveClick(News news) {
-        getPresenter().fireAddBookmark(news.getSourceId(), news.getPostId());
+        callPresenter(p -> p.fireAddBookmark(news.getSourceId(), news.getPostId()));
     }
 
     @Override
     public void onCommentButtonClick(News news) {
-        getPresenter().fireNewsCommentClick(news);
+        callPresenter(p -> p.fireNewsCommentClick(news));
     }
 
     @Override
     public void onLikeClick(News news, boolean add) {
-        getPresenter().fireLikeClick(news);
+        callPresenter(p -> p.fireLikeClick(news));
     }
 
     @Override
     public boolean onLikeLongClick(News news) {
-        getPresenter().fireNewsLikeLongClick(news);
+        callPresenter(p -> p.fireNewsLikeLongClick(news));
         return true;
     }
 
     @Override
     public boolean onShareLongClick(News news) {
-        getPresenter().fireNewsShareLongClick(news);
+        callPresenter(p -> p.fireNewsShareLongClick(news));
         return true;
     }
 
@@ -327,15 +327,18 @@ public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedVi
 
     @Override
     public void askToReload() {
-        Snackbar.make(getView(), R.string.update_news, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.do_update, v -> {
+        if (getView() == null) {
+            return;
+        }
+        Snackbar.make(requireView(), R.string.update_news, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.do_update, v -> {
             mFeedLayoutManager.scrollToPosition(0);
-            getPresenter().fireRefresh();
+            callPresenter(FeedPresenter::fireRefresh);
         }).show();
     }
 
     @Override
     public void onRefresh() {
-        getPresenter().fireRefresh();
+        callPresenter(FeedPresenter::fireRefresh);
     }
 
     private void restoreRecycleViewManagerState(String state) {
@@ -361,7 +364,7 @@ public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedVi
         Parcelable parcelable = mFeedLayoutManager.onSaveInstanceState();
         String json = gson().toJson(parcelable);
 
-        getPresenter().fireScrollStateOnPause(json);
+        callPresenter(p -> p.fireScrollStateOnPause(json));
         super.onPause();
     }
 
@@ -412,7 +415,7 @@ public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedVi
     public void onOptionClick(FeedSource entry) {
         mRecycleView.stopScroll();
         mRecycleView.scrollToPosition(0);
-        getPresenter().fireFeedSourceClick(entry);
+        callPresenter(p -> p.fireFeedSourceClick(entry));
     }
 
     @Override
@@ -420,7 +423,7 @@ public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedVi
         Utils.ThemedSnack(requireView(), R.string.do_delete, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.button_yes,
                 v1 -> {
                     mFeedSourceAdapter.removeChild(position);
-                    getPresenter().fireFeedSourceDelete(Integer.parseInt(entry.getValue().replace("list", "")));
+                    callPresenter(p -> p.fireFeedSourceDelete(Integer.parseInt(entry.getValue().replace("list", ""))));
                 }).show();
     }
 

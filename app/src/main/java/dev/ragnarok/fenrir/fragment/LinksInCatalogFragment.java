@@ -77,7 +77,7 @@ public class LinksInCatalogFragment extends BaseMvpFragment<LinksInCatalogPresen
         }
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(LinksInCatalogPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
@@ -86,7 +86,7 @@ public class LinksInCatalogFragment extends BaseMvpFragment<LinksInCatalogPresen
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(LinksInCatalogPresenter::fireScrollToEnd);
             }
         });
         mAdapter = new CatalogLinksAdapter(Collections.emptyList());

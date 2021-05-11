@@ -131,9 +131,7 @@ public class CommunitiesPresenter extends AccountDependencyPresenter<ICommunitie
     }
 
     private void resolveRefreshing() {
-        if (isGuiResumed()) {
-            getView().displayRefreshing(actualLoadingNow || netSeacrhNow);
-        }
+        callResumedView(v -> v.displayRefreshing(actualLoadingNow || netSeacrhNow));
     }
     //private int netSearchOffset;
 
@@ -141,7 +139,7 @@ public class CommunitiesPresenter extends AccountDependencyPresenter<ICommunitie
         actualLoadingNow = false;
 
         resolveRefreshing();
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     @Override
@@ -256,7 +254,7 @@ public class CommunitiesPresenter extends AccountDependencyPresenter<ICommunitie
     private void onSeacrhError(Throwable t) {
         netSeacrhNow = false;
         resolveRefreshing();
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void onSearchDataReceived(int offset, List<Community> communities) {
@@ -283,7 +281,7 @@ public class CommunitiesPresenter extends AccountDependencyPresenter<ICommunitie
     }
 
     public void fireCommunityClick(Community community) {
-        getView().showCommunityWall(getAccountId(), community);
+        callView(v -> v.showCommunityWall(getAccountId(), community));
     }
 
     @Override

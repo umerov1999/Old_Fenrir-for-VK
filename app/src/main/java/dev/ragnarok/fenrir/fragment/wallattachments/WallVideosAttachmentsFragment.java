@@ -60,7 +60,7 @@ public class WallVideosAttachmentsFragment extends PlaceSupportMvpFragment<WallV
         mEmpty = root.findViewById(R.id.empty);
         mLoadMore = root.findViewById(R.id.goto_button);
 
-        int columns = getContext().getResources().getInteger(R.integer.videos_column_count);
+        int columns = getResources().getInteger(R.integer.videos_column_count);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(requireActivity(), columns);
 
         RecyclerView recyclerView = root.findViewById(android.R.id.list);
@@ -69,13 +69,13 @@ public class WallVideosAttachmentsFragment extends PlaceSupportMvpFragment<WallV
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(WallVideosAttachmentsPresenter::fireScrollToEnd);
             }
         });
-        mLoadMore.setOnClickListener(v -> getPresenter().fireScrollToEnd());
+        mLoadMore.setOnClickListener(v -> callPresenter(WallVideosAttachmentsPresenter::fireScrollToEnd));
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(WallVideosAttachmentsPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         mAdapter = new VideosAdapter(requireActivity(), Collections.emptyList());
@@ -163,7 +163,7 @@ public class WallVideosAttachmentsFragment extends PlaceSupportMvpFragment<WallV
 
     @Override
     public void onVideoClick(int position, Video video) {
-        getPresenter().fireVideoClick(video);
+        callPresenter(p -> p.fireVideoClick(video));
     }
 
     @Override

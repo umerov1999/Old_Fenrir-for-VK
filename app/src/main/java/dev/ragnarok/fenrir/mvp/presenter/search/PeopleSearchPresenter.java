@@ -54,6 +54,6 @@ public class PeopleSearchPresenter extends AbsSearchPresenter<IPeopleSearchView,
     }
 
     public void fireUserClick(User user) {
-        getView().openUserWall(getAccountId(), user);
+        callView(v -> v.openUserWall(getAccountId(), user));
     }
 }

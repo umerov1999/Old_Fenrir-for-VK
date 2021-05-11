@@ -51,7 +51,7 @@ public class CommunityLinksFragment extends BaseMvpFragment<CommunityLinksPresen
         View root = inflater.inflate(R.layout.fragment_community_links, container, false);
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(CommunityLinksPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
@@ -62,7 +62,7 @@ public class CommunityLinksFragment extends BaseMvpFragment<CommunityLinksPresen
 
         recyclerView.setAdapter(mLinksAdapter);
 
-        root.findViewById(R.id.button_add).setOnClickListener(v -> getPresenter().fireButtonAddClick());
+        root.findViewById(R.id.button_add).setOnClickListener(v -> callPresenter(CommunityLinksPresenter::fireButtonAddClick));
         return root;
     }
 
@@ -105,7 +105,7 @@ public class CommunityLinksFragment extends BaseMvpFragment<CommunityLinksPresen
 
     @Override
     public void onClick(VKApiCommunity.Link link) {
-        getPresenter().fireLinkClick(link);
+        callPresenter(p -> p.fireLinkClick(link));
     }
 
     @Override
@@ -116,10 +116,10 @@ public class CommunityLinksFragment extends BaseMvpFragment<CommunityLinksPresen
                 .setItems(items, (dialog, which) -> {
                     switch (which) {
                         case 0:
-                            getPresenter().fireLinkEditClick(link);
+                            callPresenter(p -> p.fireLinkEditClick(link));
                             break;
                         case 1:
-                            getPresenter().fireLinkDeleteClick(link);
+                            callPresenter(p -> p.fireLinkDeleteClick(link));
                             break;
                     }
                 })

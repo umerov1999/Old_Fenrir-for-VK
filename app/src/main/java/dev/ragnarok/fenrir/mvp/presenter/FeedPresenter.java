@@ -161,7 +161,7 @@ public class FeedPresenter extends PlaceSupportPresenter<IFeedView> {
         resolveLoadMoreFooterView();
         resolveRefreshingView();
 
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onActualFeedReceived(String startFrom, List<News> feed, String nextFrom) {
@@ -231,26 +231,24 @@ public class FeedPresenter extends PlaceSupportPresenter<IFeedView> {
         mFeed.addAll(data);
 
         if (nonNull(thenScrollToState)) {
-            if (isGuiReady()) {
-                getView().displayFeed(mFeed, thenScrollToState);
+            if (getGuiIsReady()) {
+                callView(v -> v.displayFeed(mFeed, thenScrollToState));
             } else {
                 mTmpFeedScrollOnGuiReady = thenScrollToState;
             }
         } else {
-            if (isGuiReady()) {
-                getView().notifyFeedDataChanged();
-            }
+            callView(IFeedView::notifyFeedDataChanged);
         }
 
         if (mFeed.isEmpty()) {
             requestFeedAtLast(null);
         } else {
-            if (isGuiReady() && Utils.needReloadNews(getAccountId())) {
+            if (Utils.needReloadNews(getAccountId())) {
                 int vr = Settings.get().main().getStart_newsMode();
                 if (vr == 2) {
-                    getView().askToReload();
+                    callView(IFeedView::askToReload);
                 } else if (vr == 1) {
-                    getView().scrollTo(0);
+                    callView(v -> v.scrollTo(0));
                     requestFeedAtLast(null);
                 }
             }
@@ -273,13 +271,9 @@ public class FeedPresenter extends PlaceSupportPresenter<IFeedView> {
         mFeedSources.addAll(sources);
 
         int selected = refreshFeedSourcesSelection();
-
-        if (isGuiReady()) {
-            getView().notifyFeedSourcesChanged();
-
-            if (selected != -1) {
-                getView().scrollFeedSourcesToPosition(selected);
-            }
+        callView(IFeedView::notifyFeedSourcesChanged);
+        if (selected != -1) {
+            callView(v -> v.scrollFeedSourcesToPosition(selected));
         }
     }
 
@@ -326,9 +320,7 @@ public class FeedPresenter extends PlaceSupportPresenter<IFeedView> {
 
     @OnGuiCreated
     private void resolveRefreshingView() {
-        if (isGuiReady()) {
-            getView().showRefreshing(isRefreshing());
-        }
+        callView(v -> v.showRefreshing(isRefreshing()));
     }
 
     private int getActiveFeedSourceIndex() {
@@ -343,16 +335,14 @@ public class FeedPresenter extends PlaceSupportPresenter<IFeedView> {
 
     @OnGuiCreated
     private void resolveLoadMoreFooterView() {
-        if (isGuiReady()) {
-            if (mFeed.isEmpty() || isEmpty(mNextFrom)) {
-                getView().setupLoadMoreFooter(LoadMoreState.END_OF_LIST);
-            } else if (isMoreLoading()) {
-                getView().setupLoadMoreFooter(LoadMoreState.LOADING);
-            } else if (canLoadNextNow()) {
-                getView().setupLoadMoreFooter(LoadMoreState.CAN_LOAD_MORE);
-            } else {
-                getView().setupLoadMoreFooter(LoadMoreState.END_OF_LIST);
-            }
+        if (mFeed.isEmpty() || isEmpty(mNextFrom)) {
+            callView(v -> v.setupLoadMoreFooter(LoadMoreState.END_OF_LIST));
+        } else if (isMoreLoading()) {
+            callView(v -> v.setupLoadMoreFooter(LoadMoreState.LOADING));
+        } else if (canLoadNextNow()) {
+            callView(v -> v.setupLoadMoreFooter(LoadMoreState.CAN_LOAD_MORE));
+        } else {
+            callView(v -> v.setupLoadMoreFooter(LoadMoreState.END_OF_LIST));
         }
     }
 
@@ -400,7 +390,7 @@ public class FeedPresenter extends PlaceSupportPresenter<IFeedView> {
                         .subscribe(t -> {
                             CustomToast.CreateCustomToast(context).showToastSuccessBottom(R.string.success);
                             requestActualFeedLists();
-                        }, i -> showError(getView(), i))))
+                        }, i -> callView(v -> showError(v, i)))))
                 .show();
     }
 
@@ -414,7 +404,7 @@ public class FeedPresenter extends PlaceSupportPresenter<IFeedView> {
         cacheLoadingNow = false;
 
         refreshFeedSourcesSelection();
-        getView().notifyFeedSourcesChanged();
+        callView(IFeedView::notifyFeedSourcesChanged);
 
         requestFeedAtLast(null);
     }
@@ -422,31 +412,30 @@ public class FeedPresenter extends PlaceSupportPresenter<IFeedView> {
     public void fireFeedSourceDelete(Integer id) {
         appendDisposable(feedInteractor.deleteList(getAccountId(), id)
                 .compose(applySingleIOToMainSchedulers())
-                .subscribe(ignore(), t -> showError(getView(), t)));
+                .subscribe(ignore(), t -> callView(v -> showError(v, t))));
     }
 
     public void fireNewsShareLongClick(News news) {
-        getView().goToReposts(getAccountId(), news.getType(), news.getSourceId(), news.getPostId());
+        callView(v -> v.goToReposts(getAccountId(), news.getType(), news.getSourceId(), news.getPostId()));
     }
 
     public void fireNewsLikeLongClick(News news) {
-        getView().goToLikes(getAccountId(), news.getType(), news.getSourceId(), news.getPostId());
+        callView(v -> v.goToLikes(getAccountId(), news.getType(), news.getSourceId(), news.getPostId()));
     }
 
     public void fireAddBookmark(int ownerId, int postId) {
         appendDisposable(faveInteractor.addPost(getAccountId(), ownerId, postId, null)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(this::onPostAddedToBookmarks, t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(this::onPostAddedToBookmarks, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     private void onPostAddedToBookmarks() {
-        if (isGuiReady())
-            getView().showSuccessToast();
+        callView(IFeedView::showSuccessToast);
     }
 
     public void fireNewsCommentClick(News news) {
         if ("post".equalsIgnoreCase(news.getType())) {
-            getView().goToPostComments(getAccountId(), news.getPostId(), news.getSourceId());
+            callView(v -> v.goToPostComments(getAccountId(), news.getPostId(), news.getSourceId()));
         }
     }
 
@@ -466,13 +455,13 @@ public class FeedPresenter extends PlaceSupportPresenter<IFeedView> {
     public void fireNewsBodyClick(News news) {
         if ("post".equals(news.getType())) {
             Post post = news.toPost();
-            getView().openPost(getAccountId(), post);
+            callView(v -> v.openPost(getAccountId(), post));
         }
     }
 
     public void fireNewsRepostClick(News news) {
         if ("post".equals(news.getType())) {
-            getView().repostPost(getAccountId(), news.toPost());
+            callView(v -> v.repostPost(getAccountId(), news.toPost()));
         }
     }
 

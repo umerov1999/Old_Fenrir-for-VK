@@ -39,6 +39,7 @@ import dev.ragnarok.fenrir.model.User;
 import dev.ragnarok.fenrir.model.UserDetails;
 import dev.ragnarok.fenrir.model.criteria.WallCriteria;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
+import dev.ragnarok.fenrir.mvp.view.IProgressView;
 import dev.ragnarok.fenrir.mvp.view.IUserWallView;
 import dev.ragnarok.fenrir.mvp.view.IWallView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
@@ -125,7 +126,7 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
         new MaterialAlertDialogBuilder(context)
                 .setTitle(R.string.select)
                 .setNegativeButton(R.string.video, (dialog, which) -> doUploadFile(file, 0, true))
-                .setPositiveButton(R.string.photo, (dialog, which) -> getView().doEditPhoto(Uri.fromFile(new File(file))))
+                .setPositiveButton(R.string.photo, (dialog, which) -> callView(v -> v.doEditPhoto(Uri.fromFile(new File(file)))))
                 .create().show();
     }
 
@@ -150,7 +151,8 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
             if (new File(to_up.getPath()).isFile()) {
                 to_up = Uri.fromFile(new File(to_up.getPath()));
             }
-            getView().doEditPhoto(to_up);
+            Uri finalTo_up = to_up;
+            callView(v -> v.doEditPhoto(finalTo_up));
             return;
         }
         List<UploadIntent> intents = UploadUtils.createIntents(getAccountId(), UploadDestination.forStory(MessageMethod.PHOTO), photos, Upload.IMAGE_SIZE_FULL, true);
@@ -162,10 +164,8 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
         if (destination.getMethod() == Method.PHOTO_TO_PROFILE && destination.getOwnerId() == ownerId) {
             requestActualFullInfo();
 
-            if (isGuiResumed()) {
-                Post post = (Post) pair.getSecond().getResult();
-                getView().showAvatarUploadedMessage(getAccountId(), post);
-            }
+            Post post = (Post) pair.getSecond().getResult();
+            callResumedView(v -> v.showAvatarUploadedMessage(getAccountId(), post));
         } else if (destination.getMethod() == Method.STORY && Settings.get().accounts().getCurrent() == ownerId) {
             fireRefresh();
         }
@@ -173,25 +173,21 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
 
     @OnGuiCreated
     private void resolveCounters() {
-        if (isGuiReady()) {
-            getView().displayCounters(details.getFriendsCount(),
-                    details.getMutualFriendsCount(),
-                    details.getFollowersCount(),
-                    details.getGroupsCount(),
-                    details.getPhotosCount(),
-                    details.getAudiosCount(),
-                    details.getVideosCount(),
-                    details.getArticlesCount(),
-                    details.getProductsCount(),
-                    details.getGiftCount());
-        }
+        callView(v -> v.displayCounters(details.getFriendsCount(),
+                details.getMutualFriendsCount(),
+                details.getFollowersCount(),
+                details.getGroupsCount(),
+                details.getPhotosCount(),
+                details.getAudiosCount(),
+                details.getVideosCount(),
+                details.getArticlesCount(),
+                details.getProductsCount(),
+                details.getGiftCount()));
     }
 
     @OnGuiCreated
     private void resolveBaseUserInfoViews() {
-        if (isGuiReady()) {
-            getView().displayBaseUserInfo(user);
-        }
+        callView(v -> v.displayBaseUserInfo(user));
     }
 
     private void refreshUserDetails() {
@@ -239,7 +235,7 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
     }
 
     private void onDetailsGetError(Throwable t) {
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void syncFiltersWithSelectedMode() {
@@ -284,44 +280,44 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
 
     public void fireStatusClick() {
         if (nonNull(details) && nonNull(details.getStatusAudio())) {
-            getView().playAudioList(getAccountId(), 0, Utils.singletonArrayList(details.getStatusAudio()));
+            callView(v -> v.playAudioList(getAccountId(), 0, Utils.singletonArrayList(details.getStatusAudio())));
         }
     }
 
     public void fireMoreInfoClick() {
-        getView().openUserDetails(getAccountId(), user, details);
+        callView(v -> v.openUserDetails(getAccountId(), user, details));
     }
 
     public void fireFilterClick(PostFilter entry) {
         if (changeWallFilter(entry.getMode())) {
             syncFiltersWithSelectedMode();
 
-            getView().notifyWallFiltersChanged();
+            callView(IUserWallView::notifyWallFiltersChanged);
         }
     }
 
     public void fireHeaderPhotosClick() {
-        getView().openPhotoAlbums(getAccountId(), ownerId, user);
+        callView(v -> v.openPhotoAlbums(getAccountId(), ownerId, user));
     }
 
     public void fireHeaderAudiosClick() {
-        getView().openAudios(getAccountId(), ownerId, user);
+        callView(v -> v.openAudios(getAccountId(), ownerId, user));
     }
 
     public void fireHeaderArticlesClick() {
-        getView().openArticles(getAccountId(), ownerId, user);
+        callView(v -> v.openArticles(getAccountId(), ownerId, user));
     }
 
     public void fireHeaderProductsClick() {
-        getView().openProducts(getAccountId(), ownerId, user);
+        callView(v -> v.openProducts(getAccountId(), ownerId, user));
     }
 
     public void fireHeaderGiftsClick() {
-        getView().openGifts(getAccountId(), ownerId, user);
+        callView(v -> v.openGifts(getAccountId(), ownerId, user));
     }
 
     public void fireHeaderFriendsClick() {
-        getView().openFriends(getAccountId(), ownerId, FriendsTabsFragment.TAB_ALL_FRIENDS, getFriendsCounters());
+        callView(v -> v.openFriends(getAccountId(), ownerId, FriendsTabsFragment.TAB_ALL_FRIENDS, getFriendsCounters()));
     }
 
     private FriendsCounters getFriendsCounters() {
@@ -334,18 +330,16 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
     }
 
     public void fireHeaderGroupsClick() {
-        getView().openGroups(getAccountId(), ownerId, user);
+        callView(v -> v.openGroups(getAccountId(), ownerId, user));
     }
 
     public void fireHeaderVideosClick() {
-        getView().openVideosLibrary(getAccountId(), ownerId, user);
+        callView(v -> v.openVideosLibrary(getAccountId(), ownerId, user));
     }
 
     @SuppressLint("ResourceType")
     @OnGuiCreated
     private void resolvePrimaryActionButton() {
-        if (!isGuiReady()) return;
-
         @StringRes
         Integer title = null;
         if (getAccountId() == ownerId) {
@@ -370,30 +364,31 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
             }
         }
 
-        getView().setupPrimaryActionButton(title);
+        Integer finalTitle = title;
+        callView(v -> v.setupPrimaryActionButton(finalTitle));
     }
 
     public void firePrimaryActionsClick() {
         if (getAccountId() == ownerId) {
-            getView().showEditStatusDialog(user.getStatus());
+            callView(v -> v.showEditStatusDialog(user.getStatus()));
             return;
         }
 
         if (user.getBlacklisted_by_me()) {
-            getView().showUnbanMessageDialog();
+            callView(IUserWallView::showUnbanMessageDialog);
             return;
         }
 
         switch (user.getFriendStatus()) {
             case VKApiUser.FRIEND_STATUS_IS_NOT_FRIEDND:
-                getView().showAddToFriendsMessageDialog();
+                callView(IUserWallView::showAddToFriendsMessageDialog);
                 break;
 
             case VKApiUser.FRIEND_STATUS_REQUEST_SENT:
                 fireDeleteFromFriends();
                 break;
             case VKApiUser.FRIEND_STATUS_IS_FRIEDND:
-                getView().showDeleteFromFriendsMessageDialog();
+                callView(IUserWallView::showDeleteFromFriendsMessageDialog);
                 break;
 
             case VKApiUser.FRIEND_STATUS_HAS_INPUT_REQUEST:
@@ -451,8 +446,9 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
             user.setFriendStatus(newFriendStatus);
         }
 
-        if (nonNull(strRes) && isGuiReady()) {
-            getView().showSnackbar(strRes, true);
+        if (nonNull(strRes)) {
+            Integer finalStrRes = strRes;
+            callView(v -> v.showSnackbar(finalStrRes, true));
         }
 
         resolvePrimaryActionButton();
@@ -462,14 +458,14 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
         int accountId = getAccountId();
         appendDisposable(relationshipInteractor.deleteFriends(accountId, ownerId)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(this::onFriendsDeleteResult, t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(this::onFriendsDeleteResult, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     public void fireNewStatusEntered(String newValue) {
         int accountId = getAccountId();
         appendDisposable(accountInteractor.changeStatus(accountId, newValue)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(() -> onStatusChanged(newValue), t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(() -> onStatusChanged(newValue), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     private void onStatusChanged(String status) {
@@ -481,23 +477,19 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
 
     @OnGuiCreated
     private void resolveStatusView() {
-        if (isGuiReady()) {
-            String statusText;
-            if (nonNull(details.getStatusAudio())) {
-                statusText = details.getStatusAudio().getArtistAndTitle();
-            } else {
-                statusText = user.getStatus();
-            }
-
-            getView().displayUserStatus(statusText, nonNull(details.getStatusAudio()));
+        String statusText;
+        if (nonNull(details.getStatusAudio())) {
+            statusText = details.getStatusAudio().getArtistAndTitle();
+        } else {
+            statusText = user.getStatus();
         }
+
+        callView(v -> v.displayUserStatus(statusText, nonNull(details.getStatusAudio())));
     }
 
     @OnGuiCreated
     private void resolveMenu() {
-        if (isGuiReady()) {
-            getView().InvalidateOptionsMenu();
-        }
+        callView(IUserWallView::InvalidateOptionsMenu);
     }
 
     public void fireAddToFrindsClick(String message) {
@@ -537,7 +529,7 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
 
         appendDisposable(relationshipInteractor.addFriend(accountId, ownerId, text, follow)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(this::onAddFriendResult, t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(this::onAddFriendResult, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     private void onFriendsDeleteResult(int responseCode) {
@@ -570,9 +562,9 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
             user.setFriendStatus(newFriendStatus);
         }
 
-        if (nonNull(strRes) && isGuiReady()) {
-            getView().showSnackbar(strRes, true);
-
+        if (nonNull(strRes)) {
+            Integer finalStrRes = strRes;
+            callView(v -> v.showSnackbar(finalStrRes, true));
             resolvePrimaryActionButton();
         }
     }
@@ -589,17 +581,16 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
 
     private void onAvatarAlbumPrepareFailed(Throwable t) {
         setLoadingAvatarPhotosNow(false);
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     @OnGuiCreated
     private void resolveProgressDialogView() {
-        if (isGuiReady()) {
-            if (loadingAvatarPhotosNow) {
-                getView().displayProgressDialog(R.string.please_wait, R.string.loading_owner_photo_album, false);
-            } else {
-                getView().dismissProgressDialog();
-            }
+
+        if (loadingAvatarPhotosNow) {
+            callView(v -> v.displayProgressDialog(R.string.please_wait, R.string.loading_owner_photo_album, false));
+        } else {
+            callView(IProgressView::dismissProgressDialog);
         }
     }
 
@@ -609,7 +600,7 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
     }
 
     public void fireAvatarClick() {
-        getView().showAvatarContextMenu(isMyWall());
+        callView(v -> v.showAvatarContextMenu(isMyWall()));
     }
 
     public void fireOpenAvatarsPhotoAlbum() {
@@ -652,10 +643,10 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
                     .compose(RxUtils.applySingleIOToMainSchedulers())
                     .subscribe(p -> {
                         if (p == 1)
-                            getView().getCustomToast().showToast(R.string.success);
+                            callView(v -> v.getCustomToast().showToast(R.string.success));
                         else
-                            getView().getCustomToast().showToast(R.string.error);
-                    }, t -> showError(getView(), getCauseIfRuntime(t))));
+                            callView(v -> v.getCustomToast().showToast(R.string.error));
+                    }, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
             dialog.dismiss();
         });
         alert.show();
@@ -671,12 +662,12 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
     }
 
     private void onExecuteError(Throwable t) {
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void onExecuteComplete() {
         onRefresh();
-        getView().getCustomToast().showToast(R.string.success);
+        callView(v -> v.getCustomToast().showToast(R.string.success));
     }
 
     public void fireChatClick() {
@@ -685,7 +676,7 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
                 .setAvaUrl(user.getMaxSquareAvatar())
                 .setTitle(user.getFullName());
 
-        getView().openChatWith(accountId, accountId, peer);
+        callView(v -> v.openChatWith(accountId, accountId, peer));
     }
 
     public void fireNewAvatarPhotoSelected(LocalPhoto photo) {
@@ -711,7 +702,7 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
     public void fireAddToNewsClick() {
         appendDisposable(InteractorFactory.createFeedInteractor().saveList(getAccountId(), user.getShortFullName(), Collections.singleton(user.getOwnerId()))
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(i -> getView().showSnackbar(R.string.success, true), t -> showError(getView(), t)));
+                .subscribe(i -> callView(v -> v.showSnackbar(R.string.success, true)), t -> callView(v -> showError(v, t))));
     }
 
     @Override
@@ -722,7 +713,7 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
                     if (!Utils.isEmpty(data)) {
                         stories.clear();
                         stories.addAll(data);
-                        getView().updateStory(stories);
+                        callView(v -> v.updateStory(stories));
                     }
                 }, t -> {
                 }));

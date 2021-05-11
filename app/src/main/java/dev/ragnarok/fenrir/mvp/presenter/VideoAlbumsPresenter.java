@@ -45,9 +45,7 @@ public class VideoAlbumsPresenter extends AccountDependencyPresenter<IVideoAlbum
     }
 
     private void resolveRefreshingView() {
-        if (isGuiReady()) {
-            getView().displayLoading(netLoadingNow);
-        }
+        callView(v -> v.displayLoading(netLoadingNow));
     }
 
     @Override
@@ -77,7 +75,7 @@ public class VideoAlbumsPresenter extends AccountDependencyPresenter<IVideoAlbum
         netLoadingNow = false;
         resolveRefreshingView();
 
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onActualDataReceived(int offset, List<VideoAlbum> albums) {
@@ -135,7 +133,7 @@ public class VideoAlbumsPresenter extends AccountDependencyPresenter<IVideoAlbum
     }
 
     public void fireItemClick(VideoAlbum album) {
-        getView().openAlbum(getAccountId(), ownerId, album.getId(), action, album.getTitle());
+        callView(v -> v.openAlbum(getAccountId(), ownerId, album.getId(), action, album.getTitle()));
     }
 
     public void fireRefresh() {

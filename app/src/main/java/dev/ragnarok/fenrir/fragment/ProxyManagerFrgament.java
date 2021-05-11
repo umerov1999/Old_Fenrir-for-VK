@@ -70,7 +70,7 @@ public class ProxyManagerFrgament extends BaseMvpFragment<ProxyManagerPresenter,
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_add) {
-            getPresenter().fireAddClick();
+            callPresenter(ProxyManagerPresenter::fireAddClick);
             return true;
         }
 
@@ -118,16 +118,16 @@ public class ProxyManagerFrgament extends BaseMvpFragment<ProxyManagerPresenter,
 
     @Override
     public void onDeleteClick(ProxyConfig config) {
-        getPresenter().fireDeleteClick(config);
+        callPresenter(p -> p.fireDeleteClick(config));
     }
 
     @Override
     public void onSetAtiveClick(ProxyConfig config) {
-        getPresenter().fireActivateClick(config);
+        callPresenter(p -> p.fireActivateClick(config));
     }
 
     @Override
     public void onDisableClick(ProxyConfig config) {
-        getPresenter().fireDisableClick(config);
+        callPresenter(p -> p.fireDisableClick(config));
     }
 }

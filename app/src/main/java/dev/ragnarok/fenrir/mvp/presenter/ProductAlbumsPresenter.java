@@ -46,9 +46,7 @@ public class ProductAlbumsPresenter extends AccountDependencyPresenter<IProductA
 
     @OnGuiCreated
     private void resolveRefreshingView() {
-        if (isGuiReady()) {
-            getView().showRefreshing(netLoadingNow);
-        }
+        callView(v -> v.showRefreshing(netLoadingNow));
     }
 
     @Override
@@ -71,7 +69,7 @@ public class ProductAlbumsPresenter extends AccountDependencyPresenter<IProductA
     private void onNetDataGetError(Throwable t) {
         netLoadingNow = false;
         resolveRefreshingView();
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onNetDataReceived(int offset, List<MarketAlbum> markets) {
@@ -120,7 +118,7 @@ public class ProductAlbumsPresenter extends AccountDependencyPresenter<IProductA
     }
 
     public void fireAlbumOpen(MarketAlbum market_album) {
-        getView().onMarketAlbumOpen(getAccountId(), market_album);
+        callView(v -> v.onMarketAlbumOpen(getAccountId(), market_album));
     }
 
     public void fireScrollToEnd() {

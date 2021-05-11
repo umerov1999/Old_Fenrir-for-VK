@@ -93,9 +93,7 @@ public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbum
 
     @OnGuiCreated
     private void resolveDrawerPhotoSection() {
-        if (isGuiReady()) {
-            getView().seDrawertPhotoSectionActive(isMy());
-        }
+        callView(v -> v.seDrawertPhotoSectionActive(isMy()));
     }
 
     private boolean isMy() {
@@ -114,7 +112,7 @@ public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbum
     }
 
     private void onOwnerGetError(Throwable t) {
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void onOwnerInfoReceived(Owner owner) {
@@ -135,7 +133,7 @@ public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbum
 
     private void onActualAlbumsGetError(Throwable t) {
         netLoadingNow = false;
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
 
         resolveProgressView();
     }
@@ -185,23 +183,17 @@ public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbum
 
     @OnGuiCreated
     private void resolveProgressView() {
-        if (isGuiReady()) {
-            getView().displayLoading(netLoadingNow);
-        }
+        callView(v -> v.displayLoading(netLoadingNow));
     }
 
 
     private void safeNotifyDatasetChanged() {
-        if (isGuiReady()) {
-            getView().notifyDataSetChanged();
-        }
+        callView(IPhotoAlbumsView::notifyDataSetChanged);
     }
 
     @OnGuiCreated
     private void resolveSubtitleView() {
-        if (isGuiReady()) {
-            getView().setToolbarSubtitle(Objects.isNull(mOwner) || isMy() ? null : mOwner.getFullName());
-        }
+        callView(v -> v.setToolbarSubtitle(Objects.isNull(mOwner) || isMy() ? null : mOwner.getFullName()));
     }
 
     private void doAlbumRemove(@NonNull PhotoAlbum album) {
@@ -211,7 +203,7 @@ public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbum
 
         appendDisposable(photosInteractor.removedAlbum(accountId, album.getOwnerId(), album.getId())
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(() -> onAlbumRemoved(albumId, ownerId), t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(() -> onAlbumRemoved(albumId, ownerId), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     private void onAlbumRemoved(int albumId, int ownerId) {
@@ -222,20 +214,20 @@ public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbum
     }
 
     public void fireCreateAlbumClick() {
-        getView().goToAlbumCreation(getAccountId(), mOwnerId);
+        callView(v -> v.goToAlbumCreation(getAccountId(), mOwnerId));
     }
 
     public void fireAlbumClick(PhotoAlbum album) {
         if (VKPhotoAlbumsFragment.ACTION_SELECT_ALBUM.equals(mAction)) {
-            getView().doSelection(album);
+            callView(v -> v.doSelection(album));
         } else {
-            getView().openAlbum(getAccountId(), album, mOwner, mAction);
+            callView(v -> v.openAlbum(getAccountId(), album, mOwner, mAction));
         }
     }
 
     public boolean fireAlbumLongClick(PhotoAlbum album) {
         if (canDeleteOrEdit(album)) {
-            getView().showAlbumContextMenu(album);
+            callView(v -> v.showAlbumContextMenu(album));
             return true;
         }
 
@@ -252,16 +244,12 @@ public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbum
 
     @OnGuiCreated
     private void resolveCreateAlbumButtonVisibility() {
-        if (isGuiReady()) {
-            boolean mustBeVisible = isMy() || isAdmin();
-            getView().setCreateAlbumFabVisible(mustBeVisible);
-        }
+        boolean mustBeVisible = isMy() || isAdmin();
+        callView(v -> v.setCreateAlbumFabVisible(mustBeVisible));
     }
 
     public void fireAllComments() {
-        if (isGuiReady()) {
-            getView().goToPhotoComments(getAccountId(), mOwnerId);
-        }
+        callView(v -> v.goToPhotoComments(getAccountId(), mOwnerId));
     }
 
     public void fireRefresh() {
@@ -278,7 +266,7 @@ public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbum
     }
 
     public void fireAlbumDeleteClick(PhotoAlbum album) {
-        getView().showDeleteConfirmDialog(album);
+        callView(v -> v.showDeleteConfirmDialog(album));
     }
 
     public void fireAlbumEditClick(PhotoAlbum album) {
@@ -301,9 +289,8 @@ public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbum
                             .setDescription(album.getDescription())
                             .setCommentsDisabled(album.isCommentsDisabled())
                             .setUploadByAdminsOnly(album.isUploadByAdminsOnly());
-                    if (isGuiReady()) {
-                        getView().goToAlbumEditing(getAccountId(), album, editor);
-                    }
+
+                    callView(v -> v.goToAlbumEditing(getAccountId(), album, editor));
                 }, Analytics::logUnexpectedError));
     }
 

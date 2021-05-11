@@ -66,11 +66,11 @@ public class PeopleSearchFragment extends AbsSearchFragment<PeopleSearchPresente
 
     @Override
     public void onOwnerClick(Owner owner) {
-        getPresenter().fireUserClick((User) owner);
+        callPresenter(p -> p.fireUserClick((User) owner));
     }
 
     @Override
     public void openUserWall(int accountId, User user) {
-        PlaceFactory.getOwnerWallPlace(accountId, user).tryOpenWith(getContext());
+        PlaceFactory.getOwnerWallPlace(accountId, user).tryOpenWith(requireActivity());
     }
 }

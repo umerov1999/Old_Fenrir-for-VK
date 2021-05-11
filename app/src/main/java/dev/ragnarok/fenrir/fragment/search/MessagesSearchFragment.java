@@ -57,12 +57,12 @@ public class MessagesSearchFragment extends AbsSearchFragment<MessagesSearchPres
 
     @Override
     public void onAvatarClick(@NonNull Message message, int userId, int position) {
-        getPresenter().fireOwnerClick(userId);
+        callPresenter(p -> p.fireOwnerClick(userId));
     }
 
     @Override
     public void onLongAvatarClick(@NonNull Message message, int userId, int position) {
-        getPresenter().fireOwnerClick(userId);
+        callPresenter(p -> p.fireOwnerClick(userId));
     }
 
     @Override
@@ -82,7 +82,7 @@ public class MessagesSearchFragment extends AbsSearchFragment<MessagesSearchPres
 
     @Override
     public void onMessageClicked(@NonNull Message message, int position) {
-        getPresenter().fireMessageClick(message);
+        callPresenter(p -> p.fireMessageClick(message));
     }
 
     @Override

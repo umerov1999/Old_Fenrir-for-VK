@@ -50,13 +50,13 @@ public class VideoSearchFragment extends AbsSearchFragment<VideosSearchPresenter
 
     @Override
     protected RecyclerView.LayoutManager createLayoutManager() {
-        int columns = getContext().getResources().getInteger(R.integer.videos_column_count);
+        int columns = getResources().getInteger(R.integer.videos_column_count);
         return new StaggeredGridLayoutManager(columns, StaggeredGridLayoutManager.VERTICAL);
     }
 
     @Override
     public void onVideoClick(int position, Video video) {
-        getPresenter().fireVideoClick(video);
+        callPresenter(p -> p.fireVideoClick(video));
     }
 
     @Override

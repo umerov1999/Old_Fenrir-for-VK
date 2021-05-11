@@ -81,9 +81,7 @@ public class CommunityBlacklistPresenter extends AccountDependencyPresenter<ICom
     }
 
     private void resolveRefreshingView() {
-        if (isGuiReady()) {
-            getView().displayRefreshing(loadingNow);
-        }
+        callView(v -> v.displayRefreshing(loadingNow));
     }
 
     private void requestDataAtStart() {
@@ -112,7 +110,7 @@ public class CommunityBlacklistPresenter extends AccountDependencyPresenter<ICom
         setLoadingNow(false);
 
         throwable.printStackTrace();
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
     }
 
     private void onBannedUsersReceived(IntNextFrom startFrom, IntNextFrom nextFrom, List<Banned> users) {
@@ -137,11 +135,11 @@ public class CommunityBlacklistPresenter extends AccountDependencyPresenter<ICom
     }
 
     public void fireBannedClick(Banned banned) {
-        getView().openBanEditor(getAccountId(), groupId, banned);
+        callView(v -> v.openBanEditor(getAccountId(), groupId, banned));
     }
 
     public void fireAddClick() {
-        getView().startSelectProfilesActivity(getAccountId(), groupId);
+        callView(v -> v.startSelectProfilesActivity(getAccountId(), groupId));
     }
 
     public void fireAddToBanUsersSelected(ArrayList<Owner> owners) {
@@ -152,7 +150,7 @@ public class CommunityBlacklistPresenter extends AccountDependencyPresenter<ICom
             }
         }
         if (nonEmpty(users)) {
-            getView().addUsersToBan(getAccountId(), groupId, users);
+            callView(v -> v.addUsersToBan(getAccountId(), groupId, users));
         }
     }
 
@@ -165,11 +163,11 @@ public class CommunityBlacklistPresenter extends AccountDependencyPresenter<ICom
 
     @SuppressWarnings("unused")
     private void onUnbanComplete(Banned banned) {
-        safeShowToast(getView(), R.string.deleted, false);
+        callView(v -> v.showToast(R.string.deleted, false));
     }
 
     private void onUnbanError(Throwable throwable) {
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
     }
 
     private boolean canLoadMore() {

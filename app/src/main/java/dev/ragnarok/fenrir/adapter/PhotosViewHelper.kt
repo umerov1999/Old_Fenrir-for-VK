@@ -210,7 +210,7 @@ class PhotosViewHelper internal constructor(
     }
 
     private fun openImages(photos: List<PostImage>, index: Int) {
-        if(Utils.isEmpty(photos) || photos.size <= index) {
+        if (Utils.isEmpty(photos) || photos.size <= index) {
             return
         }
         val models = ArrayList<Photo>()
@@ -219,7 +219,7 @@ class PhotosViewHelper internal constructor(
                 models.add(postImage.attachment as Photo)
             }
         }
-        if(Utils.isEmpty(models)) {
+        if (Utils.isEmpty(models)) {
             return
         }
         attachmentsActionCallback.onPhotosOpen(models, index, true)

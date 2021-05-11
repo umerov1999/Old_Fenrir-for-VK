@@ -11,6 +11,7 @@ import dev.ragnarok.fenrir.domain.Repository;
 import dev.ragnarok.fenrir.model.AttachmenEntry;
 import dev.ragnarok.fenrir.model.Post;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
+import dev.ragnarok.fenrir.mvp.view.IProgressView;
 import dev.ragnarok.fenrir.mvp.view.IRepostView;
 import dev.ragnarok.fenrir.util.RxUtils;
 
@@ -39,12 +40,11 @@ public class RepostPresenter extends AbsAttachmentsEditPresenter<IRepostView> {
 
     @OnGuiCreated
     private void resolveProgressDialog() {
-        if (isGuiReady()) {
-            if (publishingNow) {
-                getView().displayProgressDialog(R.string.please_wait, R.string.publication, false);
-            } else {
-                getView().dismissProgressDialog();
-            }
+
+        if (publishingNow) {
+            callView(v -> v.displayProgressDialog(R.string.please_wait, R.string.publication, false));
+        } else {
+            callView(IProgressView::dismissProgressDialog);
         }
     }
 
@@ -55,13 +55,13 @@ public class RepostPresenter extends AbsAttachmentsEditPresenter<IRepostView> {
 
     private void onPublishError(Throwable throwable) {
         setPublishingNow(false);
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
     }
 
     @SuppressWarnings("unused")
     private void onPublishComplete(Post post) {
         setPublishingNow(false);
-        getView().goBack();
+        callView(IRepostView::goBack);
     }
 
     public final void fireReadyClick() {

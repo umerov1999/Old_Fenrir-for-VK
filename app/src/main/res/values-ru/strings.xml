@@ -59,6 +59,7 @@
     </string-array>
 
     <string-array name="array_pagan_symbol_names">
+        <item>Выключен.</item>
         <item>Иггдрасиль</item>
         <item>Валькнут</item>
         <item>Мьёльнир</item>
@@ -69,6 +70,7 @@
         <item>Трискель</item>
         <item>Хель</item>
         <item>Файер веер</item>
+        <item>Цитадель</item>
     </string-array>
 
     <string-array name="array_accounts_input">
@@ -1473,8 +1475,7 @@
     <string name="in_full_version">Доступно в полной версии!</string>
     <string name="wall_themed">Оформление стены для язычников</string>
     <string name="runes_show">Показывать руны</string>
-    <string name="show_pagan_symbol">Показывать символ</string>
-    <string name="pagan_symbol">Языческий символ</string>
+    <string name="pagan_symbol">Символ</string>
     <string name="photo_settings">Просмотр фото</string>
     <string name="canceled_by_receiver">Отменён получателем</string>
     <string name="canceled_by_initiator">Отменён инициатором</string>

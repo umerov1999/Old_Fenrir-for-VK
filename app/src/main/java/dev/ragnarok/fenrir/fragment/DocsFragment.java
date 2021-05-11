@@ -68,19 +68,15 @@ public class DocsFragment extends BaseMvpFragment<DocsListPresenter, IDocListVie
                     String file = result.getData().getStringExtra(FileManagerFragment.returnFileParameter);
                     ArrayList<LocalPhoto> photos = result.getData().getParcelableArrayListExtra(Extra.PHOTOS);
                     if (nonEmpty(file)) {
-                        getPresenter().fireFileForUploadSelected(file);
+                        callPresenter(p -> p.fireFileForUploadSelected(file));
                     } else if (nonEmpty(photos)) {
-                        getPresenter().fireLocalPhotosForUploadSelected(photos);
+                        callPresenter(p -> p.fireLocalPhotosForUploadSelected(photos));
                     }
                 }
             });
     private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-            () -> {
-                if (isPresenterPrepared()) {
-                    getPresenter().fireReadPermissionResolved();
-                }
-            });
+            () -> callPresenter(DocsListPresenter::fireReadPermissionResolved));
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerBindableAdapter<Document, ?> mDocsAdapter;
     private DocsUploadAdapter mUploadAdapter;
@@ -116,7 +112,7 @@ public class DocsFragment extends BaseMvpFragment<DocsListPresenter, IDocListVie
         ((AppCompatActivity) requireActivity()).setSupportActionBar(root.findViewById(R.id.toolbar));
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(DocsListPresenter::fireRefresh));
 
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
@@ -126,7 +122,7 @@ public class DocsFragment extends BaseMvpFragment<DocsListPresenter, IDocListVie
         // Так как мы не знаем, какой тип данных мы показываем (фото или просто документы),
         // то при создании view мы просим presenter уведомить об этом типе.
         // Предполагается, что presenter НЕЗАМЕДЛИТЕЛЬНО вызовет у view метод setAdapterType(boolean imagesOnly)
-        getPresenter().pleaseNotifyViewAboutAdapterType();
+        callPresenter(DocsListPresenter::pleaseNotifyViewAboutAdapterType);
         // и мы дальше по коду можем использовать переменную mImagesOnly
 
         mRecyclerView.setLayoutManager(createLayoutManager(mImagesOnly));
@@ -134,7 +130,7 @@ public class DocsFragment extends BaseMvpFragment<DocsListPresenter, IDocListVie
         mDocsAdapter = createAdapter(mImagesOnly, Collections.emptyList());
 
         FloatingActionButton buttonAdd = root.findViewById(R.id.add_button);
-        buttonAdd.setOnClickListener(v -> getPresenter().fireButtonAddClick());
+        buttonAdd.setOnClickListener(v -> callPresenter(DocsListPresenter::fireButtonAddClick));
 
         RecyclerView uploadRecyclerView = root.findViewById(R.id.uploads_recycler_view);
         uploadRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false));
@@ -149,7 +145,7 @@ public class DocsFragment extends BaseMvpFragment<DocsListPresenter, IDocListVie
         headerRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false));
 
         mFiltersAdapter = new HorizontalOptionsAdapter<>(Collections.emptyList());
-        mFiltersAdapter.setListener(entry -> getPresenter().fireFilterClick(entry));
+        mFiltersAdapter.setListener(entry -> callPresenter(p -> p.fireFilterClick(entry)));
 
         headerRecyclerView.setAdapter(mFiltersAdapter);
 
@@ -377,7 +373,7 @@ public class DocsFragment extends BaseMvpFragment<DocsListPresenter, IDocListVie
 
     @Override
     public void onDocClick(int index, @NonNull Document doc) {
-        getPresenter().fireDocClick(doc);
+        callPresenter(p -> p.fireDocClick(doc));
     }
 
     @Override
@@ -387,6 +383,6 @@ public class DocsFragment extends BaseMvpFragment<DocsListPresenter, IDocListVie
 
     @Override
     public void onRemoveClick(Upload upload) {
-        getPresenter().fireRemoveClick(upload);
+        callPresenter(p -> p.fireRemoveClick(upload));
     }
 }

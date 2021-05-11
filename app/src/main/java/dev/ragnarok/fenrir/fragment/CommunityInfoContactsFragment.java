@@ -49,7 +49,7 @@ public class CommunityInfoContactsFragment extends BaseMvpFragment<CommunityInfo
         View root = inflater.inflate(R.layout.fragment_community_managers, container, false);
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(CommunityInfoContactsPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
@@ -58,7 +58,7 @@ public class CommunityInfoContactsFragment extends BaseMvpFragment<CommunityInfo
         root.findViewById(R.id.button_add).setVisibility(View.INVISIBLE);
 
         mAdapter = new CommunityInfoContactsAdapter(Collections.emptyList());
-        mAdapter.setActionListener(manager -> getPresenter().fireManagerClick(manager));
+        mAdapter.setActionListener(manager -> callPresenter(p -> p.fireManagerClick(manager)));
 
         recyclerView.setAdapter(mAdapter);
         return root;

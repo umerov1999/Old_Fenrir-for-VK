@@ -50,9 +50,7 @@ public class LogsPresenter extends RxSupportPresenter<ILogsView> {
 
     @OnGuiCreated
     private void resolveEmptyTextVisibility() {
-        if (isGuiReady()) {
-            getView().setEmptyTextVisible(events.isEmpty());
-        }
+        callView(v -> v.setEmptyTextVisible(events.isEmpty()));
     }
 
     private void setLoading(boolean loading) {
@@ -74,9 +72,7 @@ public class LogsPresenter extends RxSupportPresenter<ILogsView> {
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().showRefreshing(loadingNow);
-        }
+        callResumedView(v -> v.showRefreshing(loadingNow));
     }
 
     public void fireClear() {
@@ -95,7 +91,7 @@ public class LogsPresenter extends RxSupportPresenter<ILogsView> {
 
     private void onDataReceiveError(Throwable throwable) {
         setLoading(false);
-        safeShowError(getView(), throwable.getMessage());
+        callView(v -> v.showError(throwable.getMessage()));
     }
 
     private void onDataReceived(List<LogEvent> events) {

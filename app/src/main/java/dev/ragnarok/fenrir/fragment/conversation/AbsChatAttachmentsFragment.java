@@ -52,12 +52,12 @@ public abstract class AbsChatAttachmentsFragment<T, P extends BaseChatAttachment
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(BaseChatAttachmentsPresenter::fireScrollToEnd);
             }
         });
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(getPresenter()::fireRefresh);
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(BaseChatAttachmentsPresenter::fireRefresh));
 
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 

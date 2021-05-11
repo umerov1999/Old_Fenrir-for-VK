@@ -74,6 +74,6 @@ public class ArtistSearchFragment extends AbsSearchFragment<ArtistSearchPresente
 
     @Override
     public void onArtistClick(String id) {
-        getPresenter().fireArtistClick(new AudioArtist(id));
+        callPresenter(p -> p.fireArtistClick(new AudioArtist(id)));
     }
 }

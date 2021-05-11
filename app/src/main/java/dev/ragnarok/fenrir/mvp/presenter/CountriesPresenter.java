@@ -54,9 +54,7 @@ public class CountriesPresenter extends RxSupportPresenter<ICountriesView> {
 
     @OnGuiCreated
     private void resolveLoadingView() {
-        if (isGuiReady()) {
-            getView().displayLoading(loadingNow);
-        }
+        callView(v -> v.displayLoading(loadingNow));
     }
 
     private void onDataReceived(List<Country> countries) {
@@ -98,7 +96,7 @@ public class CountriesPresenter extends RxSupportPresenter<ICountriesView> {
 
     private void onDataGetError(Throwable t) {
         setLoadingNow(false);
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void requestData() {
@@ -109,6 +107,6 @@ public class CountriesPresenter extends RxSupportPresenter<ICountriesView> {
     }
 
     public void fireCountryClick(Country country) {
-        getView().returnSelection(country);
+        callView(v -> v.returnSelection(country));
     }
 }

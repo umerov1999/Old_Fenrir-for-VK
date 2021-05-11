@@ -67,17 +67,17 @@ public class LocalPhotoAlbumsPresenter extends RxSupportPresenter<ILocalPhotoAlb
         if (!AppPerms.hasReadStoragePermission(getApplicationContext())) {
             if (!permissionRequestedOnce) {
                 permissionRequestedOnce = true;
-                getView().requestReadExternalStoragePermission();
+                callView(ILocalPhotoAlbumsView::requestReadExternalStoragePermission);
             }
         } else {
             if (isEmpty(mLocalImageAlbums)) {
                 loadData();
-                getView().displayData(mLocalImageAlbums);
+                callView(v -> v.displayData(mLocalImageAlbums));
             } else {
                 if (isEmpty(q)) {
-                    getView().displayData(mLocalImageAlbums);
+                    callView(v -> v.displayData(mLocalImageAlbums));
                 } else {
-                    getView().displayData(mLocalImageAlbums_Search);
+                    callView(v -> v.displayData(mLocalImageAlbums_Search));
                 }
             }
         }
@@ -91,7 +91,7 @@ public class LocalPhotoAlbumsPresenter extends RxSupportPresenter<ILocalPhotoAlb
     }
 
     private void resolveProgressView() {
-        if (isGuiReady()) getView().displayProgress(mLoadingNow);
+        callView(v -> v.displayProgress(mLoadingNow));
     }
 
     private void loadData() {
@@ -115,9 +115,7 @@ public class LocalPhotoAlbumsPresenter extends RxSupportPresenter<ILocalPhotoAlb
         mLocalImageAlbums.clear();
         mLocalImageAlbums.addAll(data);
 
-        if (isGuiReady()) {
-            getView().notifyDataChanged();
-        }
+        callView(ILocalPhotoAlbumsView::notifyDataChanged);
 
         resolveEmptyTextView();
         if (!isEmpty(q)) {
@@ -126,7 +124,7 @@ public class LocalPhotoAlbumsPresenter extends RxSupportPresenter<ILocalPhotoAlb
     }
 
     private void resolveEmptyTextView() {
-        if (isGuiReady()) getView().setEmptyTextVisible(Utils.safeIsEmpty(mLocalImageAlbums));
+        callView(v -> v.setEmptyTextVisible(Utils.safeIsEmpty(mLocalImageAlbums)));
     }
 
     public void fireRefresh() {
@@ -134,7 +132,7 @@ public class LocalPhotoAlbumsPresenter extends RxSupportPresenter<ILocalPhotoAlb
     }
 
     public void fireAlbumClick(@NonNull LocalImageAlbum album) {
-        getView().openAlbum(album);
+        callView(v -> v.openAlbum(album));
     }
 
     public void fireReadExternalStoregePermissionResolved() {

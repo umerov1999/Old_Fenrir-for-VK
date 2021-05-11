@@ -147,6 +147,6 @@ public class AudioDuplicatePresenter extends RxSupportPresenter<IAudioDuplicateV
     }
 
     private void onDataGetError(Throwable t) {
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 }

@@ -64,11 +64,11 @@ public class DrawerEditFragment extends AbsMvpFragment<DrawerEditPresenter, IDra
             }
 
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder h1, RecyclerView.ViewHolder h2) {
+            public boolean onMove(@NonNull RecyclerView recyclerView, RecyclerView.ViewHolder h1, RecyclerView.ViewHolder h2) {
                 int fromPosition = h1.getBindingAdapterPosition();
                 int toPosition = h2.getBindingAdapterPosition();
 
-                getPresenter().fireItemMoved(fromPosition, toPosition);
+                callPresenter(p -> p.fireItemMoved(fromPosition, toPosition));
                 recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
                 return true;
             }
@@ -106,7 +106,7 @@ public class DrawerEditFragment extends AbsMvpFragment<DrawerEditPresenter, IDra
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_save) {
-            getPresenter().fireSaveClick();
+            callPresenter(DrawerEditPresenter::fireSaveClick);
             return true;
         }
 

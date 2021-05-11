@@ -66,7 +66,7 @@ public class RepostFragment extends AbsAttachmentsEditFragment<RepostPresenter, 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.ready) {
-            getPresenter().fireReadyClick();
+            callPresenter(RepostPresenter::fireReadyClick);
             return true;
         }
 

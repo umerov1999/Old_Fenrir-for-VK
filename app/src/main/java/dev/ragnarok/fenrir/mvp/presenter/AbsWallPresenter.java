@@ -165,10 +165,7 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
 
         if (index != -1) {
             wall.remove(index);
-
-            if (isGuiReady()) {
-                getView().notifyWallItemRemoved(index);
-            }
+            callView(v -> v.notifyWallItemRemoved(index));
         }
     }
 
@@ -183,7 +180,7 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
                 wall.remove(index);
 
                 if(isGuiReady()){
-                    getView().notifyWallItemRemoved(index);
+                    callView(v -> v.notifyWallItemRemoved(index);
                 }
             }*/
 
@@ -248,15 +245,11 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
     }
 
     private void resolveRefreshingView() {
-        if (isGuiReady()) {
-            getView().showRefreshing(requestNow && nowRequestOffset == 0);
-        }
+        callView(v -> v.showRefreshing(requestNow && nowRequestOffset == 0));
     }
 
     private void safeNotifyWallDataSetChanged() {
-        if (isGuiReady()) {
-            getView().notifyWallDataSetChanged();
-        }
+        callView(IWallView::notifyWallDataSetChanged);
     }
 
     private void setRequestNow(boolean requestNow) {
@@ -285,7 +278,7 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
 
     private void onActualDataGetError(Throwable throwable) {
         setRequestNow(false);
-        showError(getView(), getCauseIfRuntime(throwable));
+        callView(v -> showError(v, getCauseIfRuntime(throwable)));
     }
 
     private void onActualDataReceived(int nextOffset, List<Post> posts, boolean append) {
@@ -312,24 +305,22 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
 
     @OnGuiCreated
     private void resolveLoadMoreFooterView() {
-        if (isGuiReady()) {
-            @LoadMoreState
-            int state;
+        @LoadMoreState
+        int state;
 
-            if (requestNow) {
-                if (nowRequestOffset == 0) {
-                    state = LoadMoreState.INVISIBLE;
-                } else {
-                    state = LoadMoreState.LOADING;
-                }
-            } else if (endOfContent) {
-                state = LoadMoreState.END_OF_LIST;
+        if (requestNow) {
+            if (nowRequestOffset == 0) {
+                state = LoadMoreState.INVISIBLE;
             } else {
-                state = LoadMoreState.CAN_LOAD_MORE;
+                state = LoadMoreState.LOADING;
             }
-
-            getView().setupLoadMoreFooter(state);
+        } else if (endOfContent) {
+            state = LoadMoreState.END_OF_LIST;
+        } else {
+            state = LoadMoreState.CAN_LOAD_MORE;
         }
+
+        callView(v -> v.setupLoadMoreFooter(state));
     }
 
     private boolean canLoadMore() {
@@ -357,7 +348,7 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
     }
 
     public void fireCreateClick() {
-        getView().goToPostCreation(getAccountId(), ownerId, EditingPostType.DRAFT);
+        callView(v -> v.goToPostCreation(getAccountId(), ownerId, EditingPostType.DRAFT));
     }
 
     private void fireEdit(Context context, VkApiProfileInfo p) {
@@ -394,7 +385,7 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
                                     CustomToast.CreateCustomToast(context).showToastBottom(R.string.later);
                                     break;
                             }
-                        }, v -> showError(getView(), v))))
+                        }, t -> callView(v -> showError(v, t)))))
                 .setNegativeButton(R.string.button_cancel, null);
         builder.create().show();
     }
@@ -546,7 +537,7 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
 
     public void firePostBodyClick(Post post) {
         if (Utils.intValueIn(post.getPostType(), VKApiPost.Type.SUGGEST, VKApiPost.Type.POSTPONE)) {
-            getView().openPostEditor(getAccountId(), post);
+            callView(v -> v.openPostEditor(getAccountId(), post));
             return;
         }
 
@@ -556,15 +547,15 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
     public void firePostRestoreClick(Post post) {
         appendDisposable(walls.restore(getAccountId(), post.getOwnerId(), post.getVkid())
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(dummy(), t -> showError(getView(), t)));
+                .subscribe(dummy(), t -> callView(v -> showError(v, t))));
     }
 
     public void fireLikeLongClick(Post post) {
-        getView().goToLikes(getAccountId(), "post", post.getOwnerId(), post.getVkid());
+        callView(v -> v.goToLikes(getAccountId(), "post", post.getOwnerId(), post.getVkid()));
     }
 
     public void fireShareLongClick(Post post) {
-        getView().goToReposts(getAccountId(), "post", post.getOwnerId(), post.getVkid());
+        callView(v -> v.goToReposts(getAccountId(), "post", post.getOwnerId(), post.getVkid()));
     }
 
     public void fireLikeClick(Post post) {
@@ -575,7 +566,7 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
 
         appendDisposable(walls.like(accountId, post.getOwnerId(), post.getVkid(), !post.isUserLikes())
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(ignore(), t -> showError(getView(), t)));
+                .subscribe(ignore(), t -> callView(v -> showError(v, t))));
     }
 
     int getWallFilter() {
@@ -631,9 +622,7 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
                 Collections.sort(wall, COMPARATOR);
                 safeNotifyWallDataSetChanged();
             } else {
-                if (isGuiReady()) {
-                    getView().notifyWallItemChanged(index);
-                }
+                callView(v -> v.notifyWallItemChanged(index));
             }
         }
     }
@@ -643,11 +632,11 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
     }
 
     public void fireCopyUrlClick() {
-        getView().copyToClipboard(getString(R.string.link), (isCommunity() ? "vk.com/club" : "vk.com/id") + Math.abs(ownerId));
+        callView(v -> v.copyToClipboard(getString(R.string.link), (isCommunity() ? "vk.com/club" : "vk.com/id") + Math.abs(ownerId)));
     }
 
     public void fireCopyIdClick() {
-        getView().copyToClipboard(getString(R.string.id), String.valueOf(ownerId));
+        callView(v -> v.copyToClipboard(getString(R.string.id), String.valueOf(ownerId)));
     }
 
     public abstract void fireAddToNewsClick();
@@ -657,16 +646,16 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
     }
 
     public void fireSearchClick() {
-        getView().goToWallSearch(getAccountId(), getOwnerId());
+        callView(v -> v.goToWallSearch(getAccountId(), getOwnerId()));
     }
 
     public void openConversationAttachments() {
-        getView().goToConversationAttachments(getAccountId(), getOwnerId());
+        callView(v -> v.goToConversationAttachments(getAccountId(), getOwnerId()));
     }
 
     public void fireButtonRemoveClick(Post post) {
         appendDisposable(walls.delete(getAccountId(), ownerId, post.getVkid())
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(dummy(), t -> showError(getView(), t)));
+                .subscribe(dummy(), t -> callView(v -> showError(v, t))));
     }
 }

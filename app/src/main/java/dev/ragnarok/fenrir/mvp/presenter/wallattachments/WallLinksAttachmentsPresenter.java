@@ -63,7 +63,7 @@ public class WallLinksAttachmentsPresenter extends PlaceSupportPresenter<IWallLi
 
     private void onActualDataGetError(Throwable t) {
         actualDataLoading = false;
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
 
         resolveRefreshingView();
     }
@@ -82,8 +82,8 @@ public class WallLinksAttachmentsPresenter extends PlaceSupportPresenter<IWallLi
         actualDataLoading = false;
         endOfContent = data.isEmpty();
         actualDataReceived = true;
-        if (endOfContent && isGuiResumed())
-            getView().onSetLoadingStatus(2);
+        if (endOfContent)
+            callResumedView(v -> v.onSetLoadingStatus(2));
 
         if (offset == 0) {
             loaded = data.size();
@@ -109,19 +109,15 @@ public class WallLinksAttachmentsPresenter extends PlaceSupportPresenter<IWallLi
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().showRefreshing(actualDataLoading);
-            if (!endOfContent)
-                getView().onSetLoadingStatus(actualDataLoading ? 1 : 0);
-        }
+        callResumedView(v -> v.showRefreshing(actualDataLoading));
+        if (!endOfContent)
+            callResumedView(v -> v.onSetLoadingStatus(actualDataLoading ? 1 : 0));
     }
 
     @OnGuiCreated
     private void resolveToolbar() {
-        if (isGuiReady()) {
-            getView().setToolbarTitle(getString(R.string.attachments_in_wall));
-            getView().setToolbarSubtitle(getString(R.string.links_count, safeCountOf(mLinks)) + " " + getString(R.string.posts_analized, loaded));
-        }
+        callView(v -> v.setToolbarTitle(getString(R.string.attachments_in_wall)));
+        callView(v -> v.setToolbarSubtitle(getString(R.string.links_count, safeCountOf(mLinks)) + " " + getString(R.string.posts_analized, loaded)));
     }
 
     @Override

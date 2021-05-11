@@ -156,23 +156,19 @@ class LocalJsonToChatPresenter(
     }
 
     private fun resolveRefreshingView(isLoading: Boolean) {
-        if (isGuiResumed) {
-            view!!.showRefreshing(isLoading)
-        }
+        resumedView?.showRefreshing(isLoading)
     }
 
     @OnGuiCreated
     private fun resolveToolbar() {
-        if (isGuiReady) {
-            view!!.setToolbarTitle(peer.title)
-            view!!.setToolbarSubtitle(
-                getString(
-                    R.string.messages_in_json,
-                    Utils.safeCountOf(mPost)
-                )
+        view?.setToolbarTitle(peer.title)
+        view?.setToolbarSubtitle(
+            getString(
+                R.string.messages_in_json,
+                Utils.safeCountOf(mPost)
             )
-            view!!.displayToolbarAvatar(peer)
-        }
+        )
+        view?.displayToolbarAvatar(peer)
     }
 
     override fun onDestroyed() {

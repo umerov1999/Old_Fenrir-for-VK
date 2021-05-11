@@ -117,7 +117,7 @@ public class PhotoAlbumPagerPresenter extends PhotoPagerPresenter {
     }
 
     private void onActualDataGetError(Throwable t) {
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void onActualPhotosReceived(List<Photo> data) {

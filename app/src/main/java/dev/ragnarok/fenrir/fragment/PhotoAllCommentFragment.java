@@ -82,7 +82,7 @@ public class PhotoAllCommentFragment extends PlaceSupportMvpFragment<PhotoAllCom
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(PhotoAllCommentPresenter::fireScrollToEnd);
             }
         });
 
@@ -101,7 +101,7 @@ public class PhotoAllCommentFragment extends PlaceSupportMvpFragment<PhotoAllCom
 
     @Override
     public void onRefresh() {
-        getPresenter().fireRefresh();
+        callPresenter(PhotoAllCommentPresenter::fireRefresh);
     }
 
     @Override
@@ -150,7 +150,7 @@ public class PhotoAllCommentFragment extends PlaceSupportMvpFragment<PhotoAllCom
 
     @Override
     public void displayDeepLookingCommentProgress() {
-        mDeepLookingProgressDialog = new SpotsDialog.Builder().setContext(requireActivity()).setCancelable(true).setCancelListener(dialog -> getPresenter().fireDeepLookingCancelledByUser()).build();
+        mDeepLookingProgressDialog = new SpotsDialog.Builder().setContext(requireActivity()).setCancelable(true).setCancelListener(dialog -> callPresenter(PhotoAllCommentPresenter::fireDeepLookingCancelledByUser)).build();
         mDeepLookingProgressDialog.show();
     }
 
@@ -211,7 +211,7 @@ public class PhotoAllCommentFragment extends PlaceSupportMvpFragment<PhotoAllCom
 
     @Override
     public void onReplyToOwnerClick(int ownerId, int commentId) {
-        getPresenter().fireReplyToOwnerClick(commentId);
+        callPresenter(p -> p.fireReplyToOwnerClick(commentId));
     }
 
     @Override
@@ -226,7 +226,7 @@ public class PhotoAllCommentFragment extends PlaceSupportMvpFragment<PhotoAllCom
 
     @Override
     public void onCommentLikeClick(Comment comment, boolean add) {
-        getPresenter().fireCommentLikeClick(comment, add);
+        callPresenter(p -> p.fireCommentLikeClick(comment, add));
     }
 
     @Override
@@ -235,7 +235,7 @@ public class PhotoAllCommentFragment extends PlaceSupportMvpFragment<PhotoAllCom
 
         menu.add(R.string.photo)
                 .setOnMenuItemClickListener(item -> {
-                    getPresenter().fireGoPhotoClick(comment);
+                    callPresenter(p -> p.fireGoPhotoClick(comment));
                     return true;
                 });
 
@@ -251,39 +251,39 @@ public class PhotoAllCommentFragment extends PlaceSupportMvpFragment<PhotoAllCom
         }
 
         menu.add(R.string.report).setOnMenuItemClickListener(item -> {
-            getPresenter().fireReport(comment, requireActivity());
+            callPresenter(p -> p.fireReport(comment, requireActivity()));
             return true;
         });
 
         menu.add(R.string.like)
                 .setVisible(!comment.isUserLikes())
                 .setOnMenuItemClickListener(item -> {
-                    getPresenter().fireCommentLikeClick(comment, true);
+                    callPresenter(p -> p.fireCommentLikeClick(comment, true));
                     return true;
                 });
 
         menu.add(R.string.dislike)
                 .setVisible(comment.isUserLikes())
                 .setOnMenuItemClickListener(item -> {
-                    getPresenter().fireCommentLikeClick(comment, false);
+                    callPresenter(p -> p.fireCommentLikeClick(comment, false));
                     return true;
                 });
 
         menu.add(R.string.who_likes)
                 .setOnMenuItemClickListener(item -> {
-                    getPresenter().fireWhoLikesClick(comment);
+                    callPresenter(p -> p.fireWhoLikesClick(comment));
                     return true;
                 });
 
         menu.add(R.string.send_to_friend)
                 .setOnMenuItemClickListener(item -> {
-                    getPresenter().fireReplyToChat(comment, requireActivity());
+                    callPresenter(p -> p.fireReplyToChat(comment, requireActivity()));
                     return true;
                 });
     }
 
     @Override
     public void onHashTagClicked(String hashTag) {
-        getPresenter().fireHashtagClick(hashTag);
+        callPresenter(p -> p.fireHashtagClick(hashTag));
     }
 }

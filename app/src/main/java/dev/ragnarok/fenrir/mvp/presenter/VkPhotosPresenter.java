@@ -192,17 +192,15 @@ public class VkPhotosPresenter extends AccountDependencyPresenter<IVkPhotosView>
 
     @OnGuiCreated
     private void resolveToolbarView() {
-        if (isGuiReady()) {
-            String ownerName = nonNull(owner) ? owner.getFullName() : null;
-            String albumTitle = nonNull(album) ? album.getTitle() : "";
+        String ownerName = nonNull(owner) ? owner.getFullName() : null;
+        String albumTitle = nonNull(album) ? album.getTitle() : "";
 
-            getView().setToolbarSubtitle(albumTitle + " " + getString(R.string.photos_count, photos.size()));
+        callView(v -> v.setToolbarSubtitle(albumTitle + " " + getString(R.string.photos_count, photos.size())));
 
-            if (nonEmpty(ownerName)) {
-                getView().setToolbarTitle(ownerName);
-            } else {
-                getView().displayDefaultToolbarTitle();
-            }
+        if (nonEmpty(ownerName)) {
+            callView(v -> v.setToolbarTitle(ownerName));
+        } else {
+            callView(IVkPhotosView::displayDefaultToolbarTitle);
         }
     }
 
@@ -282,16 +280,14 @@ public class VkPhotosPresenter extends AccountDependencyPresenter<IVkPhotosView>
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().displayRefreshing(requestNow);
-        }
+        callResumedView(v -> v.displayRefreshing(requestNow));
     }
 
     @Override
     public void onGuiResumed() {
         super.onGuiResumed();
         resolveRefreshingView();
-        getView().setDrawerPhotosSelected(isMy());
+        callView(v -> v.setDrawerPhotosSelected(isMy()));
     }
 
     private void requestActualData(int offset) {
@@ -339,7 +335,7 @@ public class VkPhotosPresenter extends AccountDependencyPresenter<IVkPhotosView>
     }
 
     private void onActualDataGetError(Throwable t) {
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
         setRequestNow(false);
     }
 
@@ -468,7 +464,7 @@ public class VkPhotosPresenter extends AccountDependencyPresenter<IVkPhotosView>
         }
 
         if (selectedPhoto.isSelected()) {
-            getView().setButtonAddVisible(true, true);
+            callView(v -> v.setButtonAddVisible(true, true));
         } else {
             resolveButtonAddVisibility(true);
         }
@@ -479,20 +475,19 @@ public class VkPhotosPresenter extends AccountDependencyPresenter<IVkPhotosView>
     }
 
     private void resolveButtonAddVisibility(boolean anim) {
-        if (isGuiReady()) {
-            if (isSelectionMode()) {
-                boolean hasSelected = false;
-                for (SelectablePhotoWrapper wrapper : photos) {
-                    if (wrapper.isSelected()) {
-                        hasSelected = true;
-                        break;
-                    }
+        if (isSelectionMode()) {
+            boolean hasSelected = false;
+            for (SelectablePhotoWrapper wrapper : photos) {
+                if (wrapper.isSelected()) {
+                    hasSelected = true;
+                    break;
                 }
-
-                getView().setButtonAddVisible(hasSelected, anim);
-            } else {
-                getView().setButtonAddVisible(canUploadToAlbum(), anim);
             }
+
+            boolean finalHasSelected = hasSelected;
+            callView(v -> v.setButtonAddVisible(finalHasSelected, anim));
+        } else {
+            callView(v -> v.setButtonAddVisible(canUploadToAlbum(), anim));
         }
     }
 
@@ -526,9 +521,9 @@ public class VkPhotosPresenter extends AccountDependencyPresenter<IVkPhotosView>
         List<Photo> selected = getSelected();
 
         if (nonEmpty(selected)) {
-            getView().returnSelectionToParent(selected);
+            callView(v -> v.returnSelectionToParent(selected));
         } else {
-            getView().showSelectPhotosToast();
+            callView(IVkPhotosView::showSelectPhotosToast);
         }
     }
 
@@ -550,12 +545,12 @@ public class VkPhotosPresenter extends AccountDependencyPresenter<IVkPhotosView>
 
     public void fireAddPhotosClick() {
         if (canUploadToAlbum()) {
-            getView().startLocalPhotosSelection();
+            callView(IVkPhotosView::startLocalPhotosSelection);
         }
     }
 
     public void fireReadStoragePermissionChanged() {
-        getView().startLocalPhotosSelectionIfHasPermission();
+        callView(IVkPhotosView::startLocalPhotosSelectionIfHasPermission);
     }
 
     private void loadDownloadPath(String Path) {

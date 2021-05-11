@@ -52,7 +52,7 @@ public class LikesListPresenter extends SimpleOwnersPresenter<ISimpleOwnersView>
     }
 
     private void onDataGetError(Throwable t) {
-        showError(getView(), Utils.getCauseIfRuntime(t));
+        callView(v -> showError(v, Utils.getCauseIfRuntime(t)));
         resolveRefreshingView();
     }
 
@@ -80,9 +80,7 @@ public class LikesListPresenter extends SimpleOwnersPresenter<ISimpleOwnersView>
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().displayRefreshing(loadingNow);
-        }
+        callResumedView(v -> v.displayRefreshing(loadingNow));
     }
 
     @Override

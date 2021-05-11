@@ -45,7 +45,7 @@ public interface IAudioApi {
     Single<Integer> edit(int ownerId, int audioId, String artist, String title, String text);
 
     @CheckResult
-    Single<Integer> add(int audioId, int ownerId, Integer groupId);
+    Single<Integer> add(int audioId, int ownerId, Integer groupId, String accessKey);
 
     @CheckResult
     Single<VKApiAudioPlaylist> createPlaylist(int ownerId, String title, String description);

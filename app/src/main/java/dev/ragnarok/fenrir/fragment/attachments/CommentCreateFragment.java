@@ -48,7 +48,7 @@ public class CommentCreateFragment extends AbsAttachmentsEditFragment<CommentCre
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.ready) {
-            getPresenter().fireReadyClick();
+            callPresenter(CommentCreatePresenter::fireReadyClick);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -87,7 +87,7 @@ public class CommentCreateFragment extends AbsAttachmentsEditFragment<CommentCre
 
     @Override
     public boolean onBackPressed() {
-        return getPresenter().onBackPressed();
+        return callPresenter(CommentCreatePresenter::onBackPressed, false);
     }
 
     @Override

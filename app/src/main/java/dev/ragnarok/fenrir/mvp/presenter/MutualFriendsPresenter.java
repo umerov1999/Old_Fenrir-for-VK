@@ -32,9 +32,7 @@ public class MutualFriendsPresenter extends SimpleOwnersPresenter<ISimpleOwnersV
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().displayRefreshing(actualDataLoading);
-        }
+        callResumedView(v -> v.displayRefreshing(actualDataLoading));
     }
 
     @Override
@@ -63,7 +61,7 @@ public class MutualFriendsPresenter extends SimpleOwnersPresenter<ISimpleOwnersV
         actualDataLoading = false;
         resolveRefreshingView();
 
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onDataReceived(int offset, List<User> users) {

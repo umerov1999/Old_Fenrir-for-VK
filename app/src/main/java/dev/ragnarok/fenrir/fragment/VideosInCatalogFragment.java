@@ -30,6 +30,7 @@ import dev.ragnarok.fenrir.listener.PicassoPauseOnScrollListener;
 import dev.ragnarok.fenrir.model.Video;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.VideosInCatalogPresenter;
+import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IVideosInCatalogView;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
@@ -77,7 +78,7 @@ public class VideosInCatalogFragment extends BaseMvpFragment<VideosInCatalogPres
         }
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(VideosInCatalogPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
@@ -86,7 +87,7 @@ public class VideosInCatalogFragment extends BaseMvpFragment<VideosInCatalogPres
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(VideosInCatalogPresenter::fireScrollToEnd);
             }
         });
         mAdapter = new VideosAdapter(requireActivity(), Collections.emptyList());
@@ -152,7 +153,7 @@ public class VideosInCatalogFragment extends BaseMvpFragment<VideosInCatalogPres
 
     @Override
     public void onVideoClick(int position, Video video) {
-        PlaceFactory.getVideoPreviewPlace(getPresenter().getAccountId(), video).tryOpenWith(requireActivity());
+        PlaceFactory.getVideoPreviewPlace(callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent()), video).tryOpenWith(requireActivity());
     }
 
     @Override

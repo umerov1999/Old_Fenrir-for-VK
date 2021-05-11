@@ -68,19 +68,19 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
     public static final String MESSAGE_SYNC_ATTACHMENTS = "message_attachments_sync";
     private final AppPerms.doRequestPermissions requestCameraPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-            () -> getPresenter().fireCameraPermissionResolved());
+            () -> callPresenter(MessageAttachmentsPresenter::fireCameraPermissionResolved));
     private final AppPerms.doRequestPermissions requestCameraPermissionScoped = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.CAMERA},
-            () -> getPresenter().fireCameraPermissionResolved());
+            () -> callPresenter(MessageAttachmentsPresenter::fireCameraPermissionResolved));
     private final ActivityResultLauncher<Uri> openCameraRequest = registerForActivityResult(new ActivityResultContracts.TakePicture(), result -> {
         if (result) {
-            getPresenter().firePhotoMaked();
+            callPresenter(MessageAttachmentsPresenter::firePhotoMaked);
         }
     });
     private final ActivityResultLauncher<Intent> openRequestAudioVideoDoc = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getData() != null && result.getResultCode() == Activity.RESULT_OK) {
             ArrayList<AbsModel> attachments = result.getData().getParcelableArrayListExtra(Extra.ATTACHMENTS);
-            getPresenter().fireAttachmentsSelected(attachments);
+            callPresenter(p -> p.fireAttachmentsSelected(attachments));
         }
     });
     private final ActivityResultLauncher<Intent> openRequestPhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -89,13 +89,13 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
             ArrayList<LocalPhoto> localPhotos = result.getData().getParcelableArrayListExtra(Extra.PHOTOS);
             String file = result.getData().getStringExtra(FileManagerFragment.returnFileParameter);
             LocalVideo video = result.getData().getParcelableExtra(Extra.VIDEO);
-            getPresenter().firePhotosSelected(vkphotos, localPhotos, file, video);
+            callPresenter(p -> p.firePhotosSelected(vkphotos, localPhotos, file, video));
         }
     });
     private final ActivityResultLauncher<Intent> openRequestResizePhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
             assert result.getData() != null;
-            getPresenter().doUploadFile(result.getData().getStringExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH), Upload.IMAGE_SIZE_FULL, false);
+            callPresenter(p -> p.doUploadFile(result.getData().getStringExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH), Upload.IMAGE_SIZE_FULL, false));
         }
     });
     private AttachmentsBottomSheetAdapter mAdapter;
@@ -145,11 +145,11 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
         });
 
         view.findViewById(R.id.button_hide).setOnClickListener(v -> getDialog().dismiss());
-        view.findViewById(R.id.button_video).setOnClickListener(v -> getPresenter().fireButtonVideoClick());
-        view.findViewById(R.id.button_audio).setOnClickListener(v -> getPresenter().fireButtonAudioClick());
-        view.findViewById(R.id.button_doc).setOnClickListener(v -> getPresenter().fireButtonDocClick());
-        view.findViewById(R.id.button_camera).setOnClickListener(v -> getPresenter().fireButtonCameraClick());
-        view.findViewById(R.id.button_photo_settings).setOnClickListener(v -> getPresenter().fireCompressSettings(requireActivity()));
+        view.findViewById(R.id.button_video).setOnClickListener(v -> callPresenter(MessageAttachmentsPresenter::fireButtonVideoClick));
+        view.findViewById(R.id.button_audio).setOnClickListener(v -> callPresenter(MessageAttachmentsPresenter::fireButtonAudioClick));
+        view.findViewById(R.id.button_doc).setOnClickListener(v -> callPresenter(MessageAttachmentsPresenter::fireButtonDocClick));
+        view.findViewById(R.id.button_camera).setOnClickListener(v -> callPresenter(MessageAttachmentsPresenter::fireButtonCameraClick));
+        view.findViewById(R.id.button_photo_settings).setOnClickListener(v -> callPresenter(p -> p.fireCompressSettings(requireActivity())));
         view.findViewById(R.id.button_photo_settings).setVisibility(Settings.get().other().isChange_upload_size() ? View.VISIBLE : View.GONE);
 
         dialog.setContentView(view);
@@ -209,7 +209,7 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
         new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(R.string.select_image_size_title)
                 .setItems(R.array.array_image_sizes_names, (dialogInterface, j)
-                        -> getPresenter().fireUploadPhotoSizeSelected(photos, values[j]))
+                        -> callPresenter(p -> p.fireUploadPhotoSizeSelected(photos, values[j])))
                 .setNegativeButton(R.string.button_cancel, null)
                 .show();
     }
@@ -231,7 +231,7 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
         new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(R.string.select_image_size_title)
                 .setItems(R.array.array_image_sizes_names, (dialogInterface, j)
-                        -> getPresenter().fireUploadFileSizeSelected(file, values[j]))
+                        -> callPresenter(p -> p.fireUploadFileSizeSelected(file, values[j])))
                 .setNegativeButton(R.string.button_cancel, null)
                 .show();
     }
@@ -297,17 +297,17 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
 
     @Override
     public void onAddPhotoButtonClick() {
-        getPresenter().fireAddPhotoButtonClick();
+        callPresenter(MessageAttachmentsPresenter::fireAddPhotoButtonClick);
     }
 
     @Override
     public void onButtonRemoveClick(AttachmenEntry entry) {
-        getPresenter().fireRemoveClick(entry);
+        callPresenter(p -> p.fireRemoveClick(entry));
     }
 
     @Override
     public void onButtonRetryClick(AttachmenEntry entry) {
-        getPresenter().fireRetryClick(entry);
+        callPresenter(p -> p.fireRetryClick(entry));
     }
 
     @Override

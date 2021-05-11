@@ -46,7 +46,7 @@ public class SimplePhotoPresenter extends PhotoPagerPresenter {
 
         appendDisposable(photosInteractor.getPhotosByIds(accountId, ids)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(this::onPhotosReceived, t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(this::onPhotosReceived, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     private void onPhotosReceived(List<Photo> photos) {
@@ -66,8 +66,9 @@ public class SimplePhotoPresenter extends PhotoPagerPresenter {
                     originalData.set(i, photo);
 
                     // если у фото до этого не было ссылок на файлы
-                    if (isGuiReady() && (isNull(orig.getSizes()) || orig.getSizes().isEmpty())) {
-                        getView().rebindPhotoAt(i);
+                    if (isNull(orig.getSizes()) || orig.getSizes().isEmpty()) {
+                        int finalI = i;
+                        callView(v -> v.rebindPhotoAt(finalI));
                     }
                     break;
                 }

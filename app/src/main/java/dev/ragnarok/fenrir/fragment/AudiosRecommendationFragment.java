@@ -37,6 +37,7 @@ import dev.ragnarok.fenrir.listener.PicassoPauseOnScrollListener;
 import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.AudiosRecommendationPresenter;
+import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IAudiosRecommendationView;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
@@ -93,7 +94,7 @@ public class AudiosRecommendationFragment extends BaseMvpFragment<AudiosRecommen
         }
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(AudiosRecommendationPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
@@ -111,7 +112,7 @@ public class AudiosRecommendationFragment extends BaseMvpFragment<AudiosRecommen
             Goto.setImageResource(isSaveMode ? R.drawable.check : R.drawable.audio_player);
             save_mode.setImageResource(isSaveMode ? R.drawable.ic_dismiss : R.drawable.save);
             mAudioRecyclerAdapter.toggleSelectMode(isSaveMode);
-            getPresenter().fireUpdateSelectMode();
+            callPresenter(AudiosRecommendationPresenter::fireUpdateSelectMode);
         });
         Goto.setImageResource(R.drawable.audio_player);
         save_mode.setImageResource(R.drawable.save);
@@ -125,22 +126,22 @@ public class AudiosRecommendationFragment extends BaseMvpFragment<AudiosRecommen
                     CustomToast.CreateCustomToast(requireActivity()).showToastError(R.string.null_audio);
                 }
             } else {
-                getPresenter().fireSelectAll();
+                callPresenter(AudiosRecommendationPresenter::fireSelectAll);
             }
             return true;
         });
         Goto.setOnClickListener(v -> {
             if (isSaveMode) {
-                List<Audio> tracks = getPresenter().getSelected(true);
+                List<Audio> tracks = callPresenter(p -> p.getSelected(true), new ArrayList<>());
                 isSaveMode = false;
                 Goto.setImageResource(R.drawable.audio_player);
                 save_mode.setImageResource(R.drawable.save);
                 mAudioRecyclerAdapter.toggleSelectMode(isSaveMode);
-                getPresenter().fireUpdateSelectMode();
+                callPresenter(AudiosRecommendationPresenter::fireUpdateSelectMode);
 
                 if (!Utils.isEmpty(tracks)) {
                     DownloadWorkUtils.CheckDirectory(Settings.get().other().getMusicDir());
-                    int account_id = getPresenter().getAccountId();
+                    int account_id = callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent());
                     WorkContinuation object = WorkManager.getInstance(requireActivity()).beginWith(DownloadWorkUtils.makeDownloadRequestAudio(tracks.get(0), account_id));
                     if (tracks.size() > 1) {
                         List<OneTimeWorkRequest> Requests = new ArrayList<>(tracks.size() - 1);
@@ -159,7 +160,7 @@ public class AudiosRecommendationFragment extends BaseMvpFragment<AudiosRecommen
             } else {
                 Audio curr = MusicUtils.getCurrentAudio();
                 if (curr != null) {
-                    int index = getPresenter().getAudioPos(curr);
+                    int index = callPresenter(p -> p.getAudioPos(curr), -1);
                     if (index >= 0) {
                         recyclerView.scrollToPosition(index + mAudioRecyclerAdapter.getHeadersCount());
                     } else
@@ -173,7 +174,7 @@ public class AudiosRecommendationFragment extends BaseMvpFragment<AudiosRecommen
         mAudioRecyclerAdapter.setClickListener(new AudioRecyclerAdapter.ClickListener() {
             @Override
             public void onClick(int position, int catalog, Audio audio) {
-                getPresenter().playAudio(requireActivity(), position);
+                callPresenter(p -> p.playAudio(requireActivity(), position));
             }
 
             @Override
@@ -183,7 +184,7 @@ public class AudiosRecommendationFragment extends BaseMvpFragment<AudiosRecommen
 
             @Override
             public void onDelete(int position) {
-                getPresenter().fireDelete(position);
+                callPresenter(p -> p.fireDelete(position));
             }
 
             @Override

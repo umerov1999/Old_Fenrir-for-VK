@@ -15,6 +15,7 @@ import dev.ragnarok.fenrir.model.Poll;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.ICreatePollView;
+import dev.ragnarok.fenrir.mvp.view.IProgressView;
 import dev.ragnarok.fenrir.util.RxUtils;
 
 import static dev.ragnarok.fenrir.util.Objects.isNull;
@@ -58,7 +59,7 @@ public class CreatePollPresenter extends AccountDependencyPresenter<ICreatePollV
 
     private void create() {
         if (safeIsEmpty(mQuestion)) {
-            getView().showQuestionError(R.string.field_is_required);
+            callView(v -> v.showQuestionError(R.string.field_is_required));
             return;
         }
 
@@ -70,7 +71,7 @@ public class CreatePollPresenter extends AccountDependencyPresenter<ICreatePollV
         }
 
         if (nonEmptyOptions.isEmpty()) {
-            getView().showOptionError(0, R.string.field_is_required);
+            callView(v -> v.showOptionError(0, R.string.field_is_required));
             return;
         }
 
@@ -84,7 +85,7 @@ public class CreatePollPresenter extends AccountDependencyPresenter<ICreatePollV
 
     private void onPollCreateError(Throwable t) {
         setCreationNow(false);
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void onPollCreated(Poll poll) {
@@ -94,12 +95,10 @@ public class CreatePollPresenter extends AccountDependencyPresenter<ICreatePollV
 
     @OnGuiCreated
     private void resolveProgressDialog() {
-        if (isGuiReady()) {
-            if (creationNow) {
-                getView().displayProgressDialog(R.string.please_wait, R.string.publication, false);
-            } else {
-                getView().dismissProgressDialog();
-            }
+        if (creationNow) {
+            callView(v -> v.displayProgressDialog(R.string.please_wait, R.string.publication, false));
+        } else {
+            callView(IProgressView::dismissProgressDialog);
         }
     }
 

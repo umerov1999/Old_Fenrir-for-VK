@@ -27,6 +27,7 @@ import dev.ragnarok.fenrir.model.WallEditorAttrs;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.IBaseAttachmentsEditView;
 import dev.ragnarok.fenrir.mvp.view.IPostEditView;
+import dev.ragnarok.fenrir.mvp.view.IProgressView;
 import dev.ragnarok.fenrir.upload.Upload;
 import dev.ragnarok.fenrir.upload.UploadDestination;
 import dev.ragnarok.fenrir.upload.UploadIntent;
@@ -211,12 +212,12 @@ public class PostEditPresenter extends AbsPostEditPresenter<IPostEditView> {
 
     @OnGuiCreated
     private void resolveSignerInfoVisibility() {
-        if (isGuiReady()) {
-            Owner signer = getDisplayedSigner();
+        Owner signer = getDisplayedSigner();
 
-            getView().displaySignerInfo(signer.getFullName(), signer.get100photoOrSmaller());
-            getView().setSignerInfoVisible(supportSignerInfoDisplaying() && addSignature.get());
-        }
+        callView(v -> {
+            v.displaySignerInfo(signer.getFullName(), signer.get100photoOrSmaller());
+            v.setSignerInfoVisible(supportSignerInfoDisplaying() && addSignature.get());
+        });
     }
 
     @Override
@@ -250,12 +251,10 @@ public class PostEditPresenter extends AbsPostEditPresenter<IPostEditView> {
 
     @OnGuiCreated
     private void resolveProgressDialog() {
-        if (isGuiReady()) {
-            if (editingNow) {
-                getView().displayProgressDialog(R.string.please_wait, R.string.publication, false);
-            } else {
-                getView().dismissProgressDialog();
-            }
+        if (editingNow) {
+            callView(v -> v.displayProgressDialog(R.string.please_wait, R.string.publication, false));
+        } else {
+            callView(IProgressView::dismissProgressDialog);
         }
     }
 
@@ -275,7 +274,7 @@ public class PostEditPresenter extends AbsPostEditPresenter<IPostEditView> {
                     if (data.isEmpty()) {
                         doCommitImpl();
                     } else {
-                        safeShowLongToast(getView(), R.string.wait_until_file_upload_is_complete);
+                        callView(v -> v.showToast(R.string.wait_until_file_upload_is_complete, true));
                     }
                 }, Analytics::logUnexpectedError));
     }
@@ -356,16 +355,13 @@ public class PostEditPresenter extends AbsPostEditPresenter<IPostEditView> {
         setEditingNow(false);
         throwable.printStackTrace();
 
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
     }
 
     private void onEditResponse() {
         setEditingNow(false);
         canExit = true;
-
-        if (isGuiReady()) {
-            getView().closeAsSuccess();
-        }
+        callView(IPostEditView::closeAsSuccess);
     }
 
     private List<AbsModel> getAttachmentTokens() {
@@ -412,12 +408,10 @@ public class PostEditPresenter extends AbsPostEditPresenter<IPostEditView> {
 
     @OnGuiCreated
     private void resolveSupportButtons() {
-        if (isGuiReady()) {
-            if (post.hasCopyHierarchy()) {
-                getView().setSupportedButtons(false, false, false, false, false, false);
-            } else {
-                getView().setSupportedButtons(true, true, true, true, isPollSupported(), supportTimer());
-            }
+        if (post.hasCopyHierarchy()) {
+            callView(v -> v.setSupportedButtons(false, false, false, false, false, false));
+        } else {
+            callView(v -> v.setSupportedButtons(true, true, true, true, isPollSupported(), supportTimer()));
         }
     }
 
@@ -449,7 +443,7 @@ public class PostEditPresenter extends AbsPostEditPresenter<IPostEditView> {
             return true;
         }
 
-        getView().showConfirmExitDialog();
+        callView(IPostEditView::showConfirmExitDialog);
         return false;
     }
 
@@ -466,13 +460,13 @@ public class PostEditPresenter extends AbsPostEditPresenter<IPostEditView> {
 
         long initialDate = Unixtime.now() + 24 * 60 * 60;
 
-        getView().showEnterTimeDialog(initialDate);
+        callView(v -> v.showEnterTimeDialog(initialDate));
     }
 
     @Override
     public void fireTimerTimeSelected(long unixtime) {
         if (!validatePublishDate(unixtime)) {
-            safeShowError(getView(), R.string.date_is_invalid);
+            callView(v -> v.showError(R.string.date_is_invalid));
             return;
         }
 
@@ -481,7 +475,7 @@ public class PostEditPresenter extends AbsPostEditPresenter<IPostEditView> {
 
     @Override
     protected void onPollCreateClick() {
-        getView().openPollCreationWindow(getAccountId(), post.getOwnerId());
+        callView(v -> v.openPollCreationWindow(getAccountId(), post.getOwnerId()));
     }
 
     public void fireExitWithSavingConfirmed() {
@@ -491,6 +485,6 @@ public class PostEditPresenter extends AbsPostEditPresenter<IPostEditView> {
     public void fireExitWithoutSavingClick() {
         canExit = true;
         uploadManager.cancelAll(getAccountId(), uploadDestination);
-        getView().closeAsSuccess();
+        callView(IPostEditView::closeAsSuccess);
     }
 }

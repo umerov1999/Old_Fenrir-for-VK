@@ -83,9 +83,7 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
             Manifest.permission.READ_EXTERNAL_STORAGE
         )
     ) {
-        if (isPresenterPrepared) {
-            presenter?.fireWritePermissionResolved()
-        }
+        presenter?.fireWritePermissionResolved()
     }
 
     override fun requestWriteExternalStoragePermission() {
@@ -317,9 +315,7 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         override var isSurfaceReady = false
         override fun surfaceCreated(holder: SurfaceHolder) {
             isSurfaceReady = true
-            if (isPresenterPrepared) {
-                presenter?.fireSurfaceCreated(bindingAdapterPosition)
-            }
+            presenter?.fireSurfaceCreated(bindingAdapterPosition)
         }
 
         override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
@@ -360,7 +356,7 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
                 rootView.findViewById(R.id.fling_root_view)
             flingRelativeLayout.setOnClickListener { toggleFullscreen() }
             flingRelativeLayout.setOnLongClickListener {
-                if (isPresenterPrepared) presenter?.fireDownloadButtonClick()
+                presenter?.fireDownloadButtonClick()
                 true
             }
             flingRelativeLayout.setOnSingleFlingListener(object :
@@ -504,7 +500,7 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
                 }
             }
             ret.photo.setOnLongClickListener {
-                if (isPresenterPrepared) presenter?.fireDownloadButtonClick()
+                presenter?.fireDownloadButtonClick()
                 true
             }
             ret.photo.setOnTouchListener { view: View, event: MotionEvent ->
@@ -531,11 +527,13 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         }
 
         override fun onBindViewHolder(holder: MultiHolder, position: Int) {
+            if (presenter == null)
+                return
             if (!presenter!!.isStoryIsVideo(position)) holder.bindTo(presenter!!.getStory(position))
         }
 
         override fun getItemViewType(position: Int): Int {
-            return if (presenter!!.isStoryIsVideo(position)) 0 else 1
+            return if (presenter?.isStoryIsVideo(position) == true) 0 else 1
         }
 
         override fun getItemCount(): Int {

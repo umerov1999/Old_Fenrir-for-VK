@@ -19,6 +19,7 @@ import dev.ragnarok.fenrir.model.LoadMoreState;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.Peer;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
+import dev.ragnarok.fenrir.mvp.view.IBasicMessageListView;
 import dev.ragnarok.fenrir.mvp.view.INotReadMessagesView;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.RxUtils;
@@ -47,36 +48,35 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
         this.peer = peer;
         this.unreadCount = unreadCount;
         loadingState = new LOADING_STATE((Header, Footer) -> {
-            if (isGuiReady()) {
-                @LoadMoreState int header;
-                @LoadMoreState int footer;
-                switch (Header) {
-                    case Side.LOADING:
-                        header = LoadMoreState.LOADING;
-                        break;
-                    case Side.NO_LOADING:
-                        header = LoadMoreState.CAN_LOAD_MORE;
-                        break;
-                    default:
-                        header = LoadMoreState.INVISIBLE;
-                        break;
-                }
-                switch (Footer) {
-                    case Side.DISABLED:
-                        footer = LoadMoreState.END_OF_LIST;
-                        break;
-                    case Side.LOADING:
-                        footer = LoadMoreState.LOADING;
-                        break;
-                    case Side.NO_LOADING:
-                        footer = LoadMoreState.CAN_LOAD_MORE;
-                        break;
-                    default:
-                        footer = LoadMoreState.INVISIBLE;
-                        break;
-                }
-                getView().setupHeaders(footer, header);
+
+            @LoadMoreState int header;
+            @LoadMoreState int footer;
+            switch (Header) {
+                case Side.LOADING:
+                    header = LoadMoreState.LOADING;
+                    break;
+                case Side.NO_LOADING:
+                    header = LoadMoreState.CAN_LOAD_MORE;
+                    break;
+                default:
+                    header = LoadMoreState.INVISIBLE;
+                    break;
             }
+            switch (Footer) {
+                case Side.DISABLED:
+                    footer = LoadMoreState.END_OF_LIST;
+                    break;
+                case Side.LOADING:
+                    footer = LoadMoreState.LOADING;
+                    break;
+                case Side.NO_LOADING:
+                    footer = LoadMoreState.CAN_LOAD_MORE;
+                    break;
+                default:
+                    footer = LoadMoreState.INVISIBLE;
+                    break;
+            }
+            callView(v -> v.setupHeaders(footer, header));
         });
 
         if (savedInstanceState == null) {
@@ -104,17 +104,17 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
         loadingState.FooterDisable();
         loadingState.HeaderDisable();
 
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void onUpDataGetError(Throwable t) {
         loadingState.FooterEnable();
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void onDownDataGetError(Throwable t) {
         loadingState.HeaderEnable();
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     public void fireDeleteForAllClick(ArrayList<Integer> ids) {
@@ -128,7 +128,7 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
     private void deleteSentImpl(Collection<Integer> ids, boolean forAll) {
         appendDisposable(messagesInteractor.deleteMessages(getAccountId(), peer.getId(), ids, forAll, false)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(RxUtils.dummy(), t -> showError(getView(), t)));
+                .subscribe(RxUtils.dummy(), t -> callView(v -> showError(v, t))));
     }
 
     public void fireFooterLoadMoreClick() {
@@ -172,7 +172,7 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
         if (nonEmpty(ids)) {
             appendDisposable(messagesInteractor.deleteMessages(accountId, peer.getId(), ids, false, false)
                     .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                    .subscribe(() -> onMessagesDeleteSuccessfully(ids), t -> showError(getView(), getCauseIfRuntime(t))));
+                    .subscribe(() -> onMessagesDeleteSuccessfully(ids), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
         }
     }
 
@@ -190,7 +190,7 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
         if (nonEmpty(ids)) {
             appendDisposable(messagesInteractor.deleteMessages(accountId, peer.getId(), ids, false, true)
                     .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                    .subscribe(() -> onMessagesDeleteSuccessfully(ids), t -> showError(getView(), getCauseIfRuntime(t))));
+                    .subscribe(() -> onMessagesDeleteSuccessfully(ids), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
         }
     }
 
@@ -226,7 +226,7 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
         ArrayList<Message> selected = getSelected(getData());
 
         if (nonEmpty(selected)) {
-            getView().forwardMessages(getAccountId(), selected);
+            callView(v -> v.forwardMessages(getAccountId(), selected));
         }
     }
 
@@ -237,7 +237,7 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
 
         appendDisposable(messagesInteractor.restoreMessage(accountId, peer.getId(), id)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(() -> onMessageRestoredSuccessfully(id), t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(() -> onMessageRestoredSuccessfully(id), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     private void onMessageRestoredSuccessfully(int id) {
@@ -264,35 +264,25 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
     private void onInitDataLoaded(List<Message> messages) {
         getData().clear();
         getData().addAll(messages);
-
-        if (isGuiReady()) {
-            getView().notifyDataChanged();
-        }
+        callView(IBasicMessageListView::notifyDataChanged);
         loadingState.reset();
 
         int index = Utils.indexOf(messages, mFocusMessageId);
-
-        if (isGuiReady()) {
-            if (index != -1) {
-                getView().focusTo(index);
-            } else if (mFocusMessageId == 0) {
-                getView().focusTo(messages.size() - 1);
-            }
+        if (index != -1) {
+            callView(v -> v.focusTo(index));
+        } else if (mFocusMessageId == 0) {
+            callView(v -> v.focusTo(messages.size() - 1));
         }
     }
 
     @OnGuiCreated
     private void resolveToolbar() {
-        if (isGuiReady()) {
-            getView().displayToolbarAvatar(peer);
-        }
+        callView(v -> v.displayToolbarAvatar(peer));
     }
 
     @OnGuiCreated
     private void resolveUnreadCount() {
-        if (isGuiReady()) {
-            getView().displayUnreadCount(unreadCount);
-        }
+        callView(v -> v.displayUnreadCount(unreadCount));
     }
 
     @Override
@@ -305,10 +295,7 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
 
         if (!message.isOut() && message.getOriginalId() > lastReadId.getIncoming()) {
             lastReadId.setIncoming(message.getOriginalId());
-
-            if (isGuiReady()) {
-                getView().notifyDataChanged();
-            }
+            callView(IBasicMessageListView::notifyDataChanged);
 
             appendDisposable(messagesInteractor.markAsRead(getAccountId(), peer.getId(), message.getOriginalId())
                     .compose(RxUtils.applyCompletableIOToMainSchedulers())
@@ -319,7 +306,7 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
                             .subscribe(e -> {
                                 unreadCount = e.getUnreadCount();
                                 resolveUnreadCount();
-                            }, s -> showError(getView(), s))), t -> showError(getView(), t)));
+                            }, s -> callView(v -> showError(v, s)))), t -> callView(v -> showError(v, t))));
         }
     }
 
@@ -332,32 +319,22 @@ public class NotReadMessagesPresenter extends AbsMessageListPresenter<INotReadMe
         int size = getData().size();
 
         getData().addAll(messages);
-
-        if (isGuiReady()) {
-            getView().notifyMessagesUpAdded(size, messages.size());
-        }
+        callView(v -> v.notifyMessagesUpAdded(size, messages.size()));
     }
 
     public void fireFinish() {
-        if (isGuiReady()) {
-            getView().doFinish(lastReadId.getIncoming(), lastReadId.getOutgoing(), true);
-        }
+        callView(v -> v.doFinish(lastReadId.getIncoming(), lastReadId.getOutgoing(), true));
     }
 
     private void onDownDataLoaded(List<Message> messages) {
         if (isEmpty(messages)) {
-            if (isGuiReady()) {
-                getView().doFinish(lastReadId.getIncoming(), lastReadId.getOutgoing(), false);
-            }
+            callView(v -> v.doFinish(lastReadId.getIncoming(), lastReadId.getOutgoing(), false));
             loadingState.HeaderDisable();
         } else {
             loadingState.HeaderEnable();
         }
         getData().addAll(0, messages);
-
-        if (isGuiReady()) {
-            getView().notifyMessagesDownAdded(messages.size());
-        }
+        callView(v -> v.notifyMessagesDownAdded(messages.size()));
     }
 
     @IntDef({Side.DISABLED, Side.NO_LOADING,

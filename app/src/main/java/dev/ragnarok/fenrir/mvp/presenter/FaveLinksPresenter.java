@@ -68,7 +68,7 @@ public class FaveLinksPresenter extends AccountDependencyPresenter<IFaveLinksVie
     private void onActualGetError(Throwable t) {
         actualLoading = false;
         resolveRefreshingView();
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void onActualDataReceived(List<FaveLink> data, int offset) {
@@ -105,9 +105,7 @@ public class FaveLinksPresenter extends AccountDependencyPresenter<IFaveLinksVie
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().displayRefreshing(actualLoading);
-        }
+        callResumedView(v -> v.displayRefreshing(actualLoading));
     }
 
     public void fireRefresh() {
@@ -150,7 +148,7 @@ public class FaveLinksPresenter extends AccountDependencyPresenter<IFaveLinksVie
         String id = link.getId();
         appendDisposable(faveInteractor.removeLink(accountId, id)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(() -> onLinkRemoved(accountId, id), t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(() -> onLinkRemoved(accountId, id), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     private void onLinkRemoved(int accountId, String id) {
@@ -177,12 +175,12 @@ public class FaveLinksPresenter extends AccountDependencyPresenter<IFaveLinksVie
                 .setView(root)
                 .setPositiveButton(R.string.button_ok, (dialog, which) -> actualDisposable.add(faveInteractor.addLink(getAccountId(), ((TextInputEditText) root.findViewById(R.id.edit_link)).getText().toString().trim())
                         .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                        .subscribe(this::fireRefresh, t -> showError(getView(), getCauseIfRuntime(t)))))
+                        .subscribe(this::fireRefresh, t -> callView(v -> showError(v, getCauseIfRuntime(t))))))
                 .setNegativeButton(R.string.button_cancel, null);
         builder.create().show();
     }
 
     public void fireLinkClick(FaveLink link) {
-        getView().openLink(getAccountId(), link);
+        callView(v -> v.openLink(getAccountId(), link));
     }
 }

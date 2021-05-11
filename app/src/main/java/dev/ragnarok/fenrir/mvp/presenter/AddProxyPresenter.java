@@ -49,7 +49,7 @@ public class AddProxyPresenter extends RxSupportPresenter<IAddProxyView> {
         }
 
         authEnabled = isChecked;
-        getView().setAuthFieldsEnabled(isChecked);
+        callView(v -> v.setAuthFieldsEnabled(isChecked));
     }
 
     public void fireUsernameEdit(CharSequence s) {
@@ -83,7 +83,7 @@ public class AddProxyPresenter extends RxSupportPresenter<IAddProxyView> {
                 throw new Exception("Invalid password");
             }
         } catch (Exception e) {
-            showError(getView(), e);
+            callView(v -> showError(v, e));
             return false;
         }
 
@@ -104,6 +104,6 @@ public class AddProxyPresenter extends RxSupportPresenter<IAddProxyView> {
             settings.put(finalAddress, finalPort);
         }
 
-        getView().goBack();
+        callView(IAddProxyView::goBack);
     }
 }

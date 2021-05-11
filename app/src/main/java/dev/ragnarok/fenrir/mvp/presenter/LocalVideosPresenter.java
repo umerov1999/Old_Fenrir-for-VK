@@ -98,16 +98,14 @@ public class LocalVideosPresenter extends RxSupportPresenter<ILocalVideosView> {
     }
 
     private void resolveEmptyTextVisibility() {
-        if (isGuiReady()) getView().setEmptyTextVisible(Utils.safeIsEmpty(mLocalVideos));
+        callView(v -> v.setEmptyTextVisible(Utils.safeIsEmpty(mLocalVideos)));
     }
 
     private void resolveListData() {
-        if (isGuiReady()) {
-            if (isEmpty(q)) {
-                getView().displayData(mLocalVideos);
-            } else {
-                getView().displayData(mLocalVideos_search);
-            }
+        if (isEmpty(q)) {
+            callView(v -> v.displayData(mLocalVideos));
+        } else {
+            callView(v -> v.displayData(mLocalVideos_search));
         }
     }
 
@@ -117,17 +115,15 @@ public class LocalVideosPresenter extends RxSupportPresenter<ILocalVideosView> {
     }
 
     private void resolveProgressView() {
-        if (isGuiReady()) {
-            getView().displayProgress(mLoadingNow);
-        }
+        callView(v -> v.displayProgress(mLoadingNow));
     }
 
     public void fireFabClick() {
         ArrayList<LocalVideo> localVideos = Utils.getSelected(mLocalVideos);
         if (!localVideos.isEmpty()) {
-            getView().returnResultToParent(localVideos);
+            callView(v -> v.returnResultToParent(localVideos));
         } else {
-            safeShowError(getView(), R.string.select_attachments);
+            callView(v -> v.showError(R.string.select_attachments));
         }
     }
 
@@ -138,7 +134,7 @@ public class LocalVideosPresenter extends RxSupportPresenter<ILocalVideosView> {
         if (video.isSelected()) {
             ArrayList<LocalVideo> single = new ArrayList<>(1);
             single.add(video);
-            getView().returnResultToParent(single);
+            callView(v -> v.returnResultToParent(single));
         }
     }
 
@@ -147,9 +143,7 @@ public class LocalVideosPresenter extends RxSupportPresenter<ILocalVideosView> {
     }
 
     private void resolveFabVisibility(boolean visible, boolean anim) {
-        if (isGuiReady()) {
-            getView().setFabVisible(visible, anim);
-        }
+        callView(v -> v.setFabVisible(visible, anim));
     }
 
     public void fireRefresh() {

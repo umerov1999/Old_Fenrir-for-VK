@@ -84,7 +84,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
 
     private void onActualDataGetError(Throwable t) {
         actualDataLoading = false;
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
 
         resolveRefreshingView();
     }
@@ -132,9 +132,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().showRefreshing(actualDataLoading);
-        }
+        callResumedView(v -> v.showRefreshing(actualDataLoading));
     }
 
     @Override
@@ -182,8 +180,8 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
                 .subscribe(data -> {
                     playlists.remove(index);
                     callView(v -> v.notifyItemRemoved(index));
-                    getView().getCustomToast().showToast(R.string.success);
-                }, throwable -> showError(getView(), throwable)));
+                    callView(v -> v.getCustomToast().showToast(R.string.success));
+                }, throwable -> callView(v -> showError(v, throwable))));
     }
 
     public void onEdit(Context context, int index, AudioPlaylist album) {
@@ -197,7 +195,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
                 .setPositiveButton(R.string.button_ok, (dialog, which) -> appendDisposable(fInteractor.editPlaylist(getAccountId(), album.getOwnerId(), album.getId(),
                         ((TextInputEditText) root.findViewById(R.id.edit_title)).getText().toString(),
                         ((TextInputEditText) root.findViewById(R.id.edit_description)).getText().toString()).compose(RxUtils.applySingleIOToMainSchedulers())
-                        .subscribe(v -> fireRefresh(), t -> showError(getView(), getCauseIfRuntime(t)))))
+                        .subscribe(v -> fireRefresh(), t -> callView(v -> showError(v, getCauseIfRuntime(t))))))
                 .setNegativeButton(R.string.button_cancel, null);
         builder.create().show();
     }
@@ -217,7 +215,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
                 .setPositiveButton(R.string.button_ok, (dialog, which) -> appendDisposable(fInteractor.createPlaylist(getAccountId(), owner_id,
                         ((TextInputEditText) root.findViewById(R.id.edit_title)).getText().toString(),
                         ((TextInputEditText) root.findViewById(R.id.edit_description)).getText().toString()).compose(RxUtils.applySingleIOToMainSchedulers())
-                        .subscribe(this::doInsertPlaylist, t -> showError(getView(), getCauseIfRuntime(t)))))
+                        .subscribe(this::doInsertPlaylist, t -> callView(v -> showError(v, getCauseIfRuntime(t))))))
                 .setNegativeButton(R.string.button_cancel, null);
         builder.create().show();
     }
@@ -226,8 +224,8 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
         int accountId = getAccountId();
         appendDisposable(fInteractor.followPlaylist(accountId, album.getId(), album.getOwnerId(), album.getAccess_key())
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(data -> getView().getCustomToast().showToast(R.string.success), throwable ->
-                        showError(getView(), throwable)));
+                .subscribe(data -> callView(v -> v.getCustomToast().showToast(R.string.success)), throwable ->
+                        callView(v -> showError(v, throwable))));
     }
 
     public void fireAudiosSelected(List<Audio> audios) {
@@ -238,8 +236,8 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
         int accountId = getAccountId();
         appendDisposable(fInteractor.addToPlaylist(accountId, pending_to_add.getOwnerId(), pending_to_add.getId(), targets)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(data -> getView().getCustomToast().showToast(R.string.success), throwable ->
-                        showError(getView(), throwable)));
+                .subscribe(data -> callView(v -> v.getCustomToast().showToast(R.string.success)), throwable ->
+                        callView(v -> showError(v, throwable))));
         pending_to_add = null;
     }
 

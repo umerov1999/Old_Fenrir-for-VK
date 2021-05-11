@@ -62,6 +62,6 @@ public class DialogsSearchFragment extends AbsSearchFragment<DialogsSearchPresen
 
     @Override
     public void onEntryClick(Conversation o) {
-        getPresenter().fireEntryClick(o);
+        callPresenter(p -> p.fireEntryClick(o));
     }
 }

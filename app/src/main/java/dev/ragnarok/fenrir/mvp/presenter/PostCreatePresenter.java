@@ -32,6 +32,7 @@ import dev.ragnarok.fenrir.model.Post;
 import dev.ragnarok.fenrir.model.WallEditorAttrs;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.IPostCreateView;
+import dev.ragnarok.fenrir.mvp.view.IProgressView;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.upload.MessageMethod;
 import dev.ragnarok.fenrir.upload.Method;
@@ -130,7 +131,7 @@ public class PostCreatePresenter extends AbsPostEditPresenter<IPostCreateView> {
     }
 
     private void checkUploadUris() {
-        if (isGuiResumed() && post != null && upload.nonEmpty()) {
+        if (post != null && upload.nonEmpty()) {
             List<Uri> uris = upload.get();
 
             Integer size = Settings.get()
@@ -140,9 +141,9 @@ public class PostCreatePresenter extends AbsPostEditPresenter<IPostCreateView> {
             boolean isVideo = ActivityUtils.isMimeVideo(mime);
 
             if (isNull(size) && !isVideo) {
-                getView().displayUploadUriSizeDialog(uris);
+                callResumedView(v -> v.displayUploadUriSizeDialog(uris));
             } else {
-                uploadStreamsImpl(uris, size, isVideo);
+                uploadStreamsImpl(uris, isNull(size) ? 0 : size, isVideo);
             }
         }
     }
@@ -188,22 +189,24 @@ public class PostCreatePresenter extends AbsPostEditPresenter<IPostCreateView> {
 
     @OnGuiCreated
     private void resolveSignerInfo() {
-        if (isGuiReady()) {
-            boolean visible = false;
 
-            if (isGroup() && !isEditorOrHigher() || !fromGroup.get() || addSignature.get()) {
-                visible = true;
-            }
+        boolean visible = false;
 
-            if (isCommunity() && isEditorOrHigher()) {
-                visible = addSignature.get();
-            }
-
-            Owner author = getAuthor();
-
-            getView().displaySignerInfo(author.getFullName(), author.get100photoOrSmaller());
-            getView().setSignerInfoVisible(visible);
+        if (isGroup() && !isEditorOrHigher() || !fromGroup.get() || addSignature.get()) {
+            visible = true;
         }
+
+        if (isCommunity() && isEditorOrHigher()) {
+            visible = addSignature.get();
+        }
+
+        Owner author = getAuthor();
+
+        boolean finalVisible = visible;
+        callView(v -> {
+            v.displaySignerInfo(author.getFullName(), author.get100photoOrSmaller());
+            v.setSignerInfoVisible(finalVisible);
+        });
     }
 
     private Owner getAuthor() {
@@ -396,7 +399,7 @@ public class PostCreatePresenter extends AbsPostEditPresenter<IPostCreateView> {
 
     @Override
     protected void onPollCreateClick() {
-        getView().openPollCreationWindow(getAccountId(), ownerId);
+        callView(v -> v.openPollCreationWindow(getAccountId(), ownerId));
     }
 
     @Override
@@ -427,7 +430,7 @@ public class PostCreatePresenter extends AbsPostEditPresenter<IPostCreateView> {
         }
 
         long initialTime = post.getDate() == 0 ? System.currentTimeMillis() / 1000 + 2 * 60 * 60 : post.getDate();
-        getView().showEnterTimeDialog(initialTime);
+        callView(v -> v.showEnterTimeDialog(initialTime));
     }
 
     public void fireTimerTimeSelected(long unixtime) {
@@ -439,9 +442,7 @@ public class PostCreatePresenter extends AbsPostEditPresenter<IPostCreateView> {
 
     @OnGuiCreated
     private void resolveSupportButtons() {
-        if (isGuiReady()) {
-            getView().setSupportedButtons(true, true, true, true, isPollSupported(), isSupportTimer());
-        }
+        callView(v -> v.setSupportedButtons(true, true, true, true, isPollSupported(), isSupportTimer()));
     }
 
     private boolean isPollSupported() {
@@ -473,12 +474,10 @@ public class PostCreatePresenter extends AbsPostEditPresenter<IPostCreateView> {
 
     @OnGuiCreated
     private void resolvePublishDialogVisibility() {
-        if (isGuiReady()) {
-            if (publishingNow) {
-                getView().displayProgressDialog(R.string.please_wait, R.string.publication, false);
-            } else {
-                getView().dismissProgressDialog();
-            }
+        if (publishingNow) {
+            callView(v -> v.displayProgressDialog(R.string.please_wait, R.string.publication, false));
+        } else {
+            callView(IProgressView::dismissProgressDialog);
         }
     }
 
@@ -502,7 +501,7 @@ public class PostCreatePresenter extends AbsPostEditPresenter<IPostCreateView> {
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(count -> {
                     if (count > 0) {
-                        safeShowError(getView(), R.string.wait_until_file_upload_is_complete);
+                        callView(v -> v.showError(R.string.wait_until_file_upload_is_complete));
                     } else {
                         doPost();
                     }
@@ -531,12 +530,12 @@ public class PostCreatePresenter extends AbsPostEditPresenter<IPostCreateView> {
 
         postPublished = true;
 
-        getView().goBack();
+        callView(IPostCreateView::goBack);
     }
 
     private void onPostPublishError(Throwable t) {
         changePublishingNowState(false);
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void releasePostDataAsync() {

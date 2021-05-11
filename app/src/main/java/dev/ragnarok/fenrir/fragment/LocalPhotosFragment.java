@@ -46,11 +46,7 @@ public class LocalPhotosFragment extends BaseMvpFragment<LocalPhotosPresenter, I
     public static final String EXTRA_MAX_SELECTION_COUNT = "max_selection_count";
     private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-            () -> {
-                if (isPresenterPrepared()) {
-                    getPresenter().fireReadExternalStoregePermissionResolved();
-                }
-            });
+            () -> callPresenter(LocalPhotosPresenter::fireReadExternalStoregePermissionResolved));
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LocalPhotosAdapter mAdapter;
@@ -92,14 +88,14 @@ public class LocalPhotosFragment extends BaseMvpFragment<LocalPhotosPresenter, I
         mEmptyTextView = view.findViewById(R.id.empty);
 
         fabAttach = view.findViewById(R.id.fr_photo_gallery_attach);
-        fabAttach.setOnClickListener(v -> getPresenter().fireFabClick());
+        fabAttach.setOnClickListener(v -> callPresenter(LocalPhotosPresenter::fireFabClick));
 
         return view;
     }
 
     @Override
     public void onPhotoClick(LocalPhotosAdapter.ViewHolder holder, LocalPhoto photo) {
-        getPresenter().firePhotoClick(photo);
+        callPresenter(p -> p.firePhotoClick(photo));
     }
 
     @Override
@@ -109,7 +105,7 @@ public class LocalPhotosFragment extends BaseMvpFragment<LocalPhotosPresenter, I
 
     @Override
     public void onRefresh() {
-        getPresenter().fireRefresh();
+        callPresenter(LocalPhotosPresenter::fireRefresh);
     }
 
     @Override

@@ -42,95 +42,95 @@ public abstract class PlaceSupportPresenter<V extends IMvpView & IAttachmentsPla
     }
 
     public void fireLinkClick(@NonNull Link link) {
-        getView().openLink(getAccountId(), link);
+        callView(v -> v.openLink(getAccountId(), link));
     }
 
     public void fireUrlClick(@NonNull String url) {
-        getView().openUrl(getAccountId(), url);
+        callView(v -> v.openUrl(getAccountId(), url));
     }
 
     public void fireWikiPageClick(@NonNull WikiPage page) {
-        getView().openWikiPage(getAccountId(), page);
+        callView(v -> v.openWikiPage(getAccountId(), page));
     }
 
     public void fireStoryClick(@NonNull Story story) {
-        getView().openStory(getAccountId(), story);
+        callView(v -> v.openStory(getAccountId(), story));
     }
 
     public void firePhotoClick(@NonNull ArrayList<Photo> photos, int index, boolean refresh) {
-        getView().openSimplePhotoGallery(getAccountId(), photos, index, refresh);
+        callView(v -> v.openSimplePhotoGallery(getAccountId(), photos, index, refresh));
     }
 
     public void firePostClick(@NonNull Post post) {
-        getView().openPost(getAccountId(), post);
+        callView(v -> v.openPost(getAccountId(), post));
     }
 
     public void fireDocClick(@NonNull Document document) {
-        getView().openDocPreview(getAccountId(), document);
+        callView(v -> v.openDocPreview(getAccountId(), document));
     }
 
     public void fireOwnerClick(int ownerId) {
-        getView().openOwnerWall(getAccountId(), ownerId);
+        callView(v -> v.openOwnerWall(getAccountId(), ownerId));
     }
 
     public void fireGoToMessagesLookup(@NonNull Message message) {
-        getView().goToMessagesLookupFWD(getAccountId(), message.getPeerId(), message.getOriginalId());
+        callView(v -> v.goToMessagesLookupFWD(getAccountId(), message.getPeerId(), message.getOriginalId()));
     }
 
     public void fireGoToMessagesLookup(int peerId, int msgId) {
-        getView().goToMessagesLookupFWD(getAccountId(), peerId, msgId);
+        callView(v -> v.goToMessagesLookupFWD(getAccountId(), peerId, msgId));
     }
 
     public void fireForwardMessagesClick(@NonNull ArrayList<Message> messages) {
-        getView().openForwardMessages(getAccountId(), messages);
+        callView(v -> v.openForwardMessages(getAccountId(), messages));
     }
 
     public void fireAudioPlayClick(int position, @NonNull ArrayList<Audio> apiAudio) {
-        getView().playAudioList(getAccountId(), position, apiAudio);
+        callView(v -> v.playAudioList(getAccountId(), position, apiAudio));
     }
 
     public void fireVideoClick(@NonNull Video apiVideo) {
-        getView().openVideo(getAccountId(), apiVideo);
+        callView(v -> v.openVideo(getAccountId(), apiVideo));
     }
 
     public void fireAudioPlaylistClick(@NonNull AudioPlaylist playlist) {
-        getView().openAudioPlaylist(getAccountId(), playlist);
+        callView(v -> v.openAudioPlaylist(getAccountId(), playlist));
     }
 
     public void fireWallReplyOpen(@NonNull WallReply reply) {
-        getView().goWallReplyOpen(getAccountId(), reply);
+        callView(v -> v.goWallReplyOpen(getAccountId(), reply));
     }
 
     public void firePollClick(@NonNull Poll poll) {
-        getView().openPoll(getAccountId(), poll);
+        callView(v -> v.openPoll(getAccountId(), poll));
     }
 
     public void fireHashtagClick(String hashTag) {
-        getView().openSearch(getAccountId(), SearchContentType.NEWS, new NewsFeedCriteria(hashTag));
+        callView(v -> v.openSearch(getAccountId(), SearchContentType.NEWS, new NewsFeedCriteria(hashTag)));
     }
 
     public void fireShareClick(Post post) {
-        getView().repostPost(getAccountId(), post);
+        callView(v -> v.repostPost(getAccountId(), post));
     }
 
     public void fireCommentsClick(Post post) {
-        getView().openComments(getAccountId(), Commented.from(post), null);
+        callView(v -> v.openComments(getAccountId(), Commented.from(post), null));
     }
 
     public void firePhotoAlbumClick(@NonNull PhotoAlbum album) {
-        getView().openPhotoAlbum(getAccountId(), album);
+        callView(v -> v.openPhotoAlbum(getAccountId(), album));
     }
 
     public void fireMarketAlbumClick(@NonNull MarketAlbum market_album) {
-        getView().toMarketAlbumOpen(getAccountId(), market_album);
+        callView(v -> v.toMarketAlbumOpen(getAccountId(), market_album));
     }
 
     public void fireMarketClick(@NonNull Market market) {
-        getView().toMarketOpen(getAccountId(), market);
+        callView(v -> v.toMarketOpen(getAccountId(), market));
     }
 
     public void fireArtistClick(@NonNull AudioArtist artist) {
-        getView().toArtistOpen(getAccountId(), artist);
+        callView(v -> v.toArtistOpen(getAccountId(), artist));
     }
 
     public void fireFaveArticleClick(@NonNull Article article) {
@@ -150,9 +150,9 @@ public abstract class PlaceSupportPresenter<V extends IMvpView & IAttachmentsPla
 
     public final void fireCopiesLikesClick(String type, int ownerId, int itemId, String filter) {
         if (ILikesInteractor.FILTER_LIKES.equals(filter)) {
-            getView().goToLikes(getAccountId(), type, ownerId, itemId);
+            callView(v -> v.goToLikes(getAccountId(), type, ownerId, itemId));
         } else if (ILikesInteractor.FILTER_COPIES.equals(filter)) {
-            getView().goToReposts(getAccountId(), type, ownerId, itemId);
+            callView(v -> v.goToReposts(getAccountId(), type, ownerId, itemId));
         }
     }
 }

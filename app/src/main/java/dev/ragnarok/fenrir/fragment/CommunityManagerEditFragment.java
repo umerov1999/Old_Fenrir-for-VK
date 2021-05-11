@@ -91,7 +91,7 @@ public class CommunityManagerEditFragment extends BaseMvpFragment<CommunityManag
         ((AppCompatActivity) requireActivity()).setSupportActionBar(root.findViewById(R.id.toolbar));
 
         mAvatar = root.findViewById(R.id.avatar);
-        mAvatar.setOnClickListener(v -> getPresenter().fireAvatarClick());
+        mAvatar.setOnClickListener(v -> callPresenter(CommunityManagerEditPresenter::fireAvatarClick));
 
         mOnlineView = root.findViewById(R.id.online);
         mName = root.findViewById(R.id.name);
@@ -104,18 +104,18 @@ public class CommunityManagerEditFragment extends BaseMvpFragment<CommunityManag
         mRadioGroupRoles = root.findViewById(R.id.radio_group_roles);
         mRadioGroupRoles.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.button_moderator) {
-                getPresenter().fireModeratorChecked();
+                callPresenter(CommunityManagerEditPresenter::fireModeratorChecked);
             } else if (checkedId == R.id.button_editor) {
-                getPresenter().fireEditorChecked();
+                callPresenter(CommunityManagerEditPresenter::fireEditorChecked);
             } else if (checkedId == R.id.button_admin) {
-                getPresenter().fireAdminChecked();
+                callPresenter(CommunityManagerEditPresenter::fireAdminChecked);
             }
         });
 
         mRadioGroupCreator = root.findViewById(R.id.radio_group_creator);
 
         mShowAsContact = root.findViewById(R.id.community_manager_show_in_contacts);
-        mShowAsContact.setOnCheckedChangeListener((buttonView, checked) -> getPresenter().fireShowAsContactChecked(checked));
+        mShowAsContact.setOnCheckedChangeListener((buttonView, checked) -> callPresenter(p -> p.fireShowAsContactChecked(checked)));
 
         mContactInfoRoot = root.findViewById(R.id.contact_info_root);
 
@@ -123,7 +123,7 @@ public class CommunityManagerEditFragment extends BaseMvpFragment<CommunityManag
         mPosition.addTextChangedListener(new TextWatcherAdapter() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                getPresenter().firePositionEdit(s);
+                callPresenter(p -> p.firePositionEdit(s));
             }
         });
 
@@ -131,7 +131,7 @@ public class CommunityManagerEditFragment extends BaseMvpFragment<CommunityManag
         mEmail.addTextChangedListener(new TextWatcherAdapter() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                getPresenter().fireEmailEdit(s);
+                callPresenter(p -> p.fireEmailEdit(s));
             }
         });
 
@@ -139,7 +139,7 @@ public class CommunityManagerEditFragment extends BaseMvpFragment<CommunityManag
         mPhone.addTextChangedListener(new TextWatcherAdapter() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                getPresenter().firePhoneEdit(s);
+                callPresenter(p -> p.firePhoneEdit(s));
             }
         });
         return root;
@@ -154,12 +154,12 @@ public class CommunityManagerEditFragment extends BaseMvpFragment<CommunityManag
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_save) {
-            getPresenter().fireButtonSaveClick();
+            callPresenter(CommunityManagerEditPresenter::fireButtonSaveClick);
             return true;
         }
 
         if (item.getItemId() == R.id.action_delete) {
-            getPresenter().fireDeleteClick();
+            callPresenter(CommunityManagerEditPresenter::fireDeleteClick);
             return true;
         }
 

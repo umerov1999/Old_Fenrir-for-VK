@@ -130,8 +130,8 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
         stickersKeywordsView = root.findViewById(R.id.stickers);
         stickersAdapter = new StickersKeyWordsAdapter(requireActivity(), Collections.emptyList());
         stickersAdapter.setStickerClickedListener(stickerId -> {
-            getPresenter().fireStickerClick(stickerId);
-            getPresenter().resetDraftMessage();
+            callPresenter(p -> p.fireStickerClick(stickerId));
+            callPresenter(CommentsPresenter::resetDraftMessage);
         });
         stickersKeywordsView.setLayoutManager(new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false));
         stickersKeywordsView.setAdapter(stickersAdapter);
@@ -151,20 +151,20 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
         mReplyView = root.findViewById(R.id.fragment_comments_reply_container);
         mReplyText = root.findViewById(R.id.fragment_comments_reply_user);
 
-        root.findViewById(R.id.fragment_comments_delete_reply).setOnClickListener(v -> getPresenter().fireReplyCancelClick());
+        root.findViewById(R.id.fragment_comments_delete_reply).setOnClickListener(v -> callPresenter(CommentsPresenter::fireReplyCancelClick));
 
         View loadUpView = inflater.inflate(R.layout.footer_load_more_comment, mRecyclerView, false);
-        upHelper = LoadMoreFooterHelperComment.createFrom(loadUpView, () -> getPresenter().fireUpLoadMoreClick());
+        upHelper = LoadMoreFooterHelperComment.createFrom(loadUpView, () -> callPresenter(CommentsPresenter::fireUpLoadMoreClick));
         upHelper.setEndOfListText(" ");
 
         View loadDownView = inflater.inflate(R.layout.footer_load_more_comment, mRecyclerView, false);
-        downhelper = LoadMoreFooterHelperComment.createFrom(loadDownView, () -> getPresenter().fireDownLoadMoreClick());
+        downhelper = LoadMoreFooterHelperComment.createFrom(loadDownView, () -> callPresenter(CommentsPresenter::fireDownLoadMoreClick));
         downhelper.setEndOfListTextRes(R.string.place_for_your_comment);
 
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToTop();
+                callPresenter(CommentsPresenter::fireScrollToTop);
             }
         });
 
@@ -184,7 +184,7 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
     @Override
     public boolean onSendLongClick() {
         if (mCanSendCommentAsAdmin) {
-            getPresenter().fireSendLongClick();
+            callPresenter(CommentsPresenter::fireSendLongClick);
             return true;
         }
 
@@ -287,7 +287,7 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
     public void displayBody(String body) {
         if (nonNull(mInputController)) {
             mInputController.setTextQuietly(body);
-            getPresenter().fireTextEdited(body);
+            callPresenter(p -> p.fireTextEdited(body));
         }
     }
 
@@ -401,7 +401,7 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
         OwnersListAdapter adapter = new OwnersListAdapter(requireActivity(), data);
         new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(R.string.select_comment_author)
-                .setAdapter(adapter, (dialog, which) -> getPresenter().fireAuthorSelected(data.get(which)))
+                .setAdapter(adapter, (dialog, which) -> callPresenter(p -> p.fireAuthorSelected(data.get(which))))
                 .setNegativeButton(R.string.button_cancel, null)
                 .show();
 
@@ -435,7 +435,7 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
 
     @Override
     public void displayDeepLookingCommentProgress() {
-        mDeepLookingProgressDialog = new SpotsDialog.Builder().setContext(requireActivity()).setCancelable(true).setCancelListener(dialog -> getPresenter().fireDeepLookingCancelledByUser()).build();
+        mDeepLookingProgressDialog = new SpotsDialog.Builder().setContext(requireActivity()).setCancelable(true).setCancelListener(dialog -> callPresenter(CommentsPresenter::fireDeepLookingCancelledByUser)).build();
         mDeepLookingProgressDialog.show();
     }
 
@@ -463,33 +463,33 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
 
     @Override
     public void onStickerClick(Sticker sticker) {
-        getPresenter().fireStickerClick(sticker);
+        callPresenter(p -> p.fireStickerClick(sticker));
     }
 
     @Override
     public void onInputTextChanged(String s) {
-        getPresenter().fireInputTextChanged(s);
-        getPresenter().fireTextEdited(s);
+        callPresenter(p -> p.fireInputTextChanged(s));
+        callPresenter(p -> p.fireTextEdited(s));
     }
 
     @Override
     public void onSendClicked() {
-        getPresenter().fireSendClick();
+        callPresenter(CommentsPresenter::fireSendClick);
     }
 
     @Override
     public void onAttachClick() {
-        getPresenter().fireAttachClick();
+        callPresenter(CommentsPresenter::fireAttachClick);
     }
 
     @Override
     public void onReplyToOwnerClick(int ownerId, int commentId) {
-        getPresenter().fireReplyToOwnerClick(commentId);
+        callPresenter(p -> p.fireReplyToOwnerClick(commentId));
     }
 
     @Override
     public void onRestoreComment(int commentId) {
-        getPresenter().fireCommentRestoreClick(commentId);
+        callPresenter(p -> p.fireCommentRestoreClick(commentId));
     }
 
     @Override
@@ -499,13 +499,13 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
 
     @Override
     public void onCommentLikeClick(Comment comment, boolean add) {
-        getPresenter().fireCommentLikeClick(comment, add);
+        callPresenter(p -> p.fireCommentLikeClick(comment, add));
     }
 
     @Override
     public void populateCommentContextMenu(ContextMenu menu, Comment comment) {
         ContextView contextView = new ContextView();
-        getPresenter().fireCommentContextViewCreated(contextView, comment);
+        callPresenter(p -> p.fireCommentContextViewCreated(contextView, comment));
 
         menu.setHeaderTitle(comment.getFullAuthorName());
 
@@ -521,19 +521,19 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
         }
 
         menu.add(R.string.reply).setOnMenuItemClickListener(item -> {
-            getPresenter().fireReplyToCommentClick(comment);
+            callPresenter(p -> p.fireReplyToCommentClick(comment));
             return true;
         });
 
         menu.add(R.string.report).setOnMenuItemClickListener(item -> {
-            getPresenter().fireReport(comment);
+            callPresenter(p -> p.fireReport(comment));
             return true;
         });
 
         if (contextView.canDelete) {
             menu.add(R.string.delete)
                     .setOnMenuItemClickListener(item -> {
-                        getPresenter().fireCommentDeleteClick(comment);
+                        callPresenter(p -> p.fireCommentDeleteClick(comment));
                         return true;
                     });
         }
@@ -541,7 +541,7 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
         if (contextView.canEdit) {
             menu.add(R.string.edit)
                     .setOnMenuItemClickListener(item -> {
-                        getPresenter().fireCommentEditClick(comment);
+                        callPresenter(p -> p.fireCommentEditClick(comment));
                         return true;
                     });
         }
@@ -549,7 +549,7 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
         if (contextView.canBan) {
             menu.add(R.string.ban_author)
                     .setOnMenuItemClickListener(item -> {
-                        getPresenter().fireBanClick(comment);
+                        callPresenter(p -> p.fireBanClick(comment));
                         return true;
                     });
         }
@@ -557,33 +557,33 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
         menu.add(R.string.like)
                 .setVisible(!comment.isUserLikes())
                 .setOnMenuItemClickListener(item -> {
-                    getPresenter().fireCommentLikeClick(comment, true);
+                    callPresenter(p -> p.fireCommentLikeClick(comment, true));
                     return true;
                 });
 
         menu.add(R.string.dislike)
                 .setVisible(comment.isUserLikes())
                 .setOnMenuItemClickListener(item -> {
-                    getPresenter().fireCommentLikeClick(comment, false);
+                    callPresenter(p -> p.fireCommentLikeClick(comment, false));
                     return true;
                 });
 
         menu.add(R.string.who_likes)
                 .setOnMenuItemClickListener(item -> {
-                    getPresenter().fireWhoLikesClick(comment);
+                    callPresenter(p -> p.fireWhoLikesClick(comment));
                     return true;
                 });
 
         menu.add(R.string.send_to_friend)
                 .setOnMenuItemClickListener(item -> {
-                    getPresenter().fireReplyToChat(comment);
+                    callPresenter(p -> p.fireReplyToChat(comment));
                     return true;
                 });
     }
 
     @Override
     public void onHashTagClicked(String hashTag) {
-        getPresenter().fireHashtagClick(hashTag);
+        callPresenter(p -> p.fireHashtagClick(hashTag));
     }
 
     @Override
@@ -632,18 +632,18 @@ public class CommentsFragment extends PlaceSupportMvpFragment<CommentsPresenter,
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.refresh) {
-            getPresenter().fireRefreshClick();
+            callPresenter(CommentsPresenter::fireRefreshClick);
             return true;
         } else if (item.getItemId() == R.id.open_poll) {
-            getPresenter().fireTopicPollClick();
+            callPresenter(CommentsPresenter::fireTopicPollClick);
             return true;
         } else if (item.getItemId() == R.id.to_commented) {
-            getPresenter().fireGotoSourceClick();
+            callPresenter(CommentsPresenter::fireGotoSourceClick);
             return true;
         } else if (item.getItemId() == R.id.direction) {
             boolean decs = Settings.get().other().toggleCommentsDirection();
             item.setIcon(getDirectionIcon(decs));
-            getPresenter().fireDirectionChanged();
+            callPresenter(CommentsPresenter::fireDirectionChanged);
             return true;
         }
         return super.onOptionsItemSelected(item);

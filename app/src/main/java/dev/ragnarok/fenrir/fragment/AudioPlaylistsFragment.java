@@ -41,6 +41,7 @@ import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.AudioPlaylistsPresenter;
+import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IAudioPlaylistsView;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
@@ -60,7 +61,7 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     ArrayList<Audio> audios = result.getData().getParcelableArrayListExtra("attachments");
                     AssertUtils.requireNonNull(audios);
-                    getPresenter().fireAudiosSelected(audios);
+                    callPresenter(p -> p.fireAudiosSelected(audios));
                 }
             });
     private TextView mEmpty;
@@ -109,11 +110,11 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
         FloatingActionButton mAdd = root.findViewById(R.id.add_button);
 
         if (mAdd != null) {
-            if (getPresenter().getAccountId() != getPresenter().getOwner_id())
+            if (callPresenter(p -> p.getAccountId() != p.getOwner_id(), true))
                 mAdd.setVisibility(View.GONE);
             else {
                 mAdd.setVisibility(View.VISIBLE);
-                mAdd.setOnClickListener(v -> getPresenter().fireCreatePlaylist(requireActivity()));
+                mAdd.setOnClickListener(v -> callPresenter(p -> p.fireCreatePlaylist(requireActivity())));
             }
         }
 
@@ -124,7 +125,7 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(AudioPlaylistsPresenter::fireScrollToEnd);
             }
         });
 
@@ -134,19 +135,19 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
         mySearchView.setOnQueryTextListener(new MySearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                getPresenter().fireSearchRequestChanged(query);
+                callPresenter(p -> p.fireSearchRequestChanged(query));
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                getPresenter().fireSearchRequestChanged(newText);
+                callPresenter(p -> p.fireSearchRequestChanged(newText));
                 return false;
             }
         });
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(AudioPlaylistsPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         mAdapter = new AudioPlaylistsAdapter(Collections.emptyList(), requireActivity(), isSelectMode);
@@ -245,33 +246,33 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
             requireActivity().setResult(Activity.RESULT_OK, intent);
             requireActivity().finish();
         } else {
-            PlaceFactory.getAudiosInAlbumPlace(getPresenter().getAccountId(), album.getOwnerId(), album.getId(), album.getAccess_key()).tryOpenWith(requireActivity());
+            PlaceFactory.getAudiosInAlbumPlace(callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent()), album.getOwnerId(), album.getId(), album.getAccess_key()).tryOpenWith(requireActivity());
         }
     }
 
     @Override
     public void onOpenClick(int index, AudioPlaylist album) {
-        PlaceFactory.getAudiosInAlbumPlace(getPresenter().getAccountId(), album.getOwnerId(), album.getId(), album.getAccess_key()).tryOpenWith(requireActivity());
+        PlaceFactory.getAudiosInAlbumPlace(callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent()), album.getOwnerId(), album.getId(), album.getAccess_key()).tryOpenWith(requireActivity());
     }
 
     @Override
     public void onDelete(int index, AudioPlaylist album) {
-        getPresenter().onDelete(index, album);
+        callPresenter(p -> p.onDelete(index, album));
     }
 
     @Override
     public void onShare(int index, AudioPlaylist album) {
-        SendAttachmentsActivity.startForSendAttachments(requireActivity(), getPresenter().getAccountId(), album);
+        SendAttachmentsActivity.startForSendAttachments(requireActivity(), callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent()), album);
     }
 
     @Override
     public void onEdit(int index, AudioPlaylist album) {
-        getPresenter().onEdit(requireActivity(), index, album);
+        callPresenter(p -> p.onEdit(requireActivity(), index, album));
     }
 
     @Override
     public void onAddAudios(int index, AudioPlaylist album) {
-        getPresenter().onPlaceToPending(album);
+        callPresenter(p -> p.onPlaceToPending(album));
     }
 
     @Override
@@ -281,6 +282,6 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
 
     @Override
     public void onAdd(int index, AudioPlaylist album) {
-        getPresenter().onAdd(album);
+        callPresenter(p -> p.onAdd(album));
     }
 }

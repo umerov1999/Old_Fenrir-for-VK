@@ -107,10 +107,10 @@ class AudioApi extends AbsApi implements IAudioApi {
     }
 
     @Override
-    public Single<Integer> add(int audioId, int ownerId, Integer groupId) {
+    public Single<Integer> add(int audioId, int ownerId, Integer groupId, String accessKey) {
         return provideService(IAudioService.class)
                 .flatMap(service -> service
-                        .add(audioId, ownerId, groupId)
+                        .add(audioId, ownerId, groupId, accessKey)
                         .map(extractResponseWithErrorHandling()));
     }
 

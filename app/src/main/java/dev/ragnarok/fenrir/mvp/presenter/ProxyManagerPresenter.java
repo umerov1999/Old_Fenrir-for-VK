@@ -66,7 +66,7 @@ public class ProxyManagerPresenter extends RxSupportPresenter<IProxyManagerView>
 
     public void fireDeleteClick(ProxyConfig config) {
         if (config.equals(settings.getActiveProxy())) {
-            showError(getView(), new Exception("Proxy is active. First, disable the proxy"));
+            callView(v -> showError(v, new Exception("Proxy is active. First, disable the proxy")));
             return;
         }
 
@@ -83,6 +83,6 @@ public class ProxyManagerPresenter extends RxSupportPresenter<IProxyManagerView>
     }
 
     public void fireAddClick() {
-        getView().goToAddingScreen();
+        callView(IProxyManagerView::goToAddingScreen);
     }
 }

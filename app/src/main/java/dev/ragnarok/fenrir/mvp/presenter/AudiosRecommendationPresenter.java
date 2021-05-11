@@ -63,9 +63,7 @@ public class AudiosRecommendationPresenter extends AccountDependencyPresenter<IA
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().displayRefreshing(loadingNow);
-        }
+        callResumedView(v -> v.displayRefreshing(loadingNow));
     }
 
     private void onEndlessListReceived(List<Audio> data) {
@@ -115,9 +113,7 @@ public class AudiosRecommendationPresenter extends AccountDependencyPresenter<IA
     private void onListGetError(Throwable t) {
         setLoadingNow(false);
 
-        if (isGuiResumed()) {
-            showError(getView(), getCauseIfRuntime(t));
-        }
+        callResumedView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     public void fireSelectAll() {

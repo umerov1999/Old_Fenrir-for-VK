@@ -97,8 +97,8 @@ public class PostCreateFragment extends AbsPostEditFragment<PostCreatePresenter,
     @Override
     public void displayUploadUriSizeDialog(@NonNull List<Uri> uris) {
         new ImageSizeAlertDialog.Builder(requireActivity())
-                .setOnSelectedCallback(size -> getPresenter().fireUriUploadSizeSelected(uris, size))
-                .setOnCancelCallback(() -> getPresenter().fireUriUploadCancelClick())
+                .setOnSelectedCallback(size -> callPresenter(p -> p.fireUriUploadSizeSelected(uris, size)))
+                .setOnCancelCallback(() -> callPresenter(PostCreatePresenter::fireUriUploadCancelClick))
                 .show();
     }
 
@@ -116,7 +116,7 @@ public class PostCreateFragment extends AbsPostEditFragment<PostCreatePresenter,
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.ready) {
-            getPresenter().fireReadyClick();
+            callPresenter(PostCreatePresenter::fireReadyClick);
             return true;
         }
 
@@ -125,6 +125,6 @@ public class PostCreateFragment extends AbsPostEditFragment<PostCreatePresenter,
 
     @Override
     public boolean onBackPressed() {
-        return getPresenter().onBackPresed();
+        return callPresenter(PostCreatePresenter::onBackPresed, false);
     }
 }

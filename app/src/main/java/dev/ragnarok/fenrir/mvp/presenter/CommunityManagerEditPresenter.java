@@ -18,6 +18,7 @@ import dev.ragnarok.fenrir.model.User;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.ICommunityManagerEditView;
+import dev.ragnarok.fenrir.mvp.view.IProgressView;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 
@@ -142,16 +143,16 @@ public class CommunityManagerEditPresenter extends AccountDependencyPresenter<IC
 
     @OnGuiCreated
     private void resolveRadioButtonsCheckState() {
-        if (isGuiReady() && !isCreator()) {
+        if (!isCreator()) {
             switch (adminLevel) {
                 case VKApiCommunity.AdminLevel.MODERATOR:
-                    getView().checkModerator();
+                    callView(ICommunityManagerEditView::checkModerator);
                     break;
                 case VKApiCommunity.AdminLevel.EDITOR:
-                    getView().checkEditor();
+                    callView(ICommunityManagerEditView::checkEditor);
                     break;
                 case VKApiCommunity.AdminLevel.ADMIN:
-                    getView().checkAdmin();
+                    callView(ICommunityManagerEditView::checkAdmin);
                     break;
             }
         }
@@ -159,16 +160,12 @@ public class CommunityManagerEditPresenter extends AccountDependencyPresenter<IC
 
     @OnGuiCreated
     private void resolveDeleteOptionVisiblity() {
-        if (isGuiReady()) {
-            getView().setDeleteOptionVisible(canDelete());
-        }
+        callView(v -> v.setDeleteOptionVisible(canDelete()));
     }
 
     @OnGuiCreated
     private void resolveRadioButtonsVisibility() {
-        if (isGuiReady()) {
-            getView().configRadioButtons(isCreator());
-        }
+        callView(v -> v.configRadioButtons(isCreator()));
     }
 
     private void setSavingNow(boolean savingNow) {
@@ -178,12 +175,11 @@ public class CommunityManagerEditPresenter extends AccountDependencyPresenter<IC
 
     @OnGuiCreated
     private void resolveProgressView() {
-        if (isGuiReady()) {
-            if (savingNow) {
-                getView().displayProgressDialog(R.string.please_wait, R.string.saving, false);
-            } else {
-                getView().dismissProgressDialog();
-            }
+
+        if (savingNow) {
+            callView(v -> v.displayProgressDialog(R.string.please_wait, R.string.saving, false));
+        } else {
+            callView(IProgressView::dismissProgressDialog);
         }
     }
 
@@ -222,7 +218,7 @@ public class CommunityManagerEditPresenter extends AccountDependencyPresenter<IC
 
     private void onSavingComplete() {
         setSavingNow(false);
-        safeShowToast(getView(), R.string.success, false);
+        callView(v -> v.showToast(R.string.success, false));
 
         if (currentUserIndex == users.size() - 1) {
             callView(ICommunityManagerEditView::goBack);
@@ -245,30 +241,28 @@ public class CommunityManagerEditPresenter extends AccountDependencyPresenter<IC
 
     @OnGuiCreated
     private void resolveContactBlock() {
-        if (isGuiReady()) {
-            getView().setShowAsContactCheched(showAsContact);
-            getView().setContactInfoVisible(showAsContact);
-            getView().displayPosition(position);
-            getView().displayEmail(email);
-            getView().displayPhone(phone);
-        }
+        callView(v -> {
+            v.setShowAsContactCheched(showAsContact);
+            v.setContactInfoVisible(showAsContact);
+            v.displayPosition(position);
+            v.displayEmail(email);
+            v.displayPhone(phone);
+        });
     }
 
     @OnGuiCreated
     private void resolveUserInfoViews() {
-        if (isGuiReady()) {
-            getView().displayUserInfo(getCurrentUser());
-        }
+        callView(v -> v.displayUserInfo(getCurrentUser()));
     }
 
     private void onSavingError(Throwable throwable) {
         throwable.printStackTrace();
         setSavingNow(false);
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
     }
 
     public void fireAvatarClick() {
-        getView().showUserProfile(getAccountId(), getCurrentUser());
+        callView(v -> v.showUserProfile(getAccountId(), getCurrentUser()));
     }
 
     public void fireModeratorChecked() {
@@ -286,7 +280,7 @@ public class CommunityManagerEditPresenter extends AccountDependencyPresenter<IC
     public void fireShowAsContactChecked(boolean checked) {
         if (checked != showAsContact) {
             showAsContact = checked;
-            getView().setContactInfoVisible(checked);
+            callView(v -> v.setContactInfoVisible(checked));
         }
     }
 

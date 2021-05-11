@@ -44,7 +44,6 @@ import com.google.zxing.integration.android.IntentResult;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.Extra;

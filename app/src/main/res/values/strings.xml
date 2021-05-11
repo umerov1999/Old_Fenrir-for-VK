@@ -135,6 +135,7 @@
     </string-array>
 
     <string-array name="array_pagan_symbol_names">
+        <item>Disabled.</item>
         <item>Yggdrasil</item>
         <item>Valknut</item>
         <item>Mjolnir</item>
@@ -145,6 +146,7 @@
         <item>Triskel</item>
         <item>Hella</item>
         <item>Fire Fan</item>
+        <item>Citadel</item>
     </string-array>
 
     <string-array name="array_pagan_symbol_items" translatable="false">
@@ -158,6 +160,8 @@
         <item>7</item>
         <item>8</item>
         <item>9</item>
+        <item>10</item>
+        <item>11</item>
     </string-array>
 
     <string-array name="array_accounts_input">
@@ -1645,8 +1649,7 @@
     <string name="in_full_version">Available in full version!</string>
     <string name="wall_themed">Wall decoration for pagans</string>
     <string name="runes_show">Show runes</string>
-    <string name="show_pagan_symbol">Show symbol</string>
-    <string name="pagan_symbol">Pagan symbol</string>
+    <string name="pagan_symbol">Symbol</string>
     <string name="photo_settings">Viewing photos</string>
     <string name="canceled_by_receiver">Canceled by recipient</string>
     <string name="canceled_by_initiator">Canceled by the initiator</string>

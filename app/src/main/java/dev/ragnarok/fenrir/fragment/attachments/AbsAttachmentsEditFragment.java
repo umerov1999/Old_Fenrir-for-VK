@@ -68,43 +68,43 @@ public abstract class AbsAttachmentsEditFragment<P extends AbsAttachmentsEditPre
 
     private final AppPerms.doRequestPermissions requestCameraPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-            () -> getPresenter().fireCameraPermissionResolved());
+            () -> callPresenter(AbsAttachmentsEditPresenter::fireCameraPermissionResolved));
     private final AppPerms.doRequestPermissions requestCameraPermissionScoped = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.CAMERA},
-            () -> getPresenter().fireCameraPermissionResolved());
+            () -> callPresenter(AbsAttachmentsEditPresenter::fireCameraPermissionResolved));
 
     private final AppPerms.doRequestPermissions requestReqadPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-            () -> getPresenter().fireReadStoragePermissionResolved());
+            () -> callPresenter(AbsAttachmentsEditPresenter::fireReadStoragePermissionResolved));
     private final ActivityResultLauncher<Uri> openCameraRequest = registerForActivityResult(new ActivityResultContracts.TakePicture(), result -> {
         if (result) {
-            getPresenter().firePhotoMaked();
+            callPresenter(AbsAttachmentsEditPresenter::firePhotoMaked);
         }
     });
     private final ActivityResultLauncher<Intent> openRequestAudioVideoDoc = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getData() != null && result.getResultCode() == Activity.RESULT_OK) {
             ArrayList<AbsModel> attachments = result.getData().getParcelableArrayListExtra(Extra.ATTACHMENTS);
-            getPresenter().fireAttachmentsSelected(attachments);
+            callPresenter(p -> p.fireAttachmentsSelected(attachments));
         }
     });
     private final ActivityResultLauncher<Intent> openRequestPhotoFromVK = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getData() != null && result.getResultCode() == Activity.RESULT_OK) {
             ArrayList<Photo> photos = result.getData().getParcelableArrayListExtra("attachments");
             AssertUtils.requireNonNull(photos);
-            getPresenter().fireVkPhotosSelected(photos);
+            callPresenter(p -> p.fireVkPhotosSelected(photos));
         }
     });
     private final ActivityResultLauncher<Intent> openRequestPhotoFromGallery = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getData() != null && result.getResultCode() == Activity.RESULT_OK) {
             ArrayList<LocalPhoto> photos = result.getData().getParcelableArrayListExtra(Extra.PHOTOS);
             AssertUtils.requireNonNull(photos);
-            getPresenter().firePhotosFromGallerySelected(photos);
+            callPresenter(p -> p.firePhotosFromGallerySelected(photos));
         }
     });
     private final ActivityResultLauncher<Intent> openRequestResizePhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
             assert result.getData() != null;
-            getPresenter().fireFileSelected(result.getData().getStringExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH));
+            callPresenter(p -> p.fireFileSelected(result.getData().getStringExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH)));
         }
     });
     private TextInputEditText mTextBody;
@@ -147,7 +147,7 @@ public abstract class AbsAttachmentsEditFragment<P extends AbsAttachmentsEditPre
         mTextBody.addTextChangedListener(new TextWatcherAdapter() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                getPresenter().fireTextChanged(s);
+                callPresenter(p -> p.fireTextChanged(s));
             }
         });
 
@@ -165,14 +165,14 @@ public abstract class AbsAttachmentsEditFragment<P extends AbsAttachmentsEditPre
 
         mButtonTimer = headerView.findViewById(R.id.button_postpone);
 
-        mButtonPhoto.setOnClickListener(view -> getPresenter().fireButtonPhotoClick());
-        mButtonAudio.setOnClickListener(view -> getPresenter().fireButtonAudioClick());
-        mButtonVideo.setOnClickListener(view -> getPresenter().fireButtonVideoClick());
-        mButtonDoc.setOnClickListener(view -> getPresenter().fireButtonDocClick());
-        mButtonPoll.setOnClickListener(view -> getPresenter().fireButtonPollClick());
+        mButtonPhoto.setOnClickListener(view -> callPresenter(AbsAttachmentsEditPresenter::fireButtonPhotoClick));
+        mButtonAudio.setOnClickListener(view -> callPresenter(AbsAttachmentsEditPresenter::fireButtonAudioClick));
+        mButtonVideo.setOnClickListener(view -> callPresenter(AbsAttachmentsEditPresenter::fireButtonVideoClick));
+        mButtonDoc.setOnClickListener(view -> callPresenter(AbsAttachmentsEditPresenter::fireButtonDocClick));
+        mButtonPoll.setOnClickListener(view -> callPresenter(AbsAttachmentsEditPresenter::fireButtonPollClick));
 
-        headerView.findViewById(R.id.button_disable_postpone).setOnClickListener(v -> getPresenter().fireButtonTimerClick());
-        mButtonTimer.setOnClickListener(view -> getPresenter().fireButtonTimerClick());
+        headerView.findViewById(R.id.button_disable_postpone).setOnClickListener(v -> callPresenter(AbsAttachmentsEditPresenter::fireButtonTimerClick));
+        mButtonTimer.setOnClickListener(view -> callPresenter(AbsAttachmentsEditPresenter::fireButtonTimerClick));
 
         mEmptyText = headerView.findViewById(R.id.empty_text);
         return root;
@@ -284,12 +284,12 @@ public abstract class AbsAttachmentsEditFragment<P extends AbsAttachmentsEditPre
 
     @Override
     public void onRemoveClick(int index, @NonNull AttachmenEntry attachment) {
-        getPresenter().fireRemoveClick(index, attachment);
+        callPresenter(p -> p.fireRemoveClick(index, attachment));
     }
 
     @Override
     public void onTitleClick(int index, @NonNull AttachmenEntry attachment) {
-        getPresenter().fireTitleClick(index, attachment);
+        callPresenter(p -> p.fireTitleClick(index, attachment));
     }
 
     @Override
@@ -332,7 +332,7 @@ public abstract class AbsAttachmentsEditFragment<P extends AbsAttachmentsEditPre
         new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(R.string.select_image_size_title)
                 .setItems(R.array.array_image_sizes_names,
-                        (dialogInterface, index) -> getPresenter().fireUploadPhotoSizeSelected(photos, values[index]))
+                        (dialogInterface, index) -> callPresenter(p -> p.fireUploadPhotoSizeSelected(photos, values[index])))
                 .show();
     }
 
@@ -353,7 +353,7 @@ public abstract class AbsAttachmentsEditFragment<P extends AbsAttachmentsEditPre
                 .setFragmentListener(CreatePollFragment.REQUEST_CREATE_POLL, (requestKey, result) -> {
                     Poll poll = result.getParcelable("poll");
                     AssertUtils.requireNonNull(poll);
-                    getPresenter().firePollCreated(poll);
+                    callPresenter(p -> p.firePollCreated(poll));
                 })
                 .tryOpenWith(requireActivity());
     }
@@ -364,13 +364,13 @@ public abstract class AbsAttachmentsEditFragment<P extends AbsAttachmentsEditPre
         new MaterialAlertDialogBuilder(requireActivity()).setItems(items, (dialogInterface, i) -> {
             switch (i) {
                 case 0:
-                    getPresenter().firePhotoFromVkChoose();
+                    callPresenter(AbsAttachmentsEditPresenter::firePhotoFromVkChoose);
                     break;
                 case 1:
-                    getPresenter().firePhotoFromLocalGalleryChoose();
+                    callPresenter(AbsAttachmentsEditPresenter::firePhotoFromLocalGalleryChoose);
                     break;
                 case 2:
-                    getPresenter().firePhotoFromCameraChoose();
+                    callPresenter(AbsAttachmentsEditPresenter::firePhotoFromCameraChoose);
                     break;
             }
         }).show();
@@ -442,7 +442,7 @@ public abstract class AbsAttachmentsEditFragment<P extends AbsAttachmentsEditPre
     public void showEnterTimeDialog(long initialTimeUnixtime) {
         new DateTimePicker.Builder(requireActivity())
                 .setTime(initialTimeUnixtime)
-                .setCallback(unixtime -> getPresenter().fireTimerTimeSelected(unixtime))
+                .setCallback(unixtime -> callPresenter(p -> p.fireTimerTimeSelected(unixtime)))
                 .show();
     }
 

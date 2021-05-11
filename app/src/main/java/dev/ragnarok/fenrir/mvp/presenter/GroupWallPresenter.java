@@ -76,25 +76,19 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
 
     @OnGuiCreated
     private void resolveBaseCommunityViews() {
-        if (isGuiReady()) {
-            getView().displayBaseCommunityData(community, details);
-        }
+        callView(v -> v.displayBaseCommunityData(community, details));
     }
 
     @OnGuiCreated
     private void resolveMenu() {
-        if (isGuiReady()) {
-            getView().InvalidateOptionsMenu();
-        }
+        callView(IGroupWallView::InvalidateOptionsMenu);
     }
 
     @OnGuiCreated
     private void resolveCounters() {
-        if (isGuiReady()) {
-            getView().displayCounters(details.getMembersCount(), details.getTopicsCount(),
-                    details.getDocsCount(), details.getPhotosCount(),
-                    details.getAudiosCount(), details.getVideosCount(), details.getArticlesCount(), details.getProductsCount(), details.getChatsCount());
-        }
+        callView(v -> v.displayCounters(details.getMembersCount(), details.getTopicsCount(),
+                details.getDocsCount(), details.getPhotosCount(),
+                details.getAudiosCount(), details.getVideosCount(), details.getArticlesCount(), details.getProductsCount(), details.getChatsCount()));
     }
 
     private void refreshInfo() {
@@ -138,7 +132,7 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
     }
 
     private void onDetailsGetError(Throwable t) {
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private List<PostFilter> createPostFilters() {
@@ -212,7 +206,7 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
 
         appendDisposable(communitiesInteractor.leave(accountid, groupId)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(this::onLeaveResult, t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(this::onLeaveResult, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     private void joinCommunity() {
@@ -221,66 +215,66 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
 
         appendDisposable(communitiesInteractor.join(accountid, groupId)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(this::onJoinResult, t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(this::onJoinResult, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     public void fireHeaderPhotosClick() {
-        getView().openPhotoAlbums(getAccountId(), ownerId, community);
+        callView(v -> v.openPhotoAlbums(getAccountId(), ownerId, community));
     }
 
     public void fireHeaderAudiosClick() {
-        getView().openAudios(getAccountId(), ownerId, community);
+        callView(v -> v.openAudios(getAccountId(), ownerId, community));
     }
 
     public void fireHeaderArticlesClick() {
-        getView().openArticles(getAccountId(), ownerId, community);
+        callView(v -> v.openArticles(getAccountId(), ownerId, community));
     }
 
     public void fireHeaderProductsClick() {
-        getView().openProducts(getAccountId(), ownerId, community);
+        callView(v -> v.openProducts(getAccountId(), ownerId, community));
     }
 
     public void fireHeaderVideosClick() {
-        getView().openVideosLibrary(getAccountId(), ownerId, community);
+        callView(v -> v.openVideosLibrary(getAccountId(), ownerId, community));
     }
 
     public void fireHeaderMembersClick() {
-        getView().openCommunityMembers(getAccountId(), Math.abs(ownerId));
+        callView(v -> v.openCommunityMembers(getAccountId(), Math.abs(ownerId)));
     }
 
     public void fireHeaderTopicsClick() {
-        getView().openTopics(getAccountId(), ownerId, community);
+        callView(v -> v.openTopics(getAccountId(), ownerId, community));
     }
 
     public void fireHeaderDocsClick() {
-        getView().openDocuments(getAccountId(), ownerId, community);
+        callView(v -> v.openDocuments(getAccountId(), ownerId, community));
     }
 
     public void fireShowComunityInfoClick() {
-        getView().goToShowComunityInfo(getAccountId(), community);
+        callView(v -> v.goToShowComunityInfo(getAccountId(), community));
     }
 
     public void fireShowComunityLinksInfoClick() {
-        getView().goToShowComunityLinksInfo(getAccountId(), community);
+        callView(v -> v.goToShowComunityLinksInfo(getAccountId(), community));
     }
 
     public void fireGroupChatsClick() {
-        getView().goToGroupChats(getAccountId(), community);
+        callView(v -> v.goToGroupChats(getAccountId(), community));
     }
 
     public void fireHeaderStatusClick() {
         if (nonNull(details) && nonNull(details.getStatusAudio())) {
-            getView().playAudioList(getAccountId(), 0, Utils.singletonArrayList(details.getStatusAudio()));
+            callView(v -> v.playAudioList(getAccountId(), 0, Utils.singletonArrayList(details.getStatusAudio())));
         }
     }
 
     @OnGuiCreated
     private void resolveActionButtons() {
-        if (!isGuiReady()) return;
-
         if (community.getType() == VKApiCommunity.Type.EVENT) {
-            getView().setupPrimaryButton(null);
-            getView().setupSecondaryButton(null);
+            callView(v -> {
+                v.setupPrimaryButton(null);
+                v.setupSecondaryButton(null);
+            });
             return;
         }
 
@@ -339,9 +333,12 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
                 secondaryText = R.string.cancel_invitation;
                 break;
         }
-
-        getView().setupPrimaryButton(primaryText);
-        getView().setupSecondaryButton(secondaryText);
+        Integer finalPrimaryText = primaryText;
+        Integer finalSecondaryText = secondaryText;
+        callView(v -> {
+            v.setupPrimaryButton(finalPrimaryText);
+            v.setupSecondaryButton(finalSecondaryText);
+        });
     }
 
     private void onLeaveResult() {
@@ -379,8 +376,9 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
         }
 
         resolveActionButtons();
-        if (nonNull(resultMessage) && isGuiReady()) {
-            getView().showSnackbar(resultMessage, true);
+        if (nonNull(resultMessage)) {
+            Integer finalResultMessage = resultMessage;
+            callView(v -> v.showSnackbar(finalResultMessage, true));
         }
     }
 
@@ -433,8 +431,9 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
 
         resolveActionButtons();
 
-        if (nonNull(resultMessage) && isGuiReady()) {
-            getView().showSnackbar(resultMessage, true);
+        if (nonNull(resultMessage)) {
+            Integer finalResultMessage = resultMessage;
+            callView(v -> v.showSnackbar(finalResultMessage, true));
         }
     }
 
@@ -442,12 +441,12 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
         if (changeWallFilter(entry.getMode())) {
             syncFiltersWithSelectedMode();
 
-            getView().notifyWallFiltersChanged();
+            callView(IGroupWallView::notifyWallFiltersChanged);
         }
     }
 
     public void fireCommunityControlClick() {
-        getView().goToCommunityControl(getAccountId(), community, null);
+        callView(v -> v.goToCommunityControl(getAccountId(), community, null));
 
         /*final int accountId = super.getAccountId();
         final int grouId = Math.abs(ownerId);
@@ -456,7 +455,7 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
         appendDisposable(interactor.getGroupSettings(accountId, grouId)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(this::onSettingsReceived, throwable -> {
-                    showError(getView(), getCauseIfRuntime(throwable));
+                    callView(v -> showError(v, getCauseIfRuntime(throwable)));
                 }));*/
     }
 
@@ -469,7 +468,7 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
             openCommunityMessages();
         } else {
             int groupId = Math.abs(ownerId);
-            getView().startLoginCommunityActivity(groupId);
+            callView(v -> v.startLoginCommunityActivity(groupId));
         }
     }
 
@@ -522,12 +521,12 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
     }
 
     private void onExecuteError(Throwable t) {
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void onExecuteComplete() {
         onRefresh();
-        getView().getCustomToast().showToast(R.string.success);
+        callView(v -> v.getCustomToast().showToast(R.string.success));
     }
 
     @Override
@@ -544,14 +543,14 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
     public void fireChatClick() {
         Peer peer = new Peer(ownerId).setTitle(community.getFullName()).setAvaUrl(community.getMaxSquareAvatar());
         int accountId = getAccountId();
-        getView().openChatWith(accountId, accountId, peer);
+        callView(v -> v.openChatWith(accountId, accountId, peer));
     }
 
     @Override
     public void fireAddToNewsClick() {
         appendDisposable(InteractorFactory.createFeedInteractor().saveList(getAccountId(), community.getFullName(), Collections.singleton(community.getOwnerId()))
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(i -> getView().showSnackbar(R.string.success, true), t -> showError(getView(), t)));
+                .subscribe(i -> callView(v -> v.showSnackbar(R.string.success, true)), t -> callView(v -> showError(v, t))));
     }
 
     @Override
@@ -562,7 +561,7 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
                     if (!Utils.isEmpty(data)) {
                         stories.clear();
                         stories.addAll(data);
-                        getView().updateStory(stories);
+                        callView(v -> v.updateStory(stories));
                     }
                 }, t -> {
                 }));

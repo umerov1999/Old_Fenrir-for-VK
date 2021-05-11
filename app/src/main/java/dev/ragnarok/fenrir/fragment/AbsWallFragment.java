@@ -53,7 +53,9 @@ import dev.ragnarok.fenrir.model.ParcelableOwnerWrapper;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.Post;
 import dev.ragnarok.fenrir.model.Story;
+import dev.ragnarok.fenrir.module.FenrirNative;
 import dev.ragnarok.fenrir.mvp.presenter.AbsWallPresenter;
+import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IVideosListView;
 import dev.ragnarok.fenrir.mvp.view.IVkPhotosView;
 import dev.ragnarok.fenrir.mvp.view.IWallView;
@@ -144,51 +146,63 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
 
     protected void setupPaganContent(@NonNull View Runes, @NonNull RLottieImageView paganSymbol) {
         Runes.setVisibility(Settings.get().other().isRunes_show() ? View.VISIBLE : View.GONE);
-        paganSymbol.setVisibility(Settings.get().other().isShow_pagan_symbol() ? View.VISIBLE : View.GONE);
-        if (!Settings.get().other().isShow_pagan_symbol()) {
+        int symbol = Settings.get().other().getPaganSymbol();
+        paganSymbol.setVisibility(symbol != 0 ? View.VISIBLE : View.GONE);
+        if (symbol == 0) {
             return;
         }
         switch (Settings.get().other().getPaganSymbol()) {
-            case 1:
+            case 2:
                 paganSymbol.setImageResource(R.drawable.valknut);
                 break;
-            case 2:
+            case 3:
                 paganSymbol.setImageResource(R.drawable.ic_mjolnir);
                 break;
-            case 3:
+            case 4:
                 paganSymbol.setImageResource(R.drawable.ic_vegvisir);
                 break;
-            case 4:
+            case 5:
                 paganSymbol.setImageResource(R.drawable.ic_celtic_knot);
                 break;
-            case 5:
+            case 6:
                 paganSymbol.setImageResource(R.drawable.ic_slepnir);
                 break;
-            case 6:
-                paganSymbol.fromRes(R.raw.fenrir, Utils.dp(140), Utils.dp(140), new int[]{
-                        0x333333,
-                        CurrentTheme.getColorPrimary(requireActivity()),
-                        0x777777,
-                        CurrentTheme.getColorSecondary(requireActivity())
-                });
-                paganSymbol.playAnimation();
-                break;
             case 7:
-                paganSymbol.setImageResource(R.drawable.ic_triskel);
+                if (FenrirNative.isNativeLoaded()) {
+                    paganSymbol.fromRes(R.raw.fenrir, Utils.dp(140), Utils.dp(140), new int[]{
+                            0x333333,
+                            CurrentTheme.getColorPrimary(requireActivity()),
+                            0x777777,
+                            CurrentTheme.getColorSecondary(requireActivity())
+                    });
+                    paganSymbol.playAnimation();
+                } else {
+                    paganSymbol.setImageResource(R.drawable.ic_igdr);
+                }
                 break;
             case 8:
-                paganSymbol.setImageResource(R.drawable.ic_hell);
+                paganSymbol.setImageResource(R.drawable.ic_triskel);
                 break;
             case 9:
-                paganSymbol.fromRes(R.raw.fire_fan, Utils.dp(180), Utils.dp(140), new int[]{
-                        0xffffff,
-                        CurrentTheme.getColorOnSurface(requireActivity()),
-                        0x333333,
-                        CurrentTheme.getColorPrimary(requireActivity()),
-                        0x777777,
-                        CurrentTheme.getColorSecondary(requireActivity())
-                });
-                paganSymbol.playAnimation();
+                paganSymbol.setImageResource(R.drawable.ic_hell);
+                break;
+            case 10:
+                if (FenrirNative.isNativeLoaded()) {
+                    paganSymbol.fromRes(R.raw.fire_fan, Utils.dp(180), Utils.dp(140), new int[]{
+                            0xffffff,
+                            CurrentTheme.getColorOnSurface(requireActivity()),
+                            0x333333,
+                            CurrentTheme.getColorPrimary(requireActivity()),
+                            0x777777,
+                            CurrentTheme.getColorSecondary(requireActivity())
+                    });
+                    paganSymbol.playAnimation();
+                } else {
+                    paganSymbol.setImageResource(R.drawable.ic_igdr);
+                }
+                break;
+            case 11:
+                paganSymbol.setImageResource(R.drawable.ic_citadel);
                 break;
             default:
                 paganSymbol.setImageResource(R.drawable.ic_igdr);
@@ -216,7 +230,7 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
         ((AppCompatActivity) requireActivity()).setSupportActionBar(root.findViewById(R.id.toolbar));
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(AbsWallPresenter::fireRefresh));
 
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
@@ -235,7 +249,7 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(AbsWallPresenter::fireScrollToEnd);
             }
         });
 
@@ -243,12 +257,12 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
         onHeaderInflated(headerView);
 
         View footerView = inflater.inflate(R.layout.footer_load_more, recyclerView, false);
-        mLoadMoreFooterHelper = LoadMoreFooterHelper.createFrom(footerView, () -> getPresenter().fireLoadMoreClick());
+        mLoadMoreFooterHelper = LoadMoreFooterHelper.createFrom(footerView, () -> callPresenter(AbsWallPresenter::fireLoadMoreClick));
 
         fabCreate = root.findViewById(R.id.fragment_user_profile_fab);
         fabCreate.setOnClickListener(v -> {
             if (isCreatePost) {
-                getPresenter().fireCreateClick();
+                callPresenter(AbsWallPresenter::fireCreateClick);
             } else {
                 recyclerView.scrollToPosition(0);
                 ToggleFab(false);
@@ -260,7 +274,7 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
         RecyclerView headerStoryRecyclerView = headerStory.findViewById(R.id.header_story);
         headerStoryRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false));
         mStoryAdapter = new HorizontalStoryAdapter(Collections.emptyList());
-        mStoryAdapter.setListener((item, pos) -> openHistoryVideo(Settings.get().accounts().getCurrent(), new ArrayList<>(getPresenter().getStories()), pos));
+        mStoryAdapter.setListener((item, pos) -> openHistoryVideo(Settings.get().accounts().getCurrent(), new ArrayList<>(callPresenter(AbsWallPresenter::getStories, Collections.emptyList())), pos));
         headerStoryRecyclerView.setAdapter(mStoryAdapter);
 
         mWallAdapter = new WallAdapter(requireActivity(), Collections.emptyList(), this, this);
@@ -318,25 +332,25 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_refresh) {
-            getPresenter().fireRefresh();
+            callPresenter(AbsWallPresenter::fireRefresh);
             return true;
         } else if (item.getItemId() == R.id.action_edit) {
-            getPresenter().fireEdit(requireActivity());
+            callPresenter(p -> p.fireEdit(requireActivity()));
             return true;
         } else if (item.getItemId() == R.id.action_copy_url) {
-            getPresenter().fireCopyUrlClick();
+            callPresenter(AbsWallPresenter::fireCopyUrlClick);
             return true;
         } else if (item.getItemId() == R.id.action_copy_id) {
-            getPresenter().fireCopyIdClick();
+            callPresenter(AbsWallPresenter::fireCopyIdClick);
             return true;
         } else if (item.getItemId() == R.id.action_add_to_news) {
-            getPresenter().fireAddToNewsClick();
+            callPresenter(AbsWallPresenter::fireAddToNewsClick);
             return true;
         } else if (item.getItemId() == R.id.action_search) {
-            getPresenter().fireSearchClick();
+            callPresenter(AbsWallPresenter::fireSearchClick);
             return true;
         } else if (item.getItemId() == R.id.wall_attachments) {
-            getPresenter().openConversationAttachments();
+            callPresenter(AbsWallPresenter::openConversationAttachments);
             return true;
         } else if (item.getItemId() == R.id.search_stories) {
             ModalBottomSheetDialogFragment.Builder menus = new ModalBottomSheetDialogFragment.Builder();
@@ -344,9 +358,9 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
             menus.add(new OptionRequest(R.id.button_cancel, getString(R.string.by_owner), R.drawable.person));
             menus.show(requireActivity().getSupportFragmentManager(), "search_story_options", option -> {
                 if (item.getItemId() == R.id.button_ok) {
-                    getPresenter().searchStory(true);
+                    callPresenter(p -> p.searchStory(true));
                 } else if (item.getItemId() == R.id.button_cancel) {
-                    getPresenter().searchStory(false);
+                    callPresenter(p -> p.searchStory(false));
                 }
             });
             return true;
@@ -354,7 +368,7 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
             ClipboardManager clipBoard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
             if (clipBoard != null && clipBoard.getPrimaryClip() != null && clipBoard.getPrimaryClip().getItemCount() > 0) {
                 String temp = clipBoard.getPrimaryClip().getItemAt(0).getText().toString();
-                LinkHelper.openUrl(getActivity(), getPresenter().getAccountId(), temp);
+                LinkHelper.openUrl(getActivity(), callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent()), temp);
             }
             return true;
         }
@@ -372,7 +386,7 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
         super.onPrepareOptionsMenu(menu);
 
         OptionView view = new OptionView();
-        getPresenter().fireOptionViewCreated(view);
+        callPresenter(p -> p.fireOptionViewCreated(view));
 
         boolean isDebug = Settings.get().other().isDeveloper_mode();
 
@@ -459,37 +473,37 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
 
     @Override
     public void onShareClick(Post post) {
-        getPresenter().fireShareClick(post);
+        callPresenter(p -> p.fireShareClick(post));
     }
 
     @Override
     public void onPostClick(Post post) {
-        getPresenter().firePostBodyClick(post);
+        callPresenter(p -> p.firePostBodyClick(post));
     }
 
     @Override
     public void onRestoreClick(Post post) {
-        getPresenter().firePostRestoreClick(post);
+        callPresenter(p -> p.firePostRestoreClick(post));
     }
 
     @Override
     public void onCommentsClick(Post post) {
-        getPresenter().fireCommentsClick(post);
+        callPresenter(p -> p.fireCommentsClick(post));
     }
 
     @Override
     public void onLikeLongClick(Post post) {
-        getPresenter().fireLikeLongClick(post);
+        callPresenter(p -> p.fireLikeLongClick(post));
     }
 
     @Override
     public void onShareLongClick(Post post) {
-        getPresenter().fireShareLongClick(post);
+        callPresenter(p -> p.fireShareLongClick(post));
     }
 
     @Override
     public void onLikeClick(Post post) {
-        getPresenter().fireLikeClick(post);
+        callPresenter(p -> p.fireLikeClick(post));
     }
 
     @Override
@@ -549,7 +563,7 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
 
     @Override
     public void onButtonRemoveClick(Post post) {
-        getPresenter().fireButtonRemoveClick(post);
+        callPresenter(p -> p.fireButtonRemoveClick(post));
     }
 
     protected static final class OptionView implements IOptionView {

@@ -78,7 +78,7 @@ public class UserBannedFragment extends BaseMvpFragment<UserBannedPresenter, IUs
         ((AppCompatActivity) requireActivity()).setSupportActionBar(root.findViewById(R.id.toolbar));
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(UserBannedPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         mRecyclerView = root.findViewById(R.id.recycler_view);
@@ -86,18 +86,18 @@ public class UserBannedFragment extends BaseMvpFragment<UserBannedPresenter, IUs
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(UserBannedPresenter::fireScrollToEnd);
             }
         });
 
         mPeopleAdapter = new PeopleAdapter(requireActivity(), Collections.emptyList());
         mPeopleAdapter.setLongClickListener(this);
-        mPeopleAdapter.setClickListener(owner -> getPresenter().fireUserClick((User) owner));
+        mPeopleAdapter.setClickListener(owner -> callPresenter(p -> p.fireUserClick((User) owner)));
         mRecyclerView.setAdapter(mPeopleAdapter);
 
         mEmptyText = root.findViewById(R.id.empty_text);
 
-        root.findViewById(R.id.button_add).setOnClickListener(v -> getPresenter().fireButtonAddClick());
+        root.findViewById(R.id.button_add).setOnClickListener(v -> callPresenter(UserBannedPresenter::fireButtonAddClick));
 
         resolveEmptyTextVisibility();
         return root;
@@ -208,7 +208,7 @@ public class UserBannedFragment extends BaseMvpFragment<UserBannedPresenter, IUs
     public boolean onOwnerLongClick(Owner owner) {
         new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(owner.getFullName())
-                .setItems(new String[]{getString(R.string.delete)}, (dialog, which) -> getPresenter().fireRemoveClick((User) owner))
+                .setItems(new String[]{getString(R.string.delete)}, (dialog, which) -> callPresenter(p -> p.fireRemoveClick((User) owner)))
                 .setNegativeButton(R.string.button_cancel, null)
                 .show();
         return true;

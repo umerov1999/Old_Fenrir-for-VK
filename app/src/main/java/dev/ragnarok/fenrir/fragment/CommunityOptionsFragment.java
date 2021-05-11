@@ -74,7 +74,7 @@ public class CommunityOptionsFragment extends BaseMvpFragment<CommunityOptionsPr
 
         mCategoryRoot = root.findViewById(R.id.category_root);
         mCategory = root.findViewById(R.id.spinner_category);
-        mCategory.setIconOnClickListener(v -> getPresenter().onCategoryClick());
+        mCategory.setIconOnClickListener(v -> callPresenter(CommunityOptionsPresenter::onCategoryClick));
 
         mSubjectRoot = root.findViewById(R.id.subject_root);
         mSubjects = new MySpinnerView[2];
@@ -85,13 +85,13 @@ public class CommunityOptionsFragment extends BaseMvpFragment<CommunityOptionsPr
 
         mPublicDateRoot = root.findViewById(R.id.public_date_root);
         mDay = root.findViewById(R.id.day);
-        mDay.setOnClickListener(v -> getPresenter().fireDayClick());
+        mDay.setOnClickListener(v -> callPresenter(CommunityOptionsPresenter::fireDayClick));
 
         mMonth = root.findViewById(R.id.month);
-        mMonth.setOnClickListener(v -> getPresenter().fireMonthClick());
+        mMonth.setOnClickListener(v -> callPresenter(CommunityOptionsPresenter::fireMonthClick));
 
         mYear = root.findViewById(R.id.year);
-        mYear.setOnClickListener(v -> getPresenter().fireYearClick());
+        mYear.setOnClickListener(v -> callPresenter(CommunityOptionsPresenter::fireYearClick));
 
         mFeedbackCommentsRoot = root.findViewById(R.id.feedback_comments_root);
         mFeedbackComments = root.findViewById(R.id.feedback_comments);
@@ -154,7 +154,7 @@ public class CommunityOptionsFragment extends BaseMvpFragment<CommunityOptionsPr
 
         new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(R.string.select_from_list_title)
-                .setItems(strings, (dialog, which) -> getPresenter().fireOptionSelected(requestCode, data.get(which)))
+                .setItems(strings, (dialog, which) -> callPresenter(p -> p.fireOptionSelected(requestCode, data.get(which))))
                 .setNegativeButton(R.string.button_cancel, null)
                 .show();
     }

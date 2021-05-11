@@ -53,7 +53,7 @@ public class DirectAuthPresenter extends RxSupportPresenter<IDirectAuthView> {
     }
 
     private void doLogin(boolean forceSms) {
-        getView().hideKeyboard();
+        callView(IDirectAuthView::hideKeyboard);
 
         String trimmedUsername = nonEmpty(username) ? username.trim() : "";
         String trimmedPass = nonEmpty(pass) ? pass.trim() : "";
@@ -111,12 +111,12 @@ public class DirectAuthPresenter extends RxSupportPresenter<IDirectAuthView> {
                             .validatePhone(Constants.API_ID, Constants.API_ID, Constants.SECRET, sid, Constants.AUTH_VERSION)
                             .compose(RxUtils.applySingleIOToMainSchedulers())
                             .subscribe(result -> {
-                            }, ex -> showError(getView(), getCauseIfRuntime(t))));
+                            }, ex -> callView(v -> showError(v, getCauseIfRuntime(t)))));
                 }
             }
         } else {
             t.printStackTrace();
-            showError(getView(), t);
+            callView(v -> showError(v, t));
         }
 
         resolveCaptchaViews();
@@ -135,26 +135,20 @@ public class DirectAuthPresenter extends RxSupportPresenter<IDirectAuthView> {
 
     @OnGuiCreated
     private void resolveSmsRootVisibility() {
-        if (isGuiReady()) {
-            getView().setSmsRootVisible(requireSmsCode);
-        }
+        callView(v -> v.setSmsRootVisible(requireSmsCode));
     }
 
     @OnGuiCreated
     private void resolveAppCodeRootVisibility() {
-        if (isGuiReady()) {
-            getView().setAppCodeRootVisible(requireAppCode);
-        }
+        callView(v -> v.setAppCodeRootVisible(requireAppCode));
     }
 
     @OnGuiCreated
     private void resolveCaptchaViews() {
-        if (isGuiReady()) {
-            getView().setCaptchaRootVisible(Objects.nonNull(requiredCaptcha));
+        callView(v -> v.setCaptchaRootVisible(Objects.nonNull(requiredCaptcha)));
 
-            if (Objects.nonNull(requiredCaptcha)) {
-                getView().displayCaptchaImage(requiredCaptcha.getImg());
-            }
+        if (Objects.nonNull(requiredCaptcha)) {
+            callView(v -> v.displayCaptchaImage(requiredCaptcha.getImg()));
         }
     }
 
@@ -184,13 +178,11 @@ public class DirectAuthPresenter extends RxSupportPresenter<IDirectAuthView> {
 
     @OnGuiCreated
     private void resolveLoadingViews() {
-        if (isGuiReady()) {
-            getView().displayLoading(loginNow);
-        }
+        callView(v -> v.displayLoading(loginNow));
     }
 
     public void fireLoginViaWebClick() {
-        getView().returnLoginViaWebAction();
+        callView(IDirectAuthView::returnLoginViaWebAction);
     }
 
     @Override
@@ -200,13 +192,11 @@ public class DirectAuthPresenter extends RxSupportPresenter<IDirectAuthView> {
     }
 
     private void resolveButtonLoginState() {
-        if (isGuiResumed()) {
-            getView().setLoginButtonEnabled(trimmedNonEmpty(username)
-                    && nonEmpty(pass)
-                    && (Objects.isNull(requiredCaptcha) || trimmedNonEmpty(captcha))
-                    && (!requireSmsCode || trimmedNonEmpty(smsCode))
-                    && (!requireAppCode || trimmedNonEmpty(appCode)));
-        }
+        callResumedView(v -> v.setLoginButtonEnabled(trimmedNonEmpty(username)
+                && nonEmpty(pass)
+                && (Objects.isNull(requiredCaptcha) || trimmedNonEmpty(captcha))
+                && (!requireSmsCode || trimmedNonEmpty(smsCode))
+                && (!requireAppCode || trimmedNonEmpty(appCode))));
     }
 
     public void fireLoginEdit(CharSequence sequence) {

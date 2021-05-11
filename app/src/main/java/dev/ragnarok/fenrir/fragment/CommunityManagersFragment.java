@@ -71,7 +71,7 @@ public class CommunityManagersFragment extends BaseMvpFragment<CommunityManagers
         View root = inflater.inflate(R.layout.fragment_community_managers, container, false);
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(CommunityManagersPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
@@ -81,7 +81,7 @@ public class CommunityManagersFragment extends BaseMvpFragment<CommunityManagers
         mAdapter.setActionListener(new CommunityManagersAdapter.ActionListener() {
             @Override
             public void onManagerClick(Manager manager) {
-                getPresenter().fireManagerClick(manager);
+                callPresenter(p -> p.fireManagerClick(manager));
             }
 
             @Override
@@ -91,7 +91,7 @@ public class CommunityManagersFragment extends BaseMvpFragment<CommunityManagers
         });
 
         recyclerView.setAdapter(mAdapter);
-        root.findViewById(R.id.button_add).setOnClickListener(v -> getPresenter().fireButtonAddClick());
+        root.findViewById(R.id.button_add).setOnClickListener(v -> callPresenter(CommunityManagersPresenter::fireButtonAddClick));
         return root;
     }
 
@@ -99,7 +99,7 @@ public class CommunityManagersFragment extends BaseMvpFragment<CommunityManagers
         String[] items = {getString(R.string.delete)};
         new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(manager.getUser().getFullName())
-                .setItems(items, (dialog, which) -> getPresenter().fireRemoveClick(manager))
+                .setItems(items, (dialog, which) -> callPresenter(p -> p.fireRemoveClick(manager)))
                 .setNegativeButton(R.string.button_cancel, null)
                 .show();
     }

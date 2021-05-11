@@ -63,7 +63,7 @@ public class CommunitiesFragment extends BaseMvpFragment<CommunitiesPresenter, I
         ((AppCompatActivity) requireActivity()).setSupportActionBar(root.findViewById(R.id.toolbar));
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(CommunitiesPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
@@ -71,7 +71,7 @@ public class CommunitiesFragment extends BaseMvpFragment<CommunitiesPresenter, I
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(CommunitiesPresenter::fireScrollToEnd);
             }
         });
 
@@ -173,19 +173,19 @@ public class CommunitiesFragment extends BaseMvpFragment<CommunitiesPresenter, I
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        getPresenter().fireSearchQueryChanged(query);
+        callPresenter(p -> p.fireSearchQueryChanged(query));
         return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        getPresenter().fireSearchQueryChanged(newText);
+        callPresenter(p -> p.fireSearchQueryChanged(newText));
         return true;
     }
 
     @Override
     public void onCommunityClick(Community community) {
-        getPresenter().fireCommunityClick(community);
+        callPresenter(p -> p.fireCommunityClick(community));
     }
 
     @Override

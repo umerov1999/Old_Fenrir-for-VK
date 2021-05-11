@@ -131,16 +131,12 @@ public abstract class AbsSearchPresenter<V extends IBaseSearchView<T>, C extends
 
     @OnGuiCreated
     private void resolveListData() {
-        if (isGuiReady()) {
-            getView().displayData(data);
-        }
+        callView(v -> v.displayData(data));
     }
 
     @OnGuiCreated
     private void resolveEmptyText() {
-        if (isGuiReady()) {
-            getView().setEmptyTextVisible(data.isEmpty());
-        }
+        callView(v -> v.setEmptyTextVisible(data.isEmpty()));
     }
 
     private void setLoadingNow(boolean loadingNow) {
@@ -155,9 +151,7 @@ public abstract class AbsSearchPresenter<V extends IBaseSearchView<T>, C extends
     }
 
     private void resolveLoadingView() {
-        if (isGuiResumed()) {
-            getView().showLoading(loadingNow);
-        }
+        callResumedView(v -> v.showLoading(loadingNow));
     }
 
     private void fireCriteriaChanged() {
@@ -219,6 +213,6 @@ public abstract class AbsSearchPresenter<V extends IBaseSearchView<T>, C extends
     }
 
     public void fireOpenFilterClick() {
-        getView().displayFilter(getAccountId(), criteria.getOptions());
+        callView(v -> v.displayFilter(getAccountId(), criteria.getOptions()));
     }
 }

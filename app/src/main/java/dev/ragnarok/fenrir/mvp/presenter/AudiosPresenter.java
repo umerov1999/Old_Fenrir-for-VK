@@ -120,9 +120,7 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().displayRefreshing(loadingNow);
-        }
+        callResumedView(v -> v.displayRefreshing(loadingNow));
     }
 
     private void requestNext() {
@@ -177,10 +175,7 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
 
     private void onListGetError(Throwable t) {
         setLoadingNow(false);
-
-        if (isGuiResumed()) {
-            showError(getView(), getCauseIfRuntime(t));
-        }
+        callResumedView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     public void fireSelectAll() {
@@ -258,7 +253,7 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
             if (nonNull(albumId) && albumId != 0) {
                 audioListDisposable.add(audioInteractor.getPlaylistById(getAccountId(), albumId, ownerId, accessKey)
                         .compose(RxUtils.applySingleIOToMainSchedulers())
-                        .subscribe(this::loadedPlaylist, t -> showError(getView(), getCauseIfRuntime(t))));
+                        .subscribe(this::loadedPlaylist, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
             }
             requestList(0, albumId);
         }
@@ -268,16 +263,16 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
         int accountId = getAccountId();
         audioListDisposable.add(audioInteractor.deletePlaylist(accountId, album.getId(), album.getOwnerId())
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(data -> getView().getCustomToast().showToast(R.string.success), throwable ->
-                        showError(getView(), throwable)));
+                .subscribe(data -> callView(v -> v.getCustomToast().showToast(R.string.success)), throwable ->
+                        callView(v -> showError(v, throwable))));
     }
 
     public void onAdd(AudioPlaylist album) {
         int accountId = getAccountId();
         audioListDisposable.add(audioInteractor.followPlaylist(accountId, album.getId(), album.getOwnerId(), album.getAccess_key())
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(data -> getView().getCustomToast().showToast(R.string.success), throwable ->
-                        showError(getView(), throwable)));
+                .subscribe(data -> callView(v -> v.getCustomToast().showToast(R.string.success)), throwable ->
+                        callView(v -> showError(v, throwable))));
     }
 
     public void fireScrollToEnd() {
@@ -308,7 +303,7 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
                 .setPositiveButton(R.string.button_ok, (dialog, which) -> audioListDisposable.add(audioInteractor.edit(getAccountId(), audio.getOwnerId(), audio.getId(),
                         ((TextInputEditText) root.findViewById(R.id.edit_artist)).getText().toString(), ((TextInputEditText) root.findViewById(R.id.edit_title)).getText().toString(),
                         ((TextInputEditText) root.findViewById(R.id.edit_lyrics)).getText().toString()).compose(RxUtils.applyCompletableIOToMainSchedulers())
-                        .subscribe(this::fireRefresh, t -> showError(getView(), getCauseIfRuntime(t)))))
+                        .subscribe(this::fireRefresh, t -> callView(v -> showError(v, getCauseIfRuntime(t))))))
                 .setNegativeButton(R.string.button_cancel, null);
         builder.create().show();
     }

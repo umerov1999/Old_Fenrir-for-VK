@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -106,13 +107,13 @@ public class AudiosSearchFragment extends AbsSearchFragment<AudiosSearchPresente
         Goto.setOnClickListener(v -> {
             if (isSelectMode) {
                 Intent intent = new Intent();
-                intent.putParcelableArrayListExtra(Extra.ATTACHMENTS, getPresenter().getSelected());
+                intent.putParcelableArrayListExtra(Extra.ATTACHMENTS, callPresenter(AudiosSearchPresenter::getSelected, new ArrayList<>()));
                 requireActivity().setResult(Activity.RESULT_OK, intent);
                 requireActivity().finish();
             } else {
                 Audio curr = MusicUtils.getCurrentAudio();
                 if (curr != null) {
-                    int index = getPresenter().getAudioPos(curr);
+                    int index = callPresenter(p -> p.getAudioPos(curr), -1);
                     if (index >= 0) {
                         recyclerView.scrollToPosition(index + mAdapter.getHeadersCount());
                     } else
@@ -129,7 +130,7 @@ public class AudiosSearchFragment extends AbsSearchFragment<AudiosSearchPresente
         adapter.setClickListener(new AudioRecyclerAdapter.ClickListener() {
             @Override
             public void onClick(int position, int catalog, Audio audio) {
-                getPresenter().playAudio(requireActivity(), position);
+                callPresenter(p -> p.playAudio(requireActivity(), position));
             }
 
             @Override

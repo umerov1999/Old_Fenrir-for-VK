@@ -51,12 +51,12 @@ public class ConversationDocsFragment extends AbsChatAttachmentsFragment<Documen
 
     @Override
     public void onDocClick(int index, @NonNull Document doc) {
-        getPresenter().fireDocClick(doc);
+        callPresenter(p -> p.fireDocClick(doc));
     }
 
     @Override
     public boolean onDocLongClick(int index, @NonNull Document doc) {
-        getPresenter().fireGoToMessagesLookup(doc.getMsgPeerId(), doc.getMsgId());
+        callPresenter(p -> p.fireGoToMessagesLookup(doc.getMsgPeerId(), doc.getMsgId()));
         return true;
     }
 }

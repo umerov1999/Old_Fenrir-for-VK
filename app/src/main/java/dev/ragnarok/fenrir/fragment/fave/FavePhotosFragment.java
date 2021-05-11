@@ -53,7 +53,7 @@ public class FavePhotosFragment extends BaseMvpFragment<FavePhotosPresenter, IFa
         RecyclerView recyclerView = root.findViewById(android.R.id.list);
         mEmpty = root.findViewById(R.id.empty);
 
-        int columns = getContext().getResources().getInteger(R.integer.photos_column_count);
+        int columns = getResources().getInteger(R.integer.photos_column_count);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(requireActivity(), columns);
         recyclerView.setLayoutManager(gridLayoutManager);
 
@@ -61,7 +61,7 @@ public class FavePhotosFragment extends BaseMvpFragment<FavePhotosPresenter, IFa
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(FavePhotosPresenter::fireScrollToEnd);
             }
         });
 
@@ -79,12 +79,12 @@ public class FavePhotosFragment extends BaseMvpFragment<FavePhotosPresenter, IFa
 
     @Override
     public void onRefresh() {
-        getPresenter().fireRefresh();
+        callPresenter(FavePhotosPresenter::fireRefresh);
     }
 
     @Override
     public void onPhotoClicked(int position, Photo photo) {
-        getPresenter().firePhotoClick(position, photo);
+        callPresenter(p -> p.firePhotoClick(position, photo));
     }
 
     @Override

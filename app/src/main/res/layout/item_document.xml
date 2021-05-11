@@ -46,11 +46,11 @@
             android:layout_height="@dimen/article_size"
             android:layout_margin="4dp"
             android:background="@drawable/circle_back_white"
+            android:backgroundTint="?colorPrimary"
             android:gravity="center"
             android:padding="8dp"
             android:scaleType="centerCrop"
             android:src="@drawable/close"
-            app:backgroundTint="?colorPrimary"
             app:tint="?white_color" />
 
         <TextView

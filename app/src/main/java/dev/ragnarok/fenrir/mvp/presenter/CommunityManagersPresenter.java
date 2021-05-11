@@ -147,14 +147,12 @@ public class CommunityManagersPresenter extends AccountDependencyPresenter<IComm
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().displayRefreshing(loadingNow);
-        }
+        callResumedView(v -> v.displayRefreshing(loadingNow));
     }
 
     private void onRequestError(Throwable throwable) {
         setLoadingNow(false);
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
     }
 
     private void onDataReceived(List<Manager> managers) {
@@ -171,7 +169,7 @@ public class CommunityManagersPresenter extends AccountDependencyPresenter<IComm
     }
 
     public void fireManagerClick(Manager manager) {
-        getView().goToManagerEditing(getAccountId(), groupId.getId(), manager);
+        callView(v -> v.goToManagerEditing(getAccountId(), groupId.getId(), manager));
     }
 
     public void fireRemoveClick(Manager manager) {
@@ -185,15 +183,15 @@ public class CommunityManagersPresenter extends AccountDependencyPresenter<IComm
 
     private void onRemoveError(Throwable throwable) {
         throwable.printStackTrace();
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
     }
 
     private void onRemoveComplete() {
-        safeShowToast(getView(), R.string.deleted, false);
+        callView(v -> v.showToast(R.string.deleted, false));
     }
 
     public void fireButtonAddClick() {
-        getView().startSelectProfilesActivity(getAccountId(), groupId.getId());
+        callView(v -> v.startSelectProfilesActivity(getAccountId(), groupId.getId()));
     }
 
     public void fireProfilesSelected(ArrayList<Owner> owners) {
@@ -204,7 +202,7 @@ public class CommunityManagersPresenter extends AccountDependencyPresenter<IComm
             }
         }
         if (nonEmpty(users)) {
-            getView().startAddingUsersToManagers(getAccountId(), groupId.getId(), users);
+            callView(v -> v.startAddingUsersToManagers(getAccountId(), groupId.getId(), users));
         }
     }
 }

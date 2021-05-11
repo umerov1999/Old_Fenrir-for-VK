@@ -77,7 +77,7 @@ public class PostEditFragment extends AbsPostEditFragment<PostEditPresenter, IPo
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.ready) {
-            getPresenter().fireReadyClick();
+            callPresenter(PostEditPresenter::fireReadyClick);
             return true;
         }
 
@@ -94,14 +94,14 @@ public class PostEditFragment extends AbsPostEditFragment<PostEditPresenter, IPo
         new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(R.string.confirmation)
                 .setMessage(R.string.save_changes_question)
-                .setPositiveButton(R.string.button_yes, (dialog, which) -> getPresenter().fireExitWithSavingConfirmed())
-                .setNegativeButton(R.string.button_no, (dialog, which) -> getPresenter().fireExitWithoutSavingClick())
+                .setPositiveButton(R.string.button_yes, (dialog, which) -> callPresenter(PostEditPresenter::fireExitWithSavingConfirmed))
+                .setNegativeButton(R.string.button_no, (dialog, which) -> callPresenter(PostEditPresenter::fireExitWithoutSavingClick))
                 .setNeutralButton(R.string.button_cancel, null)
                 .show();
     }
 
     @Override
     public boolean onBackPressed() {
-        return getPresenter().onBackPressed();
+        return callPresenter(PostEditPresenter::onBackPressed, false);
     }
 }

@@ -56,57 +56,51 @@ public class CommunityOptionsPresenter extends AccountDependencyPresenter<ICommu
 
     @OnGuiCreated
     private void resolveObsceneWordsEditorVisibility() {
-        if (isGuiReady()) {
-            getView().setObsceneStopWordsVisible(settings.isObsceneStopwordsEnabled());
-        }
+        callView(v -> v.setObsceneStopWordsVisible(settings.isObsceneStopwordsEnabled()));
     }
 
     @OnGuiCreated
     private void resolvePublicDateView() {
-        if (isGuiReady()) {
-            getView().setPublicDateVisible(community.type == VKApiCommunity.Type.PAGE);
-            getView().dislayPublicDate(settings.getDateCreated());
-        }
+        callView(v -> {
+            v.setPublicDateVisible(community.type == VKApiCommunity.Type.PAGE);
+            v.dislayPublicDate(settings.getDateCreated());
+        });
     }
 
     @OnGuiCreated
     private void resolveCategoryView() {
-        if (isGuiReady()) {
-            boolean available = community.type == VKApiCommunity.Type.PAGE;
-            getView().setCategoryVisible(available);
+        boolean available = community.type == VKApiCommunity.Type.PAGE;
+        callView(v -> v.setCategoryVisible(available));
 
-            if (available) {
-                getView().displayCategory(nonNull(settings.getCategory()) ? settings.getCategory().getTitle() : null);
-            }
+        if (available) {
+            callView(v -> v.displayCategory(nonNull(settings.getCategory()) ? settings.getCategory().getTitle() : null));
         }
     }
 
     @OnGuiCreated
     private void resolveSubjectView() {
-        if (isGuiReady()) {
-            boolean available = community.type == VKApiCommunity.Type.GROUP;
+        boolean available = community.type == VKApiCommunity.Type.GROUP;
 
-            getView().setSubjectRootVisible(available);
+        callView(v -> v.setSubjectRootVisible(available));
 
-            if (available) {
-                IdOption category = settings.getCategory();
+        if (available) {
+            IdOption category = settings.getCategory();
 
-                getView().displaySubjectValue(0, nonNull(category) ? category.getTitle() : null);
+            callView(v -> v.displaySubjectValue(0, nonNull(category) ? category.getTitle() : null));
 
-                boolean subAvailable = nonNull(category) && nonEmpty(category.getChilds());
+            boolean subAvailable = nonNull(category) && nonEmpty(category.getChilds());
 
-                getView().setSubjectVisible(1, subAvailable);
+            callView(v -> v.setSubjectVisible(1, subAvailable));
 
-                if (subAvailable) {
-                    IdOption sub = settings.getSubcategory();
-                    getView().displaySubjectValue(1, nonNull(sub) ? sub.getTitle() : null);
-                }
+            if (subAvailable) {
+                IdOption sub = settings.getSubcategory();
+                callView(v -> v.displaySubjectValue(1, nonNull(sub) ? sub.getTitle() : null));
             }
         }
     }
 
     public void onCategoryClick() {
-        getView().showSelectOptionDialog(REQUEST_CATEGORY, settings.getAvailableCategories());
+        callView(v -> v.showSelectOptionDialog(REQUEST_CATEGORY, settings.getAvailableCategories()));
     }
 
     public void fireOptionSelected(int requestCode, IdOption option) {
@@ -140,7 +134,7 @@ public class CommunityOptionsPresenter extends AccountDependencyPresenter<ICommu
             options.add(new IdOption(i, String.valueOf(i)));
         }
 
-        getView().showSelectOptionDialog(REQUEST_DAY, options);
+        callView(v -> v.showSelectOptionDialog(REQUEST_DAY, options));
     }
 
     public void fireMonthClick() {
@@ -159,7 +153,7 @@ public class CommunityOptionsPresenter extends AccountDependencyPresenter<ICommu
         options.add(new IdOption(10, getString(R.string.october)));
         options.add(new IdOption(11, getString(R.string.november)));
         options.add(new IdOption(12, getString(R.string.december)));
-        getView().showSelectOptionDialog(REQUEST_MONTH, options);
+        callView(v -> v.showSelectOptionDialog(REQUEST_MONTH, options));
     }
 
     public void fireYearClick() {
@@ -169,6 +163,6 @@ public class CommunityOptionsPresenter extends AccountDependencyPresenter<ICommu
             options.add(new IdOption(i, String.valueOf(i)));
         }
 
-        getView().showSelectOptionDialog(REQUEST_YEAR, options);
+        callView(v -> v.showSelectOptionDialog(REQUEST_YEAR, options));
     }
 }

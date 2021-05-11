@@ -140,9 +140,7 @@ public class MessageAttachmentsPresenter extends RxSupportPresenter<IMessageAtta
 
     @OnGuiCreated
     private void resolveEmptyViewVisibility() {
-        if (isGuiReady()) {
-            getView().setEmptyViewVisible(entries.isEmpty());
-        }
+        callView(v -> v.setEmptyViewVisible(entries.isEmpty()));
     }
 
     private void onUploadProgressUpdates(List<IUploadManager.IProgressUpdate> updates) {
@@ -264,7 +262,7 @@ public class MessageAttachmentsPresenter extends RxSupportPresenter<IMessageAtta
 
     public void fireAddPhotoButtonClick() {
         // Если сообщения группы - предлагать фотографии сообщества, а не группы
-        getView().addPhoto(accountId, messageOwnerId);
+        callView(v -> v.addPhoto(accountId, messageOwnerId));
     }
 
     public void firePhotosSelected(ArrayList<Photo> photos, ArrayList<LocalPhoto> localPhotos, String file, LocalVideo video) {
@@ -289,9 +287,9 @@ public class MessageAttachmentsPresenter extends RxSupportPresenter<IMessageAtta
                             .getUploadImageSize();
 
                     if (isNull(size)) {
-                        getView().displaySelectUploadFileSizeDialog(file);
+                        callView(v -> v.displaySelectUploadFileSizeDialog(file));
                     } else if (size == Upload.IMAGE_SIZE_CROPPING) {
-                        getView().displayCropPhotoDialog(Uri.fromFile(new File(file)));
+                        callView(v -> v.displayCropPhotoDialog(Uri.fromFile(new File(file))));
                     } else {
                         doUploadFile(file, size, false);
                     }
@@ -305,13 +303,14 @@ public class MessageAttachmentsPresenter extends RxSupportPresenter<IMessageAtta
                 .getUploadImageSize();
 
         if (isNull(size)) {
-            getView().displaySelectUploadPhotoSizeDialog(photos);
+            callView(v -> v.displaySelectUploadPhotoSizeDialog(photos));
         } else if (size == Upload.IMAGE_SIZE_CROPPING && photos.size() == 1) {
             Uri to_up = photos.get(0).getFullImageUri();
             if (new File(to_up.getPath()).isFile()) {
                 to_up = Uri.fromFile(new File(to_up.getPath()));
             }
-            getView().displayCropPhotoDialog(to_up);
+            Uri finalTo_up = to_up;
+            callView(v -> v.displayCropPhotoDialog(finalTo_up));
         } else {
             doUploadPhotos(photos, size);
         }
@@ -366,7 +365,8 @@ public class MessageAttachmentsPresenter extends RxSupportPresenter<IMessageAtta
             for (int i = 0; i < entries.size(); i++) {
                 if (entries.get(i).getId() == entry.getId()) {
                     entries.remove(i);
-                    getView().notifyEntryRemoved(i);
+                    int finalI = i;
+                    callView(v -> v.notifyEntryRemoved(finalI));
                     syncAccompanyingWithParent();
                     break;
                 }
@@ -380,7 +380,8 @@ public class MessageAttachmentsPresenter extends RxSupportPresenter<IMessageAtta
             if (new File(to_up.getPath()).isFile()) {
                 to_up = Uri.fromFile(new File(to_up.getPath()));
             }
-            getView().displayCropPhotoDialog(to_up);
+            Uri finalTo_up = to_up;
+            callView(v -> v.displayCropPhotoDialog(finalTo_up));
         } else {
             doUploadPhotos(photos, imageSize);
         }
@@ -388,7 +389,7 @@ public class MessageAttachmentsPresenter extends RxSupportPresenter<IMessageAtta
 
     public void fireUploadFileSizeSelected(String file, int imageSize) {
         if (imageSize == Upload.IMAGE_SIZE_CROPPING) {
-            getView().displayCropPhotoDialog(Uri.fromFile(new File(file)));
+            callView(v -> v.displayCropPhotoDialog(Uri.fromFile(new File(file))));
         } else {
             doUploadFile(file, imageSize, false);
         }
@@ -404,7 +405,7 @@ public class MessageAttachmentsPresenter extends RxSupportPresenter<IMessageAtta
         if (AppPerms.hasCameraPermission(getApplicationContext())) {
             makePhotoInternal();
         } else {
-            getView().requestCameraPermission();
+            callView(IMessageAttachmentsView::requestCameraPermission);
         }
     }
 
@@ -424,9 +425,9 @@ public class MessageAttachmentsPresenter extends RxSupportPresenter<IMessageAtta
         try {
             File file = FileUtil.createImageFile();
             currentPhotoCameraUri = FileUtil.getExportedUriForFile(getApplicationContext(), file);
-            getView().startCamera(currentPhotoCameraUri);
+            callView(v -> v.startCamera(currentPhotoCameraUri));
         } catch (IOException e) {
-            safeShowError(getView(), e.getMessage());
+            callView(v -> v.showError(e.getMessage()));
         }
     }
 
@@ -454,7 +455,7 @@ public class MessageAttachmentsPresenter extends RxSupportPresenter<IMessageAtta
             }
         }
 
-        getView().syncAccompanyingWithParent(bundle);
+        callView(v -> v.syncAccompanyingWithParent(bundle));
     }
 
     public void firePhotoMaked() {
@@ -469,15 +470,15 @@ public class MessageAttachmentsPresenter extends RxSupportPresenter<IMessageAtta
     }
 
     public void fireButtonVideoClick() {
-        getView().startAddVideoActivity(accountId, messageOwnerId);
+        callView(v -> v.startAddVideoActivity(accountId, messageOwnerId));
     }
 
     public void fireButtonAudioClick() {
-        getView().startAddAudioActivity(accountId);
+        callView(v -> v.startAddAudioActivity(accountId));
     }
 
     public void fireButtonDocClick() {
-        getView().startAddDocumentActivity(accountId); // TODO: 16.08.2017
+        callView(v -> v.startAddDocumentActivity(accountId)); // TODO: 16.08.2017
     }
 
     public void fireAttachmentsSelected(ArrayList<? extends AbsModel> attachments) {

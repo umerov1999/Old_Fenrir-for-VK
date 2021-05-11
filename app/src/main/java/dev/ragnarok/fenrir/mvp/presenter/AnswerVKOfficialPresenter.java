@@ -13,10 +13,8 @@ import dev.ragnarok.fenrir.model.AnswerVKOfficialList;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IAnswerVKOfficialView;
 import dev.ragnarok.fenrir.util.RxUtils;
-import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
-import static dev.ragnarok.fenrir.util.RxUtils.ignore;
 import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
@@ -59,7 +57,7 @@ public class AnswerVKOfficialPresenter extends AccountDependencyPresenter<IAnswe
 
     private void onActualDataGetError(Throwable t) {
         actualDataLoading = false;
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
 
         resolveRefreshingView();
     }
@@ -92,9 +90,7 @@ public class AnswerVKOfficialPresenter extends AccountDependencyPresenter<IAnswe
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().showRefreshing(actualDataLoading);
-        }
+        callResumedView(v -> v.showRefreshing(actualDataLoading));
     }
 
     @Override

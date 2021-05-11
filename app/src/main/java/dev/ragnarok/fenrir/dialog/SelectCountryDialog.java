@@ -49,7 +49,7 @@ public class SelectCountryDialog extends BaseMvpDialogFragment<CountriesPresente
         filterView.addTextChangedListener(new TextWatcherAdapter() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                getPresenter().fireFilterEdit(s);
+                callPresenter(p -> p.fireFilterEdit(s));
             }
         });
 
@@ -69,7 +69,7 @@ public class SelectCountryDialog extends BaseMvpDialogFragment<CountriesPresente
 
     @Override
     public void onClick(Country country) {
-        getPresenter().fireCountryClick(country);
+        callPresenter(p -> p.fireCountryClick(country));
     }
 
     @Override

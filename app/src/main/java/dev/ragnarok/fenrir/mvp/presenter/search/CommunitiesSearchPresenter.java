@@ -83,6 +83,6 @@ public class CommunitiesSearchPresenter extends AbsSearchPresenter<ICommunitiesS
     }
 
     public void fireCommunityClick(Community community) {
-        getView().openCommunityWall(getAccountId(), community);
+        callView(v -> v.openCommunityWall(getAccountId(), community));
     }
 }

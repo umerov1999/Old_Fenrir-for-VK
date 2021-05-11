@@ -145,14 +145,12 @@ public class CommunityInfoContactsPresenter extends AccountDependencyPresenter<I
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().displayRefreshing(loadingNow);
-        }
+        callResumedView(v -> v.displayRefreshing(loadingNow));
     }
 
     private void onRequestError(Throwable throwable) {
         setLoadingNow(false);
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
     }
 
     private void onDataReceived(List<Manager> managers) {
@@ -169,6 +167,6 @@ public class CommunityInfoContactsPresenter extends AccountDependencyPresenter<I
     }
 
     public void fireManagerClick(User manager) {
-        getView().showUserProfile(getAccountId(), manager);
+        callView(v -> v.showUserProfile(getAccountId(), manager));
     }
 }

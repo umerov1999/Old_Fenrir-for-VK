@@ -58,14 +58,12 @@ public class FollowersPresenter extends SimpleOwnersPresenter<ISimpleOwnersView>
     }
 
     private void resolveRefreshingView() {
-        if (isGuiReady()) {
-            getView().displayRefreshing(actualDataLoading);
-        }
+        callView(v -> v.displayRefreshing(actualDataLoading));
     }
 
     private void onActualDataGetError(Throwable t) {
         actualDataLoading = false;
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
 
         resolveRefreshingView();
     }
@@ -118,7 +116,7 @@ public class FollowersPresenter extends SimpleOwnersPresenter<ISimpleOwnersView>
 
     private void onCacheDataGetError(Throwable t) {
         cacheLoadingNow = false;
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void onCachedDataReceived(List<User> users) {

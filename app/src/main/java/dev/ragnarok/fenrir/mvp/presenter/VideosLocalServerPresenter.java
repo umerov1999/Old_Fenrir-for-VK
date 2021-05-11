@@ -65,7 +65,7 @@ public class VideosLocalServerPresenter extends AccountDependencyPresenter<IVide
 
     private void onActualDataGetError(Throwable t) {
         actualDataLoading = false;
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
 
         resolveRefreshingView();
     }
@@ -102,9 +102,7 @@ public class VideosLocalServerPresenter extends AccountDependencyPresenter<IVide
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().displayLoading(actualDataLoading);
-        }
+        callResumedView(v -> v.displayLoading(actualDataLoading));
     }
 
     @Override

@@ -137,7 +137,7 @@ public class CreatePhotoAlbumFragment extends BaseMvpFragment<EditPhotoAlbumPres
 
     @Override
     public boolean onBackPressed() {
-        return getPresenter().fireBackButtonClick();
+        return callPresenter(EditPhotoAlbumPresenter::fireBackButtonClick, false);
     }
 
     @Override
@@ -159,12 +159,12 @@ public class CreatePhotoAlbumFragment extends BaseMvpFragment<EditPhotoAlbumPres
 
     @Override
     public void onNextButtonClick(int step) {
-        getPresenter().fireStepPositiveButtonClick(step);
+        callPresenter(p -> p.fireStepPositiveButtonClick(step));
     }
 
     @Override
     public void onCancelButtonClick(int step) {
-        getPresenter().fireStepNegativeButtonClick(step);
+        callPresenter(p -> p.fireStepNegativeButtonClick(step));
     }
 
     @NonNull
@@ -188,27 +188,27 @@ public class CreatePhotoAlbumFragment extends BaseMvpFragment<EditPhotoAlbumPres
 
     @Override
     public void onPrivacyCommentClick() {
-        getPresenter().firePrivacyCommentClick();
+        callPresenter(EditPhotoAlbumPresenter::firePrivacyCommentClick);
     }
 
     @Override
     public void onPrivacyViewClick() {
-        getPresenter().firePrivacyViewClick();
+        callPresenter(EditPhotoAlbumPresenter::firePrivacyViewClick);
     }
 
     @Override
     public void onUploadByAdminsOnlyChecked(boolean checked) {
-        getPresenter().fireUploadByAdminsOnlyChecked(checked);
+        callPresenter(p -> p.fireUploadByAdminsOnlyChecked(checked));
     }
 
     @Override
     public void onCommentsDisableChecked(boolean checked) {
-        getPresenter().fireDisableCommentsClick(checked);
+        callPresenter(p -> p.fireDisableCommentsClick(checked));
     }
 
     @Override
     public void onTitleEdited(CharSequence text) {
-        getPresenter().fireTitleEdit(text);
+        callPresenter(p -> p.fireTitleEdit(text));
     }
 
     @Override

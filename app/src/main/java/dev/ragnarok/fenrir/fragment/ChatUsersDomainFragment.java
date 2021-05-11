@@ -74,13 +74,13 @@ public class ChatUsersDomainFragment extends BaseMvpBottomSheetDialogFragment<Ch
         mySearchView.setOnQueryTextListener(new MySearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                getPresenter().fireQuery(query);
+                callPresenter(p -> p.fireQuery(query));
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                getPresenter().fireQuery(newText);
+                callPresenter(p -> p.fireQuery(newText));
                 return false;
             }
         });
@@ -149,12 +149,12 @@ public class ChatUsersDomainFragment extends BaseMvpBottomSheetDialogFragment<Ch
 
     @Override
     public void onUserClick(AppChatUser user) {
-        getPresenter().fireUserClick(user);
+        callPresenter(p -> p.fireUserClick(user));
     }
 
     @Override
     public boolean onUserLongClick(AppChatUser user) {
-        getPresenter().fireUserLongClick(user);
+        callPresenter(p -> p.fireUserLongClick(user));
         return true;
     }
 

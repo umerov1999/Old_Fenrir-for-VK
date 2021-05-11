@@ -133,15 +133,11 @@ public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLoca
         } else {
             doAudioLoadTabs = true;
         }
-        if (isGuiReady()) {
-            getView().checkPermission();
-        }
+        callView(IAudiosLocalView::checkPermission);
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().displayRefreshing(loadingNow);
-        }
+        callResumedView(v -> v.displayRefreshing(loadingNow));
     }
 
     public void requestList() {
@@ -197,9 +193,7 @@ public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLoca
 
     private void onListGetError(Throwable t) {
         setLoadingNow(false);
-        if (isGuiResumed()) {
-            showError(getView(), Utils.getCauseIfRuntime(t));
-        }
+        callResumedView(v -> showError(v, Utils.getCauseIfRuntime(t)));
     }
 
     public void fireFileForUploadSelected(String file) {
@@ -233,9 +227,7 @@ public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLoca
     public void fireRefresh() {
         if (errorPermissions) {
             errorPermissions = false;
-            if (isGuiReady()) {
-                getView().checkPermission();
-            }
+            callView(IAudiosLocalView::checkPermission);
             return;
         }
         audioListDisposable.clear();
@@ -265,9 +257,9 @@ public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLoca
     private void onUploadResults(Pair<Upload, UploadResult<?>> pair) {
         Audio obj = (Audio) pair.getSecond().getResult();
         if (obj.getId() == 0)
-            getView().getCustomToast().showToastError(R.string.error);
+            callView(v -> v.getCustomToast().showToastError(R.string.error));
         else {
-            getView().getCustomToast().showToast(R.string.uploaded);
+            callView(v -> v.getCustomToast().showToast(R.string.uploaded));
         }
 
     }
@@ -314,9 +306,7 @@ public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLoca
 
     @OnGuiCreated
     private void resolveUploadDataVisibility() {
-        if (isGuiReady()) {
-            getView().setUploadDataVisible(!uploadsData.isEmpty());
-        }
+        callView(v -> v.setUploadDataVisible(!uploadsData.isEmpty()));
     }
 
 }

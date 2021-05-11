@@ -84,7 +84,7 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
     private final OwnerLinkSpanFactory.ActionListener ownerLinkAdapter = new LinkActionAdapter() {
         @Override
         public void onOwnerClick(int ownerId) {
-            getPresenter().fireOwnerClick(ownerId);
+            callPresenter(p -> p.fireOwnerClick(ownerId));
         }
     };
     private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
@@ -145,7 +145,7 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
         super.onPrepareOptionsMenu(menu);
 
         OptionView view = new OptionView();
-        getPresenter().fireOptionViewCreated(view);
+        callPresenter(p -> p.fireOptionViewCreated(view));
 
         menu.findItem(R.id.action_add_to_my_videos).setVisible(view.canAdd);
         menu.findItem(R.id.action_delete_from_my_videos).setVisible(view.isMy);
@@ -155,16 +155,16 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_add_to_my_videos) {
-            getPresenter().fireAddToMyClick();
+            callPresenter(VideoPreviewPresenter::fireAddToMyClick);
             return true;
         } else if (item.getItemId() == R.id.action_copy_url) {
-            getPresenter().fireCopyUrlClick(requireActivity());
+            callPresenter(p -> p.fireCopyUrlClick(requireActivity()));
             return true;
         } else if (item.getItemId() == R.id.action_delete_from_my_videos) {
-            getPresenter().fireDeleteMyClick();
+            callPresenter(VideoPreviewPresenter::fireDeleteMyClick);
             return true;
         } else if (item.getItemId() == R.id.action_edit) {
-            getPresenter().fireEditVideo(requireActivity());
+            callPresenter(p -> p.fireEditVideo(requireActivity()));
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -195,25 +195,25 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
         mAddedDate = mRootView.findViewById(R.id.item_added_time);
 
         mOwnerGroup = mRootView.findViewById(R.id.item_owner);
-        mOwnerGroup.setOnClickListener(v -> getPresenter().fireOpenOwnerClicked());
+        mOwnerGroup.setOnClickListener(v -> callPresenter(VideoPreviewPresenter::fireOpenOwnerClicked));
 
         mTransformation = CurrentTheme.createTransformationForAvatar();
 
         if (Settings.get().other().isDo_auto_play_video()) {
-            mRootView.findViewById(R.id.cover_cardview).setOnClickListener(v -> getPresenter().fireAutoPlayClick());
+            mRootView.findViewById(R.id.cover_cardview).setOnClickListener(v -> callPresenter(VideoPreviewPresenter::fireAutoPlayClick));
             mRootView.findViewById(R.id.cover_cardview).setOnLongClickListener(v -> {
-                getPresenter().firePlayClick();
+                callPresenter(VideoPreviewPresenter::firePlayClick);
                 return true;
             });
         } else {
-            mRootView.findViewById(R.id.cover_cardview).setOnClickListener(v -> getPresenter().firePlayClick());
+            mRootView.findViewById(R.id.cover_cardview).setOnClickListener(v -> callPresenter(VideoPreviewPresenter::firePlayClick));
             mRootView.findViewById(R.id.cover_cardview).setOnLongClickListener(v -> {
-                getPresenter().fireAutoPlayClick();
+                callPresenter(VideoPreviewPresenter::fireAutoPlayClick);
                 return true;
             });
         }
 
-        mRootView.findViewById(R.id.try_again_button).setOnClickListener(v -> getPresenter().fireTryAgainClick());
+        mRootView.findViewById(R.id.try_again_button).setOnClickListener(v -> callPresenter(VideoPreviewPresenter::fireTryAgainClick));
 
         return mRootView;
     }
@@ -642,10 +642,10 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
                 }
                 break;
             case Menu.ADD_TO_FAVE:
-                getPresenter().fireAddFaveVideo();
+                callPresenter(VideoPreviewPresenter::fireAddFaveVideo);
                 break;
             case Menu.COPY_LINK:
-                ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipboardManager clipboard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("response", video.getExternalLink());
                 clipboard.setPrimaryClip(clip);
                 CustomToast.CreateCustomToast(getContext()).showToast(R.string.copied);
@@ -778,18 +778,18 @@ public class VideoPreviewFragment extends BaseMvpFragment<VideoPreviewPresenter,
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.like_button) {
-            getPresenter().fireLikeClick();
+            callPresenter(VideoPreviewPresenter::fireLikeClick);
         } else if (v.getId() == R.id.comments_button) {
-            getPresenter().fireCommentsClick();
+            callPresenter(VideoPreviewPresenter::fireCommentsClick);
         } else if (v.getId() == R.id.share_button) {
-            getPresenter().fireShareClick();
+            callPresenter(VideoPreviewPresenter::fireShareClick);
         }
     }
 
     @Override
     public boolean onLongClick(View v) {
         if (v.getId() == R.id.like_button) {
-            getPresenter().fireLikeLongClick();
+            callPresenter(VideoPreviewPresenter::fireLikeLongClick);
             return true;
         }
         return false;

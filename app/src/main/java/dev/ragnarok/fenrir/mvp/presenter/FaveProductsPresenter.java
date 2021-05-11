@@ -40,9 +40,7 @@ public class FaveProductsPresenter extends AccountDependencyPresenter<IFaveProdu
     }
 
     private void resolveRefreshingView() {
-        if (isGuiReady()) {
-            getView().showRefreshing(netLoadingNow);
-        }
+        callView(v -> v.showRefreshing(netLoadingNow));
     }
 
     @Override
@@ -68,7 +66,7 @@ public class FaveProductsPresenter extends AccountDependencyPresenter<IFaveProdu
 
     private void onCacheGetError(Throwable t) {
         cacheLoadingNow = false;
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onCachedDataReceived(List<Market> markets) {
@@ -100,7 +98,7 @@ public class FaveProductsPresenter extends AccountDependencyPresenter<IFaveProdu
     private void onNetDataGetError(Throwable t) {
         netLoadingNow = false;
         resolveRefreshingView();
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onNetDataReceived(int offset, List<Market> markets) {
@@ -150,7 +148,7 @@ public class FaveProductsPresenter extends AccountDependencyPresenter<IFaveProdu
     }
 
     public void fireMarketOpen(Market market) {
-        getView().onMarketOpen(getAccountId(), market);
+        callView(v -> v.onMarketOpen(getAccountId(), market));
     }
 
     public void fireScrollToEnd() {

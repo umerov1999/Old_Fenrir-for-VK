@@ -58,9 +58,7 @@ public class AudiosInCatalogPresenter extends AccountDependencyPresenter<IAudios
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().displayRefreshing(loadingNow);
-        }
+        callResumedView(v -> v.displayRefreshing(loadingNow));
     }
 
     public void requestList() {
@@ -102,9 +100,7 @@ public class AudiosInCatalogPresenter extends AccountDependencyPresenter<IAudios
 
     private void onListGetError(Throwable t) {
         setLoadingNow(false);
-        if (isGuiResumed()) {
-            showError(getView(), Utils.getCauseIfRuntime(t));
-        }
+        callResumedView(v -> showError(v, Utils.getCauseIfRuntime(t)));
     }
 
     public int getAudioPos(Audio audio) {

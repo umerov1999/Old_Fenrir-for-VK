@@ -79,7 +79,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
                     ArrayList<Owner> users = result.getData().getParcelableArrayListExtra(Extra.OWNERS);
                     AssertUtils.requireNonNull(users);
 
-                    getPresenter().fireUsersForChatSelected(users);
+                    callPresenter(p -> p.fireUsersForChatSelected(users));
                 }
             });
     private RecyclerView mRecyclerView;
@@ -96,9 +96,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
             viewHolder.itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             mAdapter.notifyItemChanged(viewHolder.getBindingAdapterPosition());
             Dialog dialog = mAdapter.getByPosition(viewHolder.getBindingAdapterPosition());
-            if (isPresenterPrepared()) {
-                getPresenter().fireRepost(dialog);
-            }
+            callPresenter(p -> p.fireRepost(dialog));
         }
 
         @Override
@@ -195,16 +193,16 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
         OptionView optionView = new OptionView();
-        getPresenter().fireOptionViewCreated(optionView);
+        callPresenter(p -> p.fireOptionViewCreated(optionView));
         menu.findItem(R.id.action_search).setVisible(optionView.canSearch);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
-            getPresenter().fireSearchClick();
+            callPresenter(DialogsPresenter::fireSearchClick);
         } else if (item.getItemId() == R.id.action_star) {
-            getPresenter().fireImportantClick();
+            callPresenter(DialogsPresenter::fireImportantClick);
         }
         return true;
     }
@@ -243,12 +241,12 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(DialogsPresenter::fireScrollToEnd);
             }
         });
 
         mSwipeRefreshLayout = root.findViewById(R.id.swipeRefreshLayout);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(DialogsPresenter::fireRefresh));
 
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
@@ -284,7 +282,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
 
     @Override
     public void onDialogClick(Dialog dialog) {
-        getPresenter().fireDialogClick(dialog);
+        callPresenter(p -> p.fireDialogClick(dialog));
     }
 
     @Override
@@ -292,7 +290,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         List<String> options = new ArrayList<>();
 
         ContextView contextView = new ContextView();
-        getPresenter().fireContextViewCreated(contextView, dialog);
+        callPresenter(p -> p.fireContextViewCreated(contextView, dialog));
 
         String delete = getString(R.string.delete);
         String addToHomeScreen = getString(R.string.add_to_home_screen);
@@ -342,19 +340,19 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
                     String selected = options.get(which);
                     if (selected.equals(delete)) {
                         Utils.ThemedSnack(requireView(), R.string.delete_chat_do, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.button_yes,
-                                v1 -> getPresenter().fireRemoveDialogClick(dialog)).show();
+                                v1 -> callPresenter(p -> p.fireRemoveDialogClick(dialog))).show();
                     } else if (selected.equals(addToHomeScreen)) {
-                        getPresenter().fireCreateShortcutClick(dialog);
+                        callPresenter(p -> p.fireCreateShortcutClick(dialog));
                     } else if (selected.equals(notificationSettings)) {
-                        getPresenter().fireNotificationsSettingsClick(dialog);
+                        callPresenter(p -> p.fireNotificationsSettingsClick(dialog));
                     } else if (selected.equals(addToShortcuts)) {
-                        getPresenter().fireAddToLauncherShortcuts(dialog);
+                        callPresenter(p -> p.fireAddToLauncherShortcuts(dialog));
                     } else if (selected.equals(setUnPin)) {
-                        getPresenter().fireUnPin(dialog);
+                        callPresenter(p -> p.fireUnPin(dialog));
                     } else if (selected.equals(setPin)) {
-                        getPresenter().firePin(dialog);
+                        callPresenter(p -> p.firePin(dialog));
                     } else if (selected.equals(setRead)) {
-                        getPresenter().fireRead(dialog);
+                        callPresenter(p -> p.fireRead(dialog));
                     } else if (selected.equals(setHide)) {
                         if (!CheckDonate.isFullVersion(requireActivity())) {
                             return;
@@ -383,13 +381,13 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
     public void askToReload() {
         View view = getView();
         if (nonNull(view)) {
-            Snackbar.make(view, R.string.update_dialogs, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.button_yes, v -> getPresenter().fireRefresh()).show();
+            Snackbar.make(view, R.string.update_dialogs, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.button_yes, v -> callPresenter(DialogsPresenter::fireRefresh)).show();
         }
     }
 
     @Override
     public void onAvatarClick(Dialog dialog) {
-        getPresenter().fireDialogAvatarClick(dialog);
+        callPresenter(p -> p.fireDialogAvatarClick(dialog));
     }
 
     private void createGroupChat() {
@@ -512,7 +510,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
                 .setTitleRes(R.string.set_groupchat_title)
                 .setAllowEmpty(true)
                 .setInputType(InputType.TYPE_CLASS_TEXT)
-                .setCallback(newValue -> getPresenter().fireNewGroupChatTitleEntered(users, newValue))
+                .setCallback(newValue -> callPresenter(p -> p.fireNewGroupChatTitleEntered(users, newValue)))
                 .show();
     }
 

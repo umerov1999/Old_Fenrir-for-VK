@@ -58,7 +58,7 @@ public abstract class PlaceSupportMvpFragment<P extends PlaceSupportPresenter<V>
 
     @Override
     public void onOwnerClick(int ownerId) {
-        getPresenter().fireOwnerClick(ownerId);
+        callPresenter(p -> p.fireOwnerClick(ownerId));
     }
 
     @Override
@@ -68,32 +68,32 @@ public abstract class PlaceSupportMvpFragment<P extends PlaceSupportPresenter<V>
 
     @Override
     public void onPollOpen(@NonNull Poll apiPoll) {
-        getPresenter().firePollClick(apiPoll);
+        callPresenter(p -> p.firePollClick(apiPoll));
     }
 
     @Override
     public void onVideoPlay(@NonNull Video video) {
-        getPresenter().fireVideoClick(video);
+        callPresenter(p -> p.fireVideoClick(video));
     }
 
     @Override
     public void onAudioPlay(int position, @NonNull ArrayList<Audio> apiAudio) {
-        getPresenter().fireAudioPlayClick(position, apiAudio);
+        callPresenter(p -> p.fireAudioPlayClick(position, apiAudio));
     }
 
     @Override
     public void onForwardMessagesOpen(@NonNull ArrayList<Message> messages) {
-        getPresenter().fireForwardMessagesClick(messages);
+        callPresenter(p -> p.fireForwardMessagesClick(messages));
     }
 
     @Override
     public void onOpenOwner(int ownerId) {
-        getPresenter().fireOwnerClick(ownerId);
+        callPresenter(p -> p.fireOwnerClick(ownerId));
     }
 
     @Override
     public void onGoToMessagesLookup(@NonNull Message message) {
-        getPresenter().fireGoToMessagesLookup(message);
+        callPresenter(p -> p.fireGoToMessagesLookup(message));
     }
 
     @Override
@@ -109,37 +109,37 @@ public abstract class PlaceSupportMvpFragment<P extends PlaceSupportPresenter<V>
 
     @Override
     public void onDocPreviewOpen(@NonNull Document document) {
-        getPresenter().fireDocClick(document);
+        callPresenter(p -> p.fireDocClick(document));
     }
 
     @Override
     public void onPostOpen(@NonNull Post post) {
-        getPresenter().firePostClick(post);
+        callPresenter(p -> p.firePostClick(post));
     }
 
     @Override
     public void onLinkOpen(@NonNull Link link) {
-        getPresenter().fireLinkClick(link);
+        callPresenter(p -> p.fireLinkClick(link));
     }
 
     @Override
     public void onUrlOpen(@NonNull String url) {
-        getPresenter().fireUrlClick(url);
+        callPresenter(p -> p.fireUrlClick(url));
     }
 
     @Override
     public void onFaveArticle(@NonNull Article article) {
-        getPresenter().fireFaveArticleClick(article);
+        callPresenter(p -> p.fireFaveArticleClick(article));
     }
 
     @Override
     public void onWikiPageOpen(@NonNull WikiPage page) {
-        getPresenter().fireWikiPageClick(page);
+        callPresenter(p -> p.fireWikiPageClick(page));
     }
 
     @Override
     public void onStoryOpen(@NonNull Story story) {
-        getPresenter().fireStoryClick(story);
+        callPresenter(p -> p.fireStoryClick(story));
     }
 
     @Override
@@ -154,12 +154,12 @@ public abstract class PlaceSupportMvpFragment<P extends PlaceSupportPresenter<V>
 
     @Override
     public void onAudioPlaylistOpen(@NonNull AudioPlaylist playlist) {
-        getPresenter().fireAudioPlaylistClick(playlist);
+        callPresenter(p -> p.fireAudioPlaylistClick(playlist));
     }
 
     @Override
     public void onWallReplyOpen(@NonNull WallReply reply) {
-        getPresenter().fireWallReplyOpen(reply);
+        callPresenter(p -> p.fireWallReplyOpen(reply));
     }
 
     @Override
@@ -169,7 +169,7 @@ public abstract class PlaceSupportMvpFragment<P extends PlaceSupportPresenter<V>
 
     @Override
     public void onPhotosOpen(@NonNull ArrayList<Photo> photos, int index, boolean refresh) {
-        getPresenter().firePhotoClick(photos, index, refresh);
+        callPresenter(p -> p.firePhotoClick(photos, index, refresh));
     }
 
     @Override
@@ -179,22 +179,22 @@ public abstract class PlaceSupportMvpFragment<P extends PlaceSupportPresenter<V>
 
     @Override
     public void onPhotoAlbumOpen(@NonNull PhotoAlbum album) {
-        getPresenter().firePhotoAlbumClick(album);
+        callPresenter(p -> p.firePhotoAlbumClick(album));
     }
 
     @Override
     public void onMarketAlbumOpen(@NonNull MarketAlbum market_album) {
-        getPresenter().fireMarketAlbumClick(market_album);
+        callPresenter(p -> p.fireMarketAlbumClick(market_album));
     }
 
     @Override
     public void onMarketOpen(@NonNull Market market) {
-        getPresenter().fireMarketClick(market);
+        callPresenter(p -> p.fireMarketClick(market));
     }
 
     @Override
     public void onArtistOpen(@NonNull AudioArtist artist) {
-        getPresenter().fireArtistClick(artist);
+        callPresenter(p -> p.fireArtistClick(artist));
     }
 
     @Override

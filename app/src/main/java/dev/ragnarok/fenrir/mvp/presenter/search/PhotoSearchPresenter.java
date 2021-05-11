@@ -66,6 +66,7 @@ public class PhotoSearchPresenter extends AbsSearchPresenter<IPhotoSearchView, P
                 trig = true;
             }
         }
-        getView().displayGallery(getAccountId(), photos_ret, Index);
+        int finalIndex = Index;
+        callView(v -> v.displayGallery(getAccountId(), photos_ret, finalIndex));
     }
 }

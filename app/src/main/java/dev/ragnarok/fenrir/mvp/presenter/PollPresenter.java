@@ -59,7 +59,7 @@ public class PollPresenter extends AccountDependencyPresenter<IPollView> {
     }
 
     private void onLoadingError(Throwable t) {
-        showError(getView(), t);
+        callView(v -> showError(v, t));
         setLoadingNow(false);
     }
 
@@ -78,52 +78,40 @@ public class PollPresenter extends AccountDependencyPresenter<IPollView> {
 
     @OnGuiCreated
     private void resolveButtonView() {
-        if (isGuiReady()) {
-            getView().displayLoading(loadingNow);
-            getView().setupButton(isVoted());
-        }
+        callView(v -> {
+            v.displayLoading(loadingNow);
+            v.setupButton(isVoted());
+        });
     }
 
     @OnGuiCreated
     private void resolveVotesListView() {
-        if (isGuiReady()) {
-            getView().displayVotesList(mPoll.getAnswers(), !isVoted(), mPoll.isMultiple(), mTempCheckedId);
-        }
+        callView(v -> v.displayVotesList(mPoll.getAnswers(), !isVoted(), mPoll.isMultiple(), mTempCheckedId));
     }
 
     @OnGuiCreated
     private void resolveVotesCountView() {
-        if (isGuiReady()) {
-            getView().displayVoteCount(mPoll.getVoteCount());
-        }
+        callView(v -> v.displayVoteCount(mPoll.getVoteCount()));
     }
 
     @OnGuiCreated
     private void resolvePollTypeView() {
-        if (isGuiReady()) {
-            getView().displayType(mPoll.isAnonymous());
-        }
+        callView(v -> v.displayType(mPoll.isAnonymous()));
     }
 
     @OnGuiCreated
     private void resolveQuestionView() {
-        if (isGuiReady()) {
-            getView().displayQuestion(mPoll.getQuestion());
-        }
+        callView(v -> v.displayQuestion(mPoll.getQuestion()));
     }
 
     @OnGuiCreated
     private void resolveCreationTimeView() {
-        if (isGuiReady()) {
-            getView().displayCreationTime(mPoll.getCreationTime());
-        }
+        callView(v -> v.displayCreationTime(mPoll.getCreationTime()));
     }
 
     @OnGuiCreated
     private void resolvePhotoView() {
-        if (isGuiReady()) {
-            getView().displayPhoto(mPoll.getPhoto());
-        }
+        callView(v -> v.displayPhoto(mPoll.getPhoto()));
     }
 
     public void fireVoteChecked(Set<Integer> newid) {
@@ -153,7 +141,7 @@ public class PollPresenter extends AccountDependencyPresenter<IPollView> {
             removeVote();
         } else {
             if (mTempCheckedId.isEmpty()) {
-                getView().showError(R.string.select);
+                callView(v -> v.showError(R.string.select));
             } else {
                 vote();
             }

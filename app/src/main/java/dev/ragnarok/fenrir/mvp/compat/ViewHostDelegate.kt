@@ -2,10 +2,7 @@ package dev.ragnarok.fenrir.mvp.compat
 
 import android.content.Context
 import android.os.Bundle
-import dev.ragnarok.fenrir.mvp.core.IMvpView
-import dev.ragnarok.fenrir.mvp.core.IPresenter
-import dev.ragnarok.fenrir.mvp.core.IPresenterFactory
-import dev.ragnarok.fenrir.mvp.core.PresenterAction
+import dev.ragnarok.fenrir.mvp.core.*
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -21,8 +18,8 @@ class ViewHostDelegate<P : IPresenter<V>, V : IMvpView> {
 
     private val onReceivePresenterActions = ArrayList<PresenterAction<P, V>>()
 
-    val isPresenterPrepared: Boolean
-        get() = presenter != null
+    @Volatile
+    private var app: Context? = null
 
     fun onCreate(
         context: Context,
@@ -37,7 +34,7 @@ class ViewHostDelegate<P : IPresenter<V>, V : IMvpView> {
             this.lastKnownPresenterState = savedInstanceState.getBundle(SAVE_PRESENTER_STATE)
         }
 
-        val app = context.applicationContext
+        app = context.applicationContext
         val loader = loaderManager.initLoader(
             LOADER_ID,
             lastKnownPresenterState,
@@ -46,7 +43,7 @@ class ViewHostDelegate<P : IPresenter<V>, V : IMvpView> {
                     id: Int,
                     args: Bundle?
                 ): androidx.loader.content.Loader<P> {
-                    return SimplePresenterLoader(app, factoryProvider.getPresenterFactory(args))
+                    return SimplePresenterLoader(app!!, factoryProvider.getPresenterFactory(args))
                 }
 
                 override fun onLoadFinished(loader: androidx.loader.content.Loader<P>, data: P) {
@@ -94,7 +91,16 @@ class ViewHostDelegate<P : IPresenter<V>, V : IMvpView> {
     fun callPresenter(action: PresenterAction<P, V>) {
         presenter?.run {
             action.call(this)
+            //return
         }
+        //app?.let { Utils.showYellowTopToast(it, "Presenter not prepared!") }
+    }
+
+    fun <T> callPresenter(action: RetPresenterAction<P, V, T>, onDefault: T): T {
+        presenter?.run {
+            return action.call(this)
+        }
+        return onDefault
     }
 
     fun postPrenseterReceive(action: PresenterAction<P, V>) {

@@ -41,17 +41,17 @@ public abstract class AbsPostEditFragment<P extends AbsPostEditPresenter<V>, V e
         View signatureRoot = inflater.inflate(R.layout.content_post_edit_under_body, getUnderBodyContainer(), false);
 
         mFromGroupCheckBox = signatureRoot.findViewById(R.id.check_from_group);
-        mFromGroupCheckBox.setOnCheckedChangeListener((buttonView, checked) -> getPresenter().fireFromGroupChecked(checked));
+        mFromGroupCheckBox.setOnCheckedChangeListener((buttonView, checked) -> callPresenter(p -> p.fireFromGroupChecked(checked)));
 
         mFrindsOnlyCheckBox = signatureRoot.findViewById(R.id.check_friends_only);
-        mFrindsOnlyCheckBox.setOnCheckedChangeListener((buttonView, checked) -> getPresenter().fireFriendsOnlyCheched(checked));
+        mFrindsOnlyCheckBox.setOnCheckedChangeListener((buttonView, checked) -> callPresenter(p -> p.fireFriendsOnlyCheched(checked)));
 
         mSignerRoot = signatureRoot.findViewById(R.id.signer_root);
         mSignerAvatar = signatureRoot.findViewById(R.id.signer_avatar);
         mSignerName = signatureRoot.findViewById(R.id.signer_name);
 
         mShowAuthorCheckbox = signatureRoot.findViewById(R.id.check_show_author);
-        mShowAuthorCheckbox.setOnCheckedChangeListener((buttonView, checked) -> getPresenter().fireShowAuthorChecked(checked));
+        mShowAuthorCheckbox.setOnCheckedChangeListener((buttonView, checked) -> callPresenter(p -> p.fireShowAuthorChecked(checked)));
 
         getUnderBodyContainer().addView(signatureRoot);
         return root;

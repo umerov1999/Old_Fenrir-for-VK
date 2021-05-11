@@ -29,6 +29,7 @@ import dev.ragnarok.fenrir.api.Apis;
 import dev.ragnarok.fenrir.api.interfaces.INetworker;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
+import dev.ragnarok.fenrir.mvp.view.IProgressView;
 import dev.ragnarok.fenrir.mvp.view.IRequestExecuteView;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.DownloadWorkUtils;
@@ -71,7 +72,7 @@ public class RequestExecutePresenter extends AccountDependencyPresenter<IRequest
         String trimmedBody = nonEmpty(body) ? body.trim() : null;
 
         if (isEmpty(trimmedMethod)) {
-            showError(getView(), new Exception("Method can't be empty"));
+            callView(v -> showError(v, new Exception("Method can't be empty")));
             return;
         }
 
@@ -94,7 +95,7 @@ public class RequestExecutePresenter extends AccountDependencyPresenter<IRequest
                     params.put(name, value);
                 }
             } catch (Exception e) {
-                showError(getView(), e);
+                callView(v -> showError(v, e));
                 return;
             }
         }
@@ -112,7 +113,7 @@ public class RequestExecutePresenter extends AccountDependencyPresenter<IRequest
 
     private void saveToFile() {
         if (!hasWritePermission()) {
-            getView().requestWriteExternalStoragePermission();
+            callView(IRequestExecuteView::requestWriteExternalStoragePermission);
             return;
         }
 
@@ -132,9 +133,9 @@ public class RequestExecutePresenter extends AccountDependencyPresenter<IRequest
 
             getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
 
-            getView().getCustomToast().showToast(R.string.saved_to_param_file_name, file.getAbsolutePath());
+            callView(v -> v.getCustomToast().showToast(R.string.saved_to_param_file_name, file.getAbsolutePath()));
         } catch (Exception e) {
-            showError(getView(), e);
+            callView(v -> showError(v, e));
         } finally {
             Utils.safelyClose(out);
         }
@@ -157,7 +158,7 @@ public class RequestExecutePresenter extends AccountDependencyPresenter<IRequest
 
     private void onRequestError(Throwable throwable) {
         setLoadinNow(false);
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
     }
 
     private void setLoadinNow(boolean loadinNow) {
@@ -167,12 +168,10 @@ public class RequestExecutePresenter extends AccountDependencyPresenter<IRequest
 
     @OnGuiCreated
     private void resolveProgresDialog() {
-        if (isGuiReady()) {
-            if (loadinNow) {
-                getView().displayProgressDialog(R.string.please_wait, R.string.waiting_for_response_message, false);
-            } else {
-                getView().dismissProgressDialog();
-            }
+        if (loadinNow) {
+            callView(v -> v.displayProgressDialog(R.string.please_wait, R.string.waiting_for_response_message, false));
+        } else {
+            callView(IProgressView::dismissProgressDialog);
         }
     }
 
@@ -220,7 +219,7 @@ public class RequestExecutePresenter extends AccountDependencyPresenter<IRequest
     }
 
     public void fireExecuteClick() {
-        getView().hideKeyboard();
+        callView(IRequestExecuteView::hideKeyboard);
 
         executeRequest();
     }
@@ -238,6 +237,6 @@ public class RequestExecutePresenter extends AccountDependencyPresenter<IRequest
         ClipData clip = ClipData.newPlainText("response", fullResponseBody);
         clipboard.setPrimaryClip(clip);
 
-        getView().getCustomToast().showToast(R.string.copied_to_clipboard);
+        callView(v -> v.getCustomToast().showToast(R.string.copied_to_clipboard));
     }
 }

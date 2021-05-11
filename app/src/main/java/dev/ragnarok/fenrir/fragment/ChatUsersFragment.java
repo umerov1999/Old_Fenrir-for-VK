@@ -85,11 +85,11 @@ public class ChatUsersFragment extends BaseMvpFragment<ChatMembersPresenter, ICh
         recyclerView.setAdapter(mAdapter);
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(ChatMembersPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         FloatingActionButton fabAdd = root.findViewById(R.id.fragment_chat_users_add);
-        fabAdd.setOnClickListener(v -> getPresenter().fireAddUserClick());
+        fabAdd.setOnClickListener(v -> callPresenter(ChatMembersPresenter::fireAddUserClick));
         return root;
     }
 
@@ -116,7 +116,7 @@ public class ChatUsersFragment extends BaseMvpFragment<ChatMembersPresenter, ICh
         new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(R.string.confirmation)
                 .setMessage(getString(R.string.remove_chat_user_commit, user.getMember().getFullName()))
-                .setPositiveButton(R.string.button_ok, (dialog, which) -> getPresenter().fireUserDeteleConfirmed(user))
+                .setPositiveButton(R.string.button_ok, (dialog, which) -> callPresenter(p -> p.fireUserDeteleConfirmed(user)))
                 .setNegativeButton(R.string.button_cancel, null)
                 .show();
     }
@@ -183,6 +183,6 @@ public class ChatUsersFragment extends BaseMvpFragment<ChatMembersPresenter, ICh
 
     @Override
     public void onUserClick(AppChatUser user) {
-        getPresenter().fireUserClick(user);
+        callPresenter(p -> p.fireUserClick(user));
     }
 }

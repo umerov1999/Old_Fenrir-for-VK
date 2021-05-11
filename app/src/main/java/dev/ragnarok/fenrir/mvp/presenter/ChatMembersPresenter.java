@@ -47,9 +47,7 @@ public class ChatMembersPresenter extends AccountDependencyPresenter<IChatMember
     }
 
     private void resolveRefreshing() {
-        if (isGuiResumed()) {
-            getView().displayRefreshing(refreshing);
-        }
+        callResumedView(v -> v.displayRefreshing(refreshing));
     }
 
     @Override
@@ -74,7 +72,7 @@ public class ChatMembersPresenter extends AccountDependencyPresenter<IChatMember
 
     private void onDataGetError(Throwable t) {
         setRefreshing(false);
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onDataReceived(List<AppChatUser> users) {
@@ -93,7 +91,7 @@ public class ChatMembersPresenter extends AccountDependencyPresenter<IChatMember
     }
 
     public void fireAddUserClick() {
-        getView().startSelectUsersActivity(getAccountId());
+        callView(v -> v.startSelectUsersActivity(getAccountId()));
     }
 
     public void fireUserDeteleConfirmed(AppChatUser user) {
@@ -102,7 +100,7 @@ public class ChatMembersPresenter extends AccountDependencyPresenter<IChatMember
 
         appendDisposable(messagesInteractor.removeChatMember(accountId, chatId, userId)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(() -> onUserRemoved(userId), t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(() -> onUserRemoved(userId), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     private void onUserRemoved(int id) {
@@ -130,7 +128,7 @@ public class ChatMembersPresenter extends AccountDependencyPresenter<IChatMember
     }
 
     private void onChatUsersAddError(Throwable t) {
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
         requestData(); // refresh data
     }
 
@@ -142,6 +140,6 @@ public class ChatMembersPresenter extends AccountDependencyPresenter<IChatMember
     }
 
     public void fireUserClick(AppChatUser user) {
-        getView().openUserWall(getAccountId(), user.getMember());
+        callView(v -> v.openUserWall(getAccountId(), user.getMember()));
     }
 }

@@ -51,7 +51,7 @@ public class NewsFeedSearchFragment extends AbsSearchFragment<NewsFeedSearchPres
     @Override
     protected RecyclerView.LayoutManager createLayoutManager() {
         if (Utils.is600dp(requireActivity())) {
-            boolean land = Utils.isLandscape(getContext());
+            boolean land = Utils.isLandscape(requireActivity());
             return new StaggeredGridLayoutManager(land ? 2 : 1, StaggeredGridLayoutManager.VERTICAL);
         } else {
             return new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false);
@@ -60,17 +60,17 @@ public class NewsFeedSearchFragment extends AbsSearchFragment<NewsFeedSearchPres
 
     @Override
     public void onAvatarClick(int ownerId) {
-        getPresenter().fireOwnerClick(ownerId);
+        callPresenter(p -> p.fireOwnerClick(ownerId));
     }
 
     @Override
     public void onShareClick(Post post) {
-        getPresenter().fireShareClick(post);
+        callPresenter(p -> p.fireShareClick(post));
     }
 
     @Override
     public void onPostClick(Post post) {
-        getPresenter().firePostClick(post);
+        callPresenter(p -> p.firePostClick(post));
     }
 
     @Override
@@ -80,22 +80,22 @@ public class NewsFeedSearchFragment extends AbsSearchFragment<NewsFeedSearchPres
 
     @Override
     public void onCommentsClick(Post post) {
-        getPresenter().fireCommentsClick(post);
+        callPresenter(p -> p.fireCommentsClick(post));
     }
 
     @Override
     public void onLikeLongClick(Post post) {
-        getPresenter().fireCopiesLikesClick("post", post.getOwnerId(), post.getVkid(), ILikesInteractor.FILTER_LIKES);
+        callPresenter(p -> p.fireCopiesLikesClick("post", post.getOwnerId(), post.getVkid(), ILikesInteractor.FILTER_LIKES));
     }
 
     @Override
     public void onShareLongClick(Post post) {
-        getPresenter().fireCopiesLikesClick("post", post.getOwnerId(), post.getVkid(), ILikesInteractor.FILTER_COPIES);
+        callPresenter(p -> p.fireCopiesLikesClick("post", post.getOwnerId(), post.getVkid(), ILikesInteractor.FILTER_COPIES));
     }
 
     @Override
     public void onLikeClick(Post post) {
-        getPresenter().fireLikeClick(post);
+        callPresenter(p -> p.fireLikeClick(post));
     }
 
     @NonNull

@@ -140,22 +140,22 @@ public class WallPostFragment extends PlaceSupportMvpFragment<WallPostPresenter,
         mSignerAvatar = root.findViewById(R.id.item_post_signer_icon);
         mSignerNameText = root.findViewById(R.id.item_post_signer_name);
 
-        mLikeButton.setOnClickListener(view -> getPresenter().fireLikeClick());
+        mLikeButton.setOnClickListener(view -> callPresenter(WallPostPresenter::fireLikeClick));
 
         mLikeButton.setOnLongClickListener(view -> {
-            getPresenter().fireLikeLongClick();
+            callPresenter(WallPostPresenter::fireLikeLongClick);
             return true;
         });
 
-        mShareButton.setOnClickListener(view -> getPresenter().fireShareClick());
+        mShareButton.setOnClickListener(view -> callPresenter(WallPostPresenter::fireShareClick));
         mShareButton.setOnLongClickListener(view -> {
-            getPresenter().fireRepostLongClick();
+            callPresenter(WallPostPresenter::fireRepostLongClick);
             return true;
         });
 
-        root.findViewById(R.id.try_again_button).setOnClickListener(v -> getPresenter().fireTryLoadAgainClick());
+        root.findViewById(R.id.try_again_button).setOnClickListener(v -> callPresenter(WallPostPresenter::fireTryLoadAgainClick));
 
-        mCommentsButton.setOnClickListener(view -> getPresenter().fireCommentClick());
+        mCommentsButton.setOnClickListener(view -> callPresenter(WallPostPresenter::fireCommentClick));
         resolveTextSelection();
         return root;
     }
@@ -163,41 +163,41 @@ public class WallPostFragment extends PlaceSupportMvpFragment<WallPostPresenter,
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.delete_post) {
-            getPresenter().fireDeleteClick();
+            callPresenter(WallPostPresenter::fireDeleteClick);
             return true;
         } else if (item.getItemId() == R.id.restore_post) {
-            getPresenter().fireRestoreClick();
+            callPresenter(WallPostPresenter::fireRestoreClick);
             return true;
         } else if (item.getItemId() == R.id.pin_post) {
-            getPresenter().firePinClick();
+            callPresenter(WallPostPresenter::firePinClick);
             return true;
         } else if (item.getItemId() == R.id.unpin_post) {
-            getPresenter().fireUnpinClick();
+            callPresenter(WallPostPresenter::fireUnpinClick);
             return true;
         } else if (item.getItemId() == R.id.goto_user_post) {
-            getPresenter().fireGoToOwnerClick();
+            callPresenter(WallPostPresenter::fireGoToOwnerClick);
             return true;
         } else if (item.getItemId() == R.id.copy_url_post) {
-            getPresenter().fireCopyLinkClink();
+            callPresenter(WallPostPresenter::fireCopyLinkClink);
             return true;
         } else if (item.getItemId() == R.id.report) {
-            getPresenter().fireReport();
+            callPresenter(WallPostPresenter::fireReport);
             return true;
         } else if (item.getItemId() == R.id.copy_text) {
-            getPresenter().fireCopyTextClick();
+            callPresenter(WallPostPresenter::fireCopyTextClick);
             return true;
         } else if (item.getItemId() == R.id.action_allow_text_selection) {
             mTextSelectionAllowed = true;
             resolveTextSelection();
             return true;
         } else if (item.getItemId() == R.id.add_to_bookmarks) {
-            getPresenter().fireAddBookmark();
+            callPresenter(WallPostPresenter::fireAddBookmark);
             return true;
         } else if (item.getItemId() == R.id.edit_post) {
-            getPresenter().firePostEditClick();
+            callPresenter(WallPostPresenter::firePostEditClick);
             return true;
         } else if (item.getItemId() == R.id.refresh) {
-            getPresenter().fireRefresh();
+            callPresenter(WallPostPresenter::fireRefresh);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -247,7 +247,7 @@ public class WallPostFragment extends PlaceSupportMvpFragment<WallPostPresenter,
         super.onPrepareOptionsMenu(menu);
 
         OptionView optionView = new OptionView();
-        getPresenter().fireOptionViewCreated(optionView);
+        callPresenter(p -> p.fireOptionViewCreated(optionView));
 
         menu.findItem(R.id.edit_post).setVisible(optionView.canEdit);
         menu.findItem(R.id.unpin_post).setVisible(optionView.canUnpin);
@@ -463,7 +463,7 @@ public class WallPostFragment extends PlaceSupportMvpFragment<WallPostPresenter,
 
     @Override
     public void onHashTagClicked(String hashTag) {
-        getPresenter().fireHasgTagClick(hashTag);
+        callPresenter(p -> p.fireHasgTagClick(hashTag));
     }
 
     private static final class OptionView implements IWallPostView.IOptionView {

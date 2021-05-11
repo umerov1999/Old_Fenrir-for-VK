@@ -47,6 +47,7 @@ import dev.ragnarok.fenrir.model.WallReply;
 import dev.ragnarok.fenrir.mvp.presenter.base.PlaceSupportPresenter;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.ICommentsView;
+import dev.ragnarok.fenrir.mvp.view.IProgressView;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Analytics;
 import dev.ragnarok.fenrir.util.AssertUtils;
@@ -156,14 +157,12 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
 
     @OnGuiCreated
     private void resolveAuthorAvatarView() {
-        if (isGuiReady()) {
-            String avatarUrl = nonNull(author) ? (author instanceof User ? ((User) author).getPhoto50() : ((Community) author).getPhoto50()) : null;
-            getView().displayAuthorAvatar(avatarUrl);
-        }
+        String avatarUrl = nonNull(author) ? (author instanceof User ? ((User) author).getPhoto50() : ((Community) author).getPhoto50()) : null;
+        callView(v -> v.displayAuthorAvatar(avatarUrl));
     }
 
     private void onAuthorDataGetError(Throwable t) {
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void onAuthorDataReceived(Owner owner) {
@@ -176,10 +175,8 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
             Comment comment = data.get(i);
             if (comment.getId() == update.getCommentId()) {
                 applyUpdate(comment, update);
-
-                if (isGuiReady()) {
-                    getView().notifyItemChanged(i);
-                }
+                int finalI = i;
+                callView(v -> v.notifyItemChanged(finalI));
                 break;
             }
         }
@@ -221,7 +218,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
         stickersWordsDisplayDisposable.append(stickersInteractor.getKeywordsStickers(getAccountId(), s.trim())
                 .delay(500, TimeUnit.MILLISECONDS)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(stickers -> callView(view -> view.updateStickers(stickers)), u -> showError(getView(), u)));
+                .subscribe(stickers -> callView(view -> view.updateStickers(stickers)), u -> callView(v -> showError(v, u))));
     }
 
     @SuppressWarnings("unused")
@@ -278,7 +275,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
 
     private void onInitialDataError(Throwable throwable) {
         setLoadingState(LoadingState.NO);
-        showError(getView(), getCauseIfRuntime(throwable));
+        callView(v -> showError(v, getCauseIfRuntime(throwable)));
     }
 
     private void loadUp() {
@@ -313,7 +310,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
 
     private void onCommentPortionError(Throwable throwable) {
         setLoadingState(LoadingState.NO);
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
     }
 
     private void onCommentsPortionPortionReceived(CommentsBundle bundle) {
@@ -397,51 +394,48 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
 
     @OnGuiCreated
     private void resolveEmptyTextVisibility() {
-        if (isGuiReady()) {
-            getView().setEpmtyTextVisible(loadingState == LoadingState.NO && data.isEmpty());
-        }
+        callView(v -> v.setEpmtyTextVisible(loadingState == LoadingState.NO && data.isEmpty()));
     }
 
     @OnGuiCreated
     private void resolveHeaderFooterViews() {
-        if (isGuiReady()) {
-            if (data.isEmpty()) {
-                // если комментариев к этому обьекту нет, то делать хидеры невидимыми
-                getView().setupLoadUpHeader(LoadMoreState.INVISIBLE);
-                getView().setupLoadDownFooter(LoadMoreState.INVISIBLE);
-                return;
-            }
 
-            boolean lastResponseAvailable = nonNull(commentedState);
+        if (data.isEmpty()) {
+            // если комментариев к этому обьекту нет, то делать хидеры невидимыми
+            callView(v -> v.setupLoadUpHeader(LoadMoreState.INVISIBLE));
+            callView(v -> v.setupLoadDownFooter(LoadMoreState.INVISIBLE));
+            return;
+        }
 
-            if (!lastResponseAvailable) {
-                // если мы еще не получили с сервера информацию о количестве комеентов, то делать хидеры невидимыми
-                getView().setupLoadUpHeader(LoadMoreState.END_OF_LIST);
-                getView().setupLoadDownFooter(LoadMoreState.END_OF_LIST);
-                return;
-            }
+        boolean lastResponseAvailable = nonNull(commentedState);
 
-            switch (loadingState) {
-                case LoadingState.NO:
-                    getView().setupLoadUpHeader(isCommentsAvailableUp() ? LoadMoreState.CAN_LOAD_MORE : LoadMoreState.END_OF_LIST);
-                    getView().setupLoadDownFooter(isCommentsAvailableDown() ? LoadMoreState.CAN_LOAD_MORE : LoadMoreState.END_OF_LIST);
-                    break;
+        if (!lastResponseAvailable) {
+            // если мы еще не получили с сервера информацию о количестве комеентов, то делать хидеры невидимыми
+            callView(v -> v.setupLoadUpHeader(LoadMoreState.END_OF_LIST));
+            callView(v -> v.setupLoadDownFooter(LoadMoreState.END_OF_LIST));
+            return;
+        }
 
-                case LoadingState.DOWN:
-                    getView().setupLoadDownFooter(LoadMoreState.LOADING);
-                    getView().setupLoadUpHeader(LoadMoreState.END_OF_LIST);
-                    break;
+        switch (loadingState) {
+            case LoadingState.NO:
+                callView(v -> v.setupLoadUpHeader(isCommentsAvailableUp() ? LoadMoreState.CAN_LOAD_MORE : LoadMoreState.END_OF_LIST));
+                callView(v -> v.setupLoadDownFooter(isCommentsAvailableDown() ? LoadMoreState.CAN_LOAD_MORE : LoadMoreState.END_OF_LIST));
+                break;
 
-                case LoadingState.UP:
-                    getView().setupLoadDownFooter(LoadMoreState.END_OF_LIST);
-                    getView().setupLoadUpHeader(LoadMoreState.LOADING);
-                    break;
+            case LoadingState.DOWN:
+                callView(v -> v.setupLoadDownFooter(LoadMoreState.LOADING));
+                callView(v -> v.setupLoadUpHeader(LoadMoreState.END_OF_LIST));
+                break;
 
-                case LoadingState.INITIAL:
-                    getView().setupLoadDownFooter(LoadMoreState.END_OF_LIST);
-                    getView().setupLoadUpHeader(LoadMoreState.END_OF_LIST);
-                    break;
-            }
+            case LoadingState.UP:
+                callView(v -> v.setupLoadDownFooter(LoadMoreState.END_OF_LIST));
+                callView(v -> v.setupLoadUpHeader(LoadMoreState.LOADING));
+                break;
+
+            case LoadingState.INITIAL:
+                callView(v -> v.setupLoadDownFooter(LoadMoreState.END_OF_LIST));
+                callView(v -> v.setupLoadUpHeader(LoadMoreState.END_OF_LIST));
+                break;
         }
     }
 
@@ -471,9 +465,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
 
     @OnGuiCreated
     private void resolveCenterProgressView() {
-        if (isGuiReady()) {
-            getView().setCenterProgressVisible(loadingState == LoadingState.INITIAL && data.isEmpty());
-        }
+        callView(v -> v.setCenterProgressVisible(loadingState == LoadingState.INITIAL && data.isEmpty()));
     }
 
     @Nullable
@@ -483,9 +475,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
 
     @OnGuiCreated
     private void resolveBodyView() {
-        if (isGuiReady()) {
-            getView().displayBody(draftCommentBody);
-        }
+        callView(v -> v.displayBody(draftCommentBody));
     }
 
     private boolean canSendComment() {
@@ -494,9 +484,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
 
     @OnGuiCreated
     private void resolveSendButtonAvailability() {
-        if (isGuiReady()) {
-            getView().setButtonSendAvailable(canSendComment());
-        }
+        callView(v -> v.setButtonSendAvailable(canSendComment()));
     }
 
     private Single<Integer> saveSingle() {
@@ -512,9 +500,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
 
     @OnGuiCreated
     private void resolveAttachmentsCounter() {
-        if (isGuiReady()) {
-            getView().displayAttachmentsCount(draftCommentAttachmentsCount);
-        }
+        callView(v -> v.displayAttachmentsCount(draftCommentAttachmentsCount));
     }
 
     public void fireInputTextChanged(String s) {
@@ -533,8 +519,9 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
             if (comment.getId() == commentId) {
                 comment.setAnimationNow(true);
 
-                getView().notifyItemChanged(y);
-                getView().moveFocusTo(y, true);
+                int finalY = y;
+                callView(v -> v.notifyItemChanged(finalY));
+                callView(v -> v.moveFocusTo(finalY, true));
                 return;
             }
         }
@@ -555,7 +542,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
 
         int accountId = getAccountId();
 
-        getView().displayDeepLookingCommentProgress();
+        callView(ICommentsView::displayDeepLookingCommentProgress);
 
         deepLookingHolder.append(interactor.getAllCommentsRange(accountId, commented, older.getId(), commentId)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
@@ -563,12 +550,12 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
     }
 
     private void onDeepCommentLoadingError(Throwable throwable) {
-        getView().dismissDeepLookingCommentProgress();
+        callView(ICommentsView::dismissDeepLookingCommentProgress);
 
         if (throwable instanceof NotFoundException) {
-            safeShowToast(getView(), R.string.the_comment_is_not_in_the_list, false);
+            callView(v -> v.showToast(R.string.the_comment_is_not_in_the_list, false));
         } else {
-            showError(getView(), throwable);
+            callView(v -> showError(v, throwable));
         }
     }
 
@@ -583,7 +570,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
     }
 
     private void onDeepCommentLoadingResponse(int commentId, List<Comment> comments) {
-        getView().dismissDeepLookingCommentProgress();
+        callView(ICommentsView::dismissDeepLookingCommentProgress);
 
         data.addAll(comments);
 
@@ -614,7 +601,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
         }
 
         int accountId = getAccountId();
-        getView().openAttachmentsManager(accountId, draftCommentId, commented.getSourceOwnerId(), draftCommentBody);
+        callView(v -> v.openAttachmentsManager(accountId, draftCommentId, commented.getSourceOwnerId(), draftCommentBody));
     }
 
     public void fireEditBodyResult(String newBody) {
@@ -627,7 +614,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
         if (commented.getSourceType() == CommentedType.TOPIC) {
             // в топиках механизм ответа отличается
             String replyText = buildReplyTextFor(comment);
-            getView().replaceBodySelectionTextTo(replyText);
+            callView(v -> v.replaceBodySelectionTextTo(replyText));
         } else {
             replyTo = comment;
             resolveReplyViews();
@@ -643,17 +630,17 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
                     .compose(RxUtils.applySingleIOToMainSchedulers())
                     .subscribe(p -> {
                         if (p == 1)
-                            getView().getCustomToast().showToast(R.string.success);
+                            callView(v -> v.getCustomToast().showToast(R.string.success));
                         else
-                            getView().getCustomToast().showToast(R.string.error);
-                    }, t -> showError(getView(), getCauseIfRuntime(t))));
+                            callView(v -> v.getCustomToast().showToast(R.string.error));
+                    }, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
             dialog.dismiss();
         });
         alert.show();
     }
 
     public void fireWhoLikesClick(Comment comment) {
-        getView().goToLikes(getAccountId(), getApiCommentType(comment), commented.getSourceOwnerId(), comment.getId());
+        callView(v -> v.goToLikes(getAccountId(), getApiCommentType(comment), commented.getSourceOwnerId(), comment.getId()));
     }
 
     public void fireReplyToChat(Comment comment) {
@@ -706,7 +693,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
 
     private void onSendError(Throwable t) {
         setSendingNow(false);
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void onQuickSendResponse(Comment comment) {
@@ -782,14 +769,12 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
 
     @OnGuiCreated
     private void resolveProgressDialog() {
-        if (isGuiReady()) {
-            if (sendingNow) {
-                getView().displayProgressDialog(R.string.please_wait, R.string.publication, false);
-            } else if (loadingAvailableAuthorsNow) {
-                getView().displayProgressDialog(R.string.please_wait, R.string.getting_list_loading_message, false);
-            } else {
-                getView().dismissProgressDialog();
-            }
+        if (sendingNow) {
+            callView(v -> v.displayProgressDialog(R.string.please_wait, R.string.publication, false));
+        } else if (loadingAvailableAuthorsNow) {
+            callView(v -> v.displayProgressDialog(R.string.please_wait, R.string.getting_list_loading_message, false));
+        } else {
+            callView(IProgressView::dismissProgressDialog);
         }
     }
 
@@ -813,12 +798,12 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
         int accountId = getAccountId();
         appendDisposable(interactor.deleteRestore(accountId, commented, commentId, delete)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(dummy(), t -> showError(getView(), t)));
+                .subscribe(dummy(), t -> callView(v -> showError(v, t))));
     }
 
     public void fireCommentEditClick(Comment comment) {
         int accountId = getAccountId();
-        getView().goToCommentEdit(accountId, comment, CommentThread);
+        callView(v -> v.goToCommentEdit(accountId, comment, CommentThread));
     }
 
     public void fireCommentLikeClick(Comment comment, boolean add) {
@@ -830,7 +815,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
 
         appendDisposable(interactor.like(accountId, comment.getCommented(), comment.getId(), add)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(dummy(), t -> showError(getView(), t)));
+                .subscribe(dummy(), t -> callView(v -> showError(v, t))));
     }
 
     public void fireCommentRestoreClick(int commentId) {
@@ -857,11 +842,11 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
                 break;
 
             case CommentedType.POST:
-                getView().goToWallPost(getAccountId(), commented.getSourceId(), commented.getSourceOwnerId());
+                callView(v -> v.goToWallPost(getAccountId(), commented.getSourceId(), commented.getSourceOwnerId()));
                 break;
 
             case CommentedType.VIDEO:
-                getView().goToVideoPreview(getAccountId(), commented.getSourceId(), commented.getSourceOwnerId());
+                callView(v -> v.goToVideoPreview(getAccountId(), commented.getSourceId(), commented.getSourceOwnerId()));
                 break;
 
             case CommentedType.TOPIC:
@@ -888,31 +873,30 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
     }
 
     private void resolveOptionMenu() {
-        if (isGuiResumed()) {
-            boolean hasPoll = nonNull(topicPoll);
-            boolean hasGotoSource = commented.getSourceType() != CommentedType.TOPIC;
+        boolean hasPoll = nonNull(topicPoll);
+        boolean hasGotoSource = commented.getSourceType() != CommentedType.TOPIC;
 
-            @StringRes
-            Integer gotoSourceText = null;
-            if (hasGotoSource) {
-                switch (commented.getSourceType()) {
-                    case CommentedType.PHOTO:
-                        gotoSourceText = R.string.go_to_photo;
-                        break;
-                    case CommentedType.VIDEO:
-                        gotoSourceText = R.string.go_to_video;
-                        break;
-                    case CommentedType.POST:
-                        gotoSourceText = R.string.go_to_post;
-                        break;
-                    case CommentedType.TOPIC:
-                        // not supported
-                        break;
-                }
+        @StringRes
+        Integer gotoSourceText = null;
+        if (hasGotoSource) {
+            switch (commented.getSourceType()) {
+                case CommentedType.PHOTO:
+                    gotoSourceText = R.string.go_to_photo;
+                    break;
+                case CommentedType.VIDEO:
+                    gotoSourceText = R.string.go_to_video;
+                    break;
+                case CommentedType.POST:
+                    gotoSourceText = R.string.go_to_post;
+                    break;
+                case CommentedType.TOPIC:
+                    // not supported
+                    break;
             }
-
-            getView().setupOptionMenu(hasPoll, hasGotoSource, gotoSourceText);
         }
+
+        Integer finalGotoSourceText = gotoSourceText;
+        callResumedView(v -> v.setupOptionMenu(hasPoll, hasGotoSource, finalGotoSourceText));
     }
 
     public void fireCommentEditResult(Comment comment) {
@@ -920,11 +904,8 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
             for (int i = 0; i < data.size(); i++) {
                 if (data.get(i).getId() == comment.getId()) {
                     data.set(i, comment);
-
-                    if (isGuiReady()) {
-                        getView().notifyItemChanged(i);
-                    }
-
+                    int finalI = i;
+                    callView(v -> v.notifyItemChanged(finalI));
                     break;
                 }
             }
@@ -935,7 +916,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
         User user = (User) comment.getAuthor();
         int groupId = Math.abs(commented.getSourceOwnerId());
 
-        getView().banUser(getAccountId(), groupId, user);
+        callView(v -> v.banUser(getAccountId(), groupId, user));
     }
 
     private void setLoadingAvailableAuthorsNow(boolean loadingAvailableAuthorsNow) {
@@ -983,7 +964,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
 
     public void fireDirectionChanged() {
         data.clear();
-        getView().notifyDataSetChanged();
+        callView(ICommentsView::notifyDataSetChanged);
 
         directionDesc = Settings.get().other().isCommentsDesc();
         requestInitialData();
@@ -991,13 +972,14 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
 
     @OnGuiCreated
     private void checkFocusToCommentDone() {
-        if (isGuiReady() && nonNull(focusToComment)) {
+        if (nonNull(focusToComment)) {
             for (int i = 0; i < data.size(); i++) {
                 Comment comment = data.get(i);
                 if (comment.getId() == focusToComment) {
                     comment.setAnimationNow(true);
                     focusToComment = null;
-                    getView().moveFocusTo(i, false);
+                    int finalI = i;
+                    callView(v -> v.moveFocusTo(finalI, false));
                     break;
                 }
             }
@@ -1018,10 +1000,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
         topicPoll = bundle.getTopicPoll();
 
         setLoadingState(LoadingState.NO);
-
-        if (isGuiReady()) {
-            getView().notifyDataSetChanged();
-        }
+        callView(ICommentsView::notifyDataSetChanged);
 
         if (nonNull(focusToComment)) {
             checkFocusToCommentDone();
@@ -1042,9 +1021,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
 
     @OnGuiCreated
     private void resolveCanSendAsAdminView() {
-        if (isGuiReady()) {
-            getView().setCanSendSelectAuthor(commented.getSourceType() == CommentedType.POST || adminLevel >= VKApiCommunity.AdminLevel.MODERATOR);
-        }
+        callView(v -> v.setCanSendSelectAuthor(commented.getSourceType() == CommentedType.POST || adminLevel >= VKApiCommunity.AdminLevel.MODERATOR));
     }
 
     @Override
@@ -1077,13 +1054,9 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
         resolveHeaderFooterViews();
         resolveEmptyTextVisibility();
         resolveCenterProgressView();
-
-        if (isGuiReady()) {
-            getView().notifyDataSetChanged();
-
-            if (!directionDesc) {
-                getView().scrollToPosition(data.size() - 1);
-            }
+        callView(ICommentsView::notifyDataSetChanged);
+        if (!directionDesc) {
+            callView(v -> v.scrollToPosition(data.size() - 1));
         }
     }
 
@@ -1101,9 +1074,7 @@ public class CommentsPresenter extends PlaceSupportPresenter<ICommentsView> {
 
     @OnGuiCreated
     private void resolveReplyViews() {
-        if (isGuiReady()) {
-            getView().setupReplyViews(nonNull(replyTo) ? replyTo.getFullAuthorName() : null);
-        }
+        callView(v -> v.setupReplyViews(nonNull(replyTo) ? replyTo.getFullAuthorName() : null));
     }
 
     public void fireReplyCancelClick() {

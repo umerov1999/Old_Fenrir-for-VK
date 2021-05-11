@@ -71,7 +71,7 @@ public class CommunityBlacklistFragment extends BaseMvpFragment<CommunityBlackli
         View root = inflater.inflate(R.layout.fragment_community_blacklist, container, false);
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(CommunityBlacklistPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
@@ -79,7 +79,7 @@ public class CommunityBlacklistFragment extends BaseMvpFragment<CommunityBlackli
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToBottom();
+                callPresenter(CommunityBlacklistPresenter::fireScrollToBottom);
             }
         });
 
@@ -88,7 +88,7 @@ public class CommunityBlacklistFragment extends BaseMvpFragment<CommunityBlackli
 
         recyclerView.setAdapter(mAdapter);
 
-        root.findViewById(R.id.button_add).setOnClickListener(v -> getPresenter().fireAddClick());
+        root.findViewById(R.id.button_add).setOnClickListener(v -> callPresenter(CommunityBlacklistPresenter::fireAddClick));
         return root;
     }
 
@@ -161,7 +161,7 @@ public class CommunityBlacklistFragment extends BaseMvpFragment<CommunityBlackli
 
     @Override
     public void onBannedClick(Banned banned) {
-        getPresenter().fireBannedClick(banned);
+        callPresenter(p -> p.fireBannedClick(banned));
     }
 
     @Override
@@ -169,7 +169,7 @@ public class CommunityBlacklistFragment extends BaseMvpFragment<CommunityBlackli
         String[] items = {getString(R.string.delete)};
         new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(banned.getBanned().getFullName())
-                .setItems(items, (dialog, which) -> getPresenter().fireBannedRemoveClick(banned))
+                .setItems(items, (dialog, which) -> callPresenter(p -> p.fireBannedRemoveClick(banned)))
                 .setNegativeButton(R.string.button_cancel, null)
                 .show();
     }

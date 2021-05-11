@@ -503,9 +503,9 @@ class OtherSettings implements ISettings.IOtherSettings {
     @Override
     public int getPaganSymbol() {
         try {
-            return Integer.parseInt(java.util.Objects.requireNonNull(PreferenceManager.getDefaultSharedPreferences(app).getString("pagan_symbol", "0")));
+            return Integer.parseInt(java.util.Objects.requireNonNull(PreferenceManager.getDefaultSharedPreferences(app).getString("pagan_symbol", "1")));
         } catch (Exception e) {
-            return 0;
+            return 1;
         }
     }
 
@@ -529,11 +529,6 @@ class OtherSettings implements ISettings.IOtherSettings {
     @Override
     public int getEndListAnimation() {
         return Integer.parseInt(java.util.Objects.requireNonNull(PreferenceManager.getDefaultSharedPreferences(app).getString("end_list_anim", "0")));
-    }
-
-    @Override
-    public boolean isShow_pagan_symbol() {
-        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("show_pagan_symbol", true);
     }
 
     @Override

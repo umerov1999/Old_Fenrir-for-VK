@@ -86,7 +86,7 @@ public class AudiosInCatalogFragment extends BaseMvpFragment<AudiosInCatalogPres
         }
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(AudiosInCatalogPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
@@ -95,7 +95,7 @@ public class AudiosInCatalogFragment extends BaseMvpFragment<AudiosInCatalogPres
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(AudiosInCatalogPresenter::fireScrollToEnd);
             }
         });
 
@@ -113,7 +113,7 @@ public class AudiosInCatalogFragment extends BaseMvpFragment<AudiosInCatalogPres
         Goto.setOnClickListener(v -> {
             Audio curr = MusicUtils.getCurrentAudio();
             if (curr != null) {
-                int index = getPresenter().getAudioPos(curr);
+                int index = callPresenter(p -> p.getAudioPos(curr), -1);
                 if (index >= 0) {
                     recyclerView.scrollToPosition(index + mAudioRecyclerAdapter.getHeadersCount());
                 } else
@@ -125,7 +125,7 @@ public class AudiosInCatalogFragment extends BaseMvpFragment<AudiosInCatalogPres
         mAudioRecyclerAdapter.setClickListener(new AudioRecyclerAdapter.ClickListener() {
             @Override
             public void onClick(int position, int catalog, Audio audio) {
-                getPresenter().playAudio(requireActivity(), position);
+                callPresenter(p -> p.playAudio(requireActivity(), position));
             }
 
             @Override

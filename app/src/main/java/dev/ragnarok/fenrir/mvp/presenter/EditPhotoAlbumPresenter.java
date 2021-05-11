@@ -95,7 +95,7 @@ public class EditPhotoAlbumPresenter extends AccountDependencyPresenter<IEditPho
     }
 
     private void onBackOnFirstStepClick() {
-        getView().goBack();
+        callView(ISteppersView::goBack);
     }
 
     public void fireStepPositiveButtonClick(int clickAtStep) {
@@ -126,12 +126,12 @@ public class EditPhotoAlbumPresenter extends AccountDependencyPresenter<IEditPho
             appendDisposable(api.editAlbum(album.getId(), title, description, ownerId, null,
                     null, uploadsByAdminsOnly, commentsDisabled)
                     .compose(RxUtils.applySingleIOToMainSchedulers())
-                    .subscribe(t -> goToEditedAlbum(album, t), v -> showError(getView(), getCauseIfRuntime(v))));
+                    .subscribe(t -> goToEditedAlbum(album, t), l -> callView(v -> showError(v, getCauseIfRuntime(l)))));
         } else {
             Integer groupId = ownerId < 0 ? Math.abs(ownerId) : null;
             appendDisposable(api.createAlbum(title, groupId, description, null, null, uploadsByAdminsOnly, commentsDisabled)
                     .compose(RxUtils.applySingleIOToMainSchedulers())
-                    .subscribe(this::goToAlbum, t -> showError(getView(), getCauseIfRuntime(t))));
+                    .subscribe(this::goToAlbum, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
         }
     }
 

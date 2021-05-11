@@ -547,7 +547,7 @@ public class UserDetailsPresenter extends AccountDependencyPresenter<IUserDetail
         Object tag = item.getTag();
 
         if (tag instanceof Owner) {
-            getView().openOwnerProfile(getAccountId(), ((Owner) tag).getOwnerId(), (Owner) tag);
+            callView(v -> v.openOwnerProfile(getAccountId(), ((Owner) tag).getOwnerId(), (Owner) tag));
         }
     }
 }

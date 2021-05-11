@@ -54,9 +54,7 @@ public class LinksInCatalogPresenter extends AccountDependencyPresenter<ILinksIn
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().displayRefreshing(loadingNow);
-        }
+        callResumedView(v -> v.displayRefreshing(loadingNow));
     }
 
     public void requestList() {
@@ -92,9 +90,7 @@ public class LinksInCatalogPresenter extends AccountDependencyPresenter<ILinksIn
 
     private void onListGetError(Throwable t) {
         setLoadingNow(false);
-        if (isGuiResumed()) {
-            showError(getView(), Utils.getCauseIfRuntime(t));
-        }
+        callResumedView(v -> showError(v, Utils.getCauseIfRuntime(t)));
     }
 
     public void fireRefresh() {

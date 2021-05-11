@@ -63,9 +63,7 @@ public class PhotoAllCommentPresenter extends PlaceSupportPresenter<IPhotoAllCom
 
     @OnGuiCreated
     private void resolveRefreshingView() {
-        if (isGuiReady()) {
-            getView().showRefreshing(netLoadingNow);
-        }
+        callView(v -> v.showRefreshing(netLoadingNow));
     }
 
     @Override
@@ -89,7 +87,7 @@ public class PhotoAllCommentPresenter extends PlaceSupportPresenter<IPhotoAllCom
     private void onNetDataGetError(Throwable t) {
         netLoadingNow = false;
         resolveRefreshingView();
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onNetDataReceived(int offset, List<Comment> comments) {
@@ -149,7 +147,7 @@ public class PhotoAllCommentPresenter extends PlaceSupportPresenter<IPhotoAllCom
     public void fireGoPhotoClick(Comment comment) {
         appendDisposable(photosInteractor.getPhotosByIds(getAccountId(), Collections.singletonList(new AccessIdPair(comment.getCommented().getSourceId(), owner_id, null)))
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(t -> getView().openSimplePhotoGallery(getAccountId(), new ArrayList<>(t), 0, false), t -> showError(getView(), t)));
+                .subscribe(t -> callView(v -> v.openSimplePhotoGallery(getAccountId(), new ArrayList<>(t), 0, false)), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     private void likeInternal(boolean add, Comment comment) {
@@ -157,7 +155,7 @@ public class PhotoAllCommentPresenter extends PlaceSupportPresenter<IPhotoAllCom
 
         appendDisposable(interactor.like(accountId, comment.getCommented(), comment.getId(), add)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(dummy(), t -> showError(getView(), t)));
+                .subscribe(dummy(), t -> callView(v -> showError(v, t))));
     }
 
     public void fireReport(Comment comment, Context context) {
@@ -169,17 +167,17 @@ public class PhotoAllCommentPresenter extends PlaceSupportPresenter<IPhotoAllCom
                     .compose(RxUtils.applySingleIOToMainSchedulers())
                     .subscribe(p -> {
                         if (p == 1)
-                            getView().getCustomToast().showToast(R.string.success);
+                            callView(v -> v.getCustomToast().showToast(R.string.success));
                         else
-                            getView().getCustomToast().showToast(R.string.error);
-                    }, t -> showError(getView(), getCauseIfRuntime(t))));
+                            callView(v -> v.getCustomToast().showToast(R.string.error));
+                    }, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
             dialog.dismiss();
         });
         alert.show();
     }
 
     public void fireWhoLikesClick(Comment comment) {
-        getView().goToLikes(getAccountId(), "photo_comment", comment.getCommented().getSourceOwnerId(), comment.getId());
+        callView(v -> v.goToLikes(getAccountId(), "photo_comment", comment.getCommented().getSourceOwnerId(), comment.getId()));
     }
 
     public void fireReplyToChat(Comment comment, Context context) {
@@ -192,8 +190,11 @@ public class PhotoAllCommentPresenter extends PlaceSupportPresenter<IPhotoAllCom
             if (comment.getId() == commentId) {
                 comment.setAnimationNow(true);
 
-                getView().notifyItemChanged(y);
-                getView().moveFocusTo(y, true);
+                int finalY = y;
+                callView(v -> {
+                    v.notifyItemChanged(finalY);
+                    v.moveFocusTo(finalY, true);
+                });
                 return;
             }
         }
@@ -219,7 +220,7 @@ public class PhotoAllCommentPresenter extends PlaceSupportPresenter<IPhotoAllCom
 
         int accountId = getAccountId();
 
-        getView().displayDeepLookingCommentProgress();
+        callView(IPhotoAllCommentView::displayDeepLookingCommentProgress);
 
         deepLookingHolder.append(interactor.getAllCommentsRange(accountId, older.getCommented(), older.getId(), commentId)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
@@ -227,17 +228,17 @@ public class PhotoAllCommentPresenter extends PlaceSupportPresenter<IPhotoAllCom
     }
 
     private void onDeepCommentLoadingError(Throwable throwable) {
-        getView().dismissDeepLookingCommentProgress();
+        callView(IPhotoAllCommentView::dismissDeepLookingCommentProgress);
 
         if (throwable instanceof NotFoundException) {
-            getView().getCustomToast().showToast(R.string.the_comment_is_not_in_the_list);
+            callView(v -> v.getCustomToast().showToast(R.string.the_comment_is_not_in_the_list));
         } else {
-            showError(getView(), throwable);
+            callView(v -> showError(v, throwable));
         }
     }
 
     private void onDeepCommentLoadingResponse(int commentId, List<Comment> comments) {
-        getView().dismissDeepLookingCommentProgress();
+        callView(IPhotoAllCommentView::dismissDeepLookingCommentProgress);
 
         mComments.addAll(comments);
 

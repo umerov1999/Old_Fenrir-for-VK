@@ -67,7 +67,7 @@ public class LogsFragement extends BaseMvpFragment<LogsPresenter, ILogsView>
         ((AppCompatActivity) requireActivity()).setSupportActionBar(root.findViewById(R.id.toolbar));
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(LogsPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         RecyclerView recyclerView = root.findViewById(R.id.events_recycler_view);
@@ -163,7 +163,7 @@ public class LogsFragement extends BaseMvpFragment<LogsPresenter, ILogsView>
 
     @Override
     public void onOptionClick(LogEventType entry) {
-        getPresenter().fireTypeClick(entry);
+        callPresenter(p -> p.fireTypeClick(entry));
     }
 
     @Override
@@ -175,7 +175,7 @@ public class LogsFragement extends BaseMvpFragment<LogsPresenter, ILogsView>
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.delete_menu) {
-            getPresenter().fireClear();
+            callPresenter(LogsPresenter::fireClear);
             return true;
         }
 

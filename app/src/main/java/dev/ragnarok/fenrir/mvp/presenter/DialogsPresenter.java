@@ -158,7 +158,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
             return;
         }
         PersistentLogger.logThrowable("Dialogs issues", cause);
-        showError(getView(), cause);
+        callView(v -> showError(v, cause));
     }
 
     private void setNetLoadingNow(boolean netLoadingNow) {
@@ -211,10 +211,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
 
         int startSize = dialogs.size();
         dialogs.addAll(data);
-
-        if (isGuiReady()) {
-            getView().notifyDataAdded(startSize, data.size());
-        }
+        callView(v -> v.notifyDataAdded(startSize, data.size()));
     }
 
     private void onDialogRemovedSuccessfully(int accountId, int peeId) {
@@ -227,14 +224,12 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
 
         appendDisposable(messagesInteractor.deleteDialog(accountId, peeId)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(() -> onDialogRemovedSuccessfully(accountId, peeId), t -> showError(getView(), t)));
+                .subscribe(() -> onDialogRemovedSuccessfully(accountId, peeId), t -> callView(v -> showError(v, t))));
     }
 
     private void resolveRefreshingView() {
         // on resume only !!!
-        if (isGuiResumed()) {
-            getView().showRefreshing(cacheNowLoading || netLoadingNow);
-        }
+        callResumedView(v -> v.showRefreshing(cacheNowLoading || netLoadingNow));
     }
 
     private void loadCachedThenActualData() {
@@ -303,8 +298,8 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
             if (Utils.needReloadStickers(getAccountId())) {
                 receiveStickers();
             }
-            if (isGuiReady() && Utils.needReloadDialogs(getAccountId())) {
-                getView().askToReload();
+            if (Utils.needReloadDialogs(getAccountId())) {
+                callView(IDialogsView::askToReload);
             }
         } else {
             requestAtLast();
@@ -398,9 +393,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
     }
 
     private void safeNotifyDataSetChanged() {
-        if (isGuiReady()) {
-            getView().notifyDataSetChanged();
-        }
+        callView(IDialogsView::notifyDataSetChanged);
     }
 
     @Override
@@ -418,7 +411,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
     }
 
     private void checkLongpoll() {
-        if (isGuiResumed() && getAccountId() != ISettings.IAccountsSettings.INVALID_ID) {
+        if (getAccountId() != ISettings.IAccountsSettings.INVALID_ID) {
             longpollManager.keepAlive(dialogsOwnerId);
         }
     }
@@ -435,12 +428,12 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
 
     public void fireSearchClick() {
         AssertUtils.assertPositive(dialogsOwnerId);
-        getView().goToSearch(getAccountId());
+        callView(v -> v.goToSearch(getAccountId()));
     }
 
     public void fireImportantClick() {
         AssertUtils.assertPositive(dialogsOwnerId);
-        getView().goToImportant(getAccountId());
+        callView(v -> v.goToImportant(getAccountId()));
     }
 
     public void fireDialogClick(Dialog dialog) {
@@ -448,16 +441,16 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
     }
 
     private void openChat(Dialog dialog) {
-        getView().goToChat(getAccountId(),
+        callView(v -> v.goToChat(getAccountId(),
                 dialogsOwnerId,
                 dialog.getPeerId(),
                 dialog.getDisplayTitle(getApplicationContext()),
-                dialog.getImageUrl());
+                dialog.getImageUrl()));
     }
 
     public void fireDialogAvatarClick(Dialog dialog) {
         if (Peer.isUser(dialog.getPeerId()) || Peer.isGroup(dialog.getPeerId())) {
-            getView().goToOwnerWall(getAccountId(), Peer.toOwnerId(dialog.getPeerId()), dialog.getInterlocutor());
+            callView(v -> v.goToOwnerWall(getAccountId(), Peer.toOwnerId(dialog.getPeerId()), dialog.getInterlocutor()));
         } else {
             openChat(dialog);
         }
@@ -487,7 +480,7 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
 
         appendDisposable(messagesInteractor.createGroupChat(accountId, Utils.idsListOf(users), targetTitle)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(chatid -> onGroupChatCreated(chatid, targetTitle), t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(chatid -> onGroupChatCreated(chatid, targetTitle), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     private void onGroupChatCreated(int chatId, String title) {
@@ -504,9 +497,9 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
         if (users.size() == 1) {
             User user = users.get(0);
             // Post?
-            getView().goToChat(getAccountId(), dialogsOwnerId, Peer.fromUserId(user.getId()), user.getFullName(), user.getMaxSquareAvatar());
+            callView(v -> v.goToChat(getAccountId(), dialogsOwnerId, Peer.fromUserId(user.getId()), user.getFullName(), user.getMaxSquareAvatar()));
         } else if (users.size() > 1) {
-            getView().showEnterNewGroupChatTitle(users);
+            callView(v -> v.showEnterNewGroupChatTitle(users));
         }
     }
 
@@ -523,18 +516,16 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
                 .createChatShortcutRx(app, dialog.getImageUrl(), getAccountId(),
                         dialog.getPeerId(), dialog.getDisplayTitle(app))
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(this::onShortcutCreated, throwable -> safeShowError(getView(), throwable.getMessage())));
+                .subscribe(this::onShortcutCreated, throwable -> callView(v -> v.showError(throwable.getMessage()))));
     }
 
     private void onShortcutCreated() {
-        if (isGuiReady()) {
-            getView().showSnackbar(R.string.success, true);
-        }
+        callView(v -> v.showSnackbar(R.string.success, true));
     }
 
     public void fireNotificationsSettingsClick(Dialog dialog) {
         AssertUtils.assertPositive(dialogsOwnerId);
-        getView().showNotificationSettings(getAccountId(), dialog.getPeerId());
+        callView(v -> v.showNotificationSettings(getAccountId(), dialog.getPeerId()));
     }
 
     @Override
@@ -564,18 +555,18 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
         appendDisposable(messagesInteractor.pinUnPinConversation(getAccountId(), dialog.getPeerId(), false)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
                 .subscribe(() -> {
-                    safeShowToast(getView(), R.string.success, false);
+                    callView(v -> v.showToast(R.string.success, false));
                     fireRefresh();
-                }, throwable -> safeShowError(getView(), throwable.getMessage())));
+                }, throwable -> callView(v -> v.showError(throwable.getMessage()))));
     }
 
     public void firePin(Dialog dialog) {
         appendDisposable(messagesInteractor.pinUnPinConversation(getAccountId(), dialog.getPeerId(), true)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
                 .subscribe(() -> {
-                    safeShowToast(getView(), R.string.success, false);
+                    callView(v -> v.showToast(R.string.success, false));
                     fireRefresh();
-                }, throwable -> safeShowError(getView(), throwable.getMessage())));
+                }, throwable -> callView(v -> v.showError(throwable.getMessage()))));
     }
 
     public void fireAddToLauncherShortcuts(Dialog dialog) {
@@ -589,17 +580,17 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
 
         appendDisposable(completable
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(() -> safeShowToast(getView(), R.string.success, false), Analytics::logUnexpectedError));
+                .subscribe(() -> callView(v -> v.showToast(R.string.success, false)), Analytics::logUnexpectedError));
     }
 
     public void fireRead(Dialog dialog) {
         appendDisposable(messagesInteractor.markAsRead(getAccountId(), dialog.getPeerId(), dialog.getLastMessageId())
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
                 .subscribe(() -> {
-                    safeShowToast(getView(), R.string.success, false);
+                    callView(v -> v.showToast(R.string.success, false));
                     dialog.setInRead(dialog.getLastMessageId());
-                    getView().notifyDataSetChanged();
-                }, throwable -> safeShowError(getView(), throwable.getMessage())));
+                    callView(IDialogsView::notifyDataSetChanged);
+                }, throwable -> callView(v -> v.showError(throwable.getMessage()))));
     }
 
     public void fireContextViewCreated(IDialogsView.IContextView contextView, Dialog dialog) {

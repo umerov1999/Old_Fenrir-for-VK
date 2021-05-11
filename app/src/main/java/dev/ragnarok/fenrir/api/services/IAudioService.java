@@ -90,7 +90,8 @@ public interface IAudioService {
     @POST("audio.add")
     Single<BaseResponse<Integer>> add(@Field("audio_id") int audioId,
                                       @Field("owner_id") int ownerId,
-                                      @Field("group_id") Integer groupId);
+                                      @Field("group_id") Integer groupId,
+                                      @Field("access_key") String accessKey);
 
     /**
      * Returns a list of audio files of a user or community.

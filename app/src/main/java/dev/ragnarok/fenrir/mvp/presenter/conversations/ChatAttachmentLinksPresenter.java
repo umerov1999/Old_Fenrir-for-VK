@@ -57,9 +57,7 @@ public class ChatAttachmentLinksPresenter extends BaseChatAttachmentsPresenter<L
 
     @OnGuiCreated
     private void resolveToolbar() {
-        if (isGuiReady()) {
-            getView().setToolbarTitle(getString(R.string.attachments_in_chat));
-            getView().setToolbarSubtitle(getString(R.string.links_count, safeCountOf(data)));
-        }
+        callView(v -> v.setToolbarTitle(getString(R.string.attachments_in_chat)));
+        callView(v -> v.setToolbarSubtitle(getString(R.string.links_count, safeCountOf(data))));
     }
 }

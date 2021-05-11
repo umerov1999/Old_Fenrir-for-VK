@@ -74,14 +74,14 @@ public class TopicsFragment extends BaseMvpFragment<TopicsPresenter, ITopicsView
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(TopicsPresenter::fireScrollToEnd);
             }
         });
 
         mAdapter = new TopicsAdapter(requireActivity(), Collections.emptyList(), this);
 
         View footer = inflater.inflate(R.layout.footer_load_more, recyclerView, false);
-        helper = LoadMoreFooterHelper.createFrom(footer, () -> getPresenter().fireLoadMoreClick());
+        helper = LoadMoreFooterHelper.createFrom(footer, () -> callPresenter(TopicsPresenter::fireLoadMoreClick));
         mAdapter.addFooter(footer);
 
         recyclerView.setAdapter(mAdapter);
@@ -91,7 +91,7 @@ public class TopicsFragment extends BaseMvpFragment<TopicsPresenter, ITopicsView
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         fabCreate = root.findViewById(R.id.fragment_topics_create);
-        fabCreate.setOnClickListener(view -> getPresenter().fireButtonCreateClick());
+        fabCreate.setOnClickListener(view -> callPresenter(TopicsPresenter::fireButtonCreateClick));
         return root;
     }
 
@@ -113,7 +113,7 @@ public class TopicsFragment extends BaseMvpFragment<TopicsPresenter, ITopicsView
 
     @Override
     public void onRefresh() {
-        getPresenter().fireRefresh();
+        callPresenter(TopicsPresenter::fireRefresh);
     }
 
     @Override
@@ -182,6 +182,6 @@ public class TopicsFragment extends BaseMvpFragment<TopicsPresenter, ITopicsView
 
     @Override
     public void onTopicClick(@NonNull Topic topic) {
-        getPresenter().fireTopicClick(topic);
+        callPresenter(p -> p.fireTopicClick(topic));
     }
 }

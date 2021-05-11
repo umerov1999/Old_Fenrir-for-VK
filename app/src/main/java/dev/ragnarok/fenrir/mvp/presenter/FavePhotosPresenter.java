@@ -42,9 +42,7 @@ public class FavePhotosPresenter extends AccountDependencyPresenter<IFavePhotosV
     }
 
     private void resolveRefreshingView() {
-        if (isGuiReady()) {
-            getView().showRefreshing(requestNow);
-        }
+        callView(v -> v.showRefreshing(requestNow));
     }
 
     @Override
@@ -70,7 +68,7 @@ public class FavePhotosPresenter extends AccountDependencyPresenter<IFavePhotosV
 
     private void onCacheGetError(Throwable t) {
         cacheLoadingNow = false;
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onCachedDataReceived(List<Photo> photos) {
@@ -105,7 +103,7 @@ public class FavePhotosPresenter extends AccountDependencyPresenter<IFavePhotosV
 
     private void onActualDataGetError(Throwable t) {
         setRequestNow(false);
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
     }
 
     private void onActualDataReceived(int offset, List<Photo> photos) {
@@ -154,7 +152,7 @@ public class FavePhotosPresenter extends AccountDependencyPresenter<IFavePhotosV
 
     @SuppressWarnings("unused")
     public void firePhotoClick(int position, Photo photo) {
-        getView().goToGallery(getAccountId(), mPhotos, position);
+        callView(v -> v.goToGallery(getAccountId(), mPhotos, position));
     }
 
     public void fireScrollToEnd() {

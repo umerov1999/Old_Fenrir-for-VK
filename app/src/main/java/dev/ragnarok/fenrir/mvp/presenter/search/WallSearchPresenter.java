@@ -119,6 +119,6 @@ public class WallSearchPresenter extends AbsSearchPresenter<IWallSearchView, Wal
 
         appendDisposable(walls.like(accountId, post.getOwnerId(), post.getVkid(), !post.isUserLikes())
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(RxUtils.ignore(), t -> showError(getView(), t)));
+                .subscribe(RxUtils.ignore(), t -> callView(v -> showError(v, t))));
     }
 }

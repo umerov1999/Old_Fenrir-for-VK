@@ -1019,9 +1019,12 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
 
     @SuppressLint("ShowToast")
     override fun showSnackbar(@StringRes res: Int, isLong: Boolean) {
-        val view = super.getView()
         if (Objects.nonNull(view)) {
-            Snackbar.make(view!!, res, if (isLong) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT)
+            Snackbar.make(
+                requireView(),
+                res,
+                if (isLong) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT
+            )
                 .setAnchorView(InputView).show()
         }
     }

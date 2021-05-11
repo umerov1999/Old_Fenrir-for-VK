@@ -59,7 +59,7 @@ public class ShortedLinksPresenter extends AccountDependencyPresenter<IShortedLi
 
     private void onActualDataGetError(Throwable t) {
         actualDataLoading = false;
-        showError(getView(), getCauseIfRuntime(t));
+        callView(v -> showError(v, getCauseIfRuntime(t)));
 
         resolveRefreshingView();
     }
@@ -90,9 +90,7 @@ public class ShortedLinksPresenter extends AccountDependencyPresenter<IShortedLi
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().showRefreshing(actualDataLoading);
-        }
+        callResumedView(v -> v.showRefreshing(actualDataLoading));
     }
 
     @Override

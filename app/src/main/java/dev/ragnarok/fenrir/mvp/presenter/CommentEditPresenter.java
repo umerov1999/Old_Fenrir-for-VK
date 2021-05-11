@@ -21,6 +21,7 @@ import dev.ragnarok.fenrir.model.LocalPhoto;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.ICommentEditView;
+import dev.ragnarok.fenrir.mvp.view.IProgressView;
 import dev.ragnarok.fenrir.upload.Upload;
 import dev.ragnarok.fenrir.upload.UploadDestination;
 import dev.ragnarok.fenrir.upload.UploadIntent;
@@ -137,9 +138,7 @@ public class CommentEditPresenter extends AbsAttachmentsEditPresenter<ICommentEd
 
     @OnGuiCreated
     private void resolveButtonsAvailability() {
-        if (isGuiReady()) {
-            getView().setSupportedButtons(true, true, true, true, false, false);
-        }
+        callView(v -> v.setSupportedButtons(true, true, true, true, false, false));
     }
 
     private void initialPopulateEntries() {
@@ -154,7 +153,7 @@ public class CommentEditPresenter extends AbsAttachmentsEditPresenter<ICommentEd
 
     public void fireReadyClick() {
         if (hasUploads()) {
-            safeShowError(getView(), R.string.upload_not_resolved_exception_message);
+            callView(v -> v.showError(R.string.upload_not_resolved_exception_message));
             return;
         }
 
@@ -177,7 +176,7 @@ public class CommentEditPresenter extends AbsAttachmentsEditPresenter<ICommentEd
 
     private void onEditError(Throwable t) {
         setEditingNow(false);
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onEditComplete(@Nullable Comment comment) {
@@ -195,12 +194,10 @@ public class CommentEditPresenter extends AbsAttachmentsEditPresenter<ICommentEd
 
     @OnGuiCreated
     private void resolveProgressDialog() {
-        if (isGuiReady()) {
-            if (editingNow) {
-                getView().displayProgressDialog(R.string.please_wait, R.string.saving, false);
-            } else {
-                getView().dismissProgressDialog();
-            }
+        if (editingNow) {
+            callView(v -> v.displayProgressDialog(R.string.please_wait, R.string.saving, false));
+        } else {
+            callView(IProgressView::dismissProgressDialog);
         }
     }
 
@@ -209,13 +206,13 @@ public class CommentEditPresenter extends AbsAttachmentsEditPresenter<ICommentEd
             return true;
         }
 
-        getView().showConfirmWithoutSavingDialog();
+        callView(ICommentEditView::showConfirmWithoutSavingDialog);
         return false;
     }
 
     public void fireSavingCancelClick() {
         uploadManager.cancelAll(getAccountId(), destination);
         canGoBack = true;
-        getView().goBack();
+        callView(ICommentEditView::goBack);
     }
 }

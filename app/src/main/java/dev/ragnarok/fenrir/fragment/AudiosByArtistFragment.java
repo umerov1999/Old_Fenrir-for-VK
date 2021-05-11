@@ -41,6 +41,7 @@ import dev.ragnarok.fenrir.listener.PicassoPauseOnScrollListener;
 import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.AudiosByArtistPresenter;
+import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IAudiosByArtistView;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
@@ -73,7 +74,7 @@ public class AudiosByArtistFragment extends BaseMvpFragment<AudiosByArtistPresen
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
             viewHolder.itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             mAudioRecyclerAdapter.notifyItemChanged(viewHolder.getBindingAdapterPosition());
-            getPresenter().playAudio(requireActivity(), mAudioRecyclerAdapter.getItemRawPosition(viewHolder.getBindingAdapterPosition()));
+            callPresenter(p -> p.playAudio(requireActivity(), mAudioRecyclerAdapter.getItemRawPosition(viewHolder.getBindingAdapterPosition())));
         }
 
         @Override
@@ -109,7 +110,7 @@ public class AudiosByArtistFragment extends BaseMvpFragment<AudiosByArtistPresen
         ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(AudiosByArtistPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
@@ -118,7 +119,7 @@ public class AudiosByArtistFragment extends BaseMvpFragment<AudiosByArtistPresen
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(AudiosByArtistPresenter::fireScrollToEnd);
             }
         });
 
@@ -135,7 +136,7 @@ public class AudiosByArtistFragment extends BaseMvpFragment<AudiosByArtistPresen
             Goto.setImageResource(isSaveMode ? R.drawable.check : R.drawable.audio_player);
             save_mode.setImageResource(isSaveMode ? R.drawable.ic_dismiss : R.drawable.save);
             mAudioRecyclerAdapter.toggleSelectMode(isSaveMode);
-            getPresenter().fireUpdateSelectMode();
+            callPresenter(AudiosByArtistPresenter::fireUpdateSelectMode);
         });
         Goto.setImageResource(R.drawable.audio_player);
         save_mode.setImageResource(R.drawable.save);
@@ -149,22 +150,22 @@ public class AudiosByArtistFragment extends BaseMvpFragment<AudiosByArtistPresen
                     CustomToast.CreateCustomToast(requireActivity()).showToastError(R.string.null_audio);
                 }
             } else {
-                getPresenter().fireSelectAll();
+                callPresenter(AudiosByArtistPresenter::fireSelectAll);
             }
             return true;
         });
         Goto.setOnClickListener(v -> {
             if (isSaveMode) {
-                List<Audio> tracks = getPresenter().getSelected(true);
+                List<Audio> tracks = callPresenter(p -> p.getSelected(true), new ArrayList<>());
                 isSaveMode = false;
                 Goto.setImageResource(R.drawable.audio_player);
                 save_mode.setImageResource(R.drawable.save);
                 mAudioRecyclerAdapter.toggleSelectMode(isSaveMode);
-                getPresenter().fireUpdateSelectMode();
+                callPresenter(AudiosByArtistPresenter::fireUpdateSelectMode);
 
                 if (!Utils.isEmpty(tracks)) {
                     DownloadWorkUtils.CheckDirectory(Settings.get().other().getMusicDir());
-                    int account_id = getPresenter().getAccountId();
+                    int account_id = callPresenter(AccountDependencyPresenter::getAccountId, Settings.get().accounts().getCurrent());
                     WorkContinuation object = WorkManager.getInstance(requireActivity()).beginWith(DownloadWorkUtils.makeDownloadRequestAudio(tracks.get(0), account_id));
                     if (tracks.size() > 1) {
                         List<OneTimeWorkRequest> Requests = new ArrayList<>(tracks.size() - 1);
@@ -183,7 +184,7 @@ public class AudiosByArtistFragment extends BaseMvpFragment<AudiosByArtistPresen
             } else {
                 Audio curr = MusicUtils.getCurrentAudio();
                 if (curr != null) {
-                    int index = getPresenter().getAudioPos(curr);
+                    int index = callPresenter(p -> p.getAudioPos(curr), -1);
                     if (index >= 0) {
                         recyclerView.scrollToPosition(index + mAudioRecyclerAdapter.getHeadersCount());
                     } else
@@ -192,12 +193,12 @@ public class AudiosByArtistFragment extends BaseMvpFragment<AudiosByArtistPresen
                     CustomToast.CreateCustomToast(requireActivity()).showToastError(R.string.null_audio);
             }
         });
-        mAudioRecyclerAdapter = new AudioRecyclerAdapter(requireActivity(), Collections.emptyList(), getPresenter().isMyAudio(), false, 0, null);
+        mAudioRecyclerAdapter = new AudioRecyclerAdapter(requireActivity(), Collections.emptyList(), callPresenter(AudiosByArtistPresenter::isMyAudio, false), false, 0, null);
 
         mAudioRecyclerAdapter.setClickListener(new AudioRecyclerAdapter.ClickListener() {
             @Override
             public void onClick(int position, int catalog, Audio audio) {
-                getPresenter().playAudio(requireActivity(), position);
+                callPresenter(p -> p.playAudio(requireActivity(), position));
             }
 
             @Override

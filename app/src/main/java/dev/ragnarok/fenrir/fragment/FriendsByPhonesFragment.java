@@ -63,7 +63,7 @@ public class FriendsByPhonesFragment extends BaseMvpFragment<FriendsByPhonesPres
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(FriendsByPhonesPresenter::fireRefresh));
 
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
@@ -144,7 +144,7 @@ public class FriendsByPhonesFragment extends BaseMvpFragment<FriendsByPhonesPres
 
     @Override
     public void onOwnerClick(Owner owner) {
-        getPresenter().onUserOwnerClicked(owner);
+        callPresenter(p -> p.onUserOwnerClicked(owner));
     }
 
     @Override

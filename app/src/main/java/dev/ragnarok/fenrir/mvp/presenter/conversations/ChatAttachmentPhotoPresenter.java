@@ -62,10 +62,8 @@ public class ChatAttachmentPhotoPresenter extends BaseChatAttachmentsPresenter<P
 
     @OnGuiCreated
     private void resolveToolbar() {
-        if (isGuiReady()) {
-            getView().setToolbarTitle(getString(R.string.attachments_in_chat));
-            getView().setToolbarSubtitle(getString(R.string.photos_count, safeCountOf(data)));
-        }
+        callView(v -> v.setToolbarTitle(getString(R.string.attachments_in_chat)));
+        callView(v -> v.setToolbarSubtitle(getString(R.string.photos_count, safeCountOf(data))));
     }
 
     @Override

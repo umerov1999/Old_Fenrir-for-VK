@@ -71,14 +71,14 @@ public class GroupChatsFragment extends BaseMvpFragment<GroupChatsPresenter, IGr
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(GroupChatsPresenter::fireScrollToEnd);
             }
         });
 
         mAdapter = new GroupChatsAdapter(requireActivity(), Collections.emptyList(), this);
 
         View footer = inflater.inflate(R.layout.footer_load_more, recyclerView, false);
-        helper = LoadMoreFooterHelper.createFrom(footer, () -> getPresenter().fireLoadMoreClick());
+        helper = LoadMoreFooterHelper.createFrom(footer, () -> callPresenter(GroupChatsPresenter::fireLoadMoreClick));
         mAdapter.addFooter(footer);
 
         recyclerView.setAdapter(mAdapter);
@@ -107,7 +107,7 @@ public class GroupChatsFragment extends BaseMvpFragment<GroupChatsPresenter, IGr
 
     @Override
     public void onRefresh() {
-        getPresenter().fireRefresh();
+        callPresenter(GroupChatsPresenter::fireRefresh);
     }
 
     @Override
@@ -162,6 +162,6 @@ public class GroupChatsFragment extends BaseMvpFragment<GroupChatsPresenter, IGr
 
     @Override
     public void onGroupChatsClick(@NonNull GroupChats chat) {
-        getPresenter().fireGroupChatsClick(chat);
+        callPresenter(p -> p.fireGroupChatsClick(chat));
     }
 }

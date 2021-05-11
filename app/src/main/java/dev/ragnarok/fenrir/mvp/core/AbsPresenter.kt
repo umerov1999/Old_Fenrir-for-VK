@@ -19,13 +19,19 @@ abstract class AbsPresenter<V : IMvpView>(savedInstanceState: Bundle?) : IPresen
      */
     private var viewReference: WeakReference<V> = WeakReference<V>(null)
 
-    var isGuiReady: Boolean = false
+    private var isGuiReady: Boolean = false
+
+    val guiIsReady: Boolean
+        get() = isGuiReady
+
+    val guiIsResumed: Boolean
+        get() = isGuiResumed
 
     var id: Int
 
     var isDestroyed: Boolean = false
 
-    var isGuiResumed: Boolean = false
+    private var isGuiResumed: Boolean = false
 
     val isViewHostAttached: Boolean
         get() = viewReference.get() != null
@@ -140,11 +146,19 @@ abstract class AbsPresenter<V : IMvpView>(savedInstanceState: Bundle?) : IPresen
     }
 
     protected fun callView(action: ViewAction<V>) {
-        if (isGuiReady) {
-            view?.run {
-                action.call(this)
-            }
+        view?.run {
+            action.call(this)
+            //return
         }
+        //Utils.showYellowTopToast(Injection.provideApplicationContext(), "View not attached to presenter!")
+    }
+
+    protected fun callResumedView(action: ViewAction<V>) {
+        resumedView?.run {
+            action.call(this)
+            //return
+        }
+        //Utils.showYellowTopToast(Injection.provideApplicationContext(), "View not resumed!")
     }
 
     companion object {

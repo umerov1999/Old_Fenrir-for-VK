@@ -54,7 +54,7 @@ public class FavePostsFragment extends PlaceSupportMvpFragment<FavePostsPresente
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_fave_posts, container, false);
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(FavePostsPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         mEmpty = root.findViewById(R.id.empty);
@@ -73,7 +73,7 @@ public class FavePostsFragment extends PlaceSupportMvpFragment<FavePostsPresente
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(FavePostsPresenter::fireScrollToEnd);
             }
         });
 
@@ -90,7 +90,7 @@ public class FavePostsFragment extends PlaceSupportMvpFragment<FavePostsPresente
 
     @Override
     public void onPollOpen(@NonNull Poll poll) {
-        getPresenter().firePollClick(poll);
+        callPresenter(p -> p.firePollClick(poll));
     }
 
     @Override
@@ -100,37 +100,37 @@ public class FavePostsFragment extends PlaceSupportMvpFragment<FavePostsPresente
 
     @Override
     public void onShareClick(Post post) {
-        getPresenter().fireShareClick(post);
+        callPresenter(p -> p.fireShareClick(post));
     }
 
     @Override
     public void onPostClick(Post post) {
-        getPresenter().firePostClick(post);
+        callPresenter(p -> p.firePostClick(post));
     }
 
     @Override
     public void onCommentsClick(Post post) {
-        getPresenter().fireCommentsClick(post);
+        callPresenter(p -> p.fireCommentsClick(post));
     }
 
     @Override
     public void onLikeLongClick(Post post) {
-        getPresenter().fireCopiesLikesClick("post", post.getOwnerId(), post.getVkid(), ILikesInteractor.FILTER_LIKES);
+        callPresenter(p -> p.fireCopiesLikesClick("post", post.getOwnerId(), post.getVkid(), ILikesInteractor.FILTER_LIKES));
     }
 
     @Override
     public void onShareLongClick(Post post) {
-        getPresenter().fireCopiesLikesClick("post", post.getOwnerId(), post.getVkid(), ILikesInteractor.FILTER_COPIES);
+        callPresenter(p -> p.fireCopiesLikesClick("post", post.getOwnerId(), post.getVkid(), ILikesInteractor.FILTER_COPIES));
     }
 
     @Override
     public void onLikeClick(Post post) {
-        getPresenter().fireLikeClick(post);
+        callPresenter(p -> p.fireLikeClick(post));
     }
 
     @Override
     public void onDelete(int index, Post post) {
-        getPresenter().firePostDelete(index, post);
+        callPresenter(p -> p.firePostDelete(index, post));
     }
 
     @Override

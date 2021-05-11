@@ -68,7 +68,7 @@ public class ProductAlbumsFragment extends BaseMvpFragment<ProductAlbumsPresente
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(ProductAlbumsPresenter::fireScrollToEnd);
             }
         });
 
@@ -86,7 +86,7 @@ public class ProductAlbumsFragment extends BaseMvpFragment<ProductAlbumsPresente
 
     @Override
     public void onRefresh() {
-        getPresenter().fireRefresh();
+        callPresenter(ProductAlbumsPresenter::fireRefresh);
     }
 
     @Override
@@ -155,6 +155,6 @@ public class ProductAlbumsFragment extends BaseMvpFragment<ProductAlbumsPresente
 
     @Override
     public void onOpenClick(int index, MarketAlbum market_album) {
-        getPresenter().fireAlbumOpen(market_album);
+        callPresenter(p -> p.fireAlbumOpen(market_album));
     }
 }

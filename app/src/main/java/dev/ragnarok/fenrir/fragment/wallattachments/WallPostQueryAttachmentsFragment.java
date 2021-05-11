@@ -68,13 +68,13 @@ public class WallPostQueryAttachmentsFragment extends PlaceSupportMvpFragment<Wa
         mySearchView.setOnQueryTextListener(new MySearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                getPresenter().fireSearchRequestChanged(query, false);
+                callPresenter(p -> p.fireSearchRequestChanged(query, false));
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                getPresenter().fireSearchRequestChanged(newText, true);
+                callPresenter(p -> p.fireSearchRequestChanged(newText, true));
                 return false;
             }
         });
@@ -85,13 +85,13 @@ public class WallPostQueryAttachmentsFragment extends PlaceSupportMvpFragment<Wa
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(WallPostQueryAttachmentsPresenter::fireScrollToEnd);
             }
         });
-        mLoadMore.setOnClickListener(v -> getPresenter().fireScrollToEnd());
+        mLoadMore.setOnClickListener(v -> callPresenter(WallPostQueryAttachmentsPresenter::fireScrollToEnd));
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(WallPostQueryAttachmentsPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         mAdapter = new WallAdapter(requireActivity(), Collections.emptyList(), this, this);
@@ -198,37 +198,37 @@ public class WallPostQueryAttachmentsFragment extends PlaceSupportMvpFragment<Wa
 
     @Override
     public void onShareClick(Post post) {
-        getPresenter().fireShareClick(post);
+        callPresenter(p -> p.fireShareClick(post));
     }
 
     @Override
     public void onPostClick(Post post) {
-        getPresenter().firePostBodyClick(post);
+        callPresenter(p -> p.firePostBodyClick(post));
     }
 
     @Override
     public void onRestoreClick(Post post) {
-        getPresenter().firePostRestoreClick(post);
+        callPresenter(p -> p.firePostRestoreClick(post));
     }
 
     @Override
     public void onCommentsClick(Post post) {
-        getPresenter().fireCommentsClick(post);
+        callPresenter(p -> p.fireCommentsClick(post));
     }
 
     @Override
     public void onLikeLongClick(Post post) {
-        getPresenter().fireLikeLongClick(post);
+        callPresenter(p -> p.fireLikeLongClick(post));
     }
 
     @Override
     public void onShareLongClick(Post post) {
-        getPresenter().fireShareLongClick(post);
+        callPresenter(p -> p.fireShareLongClick(post));
     }
 
     @Override
     public void onLikeClick(Post post) {
-        getPresenter().fireLikeClick(post);
+        callPresenter(p -> p.fireLikeClick(post));
     }
 
     @Override

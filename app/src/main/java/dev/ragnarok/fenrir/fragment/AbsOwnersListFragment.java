@@ -48,7 +48,7 @@ public abstract class AbsOwnersListFragment<P extends SimpleOwnersPresenter<V>, 
 
         mRecyclerView = root.findViewById(R.id.list);
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(SimpleOwnersPresenter::fireRefresh));
 
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
@@ -58,12 +58,12 @@ public abstract class AbsOwnersListFragment<P extends SimpleOwnersPresenter<V>, 
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(SimpleOwnersPresenter::fireScrollToEnd);
             }
         });
 
         mOwnersAdapter = new OwnersAdapter(requireActivity(), Collections.emptyList());
-        mOwnersAdapter.setClickListener(owner -> getPresenter().fireOwnerClick(owner));
+        mOwnersAdapter.setClickListener(owner -> callPresenter(p -> p.fireOwnerClick(owner)));
 
         mRecyclerView.setAdapter(mOwnersAdapter);
         return root;

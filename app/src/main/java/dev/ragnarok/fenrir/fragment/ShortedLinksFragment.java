@@ -80,7 +80,7 @@ public class ShortedLinksFragment extends BaseMvpFragment<ShortedLinksPresenter,
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(ShortedLinksPresenter::fireScrollToEnd);
             }
         });
 
@@ -95,15 +95,15 @@ public class ShortedLinksFragment extends BaseMvpFragment<ShortedLinksPresenter,
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 do_Validate.setEnabled(!Utils.isEmpty(s));
                 do_Short.setEnabled(!Utils.isEmpty(s));
-                getPresenter().fireInputEdit(s);
+                callPresenter(p -> p.fireInputEdit(s));
             }
         });
 
-        do_Short.setOnClickListener(v -> getPresenter().fireShort());
-        do_Validate.setOnClickListener(v -> getPresenter().fireValidate());
+        do_Short.setOnClickListener(v -> callPresenter(ShortedLinksPresenter::fireShort));
+        do_Validate.setOnClickListener(v -> callPresenter(ShortedLinksPresenter::fireValidate));
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(ShortedLinksPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         mAdapter = new ShortedLinksAdapter(Collections.emptyList(), requireActivity());
@@ -220,7 +220,7 @@ public class ShortedLinksFragment extends BaseMvpFragment<ShortedLinksPresenter,
 
     @Override
     public void onCopy(int index, ShortLink link) {
-        ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipboardManager clipboard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("response", link.getShort_url());
         clipboard.setPrimaryClip(clip);
         CustomToast.CreateCustomToast(getContext()).showToast(R.string.copied);
@@ -228,6 +228,6 @@ public class ShortedLinksFragment extends BaseMvpFragment<ShortedLinksPresenter,
 
     @Override
     public void onDelete(int index, ShortLink link) {
-        getPresenter().fireDelete(index, link);
+        callPresenter(p -> p.fireDelete(index, link));
     }
 }

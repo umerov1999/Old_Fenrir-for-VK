@@ -190,7 +190,7 @@ class UserDetailsFragment : BaseMvpFragment<UserDetailsPresenter, IUserDetailsVi
                 LinkHelper.openLinkInBrowser(requireActivity(), item.urlPrefix + "/" + subtitle)
             }
         } else {
-            presenter!!.fireItemClick(item)
+            presenter?.fireItemClick(item)
         }
     }
 

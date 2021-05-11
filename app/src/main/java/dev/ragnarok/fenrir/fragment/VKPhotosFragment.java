@@ -72,18 +72,10 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
             });
     private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-            () -> {
-                if (isPresenterPrepared()) {
-                    getPresenter().fireReadStoragePermissionChanged();
-                }
-            });
+            () -> callPresenter(VkPhotosPresenter::fireReadStoragePermissionChanged));
     private final AppPerms.doRequestPermissions requestReadPermissionForLoadDownload = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-            () -> {
-                if (isPresenterPrepared()) {
-                    getPresenter().loadDownload();
-                }
-            });
+            () -> callPresenter(VkPhotosPresenter::loadDownload));
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private BigVkPhotosAdapter mAdapter;
     private TextView mEmptyText;
@@ -125,7 +117,7 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
         RecyclerView.LayoutManager manager = new GridLayoutManager(requireActivity(), columnCount);
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(VkPhotosPresenter::fireRefresh));
 
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
@@ -135,7 +127,7 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
         mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(VkPhotosPresenter::fireScrollToEnd);
             }
         });
 
@@ -171,9 +163,9 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
 
     private void onFabClicked() {
         if (isSelectionMode()) {
-            getPresenter().fireSelectionCommitClick();
+            callPresenter(VkPhotosPresenter::fireSelectionCommitClick);
         } else {
-            getPresenter().fireAddPhotosClick();
+            callPresenter(VkPhotosPresenter::fireAddPhotosClick);
         }
     }
 
@@ -186,7 +178,7 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
     }
 
     private void doUploadPhotosToAlbum(@NonNull List<LocalPhoto> photos, int size) {
-        getPresenter().firePhotosForUploadSelected(photos, size);
+        callPresenter(p -> p.firePhotosForUploadSelected(photos, size));
     }
 
     @Override
@@ -209,16 +201,16 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
     @Override
     public void onPhotoClick(BigVkPhotosAdapter.PhotoViewHolder holder, SelectablePhotoWrapper wrapper) {
         if (isSelectionMode()) {
-            getPresenter().firePhotoSelectionChanged(wrapper);
+            callPresenter(p -> p.firePhotoSelectionChanged(wrapper));
             mAdapter.updatePhotoHoldersSelectionAndIndexes();
         } else {
-            getPresenter().firePhotoClick(wrapper);
+            callPresenter(p -> p.firePhotoClick(wrapper));
         }
     }
 
     @Override
     public void onUploadRemoveClicked(Upload upload) {
-        getPresenter().fireUploadRemoveClick(upload);
+        callPresenter(p -> p.fireUploadRemoveClick(upload));
     }
 
     @Override
@@ -350,9 +342,7 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.action_toggle_rev).setTitle(Settings.get().other().isInvertPhotoRev() ? R.string.sort_new_to_old : R.string.sort_old_to_new);
-        if (isPresenterPrepared()) {
-            menu.findItem(R.id.action_show_date).setVisible(!getPresenter().getIsShowBDate());
-        }
+        menu.findItem(R.id.action_show_date).setVisible(!callPresenter(VkPhotosPresenter::getIsShowBDate, false));
     }
 
     @Override
@@ -367,13 +357,13 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
                 requestReadPermissionForLoadDownload.launch();
                 return true;
             }
-            getPresenter().loadDownload();
+            callPresenter(VkPhotosPresenter::loadDownload);
             return true;
         } else if (item.getItemId() == R.id.action_show_date) {
-            getPresenter().doToggleDate();
+            callPresenter(VkPhotosPresenter::doToggleDate);
             requireActivity().invalidateOptionsMenu();
         } else if (item.getItemId() == R.id.action_toggle_rev) {
-            getPresenter().togglePhotoInvert();
+            callPresenter(VkPhotosPresenter::togglePhotoInvert);
             requireActivity().invalidateOptionsMenu();
         }
 

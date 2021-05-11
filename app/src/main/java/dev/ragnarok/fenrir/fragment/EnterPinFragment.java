@@ -151,16 +151,16 @@ public class EnterPinFragment extends BaseMvpFragment<EnterPinPresenter, IEnterP
 
     @Override
     public void onButtonClick(int number) {
-        getPresenter().onNumberClicked(number);
+        callPresenter(p -> p.onNumberClicked(number));
     }
 
     @Override
     public void onBackspaceClick() {
-        getPresenter().onBackspaceClicked();
+        callPresenter(EnterPinPresenter::onBackspaceClicked);
     }
 
     @Override
     public void onFingerPrintClick() {
-        getPresenter().onFingerprintClicked();
+        callPresenter(EnterPinPresenter::onFingerprintClicked);
     }
 }

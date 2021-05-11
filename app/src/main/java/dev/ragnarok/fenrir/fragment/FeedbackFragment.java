@@ -22,7 +22,6 @@ import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
-import dev.ragnarok.fenrir.activity.MainActivity;
 import dev.ragnarok.fenrir.adapter.feedback.FeedbackAdapter;
 import dev.ragnarok.fenrir.dialog.FeedbackLinkDialog;
 import dev.ragnarok.fenrir.fragment.base.PlaceSupportMvpFragment;
@@ -86,12 +85,12 @@ public class FeedbackFragment extends PlaceSupportMvpFragment<FeedbackPresenter,
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToLast();
+                callPresenter(FeedbackPresenter::fireScrollToLast);
             }
         });
 
         View footerView = inflater.inflate(R.layout.footer_load_more, recyclerView, false);
-        mLoadMoreHelper = LoadMoreFooterHelper.createFrom(footerView, getPresenter()::fireLoadMoreClick);
+        mLoadMoreHelper = LoadMoreFooterHelper.createFrom(footerView, () -> callPresenter(FeedbackPresenter::fireLoadMoreClick));
         mLoadMoreHelper.switchToState(LoadMoreState.INVISIBLE);
 
         mAdapter = new FeedbackAdapter(requireActivity(), Collections.emptyList(), this);
@@ -194,11 +193,11 @@ public class FeedbackFragment extends PlaceSupportMvpFragment<FeedbackPresenter,
 
     @Override
     public void onNotificationClick(Feedback notification) {
-        getPresenter().fireItemClick(notification);
+        callPresenter(p -> p.fireItemClick(notification));
     }
 
     @Override
     public void onRefresh() {
-        getPresenter().fireRefresh();
+        callPresenter(FeedbackPresenter::fireRefresh);
     }
 }

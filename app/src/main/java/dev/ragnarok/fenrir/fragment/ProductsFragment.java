@@ -70,7 +70,7 @@ public class ProductsFragment extends BaseMvpFragment<ProductsPresenter, IProduc
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(ProductsPresenter::fireScrollToEnd);
             }
         });
 
@@ -88,7 +88,7 @@ public class ProductsFragment extends BaseMvpFragment<ProductsPresenter, IProduc
 
     @Override
     public void onRefresh() {
-        getPresenter().fireRefresh();
+        callPresenter(ProductsPresenter::fireRefresh);
     }
 
     @Override
@@ -157,6 +157,6 @@ public class ProductsFragment extends BaseMvpFragment<ProductsPresenter, IProduc
 
     @Override
     public void onOpenClick(int index, Market market) {
-        getPresenter().fireMarketOpen(market);
+        callPresenter(p -> p.fireMarketOpen(market));
     }
 }

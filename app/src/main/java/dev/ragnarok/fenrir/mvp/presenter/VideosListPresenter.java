@@ -166,11 +166,11 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
     private void onUploadResults(Pair<Upload, UploadResult<?>> pair) {
         Video obj = (Video) pair.getSecond().getResult();
         if (obj.getId() == 0)
-            getView().getCustomToast().showToastError(R.string.error);
+            callView(v -> v.getCustomToast().showToastError(R.string.error));
         else {
-            getView().getCustomToast().showToast(R.string.uploaded);
+            callView(v -> v.getCustomToast().showToast(R.string.uploaded));
             if (IVideosListView.ACTION_SELECT.equalsIgnoreCase(action)) {
-                getView().onUploaded(obj);
+                callView(v -> v.onUploaded(obj));
             } else
                 fireRefresh();
         }
@@ -219,15 +219,11 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
 
     @OnGuiCreated
     private void resolveUploadDataVisiblity() {
-        if (isGuiReady()) {
-            getView().setUploadDataVisible(!uploadsData.isEmpty());
-        }
+        callView(v -> v.setUploadDataVisible(!uploadsData.isEmpty()));
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().displayLoading(requestNow);
-        }
+        callResumedView(v -> v.displayLoading(requestNow));
     }
 
     @Override
@@ -243,9 +239,9 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
 
     public void doUpload() {
         if (AppPerms.hasReadStoragePermission(getApplicationContext())) {
-            getView().startSelectUploadFileActivity(getAccountId());
+            callView(v -> v.startSelectUploadFileActivity(getAccountId()));
         } else {
-            getView().requestReadExternalStoragePermission();
+            callView(IVideosListView::requestReadExternalStoragePermission);
         }
     }
 
@@ -255,7 +251,7 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
 
     public void fireReadPermissionResolved() {
         if (AppPerms.hasReadStoragePermission(getApplicationContext())) {
-            getView().startSelectUploadFileActivity(getAccountId());
+            callView(v -> v.startSelectUploadFileActivity(getAccountId()));
         }
     }
 
@@ -278,7 +274,7 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
 
     private void onListGetError(Throwable throwable) {
         setRequestNow(false);
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
     }
 
     private void onRequestResposnse(List<Video> videos, IntNextFrom startFrom, IntNextFrom nextFrom) {
@@ -373,9 +369,9 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
 
     public void fireVideoClick(Video video) {
         if (IVideosListView.ACTION_SELECT.equalsIgnoreCase(action)) {
-            getView().returnSelectionToParent(video);
+            callView(v -> v.returnSelectionToParent(video));
         } else {
-            getView().showVideoPreview(getAccountId(), video);
+            callView(v -> v.showVideoPreview(getAccountId(), video));
         }
     }
 
@@ -395,7 +391,7 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
                             .subscribe(() -> {
                                 data.get(position).setTitle(title).setDescription(description);
                                 callView(v -> v.notifyItemChanged(position));
-                            }, t -> showError(getView(), getCauseIfRuntime(t))));
+                            }, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
                 })
                 .setNegativeButton(R.string.button_cancel, null);
         builder.create().show();
@@ -409,7 +405,7 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
         if (id == R.id.action_add_to_my_videos) {
             netDisposable.add(interactor.addToMy(getAccountId(), getAccountId(), video.getOwnerId(), video.getId())
                     .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                    .subscribe(this::onAddComplete, t -> showError(getView(), getCauseIfRuntime(t))));
+                    .subscribe(this::onAddComplete, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
         } else if (id == R.id.action_edit) {
             fireEditVideo(context, position, video);
         } else if (id == R.id.action_delete_from_my_videos) {
@@ -418,9 +414,9 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
                     .subscribe(() -> {
                         data.remove(position);
                         callView(v -> v.notifyItemRemoved(position));
-                    }, t -> showError(getView(), getCauseIfRuntime(t))));
+                    }, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
         } else if (id == R.id.share_button) {
-            getView().displayShareDialog(getAccountId(), video, getAccountId() != ownerId);
+            callView(v -> v.displayShareDialog(getAccountId(), video, getAccountId() != ownerId));
         }
     }
 

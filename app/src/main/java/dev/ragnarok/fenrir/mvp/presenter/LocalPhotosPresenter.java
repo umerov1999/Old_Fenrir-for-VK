@@ -26,8 +26,6 @@ public class LocalPhotosPresenter extends RxSupportPresenter<ILocalPhotosView> {
     private final LocalImageAlbum mLocalImageAlbum;
     private final int mSelectionCountMax;
 
-    private boolean permissionRequestedOnce;
-
     private List<LocalPhoto> mLocalPhotos;
     private boolean mLoadingNow;
 
@@ -42,7 +40,7 @@ public class LocalPhotosPresenter extends RxSupportPresenter<ILocalPhotosView> {
         if(mLocalImageAlbum == null && !AppPerms.hasReadStoragePermission(getApplicationContext())){
             if(!permissionRequestedOnce){
                 permissionRequestedOnce = true;
-                getView().requestReadExternalStoragePermission();
+                callView(v -> v.requestReadExternalStoragePermission();
             }
         } else {
             loadData();
@@ -91,12 +89,11 @@ public class LocalPhotosPresenter extends RxSupportPresenter<ILocalPhotosView> {
     }
 
     private void resolveEmptyTextVisibility() {
-        if (isGuiReady()) getView().setEmptyTextVisible(Utils.safeIsEmpty(mLocalPhotos));
+        callView(v -> v.setEmptyTextVisible(Utils.safeIsEmpty(mLocalPhotos)));
     }
 
     private void resolveListData() {
-        if (isGuiReady())
-            getView().displayData(mLocalPhotos);
+        callView(v -> v.displayData(mLocalPhotos));
     }
 
     private void changeLoadingState(boolean loading) {
@@ -105,17 +102,15 @@ public class LocalPhotosPresenter extends RxSupportPresenter<ILocalPhotosView> {
     }
 
     private void resolveProgressView() {
-        if (isGuiReady()) {
-            getView().displayProgress(mLoadingNow);
-        }
+        callView(v -> v.displayProgress(mLoadingNow));
     }
 
     public void fireFabClick() {
         ArrayList<LocalPhoto> localPhotos = Utils.getSelected(mLocalPhotos);
         if (!localPhotos.isEmpty()) {
-            getView().returnResultToParent(localPhotos);
+            callView(v -> v.returnResultToParent(localPhotos));
         } else {
-            safeShowError(getView(), R.string.select_attachments);
+            callView(v -> v.showError(R.string.select_attachments));
         }
     }
 
@@ -126,12 +121,12 @@ public class LocalPhotosPresenter extends RxSupportPresenter<ILocalPhotosView> {
         if (mSelectionCountMax == 1 && photo.isSelected()) {
             ArrayList<LocalPhoto> single = new ArrayList<>(1);
             single.add(photo);
-            getView().returnResultToParent(single);
+            callView(v -> v.returnResultToParent(single));
             return;
         }
 
         onSelectPhoto(photo);
-        getView().updateSelectionAndIndexes();
+        callView(ILocalPhotosView::updateSelectionAndIndexes);
     }
 
     private void onSelectPhoto(LocalPhoto selectedPhoto) {
@@ -167,9 +162,7 @@ public class LocalPhotosPresenter extends RxSupportPresenter<ILocalPhotosView> {
     }
 
     private void resolveFabVisibility(boolean visible, boolean anim) {
-        if (isGuiReady()) {
-            getView().setFabVisible(visible, anim);
-        }
+        callView(v -> v.setFabVisible(visible, anim));
     }
 
     public void fireRefresh() {

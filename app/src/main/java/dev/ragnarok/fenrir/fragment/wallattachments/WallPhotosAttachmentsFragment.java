@@ -62,7 +62,7 @@ public class WallPhotosAttachmentsFragment extends PlaceSupportMvpFragment<WallP
         mEmpty = root.findViewById(R.id.empty);
         mLoadMore = root.findViewById(R.id.goto_button);
 
-        int columns = getContext().getResources().getInteger(R.integer.photos_column_count);
+        int columns = getResources().getInteger(R.integer.photos_column_count);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(requireActivity(), columns);
 
         RecyclerView recyclerView = root.findViewById(android.R.id.list);
@@ -71,13 +71,13 @@ public class WallPhotosAttachmentsFragment extends PlaceSupportMvpFragment<WallP
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(WallPhotosAttachmentsPresenter::fireScrollToEnd);
             }
         });
-        mLoadMore.setOnClickListener(v -> getPresenter().fireScrollToEnd());
+        mLoadMore.setOnClickListener(v -> callPresenter(WallPhotosAttachmentsPresenter::fireScrollToEnd));
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(WallPhotosAttachmentsPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         mAdapter = new FavePhotosAdapter(requireActivity(), Collections.emptyList());
@@ -165,7 +165,7 @@ public class WallPhotosAttachmentsFragment extends PlaceSupportMvpFragment<WallP
 
     @Override
     public void onPhotoClicked(int position, Photo photo) {
-        getPresenter().firePhotoClick(position, photo);
+        callPresenter(p -> p.firePhotoClick(position, photo));
     }
 
     @Override

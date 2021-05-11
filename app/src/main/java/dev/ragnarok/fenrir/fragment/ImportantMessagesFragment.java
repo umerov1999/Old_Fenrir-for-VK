@@ -37,6 +37,7 @@ import dev.ragnarok.fenrir.model.LastReadId;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.VoiceMessage;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
+import dev.ragnarok.fenrir.mvp.presenter.AbsMessageListPresenter;
 import dev.ragnarok.fenrir.mvp.presenter.ImportantMessagesPresenter;
 import dev.ragnarok.fenrir.mvp.view.IImportantMessagesView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
@@ -57,7 +58,7 @@ public class ImportantMessagesFragment extends PlaceSupportMvpFragment<Important
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
             viewHolder.itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-            getPresenter().fireRemoveImportant(viewHolder.getBindingAdapterPosition());
+            callPresenter(p -> p.fireRemoveImportant(viewHolder.getBindingAdapterPosition()));
         }
 
         @Override
@@ -82,7 +83,7 @@ public class ImportantMessagesFragment extends PlaceSupportMvpFragment<Important
         ((AppCompatActivity) requireActivity()).setSupportActionBar(root.findViewById(R.id.toolbar));
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(ImportantMessagesPresenter::fireRefresh));
 
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
@@ -92,7 +93,7 @@ public class ImportantMessagesFragment extends PlaceSupportMvpFragment<Important
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(ImportantMessagesPresenter::fireScrollToEnd);
             }
         });
         new ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(recyclerView);
@@ -157,13 +158,13 @@ public class ImportantMessagesFragment extends PlaceSupportMvpFragment<Important
 
     @Override
     public boolean onMessageLongClick(@NonNull Message message, int position) {
-        getPresenter().fireForwardClick();
+        callPresenter(AbsMessageListPresenter::fireForwardClick);
         return true;
     }
 
     @Override
     public void onMessageClicked(@NonNull Message message, int position) {
-        getPresenter().fireMessagesLookup(message);
+        callPresenter(p -> p.fireMessagesLookup(message));
     }
 
     @Override
@@ -249,17 +250,17 @@ public class ImportantMessagesFragment extends PlaceSupportMvpFragment<Important
 
     @Override
     public void onVoiceHolderBinded(int voiceMessageId, int voiceHolderId) {
-        getPresenter().fireVoiceHolderCreated(voiceMessageId, voiceHolderId);
+        callPresenter(p -> p.fireVoiceHolderCreated(voiceMessageId, voiceHolderId));
     }
 
     @Override
     public void onVoicePlayButtonClick(int voiceHolderId, int voiceMessageId, @NonNull VoiceMessage voiceMessage) {
-        getPresenter().fireVoicePlayButtonClick(voiceHolderId, voiceMessageId, voiceMessage);
+        callPresenter(p -> p.fireVoicePlayButtonClick(voiceHolderId, voiceMessageId, voiceMessage));
     }
 
     @Override
     public void onTranscript(String voiceMessageId, int messageId) {
-        getPresenter().fireTranscript(voiceMessageId, messageId);
+        callPresenter(p -> p.fireTranscript(voiceMessageId, messageId));
     }
 
     @Override

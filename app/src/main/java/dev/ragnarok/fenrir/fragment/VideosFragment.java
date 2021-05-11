@@ -77,19 +77,15 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
                     LocalVideo vid = result.getData().getParcelableExtra(Extra.VIDEO);
 
                     if (nonEmpty(file)) {
-                        getPresenter().fireFileForUploadSelected(file);
+                        callPresenter(p -> p.fireFileForUploadSelected(file));
                     } else if (nonNull(vid)) {
-                        getPresenter().fireFileForUploadSelected(vid.getData().toString());
+                        callPresenter(p -> p.fireFileForUploadSelected(vid.getData().toString()));
                     }
                 }
             });
     private final AppPerms.doRequestPermissions requestReadPermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-            () -> {
-                if (isPresenterPrepared()) {
-                    getPresenter().fireReadPermissionResolved();
-                }
-            });
+            () -> callPresenter(VideosListPresenter::fireReadPermissionResolved));
     /**
      * True - если фрагмент находится внутри TabLayout
      */
@@ -261,13 +257,13 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
         mySearchView.setOnQueryTextListener(new MySearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                getPresenter().fireSearchRequestChanged(query);
+                callPresenter(p -> p.fireSearchRequestChanged(query));
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                getPresenter().fireSearchRequestChanged(newText);
+                callPresenter(p -> p.fireSearchRequestChanged(newText));
                 return false;
             }
         });
@@ -275,16 +271,16 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
         FloatingActionButton Add = root.findViewById(R.id.add_button);
 
         if (Add != null) {
-            if (getPresenter().getAccountId() != getPresenter().getOwnerId())
+            if (callPresenter(p -> p.getAccountId() != p.getOwnerId(), true))
                 Add.setVisibility(View.GONE);
             else {
                 Add.setVisibility(View.VISIBLE);
-                Add.setOnClickListener(v -> getPresenter().doUpload());
+                Add.setOnClickListener(v -> callPresenter(VideosListPresenter::doUpload));
             }
         }
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(VideosListPresenter::fireRefresh));
 
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
@@ -300,7 +296,7 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(VideosListPresenter::fireScrollToEnd);
             }
         });
 
@@ -318,12 +314,12 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
 
     @Override
     public void onVideoClick(int position, Video video) {
-        getPresenter().fireVideoClick(video);
+        callPresenter(p -> p.fireVideoClick(video));
     }
 
     @Override
     public boolean onVideoLongClick(int position, Video video) {
-        getPresenter().fireOnVideoLongClick(position, video);
+        callPresenter(p -> p.fireOnVideoLongClick(position, video));
         return true;
     }
 
@@ -389,7 +385,7 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
 
     @Override
     public void onRemoveClick(Upload upload) {
-        getPresenter().fireRemoveClick(upload);
+        callPresenter(p -> p.fireRemoveClick(upload));
     }
 
     @Override
@@ -431,7 +427,7 @@ public class VideosFragment extends BaseMvpFragment<VideosListPresenter, IVideos
             } else if (option.getId() == R.id.album_container) {
                 PlaceFactory.getAlbumsByVideoPlace(accountId, ownerId, video.getOwnerId(), video.getId()).tryOpenWith(requireActivity());
             } else {
-                getPresenter().fireVideoOption(option.getId(), video, position, requireActivity());
+                callPresenter(p -> p.fireVideoOption(option.getId(), video, position, requireActivity()));
             }
         });
     }

@@ -100,10 +100,10 @@ public class MarketViewFragment extends BaseMvpFragment<MarketViewPresenter, IMa
             PicassoInstance.with().cancelRequest(photo);
             photo.setVisibility(View.GONE);
         }
-        share_button.setOnClickListener(v -> getPresenter().fireSendMarket(market));
+        share_button.setOnClickListener(v -> callPresenter(p -> p.fireSendMarket(market)));
         fave_button.setIcon(market.isIs_favorite() ? R.drawable.favorite : R.drawable.star);
-        marketer_button.setOnClickListener(v -> getPresenter().fireWriteToMarketer(market, requireActivity()));
-        fave_button.setOnClickListener(v -> getPresenter().fireFaveClick());
+        marketer_button.setOnClickListener(v -> callPresenter(p -> p.fireWriteToMarketer(market, requireActivity())));
+        fave_button.setOnClickListener(v -> callPresenter(MarketViewPresenter::fireFaveClick));
 
         switch (market.getAvailability()) {
             case 0:

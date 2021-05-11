@@ -26,7 +26,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import dev.ragnarok.fenrir.CheckDonate;
 import dev.ragnarok.fenrir.Constants;
@@ -68,12 +67,12 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     ArrayList<Token> tokens = LoginActivity.extractGroupTokens(result.getData());
-                    getPresenter().fireGroupTokensReceived(tokens);
+                    callPresenter(p -> p.fireGroupTokensReceived(tokens));
                 }
             });
     private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-            () -> getPresenter().fireShowQR(requireActivity()));
+            () -> callPresenter(p -> p.fireShowQR(requireActivity())));
     private GroupHeaderHolder mHeaderHolder;
 
     @Override
@@ -122,7 +121,10 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
                     .into(mHeaderHolder.ivAvatar);
         }
         mHeaderHolder.ivAvatar.setOnClickListener(v -> {
-            Community cmt = Objects.requireNonNull(getPresenter()).getCommunity();
+            Community cmt = callPresenter(GroupWallPresenter::getCommunity, null);
+            if (cmt == null) {
+                return;
+            }
             PlaceFactory.getSingleURLPhotoPlace(cmt.getOriginalAvatar(), cmt.getFullName(), "club" + Math.abs(cmt.getId())).tryOpenWith(requireActivity());
         });
     }
@@ -226,28 +228,28 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_community_wall, menu);
         OptionMenuView optionMenuView = new OptionMenuView();
-        getPresenter().fireOptionMenuViewCreated(optionMenuView);
+        callPresenter(p -> p.fireOptionMenuViewCreated(optionMenuView));
 
         if (!optionMenuView.isSubscribed) {
             menu.add(R.string.notify_wall_added).setOnMenuItemClickListener(item -> {
-                getPresenter().fireSubscribe();
+                callPresenter(GroupWallPresenter::fireSubscribe);
                 return true;
             });
         } else {
             menu.add(R.string.unnotify_wall_added).setOnMenuItemClickListener(item -> {
-                getPresenter().fireUnSubscribe();
+                callPresenter(GroupWallPresenter::fireUnSubscribe);
                 return true;
             });
         }
 
         if (!optionMenuView.isFavorite) {
             menu.add(R.string.add_to_bookmarks).setOnMenuItemClickListener(item -> {
-                getPresenter().fireAddToBookmarksClick();
+                callPresenter(GroupWallPresenter::fireAddToBookmarksClick);
                 return true;
             });
         } else {
             menu.add(R.string.remove_from_bookmarks).setOnMenuItemClickListener(item -> {
-                getPresenter().fireRemoveFromBookmarks();
+                callPresenter(GroupWallPresenter::fireRemoveFromBookmarks);
                 return true;
             });
         }
@@ -256,12 +258,12 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_community_control) {
-            getPresenter().fireCommunityControlClick();
+            callPresenter(GroupWallPresenter::fireCommunityControlClick);
             return true;
         }
 
         if (item.getItemId() == R.id.action_community_messages) {
-            getPresenter().fireCommunityMessagesClick();
+            callPresenter(GroupWallPresenter::fireCommunityMessagesClick);
             return true;
         }
 
@@ -269,7 +271,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
             if (!AppPerms.hasReadWriteStoragePermission(requireActivity())) {
                 requestWritePermission.launch();
             } else {
-                getPresenter().fireShowQR(requireActivity());
+                callPresenter(p -> p.fireShowQR(requireActivity()));
             }
             return true;
         }
@@ -341,7 +343,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
         super.onPrepareOptionsMenu(menu);
 
         OptionMenuView optionMenuView = new OptionMenuView();
-        getPresenter().fireOptionMenuViewCreated(optionMenuView);
+        callPresenter(p -> p.fireOptionMenuViewCreated(optionMenuView));
         menu.findItem(R.id.action_community_control).setVisible(optionMenuView.controlVisible);
     }
 
@@ -428,42 +430,42 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
             RecyclerView filterList = root.findViewById(R.id.post_filter_recyclerview);
             filterList.setLayoutManager(new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false));
             mFiltersAdapter = new HorizontalOptionsAdapter<>(Collections.emptyList());
-            mFiltersAdapter.setListener(entry -> getPresenter().fireFilterEntryClick(entry));
+            mFiltersAdapter.setListener(entry -> callPresenter(p -> p.fireFilterEntryClick(entry)));
 
             filterList.setAdapter(mFiltersAdapter);
 
-            tvStatus.setOnClickListener(v -> getPresenter().fireHeaderStatusClick());
-            fabMessage.setOnClickListener(v -> getPresenter().fireChatClick());
-            secondaryActionButton.setOnClickListener(v -> getPresenter().fireSecondaryButtonClick());
-            primaryActionButton.setOnClickListener(v -> getPresenter().firePrimaryButtonClick());
+            tvStatus.setOnClickListener(v -> callPresenter(GroupWallPresenter::fireHeaderStatusClick));
+            fabMessage.setOnClickListener(v -> callPresenter(GroupWallPresenter::fireChatClick));
+            secondaryActionButton.setOnClickListener(v -> callPresenter(GroupWallPresenter::fireSecondaryButtonClick));
+            primaryActionButton.setOnClickListener(v -> callPresenter(GroupWallPresenter::firePrimaryButtonClick));
 
             root.findViewById(R.id.header_group_photos_container)
-                    .setOnClickListener(v -> getPresenter().fireHeaderPhotosClick());
+                    .setOnClickListener(v -> callPresenter(GroupWallPresenter::fireHeaderPhotosClick));
             root.findViewById(R.id.header_group_videos_container)
-                    .setOnClickListener(v -> getPresenter().fireHeaderVideosClick());
+                    .setOnClickListener(v -> callPresenter(GroupWallPresenter::fireHeaderVideosClick));
             root.findViewById(R.id.header_group_members_container)
-                    .setOnClickListener(v -> getPresenter().fireHeaderMembersClick());
+                    .setOnClickListener(v -> callPresenter(GroupWallPresenter::fireHeaderMembersClick));
             root.findViewById(R.id.horiz_scroll)
                     .setClipToOutline(true);
             root.findViewById(R.id.header_group_topics_container)
-                    .setOnClickListener(v -> getPresenter().fireHeaderTopicsClick());
+                    .setOnClickListener(v -> callPresenter(GroupWallPresenter::fireHeaderTopicsClick));
             root.findViewById(R.id.header_group_documents_container)
-                    .setOnClickListener(v -> getPresenter().fireHeaderDocsClick());
+                    .setOnClickListener(v -> callPresenter(GroupWallPresenter::fireHeaderDocsClick));
             root.findViewById(R.id.header_group_audios_container)
-                    .setOnClickListener(v -> getPresenter().fireHeaderAudiosClick());
+                    .setOnClickListener(v -> callPresenter(GroupWallPresenter::fireHeaderAudiosClick));
             root.findViewById(R.id.header_group_articles_container)
-                    .setOnClickListener(v -> getPresenter().fireHeaderArticlesClick());
+                    .setOnClickListener(v -> callPresenter(GroupWallPresenter::fireHeaderArticlesClick));
             root.findViewById(R.id.header_group_products_container)
                     .setOnClickListener(v -> {
                         if (CheckDonate.isFullVersion(requireActivity())) {
-                            getPresenter().fireHeaderProductsClick();
+                            callPresenter(GroupWallPresenter::fireHeaderProductsClick);
                         }
                     });
             root.findViewById(R.id.header_group_contacts_container)
-                    .setOnClickListener(v -> getPresenter().fireShowComunityInfoClick());
+                    .setOnClickListener(v -> callPresenter(GroupWallPresenter::fireShowComunityInfoClick));
             root.findViewById(R.id.header_group_links_container)
-                    .setOnClickListener(v -> getPresenter().fireShowComunityLinksInfoClick());
-            bChatsContainer.setOnClickListener(v -> getPresenter().fireGroupChatsClick());
+                    .setOnClickListener(v -> callPresenter(GroupWallPresenter::fireShowComunityLinksInfoClick));
+            bChatsContainer.setOnClickListener(v -> callPresenter(GroupWallPresenter::fireGroupChatsClick));
         }
     }
 }

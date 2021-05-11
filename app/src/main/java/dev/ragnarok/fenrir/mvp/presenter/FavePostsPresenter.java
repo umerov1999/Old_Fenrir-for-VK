@@ -92,9 +92,7 @@ public class FavePostsPresenter extends PlaceSupportPresenter<IFavePostsView> {
     }
 
     private void resolveRefreshingView() {
-        if (isGuiResumed()) {
-            getView().showRefreshing(requestNow);
-        }
+        callResumedView(v -> v.showRefreshing(requestNow));
     }
 
     @Override
@@ -114,7 +112,7 @@ public class FavePostsPresenter extends PlaceSupportPresenter<IFavePostsView> {
 
     private void onActualDataGetError(Throwable throwable) {
         setRequestNow(false);
-        showError(getView(), throwable);
+        callView(v -> showError(v, throwable));
     }
 
     private void onActualDataReceived(int offset, int newOffset, List<Post> data) {
@@ -184,6 +182,6 @@ public class FavePostsPresenter extends PlaceSupportPresenter<IFavePostsView> {
     }
 
     private void onLikeError(Throwable t) {
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 }

@@ -60,7 +60,7 @@ public class VideoAlbumsFragment extends BaseMvpFragment<VideoAlbumsPresenter, I
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(VideoAlbumsPresenter::fireRefresh));
 
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
@@ -74,7 +74,7 @@ public class VideoAlbumsFragment extends BaseMvpFragment<VideoAlbumsPresenter, I
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToLast();
+                callPresenter(VideoAlbumsPresenter::fireScrollToLast);
             }
         });
 
@@ -88,7 +88,7 @@ public class VideoAlbumsFragment extends BaseMvpFragment<VideoAlbumsPresenter, I
 
     @Override
     public void onClick(VideoAlbum album) {
-        getPresenter().fireItemClick(album);
+        callPresenter(p -> p.fireItemClick(album));
     }
 
     @Override

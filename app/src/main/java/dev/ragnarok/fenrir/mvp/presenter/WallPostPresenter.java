@@ -158,7 +158,7 @@ public class WallPostPresenter extends PlaceSupportPresenter<IWallPostView> {
 
     private void onLoadPostInfoError(Throwable t) {
         setLoadingPostNow(false);
-        showError(getView(), t);
+        callView(v -> showError(v, t));
     }
 
     private void onActualPostReceived(Post post) {
@@ -174,36 +174,34 @@ public class WallPostPresenter extends PlaceSupportPresenter<IWallPostView> {
 
     @OnGuiCreated
     private void resolveRepostsView() {
-        if (isGuiReady() && nonNull(post)) {
-            getView().displayReposts(post.getRepostCount(), post.isUserReposted());
+        if (nonNull(post)) {
+            callView(v -> v.displayReposts(post.getRepostCount(), post.isUserReposted()));
         }
     }
 
     @OnGuiCreated
     private void resolveLikesView() {
-        if (isGuiReady() && nonNull(post)) {
-            getView().displayLikes(post.getLikesCount(), post.isUserLikes());
+        if (nonNull(post)) {
+            callView(v -> v.displayLikes(post.getLikesCount(), post.isUserLikes()));
         }
     }
 
     @OnGuiCreated
     private void resolveCommentsView() {
-        if (isGuiReady() && nonNull(post)) {
-            getView().displayCommentCount(post.getCommentsCount());
-            getView().setCommentButtonVisible(post.isCanPostComment() || post.getCommentsCount() > 0);
+        if (nonNull(post)) {
+            callView(v -> v.displayCommentCount(post.getCommentsCount()));
+            callView(v -> v.setCommentButtonVisible(post.isCanPostComment() || post.getCommentsCount() > 0));
         }
     }
 
     @OnGuiCreated
     private void resolveContentRootView() {
-        if (isGuiReady()) {
-            if (nonNull(post)) {
-                getView().displayPostInfo(post);
-            } else if (loadingPostNow) {
-                getView().displayLoading();
-            } else {
-                getView().displayLoadingFail();
-            }
+        if (nonNull(post)) {
+            callView(v -> v.displayPostInfo(post));
+        } else if (loadingPostNow) {
+            callView(IWallPostView::displayLoading);
+        } else {
+            callView(IWallPostView::displayLoadingFail);
         }
     }
 
@@ -240,24 +238,24 @@ public class WallPostPresenter extends PlaceSupportPresenter<IWallPostView> {
 
     public void firePostEditClick() {
         if (isNull(post)) {
-            getView().showPostNotReadyToast();
+            callView(IWallPostView::showPostNotReadyToast);
             return;
         }
 
-        getView().goToPostEditing(getAccountId(), post);
+        callView(v -> v.goToPostEditing(getAccountId(), post));
     }
 
     public void fireCommentClick() {
         Commented commented = new Commented(postId, ownerId, CommentedType.POST, null);
-        getView().openComments(getAccountId(), commented, null);
+        callView(v -> v.openComments(getAccountId(), commented, null));
     }
 
     public void fireRepostLongClick() {
-        getView().goToReposts(getAccountId(), "post", ownerId, postId);
+        callView(v -> v.goToReposts(getAccountId(), "post", ownerId, postId));
     }
 
     public void fireLikeLongClick() {
-        getView().goToLikes(getAccountId(), "post", ownerId, postId);
+        callView(v -> v.goToLikes(getAccountId(), "post", ownerId, postId));
     }
 
     public void fireTryLoadAgainClick() {
@@ -266,9 +264,9 @@ public class WallPostPresenter extends PlaceSupportPresenter<IWallPostView> {
 
     public void fireShareClick() {
         if (nonNull(post)) {
-            getView().repostPost(getAccountId(), post);
+            callView(v -> v.repostPost(getAccountId(), post));
         } else {
-            getView().showPostNotReadyToast();
+            callView(IWallPostView::showPostNotReadyToast);
         }
     }
 
@@ -276,21 +274,20 @@ public class WallPostPresenter extends PlaceSupportPresenter<IWallPostView> {
         if (nonNull(post)) {
             appendDisposable(wallInteractor.like(getAccountId(), ownerId, postId, !post.isUserLikes())
                     .compose(RxUtils.applySingleIOToMainSchedulers())
-                    .subscribe(RxUtils.ignore(), t -> showError(getView(), t)));
+                    .subscribe(RxUtils.ignore(), t -> callView(v -> showError(v, t))));
         } else {
-            getView().showPostNotReadyToast();
+            callView(IWallPostView::showPostNotReadyToast);
         }
     }
 
     public void fireAddBookmark() {
         appendDisposable(faveInteractor.addPost(getAccountId(), ownerId, postId, null)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(this::onPostAddedToBookmarks, t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(this::onPostAddedToBookmarks, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     private void onPostAddedToBookmarks() {
-        if (isGuiReady())
-            getView().showSuccessToast();
+        callView(IWallPostView::showSuccessToast);
     }
 
     public void fireDeleteClick() {
@@ -309,7 +306,7 @@ public class WallPostPresenter extends PlaceSupportPresenter<IWallPostView> {
 
         appendDisposable(completable
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(() -> onDeleteOrRestoreComplete(delete), t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(() -> onDeleteOrRestoreComplete(delete), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     private void onDeleteOrRestoreComplete(boolean deleted) {
@@ -329,7 +326,7 @@ public class WallPostPresenter extends PlaceSupportPresenter<IWallPostView> {
 
         appendDisposable(wallInteractor.pinUnpin(accountId, ownerId, postId, pin)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(() -> onPinOrUnpinComplete(pin), t -> showError(getView(), getCauseIfRuntime(t))));
+                .subscribe(() -> onPinOrUnpinComplete(pin), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
     private void onPinOrUnpinComplete(boolean pinned) {
@@ -342,7 +339,7 @@ public class WallPostPresenter extends PlaceSupportPresenter<IWallPostView> {
 
     public void fireCopyLinkClink() {
         String link = String.format("vk.com/wall%s_%s", ownerId, postId);
-        getView().copyLinkToClipboard(link);
+        callView(v -> v.copyLinkToClipboard(link));
     }
 
     public void fireReport() {
@@ -354,10 +351,10 @@ public class WallPostPresenter extends PlaceSupportPresenter<IWallPostView> {
                     .compose(RxUtils.applySingleIOToMainSchedulers())
                     .subscribe(p -> {
                         if (p == 1)
-                            getView().getCustomToast().showToast(R.string.success);
+                            callView(v -> v.getCustomToast().showToast(R.string.success));
                         else
-                            getView().getCustomToast().showToast(R.string.error);
-                    }, t -> showError(getView(), getCauseIfRuntime(t))));
+                            callView(v -> v.getCustomToast().showToast(R.string.error));
+                    }, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
             dialog.dismiss();
         });
         alert.show();
@@ -365,33 +362,37 @@ public class WallPostPresenter extends PlaceSupportPresenter<IWallPostView> {
 
     @OnGuiCreated
     private void resolveToolbarView() {
-        if (isGuiReady()) {
-            if (nonNull(post)) {
-                int type = IWallPostView.SUBTITLE_NORMAL;
 
-                if (nonNull(post.getSource())) {
-                    switch (post.getSource().getData()) {
-                        case PROFILE_ACTIVITY:
-                            type = IWallPostView.SUBTITLE_STATUS_UPDATE;
-                            break;
-                        case PROFILE_PHOTO:
-                            type = IWallPostView.SUBTITLE_PHOTO_UPDATE;
-                            break;
-                    }
+        if (nonNull(post)) {
+            int type = IWallPostView.SUBTITLE_NORMAL;
+
+            if (nonNull(post.getSource())) {
+                switch (post.getSource().getData()) {
+                    case PROFILE_ACTIVITY:
+                        type = IWallPostView.SUBTITLE_STATUS_UPDATE;
+                        break;
+                    case PROFILE_PHOTO:
+                        type = IWallPostView.SUBTITLE_PHOTO_UPDATE;
+                        break;
                 }
-
-                getView().displayToolbarTitle(post.getAuthorName());
-                getView().displayToolbatSubtitle(type, post.getDate());
-            } else {
-                getView().displayDefaultToolbaTitle();
-                getView().displayDefaultToolbaSubitle();
             }
+
+            int finalType = type;
+            callView(v -> {
+                v.displayToolbarTitle(post.getAuthorName());
+                v.displayToolbatSubtitle(finalType, post.getDate());
+            });
+        } else {
+            callView(v -> {
+                v.displayDefaultToolbaTitle();
+                v.displayDefaultToolbaSubitle();
+            });
         }
     }
 
     public void fireCopyTextClick() {
         if (isNull(post)) {
-            getView().showPostNotReadyToast();
+            callView(IWallPostView::showPostNotReadyToast);
             return;
         }
 
@@ -410,10 +411,10 @@ public class WallPostPresenter extends PlaceSupportPresenter<IWallPostView> {
             }
         }
 
-        getView().copyTextToClipboard(builder.toString());
+        callView(v -> v.copyTextToClipboard(builder.toString()));
     }
 
     public void fireHasgTagClick(String hashTag) {
-        getView().goToNewsSearch(getAccountId(), hashTag);
+        callView(v -> v.goToNewsSearch(getAccountId(), hashTag));
     }
 }

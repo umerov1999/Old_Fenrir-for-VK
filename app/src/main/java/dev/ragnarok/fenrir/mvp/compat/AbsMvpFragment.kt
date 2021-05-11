@@ -6,6 +6,7 @@ import androidx.loader.app.LoaderManager
 import dev.ragnarok.fenrir.mvp.core.IMvpView
 import dev.ragnarok.fenrir.mvp.core.IPresenter
 import dev.ragnarok.fenrir.mvp.core.PresenterAction
+import dev.ragnarok.fenrir.mvp.core.RetPresenterAction
 
 abstract class AbsMvpFragment<P : IPresenter<V>, V : IMvpView> : androidx.fragment.app.Fragment(),
     ViewHostDelegate.IFactoryProvider<P, V> {
@@ -14,9 +15,6 @@ abstract class AbsMvpFragment<P : IPresenter<V>, V : IMvpView> : androidx.fragme
 
     protected val presenter: P?
         get() = delegate.presenter
-
-    protected val isPresenterPrepared: Boolean
-        get() = delegate.isPresenterPrepared
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +64,10 @@ abstract class AbsMvpFragment<P : IPresenter<V>, V : IMvpView> : androidx.fragme
 
     fun callPresenter(action: PresenterAction<P, V>) {
         delegate.callPresenter(action)
+    }
+
+    fun <T> callPresenter(action: RetPresenterAction<P, V, T>, onDefault: T): T {
+        return delegate.callPresenter(action, onDefault)
     }
 
     fun postPrenseterReceive(action: PresenterAction<P, V>) {

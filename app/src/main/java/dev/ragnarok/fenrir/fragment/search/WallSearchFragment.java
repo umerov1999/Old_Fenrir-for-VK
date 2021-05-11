@@ -78,17 +78,17 @@ public class WallSearchFragment extends AbsSearchFragment<WallSearchPresenter, I
 
     @Override
     public void onOwnerClick(int ownerId) {
-        getPresenter().fireOwnerClick(ownerId);
+        callPresenter(p -> p.fireOwnerClick(ownerId));
     }
 
     @Override
     public void onShareClick(Post post) {
-        getPresenter().fireShareClick(post);
+        callPresenter(p -> p.fireShareClick(post));
     }
 
     @Override
     public void onPostClick(Post post) {
-        getPresenter().firePostClick(post);
+        callPresenter(p -> p.firePostClick(post));
     }
 
     @Override
@@ -98,21 +98,21 @@ public class WallSearchFragment extends AbsSearchFragment<WallSearchPresenter, I
 
     @Override
     public void onCommentsClick(Post post) {
-        getPresenter().fireCommentsClick(post);
+        callPresenter(p -> p.fireCommentsClick(post));
     }
 
     @Override
     public void onLikeLongClick(Post post) {
-        getPresenter().fireShowLikesClick(post);
+        callPresenter(p -> p.fireShowLikesClick(post));
     }
 
     @Override
     public void onShareLongClick(Post post) {
-        getPresenter().fireShowCopiesClick(post);
+        callPresenter(p -> p.fireShowCopiesClick(post));
     }
 
     @Override
     public void onLikeClick(Post post) {
-        getPresenter().fireLikeClick(post);
+        callPresenter(p -> p.fireLikeClick(post));
     }
 }

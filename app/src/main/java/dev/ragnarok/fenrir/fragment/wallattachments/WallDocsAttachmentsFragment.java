@@ -66,13 +66,13 @@ public class WallDocsAttachmentsFragment extends PlaceSupportMvpFragment<WallDoc
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
             @Override
             public void onScrollToLastElement() {
-                getPresenter().fireScrollToEnd();
+                callPresenter(WallDocsAttachmentsPresenter::fireScrollToEnd);
             }
         });
-        mLoadMore.setOnClickListener(v -> getPresenter().fireScrollToEnd());
+        mLoadMore.setOnClickListener(v -> callPresenter(WallDocsAttachmentsPresenter::fireScrollToEnd));
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> getPresenter().fireRefresh());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(WallDocsAttachmentsPresenter::fireRefresh));
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
 
         mAdapter = new DocsAdapter(Collections.emptyList());
@@ -175,7 +175,7 @@ public class WallDocsAttachmentsFragment extends PlaceSupportMvpFragment<WallDoc
 
     @Override
     public void onDocClick(int index, @NonNull Document doc) {
-        getPresenter().fireDocClick(doc);
+        callPresenter(p -> p.fireDocClick(doc));
     }
 
     @Override
