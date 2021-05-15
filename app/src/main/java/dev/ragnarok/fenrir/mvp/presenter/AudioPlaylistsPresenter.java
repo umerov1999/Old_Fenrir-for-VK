@@ -158,9 +158,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
 
         actualDataDisposable.dispose();
         if (Utils.isEmpty(q)) {
-            if (searcher.cancel()) {
-                fireRefresh();
-            }
+            searcher.cancel();
         } else {
             actualDataDisposable = (Single.just(new Object())
                     .delay(WEB_SEARCH_DELAY, TimeUnit.MILLISECONDS)
@@ -298,6 +296,20 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
             return (Utils.safeCheck(data.getTitle(), () -> data.getTitle().toLowerCase().contains(q.toLowerCase()))
                     || Utils.safeCheck(data.getArtist_name(), () -> data.getArtist_name().toLowerCase().contains(q.toLowerCase()))
                     || Utils.safeCheck(data.getDescription(), () -> data.getDescription().toLowerCase().contains(q.toLowerCase())));
+        }
+
+        @Override
+        protected void onReset(@NonNull List<AudioPlaylist> data, int offset, boolean isEnd) {
+            if (Utils.isEmpty(playlists)) {
+                fireRefresh();
+            } else {
+                Foffset = offset;
+                endOfContent = isEnd;
+                playlists.clear();
+                playlists.addAll(addon);
+                playlists.addAll(data);
+                callView(IAudioPlaylistsView::notifyDataSetChanged);
+            }
         }
     }
 }

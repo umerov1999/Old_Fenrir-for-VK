@@ -74,6 +74,7 @@
 
         <SwitchPreference
             android:defaultValue="true"
+            android:dependency="enable_native"
             android:key="autoplay_gif"
             android:title="@string/autoplay_gif"
             app:iconSpaceReserved="false" />
@@ -591,6 +592,7 @@
 
         <ListPreference
             android:defaultValue="1"
+            android:dependency="enable_native"
             android:entries="@array/array_ffmpeg_names"
             android:entryValues="@array/array_ffmpeg_items"
             android:key="ffmpeg_audio_codecs"
@@ -771,6 +773,7 @@
 
         <SwitchPreference
             android:defaultValue="false"
+            android:dependency="enable_native"
             android:key="native_parcel_enable"
             android:summary="@string/native_parcel_summary"
             android:title="@string/native_parcel_enable"
@@ -794,9 +797,17 @@
 
         <SwitchPreference
             android:defaultValue="false"
+            android:dependency="enable_native"
             android:key="enable_cache_ui_anim"
             android:summary="@string/need_restart"
             android:title="@string/enable_cache_ui_anim"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:dependency="enable_native"
+            android:key="use_hls_downloader"
+            android:summary="@string/use_hls_downloader_summary"
+            android:title="@string/use_hls_downloader"
             app:iconSpaceReserved="false" />
 
         <SwitchPreference
@@ -832,6 +843,7 @@
             app:iconSpaceReserved="false" />
 
         <Preference
+            android:dependency="enable_native"
             android:key="ui_cache_cleaner"
             android:title="@string/ui_cache_cleaner"
             app:iconSpaceReserved="false" />

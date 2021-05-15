@@ -23,10 +23,13 @@ import dev.ragnarok.fenrir.domain.InteractorFactory
 import dev.ragnarok.fenrir.longpoll.AppNotificationChannels
 import dev.ragnarok.fenrir.longpoll.NotificationHelper
 import dev.ragnarok.fenrir.model.*
+import dev.ragnarok.fenrir.module.FenrirNative
+import dev.ragnarok.fenrir.module.hls.TSDemuxer
 import dev.ragnarok.fenrir.player.util.MusicUtils
 import dev.ragnarok.fenrir.service.QuickReplyService
 import dev.ragnarok.fenrir.settings.ISettings
 import dev.ragnarok.fenrir.settings.Settings
+import dev.ragnarok.fenrir.util.hls.M3U8
 import ealvatag.audio.AudioFileIO
 import ealvatag.tag.FieldKey
 import ealvatag.tag.Tag
@@ -503,6 +506,72 @@ object DownloadWorkUtils {
         }
 
         @Suppress("DEPRECATION")
+        protected fun doHLSDownload(
+            url: String,
+            file_v: DownloadInfo,
+            UseMediaScanner: Boolean
+        ): Boolean {
+            var mBuilder = createNotification(
+                applicationContext,
+                applicationContext.getString(R.string.downloading),
+                applicationContext.getString(R.string.downloading) + " "
+                        + file_v.buildFilename(),
+                R.drawable.save,
+                false
+            )
+
+            show_notification(mBuilder, NotificationHelper.NOTIFICATION_DOWNLOADING, null)
+
+            val file = file_v.build()
+            try {
+                val file_u = DownloadInfo(file_v.file, file_v.path, "ts")
+                if (!M3U8(url, file_u.build()).run(Utils.createOkHttp(5).build())) {
+                    throw Exception("M3U8 error download")
+                }
+                if (!TSDemuxer.unpackTS(file_u.build(), file, false, false)) {
+                    throw Exception("Error TSDemuxer")
+                }
+                File(file_u.build()).delete()
+                if (UseMediaScanner) {
+                    applicationContext.sendBroadcast(
+                        Intent(
+                            Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                            Uri.fromFile(File(file))
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+
+                mBuilder = createNotification(
+                    applicationContext,
+                    applicationContext.getString(R.string.downloading),
+                    applicationContext.getString(R.string.error)
+                            + " " + e.localizedMessage + ". " + file_v.buildFilename(),
+                    R.drawable.ic_error_toast_vector,
+                    true
+                )
+                mBuilder.color = Color.parseColor("#ff0000")
+                show_notification(
+                    mBuilder,
+                    NotificationHelper.NOTIFICATION_DOWNLOAD,
+                    NotificationHelper.NOTIFICATION_DOWNLOADING
+                )
+                val result = File(file_v.build())
+                if (result.exists()) {
+                    file_v.setFile(file_v.file + "." + file_v.ext)
+                    result.renameTo(File(file_v.setExt("error").build()))
+                }
+                Utils.inMainThread {
+                    CustomToast.CreateCustomToast(applicationContext)
+                        .showToastError(R.string.error_with_message, e.localizedMessage)
+                }
+                return false
+            }
+            return true
+        }
+
+        @Suppress("DEPRECATION")
         protected fun doDownload(
             url: String,
             file_v: DownloadInfo,
@@ -731,26 +800,42 @@ object DownloadWorkUtils {
             val audio = Gson().fromJson(inputData.getString(ExtraDwn.URL)!!, Audio::class.java)
             val account_id =
                 inputData.getInt(ExtraDwn.ACCOUNT, ISettings.IAccountsSettings.INVALID_ID)
-            if (Utils.isEmpty(audio.url) || audio.isHLS) {
-                val link = RxUtils.BlockingGetSingle(
-                    InteractorFactory
-                        .createAudioInteractor()
-                        .getByIdOld(account_id, listOf(IdPair(audio.id, audio.ownerId)))
-                        .map { e: List<Audio> -> e[0].url }, audio.url
-                )
-                if (!Utils.isEmpty(link)) {
-                    audio.url = link
-                }
-            }
 
-            val final_url = Audio.getMp3FromM3u8(audio.url)
-            if (Utils.isEmpty(final_url)) {
+            if (Settings.get().other().isUse_hls_downloader && FenrirNative.isNativeLoaded()) {
+                if (Utils.isEmpty(audio.url)) {
+                    val link = RxUtils.BlockingGetSingle(
+                        InteractorFactory
+                            .createAudioInteractor()
+                            .getById(account_id, listOf(IdPair(audio.id, audio.ownerId)))
+                            .map { e: List<Audio> -> e[0].url }, audio.url
+                    )
+                    if (!Utils.isEmpty(link)) {
+                        audio.url = link
+                    }
+                }
+            } else {
+                if (Utils.isEmpty(audio.url) || audio.isHLS) {
+                    val link = RxUtils.BlockingGetSingle(
+                        InteractorFactory
+                            .createAudioInteractor()
+                            .getByIdOld(account_id, listOf(IdPair(audio.id, audio.ownerId)))
+                            .map { e: List<Audio> -> e[0].url }, audio.url
+                    )
+                    if (!Utils.isEmpty(link)) {
+                        audio.url = link
+                    }
+                }
+
+                audio.url = Audio.getMp3FromM3u8(audio.url)
+            }
+            if (Utils.isEmpty(audio.url)) {
                 return Result.failure()
             }
 
-            val ret = doDownload(final_url, file_v, true)
+            val ret = if (Settings.get().other().isUse_hls_downloader
+                && FenrirNative.isNativeLoaded() && audio.isHLS
+            ) doHLSDownload(audio.url, file_v, true) else doDownload(audio.url, file_v, true)
             if (ret) {
-
                 val cover =
                     Utils.firstNonEmptyString(audio.thumb_image_very_big, audio.thumb_image_little)
                 var updated_tag = false

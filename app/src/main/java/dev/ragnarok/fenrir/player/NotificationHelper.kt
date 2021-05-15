@@ -26,7 +26,7 @@ class NotificationHelper(private val mService: MusicPlaybackService) {
         isPlaying: Boolean, cover: Bitmap?, mediaSessionToken: MediaSessionCompat.Token?
     ) {
         if (Utils.hasOreo()) {
-            mNotificationManager!!.createNotificationChannel(
+            mNotificationManager?.createNotificationChannel(
                 AppNotificationChannels.getAudioChannel(
                     context
                 )
@@ -94,15 +94,15 @@ class NotificationHelper(private val mService: MusicPlaybackService) {
             mService.stopForeground(false)
         }
         //Remove pause action
-        mNotificationBuilder!!.mActions.removeAt(1)
-        mNotificationBuilder!!.mActions.add(
+        mNotificationBuilder?.mActions?.removeAt(1)
+        mNotificationBuilder?.mActions?.add(
             1, NotificationCompat.Action(
                 if (isPlaying) R.drawable.pause_notification else R.drawable.play_notification,
                 null,
                 retreivePlaybackActions(ACTION_PLAY_PAUSE)
             )
         )
-        mNotificationManager.notify(FENRIR_MUSIC_SERVICE, mNotificationBuilder!!.build())
+        mNotificationManager.notify(FENRIR_MUSIC_SERVICE, mNotificationBuilder?.build())
     }
 
     private fun getOpenIntent(context: Context): PendingIntent {

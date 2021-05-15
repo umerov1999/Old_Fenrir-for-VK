@@ -491,6 +491,10 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
         }
     }
 
+    public void fireMutualFriends() {
+        callView(v -> v.goToMutualFriends(getAccountId(), community));
+    }
+
     public void fireSubscribe() {
         int accountId = getAccountId();
         appendDisposable(wallsRepository.subscribe(accountId, ownerId)

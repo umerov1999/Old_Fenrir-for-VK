@@ -61,7 +61,7 @@ class UserDetailsFragment : BaseMvpFragment<UserDetailsPresenter, IUserDetailsVi
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         ivAvatarHighRes?.setOnClickListener { presenter?.firePhotoClick() }
         menuAdapter = RecyclerMenuAdapter(emptyList())
-        menuAdapter!!.setActionListener(this)
+        menuAdapter?.setActionListener(this)
         recyclerView.adapter = menuAdapter
         val behavior = BottomSheetBehavior.from(recyclerView)
         behavior.addBottomSheetCallback(ProfileBottomSheetCallback())
@@ -73,7 +73,7 @@ class UserDetailsFragment : BaseMvpFragment<UserDetailsPresenter, IUserDetailsVi
     }
 
     override fun displayData(items: List<AdvancedItem>) {
-        menuAdapter!!.setItems(items)
+        menuAdapter?.setItems(items)
     }
 
     override fun displayToolbarTitle(user: User?) {

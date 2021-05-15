@@ -86,7 +86,7 @@ import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.api.ProxyUtil;
 import dev.ragnarok.fenrir.api.model.Identificable;
-import dev.ragnarok.fenrir.media.exo.OkHttpDataSourceFactory;
+import dev.ragnarok.fenrir.media.exo.OkHttpDataSource;
 import dev.ragnarok.fenrir.model.ISelectable;
 import dev.ragnarok.fenrir.model.ISomeones;
 import dev.ragnarok.fenrir.model.Lang;
@@ -1147,13 +1147,13 @@ public class Utils {
     }
 
     public static @NonNull
-    OkHttpDataSourceFactory getExoPlayerFactory(String userAgent, ProxyConfig proxyConfig) {
+    OkHttpDataSource.Factory getExoPlayerFactory(String userAgent, ProxyConfig proxyConfig) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .readTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)
                 .connectTimeout(60, TimeUnit.SECONDS);
         ProxyUtil.applyProxyConfig(builder, proxyConfig);
-        return new OkHttpDataSourceFactory(builder.build(), userAgent);
+        return new OkHttpDataSource.Factory(builder.build()).setUserAgent(userAgent);
     }
 
     public static boolean isColorDark(int color) {

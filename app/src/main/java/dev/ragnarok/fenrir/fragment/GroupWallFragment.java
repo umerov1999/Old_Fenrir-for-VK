@@ -230,6 +230,11 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
         OptionMenuView optionMenuView = new OptionMenuView();
         callPresenter(p -> p.fireOptionMenuViewCreated(optionMenuView));
 
+        menu.add(R.string.mutual_friends).setOnMenuItemClickListener(item -> {
+            callPresenter(GroupWallPresenter::fireMutualFriends);
+            return true;
+        });
+
         if (!optionMenuView.isSubscribed) {
             menu.add(R.string.notify_wall_added).setOnMenuItemClickListener(item -> {
                 callPresenter(GroupWallPresenter::fireSubscribe);
@@ -311,6 +316,11 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
     @Override
     public void goToGroupChats(int accountId, Community community) {
         PlaceFactory.getGroupChatsPlace(accountId, Math.abs(community.getId())).tryOpenWith(requireActivity());
+    }
+
+    @Override
+    public void goToMutualFriends(int accountId, Community community) {
+        CommunityFriendsFragment.newInstance(accountId, community.getId()).show(getChildFragmentManager(), "community_friends");
     }
 
     @Override

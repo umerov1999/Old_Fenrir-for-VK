@@ -105,12 +105,12 @@ class SinglePhotoFragment : BaseFragment(), GoBackCallback, BackPressCallback {
                 when (event.action) {
                     MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
                         ui.canSwipe = false
-                        container!!.requestDisallowInterceptTouchEvent(true)
+                        container?.requestDisallowInterceptTouchEvent(true)
                         return@setOnTouchListener false
                     }
                     MotionEvent.ACTION_UP -> {
                         ui.canSwipe = true
-                        container!!.requestDisallowInterceptTouchEvent(false)
+                        container?.requestDisallowInterceptTouchEvent(false)
                         return@setOnTouchListener true
                     }
                 }
@@ -148,12 +148,14 @@ class SinglePhotoFragment : BaseFragment(), GoBackCallback, BackPressCallback {
         }
         val DOWNLOAD_DATE_FORMAT: DateFormat =
             SimpleDateFormat("yyyyMMdd_HHmmss", Utils.getAppLocale())
-        doDownloadPhoto(
-            requireActivity(),
-            url!!,
-            dir.absolutePath,
-            prefix + "." + photo_prefix + ".profile." + DOWNLOAD_DATE_FORMAT.format(Date())
-        )
+        url?.let {
+            doDownloadPhoto(
+                requireActivity(),
+                it,
+                dir.absolutePath,
+                prefix + "." + photo_prefix + ".profile." + DOWNLOAD_DATE_FORMAT.format(Date())
+            )
+        }
     }
 
     override fun goBack() {

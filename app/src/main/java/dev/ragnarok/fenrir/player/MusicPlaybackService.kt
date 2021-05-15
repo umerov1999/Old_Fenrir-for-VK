@@ -62,15 +62,15 @@ class MusicPlaybackService : Service() {
     /**
      * Used to track what type of audio focus loss caused the playback to pause
      */
-    private var ErrorsCount = 0
-    private var OnceCloseMiniPlayer = false
+    private var errorsCount = 0
+    private var onceCloseMiniPlayer = false
     private var mAnyActivityInForeground = false
     private var mMediaSession: MediaSessionCompat? = null
     private var mTransportController: MediaControllerCompat.TransportControls? = null
     private var mPlayPos = -1
-    private var CoverAudio: String? = null
-    private var CoverBitmap: Bitmap? = null
-    private var AlbumTitle: String? = null
+    private var coverAudio: String? = null
+    private var coverBitmap: Bitmap? = null
+    private var albumTitle: String? = null
     private var mShuffleMode = SHUFFLE_NONE
     private var mRepeatMode = REPEAT_NONE
     private var mPlayList: ArrayList<Audio>? = null
@@ -152,11 +152,11 @@ class MusicPlaybackService : Service() {
                 1.0f
             )
             .build()
-        mMediaSession!!.setPlaybackState(playbackStateCompat)
-        mMediaSession!!.setCallback(mMediaSessionCallback)
-        mMediaSession!!.isActive = true
+        mMediaSession?.setPlaybackState(playbackStateCompat)
+        mMediaSession?.setCallback(mMediaSessionCallback)
+        mMediaSession?.isActive = true
         updateRemoteControlClient(META_CHANGED)
-        mTransportController = mMediaSession!!.controller.transportControls
+        mTransportController = mMediaSession?.controller?.transportControls
     }
 
     private val mMediaSessionCallback: MediaSessionCompat.Callback =
@@ -202,10 +202,10 @@ class MusicPlaybackService : Service() {
         audioEffectsIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
         audioEffectsIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
         sendBroadcast(audioEffectsIntent)
-        mAlarmManager!!.cancel(mShutdownIntent)
-        mPlayer!!.release()
-        mMediaSession!!.release()
-        mNotificationHelper!!.killNotification()
+        mAlarmManager?.cancel(mShutdownIntent)
+        mPlayer?.release()
+        mMediaSession?.release()
+        mNotificationHelper?.killNotification()
         unregisterReceiver(mIntentReceiver)
     }
 
@@ -238,7 +238,7 @@ class MusicPlaybackService : Service() {
             return
         }
         if (D) Logger.d(TAG, "Nothing is playing anymore, releasing notification")
-        mNotificationHelper!!.killNotification()
+        mNotificationHelper?.killNotification()
         if (!mAnyActivityInForeground) {
             stopSelf()
         }
@@ -252,26 +252,26 @@ class MusicPlaybackService : Service() {
             stopSelf()
         }
         if (CMDNEXT == command || NEXT_ACTION == action) {
-            mTransportController!!.skipToNext()
+            mTransportController?.skipToNext()
         }
         if (CMDPREVIOUS == command || PREVIOUS_ACTION == action) {
-            mTransportController!!.skipToPrevious()
+            mTransportController?.skipToPrevious()
         }
         if (CMDTOGGLEPAUSE == command || TOGGLEPAUSE_ACTION == action) {
             if (isPlaying) {
-                mTransportController!!.pause()
+                mTransportController?.pause()
             } else {
-                mTransportController!!.play()
+                mTransportController?.play()
             }
         }
         if (CMDPAUSE == command || PAUSE_ACTION == action) {
-            mTransportController!!.pause()
+            mTransportController?.pause()
         }
         if (CMDPLAY == command) {
             play()
         }
         if (CMDSTOP == command || STOP_ACTION == action) {
-            mTransportController!!.pause()
+            mTransportController?.pause()
             seek(0)
             releaseServiceUiAndStop()
         }
@@ -295,30 +295,32 @@ class MusicPlaybackService : Service() {
      * Updates the notification, considering the current play and activity state
      */
     private fun updateNotification() {
-        mNotificationHelper!!.buildNotification(
+        mNotificationHelper?.buildNotification(
             this,
             artistName,
             trackName,
             isPlaying,
             Utils.firstNonNull(
-                CoverBitmap,
+                coverBitmap,
                 BitmapFactory.decodeResource(resources, R.drawable.generic_audio_nowplaying_service)
             ),
-            mMediaSession!!.sessionToken
+            mMediaSession?.sessionToken
         )
     }
 
     private fun scheduleDelayedShutdown() {
         if (D) Log.v(TAG, "Scheduling shutdown in $IDLE_DELAY ms")
-        mAlarmManager!![AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + IDLE_DELAY] =
+        mAlarmManager?.set(
+            AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + IDLE_DELAY,
             mShutdownIntent
+        )
         mShutdownScheduled = true
     }
 
     private fun cancelShutdown() {
         if (D) Logger.d(TAG, "Cancelling delayed shutdown, scheduled = $mShutdownScheduled")
         if (mShutdownScheduled) {
-            mAlarmManager!!.cancel(mShutdownIntent)
+            mAlarmManager?.cancel(mShutdownIntent)
             mShutdownScheduled = false
         }
     }
@@ -330,8 +332,8 @@ class MusicPlaybackService : Service() {
      */
     private fun stop(goToIdle: Boolean) {
         if (D) Logger.d(TAG, "Stopping playback, goToIdle = $goToIdle")
-        if (mPlayer != null && mPlayer!!.isInitialized) {
-            mPlayer!!.stop()
+        if (mPlayer?.isInitialized == true) {
+            mPlayer?.stop()
         }
         if (goToIdle) {
             scheduleDelayedShutdown()
@@ -342,10 +344,10 @@ class MusicPlaybackService : Service() {
     }
 
     private val isInitialized: Boolean
-        get() = mPlayer != null && mPlayer!!.isInitialized
+        get() = mPlayer?.isInitialized == true
 
     private val isPreparing: Boolean
-        get() = mPlayer != null && mPlayer!!.isPreparing
+        get() = mPlayer?.isPreparing == true
 
     /**
      * Called to open a new file as the current track and prepare the next for
@@ -358,10 +360,12 @@ class MusicPlaybackService : Service() {
                 return
             }
             stop(false)
-            if (mPlayList!!.size - 1 < mPlayPos) {
-                mPlayPos = 0
+            mPlayList?.let {
+                if (it.size - 1 < mPlayPos) {
+                    mPlayPos = 0
+                }
             }
-            val current = mPlayList!![mPlayPos]
+            val current = mPlayList?.get(mPlayPos)
             openFile(current, UpdateMeta)
         }
     }
@@ -398,7 +402,7 @@ class MusicPlaybackService : Service() {
         }
         sendBroadcast(Intent(what))
         if (what == PLAYSTATE_CHANGED) {
-            mNotificationHelper!!.updatePlayState(isPlaying)
+            mNotificationHelper?.updatePlayState(isPlaying)
         }
     }
 
@@ -423,7 +427,7 @@ class MusicPlaybackService : Service() {
                                 PlaybackStateCompat.ACTION_STOP
                     )
                     .build()
-                mMediaSession!!.setPlaybackState(pmc)
+                mMediaSession?.setPlaybackState(pmc)
             }
             META_CHANGED -> fetchCoverAndUpdateMetadata()
         }
@@ -431,14 +435,14 @@ class MusicPlaybackService : Service() {
 
     private fun fetchCoverAndUpdateMetadata() {
         updateMetadata()
-        if (CoverBitmap != null || Utils.isEmpty(albumCover)) {
+        if (coverBitmap != null || Utils.isEmpty(albumCover)) {
             return
         }
         PicassoInstance.with()
             .load(albumCover)
             .into(object : Target {
                 override fun onBitmapLoaded(bitmap: Bitmap, from: LoadedFrom) {
-                    CoverBitmap = bitmap
+                    coverBitmap = bitmap
                     updateMetadata()
                 }
 
@@ -460,7 +464,7 @@ class MusicPlaybackService : Service() {
             //.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, Utils.firstNonNull(CoverBitmap, BitmapFactory.decodeResource(getResources(), R.drawable.generic_audio_nowplaying_service)))
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration())
             .build()
-        mMediaSession!!.setMetadata(mMediaMetadataCompat)
+        mMediaSession?.setMetadata(mMediaMetadataCompat)
     }
 
     /**
@@ -478,16 +482,16 @@ class MusicPlaybackService : Service() {
             if (Settings.get().other().isForce_cache && TrackIsDownloaded(audio) == 1)
                 audio.url = GetLocalTrackLink(audio)
             if (UpdateMeta) {
-                ErrorsCount = 0
-                CoverAudio = null
-                AlbumTitle = null
-                CoverBitmap = null
-                OnceCloseMiniPlayer = false
+                errorsCount = 0
+                coverAudio = null
+                albumTitle = null
+                coverBitmap = null
+                onceCloseMiniPlayer = false
             }
-            mPlayer!!.setDataSource(audio.ownerId, audio.id, audio.url)
+            mPlayer?.setDataSource(audio.ownerId, audio.id, audio.url)
             if (audio.thumb_image_big != null && UpdateMeta) {
-                CoverAudio = audio.thumb_image_big
-                AlbumTitle = audio.album_title
+                coverAudio = audio.thumb_image_big
+                albumTitle = audio.album_title
                 fetchCoverAndUpdateMetadata()
                 notifyChange(META_CHANGED)
             } else {
@@ -504,7 +508,7 @@ class MusicPlaybackService : Service() {
      */
     val audioSessionId: Int
         get() {
-            synchronized(this) { return mPlayer!!.audioSessionId }
+            synchronized(this) { return mPlayer?.audioSessionId ?: -1 }
         }
 
     /**
@@ -514,7 +518,7 @@ class MusicPlaybackService : Service() {
      */
     val bufferPercent: Int
         get() {
-            synchronized(this) { return mPlayer!!.bufferPercent }
+            synchronized(this) { return mPlayer?.bufferPercent ?: 0 }
         }
 
     var shuffleMode: Int
@@ -566,7 +570,7 @@ class MusicPlaybackService : Service() {
             synchronized(this) {
                 return if (currentTrack == null) {
                     null
-                } else AlbumTitle
+                } else albumTitle
             }
         }
 
@@ -581,7 +585,7 @@ class MusicPlaybackService : Service() {
             synchronized(this) {
                 return if (currentTrack == null) {
                     null
-                } else CoverAudio
+                } else coverAudio
             }
         }
 
@@ -604,8 +608,10 @@ class MusicPlaybackService : Service() {
     val currentTrack: Audio?
         get() {
             synchronized(this) {
-                if (mPlayPos >= 0 && mPlayList!!.size > mPlayPos) {
-                    return mPlayList!![mPlayPos]
+                mPlayList?.let {
+                    if (mPlayPos >= 0 && it.size > mPlayPos) {
+                        return it[mPlayPos]
+                    }
                 }
             }
             return null
@@ -614,8 +620,10 @@ class MusicPlaybackService : Service() {
     val currentTrackPos: Int
         get() {
             synchronized(this) {
-                if (mPlayPos >= 0 && mPlayList!!.size > mPlayPos) {
-                    return mPlayPos
+                mPlayList?.let {
+                    if (mPlayPos >= 0 && it.size > mPlayPos) {
+                        return mPlayPos
+                    }
                 }
             }
             return -1
@@ -623,28 +631,30 @@ class MusicPlaybackService : Service() {
 
     fun seek(position: Long): Long {
         var positiontemp = position
-        if (mPlayer != null && mPlayer!!.isInitialized) {
-            if (positiontemp < 0) {
-                positiontemp = 0
-            } else if (positiontemp > mPlayer!!.duration()) {
-                positiontemp = mPlayer!!.duration()
+        mPlayer?.let {
+            if (it.isInitialized) {
+                if (positiontemp < 0) {
+                    positiontemp = 0
+                } else if (positiontemp > it.duration()) {
+                    positiontemp = it.duration()
+                }
+                val result = it.seek(positiontemp)
+                notifyChange(POSITION_CHANGED)
+                return result
             }
-            val result = mPlayer!!.seek(positiontemp)
-            notifyChange(POSITION_CHANGED)
-            return result
         }
         return -1
     }
 
     fun position(): Long {
-        return if (mPlayer != null && mPlayer!!.isInitialized) {
-            mPlayer!!.position()
+        return if (mPlayer?.isInitialized == true) {
+            mPlayer?.position() ?: -1
         } else -1
     }
 
     fun duration(): Long {
-        return if (mPlayer != null && mPlayer!!.isInitialized) {
-            mPlayer!!.duration()
+        return if (mPlayer?.isInitialized == true) {
+            mPlayer?.duration() ?: -1
         } else -1
     }
 
@@ -654,7 +664,9 @@ class MusicPlaybackService : Service() {
                 val len = Utils.safeCountOf(mPlayList)
                 val list: MutableList<Audio> = ArrayList(len)
                 for (i in 0 until len) {
-                    list.add(i, mPlayList!![i])
+                    mPlayList?.let {
+                        list.add(i, it[i])
+                    }
                 }
                 return list
             }
@@ -687,18 +699,20 @@ class MusicPlaybackService : Service() {
     }
 
     fun play() {
-        if (mPlayer != null && mPlayer!!.isInitialized) {
-            val duration = mPlayer!!.duration()
-            if (mRepeatMode != REPEAT_CURRENT && duration > 2000 && mPlayer!!.position() >= duration - 2000) {
-                gotoNext(false)
+        mPlayer?.let {
+            if (it.isInitialized) {
+                val duration = it.duration()
+                if (mRepeatMode != REPEAT_CURRENT && duration > 2000 && it.position() >= duration - 2000) {
+                    gotoNext(false)
+                }
+                it.start()
+                if (!isPlaying) {
+                    isPlaying = true
+                    notifyChange(PLAYSTATE_CHANGED)
+                }
+                cancelShutdown()
+                fetchCoverAndUpdateMetadata()
             }
-            mPlayer!!.start()
-            if (!isPlaying) {
-                isPlaying = true
-                notifyChange(PLAYSTATE_CHANGED)
-            }
-            cancelShutdown()
-            fetchCoverAndUpdateMetadata()
         }
     }
 
@@ -708,8 +722,8 @@ class MusicPlaybackService : Service() {
     fun pause() {
         if (D) Logger.d(TAG, "Pausing playback")
         synchronized(this) {
-            if (mPlayer != null && isPlaying) {
-                mPlayer!!.pause()
+            if (isPlaying) {
+                mPlayer?.pause()
                 scheduleDelayedShutdown()
                 isPlaying = false
                 notifyChange(PLAYSTATE_CHANGED)
@@ -891,9 +905,9 @@ class MusicPlaybackService : Service() {
             )
             val intent = Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
             intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
-            intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mService.get()!!.packageName)
-            mService.get()!!.sendBroadcast(intent)
-            mService.get()!!.notifyChange(PLAYSTATE_CHANGED)
+            intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, mService.get()?.packageName)
+            mService.get()?.sendBroadcast(intent)
+            mService.get()?.notifyChange(PLAYSTATE_CHANGED)
         }
 
         fun setDataSource(ownerId: Int, audioId: Int, url: String) {
@@ -963,19 +977,19 @@ class MusicPlaybackService : Service() {
 
             mCurrentMediaPlayer.repeatMode = Player.REPEAT_MODE_OFF
 
-            mCurrentMediaPlayer.addListener(object : Player.EventListener {
+            mCurrentMediaPlayer.addListener(object : Player.Listener {
 
                 override fun onPlaybackStateChanged(@Player.State state: Int) {
                     when (state) {
                         Player.STATE_READY -> if (isPreparing) {
                             isPreparing = false
                             isInitialized = true
-                            mService.get()!!.notifyChange(PREPARED)
-                            mService.get()!!.play()
+                            mService.get()?.notifyChange(PREPARED)
+                            mService.get()?.play()
                         }
                         Player.STATE_ENDED -> if (!isPreparing && isInitialized) {
                             isInitialized = false
-                            mService.get()!!.gotoNext(false)
+                            mService.get()?.gotoNext(false)
                         }
                         else -> {
                         }
@@ -986,22 +1000,24 @@ class MusicPlaybackService : Service() {
                     playWhenReady: Boolean,
                     @PlayWhenReadyChangeReason reason: Int
                 ) {
-                    if (mService.get()!!.isPlaying != playWhenReady) {
-                        mService.get()!!.isPlaying = playWhenReady
-                        mService.get()!!.notifyChange(PLAYSTATE_CHANGED)
+                    if (mService.get()?.isPlaying != playWhenReady) {
+                        mService.get()?.isPlaying = playWhenReady
+                        mService.get()?.notifyChange(PLAYSTATE_CHANGED)
                     }
                 }
 
                 override fun onPlayerError(error: ExoPlaybackException) {
-                    mService.get()!!.ErrorsCount++
-                    if (mService.get()!!.ErrorsCount > 10) {
-                        mService.get()!!.ErrorsCount = 0
-                        mService.get()!!.stopSelf()
-                    } else {
-                        val playbackPos = mCurrentMediaPlayer.currentPosition
-                        mService.get()!!.playCurrentTrack(false)
-                        mCurrentMediaPlayer.seekTo(playbackPos)
-                        mService.get()!!.notifyChange(META_CHANGED)
+                    mService.get()?.let {
+                        it.errorsCount++
+                        if (it.errorsCount > 10) {
+                            it.errorsCount = 0
+                            it.stopSelf()
+                        } else {
+                            val playbackPos = mCurrentMediaPlayer.currentPosition
+                            it.playCurrentTrack(false)
+                            mCurrentMediaPlayer.seekTo(playbackPos)
+                            it.notifyChange(META_CHANGED)
+                        }
                     }
                 }
             })
@@ -1011,60 +1027,60 @@ class MusicPlaybackService : Service() {
     private class ServiceStub(service: MusicPlaybackService) : IAudioPlayerService.Stub() {
         private val mService: WeakReference<MusicPlaybackService> = WeakReference(service)
         override fun openFile(audio: Audio) {
-            mService.get()!!.openFile(audio, true)
+            mService.get()?.openFile(audio, true)
         }
 
         override fun open(list: List<Audio>, position: Int) {
-            mService.get()!!.open(list, position)
+            mService.get()?.open(list, position)
         }
 
         override fun stop() {
-            mService.get()!!.pause()
-            mService.get()!!.releaseServiceUiAndStop()
+            mService.get()?.pause()
+            mService.get()?.releaseServiceUiAndStop()
         }
 
         override fun pause() {
-            mService.get()!!.pause()
+            mService.get()?.pause()
         }
 
         override fun play() {
-            mService.get()!!.play()
+            mService.get()?.play()
         }
 
         override fun prev() {
-            mService.get()!!.prev()
+            mService.get()?.prev()
         }
 
         override fun next() {
-            mService.get()!!.gotoNext(true)
+            mService.get()?.gotoNext(true)
         }
 
         override fun setShuffleMode(shufflemode: Int) {
-            mService.get()!!.shuffleMode = shufflemode
+            mService.get()?.shuffleMode = shufflemode
         }
 
         override fun setRepeatMode(repeatmode: Int) {
-            mService.get()!!.repeatMode = repeatmode
+            mService.get()?.repeatMode = repeatmode
         }
 
         override fun closeMiniPlayer() {
-            mService.get()!!.OnceCloseMiniPlayer = true
+            mService.get()?.onceCloseMiniPlayer = true
         }
 
         override fun refresh() {
-            mService.get()!!.refresh()
+            mService.get()?.refresh()
         }
 
         override fun isPlaying(): Boolean {
-            return mService.get()!!.isPlaying
+            return mService.get()?.isPlaying == true
         }
 
         override fun isPreparing(): Boolean {
-            return mService.get()!!.isPreparing
+            return mService.get()?.isPreparing == true
         }
 
         override fun isInitialized(): Boolean {
-            return mService.get()!!.isInitialized
+            return mService.get()?.isInitialized == true
         }
 
         override fun getQueue(): List<Audio>? {
@@ -1072,19 +1088,19 @@ class MusicPlaybackService : Service() {
         }
 
         override fun duration(): Long {
-            return mService.get()!!.duration()
+            return mService.get()?.duration() ?: -1
         }
 
         override fun position(): Long {
-            return mService.get()!!.position()
+            return mService.get()?.position() ?: -1
         }
 
         override fun getMiniplayerVisibility(): Boolean {
-            return !mService.get()!!.OnceCloseMiniPlayer && mService.get()!!.currentTrack != null
+            return mService.get()?.onceCloseMiniPlayer != true && mService.get()?.currentTrack != null
         }
 
         override fun seek(position: Long): Long {
-            return mService.get()!!.seek(position)
+            return mService.get()?.seek(position) ?: -1
         }
 
         override fun skip(position: Int) {
@@ -1096,7 +1112,7 @@ class MusicPlaybackService : Service() {
         }
 
         override fun getCurrentAudioPos(): Int {
-            return mService.get()!!.currentTrackPos
+            return mService.get()?.currentTrackPos ?: -1
         }
 
         override fun getArtistName(): String? {
@@ -1120,23 +1136,23 @@ class MusicPlaybackService : Service() {
         }
 
         override fun getQueuePosition(): Int {
-            return mService.get()!!.queuePosition
+            return mService.get()?.queuePosition ?: -1
         }
 
         override fun getShuffleMode(): Int {
-            return mService.get()!!.shuffleMode
+            return mService.get()?.shuffleMode ?: SHUFFLE_NONE
         }
 
         override fun getRepeatMode(): Int {
-            return mService.get()!!.repeatMode
+            return mService.get()?.repeatMode ?: REPEAT_NONE
         }
 
         override fun getAudioSessionId(): Int {
-            return mService.get()!!.audioSessionId
+            return mService.get()?.audioSessionId ?: -1
         }
 
         override fun getBufferPercent(): Int {
-            return mService.get()!!.bufferPercent
+            return mService.get()?.bufferPercent ?: 0
         }
 
     }

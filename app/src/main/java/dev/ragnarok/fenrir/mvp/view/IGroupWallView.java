@@ -40,6 +40,8 @@ public interface IGroupWallView extends IWallView {
 
     void goToGroupChats(int accountId, Community community);
 
+    void goToMutualFriends(int accountId, Community community);
+
     void startLoginCommunityActivity(int groupId);
 
     void openCommunityDialogs(int accountId, int groupId, String subtitle);

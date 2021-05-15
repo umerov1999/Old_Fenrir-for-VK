@@ -157,12 +157,8 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
     }
 
     private fun resolveFullscreenViews() {
-        if (Objects.nonNull(mToolbar)) {
-            mToolbar!!.visibility = if (mFullscreen) View.GONE else View.VISIBLE
-        }
-        if (Objects.nonNull(mDownload)) {
-            mDownload!!.visibility = if (mFullscreen) View.GONE else View.VISIBLE
-        }
+        mToolbar?.visibility = if (mFullscreen) View.GONE else View.VISIBLE
+        mDownload?.visibility = if (mFullscreen) View.GONE else View.VISIBLE
     }
 
     override fun getPresenterFactory(saveInstanceState: Bundle?): IPresenterFactory<StoryPagerPresenter> =
@@ -183,92 +179,75 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         }
 
     override fun displayData(pageCount: Int, selectedIndex: Int) {
-        if (Objects.nonNull(mViewPager)) {
-            val adapter = Adapter(pageCount)
-            mViewPager!!.adapter = adapter
-            mViewPager!!.setCurrentItem(selectedIndex, false)
-        }
+        val adapter = Adapter(pageCount)
+        mViewPager?.adapter = adapter
+        mViewPager?.setCurrentItem(selectedIndex, false)
     }
 
     override fun setAspectRatioAt(position: Int, w: Int, h: Int) {
-        val holder = findByPosition(position)
-        if (Objects.nonNull(holder)) {
-            holder!!.SetAspectRatio(w, h)
-        }
+        findByPosition(position)?.SetAspectRatio(w, h)
     }
 
     override fun setPreparingProgressVisible(position: Int, preparing: Boolean) {
         for (i in 0 until mHolderSparseArray.size()) {
             val key = mHolderSparseArray.keyAt(i)
             val holder = findByPosition(key)
-            if (Objects.nonNull(holder)) {
-                val isCurrent = position == key
-                val progressVisible = isCurrent && preparing
-                holder!!.setProgressVisible(progressVisible)
-                holder.setSurfaceVisible(if (isCurrent && !preparing) View.VISIBLE else View.GONE)
-            }
+            val isCurrent = position == key
+            val progressVisible = isCurrent && preparing
+            holder?.setProgressVisible(progressVisible)
+            holder?.setSurfaceVisible(if (isCurrent && !preparing) View.VISIBLE else View.GONE)
         }
     }
 
     override fun attachDisplayToPlayer(adapterPosition: Int, gifPlayer: IGifPlayer?) {
         val holder = findByPosition(adapterPosition)
-        if (holder != null && gifPlayer != null && holder.isSurfaceReady) {
-            gifPlayer.setDisplay(holder.mSurfaceHolder)
+        if (holder?.isSurfaceReady == true) {
+            gifPlayer?.setDisplay(holder.mSurfaceHolder)
         }
     }
 
     override fun setToolbarTitle(@StringRes titleRes: Int, vararg params: Any) {
-        val actionBar = ActivityUtils.supportToolbarFor(this)
-        if (Objects.nonNull(actionBar)) {
-            actionBar!!.title = getString(titleRes, *params)
-        }
+        ActivityUtils.supportToolbarFor(this)?.title = getString(titleRes, *params)
     }
 
     override fun setToolbarSubtitle(story: Story, account_id: Int) {
-        val actionBar = ActivityUtils.supportToolbarFor(this)
-        if (Objects.nonNull(actionBar)) {
-            actionBar!!.subtitle = story.owner.fullName
+        ActivityUtils.supportToolbarFor(this)?.subtitle = story.owner.fullName
+        Avatar?.setOnClickListener {
+            PlaceFactory.getOwnerWallPlace(account_id, story.owner)
+                .tryOpenWith(requireActivity())
         }
-        if (Objects.nonNull(Avatar)) {
-            Avatar!!.setOnClickListener {
-                PlaceFactory.getOwnerWallPlace(account_id, story.owner)
-                    .tryOpenWith(requireActivity())
-            }
+        Avatar?.let {
             ViewUtils.displayAvatar(
-                Avatar!!,
+                it,
                 transformation,
                 story.owner.maxSquareAvatar,
                 Constants.PICASSO_TAG
             )
         }
-        if (Objects.nonNull(mExp)) {
-            if (story.expires <= 0) mExp!!.visibility = View.GONE else {
-                mExp!!.visibility = View.VISIBLE
-                val exp = (story.expires - Calendar.getInstance().time.time / 1000) / 3600
-                mExp!!.text = getString(
-                    R.string.expires,
-                    exp.toString(),
-                    getString(
-                        Utils.declOfNum(
-                            exp,
-                            intArrayOf(R.string.hour, R.string.hour_sec, R.string.hours)
-                        )
+        if (story.expires <= 0) mExp?.visibility = View.GONE else {
+            mExp?.visibility = View.VISIBLE
+            val exp = (story.expires - Calendar.getInstance().time.time / 1000) / 3600
+            mExp?.text = getString(
+                R.string.expires,
+                exp.toString(),
+                getString(
+                    Utils.declOfNum(
+                        exp,
+                        intArrayOf(R.string.hour, R.string.hour_sec, R.string.hours)
                     )
                 )
-            }
+            )
         }
-        if (Objects.nonNull(mLink)) {
-            if (Utils.isEmpty(story.target_url)) {
-                mLink!!.visibility = View.GONE
-            } else {
-                mLink!!.visibility = View.VISIBLE
-                mLink!!.setOnClickListener {
-                    LinkHelper.openUrl(
-                        requireActivity(),
-                        account_id,
-                        story.target_url
-                    )
-                }
+        if (Utils.isEmpty(story.target_url)) {
+            mLink?.visibility = View.GONE
+        } else {
+            mLink?.visibility = View.VISIBLE
+            mLink?.setOnClickListener {
+                LinkHelper.openUrl(
+                    requireActivity(),
+                    account_id,
+                    story.target_url
+                )
             }
         }
     }
@@ -280,11 +259,9 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         aspectRatioH: Int
     ) {
         val holder = findByPosition(adapterPosition)
-        if (Objects.nonNull(holder)) {
-            holder!!.setProgressVisible(progress)
-            holder.SetAspectRatio(aspectRatioW, aspectRatioH)
-            holder.setSurfaceVisible(if (progress) View.GONE else View.VISIBLE)
-        }
+        holder?.setProgressVisible(progress)
+        holder?.SetAspectRatio(aspectRatioW, aspectRatioH)
+        holder?.setSurfaceVisible(if (progress) View.GONE else View.VISIBLE)
     }
 
     private fun fireHolderCreate(holder: MultiHolder) {

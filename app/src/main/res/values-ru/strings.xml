@@ -71,6 +71,7 @@
         <item>Хель</item>
         <item>Файер веер</item>
         <item>Цитадель</item>
+        <item>Один</item>
     </string-array>
 
     <string-array name="array_accounts_input">
@@ -1316,6 +1317,8 @@
     <string name="audio_force_download_pc">На компьютере. Всё равно скачать?</string>
     <string name="null_image_link">Отсутствует ссылка на скачивание</string>
     <string name="use_old_vk_api">Аудио с VK API 5.90</string>
+    <string name="use_hls_downloader">HLS Аудио Demuxer</string>
+    <string name="use_hls_downloader_summary">Если 5.90 сдох</string>
     <string name="expires">%1$s %2$s</string>
     <string name="disable_history">Не показывать Истории</string>
     <string name="audio_round_icon">Круглые обложки аудио</string>

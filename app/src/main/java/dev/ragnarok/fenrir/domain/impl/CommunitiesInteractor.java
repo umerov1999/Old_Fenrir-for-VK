@@ -2,8 +2,10 @@ package dev.ragnarok.fenrir.domain.impl;
 
 import java.util.List;
 
+import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.api.interfaces.INetworker;
 import dev.ragnarok.fenrir.api.model.VKApiCommunity;
+import dev.ragnarok.fenrir.api.model.VKApiUser;
 import dev.ragnarok.fenrir.db.column.GroupColumns;
 import dev.ragnarok.fenrir.db.interfaces.IStorages;
 import dev.ragnarok.fenrir.db.model.entity.CommunityEntity;
@@ -12,6 +14,7 @@ import dev.ragnarok.fenrir.domain.mappers.Dto2Entity;
 import dev.ragnarok.fenrir.domain.mappers.Dto2Model;
 import dev.ragnarok.fenrir.domain.mappers.Entity2Model;
 import dev.ragnarok.fenrir.model.Community;
+import dev.ragnarok.fenrir.model.Owner;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
 
@@ -47,6 +50,17 @@ public class CommunitiesInteractor implements ICommunitiesInteractor {
                     return stores.relativeship()
                             .storeComminities(accountId, dbos, userId, offset == 0)
                             .andThen(Single.just(Entity2Model.buildCommunitiesFromDbos(dbos)));
+                });
+    }
+
+    @Override
+    public Single<List<Owner>> getGroupFriends(int accountId, int groupId) {
+        return networker.vkDefault(accountId)
+                .groups()
+                .getMembers(String.valueOf(groupId), null, 0, 1000, Constants.MAIN_OWNER_FIELDS, "friends")
+                .map(items -> {
+                    List<VKApiUser> dtos = listEmptyIfNull(items.getItems());
+                    return Dto2Model.transformOwners(dtos, null);
                 });
     }
 

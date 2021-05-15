@@ -33,7 +33,6 @@ import dev.ragnarok.fenrir.mvp.view.ILocalJsonToChatView
 import dev.ragnarok.fenrir.picasso.PicassoInstance
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation
 import dev.ragnarok.fenrir.settings.CurrentTheme
-import dev.ragnarok.fenrir.util.Objects
 import dev.ragnarok.fenrir.util.Utils
 import dev.ragnarok.fenrir.util.ViewUtils
 
@@ -187,36 +186,26 @@ class LocalJsonToChatFragment :
     }
 
     private fun resolveEmptyText() {
-        if (Objects.nonNull(mEmpty) && Objects.nonNull(mAdapter)) {
-            mEmpty!!.visibility = if (mAdapter!!.itemCount == 0) View.VISIBLE else View.GONE
-        }
+        mEmpty?.visibility = if (mAdapter?.itemCount == 0) View.VISIBLE else View.GONE
     }
 
     override fun displayData(posts: List<Message>) {
-        if (Objects.nonNull(mAdapter)) {
-            mAdapter!!.items = posts
-            resolveEmptyText()
-        }
+        mAdapter?.items = posts
+        resolveEmptyText()
     }
 
     override fun notifyDataSetChanged() {
-        if (Objects.nonNull(mAdapter)) {
-            mAdapter!!.notifyDataSetChanged()
-            resolveEmptyText()
-        }
+        mAdapter?.notifyDataSetChanged()
+        resolveEmptyText()
     }
 
     override fun notifyDataAdded(position: Int, count: Int) {
-        if (Objects.nonNull(mAdapter)) {
-            mAdapter!!.notifyItemRangeInserted(position, count)
-            resolveEmptyText()
-        }
+        mAdapter?.notifyItemRangeInserted(position, count)
+        resolveEmptyText()
     }
 
     override fun showRefreshing(refreshing: Boolean) {
-        if (Objects.nonNull(mSwipeRefreshLayout)) {
-            mSwipeRefreshLayout!!.isRefreshing = refreshing
-        }
+        mSwipeRefreshLayout?.isRefreshing = refreshing
     }
 
     override fun getPresenterFactory(saveInstanceState: Bundle?): IPresenterFactory<LocalJsonToChatPresenter> =
@@ -239,9 +228,9 @@ class LocalJsonToChatFragment :
             PicassoInstance.with()
                 .load(peer.avaUrl)
                 .transform(RoundTransformation())
-                .into(Avatar!!)
+                .into(Avatar)
         } else {
-            PicassoInstance.with().cancelRequest(Avatar!!)
+            Avatar?.let { PicassoInstance.with().cancelRequest(it) }
             EmptyAvatar?.visibility = View.VISIBLE
             var name: String = peer.title
             if (name.length > 2) name = name.substring(0, 2)
@@ -260,18 +249,12 @@ class LocalJsonToChatFragment :
     }
 
     override fun setToolbarTitle(title: String?) {
-        val actionBar = ActivityUtils.supportToolbarFor(this)
-        if (Objects.nonNull(actionBar)) {
-            actionBar!!.title = null
-        }
+        ActivityUtils.supportToolbarFor(this)?.title = null
         Title?.text = title
     }
 
     override fun setToolbarSubtitle(subtitle: String?) {
-        val actionBar = ActivityUtils.supportToolbarFor(this)
-        if (Objects.nonNull(actionBar)) {
-            actionBar!!.subtitle = null
-        }
+        ActivityUtils.supportToolbarFor(this)?.subtitle = null
         SubTitle?.text = subtitle
     }
 

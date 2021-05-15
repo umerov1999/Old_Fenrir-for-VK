@@ -313,6 +313,10 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                 .observeOn(Injection.provideMainThreadScheduler())
                 .subscribe(this::onCurrentAccountChange));
 
+        mCompositeDisposable.add(Injection.provideProxySettings()
+                .observeActive().observeOn(Injection.provideMainThreadScheduler())
+                .subscribe(o -> MusicUtils.stop()));
+
         mCompositeDisposable.add(Stores.getInstance()
                 .dialogs()
                 .observeUnreadDialogsCount()

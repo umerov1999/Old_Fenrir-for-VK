@@ -74,6 +74,8 @@ public interface ISettings {
 
         boolean isUse_old_vk_api();
 
+        boolean isUse_hls_downloader();
+
         boolean isDisable_history();
 
         boolean isShow_wall_cover();

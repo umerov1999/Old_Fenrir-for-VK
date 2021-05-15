@@ -16,6 +16,7 @@ public abstract class FindAtWithContent<T> {
     private String q;
     private boolean ended;
     private boolean needSearchInCache;
+    private int offset;
 
     public FindAtWithContent(CompositeDisposable disposable, int visibleCount, int searchCount) {
         cached = new ArrayList<>();
@@ -37,16 +38,17 @@ public abstract class FindAtWithContent<T> {
 
     protected abstract boolean compare(@NonNull T data, @NonNull String q);
 
+    protected abstract void onReset(@NonNull List<T> data, int offset, boolean isEnd);
+
     public void do_search() {
         do_search(q);
     }
 
-    public boolean cancel() {
+    public void cancel() {
         if (q != null) {
             q = null;
-            return true;
+            onReset(cached, offset, ended);
         }
-        return false;
     }
 
     public void do_search(String q) {
@@ -77,13 +79,13 @@ public abstract class FindAtWithContent<T> {
     }
 
     private void progress(int searched) {
-        disposable.add(search(cached.size(), searchCount).compose(RxUtils.applySingleIOToMainSchedulers())
+        disposable.add(search(offset, searchCount).compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(r -> {
+                    offset += searchCount;
                     if (Utils.isEmpty(r)) {
                         ended = true;
                         updateLoading(false);
                     } else {
-                        ended = r.size() < searchCount;
                         cached.addAll(r);
                         List<T> result = new ArrayList<>();
                         for (T i : r) {
@@ -94,7 +96,7 @@ public abstract class FindAtWithContent<T> {
                         if (!Utils.isEmpty(result)) {
                             onResult(result);
                         }
-                        if (searched + result.size() >= visibleCount || ended) {
+                        if (searched + result.size() >= visibleCount) {
                             updateLoading(false);
                         } else {
                             progress(searched + result.size());
@@ -109,7 +111,16 @@ public abstract class FindAtWithContent<T> {
         needSearchInCache = true;
         String tmp = q;
         q = null;
+        offset = 0;
         do_search(tmp);
+    }
+
+    public void insertCache(List<T> data, int offset) {
+        if (Utils.isEmpty(data) || !Utils.isEmpty(cached)) {
+            return;
+        }
+        this.offset = offset;
+        cached.addAll(data);
     }
 
     public boolean isSearchMode() {

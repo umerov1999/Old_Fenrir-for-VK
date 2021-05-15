@@ -127,6 +127,7 @@ public class SettingsBackup {
         settings.add(new SettingCollector("end_list_anim", SettingTypes.TYPE_STRING));
         settings.add(new SettingCollector("runes_show", SettingTypes.TYPE_BOOL));
         settings.add(new SettingCollector("player_background_json", SettingTypes.TYPE_STRING));
+        settings.add(new SettingCollector("use_hls_downloader", SettingTypes.TYPE_BOOL));
     }
 
     public @Nullable

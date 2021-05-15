@@ -161,7 +161,7 @@ public class FirebaseInstallationServiceClient {
             firebaseInstallationData.put("fid", fid);
             firebaseInstallationData.put("appId", appId);
             firebaseInstallationData.put("authVersion", FIREBASE_INSTALLATION_AUTH_VERSION);
-            firebaseInstallationData.put("sdkVersion", SDK_VERSION_PREFIX + "16.3.5");
+            firebaseInstallationData.put("sdkVersion", SDK_VERSION_PREFIX + "17.0.0");
             return firebaseInstallationData;
         } catch (JSONException e) {
             throw new IllegalStateException(e);
@@ -179,7 +179,7 @@ public class FirebaseInstallationServiceClient {
     private static JSONObject buildGenerateAuthTokenRequestBody() {
         try {
             JSONObject sdkVersionData = new JSONObject();
-            sdkVersionData.put("sdkVersion", SDK_VERSION_PREFIX + "16.3.5");
+            sdkVersionData.put("sdkVersion", SDK_VERSION_PREFIX + "17.0.0");
 
             JSONObject firebaseInstallationData = new JSONObject();
             firebaseInstallationData.put("installation", sdkVersionData);
@@ -560,35 +560,29 @@ public class FirebaseInstallationServiceClient {
         reader.beginObject();
         while (reader.hasNext()) {
             String name = reader.nextName();
-            switch (name) {
-                case "name":
-                    builder.setUri(reader.nextString());
-                    break;
-                case "fid":
-                    builder.setFid(reader.nextString());
-                    break;
-                case "refreshToken":
-                    builder.setRefreshToken(reader.nextString());
-                    break;
-                case "authToken":
-                    reader.beginObject();
-                    while (reader.hasNext()) {
-                        String key = reader.nextName();
-                        if (key.equals("token")) {
-                            tokenResult.setToken(reader.nextString());
-                        } else if (key.equals("expiresIn")) {
-                            tokenResult.setTokenExpirationTimestamp(
-                                    parseTokenExpirationTimestamp(reader.nextString()));
-                        } else {
-                            reader.skipValue();
-                        }
+            if (name.equals("name")) {
+                builder.setUri(reader.nextString());
+            } else if (name.equals("fid")) {
+                builder.setFid(reader.nextString());
+            } else if (name.equals("refreshToken")) {
+                builder.setRefreshToken(reader.nextString());
+            } else if (!name.equals("authToken")) {
+                reader.skipValue();
+            } else {
+                reader.beginObject();
+                while (reader.hasNext()) {
+                    String key = reader.nextName();
+                    if (key.equals("token")) {
+                        tokenResult.setToken(reader.nextString());
+                    } else if (key.equals("expiresIn")) {
+                        tokenResult.setTokenExpirationTimestamp(
+                                parseTokenExpirationTimestamp(reader.nextString()));
+                    } else {
+                        reader.skipValue();
                     }
-                    builder.setAuthToken(tokenResult.build());
-                    reader.endObject();
-                    break;
-                default:
-                    reader.skipValue();
-                    break;
+                }
+                builder.setAuthToken(tokenResult.build());
+                reader.endObject();
             }
         }
         reader.endObject();

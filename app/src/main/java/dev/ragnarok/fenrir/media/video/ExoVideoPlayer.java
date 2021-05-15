@@ -3,15 +3,17 @@ package dev.ragnarok.fenrir.media.video;
 import android.content.Context;
 import android.view.SurfaceHolder;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.audio.AudioAttributes;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.source.hls.HlsMediaSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.video.VideoListener;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -145,7 +147,7 @@ public class ExoVideoPlayer implements IVideoPlayer {
         videoSizeChangeListeners.remove(listener);
     }
 
-    private static final class OnVideoSizeChangedListener implements VideoListener {
+    private static final class OnVideoSizeChangedListener implements Player.Listener {
 
         final WeakReference<ExoVideoPlayer> ref;
 
@@ -154,10 +156,10 @@ public class ExoVideoPlayer implements IVideoPlayer {
         }
 
         @Override
-        public void onVideoSizeChanged(int i, int i1, int i2, float v) {
+        public void onVideoSizeChanged(@NonNull com.google.android.exoplayer2.video.VideoSize size) {
             ExoVideoPlayer player = ref.get();
             if (player != null) {
-                player.onVideoSizeChanged(i, i1);
+                player.onVideoSizeChanged(size.width, size.height);
             }
         }
 

@@ -8,7 +8,7 @@ android {
         minSdkVersion fenrirMinSDK
         //noinspection ExpiredTargetSdkVersion,OldTargetApi
         targetSdkVersion fenrirTargetSDK
-        versionName "16.3.5"
+        versionName "17.0.0"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -17,9 +17,9 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.firebase:firebase-common:19.5.0'
-    implementation 'com.google.firebase:firebase-installations-interop:16.0.1'
-    implementation 'com.google.firebase:firebase-components:16.1.0'
+    implementation 'com.google.firebase:firebase-common:20.0.0'
+    implementation 'com.google.firebase:firebase-installations-interop:17.0.0'
+    implementation 'com.google.firebase:firebase-components:17.0.0'
     implementation 'com.google.android.gms:play-services-tasks:17.2.1'
 
     compileOnly "com.google.auto.value:auto-value-annotations:1.8.1"

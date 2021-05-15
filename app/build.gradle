@@ -137,7 +137,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-parcelize-runtime:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-android-extensions-runtime:$kotlin_version"
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
-    implementation 'androidx.core:core-ktx:1.5.0-rc01'
+    implementation 'androidx.core:core-ktx:1.5.0-rc02'
     implementation 'androidx.annotation:annotation:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.0'
     implementation 'androidx.viewpager2:viewpager2:1.1.0-alpha01'
@@ -152,12 +152,12 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation "io.reactivex.rxjava3:rxjava:$RxJavaVersion"
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
-    implementation 'com.google.firebase:firebase-database:19.7.0'
-    fenrir_vk_liteImplementation('com.google.firebase:firebase-messaging:21.1.0') {
+    implementation 'com.google.firebase:firebase-database:20.0.0'
+    fenrir_vk_liteImplementation('com.google.firebase:firebase-messaging:22.0.0') {
         exclude group: "com.google.firebase", module: "firebase-installations"
     }
     fenrir_vk_liteImplementation project(path: ':firebase-installations')
-    fenrir_vk_fullImplementation('com.google.firebase:firebase-messaging:21.1.0') {
+    fenrir_vk_fullImplementation('com.google.firebase:firebase-messaging:22.0.0') {
         exclude group: "com.google.firebase", module: "firebase-installations"
     }
     fenrir_vk_fullImplementation project(path: ':firebase-installations')

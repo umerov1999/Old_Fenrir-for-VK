@@ -189,6 +189,11 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public boolean isUse_hls_downloader() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("use_hls_downloader", false);
+    }
+
+    @Override
     public boolean isDisable_history() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("disable_history", false);
     }

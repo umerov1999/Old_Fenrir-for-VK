@@ -2,10 +2,6 @@ package dev.ragnarok.fenrir.fragment
 
 import android.Manifest
 import android.app.Dialog
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
@@ -24,33 +20,36 @@ import dev.ragnarok.fenrir.adapter.AudioRecyclerAdapter
 import dev.ragnarok.fenrir.listener.BackPressCallback
 import dev.ragnarok.fenrir.model.Audio
 import dev.ragnarok.fenrir.place.PlaceFactory
-import dev.ragnarok.fenrir.player.MusicPlaybackService
 import dev.ragnarok.fenrir.player.MusicPlaybackService.Companion.startForPlayList
 import dev.ragnarok.fenrir.player.util.MusicUtils
 import dev.ragnarok.fenrir.settings.Settings
 import dev.ragnarok.fenrir.util.AppPerms
 import dev.ragnarok.fenrir.util.CustomToast.Companion.CreateCustomToast
-import dev.ragnarok.fenrir.util.Objects
-import java.util.*
-
+import dev.ragnarok.fenrir.util.Utils
 
 class PlaylistFragment : BottomSheetDialogFragment(), AudioRecyclerAdapter.ClickListener,
     BackPressCallback {
     private var mRecyclerView: RecyclerView? = null
     private var mAdapter: AudioRecyclerAdapter? = null
-    private var mData: ArrayList<Audio>? = null
-    private var mPlaybackStatus: PlaybackStatus? = null
+    private val mData: ArrayList<Audio> = ArrayList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mData = requireArguments().getParcelableArrayList(Extra.AUDIOS)
+        mData.clear()
+        val tmp: List<Audio>? = requireArguments().getParcelableArrayList(Extra.AUDIOS)
+        if (!Utils.isEmpty(tmp)) {
+            if (tmp != null) {
+                mData.addAll(tmp)
+            }
+        }
     }
 
     private fun getAudioPos(audio: Audio): Int {
-        if (mData != null && mData!!.isNotEmpty()) {
-            for ((pos, i) in mData!!.withIndex()) {
+        if (mData.isNotEmpty()) {
+            for ((pos, i) in mData.withIndex()) {
                 if (i.id == audio.id && i.ownerId == audio.ownerId) {
                     i.isAnimationNow = true
-                    mAdapter!!.notifyDataSetChanged()
+                    mAdapter?.notifyDataSetChanged()
                     return pos
                 }
             }
@@ -109,12 +108,14 @@ class PlaylistFragment : BottomSheetDialogFragment(), AudioRecyclerAdapter.Click
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
                 viewHolder.itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                 mAdapter?.notifyItemChanged(viewHolder.bindingAdapterPosition)
-                startForPlayList(
-                    requireActivity(),
-                    mData!!,
-                    mAdapter!!.getItemRawPosition(viewHolder.bindingAdapterPosition),
-                    false
-                )
+                mAdapter?.let { it1 ->
+                    startForPlayList(
+                        requireActivity(),
+                        mData,
+                        it1.getItemRawPosition(viewHolder.bindingAdapterPosition),
+                        false
+                    )
+                }
             }
 
             override fun isLongPressDragEnabled(): Boolean {
@@ -125,25 +126,29 @@ class PlaylistFragment : BottomSheetDialogFragment(), AudioRecyclerAdapter.Click
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mAdapter = AudioRecyclerAdapter(requireActivity(), mData, false, false, 0, null)
-        mAdapter!!.setClickListener(this)
-        mRecyclerView!!.adapter = mAdapter
+        mAdapter?.setClickListener(this)
+        mRecyclerView?.adapter = mAdapter
         val my = MusicUtils.getCurrentAudio()
         if (my != null) {
             var index = 0
             var o = 0
-            for (i in mData!!) {
+            for (i in mData) {
                 if (i === my) {
                     index = o
                     break
                 }
                 o++
             }
-            mRecyclerView!!.scrollToPosition(index)
+            mRecyclerView?.scrollToPosition(index)
         }
     }
 
     override fun onClick(position: Int, catalog: Int, audio: Audio) {
-        startForPlayList(requireActivity(), mData!!, position, false)
+        if (MusicUtils.getQueue() == mData) {
+            MusicUtils.skip(position)
+        } else {
+            startForPlayList(requireActivity(), mData, position, false)
+        }
     }
 
     override fun onEdit(position: Int, audio: Audio?) {
@@ -171,55 +176,16 @@ class PlaylistFragment : BottomSheetDialogFragment(), AudioRecyclerAdapter.Click
         requestWritePermission.launch()
     }
 
-    override fun onResume() {
-        super.onResume()
-        mPlaybackStatus = PlaybackStatus()
-        val filter = IntentFilter()
-        filter.addAction(MusicPlaybackService.PLAYSTATE_CHANGED)
-        filter.addAction(MusicPlaybackService.SHUFFLEMODE_CHANGED)
-        filter.addAction(MusicPlaybackService.REPEATMODE_CHANGED)
-        filter.addAction(MusicPlaybackService.META_CHANGED)
-        filter.addAction(MusicPlaybackService.PREPARED)
-        filter.addAction(MusicPlaybackService.REFRESH)
-        requireActivity().registerReceiver(mPlaybackStatus, filter)
-    }
-
     override fun onBackPressed(): Boolean {
         return true
     }
 
-    override fun onPause() {
-        try {
-            requireActivity().unregisterReceiver(mPlaybackStatus)
-        } catch (ignored: Throwable) {
-        }
-        super.onPause()
-    }
-
-    private inner class PlaybackStatus : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val action = intent.action
-            if (Objects.isNull(action)) return
-            if (MusicPlaybackService.PLAYSTATE_CHANGED == action) {
-                mAdapter!!.notifyDataSetChanged()
-            }
-        }
-    }
-
     companion object {
-        fun buildArgs(playlist: ArrayList<Audio?>?): Bundle {
+        fun newInstance(playlist: ArrayList<Audio>?): PlaylistFragment {
             val bundle = Bundle()
             bundle.putParcelableArrayList(Extra.AUDIOS, playlist)
-            return bundle
-        }
-
-        fun newInstance(playlist: ArrayList<Audio?>?): PlaylistFragment {
-            return newInstance(buildArgs(playlist))
-        }
-
-        fun newInstance(args: Bundle?): PlaylistFragment {
             val fragment = PlaylistFragment()
-            fragment.arguments = args
+            fragment.arguments = bundle
             return fragment
         }
     }

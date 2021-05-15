@@ -178,7 +178,7 @@ public class ExoVoicePlayerSensored implements IVoicePlayer, SensorEventListener
 
         MediaSource mediaSource = new ProgressiveMediaSource.Factory(Utils.getExoPlayerFactory(userAgent, proxyConfig)).createMediaSource(Utils.makeMediaItem(url));
         exoPlayer.setRepeatMode(Player.REPEAT_MODE_OFF);
-        exoPlayer.addListener(new Player.EventListener() {
+        exoPlayer.addListener(new Player.Listener() {
             @Override
             public void onPlaybackStateChanged(@Player.State int state) {
                 onInternalPlayerStateChanged(state);

@@ -140,6 +140,16 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
         endOfContent = data.isEmpty();
         actualReceived = true;
         if (offset == 0) {
+            if (MusicUtils.Audios.containsKey(ownerId)) {
+                Objects.requireNonNull(MusicUtils.Audios.get(ownerId)).clear();
+            } else {
+                MusicUtils.Audios.put(ownerId, new ArrayList<>(data.size()));
+            }
+        }
+        if (MusicUtils.Audios.containsKey(ownerId)) {
+            Objects.requireNonNull(MusicUtils.Audios.get(ownerId)).addAll(data);
+        }
+        if (offset == 0) {
             audios.clear();
             audios.addAll(data);
             callView(IAudiosView::notifyListChanged);
@@ -149,7 +159,7 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
             callView(view -> view.notifyDataAdded(startOwnSize, data.size()));
         }
         if (isNull(albumId) && !iSSelectMode) {
-            MusicUtils.Audios.put(ownerId, audios);
+            MusicUtils.Audios.put(ownerId, new ArrayList<>(audios));
         }
         setLoadingNow(false);
     }
@@ -231,10 +241,11 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
 
         sleepDataDisposable.dispose();
         if (Utils.isEmpty(q)) {
-            if (searcher.cancel()) {
-                fireRefresh();
-            }
+            searcher.cancel();
         } else {
+            if (!searcher.isSearchMode()) {
+                searcher.insertCache(audios, audios.size());
+            }
             sleepDataDisposable = (Single.just(new Object())
                     .delay(WEB_SEARCH_DELAY, TimeUnit.MILLISECONDS)
                     .compose(RxUtils.applySingleIOToMainSchedulers())
@@ -415,6 +426,24 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
             return (Utils.safeCheck(data.getTitle(), () -> data.getTitle().toLowerCase().contains(q.toLowerCase()))
                     || Utils.safeCheck(data.getArtist(), () -> data.getArtist().toLowerCase().contains(q.toLowerCase()))
                     || checkArtists(data.getMain_artists(), q));
+        }
+
+        @Override
+        protected void onReset(@NonNull List<Audio> data, int offset, boolean isEnd) {
+            if (Utils.isEmpty(data)) {
+                fireRefresh();
+            } else {
+                endOfContent = isEnd;
+                audios.clear();
+                audios.addAll(data);
+                if (MusicUtils.Audios.containsKey(ownerId)) {
+                    Objects.requireNonNull(MusicUtils.Audios.get(ownerId)).clear();
+                } else {
+                    MusicUtils.Audios.put(ownerId, new ArrayList<>(data.size()));
+                }
+                Objects.requireNonNull(MusicUtils.Audios.get(ownerId)).addAll(data);
+                callView(IAudiosView::notifyListChanged);
+            }
         }
     }
 }

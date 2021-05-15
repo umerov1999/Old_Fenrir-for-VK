@@ -77,6 +77,7 @@ import java.io.OutputStream
 import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener {
     private val PLAYER_TAG = "PicassoPlayerTag"
@@ -310,8 +311,9 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                     icon = R.drawable.ic_menu_24_white
                     iconColor = CurrentTheme.getColorSecondary(requireActivity())
                     callback = {
-                        if (!isEmpty(MusicUtils.getQueue())) {
-                            PlaylistFragment.newInstance(MusicUtils.getQueue() as ArrayList<Audio?>)
+                        val tmpList = MusicUtils.getQueue()
+                        if (!isEmpty(tmpList)) {
+                            PlaylistFragment.newInstance(ArrayList(tmpList))
                                 .show(childFragmentManager, "audio_playlist")
                         }
                     }
@@ -750,11 +752,13 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
             if (isAdded) {
                 playerGradientFirst?.visibility = View.VISIBLE
                 playerGradientSecond?.visibility = View.VISIBLE
-                FadeAnimDrawable.setBitmap(
-                    ivBackground!!,
-                    requireActivity(),
-                    bitmap
-                )
+                ivBackground?.let {
+                    FadeAnimDrawable.setBitmap(
+                        it,
+                        requireActivity(),
+                        bitmap
+                    )
+                }
             }
         }
 
@@ -1092,7 +1096,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
 
             // approximate how often we would need to refresh the slider to
             // move it smoothly
-            var width = mProgress!!.width
+            var width = mProgress?.width ?: 0
             if (width == 0) {
                 width = 320
             }
@@ -1202,7 +1206,9 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         fun updateAudios(audios: List<Audio>?) {
             mAudios.clear()
             if (!isEmpty(audios)) {
-                mAudios.addAll(audios!!)
+                if (audios != null) {
+                    mAudios.addAll(audios)
+                }
             }
             notifyDataSetChanged()
         }

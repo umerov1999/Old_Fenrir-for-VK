@@ -43,7 +43,6 @@ import dev.ragnarok.fenrir.settings.CurrentTheme
 import dev.ragnarok.fenrir.settings.Settings
 import dev.ragnarok.fenrir.util.AppPerms
 import dev.ragnarok.fenrir.util.CustomToast.Companion.CreateCustomToast
-import dev.ragnarok.fenrir.util.Objects
 import dev.ragnarok.fenrir.util.Utils
 import dev.ragnarok.fenrir.util.Utils.nonEmpty
 import dev.ragnarok.fenrir.view.CircleCounterButton
@@ -411,64 +410,48 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
         }
 
     override fun setupLikeButton(visible: Boolean, like: Boolean, likes: Int) {
-        if (Objects.nonNull(mButtonLike)) {
-            mButtonLike!!.visibility = if (visible) View.VISIBLE else View.GONE
-            mButtonLike!!.isActive = like
-            mButtonLike!!.count = likes
-            mButtonLike!!.setIcon(if (like) R.drawable.heart_filled else R.drawable.heart)
-        }
+        mButtonLike?.visibility = if (visible) View.VISIBLE else View.GONE
+        mButtonLike?.isActive = like
+        mButtonLike?.count = likes
+        mButtonLike?.setIcon(if (like) R.drawable.heart_filled else R.drawable.heart)
     }
 
     override fun setupWithUserButton(users: Int) {
-        if (Objects.nonNull(mButtonWithUser)) {
-            mButtonWithUser!!.visibility = if (users > 0) View.VISIBLE else View.GONE
-            mButtonWithUser!!.count = users
-        }
+        mButtonWithUser?.visibility = if (users > 0) View.VISIBLE else View.GONE
+        mButtonWithUser?.count = users
     }
 
     override fun setupShareButton(visible: Boolean) {
-        if (Objects.nonNull(buttonShare)) {
-            buttonShare!!.visibility = if (visible) View.VISIBLE else View.GONE
-        }
+        buttonShare?.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
     override fun setupCommentsButton(visible: Boolean, count: Int) {
-        if (Objects.nonNull(mButtonComments)) {
-            mButtonComments!!.visibility = if (visible) View.VISIBLE else View.GONE
-            mButtonComments!!.count = count
-        }
+        mButtonComments?.visibility = if (visible) View.VISIBLE else View.GONE
+        mButtonComments?.count = count
     }
 
     override fun displayPhotos(photos: List<Photo>, initialIndex: Int) {
-        if (Objects.nonNull(mViewPager)) {
-            if (bShowPhotosLine) {
-                if (photos.size <= 1) {
-                    mAdapterRecycler.setData(Collections.emptyList())
-                    mAdapterRecycler.notifyDataSetChanged()
-                } else {
-                    mAdapterRecycler.setData(photos)
-                    mAdapterRecycler.notifyDataSetChanged()
-                    mAdapterRecycler.selectPosition(initialIndex)
-                }
+        if (bShowPhotosLine) {
+            if (photos.size <= 1) {
+                mAdapterRecycler.setData(Collections.emptyList())
+                mAdapterRecycler.notifyDataSetChanged()
+            } else {
+                mAdapterRecycler.setData(photos)
+                mAdapterRecycler.notifyDataSetChanged()
+                mAdapterRecycler.selectPosition(initialIndex)
             }
-            mPagerAdapter = Adapter(photos)
-            mViewPager!!.adapter = mPagerAdapter
-            mViewPager!!.setCurrentItem(initialIndex, false)
         }
+        mPagerAdapter = Adapter(photos)
+        mViewPager?.adapter = mPagerAdapter
+        mViewPager?.setCurrentItem(initialIndex, false)
     }
 
     override fun setToolbarTitle(title: String?) {
-        val actionBar = ActivityUtils.supportToolbarFor(this)
-        if (Objects.nonNull(actionBar)) {
-            actionBar!!.title = title
-        }
+        ActivityUtils.supportToolbarFor(this)?.title = title
     }
 
     override fun setToolbarSubtitle(subtitle: String?) {
-        val actionBar = ActivityUtils.supportToolbarFor(this)
-        if (Objects.nonNull(actionBar)) {
-            actionBar!!.subtitle = subtitle
-        }
+        ActivityUtils.supportToolbarFor(this)?.subtitle = subtitle
     }
 
     override fun sharePhoto(accountId: Int, photo: Photo) {
@@ -509,9 +492,7 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
     }
 
     override fun setButtonRestoreVisible(visible: Boolean) {
-        if (Objects.nonNull(mButtonRestore)) {
-            mButtonRestore!!.visibility = if (visible) View.VISIBLE else View.GONE
-        }
+        mButtonRestore?.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
     override fun setupOptionMenu(canSaveYourself: Boolean, canDelete: Boolean) {
@@ -550,9 +531,7 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
     }
 
     override fun setToolbarVisible(visible: Boolean) {
-        if (Objects.nonNull(mToolbar)) {
-            mToolbar!!.visibility = if (visible) View.VISIBLE else View.GONE
-        }
+        mToolbar?.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
     override fun rebindPhotoAt(position: Int) {

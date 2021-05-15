@@ -61,10 +61,11 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
 
         sleepDataDisposable.dispose();
         if (Utils.isEmpty(q)) {
-            if (searcher.cancel()) {
-                fireRefresh();
-            }
+            searcher.cancel();
         } else {
+            if (!searcher.isSearchMode()) {
+                searcher.insertCache(pages, pages.size());
+            }
             sleepDataDisposable = (Single.just(new Object())
                     .delay(WEB_SEARCH_DELAY, TimeUnit.MILLISECONDS)
                     .compose(RxUtils.applySingleIOToMainSchedulers())
@@ -250,6 +251,18 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
         @Override
         protected boolean compare(@NonNull FavePage data, @NonNull String q) {
             return Objects.nonNull(data.getOwner()) && Utils.safeCheck(data.getOwner().getFullName(), () -> data.getOwner().getFullName().toLowerCase().contains(q.toLowerCase()));
+        }
+
+        @Override
+        protected void onReset(@NonNull List<FavePage> data, int offset, boolean isEnd) {
+            if (Utils.isEmpty(data)) {
+                fireRefresh();
+            } else {
+                pages.clear();
+                pages.addAll(data);
+                endOfContent = isEnd;
+                callView(IFaveUsersView::notifyDataSetChanged);
+            }
         }
     }
 }

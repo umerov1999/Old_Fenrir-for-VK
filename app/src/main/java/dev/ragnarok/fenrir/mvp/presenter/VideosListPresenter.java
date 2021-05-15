@@ -132,10 +132,11 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
 
         sleepDataDisposable.dispose();
         if (Utils.isEmpty(q)) {
-            if (searcher.cancel()) {
-                fireRefresh();
-            }
+            searcher.cancel();
         } else {
+            if (!searcher.isSearchMode()) {
+                searcher.insertCache(data, intNextFrom.getOffset());
+            }
             sleepDataDisposable = (Single.just(new Object())
                     .delay(WEB_SEARCH_DELAY, TimeUnit.MILLISECONDS)
                     .compose(RxUtils.applySingleIOToMainSchedulers())
@@ -458,6 +459,19 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
         protected boolean compare(@NonNull Video data, @NonNull String q) {
             return Utils.safeCheck(data.getTitle(), () -> data.getTitle().toLowerCase().contains(q.toLowerCase()))
                     || Utils.safeCheck(data.getDescription(), () -> data.getDescription().toLowerCase().contains(q.toLowerCase()));
+        }
+
+        @Override
+        protected void onReset(@NonNull List<Video> data, int offset, boolean isEnd) {
+            if (Utils.isEmpty(data)) {
+                fireRefresh();
+            } else {
+                VideosListPresenter.this.data.clear();
+                VideosListPresenter.this.data.addAll(data);
+                intNextFrom.setOffset(offset);
+                endOfContent = isEnd;
+                callView(IVideosListView::notifyDataSetChanged);
+            }
         }
     }
 }

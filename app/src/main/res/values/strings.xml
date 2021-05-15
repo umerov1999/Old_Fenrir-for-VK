@@ -147,6 +147,7 @@
         <item>Hella</item>
         <item>Fire Fan</item>
         <item>Citadel</item>
+        <item>Odin</item>
     </string-array>
 
     <string-array name="array_pagan_symbol_items" translatable="false">
@@ -162,6 +163,7 @@
         <item>9</item>
         <item>10</item>
         <item>11</item>
+        <item>12</item>
     </string-array>
 
     <string-array name="array_accounts_input">
@@ -1490,6 +1492,8 @@
     <string name="audio_force_download_pc">On the computer. Download anyway?</string>
     <string name="null_image_link">Missing download link</string>
     <string name="use_old_vk_api">Audio with VK API 5.90</string>
+    <string name="use_hls_downloader">HLS Audio Demuxer</string>
+    <string name="use_hls_downloader_summary">If 5.90 dead</string>
     <string name="expires">%1$s %2$s</string>
     <string name="disable_history">Don\'t show Stories</string>
     <string name="audio_round_icon">Rounded audio covers</string>

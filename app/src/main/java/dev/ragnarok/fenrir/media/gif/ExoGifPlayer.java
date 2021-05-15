@@ -2,11 +2,12 @@ package dev.ragnarok.fenrir.media.gif;
 
 import android.view.SurfaceHolder;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
-import com.google.android.exoplayer2.video.VideoListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +32,10 @@ public class ExoGifPlayer implements IGifPlayer {
     private final boolean isRepeat;
     private int status;
     private VideoSize size;
-    private final VideoListener videoListener = new VideoListener() {
+    private final Player.Listener videoListener = new Player.Listener() {
         @Override
-        public void onVideoSizeChanged(int i, int i1, int i2, float v) {
-            size = new VideoSize(i, i1);
+        public void onVideoSizeChanged(@NonNull com.google.android.exoplayer2.video.VideoSize videoSize) {
+            size = new VideoSize(videoSize.width, videoSize.height);
             ExoGifPlayer.this.onVideoSizeChanged();
         }
 
@@ -102,7 +103,7 @@ public class ExoGifPlayer implements IGifPlayer {
 
         MediaSource mediaSource = new ProgressiveMediaSource.Factory(Utils.getExoPlayerFactory(userAgent, proxyConfig)).createMediaSource(Utils.makeMediaItem((url)));
         internalPlayer.setRepeatMode(isRepeat ? Player.REPEAT_MODE_ONE : Player.REPEAT_MODE_OFF);
-        internalPlayer.addListener(new Player.EventListener() {
+        internalPlayer.addListener(new Player.Listener() {
             @Override
             public void onPlaybackStateChanged(@Player.State int state) {
                 Logger.d("FenrirExo", "onPlaybackStateChanged, state: " + state);
