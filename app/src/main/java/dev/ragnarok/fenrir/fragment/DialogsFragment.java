@@ -406,7 +406,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         }
 
         if (requireActivity() instanceof OnSectionResumeCallback) {
-            ((OnSectionResumeCallback) requireActivity()).onSectionResume(AdditionalNavigationFragment.SECTION_ITEM_DIALOGS);
+            ((OnSectionResumeCallback) requireActivity()).onSectionResume(AbsNavigationFragment.SECTION_ITEM_DIALOGS);
         }
 
         new ActivityFeatures.Builder()

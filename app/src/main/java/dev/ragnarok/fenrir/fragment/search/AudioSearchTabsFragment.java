@@ -18,7 +18,7 @@ import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
-import dev.ragnarok.fenrir.fragment.AdditionalNavigationFragment;
+import dev.ragnarok.fenrir.fragment.AbsNavigationFragment;
 import dev.ragnarok.fenrir.fragment.search.criteria.AudioSearchCriteria;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.place.Place;
@@ -87,7 +87,7 @@ public class AudioSearchTabsFragment extends Fragment {
                 .apply(requireActivity());
 
         if (requireActivity() instanceof OnSectionResumeCallback) {
-            ((OnSectionResumeCallback) requireActivity()).onSectionResume(AdditionalNavigationFragment.SECTION_ITEM_AUDIOS);
+            ((OnSectionResumeCallback) requireActivity()).onSectionResume(AbsNavigationFragment.SECTION_ITEM_AUDIOS);
         }
     }
 

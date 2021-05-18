@@ -103,6 +103,10 @@ public class PlaceFactory {
         return new Place(Place.DRAWER_EDIT);
     }
 
+    public static Place getSideDrawerEditPlace() {
+        return new Place(Place.SIDE_DRAWER_EDIT);
+    }
+
     public static Place getProxyAddPlace() {
         return new Place(Place.PROXY_ADD);
     }

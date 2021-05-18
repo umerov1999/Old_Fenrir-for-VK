@@ -152,11 +152,11 @@ class PlaylistFragment : BottomSheetDialogFragment(), AudioRecyclerAdapter.Click
     }
 
     override fun onEdit(position: Int, audio: Audio?) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onDelete(position: Int) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onUrlPhotoOpen(url: String, prefix: String, photo_prefix: String) {

@@ -360,7 +360,7 @@ public class DocsFragment extends BaseMvpFragment<DocsListPresenter, IDocListVie
         }
 
         if (requireActivity() instanceof OnSectionResumeCallback) {
-            ((OnSectionResumeCallback) requireActivity()).onSectionResume(AdditionalNavigationFragment.SECTION_ITEM_DOCS);
+            ((OnSectionResumeCallback) requireActivity()).onSectionResume(AbsNavigationFragment.SECTION_ITEM_DOCS);
         }
 
         new ActivityFeatures.Builder()

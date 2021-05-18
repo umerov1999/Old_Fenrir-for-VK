@@ -12,10 +12,9 @@ import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
@@ -25,13 +24,16 @@ import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.adapter.MenuListAdapter;
+import dev.ragnarok.fenrir.db.Stores;
 import dev.ragnarok.fenrir.domain.IOwnersRepository;
 import dev.ragnarok.fenrir.domain.Repository;
-import dev.ragnarok.fenrir.model.SwitchableCategory;
+import dev.ragnarok.fenrir.model.SideSwitchableCategory;
 import dev.ragnarok.fenrir.model.User;
 import dev.ragnarok.fenrir.model.drawer.AbsMenuItem;
+import dev.ragnarok.fenrir.model.drawer.DividerMenuItem;
 import dev.ragnarok.fenrir.model.drawer.RecentChat;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
+import dev.ragnarok.fenrir.picasso.transforms.BlurTransformation;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.ISettings;
@@ -40,38 +42,50 @@ import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.RxUtils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
-import static dev.ragnarok.fenrir.model.SwitchableCategory.BOOKMARKS;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.DOCS;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.FRIENDS;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.GROUPS;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.MUSIC;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.NEWSFEED_COMMENTS;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.PHOTOS;
-import static dev.ragnarok.fenrir.model.SwitchableCategory.VIDEOS;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.BOOKMARKS;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.DIALOGS;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.DOCS;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.FEED;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.FEEDBACK;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.FRIENDS;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.GROUPS;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.MUSIC;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.NEWSFEED_COMMENTS;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.PHOTOS;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.SEARCH;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.VIDEOS;
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 import static dev.ragnarok.fenrir.util.RxUtils.ignore;
 import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
 import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
-public class AdditionalNavigationFragment extends AbsNavigationFragment implements MenuListAdapter.ActionListener {
+public class SideNavigationFragment extends AbsNavigationFragment implements MenuListAdapter.ActionListener {
 
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private NavigationDrawerCallbacks mCallbacks;
-    private BottomSheetBehavior<View> mBottomSheetBehavior;
+    private DrawerLayout mDrawerLayout;
+    private View mFragmentContainerView;
     private ImageView ivHeaderAvatar;
     private TextView tvUserName;
     private TextView tvDomain;
     private List<RecentChat> mRecentChats;
     private MenuListAdapter mAdapter;
     private List<AbsMenuItem> mDrawerItems;
+    private ImageView backgroundImage;
     private int mAccountId;
 
     private IOwnersRepository ownersRepository;
 
-    protected static AbsMenuItem getItemBySwitchableCategory(@SwitchableCategory int type) {
+    private static AbsMenuItem getItemBySideSwitchableCategory(@SideSwitchableCategory int type) {
         switch (type) {
             case FRIENDS:
                 return SECTION_ITEM_FRIENDS;
+            case DIALOGS:
+                return SECTION_ITEM_DIALOGS;
+            case FEED:
+                return SECTION_ITEM_FEED;
+            case FEEDBACK:
+                return SECTION_ITEM_FEEDBACK;
             case NEWSFEED_COMMENTS:
                 return SECTION_ITEM_NEWSFEED_COMMENTS;
             case GROUPS:
@@ -86,6 +100,8 @@ public class AdditionalNavigationFragment extends AbsNavigationFragment implemen
                 return SECTION_ITEM_DOCS;
             case BOOKMARKS:
                 return SECTION_ITEM_BOOKMARKS;
+            case SEARCH:
+                return SECTION_ITEM_SEARCH;
         }
 
         throw new UnsupportedOperationException();
@@ -111,47 +127,44 @@ public class AdditionalNavigationFragment extends AbsNavigationFragment implemen
                 .recentChats()
                 .get(mAccountId);
 
-        mDrawerItems = new ArrayList<>();
-        mDrawerItems.addAll(generateNavDrawerItems());
-
-        mCompositeDisposable.add(Settings.get().drawerSettings()
+        mCompositeDisposable.add(Settings.get().sideDrawerSettings()
                 .observeChanges()
                 .observeOn(Injection.provideMainThreadScheduler())
                 .subscribe(o -> refreshNavigationItems()));
     }
 
-    private void refreshUserInfo() {
-        if (mAccountId != ISettings.IAccountsSettings.INVALID_ID) {
-            mCompositeDisposable.add(ownersRepository.getBaseOwnerInfo(mAccountId, mAccountId, IOwnersRepository.MODE_ANY)
-                    .compose(RxUtils.applySingleIOToMainSchedulers())
-                    .subscribe(owner -> refreshHeader((User) owner), ignore()));
+    @Override
+    public void onUnreadDialogsCountChange(int count) {
+        if (SECTION_ITEM_DIALOGS.getCount() != count) {
+            SECTION_ITEM_DIALOGS.setCount(count);
+            safellyNotifyDataSetChanged();
         }
     }
 
-    private void openMyWall() {
-        if (mAccountId == ISettings.IAccountsSettings.INVALID_ID) {
-            return;
+    @Override
+    public void onUnreadNotificationsCountChange(int count) {
+        if (SECTION_ITEM_FEEDBACK.getCount() != count) {
+            SECTION_ITEM_FEEDBACK.setCount(count);
+            safellyNotifyDataSetChanged();
         }
-        PlaceFactory.getOwnerWallPlace(mAccountId, mAccountId, null).tryOpenWith(requireActivity());
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
+        View root = inflater.inflate(R.layout.fragment_side_navigation_drawer, container, false);
 
         RecyclerView recyclerView = root.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 2));
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
-        ViewGroup vgProfileContainer = root.findViewById(R.id.content_root);
-        if (!Settings.get().ui().isShow_profile_in_additional_page())
-            root.findViewById(R.id.profile_view).setVisibility(View.GONE);
-        else
-            root.findViewById(R.id.profile_view).setVisibility(View.VISIBLE);
-        ivHeaderAvatar = root.findViewById(R.id.header_navi_menu_avatar);
-        tvUserName = root.findViewById(R.id.header_navi_menu_username);
-        tvDomain = root.findViewById(R.id.header_navi_menu_usernick);
-        ImageView ivHeaderDayNight = root.findViewById(R.id.header_navi_menu_day_night);
-        ImageView ivHeaderNotifications = root.findViewById(R.id.header_navi_menu_notifications);
+        View vHeader = inflater.inflate(R.layout.side_header_navi_menu, recyclerView, false);
+        backgroundImage = vHeader.findViewById(R.id.header_navi_menu_background);
+
+        ivHeaderAvatar = vHeader.findViewById(R.id.header_navi_menu_avatar);
+        tvUserName = vHeader.findViewById(R.id.header_navi_menu_username);
+        tvDomain = vHeader.findViewById(R.id.header_navi_menu_usernick);
+
+        ImageView ivHeaderDayNight = vHeader.findViewById(R.id.header_navi_menu_day_night);
+        ImageView ivHeaderNotifications = vHeader.findViewById(R.id.header_navi_menu_notifications);
 
         ivHeaderDayNight.setOnClickListener(v -> {
             if (Settings.get().ui().getNightMode() == NightMode.ENABLE || Settings.get().ui().getNightMode() == NightMode.AUTO ||
@@ -179,34 +192,48 @@ public class AdditionalNavigationFragment extends AbsNavigationFragment implemen
         ivHeaderDayNight.setImageResource((Settings.get().ui().getNightMode() == NightMode.ENABLE || Settings.get().ui().getNightMode() == NightMode.AUTO ||
                 Settings.get().ui().getNightMode() == NightMode.FOLLOW_SYSTEM) ? R.drawable.ic_outline_nights_stay : R.drawable.ic_outline_wb_sunny);
 
-        mAdapter = new MenuListAdapter(requireActivity(), mDrawerItems, this, true);
+        mDrawerItems = new ArrayList<>();
+        mDrawerItems.addAll(generateNavDrawerItems());
 
-        mBottomSheetBehavior = BottomSheetBehavior.from(root.findViewById(R.id.bottom_sheet));
-        mBottomSheetBehavior.setSkipCollapsed(true);
-        mBottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-            }
+        mAdapter = new MenuListAdapter(requireActivity(), mDrawerItems, this, false);
+        mAdapter.addHeader(vHeader);
+
+        mDrawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
 
             @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                if (slideOffset == -1) {
+            public void onDrawerClosed(@NonNull View drawerView) {
+                if (mCallbacks != null) {
                     mCallbacks.onSheetClosed();
                 }
             }
         });
-        closeSheet();
 
         recyclerView.setAdapter(mAdapter);
 
         refreshUserInfo();
 
-        vgProfileContainer.setOnClickListener(v -> {
+        ivHeaderAvatar.setOnClickListener(v -> {
             closeSheet();
             openMyWall();
         });
 
         return root;
+    }
+
+    private void refreshUserInfo() {
+        if (mAccountId != ISettings.IAccountsSettings.INVALID_ID) {
+            mCompositeDisposable.add(ownersRepository.getBaseOwnerInfo(mAccountId, mAccountId, IOwnersRepository.MODE_ANY)
+                    .compose(RxUtils.applySingleIOToMainSchedulers())
+                    .subscribe(owner -> refreshHeader((User) owner), ignore()));
+        }
+    }
+
+    private void openMyWall() {
+        if (mAccountId == ISettings.IAccountsSettings.INVALID_ID) {
+            return;
+        }
+
+        PlaceFactory.getOwnerWallPlace(mAccountId, mAccountId, null).tryOpenWith(requireActivity());
     }
 
     @Override
@@ -219,9 +246,9 @@ public class AdditionalNavigationFragment extends AbsNavigationFragment implemen
     }
 
     private ArrayList<AbsMenuItem> generateNavDrawerItems() {
-        ISettings.IDrawerSettings settings = Settings.get().drawerSettings();
+        ISettings.ISideDrawerSettings settings = Settings.get().sideDrawerSettings();
 
-        @SwitchableCategory
+        @SideSwitchableCategory
         int[] categories = settings.getCategoriesOrder();
 
         ArrayList<AbsMenuItem> items = new ArrayList<>();
@@ -229,20 +256,20 @@ public class AdditionalNavigationFragment extends AbsNavigationFragment implemen
         for (int category : categories) {
             if (settings.isCategoryEnabled(category)) {
                 try {
-                    items.add(getItemBySwitchableCategory(category));
+                    items.add(getItemBySideSwitchableCategory(category));
                 } catch (Exception ignored) {
                 }
             }
         }
-
-//        items.add(new DividerMenuItem());
-
-        items.add(SECTION_ITEM_SETTINGS);
-        items.add(SECTION_ITEM_ACCOUNTS);
+        items.add(new DividerMenuItem());
 
         if (nonEmpty(mRecentChats) && Settings.get().other().isEnable_show_recent_dialogs()) {
             items.addAll(mRecentChats);
+            items.add(new DividerMenuItem());
         }
+
+        items.add(SECTION_ITEM_SETTINGS);
+        items.add(SECTION_ITEM_ACCOUNTS);
         return items;
     }
 
@@ -290,7 +317,13 @@ public class AdditionalNavigationFragment extends AbsNavigationFragment implemen
                     .load(avaUrl)
                     .transform(transformation)
                     .into(ivHeaderAvatar);
+            PicassoInstance.with()
+                    .load(avaUrl)
+                    .transform(new BlurTransformation(6f, requireActivity()))
+                    .into(backgroundImage);
         } else {
+            PicassoInstance.with().cancelRequest(ivHeaderAvatar);
+            PicassoInstance.with().cancelRequest(backgroundImage);
             ivHeaderAvatar.setImageResource(R.drawable.ic_avatar_unknown);
         }
 
@@ -301,54 +334,55 @@ public class AdditionalNavigationFragment extends AbsNavigationFragment implemen
 
     @Override
     public boolean isSheetOpen() {
-        return mBottomSheetBehavior != null && mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED;
+        return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
     }
 
     @Override
     public void openSheet() {
-        if (mBottomSheetBehavior != null) {
-            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        if (mDrawerLayout != null) {
+            mDrawerLayout.openDrawer(mFragmentContainerView);
         }
     }
 
     @Override
     public void closeSheet() {
-        if (mBottomSheetBehavior != null) {
-            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        if (mDrawerLayout != null) {
+            mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
     }
 
     @Override
     public void unblockSheet() {
-        if (getView() != null) {
-            getView().setVisibility(View.VISIBLE);
+        if (mDrawerLayout != null) {
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         }
     }
 
     @Override
     public void blockSheet() {
-        if (getView() != null) {
-            getView().setVisibility(View.GONE);
+        if (mDrawerLayout != null) {
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         }
     }
 
+    /**
+     * Users of this fragment must call this method to set up the navigation drawer interactions.
+     *
+     * @param drawerLayout The DrawerLayout containing this fragment's UI.
+     */
     @Override
     public void setUp(@IdRes int fragmentId, @NonNull DrawerLayout drawerLayout) {
-
-    }
-
-    @Override
-    public void onUnreadDialogsCountChange(int count) {
-
-    }
-
-    @Override
-    public void onUnreadNotificationsCountChange(int count) {
-
+        mFragmentContainerView = requireActivity().findViewById(fragmentId);
+        mDrawerLayout = drawerLayout;
+//        if (drawerLayout != null) {
+//            mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+//        }
     }
 
     private void selectItem(AbsMenuItem item, boolean longClick) {
-        closeSheet();
+        if (mDrawerLayout != null) {
+            mDrawerLayout.closeDrawer(mFragmentContainerView);
+        }
 
         if (mCallbacks != null) {
             mCallbacks.onSheetItemSelected(item, longClick);
@@ -402,9 +436,9 @@ public class AdditionalNavigationFragment extends AbsNavigationFragment implemen
         backupRecentChats();
 
         mAccountId = newAccountId;
-//        SECTION_ITEM_DIALOGS.setCount(Stores.getInstance()
-//                .dialogs()
-//                .getUnreadDialogsCount(mAccountId));
+        SECTION_ITEM_DIALOGS.setCount(Stores.getInstance()
+                .dialogs()
+                .getUnreadDialogsCount(mAccountId));
 
         mRecentChats = Settings.get()
                 .recentChats()

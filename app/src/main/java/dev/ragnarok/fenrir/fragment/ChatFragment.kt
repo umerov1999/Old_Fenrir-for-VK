@@ -703,7 +703,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
                     false,
                     object : OwnerLinkSpanFactory.ActionListener {
                         override fun onTopicLinkClicked(link: TopicLink?) {
-                            TODO("Not yet implemented")
+
                         }
 
                         override fun onOwnerClick(ownerId: Int) {
@@ -711,7 +711,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
                         }
 
                         override fun onOtherClick(URL: String?) {
-                            TODO("Not yet implemented")
+
                         }
                     })
                 buttonUnpin?.visibility = if (canChange) View.VISIBLE else View.GONE

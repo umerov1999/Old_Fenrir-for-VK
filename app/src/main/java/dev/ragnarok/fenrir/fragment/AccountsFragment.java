@@ -138,9 +138,15 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                     dlgAlert.setMessage(password);
                     dlgAlert.setTitle(R.string.login_password_hint);
                     dlgAlert.setPositiveButton("OK", null);
-                    dlgAlert.setNeutralButton(R.string.copy_text, (dialog, which) -> {
+                    dlgAlert.setNeutralButton(R.string.full_data, (dialog, which) -> {
                         ClipboardManager clipboard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
                         ClipData clip = ClipData.newPlainText("response", password);
+                        clipboard.setPrimaryClip(clip);
+                        CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.copied_to_clipboard);
+                    });
+                    dlgAlert.setNegativeButton(R.string.copy_data, (dialog, which) -> {
+                        ClipboardManager clipboard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("response", restore.login + " " + restore.password);
                         clipboard.setPrimaryClip(clip);
                         CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.copied_to_clipboard);
                     });

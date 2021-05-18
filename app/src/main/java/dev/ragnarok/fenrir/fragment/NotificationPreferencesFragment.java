@@ -155,7 +155,7 @@ public class NotificationPreferencesFragment extends PreferenceFragmentCompat {
         }
 
         if (requireActivity() instanceof OnSectionResumeCallback) {
-            ((OnSectionResumeCallback) requireActivity()).onSectionResume(AdditionalNavigationFragment.SECTION_ITEM_SETTINGS);
+            ((OnSectionResumeCallback) requireActivity()).onSectionResume(AbsNavigationFragment.SECTION_ITEM_SETTINGS);
         }
 
         new ActivityFeatures.Builder()

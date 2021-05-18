@@ -22,7 +22,7 @@ import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
-import dev.ragnarok.fenrir.fragment.AdditionalNavigationFragment;
+import dev.ragnarok.fenrir.fragment.AbsNavigationFragment;
 import dev.ragnarok.fenrir.fragment.base.BaseFragment;
 import dev.ragnarok.fenrir.link.types.FaveLink;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
@@ -127,7 +127,7 @@ public class FaveTabsFragment extends BaseFragment {
         }
 
         if (requireActivity() instanceof OnSectionResumeCallback) {
-            ((OnSectionResumeCallback) requireActivity()).onSectionResume(AdditionalNavigationFragment.SECTION_ITEM_BOOKMARKS);
+            ((OnSectionResumeCallback) requireActivity()).onSectionResume(AbsNavigationFragment.SECTION_ITEM_BOOKMARKS);
         }
 
         new ActivityFeatures.Builder()

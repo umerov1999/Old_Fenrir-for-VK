@@ -9,6 +9,7 @@ public class SettingsImpl implements ISettings {
     private static volatile SettingsImpl instance;
     private final IRecentChats recentChats;
     private final IDrawerSettings drawerSettings;
+    private final ISideDrawerSettings sideDrawerSettings;
     private final IPushSettings pushSettings;
     private final ISecuritySettings securitySettings;
     private final IUISettings iuiSettings;
@@ -21,6 +22,7 @@ public class SettingsImpl implements ISettings {
         notificationSettings = new NotificationsPrefs(app);
         recentChats = new RecentChatsSettings(app);
         drawerSettings = new DrawerSettings(app);
+        sideDrawerSettings = new SideDrawerSettings(app);
         pushSettings = new PushSettings(app);
         securitySettings = new SecuritySettings(app);
         iuiSettings = new UISettings(app);
@@ -49,6 +51,11 @@ public class SettingsImpl implements ISettings {
     @Override
     public IDrawerSettings drawerSettings() {
         return drawerSettings;
+    }
+
+    @Override
+    public ISideDrawerSettings sideDrawerSettings() {
+        return sideDrawerSettings;
     }
 
     @Override

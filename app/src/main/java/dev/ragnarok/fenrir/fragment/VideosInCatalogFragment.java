@@ -108,7 +108,7 @@ public class VideosInCatalogFragment extends BaseMvpFragment<VideosInCatalogPres
             }
 
             if (requireActivity() instanceof OnSectionResumeCallback) {
-                ((OnSectionResumeCallback) requireActivity()).onSectionResume(AdditionalNavigationFragment.SECTION_ITEM_AUDIOS);
+                ((OnSectionResumeCallback) requireActivity()).onSectionResume(AbsNavigationFragment.SECTION_ITEM_AUDIOS);
             }
 
             new ActivityFeatures.Builder()

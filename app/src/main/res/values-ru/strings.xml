@@ -293,6 +293,7 @@
     <string name="open_poll">Открытое голосование</string>
 
     <string name="drawer_categories_title">Элементы всплывающего меню</string>
+    <string name="side_drawer_categories_title">Элементы бокового меню</string>
     <string name="drawer_categories_summary">Выберите элементы, которые будут отображаться в главном меню приложения</string>
 
     <string name="add_vote">Голосовать</string>
@@ -663,6 +664,8 @@
     <string name="first_pagan">Первый языческий</string>
     <string name="repo">Репозиторий: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="repo_local_server">Репозиторий: https://github.com/umerov1999/FenrirMediaServer/releases</string>
+    <string name="project_dedicated_summary">Проект посвящён Арнольдове Екатерине, https://vk.com/id255645173</string>
+    <string name="project_dedicated">Проект посвящён</string>
     <string name="comment">Комментарий</string>
     <string name="search">Поиск</string>
     <string name="input">Ввод</string>
@@ -1305,6 +1308,7 @@
     <string name="biometric">Приложите палец к сканеру отпечатков</string>
     <string name="biometric_not_support">Данная функция не поддерживается"</string>
     <string name="show_recent_dialogs">Отображать последние чаты</string>
+    <string name="is_side_navigation">Навигация сбоку</string>
     <string name="show_mini_player">Показывать мини-плеер</string>
     <string name="audio_in_status">Обновлять аудио в статусе</string>
     <string name="audio_in_status_summary">Обновление происходит, если открыть основной плеер</string>
@@ -1562,4 +1566,5 @@
     <string name="invert_rotating">Вращать вдругую сторону</string>
     <string name="player_background">Настройка фона плеера</string>
     <string name="do_report">Отправить жалобу?</string>
+    <string name="full_data">Полностью</string>
 </resources>

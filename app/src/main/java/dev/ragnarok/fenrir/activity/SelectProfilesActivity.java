@@ -80,7 +80,7 @@ public class SelectProfilesActivity extends MainActivity implements SelectedProf
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        mLayoutRes = R.layout.activity_main_with_profiles_selection;
+        mLayoutRes = Settings.get().other().is_side_navigation() ? R.layout.activity_main_with_profiles_selection_side : R.layout.activity_main_with_profiles_selection;
         super.onCreate(savedInstanceState);
         mLastBackPressedTime = Long.MAX_VALUE - DOUBLE_BACK_PRESSED_TIMEOUT;
 

@@ -106,6 +106,7 @@ public class Place implements Parcelable {
     public static final int AUDIOS_SEARCH_TABS = 93;
     public static final int GROUP_CHATS = 94;
     public static final int VK_PHOTO_ALBUM_GALLERY_SAVED = 95;
+    public static final int SIDE_DRAWER_EDIT = 96;
     public static final Creator<Place> CREATOR = new Creator<Place>() {
         @Override
         public Place createFromParcel(Parcel in) {

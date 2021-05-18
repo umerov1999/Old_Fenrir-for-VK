@@ -104,7 +104,7 @@ public class NewsfeedCommentsFragment extends PlaceSupportMvpFragment<NewsfeedCo
         ActivityUtils.setToolbarSubtitle(this, null);
 
         if (requireActivity() instanceof OnSectionResumeCallback) {
-            ((OnSectionResumeCallback) requireActivity()).onSectionResume(AdditionalNavigationFragment.SECTION_ITEM_NEWSFEED_COMMENTS);
+            ((OnSectionResumeCallback) requireActivity()).onSectionResume(AbsNavigationFragment.SECTION_ITEM_NEWSFEED_COMMENTS);
         }
 
         new ActivityFeatures.Builder()

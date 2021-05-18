@@ -289,6 +289,11 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public boolean is_side_navigation() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("is_side_navigation", false);
+    }
+
+    @Override
     public boolean isEnable_show_audio_top() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("show_audio_top", false);
     }

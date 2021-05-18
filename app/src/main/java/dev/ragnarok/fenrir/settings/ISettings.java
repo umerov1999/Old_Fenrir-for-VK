@@ -17,6 +17,7 @@ import dev.ragnarok.fenrir.api.model.PlayerCoverBackgroundSettings;
 import dev.ragnarok.fenrir.crypt.KeyLocationPolicy;
 import dev.ragnarok.fenrir.model.Lang;
 import dev.ragnarok.fenrir.model.PhotoSize;
+import dev.ragnarok.fenrir.model.SideSwitchableCategory;
 import dev.ragnarok.fenrir.model.SwitchableCategory;
 import dev.ragnarok.fenrir.model.drawer.RecentChat;
 import dev.ragnarok.fenrir.place.Place;
@@ -28,6 +29,8 @@ public interface ISettings {
     IRecentChats recentChats();
 
     IDrawerSettings drawerSettings();
+
+    ISideDrawerSettings sideDrawerSettings();
 
     IPushSettings pushSettings();
 
@@ -125,6 +128,8 @@ public interface ISettings {
         boolean isShow_mini_player();
 
         boolean isEnable_show_recent_dialogs();
+
+        boolean is_side_navigation();
 
         boolean isEnable_show_audio_top();
 
@@ -377,6 +382,16 @@ public interface ISettings {
         boolean isCategoryEnabled(@SwitchableCategory int category);
 
         void setCategoriesOrder(@SwitchableCategory int[] order, boolean[] active);
+
+        int[] getCategoriesOrder();
+
+        Observable<Object> observeChanges();
+    }
+
+    interface ISideDrawerSettings {
+        boolean isCategoryEnabled(@SideSwitchableCategory int category);
+
+        void setCategoriesOrder(@SideSwitchableCategory int[] order, boolean[] active);
 
         int[] getCategoriesOrder();
 

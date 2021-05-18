@@ -246,7 +246,7 @@ public class FeedFragment extends PlaceSupportMvpFragment<FeedPresenter, IFeedVi
         }
 
         if (requireActivity() instanceof OnSectionResumeCallback) {
-            ((OnSectionResumeCallback) requireActivity()).onSectionResume(AdditionalNavigationFragment.SECTION_ITEM_FEED);
+            ((OnSectionResumeCallback) requireActivity()).onSectionResume(AbsNavigationFragment.SECTION_ITEM_FEED);
         }
 
         new ActivityFeatures.Builder()

@@ -17,6 +17,7 @@ import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.adapter.base.RecyclerBindableAdapter;
 import dev.ragnarok.fenrir.model.drawer.AbsMenuItem;
 import dev.ragnarok.fenrir.model.drawer.IconMenuItem;
+import dev.ragnarok.fenrir.model.drawer.NoIconMenuItem;
 import dev.ragnarok.fenrir.model.drawer.RecentChat;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
@@ -31,8 +32,9 @@ public class MenuListAdapter extends RecyclerBindableAdapter<AbsMenuItem, Recycl
     private final int colorOnSurface;
     private final int dp;
     private final Transformation transformation;
+    private final boolean paging;
 
-    public MenuListAdapter(@NonNull Context context, @NonNull List<AbsMenuItem> pageItems, @NonNull ActionListener actionListener) {
+    public MenuListAdapter(@NonNull Context context, @NonNull List<AbsMenuItem> pageItems, @NonNull ActionListener actionListener, boolean paging) {
         super(pageItems);
         colorPrimary = CurrentTheme.getColorPrimary(context);
         colorSurface = CurrentTheme.getColorSurface(context);
@@ -41,6 +43,7 @@ public class MenuListAdapter extends RecyclerBindableAdapter<AbsMenuItem, Recycl
         dp = (int) Utils.dpToPx(1, context);
         transformation = CurrentTheme.createTransformationForAvatar();
         this.actionListener = actionListener;
+        this.paging = paging;
     }
 
     @Override
@@ -55,7 +58,20 @@ public class MenuListAdapter extends RecyclerBindableAdapter<AbsMenuItem, Recycl
             case AbsMenuItem.TYPE_RECENT_CHAT:
                 bindRecentChat((RecentChatHolder) holder, (RecentChat) item);
                 break;
+            case AbsMenuItem.TYPE_WITHOUT_ICON:
+                bindWithoutIcon((NoIconHolder) holder, (NoIconMenuItem) item);
+                break;
         }
+    }
+
+    private void bindWithoutIcon(NoIconHolder holder, NoIconMenuItem item) {
+        holder.txTitle.setText(item.getTitle());
+        holder.txTitle.setTextColor(item.isSelected() ? colorOnPrimary : colorOnSurface);
+        holder.contentRoot.setOnClickListener(v -> actionListener.onDrawerItemClick(item));
+        holder.contentRoot.setOnLongClickListener(view -> {
+            actionListener.onDrawerItemLongClick(item);
+            return true;
+        });
     }
 
     private void bindIconHolder(NormalHolder holder, IconMenuItem item) {
@@ -64,6 +80,7 @@ public class MenuListAdapter extends RecyclerBindableAdapter<AbsMenuItem, Recycl
 
         holder.tvCount.setVisibility(item.getCount() > 0 ? View.VISIBLE : View.GONE);
         holder.tvCount.setText(String.valueOf(item.getCount()));
+        holder.tvCount.setTextColor(item.isSelected() ? colorOnPrimary : colorPrimary);
 
         holder.imgIcon.setImageResource(item.getIcon());
         holder.imgIcon.setColorFilter(item.isSelected() ? colorOnPrimary : colorOnSurface);
@@ -104,10 +121,14 @@ public class MenuListAdapter extends RecyclerBindableAdapter<AbsMenuItem, Recycl
     @Override
     protected RecyclerView.ViewHolder viewHolder(View view, int type) {
         switch (type) {
+            case AbsMenuItem.TYPE_DIVIDER:
+                return new DividerHolder(view);
             case AbsMenuItem.TYPE_RECENT_CHAT:
                 return new RecentChatHolder(view);
             case AbsMenuItem.TYPE_ICON:
                 return new NormalHolder(view);
+            case AbsMenuItem.TYPE_WITHOUT_ICON:
+                return new NoIconHolder(view);
         }
         throw new IllegalStateException();
     }
@@ -115,10 +136,14 @@ public class MenuListAdapter extends RecyclerBindableAdapter<AbsMenuItem, Recycl
     @Override
     protected int layoutId(int type) {
         switch (type) {
+            case AbsMenuItem.TYPE_DIVIDER:
+                return R.layout.drawer_list_item_divider;
             case AbsMenuItem.TYPE_RECENT_CHAT:
                 return R.layout.item_navigation_recents;
             case AbsMenuItem.TYPE_ICON:
-                return R.layout.item_navigation;
+                return paging ? R.layout.item_navigation : R.layout.drawer_list_item;
+            case AbsMenuItem.TYPE_WITHOUT_ICON:
+                return R.layout.drawer_list_item_without_icon;
         }
 
         throw new IllegalStateException();
@@ -151,6 +176,13 @@ public class MenuListAdapter extends RecyclerBindableAdapter<AbsMenuItem, Recycl
         }
     }
 
+    private static class DividerHolder extends RecyclerView.ViewHolder {
+
+        DividerHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
     private static class RecentChatHolder extends RecyclerView.ViewHolder {
 
         final TextView tvChatTitle;
@@ -162,6 +194,17 @@ public class MenuListAdapter extends RecyclerBindableAdapter<AbsMenuItem, Recycl
             contentRoot = itemView.findViewById(R.id.content_root);
             tvChatTitle = itemView.findViewById(R.id.title);
             ivChatImage = itemView.findViewById(R.id.avatar);
+        }
+    }
+
+    private static class NoIconHolder extends RecyclerView.ViewHolder {
+        TextView txTitle;
+        View contentRoot;
+
+        NoIconHolder(View view) {
+            super(view);
+            contentRoot = view.findViewById(R.id.content_root);
+            txTitle = view.findViewById(R.id.title);
         }
     }
 }

@@ -18,7 +18,7 @@ import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
-import dev.ragnarok.fenrir.fragment.AdditionalNavigationFragment;
+import dev.ragnarok.fenrir.fragment.AbsNavigationFragment;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.settings.Settings;
@@ -138,7 +138,7 @@ public class SearchTabsFragment extends Fragment {
                 .apply(requireActivity());
 
         if (requireActivity() instanceof OnSectionResumeCallback) {
-            ((OnSectionResumeCallback) requireActivity()).onSectionResume(AdditionalNavigationFragment.SECTION_ITEM_SEARCH);
+            ((OnSectionResumeCallback) requireActivity()).onSectionResume(AbsNavigationFragment.SECTION_ITEM_SEARCH);
         }
     }
 

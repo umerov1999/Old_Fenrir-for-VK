@@ -101,6 +101,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     private static final String KEY_NOTIFICATION = "notifications";
     private static final String KEY_SECURITY = "security";
     private static final String KEY_DRAWER_ITEMS = "drawer_categories";
+    private static final String KEY_SIDE_DRAWER_ITEMS = "side_drawer_categories";
 
     private static final String TAG = PreferencesFragment.class.getSimpleName();
 
@@ -527,6 +528,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             });
         }
 
+        Preference sideDrawerCategories = findPreference(KEY_SIDE_DRAWER_ITEMS);
+        if (sideDrawerCategories != null) {
+            sideDrawerCategories.setOnPreferenceClickListener(preference -> {
+                PlaceFactory.getSideDrawerEditPlace().tryOpenWith(requireActivity());
+                return true;
+            });
+        }
+
         Preference avatarStyle = findPreference(KEY_AVATAR_STYLE);
         if (avatarStyle != null) {
             avatarStyle.setOnPreferenceClickListener(preference -> {
@@ -550,10 +559,24 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 View view = View.inflate(requireActivity(), R.layout.dialog_about_us, null);
                 new MaterialAlertDialogBuilder(requireActivity())
                         .setView(view)
+                        .setOnDismissListener(dialog -> {
+                            View view1 = View.inflate(requireActivity(), R.layout.dialog_dedicated, null);
+                            new MaterialAlertDialogBuilder(requireActivity())
+                                    .setView(view1)
+                                    .show();
+                        })
                         .show();
                 return true;
             });
         }
+
+        findPreference("dedicated").setOnPreferenceClickListener(preference -> {
+            View view = View.inflate(requireActivity(), R.layout.dialog_dedicated, null);
+            new MaterialAlertDialogBuilder(requireActivity())
+                    .setView(view)
+                    .show();
+            return true;
+        });
 
         Preference additional_debug = findPreference("additional_debug");
         if (additional_debug != null) {
@@ -1070,7 +1093,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
 
         if (requireActivity() instanceof OnSectionResumeCallback) {
-            ((OnSectionResumeCallback) requireActivity()).onSectionResume(AdditionalNavigationFragment.SECTION_ITEM_SETTINGS);
+            ((OnSectionResumeCallback) requireActivity()).onSectionResume(AbsNavigationFragment.SECTION_ITEM_SETTINGS);
         }
 
         new ActivityFeatures.Builder()

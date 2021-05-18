@@ -24,7 +24,7 @@ import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
-import dev.ragnarok.fenrir.fragment.AdditionalNavigationFragment;
+import dev.ragnarok.fenrir.fragment.AbsNavigationFragment;
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.model.FriendsCounters;
@@ -164,7 +164,7 @@ public class FriendsTabsFragment extends BaseMvpFragment<FriendsTabsPresenter, I
     public void setDrawerFriendsSectionSelected(boolean selected) {
         if (requireActivity() instanceof OnSectionResumeCallback) {
             if (selected) {
-                ((OnSectionResumeCallback) requireActivity()).onSectionResume(AdditionalNavigationFragment.SECTION_ITEM_FRIENDS);
+                ((OnSectionResumeCallback) requireActivity()).onSectionResume(AbsNavigationFragment.SECTION_ITEM_FRIENDS);
             } else {
                 ((OnSectionResumeCallback) requireActivity()).onClearSelection();
             }

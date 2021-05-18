@@ -25,6 +25,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
@@ -34,6 +36,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -53,8 +56,8 @@ import dev.ragnarok.fenrir.db.Stores;
 import dev.ragnarok.fenrir.dialog.ResolveDomainDialog;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
 import dev.ragnarok.fenrir.domain.impl.CountersInteractor;
+import dev.ragnarok.fenrir.fragment.AbsNavigationFragment;
 import dev.ragnarok.fenrir.fragment.AbsWallFragment;
-import dev.ragnarok.fenrir.fragment.AdditionalNavigationFragment;
 import dev.ragnarok.fenrir.fragment.AnswerVKOfficialFragment;
 import dev.ragnarok.fenrir.fragment.AudioCatalogFragment;
 import dev.ragnarok.fenrir.fragment.AudioPlayerFragment;
@@ -107,6 +110,7 @@ import dev.ragnarok.fenrir.fragment.ProductsFragment;
 import dev.ragnarok.fenrir.fragment.RequestExecuteFragment;
 import dev.ragnarok.fenrir.fragment.SecurityPreferencesFragment;
 import dev.ragnarok.fenrir.fragment.ShortedLinksFragment;
+import dev.ragnarok.fenrir.fragment.SideDrawerEditFragment;
 import dev.ragnarok.fenrir.fragment.SinglePhotoFragment;
 import dev.ragnarok.fenrir.fragment.StoryPagerFragment;
 import dev.ragnarok.fenrir.fragment.ThemeFragment;
@@ -180,7 +184,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import static dev.ragnarok.fenrir.util.Objects.isNull;
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
-public class MainActivity extends AppCompatActivity implements AdditionalNavigationFragment.NavigationDrawerCallbacks,
+public class MainActivity extends AppCompatActivity implements AbsNavigationFragment.NavigationDrawerCallbacks,
         OnSectionResumeCallback, AppStyleable, PlaceProvider, ServiceConnection, NavigationBarView.OnItemSelectedListener {
 
     public static final String ACTION_MAIN = "android.intent.action.MAIN";
@@ -237,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                     supportFinishAfterTransition();
                 }
             });
-    protected int mLayoutRes = Settings.get().main().isSnow_mode() ? R.layout.activity_main_with_snow : R.layout.activity_main;
+    protected int mLayoutRes = Settings.get().main().isSnow_mode() ? getSnowLayout() : getNormalLayout();
     protected long mLastBackPressedTime;
     /**
      * Атрибуты секции, которая на данный момент находится на главном контейнере экрана
@@ -269,6 +273,14 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(context);
         return resultCode == ConnectionResult.SUCCESS;
+    }
+
+    private int getSnowLayout() {
+        return Settings.get().other().is_side_navigation() ? R.layout.activity_main_side_with_snow : R.layout.activity_main_with_snow;
+    }
+
+    private int getNormalLayout() {
+        return Settings.get().other().is_side_navigation() ? R.layout.activity_main_side : R.layout.activity_main;
     }
 
     protected @MainActivityTransforms
@@ -334,8 +346,23 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
 
         setStatusbarColored(true, Settings.get().ui().isDarkModeEnabled(this));
 
+        DrawerLayout mDrawerLayout = findViewById(R.id.my_drawer_layout);
+        if (nonNull(mDrawerLayout)) {
+            mDrawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+                @Override
+                public void onDrawerStateChanged(int newState) {
+                    if (newState != DrawerLayout.STATE_IDLE || mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                        keyboardHide();
+                    }
+                }
+            });
+            getNavigationFragment().setUp(R.id.additional_navigation_menu, mDrawerLayout);
+        }
+
         mBottomNavigation = findViewById(R.id.bottom_navigation_menu);
-        mBottomNavigation.setOnItemSelectedListener(this);
+        if (nonNull(mBottomNavigation)) {
+            mBottomNavigation.setOnItemSelectedListener(this);
+        }
 
         mBottomNavigationContainer = findViewById(R.id.bottom_navigation_menu_container);
         mViewFragment = findViewById(R.id.fragment);
@@ -476,7 +503,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
             } else {
                 mToolbar.setNavigationIcon(R.drawable.arrow_left);
                 if (getMainActivityTransform() != MainActivityTransforms.SWIPEBLE) {
-                    mToolbar.setNavigationOnClickListener(v -> openNavigationPage(AdditionalNavigationFragment.SECTION_ITEM_FEED));
+                    mToolbar.setNavigationOnClickListener(v -> openNavigationPage(AbsNavigationFragment.SECTION_ITEM_FEED));
                 } else {
                     mToolbar.setNavigationOnClickListener(v -> onBackPressed());
                 }
@@ -557,13 +584,13 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
         }
 
         if (extras != null && ActivityUtils.checkInputExist(this)) {
-            mCurrentFrontSection = AdditionalNavigationFragment.SECTION_ITEM_DIALOGS;
+            mCurrentFrontSection = AbsNavigationFragment.SECTION_ITEM_DIALOGS;
             openNavigationPage(mCurrentFrontSection);
             return true;
         }
 
         if (ACTION_SEND_ATTACHMENTS.equals(action)) {
-            mCurrentFrontSection = AdditionalNavigationFragment.SECTION_ITEM_DIALOGS;
+            mCurrentFrontSection = AbsNavigationFragment.SECTION_ITEM_DIALOGS;
             openNavigationPage(mCurrentFrontSection);
             return true;
         }
@@ -697,9 +724,9 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
         mTargetPage = null;
     }
 
-    private AdditionalNavigationFragment getNavigationFragment() {
+    private AbsNavigationFragment getNavigationFragment() {
         FragmentManager fm = getSupportFragmentManager();
-        return (AdditionalNavigationFragment) fm.findFragmentById(R.id.additional_navigation_menu);
+        return (AbsNavigationFragment) fm.findFragmentById(R.id.additional_navigation_menu);
     }
 
     private void openNavigationPage(@NonNull AbsMenuItem item) {
@@ -731,7 +758,7 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
         }
 
         SectionMenuItem sectionDrawerItem = (SectionMenuItem) item;
-        if (sectionDrawerItem.getSection() == AdditionalNavigationFragment.PAGE_ACCOUNTS) {
+        if (sectionDrawerItem.getSection() == AbsNavigationFragment.PAGE_ACCOUNTS) {
             startAccountsActivity();
             return;
         }
@@ -748,43 +775,43 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
 //        PlaceFactory.getDialogsPlace(aid, aid, null)
 
         switch (sectionDrawerItem.getSection()) {
-            case AdditionalNavigationFragment.PAGE_DIALOGS:
+            case AbsNavigationFragment.PAGE_DIALOGS:
                 openPlace(PlaceFactory.getDialogsPlace(aid, aid, null));
                 break;
-            case AdditionalNavigationFragment.PAGE_FRIENDS:
+            case AbsNavigationFragment.PAGE_FRIENDS:
                 openPlace(PlaceFactory.getFriendsFollowersPlace(aid, aid, FriendsTabsFragment.TAB_ALL_FRIENDS, null));
                 break;
-            case AdditionalNavigationFragment.PAGE_GROUPS:
+            case AbsNavigationFragment.PAGE_GROUPS:
                 openPlace(PlaceFactory.getCommunitiesPlace(aid, aid));
                 break;
-            case AdditionalNavigationFragment.PAGE_PREFERENSES:
+            case AbsNavigationFragment.PAGE_PREFERENSES:
                 openPlace(PlaceFactory.getPreferencesPlace(aid));
                 break;
-            case AdditionalNavigationFragment.PAGE_MUSIC:
+            case AbsNavigationFragment.PAGE_MUSIC:
                 openPlace(PlaceFactory.getAudiosPlace(aid, aid));
                 break;
-            case AdditionalNavigationFragment.PAGE_DOCUMENTS:
+            case AbsNavigationFragment.PAGE_DOCUMENTS:
                 openPlace(PlaceFactory.getDocumentsPlace(aid, aid, DocsListPresenter.ACTION_SHOW));
                 break;
-            case AdditionalNavigationFragment.PAGE_FEED:
+            case AbsNavigationFragment.PAGE_FEED:
                 openPlace(PlaceFactory.getFeedPlace(aid));
                 break;
-            case AdditionalNavigationFragment.PAGE_NOTIFICATION:
+            case AbsNavigationFragment.PAGE_NOTIFICATION:
                 openPlace(PlaceFactory.getNotificationsPlace(aid));
                 break;
-            case AdditionalNavigationFragment.PAGE_PHOTOS:
+            case AbsNavigationFragment.PAGE_PHOTOS:
                 openPlace(PlaceFactory.getVKPhotoAlbumsPlace(aid, aid, IVkPhotosView.ACTION_SHOW_PHOTOS, null));
                 break;
-            case AdditionalNavigationFragment.PAGE_VIDEOS:
+            case AbsNavigationFragment.PAGE_VIDEOS:
                 openPlace(PlaceFactory.getVideosPlace(aid, aid, IVideosListView.ACTION_SHOW));
                 break;
-            case AdditionalNavigationFragment.PAGE_BOOKMARKS:
+            case AbsNavigationFragment.PAGE_BOOKMARKS:
                 openPlace(PlaceFactory.getBookmarksPlace(aid, FaveTabsFragment.TAB_PAGES));
                 break;
-            case AdditionalNavigationFragment.PAGE_SEARCH:
+            case AbsNavigationFragment.PAGE_SEARCH:
                 openPlace(PlaceFactory.getSearchPlace(aid, SearchTabsFragment.TAB_PEOPLE));
                 break;
-            case AdditionalNavigationFragment.PAGE_NEWSFEED_COMMENTS:
+            case AbsNavigationFragment.PAGE_NEWSFEED_COMMENTS:
                 openPlace(PlaceFactory.getNewsfeedCommentsPlace(aid));
                 break;
             default:
@@ -870,11 +897,11 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
         if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
             if (getMainActivityTransform() != MainActivityTransforms.SWIPEBLE) {
                 if (isFragmentWithoutNavigation()) {
-                    openNavigationPage(AdditionalNavigationFragment.SECTION_ITEM_FEED);
+                    openNavigationPage(AbsNavigationFragment.SECTION_ITEM_FEED);
                     return;
                 }
                 if (isChatFragment()) {
-                    openNavigationPage(AdditionalNavigationFragment.SECTION_ITEM_DIALOGS);
+                    openNavigationPage(AbsNavigationFragment.SECTION_ITEM_DIALOGS);
                     return;
                 }
             }
@@ -917,22 +944,24 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
     public void onSectionResume(SectionMenuItem sectionDrawerItem) {
         getNavigationFragment().selectPage(sectionDrawerItem);
 
-        switch (sectionDrawerItem.getSection()) {
-            case AdditionalNavigationFragment.PAGE_FEED:
-                mBottomNavigation.getMenu().getItem(0).setChecked(true);
-                break;
-            case AdditionalNavigationFragment.PAGE_SEARCH:
-                mBottomNavigation.getMenu().getItem(1).setChecked(true);
-                break;
-            case AdditionalNavigationFragment.PAGE_DIALOGS:
-                mBottomNavigation.getMenu().getItem(2).setChecked(true);
-                break;
-            case AdditionalNavigationFragment.PAGE_NOTIFICATION:
-                mBottomNavigation.getMenu().getItem(3).setChecked(true);
-                break;
-            default:
-                mBottomNavigation.getMenu().getItem(4).setChecked(true);
-                break;
+        if (nonNull(mBottomNavigation)) {
+            switch (sectionDrawerItem.getSection()) {
+                case AbsNavigationFragment.PAGE_FEED:
+                    mBottomNavigation.getMenu().getItem(0).setChecked(true);
+                    break;
+                case AbsNavigationFragment.PAGE_SEARCH:
+                    mBottomNavigation.getMenu().getItem(1).setChecked(true);
+                    break;
+                case AbsNavigationFragment.PAGE_DIALOGS:
+                    mBottomNavigation.getMenu().getItem(2).setChecked(true);
+                    break;
+                case AbsNavigationFragment.PAGE_NOTIFICATION:
+                    mBottomNavigation.getMenu().getItem(3).setChecked(true);
+                    break;
+                default:
+                    mBottomNavigation.getMenu().getItem(4).setChecked(true);
+                    break;
+            }
         }
 
         mCurrentFrontSection = sectionDrawerItem;
@@ -961,7 +990,12 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
             return;
         mCompositeDisposable.add(InteractorFactory.createFeedbackInteractor().maskAaViewed(mAccountId)
                 .compose(RxUtils.applyCompletableIOToMainSchedulers())
-                .subscribe(() -> mBottomNavigation.removeBadge(R.id.menu_feedback), RxUtils.ignore()));
+                .subscribe(() -> {
+                    if (nonNull(mBottomNavigation)) {
+                        mBottomNavigation.removeBadge(R.id.menu_feedback);
+                    }
+                    getNavigationFragment().onUnreadNotificationsCountChange(0);
+                }, RxUtils.ignore()));
     }
 
     private void attachToFront(Fragment fragment) {
@@ -1020,9 +1054,25 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
         if (hide) {
             getNavigationFragment().closeSheet();
             getNavigationFragment().blockSheet();
-            mBottomNavigationContainer.setVisibility(View.GONE);
+            if (nonNull(mBottomNavigationContainer)) {
+                mBottomNavigationContainer.setVisibility(View.GONE);
+            }
+            if (Settings.get().other().is_side_navigation()) {
+                MaterialCardView player = findViewById(R.id.miniplayer_side_root);
+                if (nonNull(player)) {
+                    player.setVisibility(View.GONE);
+                }
+            }
         } else {
-            mBottomNavigationContainer.setVisibility(View.VISIBLE);
+            if (nonNull(mBottomNavigationContainer)) {
+                mBottomNavigationContainer.setVisibility(View.VISIBLE);
+            }
+            if (Settings.get().other().is_side_navigation()) {
+                MaterialCardView player = findViewById(R.id.miniplayer_side_root);
+                if (nonNull(player)) {
+                    player.setVisibility(View.VISIBLE);
+                }
+            }
             getNavigationFragment().unblockSheet();
         }
     }
@@ -1382,6 +1432,10 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
                 attachToFront(DrawerEditFragment.newInstance());
                 break;
 
+            case Place.SIDE_DRAWER_EDIT:
+                attachToFront(SideDrawerEditFragment.newInstance());
+                break;
+
             case Place.SINGLE_PHOTO:
                 attachToFront(SinglePhotoFragment.newInstance(args));
                 break;
@@ -1524,7 +1578,8 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
         }
     }
 
-    private void updateMessagesBagde(Integer count) {
+    private void updateMessagesBagde(int count) {
+        getNavigationFragment().onUnreadDialogsCountChange(count);
         if (mBottomNavigation != null) {
             if (count > 0) {
                 BadgeDrawable badgeDrawable = mBottomNavigation.getOrCreateBadge(R.id.menu_messages);
@@ -1537,7 +1592,9 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
         }
     }
 
-    private void updateNotificationsBagde(SectionCounters counters) {
+    private void updateNotificationsBagde(@NonNull SectionCounters counters) {
+        getNavigationFragment().onUnreadDialogsCountChange(counters.getMessages());
+        getNavigationFragment().onUnreadNotificationsCountChange(counters.getNotifications());
         if (mBottomNavigation != null) {
             if (counters.getNotifications() > 0) {
                 BadgeDrawable badgeDrawable = mBottomNavigation.getOrCreateBadge(R.id.menu_feedback);
@@ -1559,6 +1616,8 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
     }
 
     private void removeNotificationsBagde() {
+        getNavigationFragment().onUnreadDialogsCountChange(0);
+        getNavigationFragment().onUnreadNotificationsCountChange(0);
         if (mBottomNavigation != null) {
             mBottomNavigation.removeBadge(R.id.menu_feedback);
             mBottomNavigation.removeBadge(R.id.menu_messages);
@@ -1568,16 +1627,16 @@ public class MainActivity extends AppCompatActivity implements AdditionalNavigat
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_feed) {
-            openPageAndCloseSheet(AdditionalNavigationFragment.SECTION_ITEM_FEED);
+            openPageAndCloseSheet(AbsNavigationFragment.SECTION_ITEM_FEED);
             return true;
         } else if (item.getItemId() == R.id.menu_search) {
-            openPageAndCloseSheet(AdditionalNavigationFragment.SECTION_ITEM_SEARCH);
+            openPageAndCloseSheet(AbsNavigationFragment.SECTION_ITEM_SEARCH);
             return true;
         } else if (item.getItemId() == R.id.menu_messages) {
-            openPageAndCloseSheet(AdditionalNavigationFragment.SECTION_ITEM_DIALOGS);
+            openPageAndCloseSheet(AbsNavigationFragment.SECTION_ITEM_DIALOGS);
             return true;
         } else if (item.getItemId() == R.id.menu_feedback) {
-            openPageAndCloseSheet(AdditionalNavigationFragment.SECTION_ITEM_FEEDBACK);
+            openPageAndCloseSheet(AbsNavigationFragment.SECTION_ITEM_FEEDBACK);
             return true;
         } else if (item.getItemId() == R.id.menu_other) {
             if (getNavigationFragment().isSheetOpen()) {

@@ -302,7 +302,7 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
     public void setDrawerPhotosSelected(boolean selected) {
         if (requireActivity() instanceof OnSectionResumeCallback) {
             if (selected) {
-                ((OnSectionResumeCallback) requireActivity()).onSectionResume(AdditionalNavigationFragment.SECTION_ITEM_PHOTOS);
+                ((OnSectionResumeCallback) requireActivity()).onSectionResume(AbsNavigationFragment.SECTION_ITEM_PHOTOS);
             } else {
                 ((OnSectionResumeCallback) requireActivity()).onClearSelection();
             }

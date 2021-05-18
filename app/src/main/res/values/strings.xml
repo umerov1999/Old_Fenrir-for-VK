@@ -420,6 +420,7 @@
     <string name="open_poll">Open poll</string>
 
     <string name="drawer_categories_title">Popup menu items</string>
+    <string name="side_drawer_categories_title">Side menu items</string>
     <string name="drawer_categories_summary">Select the items to be displayed in the main menu of the application</string>
 
     <string name="add_vote">Vote</string>
@@ -795,6 +796,8 @@
     <string name="first_pagan">First pagan</string>
     <string name="repo">Repository: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="repo_local_server">Repository: https://github.com/umerov1999/FenrirMediaServer/releases</string>
+    <string name="project_dedicated_summary">Project Dedicated for Arnoldova Ekaterina, https://vk.com/id255645173</string>
+    <string name="project_dedicated">Project Dedicated</string>
     <string name="comment">Comment</string>
     <string name="search">Search</string>
     <string name="input">Input</string>
@@ -1480,6 +1483,7 @@
     <string name="biometric">Place your finger on the fingerprint reader</string>
     <string name="biometric_not_support">This function is not supported"</string>
     <string name="show_recent_dialogs">Show recent chats</string>
+    <string name="is_side_navigation">Side navigation menu</string>
     <string name="show_mini_player">Show mini player</string>
     <string name="audio_in_status">Update audio in status</string>
     <string name="audio_in_status_summary">The update happens if you open the main player</string>
@@ -1739,4 +1743,5 @@
     <string name="invert_rotating">Invert rotating</string>
     <string name="player_background">Player background cover settings</string>
     <string name="do_report">Send report?</string>
+    <string name="full_data">Full</string>
 </resources>
