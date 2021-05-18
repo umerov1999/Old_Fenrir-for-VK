@@ -24,7 +24,6 @@ import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.adapter.MenuListAdapter;
-import dev.ragnarok.fenrir.db.Stores;
 import dev.ragnarok.fenrir.domain.IOwnersRepository;
 import dev.ragnarok.fenrir.domain.Repository;
 import dev.ragnarok.fenrir.model.SideSwitchableCategory;
@@ -127,6 +126,9 @@ public class SideNavigationFragment extends AbsNavigationFragment implements Men
                 .recentChats()
                 .get(mAccountId);
 
+        mDrawerItems = new ArrayList<>();
+        mDrawerItems.addAll(generateNavDrawerItems());
+
         mCompositeDisposable.add(Settings.get().sideDrawerSettings()
                 .observeChanges()
                 .observeOn(Injection.provideMainThreadScheduler())
@@ -157,6 +159,10 @@ public class SideNavigationFragment extends AbsNavigationFragment implements Men
         recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         View vHeader = inflater.inflate(R.layout.side_header_navi_menu, recyclerView, false);
+        if (!Settings.get().ui().isShow_profile_in_additional_page())
+            vHeader.setVisibility(View.GONE);
+        else
+            vHeader.setVisibility(View.VISIBLE);
         backgroundImage = vHeader.findViewById(R.id.header_navi_menu_background);
 
         ivHeaderAvatar = vHeader.findViewById(R.id.header_navi_menu_avatar);
@@ -191,9 +197,6 @@ public class SideNavigationFragment extends AbsNavigationFragment implements Men
 
         ivHeaderDayNight.setImageResource((Settings.get().ui().getNightMode() == NightMode.ENABLE || Settings.get().ui().getNightMode() == NightMode.AUTO ||
                 Settings.get().ui().getNightMode() == NightMode.FOLLOW_SYSTEM) ? R.drawable.ic_outline_nights_stay : R.drawable.ic_outline_wb_sunny);
-
-        mDrawerItems = new ArrayList<>();
-        mDrawerItems.addAll(generateNavDrawerItems());
 
         mAdapter = new MenuListAdapter(requireActivity(), mDrawerItems, this, false);
         mAdapter.addHeader(vHeader);
@@ -436,9 +439,9 @@ public class SideNavigationFragment extends AbsNavigationFragment implements Men
         backupRecentChats();
 
         mAccountId = newAccountId;
-        SECTION_ITEM_DIALOGS.setCount(Stores.getInstance()
-                .dialogs()
-                .getUnreadDialogsCount(mAccountId));
+//        SECTION_ITEM_DIALOGS.setCount(Stores.getInstance()
+//                .dialogs()
+//                .getUnreadDialogsCount(mAccountId));
 
         mRecentChats = Settings.get()
                 .recentChats()
