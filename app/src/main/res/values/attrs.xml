@@ -71,7 +71,6 @@
     <attr name="statusbarNonColoredColor" format="color" />
 
     <!-- QuickReply-->
-    <attr name="quick_reply_primary_color" format="color" />
     <attr name="quick_reply_icon_color" format="color" />
 
 

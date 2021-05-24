@@ -144,9 +144,8 @@
         <item>Slepnir</item>
         <item>Fenrir</item>
         <item>Triskel</item>
-        <item>Hella</item>
+        <item>Hel</item>
         <item>Fire Fan</item>
-        <item>Citadel</item>
         <item>Odin</item>
     </string-array>
 
@@ -163,7 +162,6 @@
         <item>9</item>
         <item>10</item>
         <item>11</item>
-        <item>12</item>
     </string-array>
 
     <string-array name="array_accounts_input">

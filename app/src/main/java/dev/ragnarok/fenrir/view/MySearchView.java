@@ -14,11 +14,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
+
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.listener.TextWatcherAdapter;
 import dev.ragnarok.fenrir.util.Logger;
+import dev.ragnarok.fenrir.util.Utils;
 
 public class MySearchView extends LinearLayout {
 
@@ -83,7 +87,6 @@ public class MySearchView extends LinearLayout {
                 resolveCloseButton();
             }
         });
-
         mButtonClear.setOnClickListener(v -> clear());
 
         mButtonBack.setOnClickListener(v -> {
@@ -201,8 +204,16 @@ public class MySearchView extends LinearLayout {
         mInput.setSelection(position);
     }
 
-    public void setLeftIcon(int drawable) {
+    public void setLeftIcon(@DrawableRes int drawable) {
         mButtonBack.setImageResource(drawable);
+    }
+
+    public void setLeftIconTint(@ColorInt int color) {
+        Utils.setTint(mButtonBack, color);
+    }
+
+    public void setRightIconTint(@ColorInt int color) {
+        Utils.setTint(mButtonAdditional, color);
     }
 
     public void setLeftIcon(Drawable drawable) {
@@ -213,7 +224,7 @@ public class MySearchView extends LinearLayout {
         mButtonAdditional.setImageDrawable(drawable);
     }
 
-    public void setRightIcon(int drawable) {
+    public void setRightIcon(@DrawableRes int drawable) {
         mButtonAdditional.setImageResource(drawable);
     }
 

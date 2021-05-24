@@ -186,7 +186,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
         View root = View.inflate(context, R.layout.entry_playlist_info, null);
         ((TextInputEditText) root.findViewById(R.id.edit_title)).setText(album.getTitle());
         ((TextInputEditText) root.findViewById(R.id.edit_description)).setText(album.getDescription());
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
+        new MaterialAlertDialogBuilder(context)
                 .setTitle(R.string.edit)
                 .setCancelable(true)
                 .setView(root)
@@ -194,8 +194,8 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
                         ((TextInputEditText) root.findViewById(R.id.edit_title)).getText().toString(),
                         ((TextInputEditText) root.findViewById(R.id.edit_description)).getText().toString()).compose(RxUtils.applySingleIOToMainSchedulers())
                         .subscribe(v -> fireRefresh(), t -> callView(v -> showError(v, getCauseIfRuntime(t))))))
-                .setNegativeButton(R.string.button_cancel, null);
-        builder.create().show();
+                .setNegativeButton(R.string.button_cancel, null)
+                .show();
     }
 
     private void doInsertPlaylist(AudioPlaylist playlist) {
@@ -206,7 +206,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
 
     public void fireCreatePlaylist(Context context) {
         View root = View.inflate(context, R.layout.entry_playlist_info, null);
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
+        new MaterialAlertDialogBuilder(context)
                 .setTitle(R.string.create_playlist)
                 .setCancelable(true)
                 .setView(root)
@@ -214,8 +214,8 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
                         ((TextInputEditText) root.findViewById(R.id.edit_title)).getText().toString(),
                         ((TextInputEditText) root.findViewById(R.id.edit_description)).getText().toString()).compose(RxUtils.applySingleIOToMainSchedulers())
                         .subscribe(this::doInsertPlaylist, t -> callView(v -> showError(v, getCauseIfRuntime(t))))))
-                .setNegativeButton(R.string.button_cancel, null);
-        builder.create().show();
+                .setNegativeButton(R.string.button_cancel, null)
+                .show();
     }
 
     public void onAdd(AudioPlaylist album) {

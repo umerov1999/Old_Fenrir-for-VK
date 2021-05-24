@@ -21,7 +21,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -32,6 +31,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.yalantis.ucrop.UCrop
 import dev.ragnarok.fenrir.*
+import dev.ragnarok.fenrir.Extensions.Companion.nullOrEmpty
 import dev.ragnarok.fenrir.activity.*
 import dev.ragnarok.fenrir.adapter.AttachmentsBottomSheetAdapter
 import dev.ragnarok.fenrir.adapter.AttachmentsViewBinder
@@ -1251,11 +1251,8 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
     }
 
     private fun resolveToolbarNavigationIcon() {
-        if (Objects.isNull(toolbar)) return
-        val tr = AppCompatResources.getDrawable(requireActivity(), R.drawable.arrow_left)
-        Utils.setColorFilter(tr, CurrentTheme.getColorPrimary(requireActivity()))
-        toolbar!!.navigationIcon = tr
-        toolbar!!.setNavigationOnClickListener { requireActivity().onBackPressed() }
+        toolbar?.setNavigationIcon(R.drawable.arrow_left)
+        toolbar?.setNavigationOnClickListener { requireActivity().onBackPressed() }
     }
 
     private fun resolveLeftButton(peerId: Int) {

@@ -400,20 +400,20 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
                 Utils.safeObjectCall(reference.get(), () -> reference.get().callPresenter(AbsMessageListPresenter::fireActionModeDeleteClick));
                 hide();
             } else if (v.getId() == R.id.buttonSpam) {
-                MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(requireActivity());
-                dlgAlert.setIcon(R.drawable.report_red);
-                dlgAlert.setMessage(R.string.do_report);
-                dlgAlert.setTitle(R.string.select);
-                dlgAlert.setPositiveButton(R.string.button_yes, (dialog, which) -> {
-                    Utils.safeObjectCall(reference.get(), () -> reference.get().callPresenter(AbsMessageListPresenter::fireActionModeSpamClick));
-                    hide();
-                });
-                dlgAlert.setNeutralButton(R.string.delete, (dialog, which) -> {
-                    Utils.safeObjectCall(reference.get(), () -> reference.get().callPresenter(AbsMessageListPresenter::fireActionModeDeleteClick));
-                    hide();
-                });
-                dlgAlert.setCancelable(true);
-                dlgAlert.create().show();
+                new MaterialAlertDialogBuilder(requireActivity())
+                        .setIcon(R.drawable.report_red)
+                        .setMessage(R.string.do_report)
+                        .setTitle(R.string.select)
+                        .setPositiveButton(R.string.button_yes, (dialog, which) -> {
+                            Utils.safeObjectCall(reference.get(), () -> reference.get().callPresenter(AbsMessageListPresenter::fireActionModeSpamClick));
+                            hide();
+                        })
+                        .setNeutralButton(R.string.delete, (dialog, which) -> {
+                            Utils.safeObjectCall(reference.get(), () -> reference.get().callPresenter(AbsMessageListPresenter::fireActionModeDeleteClick));
+                            hide();
+                        })
+                        .setCancelable(true)
+                        .show();
             }
         }
     }

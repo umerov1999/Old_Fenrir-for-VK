@@ -120,15 +120,15 @@ public class LocalServerVideosAdapter extends RecyclerView.Adapter<LocalServerVi
                         listDisposable = mVideoInteractor.get_file_name(hash2).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> {
                             View root = View.inflate(context, R.layout.entry_file_name, null);
                             ((TextInputEditText) root.findViewById(R.id.edit_file_name)).setText(t);
-                            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
+                            new MaterialAlertDialogBuilder(context)
                                     .setTitle(R.string.change_name)
                                     .setCancelable(true)
                                     .setView(root)
                                     .setPositiveButton(R.string.button_ok, (dialog, which) -> listDisposable = mVideoInteractor.update_file_name(hash2, ((TextInputEditText) root.findViewById(R.id.edit_file_name)).getText().toString().trim())
                                             .compose(RxUtils.applySingleIOToMainSchedulers())
                                             .subscribe(t1 -> CustomToast.CreateCustomToast(context).showToast(R.string.success), o -> Utils.showErrorInAdapter((Activity) context, o)))
-                                    .setNegativeButton(R.string.button_cancel, null);
-                            builder.create().show();
+                                    .setNegativeButton(R.string.button_cancel, null)
+                                    .show();
                         }, t -> Utils.showErrorInAdapter((Activity) context, t));
                         break;
                     case AudioItem.add_item_audio:

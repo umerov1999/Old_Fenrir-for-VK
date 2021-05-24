@@ -169,15 +169,15 @@ public class FaveLinksPresenter extends AccountDependencyPresenter<IFaveLinksVie
 
     public void fireAdd(Context context) {
         View root = View.inflate(context, R.layout.entry_link, null);
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
+        new MaterialAlertDialogBuilder(context)
                 .setTitle(R.string.enter_link)
                 .setCancelable(true)
                 .setView(root)
                 .setPositiveButton(R.string.button_ok, (dialog, which) -> actualDisposable.add(faveInteractor.addLink(getAccountId(), ((TextInputEditText) root.findViewById(R.id.edit_link)).getText().toString().trim())
                         .compose(RxUtils.applyCompletableIOToMainSchedulers())
                         .subscribe(this::fireRefresh, t -> callView(v -> showError(v, getCauseIfRuntime(t))))))
-                .setNegativeButton(R.string.button_cancel, null);
-        builder.create().show();
+                .setNegativeButton(R.string.button_cancel, null)
+                .show();
     }
 
     public void fireLinkClick(FaveLink link) {

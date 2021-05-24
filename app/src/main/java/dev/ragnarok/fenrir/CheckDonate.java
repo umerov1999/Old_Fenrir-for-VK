@@ -23,12 +23,12 @@ public class CheckDonate {
             108845803,
             51694038,
             15797882,
-            52535002,
             337698605,
             381208303,
             527552062,
             177952599,
             264548156,
+            633896460,
             244271565,
             169564648,
             488853841,
@@ -87,7 +87,6 @@ public class CheckDonate {
             181083754,
             512257899,
             248656668,
-            633896460,
             402168856,
             418160488,
             318697300,
@@ -123,18 +122,11 @@ public class CheckDonate {
             368211079,
             183420025,
             469507565,
-            118540110,
-            164931482,
-            266524379,
-            295257534,
-            164602028,
-            303122031
+            118540110
     };
 
     public static boolean isFullVersion(@NonNull Context context) {
         if (!Constants.IS_DONATE && !Utils.isOneElementAssigned(Settings.get().accounts().getRegistered(), donatedUsers)) {
-            MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(context);
-
             View view = LayoutInflater.from(context).inflate(R.layout.donate_alert, null);
             view.findViewById(R.id.item_donate).setOnClickListener(v -> LinkHelper.openLinkInBrowser(context, "https://play.google.com/store/apps/details?id=dev.ragnarok.fenrir_full"));
             RLottieImageView anim = view.findViewById(R.id.lottie_animation);
@@ -142,11 +134,12 @@ public class CheckDonate {
             anim.fromRes(R.raw.google_store, Utils.dp(200), Utils.dp(200));
             anim.playAnimation();
 
-            dlgAlert.setTitle(R.string.info);
-            dlgAlert.setIcon(R.drawable.client_round);
-            dlgAlert.setCancelable(true);
-            dlgAlert.setView(view);
-            dlgAlert.show();
+            new MaterialAlertDialogBuilder(context)
+                    .setTitle(R.string.info)
+                    .setIcon(R.drawable.client_round)
+                    .setCancelable(true)
+                    .setView(view)
+                    .show();
             return false;
         }
         return true;

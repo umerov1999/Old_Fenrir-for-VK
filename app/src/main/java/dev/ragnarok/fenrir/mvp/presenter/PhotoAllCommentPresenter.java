@@ -159,21 +159,21 @@ public class PhotoAllCommentPresenter extends PlaceSupportPresenter<IPhotoAllCom
     }
 
     public void fireReport(Comment comment, Context context) {
-        MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(context);
-        alert.setTitle(R.string.report);
         CharSequence[] items = {"Спам", "Детская порнография", "Экстремизм", "Насилие", "Пропаганда наркотиков", "Материал для взрослых", "Оскорбление", "Призывы к суициду"};
-        alert.setItems(items, (dialog, item) -> {
-            appendDisposable(interactor.reportComment(getAccountId(), comment.getFromId(), comment.getId(), item)
-                    .compose(RxUtils.applySingleIOToMainSchedulers())
-                    .subscribe(p -> {
-                        if (p == 1)
-                            callView(v -> v.getCustomToast().showToast(R.string.success));
-                        else
-                            callView(v -> v.getCustomToast().showToast(R.string.error));
-                    }, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
-            dialog.dismiss();
-        });
-        alert.show();
+        new MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.report)
+                .setItems(items, (dialog, item) -> {
+                    appendDisposable(interactor.reportComment(getAccountId(), comment.getFromId(), comment.getId(), item)
+                            .compose(RxUtils.applySingleIOToMainSchedulers())
+                            .subscribe(p -> {
+                                if (p == 1)
+                                    callView(v -> v.getCustomToast().showToast(R.string.success));
+                                else
+                                    callView(v -> v.getCustomToast().showToast(R.string.error));
+                            }, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
+                    dialog.dismiss();
+                })
+                .show();
     }
 
     public void fireWhoLikesClick(Comment comment) {

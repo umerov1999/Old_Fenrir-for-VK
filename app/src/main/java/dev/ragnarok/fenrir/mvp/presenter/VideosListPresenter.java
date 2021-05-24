@@ -380,7 +380,7 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
         View root = View.inflate(context, R.layout.entry_video_info, null);
         ((TextInputEditText) root.findViewById(R.id.edit_title)).setText(video.getTitle());
         ((TextInputEditText) root.findViewById(R.id.edit_description)).setText(video.getDescription());
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
+        new MaterialAlertDialogBuilder(context)
                 .setTitle(R.string.edit)
                 .setCancelable(true)
                 .setView(root)
@@ -394,8 +394,8 @@ public class VideosListPresenter extends AccountDependencyPresenter<IVideosListV
                                 callView(v -> v.notifyItemChanged(position));
                             }, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
                 })
-                .setNegativeButton(R.string.button_cancel, null);
-        builder.create().show();
+                .setNegativeButton(R.string.button_cancel, null)
+                .show();
     }
 
     private void onAddComplete() {

@@ -16,13 +16,14 @@
         android:layout_height="48dp"
         android:layout_centerVertical="true">
 
-        <dev.ragnarok.fenrir.view.CircleImageButton
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/circle_back_white"
+            android:backgroundTint="?colorPrimary"
             android:padding="12dp"
             android:src="@drawable/ic_external"
-            app:backgroundColor="?attr/colorAccent"
-            app:iconColor="?attr/colorOnSurface" />
+            app:tint="?white_color" />
 
         <ImageView
             android:id="@+id/icon"

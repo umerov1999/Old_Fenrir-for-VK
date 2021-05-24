@@ -1,7 +1,6 @@
 package dev.ragnarok.fenrir.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
@@ -14,7 +13,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.imageview.ShapeableImageView;
@@ -68,18 +66,19 @@ public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOffici
         Integer IconRes = GetIconResByType(Page.iconType);
 
         if (IconRes == null && Page.iconURL == null) {
-            Drawable tr = AppCompatResources.getDrawable(context, R.drawable.client_round);
-            assert tr != null;
-            Utils.setColorFilter(tr, CurrentTheme.getColorPrimary(context));
             if (isSmall) {
                 holder.small.setVisibility(View.VISIBLE);
-                holder.small.setImageDrawable(tr);
+                holder.small.setImageResource(R.drawable.client_round);
+                Utils.setColorFilter(holder.small, CurrentTheme.getColorPrimary(context));
             } else {
                 holder.small.setVisibility(View.INVISIBLE);
-                holder.avatar.setImageDrawable(tr);
+                holder.avatar.setImageResource(R.drawable.client_round);
+                Utils.setColorFilter(holder.avatar, CurrentTheme.getColorPrimary(context));
             }
             return;
         }
+        holder.avatar.clearColorFilter();
+        holder.small.clearColorFilter();
         if (IconRes == null) {
             if (isSmall) {
                 holder.small.setVisibility(View.VISIBLE);

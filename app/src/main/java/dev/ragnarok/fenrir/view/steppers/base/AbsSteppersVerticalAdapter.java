@@ -54,7 +54,7 @@ public abstract class AbsSteppersVerticalAdapter<H extends AbsStepsHost<?>> exte
         int tintColor = isActive ? activeColor : inactiveColor;
 
         holder.counterRoot.setEnabled(isCurrent);
-        Utils.setColorFilter(holder.counterRoot.getBackground(), tintColor);
+        Utils.setBackgroundTint(holder.counterRoot, tintColor);
         holder.contentRoot.setVisibility(isCurrent ? View.VISIBLE : View.GONE);
 
         holder.line.setVisibility(isLast ? View.INVISIBLE : View.VISIBLE);

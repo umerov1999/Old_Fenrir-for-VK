@@ -360,7 +360,7 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
         ((TextInputEditText) root.findViewById(R.id.edit_bdate)).setText(p.bdate);
         ((TextInputEditText) root.findViewById(R.id.edit_home_town)).setText(p.home_town);
         ((Spinner) root.findViewById(R.id.sex)).setSelection(p.sex - 1);
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
+        new MaterialAlertDialogBuilder(context)
                 .setTitle(R.string.edit)
                 .setCancelable(true)
                 .setView(root)
@@ -386,8 +386,8 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
                                     break;
                             }
                         }, t -> callView(v -> showError(v, t)))))
-                .setNegativeButton(R.string.button_cancel, null);
-        builder.create().show();
+                .setNegativeButton(R.string.button_cancel, null)
+                .show();
     }
 
     public final void fireEdit(Context context) {
@@ -457,56 +457,21 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
         if (!FenrirNative.isNativeLoaded()) {
             return;
         }
-        Bitmap qr = QrGenerator.generateQR("https://vk.com/" + (ownerId < 0 ? "club" : "id") + Math.abs(ownerId), CurrentTheme.getColorPrimary(context), CurrentTheme.getColorSecondary(context), Color.parseColor("#ffffff"), Color.parseColor("#000000"), 3);
-        MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(context);
-        dlgAlert.setCancelable(true);
-        dlgAlert.setNegativeButton(R.string.button_cancel, null);
-        dlgAlert.setPositiveButton(R.string.save, (dialogInterface, i) -> {
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-            OutputStream fOutputStream;
-            File file = new File(path, "qr_fenrir_" + (ownerId < 0 ? "club" : "id") + Math.abs(ownerId) + ".png");
-            try {
-                fOutputStream = new FileOutputStream(file);
-                assert qr != null;
-                qr.compress(Bitmap.CompressFormat.PNG, 100, fOutputStream);
-
-                fOutputStream.flush();
-                fOutputStream.close();
-                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
-                CustomToast.CreateCustomToast(context).showToast(R.string.success);
-            } catch (IOException e) {
-                e.printStackTrace();
-                CustomToast.CreateCustomToast(context).showToastError("Save Failed");
-            }
-        });
-        dlgAlert.setIcon(R.drawable.qr_code);
+        Bitmap qr = Utils.renderSVG(QrGenerator.generateQR("https://vk.com/" + (ownerId < 0 ? "club" : "id") + Math.abs(ownerId), CurrentTheme.getColorPrimary(context), CurrentTheme.getColorSecondary(context), Color.parseColor("#ffffff"), Color.parseColor("#000000"), 3), 650, 650);
         View view = LayoutInflater.from(context).inflate(R.layout.qr, null);
-        dlgAlert.setTitle(R.string.show_qr);
         ShapeableImageView imageView = view.findViewById(R.id.qr);
         imageView.setImageBitmap(qr);
-        dlgAlert.setView(view);
-        dlgAlert.show();
-    }
-
-    /*
-    public void fireShowQR(Context context) {
-        try {
-            Bitmap qr = TextToImageEncode("https://vk.com/" + (ownerId < 0 ? "club" : "id") + Math.abs(ownerId));
-            MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(context);
-            dlgAlert.setCancelable(true);
-            dlgAlert.setNegativeButton(R.string.button_cancel, null);
-            dlgAlert.setPositiveButton(R.string.save, (dialogInterface, i) -> {
-                if (!AppPerms.hasReadWriteStoragePermission(context)) {
-                    AppPerms.requestReadWriteStoragePermission((Activity) context);
-                } else {
+        new MaterialAlertDialogBuilder(context)
+                .setCancelable(true)
+                .setNegativeButton(R.string.button_cancel, null)
+                .setPositiveButton(R.string.save, (dialogInterface, i) -> {
                     String path = Environment.getExternalStorageDirectory().getAbsolutePath();
                     OutputStream fOutputStream;
-                    File file = new File(path, "qr_fenrir_" + (ownerId < 0 ? "club" : "id") + Math.abs(ownerId) + ".jpg");
+                    File file = new File(path, "qr_fenrir_" + (ownerId < 0 ? "club" : "id") + Math.abs(ownerId) + ".png");
                     try {
                         fOutputStream = new FileOutputStream(file);
-
                         assert qr != null;
-                        qr.compress(Bitmap.CompressFormat.JPEG, 100, fOutputStream);
+                        qr.compress(Bitmap.CompressFormat.PNG, 100, fOutputStream);
 
                         fOutputStream.flush();
                         fOutputStream.close();
@@ -516,20 +481,12 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
                         e.printStackTrace();
                         CustomToast.CreateCustomToast(context).showToastError("Save Failed");
                     }
-                }
-            });
-            dlgAlert.setIcon(R.drawable.qr_code);
-            View view = LayoutInflater.from(context).inflate(R.layout.qr, null);
-            dlgAlert.setTitle(R.string.show_qr);
-            ShapeableImageView imageView = view.findViewById(R.id.qr);
-            imageView.setImageBitmap(qr);
-            dlgAlert.setView(view);
-            dlgAlert.show();
-        } catch (WriterException ignored) {
-
-        }
+                })
+                .setIcon(R.drawable.qr_code)
+                .setTitle(R.string.show_qr)
+                .setView(view)
+                .show();
     }
-     */
 
     protected void onRefresh() {
 

@@ -96,11 +96,11 @@ public class CircleCounterButton extends LinearLayout {
 
     private void resolveActiveViews() {
         if (mActive) {
-            Utils.setColorFilter(icon, mActiveIconColor);
-            Utils.setColorFilter(icon.getBackground(), mActiveBackgroundColor);
+            Utils.setTint(icon, mActiveIconColor);
+            Utils.setBackgroundTint(icon, mActiveBackgroundColor);
         } else {
-            Utils.setColorFilter(icon, mNoactiveIconColor);
-            Utils.setColorFilter(icon.getBackground(), mNoactiveBackgroundColor);
+            Utils.setTint(icon, mNoactiveIconColor);
+            Utils.setBackgroundTint(icon, mNoactiveBackgroundColor);
         }
     }
 

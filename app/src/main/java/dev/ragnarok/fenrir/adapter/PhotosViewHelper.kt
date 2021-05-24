@@ -46,7 +46,6 @@ class PhotosViewHelper internal constructor(
                 .inflate(R.layout.item_video_attachment, container, false)
             val holder = VideoHolder(root)
             root.tag = holder
-            Utils.setColorFilter(holder.ivPlay.background, mIconColorActive)
             container.addView(root)
         }
         for (g in 0 until container.childCount) {
@@ -136,10 +135,6 @@ class PhotosViewHelper internal constructor(
                 val image = images[g]
                 holder.ivPlay.visibility =
                     if (image.type == PostImage.TYPE_IMAGE) View.GONE else View.VISIBLE
-                if (image.type != PostImage.TYPE_IMAGE) Utils.setColorFilter(
-                    holder.ivPlay.background,
-                    mIconColorActive
-                )
                 holder.tvTitle.visibility =
                     if (image.type == PostImage.TYPE_IMAGE) View.GONE else View.VISIBLE
                 holder.vgPhoto.setOnClickListener {
@@ -234,7 +229,6 @@ class PhotosViewHelper internal constructor(
 
     private class VideoHolder(itemView: View) {
         val vgPhoto: AspectRatioImageView = itemView.findViewById(R.id.item_video_album_image)
-        val ivPlay: ImageView = itemView.findViewById(R.id.item_video_play)
         val tvTitle: TextView = itemView.findViewById(R.id.item_video_album_title)
         val tvDelay: TextView = itemView.findViewById(R.id.item_video_album_count)
 

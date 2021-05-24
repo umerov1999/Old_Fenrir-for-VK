@@ -112,14 +112,13 @@ public abstract class BaseMvpBottomSheetDialogFragment<P extends AbsPresenter<V>
                             Text.append(stackTraceElement);
                             Text.append("\r\n");
                         }
-                        MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(requireActivity());
-                        dlgAlert.setIcon(R.drawable.ic_error);
-                        dlgAlert.setMessage(Text);
-                        dlgAlert.setTitle(R.string.more_info);
-
-                        dlgAlert.setPositiveButton("OK", null);
-                        dlgAlert.setCancelable(true);
-                        dlgAlert.create().show();
+                        new MaterialAlertDialogBuilder(requireActivity())
+                                .setIcon(R.drawable.ic_error)
+                                .setMessage(Text)
+                                .setTitle(R.string.more_info)
+                                .setPositiveButton("OK", null)
+                                .setCancelable(true)
+                                .show();
                     }).setActionTextColor(Color.WHITE).show();
         }
     }

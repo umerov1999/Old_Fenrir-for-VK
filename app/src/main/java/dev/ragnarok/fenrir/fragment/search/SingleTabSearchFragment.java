@@ -1,6 +1,5 @@
 package dev.ragnarok.fenrir.fragment.search;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +7,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 
 import dev.ragnarok.fenrir.Extra;
@@ -19,7 +17,6 @@ import dev.ragnarok.fenrir.listener.AppStyleable;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.util.Objects;
-import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.MySearchView;
 
 public class SingleTabSearchFragment extends Fragment implements MySearchView.OnQueryTextListener, MySearchView.OnAdditionalButtonClickListener {
@@ -77,10 +74,9 @@ public class SingleTabSearchFragment extends Fragment implements MySearchView.On
     private void resolveLeftButton(MySearchView searchView) {
         int count = requireActivity().getSupportFragmentManager().getBackStackEntryCount();
         if (searchView != null) {
-            Drawable tr = AppCompatResources.getDrawable(requireActivity(), count == 1 && requireActivity() instanceof AppStyleable ?
+            searchView.setLeftIcon(count == 1 && requireActivity() instanceof AppStyleable ?
                     R.drawable.magnify : R.drawable.arrow_left);
-            Utils.setColorFilter(tr, CurrentTheme.getColorPrimary(requireActivity()));
-            searchView.setLeftIcon(tr);
+            searchView.setLeftIconTint(CurrentTheme.getColorPrimary(requireActivity()));
         }
     }
 

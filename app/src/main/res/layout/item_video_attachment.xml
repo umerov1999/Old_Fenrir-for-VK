@@ -37,6 +37,7 @@
                 android:layout_height="40dp"
                 android:layout_centerInParent="true"
                 android:background="@drawable/circle_back_white"
+                android:backgroundTint="?colorPrimary"
                 android:padding="6dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/video"

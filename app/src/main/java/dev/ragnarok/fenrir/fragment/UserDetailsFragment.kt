@@ -18,14 +18,14 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
+import dev.ragnarok.fenrir.Extensions.Companion.fadeIn
+import dev.ragnarok.fenrir.Extensions.Companion.hide
 import dev.ragnarok.fenrir.Extra
 import dev.ragnarok.fenrir.R
 import dev.ragnarok.fenrir.activity.ActivityFeatures
 import dev.ragnarok.fenrir.activity.ActivityUtils
 import dev.ragnarok.fenrir.adapter.RecyclerMenuAdapter
-import dev.ragnarok.fenrir.fadeIn
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment
-import dev.ragnarok.fenrir.hide
 import dev.ragnarok.fenrir.link.LinkHelper
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback
 import dev.ragnarok.fenrir.model.*

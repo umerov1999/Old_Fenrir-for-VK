@@ -147,19 +147,19 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
     private void onAudioLyricsReceived(String Text, Audio audio) {
         String title = audio.getArtistAndTitle();
 
-        MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(mContext);
-        dlgAlert.setIcon(R.drawable.dir_song);
-        dlgAlert.setMessage(Text);
-        dlgAlert.setTitle(title != null ? title : mContext.getString(R.string.get_lyrics));
-        dlgAlert.setPositiveButton("OK", null);
-        dlgAlert.setNeutralButton(R.string.copy_text, (dialog, which) -> {
-            ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("response", Text);
-            clipboard.setPrimaryClip(clip);
-            CustomToast.CreateCustomToast(mContext).showToast(R.string.copied_to_clipboard);
-        });
-        dlgAlert.setCancelable(true);
-        dlgAlert.create().show();
+        new MaterialAlertDialogBuilder(mContext)
+                .setIcon(R.drawable.dir_song)
+                .setMessage(Text)
+                .setTitle(title != null ? title : mContext.getString(R.string.get_lyrics))
+                .setPositiveButton("OK", null)
+                .setNeutralButton(R.string.copy_text, (dialog, which) -> {
+                    ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("response", Text);
+                    clipboard.setPrimaryClip(clip);
+                    CustomToast.CreateCustomToast(mContext).showToast(R.string.copied_to_clipboard);
+                })
+                .setCancelable(true)
+                .show();
     }
 
     @Override

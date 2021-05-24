@@ -215,6 +215,28 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
     }
 
+    private static Bitmap checkBitmap(@NonNull Bitmap bitmap) {
+        if (bitmap.getWidth() <= 0 || bitmap.getHeight() <= 0 || (bitmap.getWidth() <= 4000 && bitmap.getHeight() <= 4000)) {
+            return bitmap;
+        }
+        int mWidth = bitmap.getWidth();
+        int mHeight = bitmap.getHeight();
+        float mCo = (float) Math.min(mHeight, mWidth) / Math.max(mHeight, mWidth);
+        if (mWidth > mHeight) {
+            mWidth = 4000;
+            mHeight = (int) (4000 * mCo);
+        } else {
+            mHeight = 4000;
+            mWidth = (int) (4000 * mCo);
+        }
+        if (mWidth <= 0 || mHeight <= 0) {
+            return bitmap;
+        }
+        Bitmap tmp = Bitmap.createScaledBitmap(bitmap, mWidth, mHeight, true);
+        bitmap.recycle();
+        return tmp;
+    }
+
     private void selectLocalImage(boolean isDark) {
         if (!AppPerms.hasReadStoragePermission(getActivity())) {
             requestReadPermission.launch();
@@ -885,20 +907,17 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if (isEmpty(photos)) {
             return;
         }
-
         LocalPhoto photo = photos.get(0);
         boolean light = !isDark;
-
         File file = getDrawerBackgroundFile(requireActivity(), light);
-
         Bitmap original;
-
         try (FileOutputStream fos = new FileOutputStream(file)) {
             original = BitmapFactory.decodeFile(photo.getFullImageUri().getPath());
-
+            original = checkBitmap(original);
             original.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-
             fos.flush();
+            fos.close();
+            original.recycle();
             Drawable d = Drawable.createFromPath(file.getAbsolutePath());
             if (light) {
                 Preference lightSideBarPreference = findPreference("chat_light_background");

@@ -156,12 +156,12 @@ public class AllFriendsFragment extends BaseMvpFragment<AllFriendsPresenter, IAl
     public void showNotFriends(List<Owner> data, int accountId) {
         OwnersAdapter adapter = new OwnersAdapter(requireActivity(), data);
         adapter.setClickListener(owner -> PlaceFactory.getOwnerWallPlace(accountId, owner.getOwnerId(), null).tryOpenWith(requireContext()));
-        MaterialAlertDialogBuilder dlg = new MaterialAlertDialogBuilder(requireActivity())
+        new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(requireActivity().getString(R.string.not_friend))
                 .setView(Utils.createAlertRecycleFrame(requireActivity(), adapter, null))
                 .setPositiveButton("OK", null)
-                .setCancelable(true);
-        dlg.show();
+                .setCancelable(true)
+                .show();
     }
 
     @Override
@@ -172,7 +172,7 @@ public class AllFriendsFragment extends BaseMvpFragment<AllFriendsPresenter, IAl
         }
         OwnersAdapter adapter = new OwnersAdapter(requireActivity(), add);
         adapter.setClickListener(owner -> PlaceFactory.getOwnerWallPlace(accountId, owner.getOwnerId(), null).tryOpenWith(requireContext()));
-        MaterialAlertDialogBuilder dlg = new MaterialAlertDialogBuilder(requireActivity())
+        new MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(requireActivity().getString(R.string.new_friend))
                 .setView(Utils.createAlertRecycleFrame(requireActivity(), adapter, null))
                 .setPositiveButton("OK", (dialog, which) -> {
@@ -180,8 +180,8 @@ public class AllFriendsFragment extends BaseMvpFragment<AllFriendsPresenter, IAl
                         showNotFriends(remove, accountId);
                     }
                 })
-                .setCancelable(remove.size() <= 0);
-        dlg.show();
+                .setCancelable(remove.size() <= 0)
+                .show();
     }
 
     @Override

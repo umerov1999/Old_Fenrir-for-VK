@@ -19,6 +19,7 @@ package com.google.android.material.internal;
 import static androidx.core.util.Preconditions.checkNotNull;
 import static android.text.Layout.Alignment.ALIGN_NORMAL;
 import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP;
+import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 import android.animation.TimeInterpolator;
@@ -117,6 +118,7 @@ public final class CollapsingTextHelper {
   @Nullable private CharSequence text;
   @Nullable private CharSequence textToDraw;
   private boolean isRtl;
+  private boolean isRtlTextDirectionHeuristicsEnabled = true;
 
   private boolean useTexture;
   @Nullable private Bitmap expandedTitleTexture;
@@ -352,11 +354,11 @@ public final class CollapsingTextHelper {
   public void setCollapsedTextAppearance(int resId) {
     TextAppearance textAppearance = new TextAppearance(view.getContext(), resId);
 
-    if (textAppearance.textColor != null) {
-      collapsedTextColor = textAppearance.textColor;
+    if (textAppearance.getTextColor() != null) {
+      collapsedTextColor = textAppearance.getTextColor();
     }
-    if (textAppearance.textSize != 0) {
-      collapsedTextSize = textAppearance.textSize;
+    if (textAppearance.getTextSize() != 0) {
+      collapsedTextSize = textAppearance.getTextSize();
     }
     if (textAppearance.shadowColor != null) {
       collapsedShadowColor = textAppearance.shadowColor;
@@ -386,11 +388,11 @@ public final class CollapsingTextHelper {
 
   public void setExpandedTextAppearance(int resId) {
     TextAppearance textAppearance = new TextAppearance(view.getContext(), resId);
-    if (textAppearance.textColor != null) {
-      expandedTextColor = textAppearance.textColor;
+    if (textAppearance.getTextColor() != null) {
+      expandedTextColor = textAppearance.getTextColor();
     }
-    if (textAppearance.textSize != 0) {
-      expandedTextSize = textAppearance.textSize;
+    if (textAppearance.getTextSize() != 0) {
+      expandedTextSize = textAppearance.getTextSize();
     }
     if (textAppearance.shadowColor != null) {
       expandedShadowColor = textAppearance.shadowColor;
@@ -522,6 +524,14 @@ public final class CollapsingTextHelper {
     return expandedTextSize;
   }
 
+  public void setRtlTextDirectionHeuristicsEnabled(boolean rtlTextDirectionHeuristicsEnabled) {
+    isRtlTextDirectionHeuristicsEnabled = rtlTextDirectionHeuristicsEnabled;
+  }
+
+  public boolean isRtlTextDirectionHeuristicsEnabled() {
+    return isRtlTextDirectionHeuristicsEnabled;
+  }
+
   private void calculateCurrentOffsets() {
     calculateOffsets(expandedFraction);
   }
@@ -539,7 +549,7 @@ public final class CollapsingTextHelper {
       } else {
         textBlendFraction = 1F;
         currentDrawX = collapsedDrawX;
-        currentDrawY = collapsedDrawY - currentOffsetY;
+        currentDrawY = collapsedDrawY - max(0, currentOffsetY);
 
         setInterpolatedTextSize(collapsedTextSize);
       }
@@ -840,14 +850,20 @@ public final class CollapsingTextHelper {
 
   private boolean calculateIsRtl(@NonNull CharSequence text) {
     final boolean defaultIsRtl = isDefaultIsRtl();
-    return (defaultIsRtl
-        ? TextDirectionHeuristicsCompat.FIRSTSTRONG_RTL
-        : TextDirectionHeuristicsCompat.FIRSTSTRONG_LTR)
-        .isRtl(text, 0, text.length());
+    return isRtlTextDirectionHeuristicsEnabled
+        ? isTextDirectionHeuristicsIsRtl(text, defaultIsRtl)
+        : defaultIsRtl;
   }
 
   private boolean isDefaultIsRtl() {
     return ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL;
+  }
+
+  private boolean isTextDirectionHeuristicsIsRtl(@NonNull CharSequence text, boolean defaultIsRtl) {
+    return (defaultIsRtl
+            ? TextDirectionHeuristicsCompat.FIRSTSTRONG_RTL
+            : TextDirectionHeuristicsCompat.FIRSTSTRONG_LTR)
+        .isRtl(text, 0, text.length());
   }
 
   private void setInterpolatedTextSize(float textSize) {

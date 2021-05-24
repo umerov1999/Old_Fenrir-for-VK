@@ -201,16 +201,6 @@ public class SideNavigationFragment extends AbsNavigationFragment implements Men
         mAdapter = new MenuListAdapter(requireActivity(), mDrawerItems, this, false);
         mAdapter.addHeader(vHeader);
 
-        mDrawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
-
-            @Override
-            public void onDrawerClosed(@NonNull View drawerView) {
-                if (mCallbacks != null) {
-                    mCallbacks.onSheetClosed();
-                }
-            }
-        });
-
         recyclerView.setAdapter(mAdapter);
 
         refreshUserInfo();
@@ -377,9 +367,15 @@ public class SideNavigationFragment extends AbsNavigationFragment implements Men
     public void setUp(@IdRes int fragmentId, @NonNull DrawerLayout drawerLayout) {
         mFragmentContainerView = requireActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
-//        if (drawerLayout != null) {
-//            mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-//        }
+        mDrawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+                if (mCallbacks != null) {
+                    mCallbacks.onSheetClosed();
+                }
+            }
+        });
     }
 
     private void selectItem(AbsMenuItem item, boolean longClick) {

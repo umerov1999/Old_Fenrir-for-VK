@@ -134,24 +134,24 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                     SaveAccount restore = new Gson().fromJson(Settings.get().accounts().getLogin(temp_to_show), SaveAccount.class);
 
                     String password = requireActivity().getString(R.string.restore_login_info, restore.login, restore.password, Settings.get().accounts().getAccessToken(temp_to_show), restore.two_factor_auth);
-                    MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(requireActivity());
-                    dlgAlert.setMessage(password);
-                    dlgAlert.setTitle(R.string.login_password_hint);
-                    dlgAlert.setPositiveButton("OK", null);
-                    dlgAlert.setNeutralButton(R.string.full_data, (dialog, which) -> {
-                        ClipboardManager clipboard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                        ClipData clip = ClipData.newPlainText("response", password);
-                        clipboard.setPrimaryClip(clip);
-                        CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.copied_to_clipboard);
-                    });
-                    dlgAlert.setNegativeButton(R.string.copy_data, (dialog, which) -> {
-                        ClipboardManager clipboard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                        ClipData clip = ClipData.newPlainText("response", restore.login + " " + restore.password);
-                        clipboard.setPrimaryClip(clip);
-                        CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.copied_to_clipboard);
-                    });
-                    dlgAlert.setCancelable(true);
-                    dlgAlert.create().show();
+                    new MaterialAlertDialogBuilder(requireActivity())
+                            .setMessage(password)
+                            .setTitle(R.string.login_password_hint)
+                            .setPositiveButton("OK", null)
+                            .setNeutralButton(R.string.full_data, (dialog, which) -> {
+                                ClipboardManager clipboard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("response", password);
+                                clipboard.setPrimaryClip(clip);
+                                CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.copied_to_clipboard);
+                            })
+                            .setNegativeButton(R.string.copy_data, (dialog, which) -> {
+                                ClipboardManager clipboard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("response", restore.login + " " + restore.password);
+                                clipboard.setPrimaryClip(clip);
+                                CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.copied_to_clipboard);
+                            })
+                            .setCancelable(true)
+                            .show();
                 }
             });
     private ArrayList<Account> mData;
@@ -493,13 +493,13 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                 case 4:
                     View root = View.inflate(requireActivity(), R.layout.dialog_enter_text, null);
                     ((TextInputEditText) root.findViewById(R.id.editText)).setText(Settings.get().accounts().getDevice(account.getId()));
-                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity())
+                    new MaterialAlertDialogBuilder(requireActivity())
                             .setTitle(R.string.set_device)
                             .setCancelable(true)
                             .setView(root)
                             .setPositiveButton(R.string.button_ok, (dialog, which) -> Settings.get().accounts().storeDevice(account.getId(), ((TextInputEditText) root.findViewById(R.id.editText)).getEditableText().toString()))
-                            .setNegativeButton(R.string.button_cancel, null);
-                    builder.create().show();
+                            .setNegativeButton(R.string.button_cancel, null)
+                            .show();
                     break;
             }
         });
@@ -609,7 +609,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
             return true;
         } else if (item.getItemId() == R.id.entry_account) {
             View root = View.inflate(requireActivity(), R.layout.entry_account, null);
-            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity())
+            new MaterialAlertDialogBuilder(requireActivity())
                     .setTitle(R.string.entry_account)
                     .setCancelable(true)
                     .setView(root)
@@ -625,8 +625,8 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
                         } catch (NumberFormatException ignored) {
                         }
                     })
-                    .setNegativeButton(R.string.button_cancel, null);
-            builder.create().show();
+                    .setNegativeButton(R.string.button_cancel, null)
+                    .show();
             return true;
         } else if (item.getItemId() == R.id.export_accounts) {
             if (Settings.get().accounts() == null || Settings.get().accounts().getRegistered() == null || Settings.get().accounts().getRegistered().size() <= 0)

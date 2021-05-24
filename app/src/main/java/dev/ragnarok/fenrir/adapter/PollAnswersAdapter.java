@@ -1,6 +1,7 @@
 package dev.ragnarok.fenrir.adapter;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -18,7 +19,6 @@ import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.adapter.base.RecyclerBindableAdapter;
 import dev.ragnarok.fenrir.model.Poll;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
-import dev.ragnarok.fenrir.util.Utils;
 
 public class PollAnswersAdapter extends RecyclerBindableAdapter<Poll.Answer, PollAnswersAdapter.ViewHolder> {
 
@@ -43,7 +43,7 @@ public class PollAnswersAdapter extends RecyclerBindableAdapter<Poll.Answer, Pol
 
         holder.tvCount.setText(String.valueOf(answer.getVoteCount()));
         holder.pbRate.setProgress((int) answer.getRate());
-        Utils.setColorFilter(holder.pbRate.getProgressDrawable(), CurrentTheme.getColorPrimary(context));
+        holder.pbRate.setProgressTintList(ColorStateList.valueOf(CurrentTheme.getColorPrimary(context)));
 
         boolean isMyAnswer = checkedIds.contains(answer.getId());
 

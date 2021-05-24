@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -48,6 +49,8 @@ import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.caverock.androidsvg.SVG;
+import com.caverock.androidsvg.SVGParseException;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -118,9 +121,6 @@ public class Utils {
     private static String device_id;
     private static float density = 1;
     private static DisplayMetrics metrics;
-
-    private Utils() {
-    }
 
     public static List<Sticker.LocalSticker> getCachedMyStickers() {
         return CachedMyStickers;
@@ -1008,19 +1008,46 @@ public class Utils {
         activity.startActivity(Intent.createChooser(sharingIntent, activity.getResources().getString(R.string.share_using)));
     }
 
-    public static void setColorFilter(Drawable dr, int Color) {
+    public static void setTint(@Nullable ImageView view, @ColorInt int color) {
+        if (isNull(view)) {
+            return;
+        }
+        view.setImageTintList(ColorStateList.valueOf(color));
+    }
+
+    public static void setBackgroundTint(@Nullable ImageView view, @ColorInt int color) {
+        if (isNull(view)) {
+            return;
+        }
+        view.setBackgroundTintList(ColorStateList.valueOf(color));
+    }
+
+    public static void setBackgroundTint(@Nullable View view, @ColorInt int color) {
+        if (isNull(view)) {
+            return;
+        }
+        view.setBackgroundTintList(ColorStateList.valueOf(color));
+    }
+
+    public static void setColorFilter(@Nullable Drawable drawable, @ColorInt int color) {
+        if (isNull(drawable)) {
+            return;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            dr.setColorFilter(new BlendModeColorFilter(Color, BlendMode.MODULATE));
+            drawable.setColorFilter(new BlendModeColorFilter(color, BlendMode.MODULATE));
         } else {
-            dr.setColorFilter(Color, PorterDuff.Mode.MULTIPLY);
+            drawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
         }
     }
 
-    public static void setColorFilter(ImageView dr, int Color) {
+    public static void setColorFilter(@Nullable ImageView view, @ColorInt int color) {
+        if (isNull(view)) {
+            return;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            dr.setColorFilter(new BlendModeColorFilter(Color, BlendMode.MODULATE));
+            view.setColorFilter(new BlendModeColorFilter(color, BlendMode.MODULATE));
         } else {
-            dr.setColorFilter(Color, PorterDuff.Mode.MULTIPLY);
+            view.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
         }
     }
 
@@ -1603,14 +1630,12 @@ public class Utils {
                     }
                     Handler uiHandler = new Handler(context.getMainLooper());
                     String finalResult = result;
-                    uiHandler.post(() -> {
-                        MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(context);
-                        dlgAlert.setIcon(R.drawable.dir_person);
-                        dlgAlert.setMessage(finalResult);
-                        dlgAlert.setTitle(context.getString(R.string.registration_date));
-                        dlgAlert.setCancelable(true);
-                        dlgAlert.create().show();
-                    });
+                    uiHandler.post(() -> new MaterialAlertDialogBuilder(context)
+                            .setIcon(R.drawable.dir_person)
+                            .setMessage(finalResult)
+                            .setTitle(context.getString(R.string.registration_date))
+                            .setCancelable(true)
+                            .show());
                 }
             }
         });
@@ -1631,6 +1656,25 @@ public class Utils {
         } catch (Throwable ignore) {
             CustomToast.CreateCustomToast(context).showToastError(R.string.remote_audio_error);
         }
+    }
+
+    @Nullable
+    public static Bitmap renderSVG(@Nullable String str, int width, int height) {
+        if (isEmpty(str)) {
+            return null;
+        }
+        try {
+            SVG svg = SVG.getFromString(str);
+            svg.setDocumentWidth(width);
+            svg.setDocumentHeight(height);
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            svg.renderToCanvas(canvas);
+            return bitmap;
+        } catch (SVGParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static String BytesToSize(long Bytes) {

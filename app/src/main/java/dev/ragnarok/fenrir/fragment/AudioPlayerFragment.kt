@@ -34,6 +34,7 @@ import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import dev.ragnarok.fenrir.*
+import dev.ragnarok.fenrir.Extensions.Companion.toMainThread
 import dev.ragnarok.fenrir.activity.SendAttachmentsActivity
 import dev.ragnarok.fenrir.domain.IAudioInteractor
 import dev.ragnarok.fenrir.domain.InteractorFactory
@@ -223,13 +224,15 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
             return
         }
         val audio = MusicUtils.getCurrentAudio() ?: return
-        val qr = generateQR(
-            "https://vk.com/audio/" + audio.ownerId + "_" + audio.id,
-            CurrentTheme.getColorPrimary(requireActivity()),
-            CurrentTheme.getColorSecondary(requireActivity()),
-            Color.parseColor("#ffffff"),
-            Color.parseColor("#000000"),
-            3
+        val qr = Utils.renderSVG(
+            generateQR(
+                "https://vk.com/audio/" + audio.ownerId + "_" + audio.id,
+                CurrentTheme.getColorPrimary(requireActivity()),
+                CurrentTheme.getColorSecondary(requireActivity()),
+                Color.parseColor("#ffffff"),
+                Color.parseColor("#000000"),
+                3
+            ), 650, 650
         )
         val dlgAlert = MaterialAlertDialogBuilder(requireActivity())
         dlgAlert.setCancelable(true)
@@ -663,7 +666,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
             return
         }
         val now = SystemClock.elapsedRealtime()
-        if (now - mLastSeekEventTime > 250) {
+        if (now - mLastSeekEventTime > 100) {
             mLastSeekEventTime = now
             refreshCurrentTime()
             if (!mFromTouch) {
@@ -736,6 +739,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         playDispose.dispose()
         mCompositeDisposable.dispose()
         mTimeHandler?.removeMessages(REFRESH_TIME)
+        mTimeHandler = null
         mBroadcastDisposable.dispose()
         PicassoInstance.with().cancelTag(PLAYER_TAG)
         super.onDestroy()
@@ -1117,11 +1121,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         private val mAudioPlayer: WeakReference<AudioPlayerFragment> = WeakReference(player)
         override fun handleMessage(msg: Message) {
             if (msg.what == REFRESH_TIME) {
-                if (mAudioPlayer.get() == null) return
-                val next = mAudioPlayer.get()?.refreshCurrentTime()
-                if (next != null) {
-                    mAudioPlayer.get()?.queueNextRefresh(next)
-                }
+                mAudioPlayer.get()?.let { it.queueNextRefresh(it.refreshCurrentTime()) }
             }
         }
 

@@ -216,19 +216,19 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
             result -> {
                 IntentResult scanner = IntentIntegrator.parseActivityResult(result);
                 if (!Utils.isEmpty(scanner.getContents())) {
-                    MaterialAlertDialogBuilder dlgAlert = new MaterialAlertDialogBuilder(this);
-                    dlgAlert.setIcon(R.drawable.qr_code);
-                    dlgAlert.setMessage(scanner.getContents());
-                    dlgAlert.setTitle(getString(R.string.scan_qr));
-                    dlgAlert.setPositiveButton(R.string.open, (dialog, which) -> LinkHelper.openUrl(this, mAccountId, scanner.getContents()));
-                    dlgAlert.setNeutralButton(R.string.copy_text, (dialog, which) -> {
-                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                        ClipData clip = ClipData.newPlainText("response", scanner.getContents());
-                        clipboard.setPrimaryClip(clip);
-                        CustomToast.CreateCustomToast(this).showToast(R.string.copied_to_clipboard);
-                    });
-                    dlgAlert.setCancelable(true);
-                    dlgAlert.create().show();
+                    new MaterialAlertDialogBuilder(this)
+                            .setIcon(R.drawable.qr_code)
+                            .setMessage(scanner.getContents())
+                            .setTitle(getString(R.string.scan_qr))
+                            .setPositiveButton(R.string.open, (dialog, which) -> LinkHelper.openUrl(this, mAccountId, scanner.getContents()))
+                            .setNeutralButton(R.string.copy_text, (dialog, which) -> {
+                                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("response", scanner.getContents());
+                                clipboard.setPrimaryClip(clip);
+                                CustomToast.CreateCustomToast(this).showToast(R.string.copied_to_clipboard);
+                            })
+                            .setCancelable(true)
+                            .create().show();
                 }
             });
     private final ActivityResultLauncher<Intent> requestLogin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),

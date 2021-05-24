@@ -343,21 +343,21 @@ public class WallPostPresenter extends PlaceSupportPresenter<IWallPostView> {
     }
 
     public void fireReport() {
-        MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(context);
-        alert.setTitle(R.string.report);
         CharSequence[] items = {"Спам", "Детская порнография", "Экстремизм", "Насилие", "Пропаганда наркотиков", "Материал для взрослых", "Оскорбление", "Призывы к суициду"};
-        alert.setItems(items, (dialog, item) -> {
-            appendDisposable(wallInteractor.reportPost(getAccountId(), ownerId, postId, item)
-                    .compose(RxUtils.applySingleIOToMainSchedulers())
-                    .subscribe(p -> {
-                        if (p == 1)
-                            callView(v -> v.getCustomToast().showToast(R.string.success));
-                        else
-                            callView(v -> v.getCustomToast().showToast(R.string.error));
-                    }, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
-            dialog.dismiss();
-        });
-        alert.show();
+        new MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.report)
+                .setItems(items, (dialog, item) -> {
+                    appendDisposable(wallInteractor.reportPost(getAccountId(), ownerId, postId, item)
+                            .compose(RxUtils.applySingleIOToMainSchedulers())
+                            .subscribe(p -> {
+                                if (p == 1)
+                                    callView(v -> v.getCustomToast().showToast(R.string.success));
+                                else
+                                    callView(v -> v.getCustomToast().showToast(R.string.error));
+                            }, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
+                    dialog.dismiss();
+                })
+                .show();
     }
 
     @OnGuiCreated

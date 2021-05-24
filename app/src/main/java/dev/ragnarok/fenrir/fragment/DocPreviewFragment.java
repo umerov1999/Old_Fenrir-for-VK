@@ -38,7 +38,6 @@ import dev.ragnarok.fenrir.model.PhotoSize;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.place.PlaceUtil;
-import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.DownloadWorkUtils;
@@ -131,7 +130,6 @@ public class DocPreviewFragment extends BaseFragment implements View.OnClickList
         ((AppCompatActivity) requireActivity()).setSupportActionBar(rootView.findViewById(R.id.toolbar));
         preview = rootView.findViewById(R.id.fragment_document_preview);
         ivDocIcon = rootView.findViewById(R.id.no_preview_icon);
-        Utils.setColorFilter(ivDocIcon.getBackground(), CurrentTheme.getColorPrimary(requireActivity()));
 
         tvTitle = rootView.findViewById(R.id.fragment_document_title);
         tvSubtitle = rootView.findViewById(R.id.fragment_document_subtitle);

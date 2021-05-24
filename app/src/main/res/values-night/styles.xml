@@ -482,6 +482,36 @@
         <item name="white_color">#FFFFFF</item>
         <item name="materialCardStyle">@style/CardViewMD2</item>
         <item name="materialCardBackgroundStyle">@drawable/background_rectangle_stroke_filled</item>
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.AppTheme.SmallComponent
+        </item>
+        <item name="shapeAppearanceMediumComponent">
+            @style/ShapeAppearance.AppTheme.MediumComponent
+        </item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.AppTheme.LargeComponent
+        </item>
+        <item name="materialCardViewStyle">@style/Theme.MaterialCardView</item>
+        <item name="floatingActionButtonStyle">@style/Theme.FloatingActionButton</item>
+        <item name="fab_secondary">@style/Theme.FloatingActionButtonSecondary</item>
+        <item name="fab_player">@style/Theme.FloatingActionButtonAudio</item>
+        <item name="icon_color_active">#AA448AFF</item>
+        <item name="icon_color_inactive">#AAFF0000</item>
+        <item name="dialogs_unread_color">#20b0b0b0</item>
+        <item name="navi_menu_color">#00000000</item>
+        <item name="navi_menu_selector">@drawable/list_selector_dark</item>
+        <item name="toast_background">#FFFFFF</item>
+        <item name="messages_background_color">#151515</item>
+        <item name="my_messages_bubble_color">#D42C3C53</item>
+        <item name="my_messages_secondary_bubble_color">#D42C3C53</item>
+        <item name="message_unread_color">#f564b5f6</item>
+        <item name="chat_background_cookies">@drawable/cookies_dark</item>
+        <item name="chat_background_lines">@drawable/lines_dark</item>
+        <item name="chat_background_runes">@drawable/runes_dark</item>
+        <item name="buttonAddPhotoBackground">@drawable/background_rectangle_dash</item>
+        <item name="bottomSheetDialogTheme">@style/CustomBottomSheetDialog</item>
+        <item name="colorBackgroundFloating">@color/night</item>
+        <item name="colorOnBackground">#1E1E1E</item>
+        <item name="colorSurface">#F01E1E1E</item>
+        <item name="toolbar_left_icon_color">?attr/colorPrimary</item>
     </style>
 
     <style name="Theme.MaterialCardView" parent="Widget.MaterialComponents.CardView">

@@ -296,15 +296,15 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
                         audioListDisposable = mAudioInteractor.get_file_name(hash2).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> {
                             View root = View.inflate(mContext, R.layout.entry_file_name, null);
                             ((TextInputEditText) root.findViewById(R.id.edit_file_name)).setText(t);
-                            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(mContext)
+                            new MaterialAlertDialogBuilder(mContext)
                                     .setTitle(R.string.change_name)
                                     .setCancelable(true)
                                     .setView(root)
                                     .setPositiveButton(R.string.button_ok, (dialog, which) -> audioListDisposable = mAudioInteractor.update_file_name(hash2, ((TextInputEditText) root.findViewById(R.id.edit_file_name)).getText().toString().trim())
                                             .compose(RxUtils.applySingleIOToMainSchedulers())
                                             .subscribe(t1 -> CustomToast.CreateCustomToast(mContext).showToast(R.string.success), o -> Utils.showErrorInAdapter((Activity) mContext, o)))
-                                    .setNegativeButton(R.string.button_cancel, null);
-                            builder.create().show();
+                                    .setNegativeButton(R.string.button_cancel, null)
+                                    .show();
                         }, t -> Utils.showErrorInAdapter((Activity) mContext, t));
                         break;
                     case AudioItem.add_item_audio:

@@ -140,26 +140,24 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
         endOfContent = data.isEmpty();
         actualReceived = true;
         if (offset == 0) {
-            if (MusicUtils.Audios.containsKey(ownerId)) {
-                Objects.requireNonNull(MusicUtils.Audios.get(ownerId)).clear();
-            } else {
-                MusicUtils.Audios.put(ownerId, new ArrayList<>(data.size()));
+            if (isNull(albumId) && !iSSelectMode) {
+                if (MusicUtils.Audios.containsKey(ownerId)) {
+                    Objects.requireNonNull(MusicUtils.Audios.get(ownerId)).clear();
+                } else {
+                    MusicUtils.Audios.put(ownerId, new ArrayList<>(data.size()));
+                }
+                Objects.requireNonNull(MusicUtils.Audios.get(ownerId)).addAll(data);
             }
-        }
-        if (MusicUtils.Audios.containsKey(ownerId)) {
-            Objects.requireNonNull(MusicUtils.Audios.get(ownerId)).addAll(data);
-        }
-        if (offset == 0) {
             audios.clear();
             audios.addAll(data);
             callView(IAudiosView::notifyListChanged);
         } else {
+            if (isNull(albumId) && !iSSelectMode && MusicUtils.Audios.containsKey(ownerId)) {
+                Objects.requireNonNull(MusicUtils.Audios.get(ownerId)).addAll(data);
+            }
             int startOwnSize = audios.size();
             audios.addAll(data);
             callView(view -> view.notifyDataAdded(startOwnSize, data.size()));
-        }
-        if (isNull(albumId) && !iSSelectMode) {
-            MusicUtils.Audios.put(ownerId, new ArrayList<>(audios));
         }
         setLoadingNow(false);
     }
@@ -307,7 +305,7 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
         ((TextInputEditText) root.findViewById(R.id.edit_artist)).setText(audio.getArtist());
         ((TextInputEditText) root.findViewById(R.id.edit_title)).setText(audio.getTitle());
         ((TextInputEditText) root.findViewById(R.id.edit_lyrics)).setText(lyrics);
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
+        new MaterialAlertDialogBuilder(context)
                 .setTitle(R.string.enter_audio_info)
                 .setCancelable(true)
                 .setView(root)
@@ -315,8 +313,8 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
                         ((TextInputEditText) root.findViewById(R.id.edit_artist)).getText().toString(), ((TextInputEditText) root.findViewById(R.id.edit_title)).getText().toString(),
                         ((TextInputEditText) root.findViewById(R.id.edit_lyrics)).getText().toString()).compose(RxUtils.applyCompletableIOToMainSchedulers())
                         .subscribe(this::fireRefresh, t -> callView(v -> showError(v, getCauseIfRuntime(t))))))
-                .setNegativeButton(R.string.button_cancel, null);
-        builder.create().show();
+                .setNegativeButton(R.string.button_cancel, null)
+                .show();
     }
 
     private void tempSwap(int fromPosition, int toPosition) {
@@ -436,12 +434,14 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
                 endOfContent = isEnd;
                 audios.clear();
                 audios.addAll(data);
-                if (MusicUtils.Audios.containsKey(ownerId)) {
-                    Objects.requireNonNull(MusicUtils.Audios.get(ownerId)).clear();
-                } else {
-                    MusicUtils.Audios.put(ownerId, new ArrayList<>(data.size()));
+                if (isNull(albumId) && !iSSelectMode) {
+                    if (MusicUtils.Audios.containsKey(ownerId)) {
+                        Objects.requireNonNull(MusicUtils.Audios.get(ownerId)).clear();
+                    } else {
+                        MusicUtils.Audios.put(ownerId, new ArrayList<>(data.size()));
+                    }
+                    Objects.requireNonNull(MusicUtils.Audios.get(ownerId)).addAll(data);
                 }
-                Objects.requireNonNull(MusicUtils.Audios.get(ownerId)).addAll(data);
                 callView(IAudiosView::notifyListChanged);
             }
         }

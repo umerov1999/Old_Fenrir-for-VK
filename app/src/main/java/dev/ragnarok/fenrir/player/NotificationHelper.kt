@@ -42,13 +42,10 @@ class NotificationHelper(private val mService: MusicPlaybackService) {
                 .setContentText(trackName)
                 .setContentIntent(getOpenIntent(context))
                 .setLargeIcon(cover)
-                //.setDeleteIntent(retreivePlaybackActions(SWIPE_DISMISS_ACTION))
                 .setStyle(
                     androidx.media.app.NotificationCompat.MediaStyle()
                         .setMediaSession(mediaSessionToken)
-                        .setShowCancelButton(true)
                         .setShowActionsInCompactView(0, 1, 2)
-                        .setCancelButtonIntent(retreivePlaybackActions(ACTION_STOP_ACTION))
                 )
                 .addAction(
                     NotificationCompat.Action(
@@ -71,6 +68,9 @@ class NotificationHelper(private val mService: MusicPlaybackService) {
                         retreivePlaybackActions(ACTION_NEXT)
                     )
                 )
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            mNotificationBuilder?.setDeleteIntent(retreivePlaybackActions(SWIPE_DISMISS_ACTION))
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             mNotificationBuilder?.priority = NotificationManager.IMPORTANCE_HIGH
         else
@@ -137,13 +137,6 @@ class NotificationHelper(private val mService: MusicPlaybackService) {
                 pendingIntent = PendingIntent.getService(mService, ACTION_PREV, action, 0)
                 return pendingIntent
             }
-            ACTION_STOP_ACTION -> {
-                // Stop and collapse the notification
-                action = Intent(MusicPlaybackService.STOP_ACTION)
-                action.component = serviceName
-                pendingIntent = PendingIntent.getService(mService, ACTION_STOP_ACTION, action, 0)
-                return pendingIntent
-            }
             SWIPE_DISMISS_ACTION -> {
                 // Stop and collapse the notification
                 action = Intent(MusicPlaybackService.SWIPE_DISMISS_ACTION)
@@ -162,8 +155,7 @@ class NotificationHelper(private val mService: MusicPlaybackService) {
         private const val ACTION_PLAY_PAUSE = 1
         private const val ACTION_NEXT = 2
         private const val ACTION_PREV = 3
-        private const val ACTION_STOP_ACTION = 4
-        private const val SWIPE_DISMISS_ACTION = 5
+        private const val SWIPE_DISMISS_ACTION = 4
     }
 
     init {

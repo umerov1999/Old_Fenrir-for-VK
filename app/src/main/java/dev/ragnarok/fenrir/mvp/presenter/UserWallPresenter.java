@@ -633,23 +633,23 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
     }
 
     public void fireReport() {
-        MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(context);
-        alert.setTitle(R.string.report);
         CharSequence[] values = {"porn", "spam", "insult", "advertisement"};
         CharSequence[] items = {"Порнография", "Спам, Мошенничество", "Оскорбительное поведение", "Рекламная страница"};
-        alert.setItems(items, (dialog, item) -> {
-            String report = values[item].toString();
-            appendDisposable(ownersRepository.report(getAccountId(), getOwnerId(), report, null)
-                    .compose(RxUtils.applySingleIOToMainSchedulers())
-                    .subscribe(p -> {
-                        if (p == 1)
-                            callView(v -> v.getCustomToast().showToast(R.string.success));
-                        else
-                            callView(v -> v.getCustomToast().showToast(R.string.error));
-                    }, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
-            dialog.dismiss();
-        });
-        alert.show();
+        new MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.report)
+                .setItems(items, (dialog, item) -> {
+                    String report = values[item].toString();
+                    appendDisposable(ownersRepository.report(getAccountId(), getOwnerId(), report, null)
+                            .compose(RxUtils.applySingleIOToMainSchedulers())
+                            .subscribe(p -> {
+                                if (p == 1)
+                                    callView(v -> v.getCustomToast().showToast(R.string.success));
+                                else
+                                    callView(v -> v.getCustomToast().showToast(R.string.error));
+                            }, t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
+                    dialog.dismiss();
+                })
+                .show();
     }
 
     public void fireRemoveBlacklistClick() {

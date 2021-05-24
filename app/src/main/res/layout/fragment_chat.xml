@@ -84,18 +84,20 @@
         </com.google.android.material.appbar.MaterialToolbar>
     </dev.ragnarok.fenrir.view.BottomShadowView>
 
-    <LinearLayout
+    <dev.ragnarok.fenrir.view.BottomShadowView
         android:id="@+id/pinned_root_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar_root"
+        android:animateLayoutChanges="true"
+        android:background="?android:colorBackground"
         android:orientation="vertical"
-        android:stateListAnimator="@animator/clicked">
+        android:stateListAnimator="@animator/clicked"
+        app:elevation="4dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?android:colorBackground"
             android:padding="4dp">
 
             <ImageView
@@ -144,12 +146,7 @@
 
         </RelativeLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?attr/dividerColor" />
-
-    </LinearLayout>
+    </dev.ragnarok.fenrir.view.BottomShadowView>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
