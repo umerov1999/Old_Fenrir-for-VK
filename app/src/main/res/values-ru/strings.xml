@@ -657,9 +657,8 @@
     <string name="avatar_style_title">Стиль аватарок</string>
 
     <string name="save_changes_question">Сохранить изменения ?</string>
-    <string name="developer">Разработчики:</string>
-    <string name="first_developer">Умеров Артём</string>
-    <string name="second_developer">Данилюк Дмитрий</string>
+    <string name="developer">Разработчик: Умеров Артём</string>
+    <string name="helped_developer">Помогал: Данилюк Дмитрий</string>
     <string name="first_pagan">Первый языческий</string>
     <string name="repo">Репозиторий: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="repo_local_server">Репозиторий: https://github.com/umerov1999/FenrirMediaServer/releases</string>

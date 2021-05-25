@@ -23,6 +23,7 @@ import dev.ragnarok.fenrir.view.AspectRatioImageView
 import dev.ragnarok.fenrir.view.mozaik.MozaikLayout
 import dev.ragnarok.fenrir.view.natives.video.AnimatedShapeableImageView
 import dev.ragnarok.fenrir.view.zoomhelper.ZoomHelper.Companion.addZoomableView
+import dev.ragnarok.fenrir.view.zoomhelper.ZoomHelper.Companion.removeZoomableView
 import java.util.*
 
 class PhotosViewHelper internal constructor(
@@ -44,13 +45,15 @@ class PhotosViewHelper internal constructor(
         for (j in 0 until i) {
             val root = LayoutInflater.from(context)
                 .inflate(R.layout.item_video_attachment, container, false)
-            val holder = VideoHolder(root)
-            root.tag = holder
             container.addView(root)
         }
         for (g in 0 until container.childCount) {
             val tmpV = container.getChildAt(g)
-            val holder = tmpV.tag as VideoHolder
+            var holder = tmpV.tag as VideoHolder?
+            if (holder == null) {
+                holder = VideoHolder(tmpV)
+                tmpV.tag = holder
+            }
             if (g < videos.size) {
                 val image = videos[g]
                 holder.vgPhoto.setOnClickListener {
@@ -82,9 +85,18 @@ class PhotosViewHelper internal constructor(
         }
     }
 
+    fun removeZoomable(container: ViewGroup?) {
+        if (container == null)
+            return
+        for (g in 0 until container.childCount) {
+            removeZoomableView(container.getChildAt(g))
+        }
+    }
+
     fun displayPhotos(photos: List<PostImage>, container: ViewGroup) {
         container.visibility = if (photos.isEmpty()) View.GONE else View.VISIBLE
         if (photos.isEmpty()) {
+            removeZoomable(container)
             return
         }
         var images = photos
@@ -123,15 +135,19 @@ class PhotosViewHelper internal constructor(
             val holder = Holder(root)
             root.tag = holder
             container.addView(root)
-            addZoomableView(root, holder)
         }
         if (container is MozaikLayout) {
             container.setPhotos(images)
         }
         for (g in 0 until container.childCount) {
             val tmpV = container.getChildAt(g)
-            val holder = tmpV.tag as Holder
+            var holder = tmpV.tag as Holder?
+            if (holder == null) {
+                holder = Holder(tmpV)
+                tmpV.tag = holder
+            }
             if (g < images.size) {
+                addZoomableView(tmpV, holder)
                 val image = images[g]
                 holder.ivPlay.visibility =
                     if (image.type == PostImage.TYPE_IMAGE) View.GONE else View.VISIBLE
@@ -199,6 +215,7 @@ class PhotosViewHelper internal constructor(
                     tmpV.visibility = View.GONE
                 }
             } else {
+                removeZoomableView(tmpV)
                 tmpV.visibility = View.GONE
             }
         }

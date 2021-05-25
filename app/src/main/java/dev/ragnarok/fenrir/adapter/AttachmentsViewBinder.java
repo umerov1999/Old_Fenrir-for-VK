@@ -130,6 +130,7 @@ public class AttachmentsViewBinder {
             safeSetVisibitity(containers.getVgStickers(), View.GONE);
             safeSetVisibitity(containers.getVoiceMessageRoot(), View.GONE);
             safeSetVisibitity(containers.getVgFriends(), View.GONE);
+            photosViewHelper.removeZoomable(containers.getVgPhotos());
             containers.getVgAudios().dispose();
         } else {
             displayArticles(attachments.getArticles(), containers.getVgArticles());
@@ -356,7 +357,12 @@ public class AttachmentsViewBinder {
             ViewGroup postViewGroup = (ViewGroup) container.getChildAt(g);
 
             if (g < posts.size()) {
-                CopyHolder holder = (CopyHolder) postViewGroup.getTag();
+                CopyHolder check = (CopyHolder) postViewGroup.getTag();
+                if (check == null) {
+                    check = new CopyHolder(postViewGroup, mAttachmentsActionCallback);
+                    postViewGroup.setTag(check);
+                }
+                CopyHolder holder = check;
                 Post copy = posts.get(g);
 
                 if (isNull(copy)) {

@@ -22,6 +22,7 @@ import java.util.Set;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
+import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
 import dev.ragnarok.fenrir.adapter.PollAnswersAdapter;
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
@@ -148,6 +149,17 @@ public class PollFragment extends BaseMvpFragment<PollPresenter, IPollView>
         if (nonNull(mButton)) {
             mButton.setText(getString(voted ? R.string.remove_vote : R.string.add_vote));
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        new ActivityFeatures.Builder()
+                .begin()
+                .setHideNavigationMenu(false)
+                .setBarsColored(requireActivity(), true)
+                .build()
+                .apply(requireActivity());
     }
 
     @NonNull

@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.List;
 
 import dev.ragnarok.fenrir.CheckDonate;
+import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
@@ -152,7 +153,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
                         .into(mHeaderHolder.vgCover);
             }
         }
-        if (Settings.get().other().isShow_donate_anim() && user.isDonated()) {
+        if (Settings.get().other().isShow_donate_anim() && (user.isDonated() || Constants.IS_DONATE)) {
             mHeaderHolder.bDonate.setVisibility(View.VISIBLE);
             mHeaderHolder.bDonate.setAutoRepeat(true);
             mHeaderHolder.bDonate.fromRes(R.raw.donater, Utils.dp(100), Utils.dp(100), new int[]{0xffffff, CurrentTheme.getColorPrimary(requireActivity()), 0x777777, CurrentTheme.getColorSecondary(requireActivity())});

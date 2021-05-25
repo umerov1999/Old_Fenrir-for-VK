@@ -89,14 +89,7 @@ android {
             buildConfigField 'int', 'VK_API_APP_ID', getProps("vk_app_id")
             buildConfigField 'int', 'DEFAULT_ACCOUNT_TYPE', 'Account_Types.VK_ANDROID'
             buildConfigField 'String', 'VK_CLIENT_SECRET', getProps("vk_client_secret")
-        }
-        fenrir_kate_lite {
-            applicationId "dev.ragnarok.fenrir_kate_public"
-            dimension "type"
-            buildConfigField 'boolean', 'IS_DONATE', 'false'
-            buildConfigField 'int', 'VK_API_APP_ID', getProps("kate_app_id")
-            buildConfigField 'int', 'DEFAULT_ACCOUNT_TYPE', 'Account_Types.KATE'
-            buildConfigField 'String', 'VK_CLIENT_SECRET', getProps("kate_client_secret")
+            isDefault = true
         }
         fenrir_kate_full {
             applicationId "dev.ragnarok.fenrir_kate_full"
@@ -162,8 +155,6 @@ dependencies {
         exclude group: "com.google.firebase", module: "firebase-installations"
     }
     fenrir_vk_fullImplementation project(path: ':firebase-installations')
-    //noinspection GradleDependency
-    fenrir_kate_liteImplementation 'com.google.firebase:firebase-messaging:20.1.0'
     //noinspection GradleDependency
     fenrir_kate_fullImplementation 'com.google.firebase:firebase-messaging:20.1.0'
     //implementation project(path: ':libfenrir')

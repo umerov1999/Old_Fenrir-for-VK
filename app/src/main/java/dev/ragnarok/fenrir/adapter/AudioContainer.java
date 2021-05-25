@@ -189,9 +189,13 @@ public class AudioContainer extends LinearLayout {
         for (int g = 0; g < getChildCount(); g++) {
             ViewGroup root = (ViewGroup) getChildAt(g);
             if (g < audios.size()) {
+                AudioHolder check = (AudioHolder) root.getTag();
+                if (check == null) {
+                    check = new AudioHolder(root);
+                    root.setTag(check);
+                }
+                AudioHolder holder = check;
                 Audio audio = audios.get(g);
-
-                AudioHolder holder = new AudioHolder(root);
 
                 holder.tvTitle.setText(audio.getArtist());
                 holder.tvSubtitle.setText(audio.getTitle());
@@ -398,10 +402,8 @@ public class AudioContainer extends LinearLayout {
                 });
 
                 root.setVisibility(View.VISIBLE);
-                root.setTag(audio);
             } else {
                 root.setVisibility(View.GONE);
-                root.setTag(null);
             }
         }
         mPlayerDisposable.dispose();
