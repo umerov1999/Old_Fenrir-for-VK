@@ -234,6 +234,12 @@
             app:useSimpleSummaryProvider="true" />
 
         <SwitchPreference
+            android:defaultValue="true"
+            android:key="show_donate_anim"
+            android:title="@string/show_donate_anim"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
             android:defaultValue="false"
             android:key="disable_history"
             android:title="@string/disable_history"
@@ -512,12 +518,6 @@
             android:defaultValue="false"
             android:key="be_online"
             android:title="@string/be_online"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="show_donate_anim"
-            android:title="@string/show_donate_anim"
             app:iconSpaceReserved="false" />
 
     </PreferenceCategory>

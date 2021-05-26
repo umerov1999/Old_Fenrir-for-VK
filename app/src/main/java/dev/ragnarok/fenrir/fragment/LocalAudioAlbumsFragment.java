@@ -145,7 +145,7 @@ public class LocalAudioAlbumsFragment extends BaseMvpBottomSheetDialogFragment<L
         return () -> new LocalAudioAlbumsPresenter(saveInstanceState);
     }
 
-    interface Listener {
+    public interface Listener {
         void onSelected(int bucket_id);
     }
 }

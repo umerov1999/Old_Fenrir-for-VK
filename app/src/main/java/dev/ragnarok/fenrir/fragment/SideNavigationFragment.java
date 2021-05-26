@@ -171,6 +171,7 @@ public class SideNavigationFragment extends AbsNavigationFragment implements Men
 
         ImageView ivHeaderDayNight = vHeader.findViewById(R.id.header_navi_menu_day_night);
         ImageView ivHeaderNotifications = vHeader.findViewById(R.id.header_navi_menu_notifications);
+        ImageView ivHeaderThemes = vHeader.findViewById(R.id.header_navi_menu_themes);
 
         ivHeaderDayNight.setOnClickListener(v -> {
             if (Settings.get().ui().getNightMode() == NightMode.ENABLE || Settings.get().ui().getNightMode() == NightMode.AUTO ||
@@ -182,6 +183,8 @@ public class SideNavigationFragment extends AbsNavigationFragment implements Men
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             }
         });
+
+        ivHeaderThemes.setOnClickListener(v -> PlaceFactory.getSettingsThemePlace().tryOpenWith(requireActivity()));
 
         ivHeaderNotifications.setOnClickListener(v -> {
             boolean rs = !Settings.get().other().isDisable_notifications();

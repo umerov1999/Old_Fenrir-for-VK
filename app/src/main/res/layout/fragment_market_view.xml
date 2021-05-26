@@ -51,6 +51,7 @@
                 android:id="@+id/item_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:autoLink="web|phone"
                 android:gravity="center"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 tools:text="Title" />
@@ -91,6 +92,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
+                android:autoLink="web|phone"
                 android:enabled="true"
                 android:focusable="true"
                 android:gravity="center"

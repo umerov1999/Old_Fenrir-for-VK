@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.text.Spannable;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Transformation;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.EventListener;
 import java.util.HashSet;
@@ -60,6 +62,7 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final ForegroundColorSpan mForegroundColorSpan;
     private final RecyclerView.AdapterDataObserver mDataObserver;
     private final Set<Integer> hidden;
+    private final List<Integer> silentChats;
     private boolean showHidden;
     private List<Dialog> mDialogs;
     private long mStartOfToday;
@@ -68,6 +71,7 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public DialogsAdapter(Context context, @NonNull List<Dialog> dialogs) {
         mContext = context;
         mDialogs = dialogs;
+        silentChats = new ArrayList<>();
         mTransformation = CurrentTheme.createTransformationForAvatar();
         mForegroundColorSpan = new ForegroundColorSpan(CurrentTheme.getPrimaryTextColorCode(context));
         mDataObserver = new RecyclerView.AdapterDataObserver() {
@@ -80,6 +84,11 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         registerAdapterDataObserver(mDataObserver);
         initStartOfTodayDate();
+    }
+
+    public void updateSilentChats(@NonNull List<Integer> chats) {
+        silentChats.clear();
+        silentChats.addAll(chats);
     }
 
     public void updateShowHidden(boolean showHidden) {
@@ -138,6 +147,7 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return null;
     }
 
+    @SuppressLint("SwitchIntDef")
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder dualHolder, int position) {
         if (getDataTypeByAdapterPosition(position) == DATA_TYPE_HIDDEN) {
@@ -272,6 +282,7 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         holder.ivDialogType.setVisibility(dialog.isChat() ? View.VISIBLE : View.GONE);
         holder.ivUnreadTicks.setVisibility(dialog.isLastMessageOut() ? View.VISIBLE : View.GONE);
         holder.ivUnreadTicks.setImageResource(lastMessageRead ? R.drawable.check_all : R.drawable.check);
+        holder.silent.setVisibility(silentChats.contains(dialog.getId()) ? View.VISIBLE : View.GONE);
 
         holder.ivOnline.setVisibility(online && !dialog.isChat() ? View.VISIBLE : View.GONE);
 
@@ -429,6 +440,7 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         final ImageView ivAvatar;
         final ImageView ivVerified;
         final ImageView blacklisted;
+        final ImageView silent;
         final TextView tvUnreadCount;
         final ImageView ivUnreadTicks;
         final OnlineView ivOnline;
@@ -453,6 +465,7 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mDialogContentRoot = view.findViewById(R.id.dialog_content);
             blacklisted = itemView.findViewById(R.id.item_blacklisted);
             ivVerified = itemView.findViewById(R.id.item_verified);
+            silent = itemView.findViewById(R.id.dialog_silent);
         }
     }
 }

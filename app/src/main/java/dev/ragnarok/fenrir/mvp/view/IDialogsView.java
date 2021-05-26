@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.mvp.view;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
@@ -14,7 +15,7 @@ import dev.ragnarok.fenrir.mvp.view.base.IAccountDependencyView;
 
 public interface IDialogsView extends IAccountDependencyView, IMvpView, IErrorView, IToastView {
 
-    void displayData(List<Dialog> data);
+    void displayData(List<Dialog> data, @NonNull List<Integer> chats);
 
     void notifyDataSetChanged();
 
@@ -41,6 +42,8 @@ public interface IDialogsView extends IAccountDependencyView, IMvpView, IErrorVi
     void setCreateGroupChatButtonVisible(boolean visible);
 
     void notifyHasAttachments(boolean has);
+
+    void updateSilentChats(@NonNull List<Integer> chats);
 
     interface IContextView {
         void setCanDelete(boolean can);

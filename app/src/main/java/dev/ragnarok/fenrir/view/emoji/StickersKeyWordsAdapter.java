@@ -58,18 +58,18 @@ public class StickersKeyWordsAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Sticker item = stickers.get(position);
         StickerHolder normalHolder = (StickerHolder) holder;
-        normalHolder.image.setVisibility(View.VISIBLE);
+        normalHolder.root.setVisibility(View.VISIBLE);
         String url = item.getImage(256, isNightStiker).getUrl();
 
         if (Utils.isEmpty(url)) {
-            PicassoInstance.with().cancelRequest(normalHolder.image);
-            normalHolder.image.setImageResource(R.drawable.ic_avatar_unknown);
+            PicassoInstance.with().cancelRequest(normalHolder.root);
+            normalHolder.root.setImageResource(R.drawable.ic_avatar_unknown);
         } else {
             PicassoInstance.with()
                     .load(url)
                     //.networkPolicy(NetworkPolicy.OFFLINE)
                     .tag(Constants.PICASSO_TAG)
-                    .into(normalHolder.image, new LoadOnErrorCallback(normalHolder.image, url));
+                    .into(normalHolder.root, new LoadOnErrorCallback(normalHolder.root, url));
             normalHolder.root.setOnClickListener(v -> stickerClickedListener.onStickerClick(item));
         }
     }
@@ -110,13 +110,11 @@ public class StickersKeyWordsAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     static final class StickerHolder extends RecyclerView.ViewHolder {
-        final View root;
-        final ImageView image;
+        final ImageView root;
 
         StickerHolder(@NonNull View itemView) {
             super(itemView);
-            root = itemView.getRootView();
-            image = itemView.findViewById(R.id.sticker);
+            root = itemView.findViewById(R.id.sticker);
         }
     }
 }

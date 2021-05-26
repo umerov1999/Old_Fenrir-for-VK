@@ -17,18 +17,18 @@ import dev.ragnarok.fenrir.util.Utils;
 public class Constants {
     public static final boolean IS_DONATE = BuildConfig.IS_DONATE;
 
-    public static final String API_VERSION = "5.126";
-    public static final String AUTH_VERSION = "5.122";
+    public static final String API_VERSION = "5.131";
     public static final int DATABASE_VERSION = 5;
 
     public static final @Account_Types
     int DEFAULT_ACCOUNT_TYPE = BuildConfig.DEFAULT_ACCOUNT_TYPE;
 
-    public static final boolean IS_HAS_LOGIN_WEB = BuildConfig.DEFAULT_ACCOUNT_TYPE == Account_Types.KATE;
+    public static final boolean IS_HAS_LOGIN_WEB = DEFAULT_ACCOUNT_TYPE == Account_Types.KATE;
+    public static final String AUTH_VERSION = DEFAULT_ACCOUNT_TYPE == Account_Types.KATE ? API_VERSION : "5.122";
     public static final String FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".file_provider";
 
-    public static final String VK_ANDROID_APP_VERSION_NAME = "6.37";
-    public static final String VK_ANDROID_APP_VERSION_CODE = "7952";
+    public static final String VK_ANDROID_APP_VERSION_NAME = "6.38";
+    public static final String VK_ANDROID_APP_VERSION_CODE = "7999";
     public static final String KATE_APP_VERSION_NAME = "74 lite";
     public static final String KATE_APP_VERSION_CODE = "492";
     public static final String KATE_RECEIPT_GMS_TOKEN = BuildConfig.KATE_RECEIPT_GMS_TOKEN;

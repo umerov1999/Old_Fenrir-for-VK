@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sticker"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:stateListAnimator="@animator/clicked">
-
-    <ImageView
-        android:id="@+id/sticker"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-</FrameLayout>
+    android:contentDescription="@string/sticker_message"
+    android:stateListAnimator="@animator/clicked" />

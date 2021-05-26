@@ -52,6 +52,8 @@ import dev.ragnarok.fenrir.fragment.search.criteria.MessageSeachCriteria;
 import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.listener.PicassoPauseOnScrollListener;
+import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.ModalBottomSheetDialogFragment;
+import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.OptionRequest;
 import dev.ragnarok.fenrir.model.Dialog;
 import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.Peer;
@@ -281,16 +283,22 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
     }
 
     @Override
+    public void updateSilentChats(@NonNull List<Integer> chats) {
+        mAdapter.updateSilentChats(chats);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void onDialogClick(Dialog dialog) {
         callPresenter(p -> p.fireDialogClick(dialog));
     }
 
     @Override
     public boolean onDialogLongClick(Dialog dialog) {
-        List<String> options = new ArrayList<>();
-
         ContextView contextView = new ContextView();
         callPresenter(p -> p.fireContextViewCreated(contextView, dialog));
+
+        ModalBottomSheetDialogFragment.Builder menus = new ModalBottomSheetDialogFragment.Builder();
 
         String delete = getString(R.string.delete);
         String addToHomeScreen = getString(R.string.add_to_home_screen);
@@ -305,76 +313,82 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         String setUnPin = getString(R.string.unpin);
 
         if (contextView.canDelete) {
-            options.add(delete);
+            menus.add(new OptionRequest(1, delete, R.drawable.ic_outline_delete));
         }
-
-        options.add(contextView.isPinned ? setUnPin : setPin);
+        menus.add(new OptionRequest(2, contextView.isPinned ? setUnPin : setPin, contextView.isPinned ? R.drawable.unpin : R.drawable.pin));
 
         if (contextView.canAddToHomescreen) {
-            options.add(addToHomeScreen);
+            menus.add(new OptionRequest(3, addToHomeScreen, R.drawable.ic_home_outline));
         }
 
         if (contextView.canConfigNotifications) {
-            options.add(notificationSettings);
+            menus.add(new OptionRequest(4, notificationSettings, R.drawable.feed));
         }
 
         if (contextView.canAddToShortcuts && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            options.add(addToShortcuts);
+            menus.add(new OptionRequest(5, addToShortcuts, R.drawable.about_writed));
         }
 
         if (!contextView.isHidden) {
-            options.add(setHide);
+            menus.add(new OptionRequest(6, setHide, R.drawable.offline));
         }
 
         if (contextView.isHidden && Settings.get().security().getShowHiddenDialogs()) {
-            options.add(setShow);
+            menus.add(new OptionRequest(7, setShow, R.drawable.ic_eye_white_vector));
         }
 
         if (contextView.canRead) {
-            options.add(setRead);
+            menus.add(new OptionRequest(8, setRead, R.drawable.email));
         }
 
-        new MaterialAlertDialogBuilder(requireActivity())
-                .setTitle(contextView.isHidden && !Settings.get().security().getShowHiddenDialogs() ? getString(R.string.dialogs) : dialog.getDisplayTitle(requireActivity()))
-                .setItems(options.toArray(new String[0]), (dialogInterface, which) -> {
-                    String selected = options.get(which);
-                    if (selected.equals(delete)) {
-                        Utils.ThemedSnack(requireView(), R.string.delete_chat_do, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.button_yes,
-                                v1 -> callPresenter(p -> p.fireRemoveDialogClick(dialog))).show();
-                    } else if (selected.equals(addToHomeScreen)) {
-                        callPresenter(p -> p.fireCreateShortcutClick(dialog));
-                    } else if (selected.equals(notificationSettings)) {
-                        callPresenter(p -> p.fireNotificationsSettingsClick(dialog));
-                    } else if (selected.equals(addToShortcuts)) {
-                        callPresenter(p -> p.fireAddToLauncherShortcuts(dialog));
-                    } else if (selected.equals(setUnPin)) {
+        menus.header(contextView.isHidden && !Settings.get().security().getShowHiddenDialogs() ? getString(R.string.dialogs) : dialog.getDisplayTitle(requireActivity()), R.drawable.email, dialog.getImageUrl());
+        menus.columns(1);
+        menus.show(requireActivity().getSupportFragmentManager(), "dialog_options", option -> {
+            switch (option.getId()) {
+                case 1:
+                    Utils.ThemedSnack(requireView(), R.string.delete_chat_do, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.button_yes,
+                            v1 -> callPresenter(p -> p.fireRemoveDialogClick(dialog))).show();
+                    break;
+                case 2:
+                    if (contextView.isPinned) {
                         callPresenter(p -> p.fireUnPin(dialog));
-                    } else if (selected.equals(setPin)) {
+                    } else {
                         callPresenter(p -> p.firePin(dialog));
-                    } else if (selected.equals(setRead)) {
-                        callPresenter(p -> p.fireRead(dialog));
-                    } else if (selected.equals(setHide)) {
-                        if (!CheckDonate.isFullVersion(requireActivity())) {
-                            return;
-                        }
-                        if (!Settings.get().security().isUsePinForSecurity()) {
-                            CustomToast.CreateCustomToast(requireActivity()).showToastError(R.string.not_supported_hide);
-                            PlaceFactory.getSecuritySettingsPlace().tryOpenWith(requireActivity());
-                        } else {
-                            Settings.get().security().AddValueToSet(dialog.getId(), "hidden_dialogs");
-                            ReconfigureOptionsHide(Settings.get().security().getShowHiddenDialogs());
-                            notifyDataSetChanged();
-                        }
-                    } else if (selected.equals(setShow)) {
-                        Settings.get().security().RemoveValueFromSet(dialog.getId(), "hidden_dialogs");
+                    }
+                    break;
+                case 3:
+                    callPresenter(p -> p.fireCreateShortcutClick(dialog));
+                    break;
+                case 4:
+                    callPresenter(p -> p.fireNotificationsSettingsClick(dialog));
+                    break;
+                case 5:
+                    callPresenter(p -> p.fireAddToLauncherShortcuts(dialog));
+                    break;
+                case 6:
+                    if (!CheckDonate.isFullVersion(requireActivity())) {
+                        break;
+                    }
+                    if (!Settings.get().security().isUsePinForSecurity()) {
+                        CustomToast.CreateCustomToast(requireActivity()).showToastError(R.string.not_supported_hide);
+                        PlaceFactory.getSecuritySettingsPlace().tryOpenWith(requireActivity());
+                    } else {
+                        Settings.get().security().AddValueToSet(dialog.getId(), "hidden_dialogs");
                         ReconfigureOptionsHide(Settings.get().security().getShowHiddenDialogs());
                         notifyDataSetChanged();
                     }
-                })
-                .setNegativeButton(R.string.button_cancel, null)
-                .show();
-
-        return !options.isEmpty();
+                    break;
+                case 7:
+                    Settings.get().security().RemoveValueFromSet(dialog.getId(), "hidden_dialogs");
+                    ReconfigureOptionsHide(Settings.get().security().getShowHiddenDialogs());
+                    notifyDataSetChanged();
+                    break;
+                case 8:
+                    callPresenter(p -> p.fireRead(dialog));
+                    break;
+            }
+        });
+        return true;
     }
 
     @Override
@@ -435,8 +449,9 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
      */
 
     @Override
-    public void displayData(List<Dialog> data) {
+    public void displayData(List<Dialog> data, @NonNull List<Integer> chats) {
         if (nonNull(mAdapter)) {
+            mAdapter.updateSilentChats(chats);
             mAdapter.setData(data);
         }
     }
@@ -516,8 +531,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
 
     @Override
     public void showNotificationSettings(int accountId, int peerId) {
-        DialogNotifOptionsDialog dialog = DialogNotifOptionsDialog.newInstance(accountId, peerId);
-        dialog.show(getParentFragmentManager(), "dialog-notif-options");
+        DialogNotifOptionsDialog.newInstance(accountId, peerId, () -> callPresenter(DialogsPresenter::changedNotifications)).show(getParentFragmentManager(), "dialog-notif-options");
     }
 
     @Override

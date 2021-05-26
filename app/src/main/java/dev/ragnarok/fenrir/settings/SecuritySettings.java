@@ -74,10 +74,12 @@ public class SecuritySettings implements ISettings.ISecuritySettings {
         }
     }
 
+    @Override
     public boolean getShowHiddenDialogs() {
         return isShowHiddenDialogs;
     }
 
+    @Override
     public void setShowHiddenDialogs(boolean showHiddenDialogs) {
         isShowHiddenDialogs = showHiddenDialogs;
     }
@@ -115,11 +117,13 @@ public class SecuritySettings implements ISettings.ISecuritySettings {
         mPrefs.edit().putStringSet(KEY_PIN_ENTER_HISTORY, target).apply();
     }
 
+    @Override
     public void clearPinHistory() {
         mPinEnterHistory.clear();
         mPrefs.edit().remove(KEY_PIN_ENTER_HISTORY).apply();
     }
 
+    @Override
     public void firePinAttemptNow() {
         long now = System.currentTimeMillis();
         mPinEnterHistory.add(now);
@@ -130,22 +134,26 @@ public class SecuritySettings implements ISettings.ISecuritySettings {
         storePinHistory();
     }
 
+    @Override
     public void enableMessageEncryption(int accountId, int peerId, @KeyLocationPolicy int policy) {
         mPrefs.edit()
                 .putInt(encryptionKeyFor(accountId, peerId), policy)
                 .apply();
     }
 
+    @Override
     public boolean isMessageEncryptionEnabled(int accountId, int peerId) {
         return mPrefs.contains(encryptionKeyFor(accountId, peerId));
     }
 
+    @Override
     public void disableMessageEncryption(int accountId, int peerId) {
         mPrefs.edit()
                 .remove(encryptionKeyFor(accountId, peerId))
                 .apply();
     }
 
+    @Override
     @KeyLocationPolicy
     public int getEncryptionLocationPolicy(int accountId, int peerId) {
         @KeyLocationPolicy
@@ -153,6 +161,7 @@ public class SecuritySettings implements ISettings.ISecuritySettings {
         return result;
     }
 
+    @Override
     public boolean hasPinHash() {
         return !TextUtils.isEmpty(mPinHash);
     }
@@ -168,6 +177,7 @@ public class SecuritySettings implements ISettings.ISecuritySettings {
                 .getBoolean("hide_notif_message_body", false);
     }
 
+    @Override
     public boolean isUsePinForSecurity() {
         return hasPinHash() && PreferenceManager.getDefaultSharedPreferences(mApplication)
                 .getBoolean(KEY_USE_PIN_FOR_SECURITY, false);
@@ -178,11 +188,13 @@ public class SecuritySettings implements ISettings.ISecuritySettings {
         return PreferenceManager.getDefaultSharedPreferences(mApplication).getBoolean("allow_fingerprint", false);
     }
 
+    @Override
     public boolean isUsePinForEntrance() {
         return hasPinHash() && PreferenceManager.getDefaultSharedPreferences(mApplication)
                 .getBoolean(KEY_USE_PIN_FOR_ENTRANCE, false);
     }
 
+    @Override
     public void setPin(@Nullable int[] pin) {
         setPinHash(Objects.isNull(pin) ? null : calculatePinHash(pin));
     }
@@ -196,15 +208,18 @@ public class SecuritySettings implements ISettings.ISecuritySettings {
         return calculateHash(builder.toString());
     }
 
+    @Override
     public boolean isPinValid(@NonNull int[] values) {
         String hash = calculatePinHash(values);
         return hash.equals(getPinHash());
     }
 
+    @Override
     public boolean isKeyEncryptionPolicyAccepted() {
         return mKeyEncryptionPolicyAccepted;
     }
 
+    @Override
     public void setKeyEncryptionPolicyAccepted(boolean accepted) {
         mKeyEncryptionPolicyAccepted = accepted;
         mPrefs.edit()
@@ -212,7 +227,7 @@ public class SecuritySettings implements ISettings.ISecuritySettings {
                 .apply();
     }
 
-    public boolean saveSet(Set<Integer> array, String arrayName) {
+    private boolean saveSet(Set<Integer> array, String arrayName) {
         SharedPreferences prefs = mApplication.getSharedPreferences("security_other", 0);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt(arrayName + "_size", array.size());
@@ -224,17 +239,20 @@ public class SecuritySettings implements ISettings.ISecuritySettings {
         return editor.commit();
     }
 
+    @Override
     public boolean AddValueToSet(int value, String arrayName) {
         Set<Integer> itr = loadSet(arrayName);
         itr.add(value);
         return saveSet(itr, arrayName);
     }
 
+    @Override
     public boolean ContainsValueInSet(int value, String arrayName) {
         Set<Integer> itr = loadSet(arrayName);
         return itr.contains(value);
     }
 
+    @Override
     public boolean ContainsValuesInSet(int[] values, String arrayName) {
         Set<Integer> itr = loadSet(arrayName);
         for (Integer i : values) {
@@ -244,17 +262,20 @@ public class SecuritySettings implements ISettings.ISecuritySettings {
         return true;
     }
 
+    @Override
     public boolean RemoveValueFromSet(int value, String arrayName) {
         Set<Integer> itr = loadSet(arrayName);
         itr.remove(value);
         return saveSet(itr, arrayName);
     }
 
+    @Override
     public int getSetSize(String arrayName) {
         SharedPreferences prefs = mApplication.getSharedPreferences("security_other", 0);
         return prefs.getInt(arrayName + "_size", 0);
     }
 
+    @Override
     public Set<Integer> loadSet(String arrayName) {
         SharedPreferences prefs = mApplication.getSharedPreferences("security_other", 0);
         int size = prefs.getInt(arrayName + "_size", 0);

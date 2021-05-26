@@ -75,7 +75,7 @@ public class BirthdayFCMMessage {
 
         if (!Settings.get()
                 .notifications()
-                .isBirtdayNotifEnabled()) {
+                .isBirthdayNotifyEnabled()) {
             return;
         }
 

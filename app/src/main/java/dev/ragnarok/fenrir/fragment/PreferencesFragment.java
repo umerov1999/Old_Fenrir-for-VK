@@ -24,12 +24,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
-import androidx.preference.SwitchPreference;
 
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -102,8 +100,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     private static final String KEY_SECURITY = "security";
     private static final String KEY_DRAWER_ITEMS = "drawer_categories";
     private static final String KEY_SIDE_DRAWER_ITEMS = "side_drawer_categories";
-
-    private static final String TAG = PreferencesFragment.class.getSimpleName();
 
     private final ActivityResultLauncher<Intent> requestLightBackgound = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -238,7 +234,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void selectLocalImage(boolean isDark) {
-        if (!AppPerms.hasReadStoragePermission(getActivity())) {
+        if (!AppPerms.hasReadStoragePermission(requireActivity())) {
             requestReadPermission.launch();
             return;
         }
@@ -279,9 +275,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.settings);
 
-        ListPreference nightPreference = findPreference(KEY_NIGHT_SWITCH);
-
-        nightPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+        findPreference(KEY_NIGHT_SWITCH).setOnPreferenceChangeListener((preference, newValue) -> {
             switch (Integer.parseInt(newValue.toString())) {
                 case NightMode.DISABLE:
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -300,20 +294,17 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        SwitchPreference messages_menu_down = findPreference("messages_menu_down");
-        messages_menu_down.setOnPreferenceChangeListener((preference, newValue) -> {
+        findPreference("messages_menu_down").setOnPreferenceChangeListener((preference, newValue) -> {
             requireActivity().recreate();
             return true;
         });
 
-        SwitchPreference prefAmoled = findPreference("amoled_theme");
-        prefAmoled.setOnPreferenceChangeListener((preference, newValue) -> {
+        findPreference("amoled_theme").setOnPreferenceChangeListener((preference, newValue) -> {
             requireActivity().recreate();
             return true;
         });
 
-        SwitchPreference prefMiniplayer = findPreference("show_mini_player");
-        prefMiniplayer.setOnPreferenceChangeListener((preference, newValue) -> {
+        findPreference("show_mini_player").setOnPreferenceChangeListener((preference, newValue) -> {
             requireActivity().recreate();
             return true;
         });
@@ -452,8 +443,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        EditTextPreference prefMaxResolution = findPreference("max_bitmap_resolution");
-        prefMaxResolution.setOnPreferenceChangeListener((preference, newValue) -> {
+        findPreference("max_bitmap_resolution").setOnPreferenceChangeListener((preference, newValue) -> {
             int sz = -1;
             try {
                 sz = Integer.parseInt(newValue.toString().trim());
@@ -468,50 +458,42 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        SwitchPreference prefMiniplayerRoundIcon = findPreference("audio_round_icon");
-        prefMiniplayerRoundIcon.setOnPreferenceChangeListener((preference, newValue) -> {
+        findPreference("audio_round_icon").setOnPreferenceChangeListener((preference, newValue) -> {
             requireActivity().recreate();
             return true;
         });
 
-        SwitchPreference prefshow_profile_in_additional_page = findPreference("show_profile_in_additional_page");
-        prefshow_profile_in_additional_page.setOnPreferenceChangeListener((preference, newValue) -> {
+        findPreference("show_profile_in_additional_page").setOnPreferenceChangeListener((preference, newValue) -> {
             requireActivity().recreate();
             return true;
         });
 
-        SwitchPreference prefshow_recent_dialogs = findPreference("show_recent_dialogs");
-        prefshow_recent_dialogs.setOnPreferenceChangeListener((preference, newValue) -> {
+        findPreference("show_recent_dialogs").setOnPreferenceChangeListener((preference, newValue) -> {
             requireActivity().recreate();
             return true;
         });
 
-        SwitchPreference do_zoom_photo = findPreference("do_zoom_photo");
-        do_zoom_photo.setOnPreferenceChangeListener((preference, newValue) -> {
+        findPreference("do_zoom_photo").setOnPreferenceChangeListener((preference, newValue) -> {
             requireActivity().recreate();
             return true;
         });
 
-        ListPreference font_size = findPreference("font_size");
-        font_size.setOnPreferenceChangeListener((preference, newValue) -> {
+        findPreference("font_size").setOnPreferenceChangeListener((preference, newValue) -> {
             requireActivity().recreate();
             return true;
         });
 
-        ListPreference language_ui = findPreference("language_ui");
-        language_ui.setOnPreferenceChangeListener((preference, newValue) -> {
+        findPreference("language_ui").setOnPreferenceChangeListener((preference, newValue) -> {
             requireActivity().recreate();
             return true;
         });
 
-        SwitchPreference snow_mode = findPreference("snow_mode");
-        snow_mode.setOnPreferenceChangeListener((preference, newValue) -> {
+        findPreference("snow_mode").setOnPreferenceChangeListener((preference, newValue) -> {
             requireActivity().recreate();
             return true;
         });
 
-        ListPreference prefPhotoPreview = findPreference("photo_preview_size");
-        prefPhotoPreview.setOnPreferenceChangeListener((preference, newValue) -> {
+        findPreference("photo_preview_size").setOnPreferenceChangeListener((preference, newValue) -> {
             Settings.get().main().notifyPrefPreviewSizeChanged();
             return true;
         });
@@ -711,7 +693,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         findPreference("music_dir")
                 .setOnPreferenceClickListener(preference -> {
-                    if (!AppPerms.hasReadStoragePermission(getActivity())) {
+                    if (!AppPerms.hasReadStoragePermission(requireActivity())) {
                         requestReadPermission.launch();
                         return true;
                     }
@@ -732,7 +714,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         findPreference("photo_dir")
                 .setOnPreferenceClickListener(preference -> {
-                    if (!AppPerms.hasReadStoragePermission(getActivity())) {
+                    if (!AppPerms.hasReadStoragePermission(requireActivity())) {
                         requestReadPermission.launch();
                         return true;
                     }
@@ -753,7 +735,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         findPreference("video_dir")
                 .setOnPreferenceClickListener(preference -> {
-                    if (!AppPerms.hasReadStoragePermission(getActivity())) {
+                    if (!AppPerms.hasReadStoragePermission(requireActivity())) {
                         requestReadPermission.launch();
                         return true;
                     }
@@ -774,7 +756,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         findPreference("docs_dir")
                 .setOnPreferenceClickListener(preference -> {
-                    if (!AppPerms.hasReadStoragePermission(getActivity())) {
+                    if (!AppPerms.hasReadStoragePermission(requireActivity())) {
                         requestReadPermission.launch();
                         return true;
                     }
@@ -795,7 +777,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         findPreference("sticker_dir")
                 .setOnPreferenceClickListener(preference -> {
-                    if (!AppPerms.hasReadStoragePermission(getActivity())) {
+                    if (!AppPerms.hasReadStoragePermission(requireActivity())) {
                         requestReadPermission.launch();
                         return true;
                     }
@@ -870,8 +852,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     return true;
                 });
 
-        SwitchPreference keepLongpoll = findPreference("keep_longpoll");
-        keepLongpoll.setOnPreferenceChangeListener((preference, newValue) -> {
+        findPreference("keep_longpoll").setOnPreferenceChangeListener((preference, newValue) -> {
             boolean keep = (boolean) newValue;
             if (keep) {
                 KeepLongpollService.start(preference.getContext());

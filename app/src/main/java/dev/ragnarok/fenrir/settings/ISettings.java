@@ -369,7 +369,16 @@ public interface ISettings {
 
         boolean isQuickReplyImmediately();
 
-        boolean isBirtdayNotifEnabled();
+        boolean isBirthdayNotifyEnabled();
+
+        void putChatNotificationSettingsBackup(int aid, int peerId, int mask);
+
+        void removeChatNotificationSettingsBackup(int aid, int peerId);
+
+        void parseBackupNotifications();
+
+        @NonNull
+        List<Integer> getSilentChats(int aid);
     }
 
     interface IRecentChats {

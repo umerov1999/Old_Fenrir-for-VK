@@ -22,7 +22,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/container"
-        android:layout_alignLeft="@+id/container"
         android:layout_alignTop="@+id/container"
         android:layout_alignBottom="@+id/container"
         android:background="#40000000" />
@@ -98,6 +97,16 @@
             android:layout_marginEnd="25dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/feed"
+            android:stateListAnimator="@animator/clicked"
+            app:tint="#ffffff" />
+
+        <ImageView
+            android:id="@+id/header_navi_menu_themes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="25dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/select_colored"
             android:stateListAnimator="@animator/clicked"
             app:tint="#ffffff" />
 

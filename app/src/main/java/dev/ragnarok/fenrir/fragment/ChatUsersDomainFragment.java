@@ -158,7 +158,7 @@ public class ChatUsersDomainFragment extends BaseMvpBottomSheetDialogFragment<Ch
         return true;
     }
 
-    interface Listener {
+    public interface Listener {
         void onSelected(Owner user);
     }
 }

@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.fragment.PreferencesFragment;
+import dev.ragnarok.fenrir.settings.Settings;
 import io.reactivex.rxjava3.annotations.NonNull;
 
 public class SettingsBackup {
@@ -129,6 +130,7 @@ public class SettingsBackup {
         settings.add(new SettingCollector("player_background_json", SettingTypes.TYPE_STRING));
         settings.add(new SettingCollector("use_hls_downloader", SettingTypes.TYPE_BOOL));
         settings.add(new SettingCollector("is_side_navigation", SettingTypes.TYPE_BOOL));
+        settings.add(new SettingCollector("chats_notification_backup", SettingTypes.TYPE_STRING));
     }
 
     public @Nullable
@@ -154,6 +156,7 @@ public class SettingsBackup {
         for (SettingCollector i : settings) {
             i.restore(pref, ret);
         }
+        Settings.get().notifications().parseBackupNotifications();
     }
 
     private static class SettingCollector {

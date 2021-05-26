@@ -4,11 +4,23 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
+import androidx.annotation.Keep;
+import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
+
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.Peer;
 import dev.ragnarok.fenrir.util.Utils;
+
+import static dev.ragnarok.fenrir.util.Utils.hasFlag;
 
 public class NotificationsPrefs implements ISettings.INotificationSettings {
 
@@ -33,10 +45,11 @@ public class NotificationsPrefs implements ISettings.INotificationSettings {
         preferences.edit()
                 .putInt(keyFor(aid, peerid), mask)
                 .apply();
+        putChatNotificationSettingsBackup(aid, peerid, mask);
     }
 
     private boolean isOtherNotificationsEnable() {
-        return Utils.hasFlag(getOtherNotificationMask(), FLAG_SHOW_NOTIF);
+        return hasFlag(getOtherNotificationMask(), FLAG_SHOW_NOTIF);
     }
 
     @Override
@@ -110,7 +123,7 @@ public class NotificationsPrefs implements ISettings.INotificationSettings {
     }
 
     @Override
-    public boolean isBirtdayNotifEnabled() {
+    public boolean isBirthdayNotifyEnabled() {
         return isOtherNotificationsEnable() && PreferenceManager.getDefaultSharedPreferences(app)
                 .getBoolean("birtday_notification", true);
     }
@@ -175,6 +188,7 @@ public class NotificationsPrefs implements ISettings.INotificationSettings {
         preferences.edit()
                 .remove(keyFor(aid, peerId))
                 .apply();
+        removeChatNotificationSettingsBackup(aid, peerId);
     }
 
     @Override
@@ -220,5 +234,65 @@ public class NotificationsPrefs implements ISettings.INotificationSettings {
             }
         }
         return value;
+    }
+
+    @Override
+    public void putChatNotificationSettingsBackup(int aid, int peerId, int mask) {
+        String tmp = PreferenceManager.getDefaultSharedPreferences(app).getString("chats_notification_backup", null);
+        NotificationChatSettings settings = Utils.isEmpty(tmp) ? new NotificationChatSettings().init() : new Gson().fromJson(tmp, NotificationChatSettings.class);
+        settings.chats_notification.put(keyFor(aid, peerId), mask);
+        PreferenceManager.getDefaultSharedPreferences(app).edit().putString("chats_notification_backup", new Gson().toJson(settings)).apply();
+    }
+
+    @Override
+    public void removeChatNotificationSettingsBackup(int aid, int peerId) {
+        String tmp = PreferenceManager.getDefaultSharedPreferences(app).getString("chats_notification_backup", null);
+        NotificationChatSettings settings = Utils.isEmpty(tmp) ? new NotificationChatSettings().init() : new Gson().fromJson(tmp, NotificationChatSettings.class);
+        settings.chats_notification.remove(keyFor(aid, peerId));
+        PreferenceManager.getDefaultSharedPreferences(app).edit().putString("chats_notification_backup", new Gson().toJson(settings)).apply();
+    }
+
+    @Override
+    public @NonNull
+    List<Integer> getSilentChats(int aid) {
+        List<Integer> ret = new ArrayList<>();
+        String tmp = PreferenceManager.getDefaultSharedPreferences(app).getString("chats_notification_backup", null);
+        NotificationChatSettings settings = Utils.isEmpty(tmp) ? new NotificationChatSettings().init() : new Gson().fromJson(tmp, NotificationChatSettings.class);
+        for (String i : settings.chats_notification.keySet()) {
+            Integer value = settings.chats_notification.get(i);
+            if (value == null) {
+                continue;
+            }
+            if (i.contains("peerid" + aid) && !hasFlag(value, FLAG_SHOW_NOTIF)) {
+                ret.add(Integer.parseInt(i.replace("peerid" + aid + "_", "")));
+            }
+        }
+        return ret;
+    }
+
+    @Override
+    public void parseBackupNotifications() {
+        String tmp = PreferenceManager.getDefaultSharedPreferences(app).getString("chats_notification_backup", null);
+        NotificationChatSettings settings = Utils.isEmpty(tmp) ? new NotificationChatSettings().init() : new Gson().fromJson(tmp, NotificationChatSettings.class);
+        for (String i : settings.chats_notification.keySet()) {
+            Integer value = settings.chats_notification.get(i);
+            if (value == null) {
+                continue;
+            }
+            preferences.edit()
+                    .putInt(i, value)
+                    .apply();
+        }
+    }
+
+    @Keep
+    private static class NotificationChatSettings {
+        @SerializedName("chats_notification")
+        public Map<String, Integer> chats_notification;
+
+        public NotificationChatSettings init() {
+            chats_notification = new HashMap<>();
+            return this;
+        }
     }
 }

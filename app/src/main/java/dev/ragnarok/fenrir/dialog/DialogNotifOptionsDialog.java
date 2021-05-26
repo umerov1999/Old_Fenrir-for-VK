@@ -1,14 +1,15 @@
 package dev.ragnarok.fenrir.dialog;
 
-import android.app.Dialog;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.fragment.app.DialogFragment;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
@@ -19,24 +20,27 @@ import static dev.ragnarok.fenrir.settings.NotificationsPrefs.FLAG_LED;
 import static dev.ragnarok.fenrir.settings.NotificationsPrefs.FLAG_SHOW_NOTIF;
 import static dev.ragnarok.fenrir.settings.NotificationsPrefs.FLAG_SOUND;
 import static dev.ragnarok.fenrir.settings.NotificationsPrefs.FLAG_VIBRO;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 import static dev.ragnarok.fenrir.util.Utils.hasFlag;
 
-public class DialogNotifOptionsDialog extends DialogFragment {
+public class DialogNotifOptionsDialog extends BottomSheetDialogFragment {
 
     protected int mask;
     private int peerId;
     private int accountId;
-    private SwitchCompat scEnable;
-    private SwitchCompat scHighPriority;
-    private SwitchCompat scSound;
-    private SwitchCompat scVibro;
-    private SwitchCompat scLed;
+    private SwitchMaterial scEnable;
+    private SwitchMaterial scHighPriority;
+    private SwitchMaterial scSound;
+    private SwitchMaterial scVibro;
+    private SwitchMaterial scLed;
+    private Listener listener;
 
-    public static DialogNotifOptionsDialog newInstance(int aid, int peerId) {
+    public static DialogNotifOptionsDialog newInstance(int aid, int peerId, Listener listener) {
         Bundle args = new Bundle();
         args.putInt(Extra.PEER_ID, peerId);
         args.putInt(Extra.ACCOUNT_ID, aid);
         DialogNotifOptionsDialog dialog = new DialogNotifOptionsDialog();
+        dialog.listener = listener;
         dialog.setArguments(args);
         return dialog;
     }
@@ -52,9 +56,8 @@ public class DialogNotifOptionsDialog extends DialogFragment {
                 .getNotifPref(accountId, peerId);
     }
 
-    @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = View.inflate(requireActivity(), R.layout.dialog_dialog_options, null);
 
         scEnable = root.findViewById(R.id.enable);
@@ -62,6 +65,8 @@ public class DialogNotifOptionsDialog extends DialogFragment {
         scSound = root.findViewById(R.id.sound);
         scVibro = root.findViewById(R.id.vibro);
         scLed = root.findViewById(R.id.led);
+        MaterialButton save = root.findViewById(R.id.buttonSave);
+        MaterialButton restore = root.findViewById(R.id.button_restore);
 
         scEnable.setChecked(hasFlag(mask, FLAG_SHOW_NOTIF));
         scEnable.setOnCheckedChangeListener((buttonView, isChecked) -> resolveOtherSwitches());
@@ -70,18 +75,24 @@ public class DialogNotifOptionsDialog extends DialogFragment {
         scHighPriority.setChecked(hasFlag(mask, FLAG_HIGH_PRIORITY));
         scVibro.setChecked(hasFlag(mask, FLAG_VIBRO));
         scLed.setChecked(hasFlag(mask, FLAG_LED));
-
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity())
-                .setTitle(R.string.peer_notification_settings)
-                .setPositiveButton(R.string.button_ok, (dialog, whichButton) -> onSaveClick())
-                .setNeutralButton(R.string.set_default, (dialog, which) -> Settings.get()
-                        .notifications()
-                        .setDefault(accountId, peerId));
-
-        builder.setView(root);
+        save.setOnClickListener(v -> {
+            onSaveClick();
+            if (nonNull(listener)) {
+                listener.onSelected();
+            }
+            dismiss();
+        });
+        restore.setOnClickListener(v -> {
+            Settings.get()
+                    .notifications()
+                    .setDefault(accountId, peerId);
+            if (nonNull(listener)) {
+                listener.onSelected();
+            }
+            dismiss();
+        });
         resolveOtherSwitches();
-
-        return builder.create();
+        return root;
     }
 
     private void onSaveClick() {
@@ -90,19 +101,19 @@ public class DialogNotifOptionsDialog extends DialogFragment {
             newMask += FLAG_SHOW_NOTIF;
         }
 
-        if (scHighPriority.isEnabled() && scHighPriority.isChecked()) {
+        if (scHighPriority.isChecked()) {
             newMask += FLAG_HIGH_PRIORITY;
         }
 
-        if (scSound.isEnabled() && scSound.isChecked()) {
+        if (scSound.isChecked()) {
             newMask += FLAG_SOUND;
         }
 
-        if (scVibro.isEnabled() && scVibro.isChecked()) {
+        if (scVibro.isChecked()) {
             newMask += FLAG_VIBRO;
         }
 
-        if (scLed.isEnabled() && scLed.isChecked()) {
+        if (scLed.isChecked()) {
             newMask += FLAG_LED;
         }
 
@@ -117,5 +128,9 @@ public class DialogNotifOptionsDialog extends DialogFragment {
         scSound.setEnabled(enable);
         scVibro.setEnabled(enable);
         scLed.setEnabled(enable);
+    }
+
+    public interface Listener {
+        void onSelected();
     }
 }

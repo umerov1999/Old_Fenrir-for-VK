@@ -94,7 +94,7 @@
             android:id="@+id/dialog_content"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:constraint_referenced_ids="dialog_type,dialog_title,unread_ticks,item_chat_date,dialog_message,item_chat_unread_count"
+            app:constraint_referenced_ids="dialog_type,dialog_title,dialog_silent,unread_ticks,item_chat_date,dialog_message,item_chat_unread_count"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/dialog_message"
             app:layout_constraintTop_toTopOf="@id/item_chat_avatar" />
@@ -116,16 +116,26 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:layout_marginEnd="7dp"
-            android:layout_toStartOf="@id/unread_ticks"
+            android:layout_toStartOf="@id/dialog_silent"
             android:layout_toEndOf="@id/dialog_type"
             android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-            app:layout_constraintEnd_toStartOf="@+id/unread_ticks"
+            app:layout_constraintEnd_toStartOf="@+id/dialog_silent"
             app:layout_constraintStart_toEndOf="@+id/dialog_type"
             app:layout_constraintTop_toTopOf="@+id/item_chat_avatar"
             app:layout_goneMarginStart="12dp"
             tools:text="Name" />
+
+        <ImageView
+            android:id="@+id/dialog_silent"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="6dp"
+            android:src="@drawable/notification_disable"
+            app:layout_constraintEnd_toStartOf="@id/unread_ticks"
+            app:layout_constraintTop_toTopOf="@id/dialog_type"
+            app:tint="?colorOnSurface" />
 
         <ImageView
             android:id="@+id/unread_ticks"
