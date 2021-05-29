@@ -26,6 +26,7 @@ import dev.ragnarok.fenrir.service.ApiErrorCodes;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.PersistentLogger;
 import dev.ragnarok.fenrir.util.Utils;
+import dev.ragnarok.fenrir.util.refresh.official.TokenMod;
 import io.reactivex.rxjava3.core.Completable;
 import okhttp3.FormBody;
 import okhttp3.Interceptor;
@@ -73,8 +74,20 @@ abstract class AbsVkApiInterceptor implements Interceptor {
     }
      */
 
-    private boolean upgradeToken() {
+    private boolean upgradeTokenKate() {
         String gms = Settings.get().other().getKateGMSToken();
+        String oldToken = getToken();
+        String token = Injection.provideNetworkInterfaces().vkDefault(getAccountId()).account().refreshToken(gms).blockingGet().token;
+        Log.w("refresh", oldToken + " " + token + " " + gms);
+        if (oldToken.equals(token) || isEmpty(token)) {
+            return false;
+        }
+        Settings.get().accounts().storeAccessToken(getAccountId(), token);
+        return true;
+    }
+
+    private boolean upgradeTokenOfficial() {
+        String gms = TokenMod.requestToken();
         String oldToken = getToken();
         String token = Injection.provideNetworkInterfaces().vkDefault(getAccountId()).account().refreshToken(gms).blockingGet().token;
         Log.w("refresh", oldToken + " " + token + " " + gms);
@@ -199,7 +212,19 @@ abstract class AbsVkApiInterceptor implements Interceptor {
 
                 if (Constants.DEFAULT_ACCOUNT_TYPE == Account_Types.KATE) {
                     if (error.errorCode == ApiErrorCodes.REFRESH_TOKEN) {
-                        if (upgradeToken()) {
+                        if (upgradeTokenKate()) {
+                            token = getToken();
+                            formBuilder.add("access_token", token);
+
+                            request = original.newBuilder()
+                                    .method("POST", formBuilder.build())
+                                    .build();
+                            continue;
+                        }
+                    }
+                } else if (Constants.DEFAULT_ACCOUNT_TYPE == Account_Types.VK_ANDROID) {
+                    if (error.errorCode == ApiErrorCodes.REFRESH_TOKEN) {
+                        if (upgradeTokenOfficial()) {
                             token = getToken();
                             formBuilder.add("access_token", token);
 

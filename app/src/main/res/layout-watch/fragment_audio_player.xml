@@ -117,7 +117,7 @@
             android:gravity="start"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             android:textSize="11sp"
-            app:layout_constraintBottom_toTopOf="@android:id/progress"
+            app:layout_constraintBottom_toTopOf="@id/seek_player_pos"
             app:layout_constraintEnd_toStartOf="@id/audio_player_total_time"
             app:layout_constraintStart_toStartOf="parent"
             tools:ignore="SmallSp" />
@@ -131,13 +131,13 @@
             android:gravity="end"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             android:textSize="11sp"
-            app:layout_constraintBottom_toTopOf="@android:id/progress"
+            app:layout_constraintBottom_toTopOf="@id/seek_player_pos"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/audio_player_current_time"
             tools:ignore="SmallSp" />
 
         <SeekBar
-            android:id="@android:id/progress"
+            android:id="@+id/seek_player_pos"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/audio_player_current_time"

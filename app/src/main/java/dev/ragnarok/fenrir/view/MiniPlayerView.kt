@@ -94,7 +94,7 @@ class MiniPlayerView : FrameLayout, OnSeekBarChangeListener {
         }
         title = root.findViewById(R.id.mini_artist)
         title.isSelected = true
-        mProgress = root.findViewById(R.id.SeekBar01)
+        mProgress = root.findViewById(R.id.seek_player_pos)
         mProgress.setOnSeekBarChangeListener(this)
     }
 

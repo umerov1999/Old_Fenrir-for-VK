@@ -33,8 +33,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
-import dev.ragnarok.fenrir.*
+import dev.ragnarok.fenrir.Constants
 import dev.ragnarok.fenrir.Extensions.Companion.toMainThread
+import dev.ragnarok.fenrir.Extra
+import dev.ragnarok.fenrir.Injection
+import dev.ragnarok.fenrir.R
 import dev.ragnarok.fenrir.activity.SendAttachmentsActivity
 import dev.ragnarok.fenrir.domain.IAudioInteractor
 import dev.ragnarok.fenrir.domain.InteractorFactory
@@ -190,6 +193,17 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                 updatePlaybackControls()
                 resolveTotalTime()
                 resolveControlViews()
+                ivBackground?.let {
+                    if (it.drawable is Animatable) {
+                        (it.drawable as Animatable).apply {
+                            if (MusicUtils.isPlaying()) {
+                                start()
+                            } else {
+                                stop()
+                            }
+                        }
+                    }
+                }
             }
             PlayerStatus.REPEATMODE_CHANGED -> {
                 mRepeatButton?.updateRepeatState()
@@ -289,7 +303,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         mPlayerProgressStrings = resources.getStringArray(R.array.player_progress_state)
         playerGradientFirst = root.findViewById(R.id.cover_gradient_top)
         playerGradientSecond = root.findViewById(R.id.cover_gradient)
-        mProgress = root.findViewById(android.R.id.progress)
+        mProgress = root.findViewById(R.id.seek_player_pos)
         mPlayPauseButton = root.findViewById(R.id.action_button_play)
         mShuffleButton = root.findViewById(R.id.action_button_shuffle)
         mRepeatButton = root.findViewById(R.id.action_button_repeat)
@@ -758,7 +772,8 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                     FadeAnimDrawable.setBitmap(
                         it,
                         requireActivity(),
-                        bitmap
+                        bitmap,
+                        MusicUtils.isPlaying()
                     )
                 }
             }

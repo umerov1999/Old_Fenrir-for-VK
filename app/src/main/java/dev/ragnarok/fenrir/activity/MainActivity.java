@@ -479,6 +479,7 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
                     ModalBottomSheetDialogFragment.Builder menus = new ModalBottomSheetDialogFragment.Builder();
                     menus.add(new OptionRequest(R.id.button_ok, getString(R.string.set_offline), R.drawable.offline));
                     menus.add(new OptionRequest(R.id.button_cancel, getString(R.string.open_clipboard_url), R.drawable.web));
+                    menus.add(new OptionRequest(R.id.action_preferences, getString(R.string.settings), R.drawable.preferences));
                     menus.add(new OptionRequest(R.id.button_camera, getString(R.string.scan_qr), R.drawable.qr_code));
                     menus.show(getSupportFragmentManager(), "left_options", option -> {
                         if (option.getId() == R.id.button_ok) {
@@ -491,6 +492,8 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
                                 String temp = clipBoard.getPrimaryClip().getItemAt(0).getText().toString();
                                 LinkHelper.openUrl(this, mAccountId, temp);
                             }
+                        } else if (option.getId() == R.id.action_preferences) {
+                            PlaceFactory.getPreferencesPlace(mAccountId).tryOpenWith(this);
                         } else if (option.getId() == R.id.button_camera) {
                             IntentIntegrator integrator = new IntentIntegrator(this);
                             integrator.setCameraId(0);

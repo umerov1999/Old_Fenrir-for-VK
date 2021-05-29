@@ -30,6 +30,18 @@
             android:title="@string/friends_by_phone"
             app:iconSpaceReserved="false" />
 
+        <SwitchPreference
+            android:key="force_cache"
+            android:title="@string/force_cache"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:dependency="enable_native"
+            android:key="use_hls_downloader"
+            android:summary="@string/use_hls_downloader_summary"
+            android:title="@string/use_hls_downloader"
+            app:iconSpaceReserved="false" />
+
         <Preference
             android:icon="@drawable/security_settings"
             android:key="security"
@@ -816,23 +828,6 @@
             android:key="enable_cache_ui_anim"
             android:summary="@string/need_restart"
             android:title="@string/enable_cache_ui_anim"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
-            android:dependency="enable_native"
-            android:key="use_hls_downloader"
-            android:summary="@string/use_hls_downloader_summary"
-            android:title="@string/use_hls_downloader"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
-            android:key="use_old_vk_api"
-            android:summary="@string/mp3_friendly"
-            android:title="@string/use_old_vk_api"
-            app:iconSpaceReserved="false" />
-        <SwitchPreference
-            android:key="force_cache"
-            android:title="@string/force_cache"
             app:iconSpaceReserved="false" />
 
         <SwitchPreference

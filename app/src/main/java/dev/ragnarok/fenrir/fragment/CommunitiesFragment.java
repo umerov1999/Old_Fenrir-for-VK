@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -161,6 +163,23 @@ public class CommunitiesFragment extends BaseMvpFragment<CommunitiesPresenter, I
         }
     }
 
+    @Override
+    public void showCommunityMenu(Community community) {
+        String delete = getString(R.string.delete);
+        List<String> options = new ArrayList<>();
+        options.add(delete);
+        new MaterialAlertDialogBuilder(requireActivity())
+                .setTitle(community.getFullName())
+                .setItems(options.toArray(new String[0]), (dialogInterface, which) -> {
+                    String selected = options.get(which);
+                    if (selected.equals(delete)) {
+                        callPresenter(p -> p.fireUnsubscribe(community));
+                    }
+                })
+                .setNegativeButton(R.string.button_cancel, null)
+                .show();
+    }
+
     @NonNull
     @Override
     public IPresenterFactory<CommunitiesPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
@@ -186,6 +205,11 @@ public class CommunitiesFragment extends BaseMvpFragment<CommunitiesPresenter, I
     @Override
     public void onCommunityClick(Community community) {
         callPresenter(p -> p.fireCommunityClick(community));
+    }
+
+    @Override
+    public boolean onCommunityLongClick(Community community) {
+        return callPresenter(p -> p.fireCommunityLongClick(community), false);
     }
 
     @Override

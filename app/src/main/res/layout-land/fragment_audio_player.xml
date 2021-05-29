@@ -151,7 +151,7 @@
                 tools:ignore="RelativeOverlap,SmallSp" />
 
             <SeekBar
-                android:id="@android:id/progress"
+                android:id="@+id/seek_player_pos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/audio_player_current_time"

@@ -66,6 +66,12 @@ public class CommunitiesAdapter extends MultyDataAdapter<Community, CommunitiesA
                 actionListener.onCommunityClick(community);
             }
         });
+        holder.contentRoot.setOnLongClickListener(view -> {
+            if (Objects.nonNull(actionListener)) {
+                return actionListener.onCommunityLongClick(community);
+            }
+            return false;
+        });
     }
 
     public void setActionListener(ActionListener actionListener) {
@@ -74,6 +80,8 @@ public class CommunitiesAdapter extends MultyDataAdapter<Community, CommunitiesA
 
     public interface ActionListener {
         void onCommunityClick(Community community);
+
+        boolean onCommunityLongClick(Community community);
     }
 
     static class Holder extends RecyclerView.ViewHolder {

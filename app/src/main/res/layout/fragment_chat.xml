@@ -148,41 +148,36 @@
 
     </dev.ragnarok.fenrir.view.BottomShadowView>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fragment_friend_dialog_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/input_view"
-        android:layout_below="@id/pinned_root_view">
+        android:layout_below="@id/pinned_root_view"
+        android:scrollbars="vertical" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/fragment_friend_dialog_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingTop="8dp"
-            android:scrollbars="vertical" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/stickers"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignBottom="@id/fragment_friend_dialog_list"
+        android:layout_gravity="bottom"
+        android:background="?sticker_hint_color"
+        android:visibility="gone" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/stickers"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_gravity="bottom"
-            android:background="?sticker_hint_color"
-            android:visibility="gone" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/goto_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginStart="@dimen/fab_margin"
-            android:layout_marginTop="@dimen/fab_margin"
-            android:layout_marginEnd="@dimen/fab_margin"
-            android:layout_marginBottom="10dp"
-            android:src="@drawable/ic_outline_keyboard_arrow_up"
-            app:fabSize="mini"
-            app:layout_behavior="dev.ragnarok.fenrir.view.FABBehavior" />
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/goto_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/fragment_friend_dialog_list"
+        android:layout_alignBottom="@id/fragment_friend_dialog_list"
+        android:layout_marginStart="@dimen/fab_margin"
+        android:layout_marginTop="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_outline_keyboard_arrow_up"
+        app:fabSize="mini" />
 
     <RelativeLayout
         android:id="@+id/writingGroup"

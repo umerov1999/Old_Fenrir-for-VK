@@ -20,6 +20,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Vibrator;
@@ -55,7 +56,7 @@ public final class BeepManager {
 
     /**
      * Call updatePrefs() after setting this.
-     * <p>
+     *
      * If the device is in silent mode, it will not beep.
      *
      * @param beepEnabled true to enable beep
@@ -93,21 +94,27 @@ public final class BeepManager {
 
     public MediaPlayer playBeepSound() {
         MediaPlayer mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setAudioAttributes(new AudioAttributes.Builder().setContentType(
+                AudioAttributes.CONTENT_TYPE_MUSIC).build());
         mediaPlayer.setOnCompletionListener(mp -> {
             mp.stop();
+            mp.reset();
             mp.release();
         });
         mediaPlayer.setOnErrorListener((mp, what, extra) -> {
             Log.w(TAG, "Failed to beep " + what + ", " + extra);
             // possibly media player error, so release and recreate
             mp.stop();
+            mp.reset();
             mp.release();
             return true;
         });
         try {
-            try (AssetFileDescriptor file = context.getResources().openRawResourceFd(R.raw.zxing_beep)) {
+            AssetFileDescriptor file = context.getResources().openRawResourceFd(R.raw.zxing_beep);
+            try {
                 mediaPlayer.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
+            } finally {
+                file.close();
             }
             mediaPlayer.setVolume(BEEP_VOLUME, BEEP_VOLUME);
             mediaPlayer.prepare();
@@ -115,6 +122,7 @@ public final class BeepManager {
             return mediaPlayer;
         } catch (IOException ioe) {
             Log.w(TAG, ioe);
+            mediaPlayer.reset();
             mediaPlayer.release();
             return null;
         }

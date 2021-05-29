@@ -173,7 +173,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             mHeaderHolder.ivOnline.setIcon(onlineIcon);
         }
         if (user.getBlacklisted()) {
-            Utils.ColoredSnack(requireView(), R.string.blacklisted, BaseTransientBottomBar.LENGTH_LONG, Color.parseColor("#ccaa0000")).show();
+            Utils.ColoredSnack(requireView(), R.string.blacklisted, BaseTransientBottomBar.LENGTH_LONG, Color.parseColor("#ccc9a200")).show();
         }
         mHeaderHolder.ivVerified.setVisibility(user.isVerified() ? View.VISIBLE : View.GONE);
     }

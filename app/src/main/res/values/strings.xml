@@ -707,10 +707,10 @@
 
     <!-- Friend status -->
     <string name="add_to_friends">Add as friend</string>
-    <string name="accept_request">Accept application</string>
+    <string name="accept_request">Accept request</string>
     <string name="delete_from_friends">Remove from friends</string>
     <string name="edit_status">Change status</string>
-    <string name="cancel_request">Cancel the application</string>
+    <string name="cancel_request">Cancel the request</string>
 
     <string name="button_ok">OK</string>
     <string name="button_yes">Yes</string>
@@ -727,8 +727,8 @@
     <string name="request_resending">Friend request approved</string>
 
     <string name="friend_deleted">A friend has been deleted</string>
-    <string name="out_request_deleted">Cancel outgoing application</string>
-    <string name="in_request_deleted">Cancel incoming application</string>
+    <string name="out_request_deleted">Cancel outgoing request</string>
+    <string name="in_request_deleted">Cancel incoming request</string>
     <string name="suggestion_deleted">Friend recommendation rejected</string>
 
     <string name="status_was_changed">Status has been changed</string>
@@ -737,10 +737,12 @@
     <string name="community_send_request">Send request</string>
     <string name="community_join">Join the group</string>
     <string name="community_follow">Subscribe</string>
+    <string name="community_to_go">To go</string>
+    <string name="community_not_to_go">Will not go</string>
     <string name="community_unsubscribe_from_news">Unsubscribe</string>
     <string name="community_leave">Leave the group</string>
 
-    <string name="community_send_request_success">Application sent</string>
+    <string name="community_send_request_success">Request sent</string>
     <string name="community_join_success">You have joined a group</string>
     <string name="community_follow_success">Subscribed</string>
     <string name="community_unsubscribe_from_news_success">Successfully unsubscribed</string>
@@ -940,7 +942,7 @@
     <string name="posts_count">%1$d posts</string>
     <string name="cancel_invitation">Decline invitation</string>
     <string name="invitation_has_been_declined">The invitation was declined</string>
-    <string name="request_canceled">Application canceled</string>
+    <string name="request_canceled">Request canceled</string>
     <string name="restored">Restored</string>
     <string name="friend_request_accepted_notification">Accepting a friend request</string>
     <string name="group_invited_notification">Group invitation</string>
@@ -1380,7 +1382,7 @@
     <string name="instagram" translatable="false">Instagram</string>
     <string name="twitter" translatable="false">Twitter</string>
     <string name="facebook" translatable="false">Facebook</string>
-    <string name="force_cache">Force listen from downloads</string>
+    <string name="force_cache">Force playing from downloads</string>
     <string name="player_live" translatable="false">Live</string>
     <string name="activity_until_now">current time</string>
     <string name="direction">Direction</string>
@@ -1492,9 +1494,8 @@
     <string name="audio_force_download">Already downloaded. Download anyway?</string>
     <string name="audio_force_download_pc">On the computer. Download anyway?</string>
     <string name="null_image_link">Missing download link</string>
-    <string name="use_old_vk_api">Audio with VK API 5.90</string>
     <string name="use_hls_downloader">HLS Audio Demuxer</string>
-    <string name="use_hls_downloader_summary">If 5.90 dead</string>
+    <string name="use_hls_downloader_summary">If VK Api 5.90 dead</string>
     <string name="expires">%1$s %2$s</string>
     <string name="disable_history">Don\'t show Stories</string>
     <string name="audio_round_icon">Rounded audio covers</string>
@@ -1550,7 +1551,6 @@
     <string name="font_size">Font size</string>
     <string name="load_history_notif">Dialog preview in notifications</string>
     <string name="load_history_notif_summary">Show recent chat messages (may cause captcha)</string>
-    <string name="mp3_friendly">If the download does not work</string>
     <string name="search_stories">Search stories</string>
     <string name="by_name">By name</string>
     <string name="by_owner">By owner</string>
@@ -1630,7 +1630,7 @@
     <string name="audio_save_mode_button">Download multiple tracks</string>
     <string name="hint_stickers">Suggest stickers</string>
     <string name="not_changed">No changes</string>
-    <string name="later">Application accepted, please wait…</string>
+    <string name="later">Request accepted, please wait…</string>
     <string name="work_manager">Fenrir Work</string>
     <string name="channel_keep_work_manager">WorkManager</string>
     <string name="action_create_list">Create list</string>

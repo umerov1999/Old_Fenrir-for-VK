@@ -35,7 +35,7 @@ public final class FadeAnimDrawable extends BitmapDrawable implements Animatable
         targetRotation = 0;
     }
 
-    public static void setBitmap(@NonNull ImageView target, Context context, @NonNull Bitmap bitmap) {
+    public static void setBitmap(@NonNull ImageView target, Context context, @NonNull Bitmap bitmap, boolean start) {
         PlayerCoverBackgroundSettings settings = Settings.get().other().getPlayerCoverBackgroundSettings();
         if (!settings.enabled_rotation || settings.rotation_speed <= 0) {
             FadeDrawable.setBitmap(target, context, bitmap);
@@ -47,7 +47,9 @@ public final class FadeAnimDrawable extends BitmapDrawable implements Animatable
         }
         FadeAnimDrawable drawable = new FadeAnimDrawable(context, bitmap);
         drawable.setCurrentParentView(target);
-        drawable.start();
+        if (start) {
+            drawable.start();
+        }
         target.setImageDrawable(drawable);
     }
 
@@ -85,6 +87,7 @@ public final class FadeAnimDrawable extends BitmapDrawable implements Animatable
                 super.draw(canvas);
                 invalidateInternal();
             } else {
+                canvas.rotate((float) Math.toDegrees(targetRotation), (float) getBitmap().getWidth() / 2, (float) getBitmap().getHeight() / 2);
                 super.draw(canvas);
             }
         } else {
@@ -96,7 +99,6 @@ public final class FadeAnimDrawable extends BitmapDrawable implements Animatable
                     invalidateInternal();
                 }
             } else {
-
                 // setAlpha will call invalidateSelf and drive the animation.
                 int partialAlpha = (int) (alpha * normalized);
                 super.setAlpha(partialAlpha);
@@ -114,13 +116,18 @@ public final class FadeAnimDrawable extends BitmapDrawable implements Animatable
 
     @Override
     public void start() {
-        animating = true;
-        invalidateInternal();
+        if (!animating) {
+            animating = true;
+            invalidateInternal();
+        }
     }
 
     @Override
     public void stop() {
-        animating = false;
+        if (animating) {
+            animating = false;
+            invalidateInternal();
+        }
     }
 
     @Override

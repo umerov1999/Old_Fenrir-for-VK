@@ -17,7 +17,6 @@ import dev.ragnarok.fenrir.api.model.response.AddToPlaylistResponse;
 import dev.ragnarok.fenrir.api.model.response.CatalogResponse;
 import dev.ragnarok.fenrir.api.model.server.VkApiAudioUploadServer;
 import dev.ragnarok.fenrir.api.services.IAudioService;
-import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Objects;
 import io.reactivex.rxjava3.core.Single;
 
@@ -40,20 +39,11 @@ class AudioApi extends AbsApi implements IAudioApi {
 
     @Override
     public Single<Items<VKApiAudio>> search(String query, Boolean autoComplete, Boolean lyrics, Boolean performerOnly, Integer sort, Boolean searchOwn, Integer offset, Integer count) {
-
-        if (Settings.get().other().isUse_old_vk_api()) {
-            return provideService(IAudioService.class)
-                    .flatMap(service -> service
-                            .searchOld(query, integerFromBoolean(autoComplete), integerFromBoolean(lyrics),
-                                    integerFromBoolean(performerOnly), sort, integerFromBoolean(searchOwn), offset, count, "5.90")
-                            .map(extractResponseWithErrorHandling()));
-        } else {
-            return provideService(IAudioService.class)
-                    .flatMap(service -> service
-                            .search(query, integerFromBoolean(autoComplete), integerFromBoolean(lyrics),
-                                    integerFromBoolean(performerOnly), sort, integerFromBoolean(searchOwn), offset, count)
-                            .map(extractResponseWithErrorHandling()));
-        }
+        return provideService(IAudioService.class)
+                .flatMap(service -> service
+                        .search(query, integerFromBoolean(autoComplete), integerFromBoolean(lyrics),
+                                integerFromBoolean(performerOnly), sort, integerFromBoolean(searchOwn), offset, count)
+                        .map(extractResponseWithErrorHandling()));
     }
 
     @Override
@@ -66,18 +56,10 @@ class AudioApi extends AbsApi implements IAudioApi {
 
     @Override
     public Single<Items<VKApiAudioPlaylist>> searchPlaylists(String query, Integer offset, Integer count) {
-
-        if (Settings.get().other().isUse_old_vk_api()) {
-            return provideService(IAudioService.class)
-                    .flatMap(service -> service
-                            .searchPlaylistsOld(query, offset, count, "5.90")
-                            .map(extractResponseWithErrorHandling()));
-        } else {
-            return provideService(IAudioService.class)
-                    .flatMap(service -> service
-                            .searchPlaylists(query, offset, count)
-                            .map(extractResponseWithErrorHandling()));
-        }
+        return provideService(IAudioService.class)
+                .flatMap(service -> service
+                        .searchPlaylists(query, offset, count)
+                        .map(extractResponseWithErrorHandling()));
     }
 
     @Override
@@ -180,79 +162,45 @@ class AudioApi extends AbsApi implements IAudioApi {
 
     @Override
     public Single<Items<VKApiAudioCatalog>> getCatalog(String artist_id, String query) {
-        if (Settings.get().other().isUse_old_vk_api()) {
-            return provideService(IAudioService.class)
-                    .flatMap(service -> service
-                            .getCatalogOld(artist_id, query, "5.90")
-                            .map(extractResponseWithErrorHandling()));
-        } else {
-            return provideService(IAudioService.class)
-                    .flatMap(service -> service
-                            .getCatalog(artist_id, query)
-                            .map(extractResponseWithErrorHandling()));
-        }
+        return provideService(IAudioService.class)
+                .flatMap(service -> service
+                        .getCatalog(artist_id, query)
+                        .map(extractResponseWithErrorHandling()));
     }
 
     @Override
     public Single<Items<VKApiAudio>> get(Integer playlist_id, Integer ownerId, Integer offset, Integer count, String accessKey) {
-        if (Settings.get().other().isUse_old_vk_api())
-            return provideService(IAudioService.class).flatMap(service -> service.getOld(playlist_id, ownerId, offset, count, "5.90", accessKey).map(extractResponseWithErrorHandling()));
-        else
-            return provideService(IAudioService.class).flatMap(service -> service.get(playlist_id, ownerId, offset, count, accessKey).map(extractResponseWithErrorHandling()));
+        return provideService(IAudioService.class).flatMap(service -> service.get(playlist_id, ownerId, offset, count, accessKey).map(extractResponseWithErrorHandling()));
     }
 
     @Override
     public Single<Items<VKApiAudio>> getAudiosByArtist(String artist_id, Integer offset, Integer count) {
-        if (Settings.get().other().isUse_old_vk_api())
-            return provideService(IAudioService.class).flatMap(service -> service.getAudiosByArtistOld(artist_id, offset, count, "5.90").map(extractResponseWithErrorHandling()));
-        else
-            return provideService(IAudioService.class).flatMap(service -> service.getAudiosByArtist(artist_id, offset, count).map(extractResponseWithErrorHandling()));
+        return provideService(IAudioService.class).flatMap(service -> service.getAudiosByArtist(artist_id, offset, count).map(extractResponseWithErrorHandling()));
     }
 
     @Override
     public Single<List<VKApiAudio>> getPopular(Integer foreign,
                                                Integer genre, Integer count) {
-        if (Settings.get().other().isUse_old_vk_api()) {
-            return provideService(IAudioService.class)
-                    .flatMap(service -> service
-                            .getPopularOld(foreign, genre, count, "5.90")
-                            .map(extractResponseWithErrorHandling()));
-        } else {
-            return provideService(IAudioService.class)
-                    .flatMap(service -> service
-                            .getPopular(foreign, genre, count)
-                            .map(extractResponseWithErrorHandling()));
-        }
+        return provideService(IAudioService.class)
+                .flatMap(service -> service
+                        .getPopular(foreign, genre, count)
+                        .map(extractResponseWithErrorHandling()));
     }
 
     @Override
     public Single<Items<VKApiAudio>> getRecommendations(Integer audioOwnerId, Integer count) {
-        if (Settings.get().other().isUse_old_vk_api()) {
-            return provideService(IAudioService.class)
-                    .flatMap(service -> service
-                            .getRecommendationsOld(audioOwnerId, count, "5.90")
-                            .map(extractResponseWithErrorHandling()));
-        } else {
-            return provideService(IAudioService.class)
-                    .flatMap(service -> service
-                            .getRecommendations(audioOwnerId, count)
-                            .map(extractResponseWithErrorHandling()));
-        }
+        return provideService(IAudioService.class)
+                .flatMap(service -> service
+                        .getRecommendations(audioOwnerId, count)
+                        .map(extractResponseWithErrorHandling()));
     }
 
     @Override
     public Single<Items<VKApiAudio>> getRecommendationsByAudio(String audio, Integer count) {
-        if (Settings.get().other().isUse_old_vk_api()) {
-            return provideService(IAudioService.class)
-                    .flatMap(service -> service
-                            .getRecommendationsByAudioOld(audio, count, "5.90")
-                            .map(extractResponseWithErrorHandling()));
-        } else {
-            return provideService(IAudioService.class)
-                    .flatMap(service -> service
-                            .getRecommendationsByAudio(audio, count)
-                            .map(extractResponseWithErrorHandling()));
-        }
+        return provideService(IAudioService.class)
+                .flatMap(service -> service
+                        .getRecommendationsByAudio(audio, count)
+                        .map(extractResponseWithErrorHandling()));
     }
 
     @Override
@@ -265,24 +213,17 @@ class AudioApi extends AbsApi implements IAudioApi {
 
     @Override
     public Single<List<VKApiAudio>> getById(String audios) {
-        if (Settings.get().other().isUse_old_vk_api()) {
-            return provideService(IAudioService.class)
-                    .flatMap(service -> service
-                            .getByIdOld(audios, "5.90")
-                            .map(extractResponseWithErrorHandling()));
-        } else {
-            return provideService(IAudioService.class)
-                    .flatMap(service -> service
-                            .getById(audios)
-                            .map(extractResponseWithErrorHandling()));
-        }
+        return provideService(IAudioService.class)
+                .flatMap(service -> service
+                        .getById(audios)
+                        .map(extractResponseWithErrorHandling()));
     }
 
     @Override
     public Single<List<VKApiAudio>> getByIdOld(String audios) {
         return provideService(IAudioService.class)
                 .flatMap(service -> service
-                        .getByIdOld(audios, "5.90")
+                        .getByIdVersioned(audios, "5.90")
                         .map(extractResponseWithErrorHandling()));
     }
 
@@ -296,17 +237,10 @@ class AudioApi extends AbsApi implements IAudioApi {
 
     @Override
     public Single<CatalogResponse> getCatalogBlockById(String block_id, String start_from) {
-        if (Settings.get().other().isUse_old_vk_api()) {
-            return provideService(IAudioService.class)
-                    .flatMap(service -> service
-                            .getCatalogBlockByIdOld(block_id, start_from, "5.90")
-                            .map(extractBlockResponseWithErrorHandling()));
-        } else {
-            return provideService(IAudioService.class)
-                    .flatMap(service -> service
-                            .getCatalogBlockById(block_id, start_from)
-                            .map(extractBlockResponseWithErrorHandling()));
-        }
+        return provideService(IAudioService.class)
+                .flatMap(service -> service
+                        .getCatalogBlockById(block_id, start_from)
+                        .map(extractBlockResponseWithErrorHandling()));
     }
 
     @Override

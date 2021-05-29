@@ -18,4 +18,6 @@ public interface ICommunitiesView extends IAccountDependencyView, IMvpView, IErr
     void showCommunityWall(int accountId, Community community);
 
     void notifySeacrhDataAdded(int position, int count);
+
+    void showCommunityMenu(Community community);
 }

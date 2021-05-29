@@ -270,14 +270,6 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
 
     @OnGuiCreated
     private void resolveActionButtons() {
-        if (community.getType() == VKApiCommunity.Type.EVENT) {
-            callView(v -> {
-                v.setupPrimaryButton(null);
-                v.setupSecondaryButton(null);
-            });
-            return;
-        }
-
         @StringRes
         Integer primaryText = null;
         @StringRes
@@ -300,6 +292,9 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
                     case VKApiCommunity.Type.PAGE:
                         primaryText = R.string.community_follow;
                         break;
+                    case VKApiCommunity.Type.EVENT:
+                        primaryText = R.string.community_to_go;
+                        break;
                 }
 
                 break;
@@ -312,12 +307,15 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
                     case VKApiCommunity.Type.PAGE:
                         primaryText = R.string.community_unsubscribe_from_news;
                         break;
+                    case VKApiCommunity.Type.EVENT:
+                        primaryText = R.string.community_not_to_go;
+                        break;
                 }
 
                 break;
 
             case VKApiCommunity.MemberStatus.NOT_SURE:
-                // TODO: 07.02.2016 ЧЕРТ РАЗБЕРЕТ ЧТО ЭТО.. скорее всего я не уверен, что пойду на встречу
+                primaryText = R.string.community_leave;
                 break;
 
             case VKApiCommunity.MemberStatus.DECLINED_INVITATION:
@@ -350,6 +348,7 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
 
                 switch (community.getType()) {
                     case VKApiCommunity.Type.GROUP:
+                    case VKApiCommunity.Type.EVENT:
                         resultMessage = R.string.community_leave_success;
                         break;
                     case VKApiCommunity.Type.PAGE:
@@ -405,6 +404,7 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
                         break;
 
                     case VKApiCommunity.Type.PAGE:
+                    case VKApiCommunity.Type.EVENT:
                         community.setMember(true);
                         community.setMemberStatus(VKApiCommunity.MemberStatus.IS_MEMBER);
                         resultMessage = R.string.community_follow_success;

@@ -112,6 +112,20 @@ public class CommunitiesPresenter extends AccountDependencyPresenter<ICommunitie
         return nonEmpty(community.getScreenName()) && community.getScreenName().toLowerCase().contains(lower);
     }
 
+    private static boolean exist(DataWrapper<Community> data, Community in) {
+        if (data == null || in == null) {
+            return false;
+        }
+
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get().get(i).getOwnerId() == in.getOwnerId()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void requestActualData(int offset) {
         actualLoadingNow = true;
         //this.actualLoadingOffset = offset;
@@ -129,11 +143,11 @@ public class CommunitiesPresenter extends AccountDependencyPresenter<ICommunitie
         super.onGuiResumed();
         resolveRefreshing();
     }
+    //private int netSearchOffset;
 
     private void resolveRefreshing() {
         callResumedView(v -> v.displayRefreshing(actualLoadingNow || netSeacrhNow));
     }
-    //private int netSearchOffset;
 
     private void onActualDataGetError(Throwable t) {
         actualLoadingNow = false;
@@ -282,6 +296,20 @@ public class CommunitiesPresenter extends AccountDependencyPresenter<ICommunitie
 
     public void fireCommunityClick(Community community) {
         callView(v -> v.showCommunityWall(getAccountId(), community));
+    }
+
+    public void fireUnsubscribe(Community community) {
+        actualDisposable.add(communitiesInteractor.leave(getAccountId(), community.getId())
+                .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                .subscribe(this::fireRefresh, this::onSeacrhError));
+    }
+
+    public boolean fireCommunityLongClick(Community community) {
+        if ((exist(own, community) || exist(filtered, community)) && userId == getAccountId()) {
+            callView(v -> v.showCommunityMenu(community));
+            return true;
+        }
+        return false;
     }
 
     @Override

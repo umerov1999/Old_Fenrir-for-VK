@@ -75,8 +75,6 @@ public interface ISettings {
 
         String get_Auth_Domain();
 
-        boolean isUse_old_vk_api();
-
         boolean isUse_hls_downloader();
 
         boolean isDisable_history();

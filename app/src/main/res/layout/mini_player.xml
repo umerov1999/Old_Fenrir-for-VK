@@ -51,7 +51,7 @@
             android:singleLine="true" />
 
         <SeekBar
-            android:id="@+id/SeekBar01"
+            android:id="@+id/seek_player_pos"
             style="@android:style/Widget.Material.SeekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

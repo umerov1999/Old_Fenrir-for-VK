@@ -606,6 +606,8 @@
     <string name="community_send_request">Отправить заявку</string>
     <string name="community_join">Вступить в группу</string>
     <string name="community_follow">Подписаться</string>
+    <string name="community_to_go">Пойти</string>
+    <string name="community_not_to_go">Передумал</string>
     <string name="community_unsubscribe_from_news">Отписаться от новостей</string>
     <string name="community_leave">Покинуть группу</string>
 
@@ -1318,9 +1320,8 @@
     <string name="audio_force_download">Уже скачен. Всё равно скачать?</string>
     <string name="audio_force_download_pc">На компьютере. Всё равно скачать?</string>
     <string name="null_image_link">Отсутствует ссылка на скачивание</string>
-    <string name="use_old_vk_api">Аудио с VK API 5.90</string>
     <string name="use_hls_downloader">HLS Аудио Demuxer</string>
-    <string name="use_hls_downloader_summary">Если 5.90 сдох</string>
+    <string name="use_hls_downloader_summary">Если VK Api 5.90 сдох</string>
     <string name="expires">%1$s %2$s</string>
     <string name="disable_history">Не показывать Истории</string>
     <string name="audio_round_icon">Круглые обложки аудио</string>
@@ -1376,7 +1377,6 @@
     <string name="font_size">Размер шрифта</string>
     <string name="load_history_notif">Предпросмотр диалога в уведомлениях</string>
     <string name="load_history_notif_summary">Отображать последние сообщения из чата (может стать причиной капчи)</string>
-    <string name="mp3_friendly">Если не работает скачивание</string>
     <string name="search_stories">Искать истории</string>
     <string name="by_name">По имени</string>
     <string name="by_owner">По владельцу</string>

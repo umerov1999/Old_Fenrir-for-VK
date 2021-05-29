@@ -46,10 +46,7 @@ import dev.ragnarok.fenrir.fragment.search.criteria.MessageSeachCriteria
 import dev.ragnarok.fenrir.fragment.sheet.MessageAttachmentsFragment
 import dev.ragnarok.fenrir.link.internal.OwnerLinkSpanFactory
 import dev.ragnarok.fenrir.link.internal.TopicLink
-import dev.ragnarok.fenrir.listener.BackPressCallback
-import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener
-import dev.ragnarok.fenrir.listener.OnSectionResumeCallback
-import dev.ragnarok.fenrir.listener.PicassoPauseOnScrollListener
+import dev.ragnarok.fenrir.listener.*
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.ModalBottomSheetDialogFragment
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.Option
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.OptionRequest
@@ -176,8 +173,8 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
 
         toolbar = root.findViewById(R.id.toolbar)
         toolbar?.inflateMenu(R.menu.menu_chat)
-        PrepareOptionsMenu(toolbar?.menu!!)
-        toolbar!!.setOnMenuItemClickListener { item: MenuItem ->
+        toolbar?.menu?.let { PrepareOptionsMenu(it) }
+        toolbar?.setOnMenuItemClickListener { item: MenuItem ->
             OptionsItemSelected(item)
         }
 
@@ -209,6 +206,23 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
 
         Writing_msg_Group?.visibility = View.GONE
 
+        goto_button = root.findViewById(R.id.goto_button)
+        goto_button?.let {
+            if (Utils.isHiddenCurrent()) {
+                it.setImageResource(R.drawable.attachment)
+                it.setOnClickListener { presenter?.fireDialogAttachmentsClick() }
+            } else {
+                it.setImageResource(R.drawable.ic_outline_keyboard_arrow_up)
+                it.setOnClickListener { presenter?.fireScrollToUnread() }
+                it.setOnLongClickListener { presenter?.fireDialogAttachmentsClick(); true; }
+            }
+
+            if (!Settings.get().other().isEnable_last_read)
+                it.visibility = View.GONE
+            else
+                it.visibility = View.VISIBLE
+        }
+
         recyclerView = root.findViewById(R.id.fragment_friend_dialog_list)
         recyclerView?.apply {
             layoutManager = createLayoutManager()
@@ -222,6 +236,9 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
                     presenter?.fireScrollToEnd()
                 }
             })
+            if (Settings.get().other().isEnable_last_read) {
+                goto_button?.let { addOnScrollListener(ChatOnScrollListener(it)) }
+            }
         }
 
         ItemTouchHelper(MessagesReplyItemCallback {
@@ -266,23 +283,6 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         pinnedView?.setOnLongClickListener {
             it.isVisible = false
             true
-        }
-
-        goto_button = root.findViewById(R.id.goto_button)
-        goto_button?.let {
-            if (Utils.isHiddenCurrent()) {
-                it.setImageResource(R.drawable.attachment)
-                it.setOnClickListener { presenter?.fireDialogAttachmentsClick() }
-            } else {
-                it.setImageResource(R.drawable.ic_outline_keyboard_arrow_up)
-                it.setOnClickListener { presenter?.fireScrollToUnread() }
-                it.setOnLongClickListener { presenter?.fireDialogAttachmentsClick(); true; }
-            }
-
-            if (!Settings.get().other().isEnable_last_read)
-                it.visibility = View.GONE
-            else
-                it.visibility = View.VISIBLE
         }
 
         editMessageGroup = root.findViewById(R.id.editMessageGroup)
