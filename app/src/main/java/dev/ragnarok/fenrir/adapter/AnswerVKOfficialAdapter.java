@@ -13,20 +13,27 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.imageview.ShapeableImageView;
 import com.squareup.picasso.Transformation;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.regex.Matcher;
 
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
+import dev.ragnarok.fenrir.adapter.feedback.FeedbackPhotosAdapter;
 import dev.ragnarok.fenrir.model.AnswerVKOfficial;
 import dev.ragnarok.fenrir.model.AnswerVKOfficialList;
+import dev.ragnarok.fenrir.model.PhotoSize;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
+import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
+import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.LinkParser;
 import dev.ragnarok.fenrir.util.Utils;
@@ -171,7 +178,6 @@ public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOffici
                 break;
         }
 
-
         holder.small.setVisibility(View.INVISIBLE);
         if (!Utils.isEmpty(Page.header)) {
             holder.name.setVisibility(View.VISIBLE);
@@ -233,6 +239,30 @@ public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOffici
                     .tag(Constants.PICASSO_TAG)
                     .placeholder(R.drawable.background_gray)
                     .into(holder.additional);
+        }
+        if (Utils.isEmpty(Page.attachments)) {
+            PicassoInstance.with().cancelRequest(holder.photo_image);
+            holder.photo_image.setVisibility(View.GONE);
+            holder.attachments.setVisibility(View.GONE);
+            holder.attachments.setAdapter(null);
+        } else if (Page.attachments.size() == 1) {
+            holder.photo_image.setVisibility(View.VISIBLE);
+            holder.attachments.setVisibility(View.GONE);
+            holder.attachments.setAdapter(null);
+            PicassoInstance.with()
+                    .load(Page.attachments.get(0).getUrlForSize(PhotoSize.X, false))
+                    .tag(Constants.PICASSO_TAG)
+                    .placeholder(R.drawable.background_gray)
+                    .into(holder.photo_image);
+            holder.photo_image.setOnClickListener(v -> PlaceFactory.getSimpleGalleryPlace(Settings.get().accounts().getCurrent(), new ArrayList<>(Collections.singletonList(Page.attachments.get(0))), 0, true).tryOpenWith(context));
+        } else {
+            PicassoInstance.with().cancelRequest(holder.photo_image);
+            holder.photo_image.setVisibility(View.GONE);
+            holder.attachments.setVisibility(View.VISIBLE);
+            holder.attachments.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
+            FeedbackPhotosAdapter adapter = new FeedbackPhotosAdapter(context, Page.attachments);
+            adapter.setPhotoSelectionListener((position1, photo) -> PlaceFactory.getSimpleGalleryPlace(Settings.get().accounts().getCurrent(), new ArrayList<>(Page.attachments), position1, true).tryOpenWith(context));
+            holder.attachments.setAdapter(adapter);
         }
     }
 
@@ -362,10 +392,11 @@ public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOffici
         final ImageView small;
         final TextView mHeaderTitle;
         final ShapeableImageView additional;
+        final ShapeableImageView photo_image;
+        final RecyclerView attachments;
 
         public Holder(View itemView) {
             super(itemView);
-
             avatar = itemView.findViewById(R.id.item_friend_avatar);
             name = itemView.findViewById(R.id.item_friend_name);
             name.setMovementMethod(LinkMovementMethod.getInstance());
@@ -377,6 +408,8 @@ public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOffici
             small = itemView.findViewById(R.id.item_icon);
             mHeaderTitle = itemView.findViewById(R.id.header_title);
             additional = itemView.findViewById(R.id.additional_image);
+            attachments = itemView.findViewById(R.id.attachments);
+            photo_image = itemView.findViewById(R.id.photo_image);
         }
     }
 }

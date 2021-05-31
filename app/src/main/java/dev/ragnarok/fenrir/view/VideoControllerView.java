@@ -16,9 +16,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,6 +26,8 @@ import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.media.MaterialPlayPauseFab;
 import dev.ragnarok.fenrir.view.media.MediaActionDrawable;
+import dev.ragnarok.fenrir.view.seek.DefaultTimeBar;
+import dev.ragnarok.fenrir.view.seek.TimeBar;
 
 
 /**
@@ -70,7 +69,7 @@ public class VideoControllerView extends FrameLayout {
     private MediaPlayerControl mPlayer;
     private ViewGroup mAnchor;
     private View mRoot;
-    private ProgressBar mProgress;
+    private DefaultTimeBar mProgress;
     private TextView mEndTime, mCurrentTime;
     private boolean mShowing;
     private boolean mDragging;
@@ -99,39 +98,30 @@ public class VideoControllerView extends FrameLayout {
     // The second scenario involves the user operating the scroll ball, in this
     // case there WON'T BE onStartTrackingTouch/onStopTrackingTouch notifications,
     // we will simply apply the updated position without suspending regular updates.
-    private final OnSeekBarChangeListener mSeekListener = new OnSeekBarChangeListener() {
-        public void onStartTrackingTouch(SeekBar bar) {
+    private final TimeBar.OnScrubListener mSeekListener = new TimeBar.OnScrubListener() {
+        @Override
+        public void onScrubStart(TimeBar timeBar, long position) {
             show(3600000);
-
             mDragging = true;
-
-            // By removing these pending progress messages we make sure
-            // that a) we won't update the progress while the user adjusts
-            // the seekbar and b) once the user is done dragging the thumb
-            // we will post one of these messages to the queue again and
-            // this ensures that there will be exactly one message queued up.
             mHandler.removeMessages(SHOW_PROGRESS);
         }
 
-        public void onProgressChanged(SeekBar bar, int progress, boolean fromuser) {
+        @Override
+        public void onScrubMove(TimeBar timeBar, long position) {
             if (mPlayer == null) {
                 return;
             }
 
-            if (!fromuser) {
-                // We're not interested in programmatically generated changes to
-                // the progress bar's position.
-                return;
-            }
-
-            long duration = mPlayer.getDuration();
-            long newposition = (duration * progress) / 1000L;
-            mPlayer.seekTo((int) newposition);
+            mPlayer.seekTo(position);
             if (mCurrentTime != null)
-                mCurrentTime.setText(stringForTime((int) newposition));
+                mCurrentTime.setText(stringForTime(position));
         }
 
-        public void onStopTrackingTouch(SeekBar bar) {
+        @Override
+        public void onScrubStop(TimeBar timeBar, long position, boolean canceled) {
+            if (!canceled) {
+                mPlayer.seekTo(position);
+            }
             mDragging = false;
             setProgress();
             updatePausePlay();
@@ -149,7 +139,7 @@ public class VideoControllerView extends FrameLayout {
                 return;
             }
 
-            int pos = mPlayer.getCurrentPosition();
+            long pos = mPlayer.getCurrentPosition();
             pos -= 5000; // milliseconds
             mPlayer.seekTo(pos);
             setProgress();
@@ -163,7 +153,7 @@ public class VideoControllerView extends FrameLayout {
                 return;
             }
 
-            int pos = mPlayer.getCurrentPosition();
+            long pos = mPlayer.getCurrentPosition();
             pos += 15000; // milliseconds
             mPlayer.seekTo(pos);
             setProgress();
@@ -297,9 +287,8 @@ public class VideoControllerView extends FrameLayout {
 
         mProgress = v.findViewById(R.id.mediacontroller_progress);
         if (mProgress != null) {
-            SeekBar seeker = (SeekBar) mProgress;
-            seeker.setOnSeekBarChangeListener(mSeekListener);
-            mProgress.setMax(1000);
+            DefaultTimeBar seeker = mProgress;
+            seeker.addListener(mSeekListener);
         }
 
         mEndTime = v.findViewById(R.id.time);
@@ -402,7 +391,7 @@ public class VideoControllerView extends FrameLayout {
         mShowing = false;
     }
 
-    private String stringForTime(int timeMs) {
+    private String stringForTime(long timeMs) {
         if (timeMs < 0) {
             return "--:--";
         }
@@ -411,11 +400,11 @@ public class VideoControllerView extends FrameLayout {
             return "00:00";
         }
 
-        int totalSeconds = timeMs / 1000;
+        long totalSeconds = timeMs / 1000;
 
-        int seconds = totalSeconds % 60;
-        int minutes = (totalSeconds / 60) % 60;
-        int hours = totalSeconds / 3600;
+        long seconds = totalSeconds % 60;
+        long minutes = (totalSeconds / 60) % 60;
+        long hours = totalSeconds / 3600;
 
         if (hours > 0) {
             return String.format(Utils.getAppLocale(), "%d:%02d:%02d", hours, minutes, seconds);
@@ -424,21 +413,19 @@ public class VideoControllerView extends FrameLayout {
         }
     }
 
-    private int setProgress() {
+    private long setProgress() {
         if (mPlayer == null || mDragging) {
             return 0;
         }
 
-        int position = mPlayer.getCurrentPosition();
-        int duration = mPlayer.getDuration();
+        long position = mPlayer.getCurrentPosition();
+        long duration = mPlayer.getDuration();
         if (mProgress != null) {
             if (duration > 0) {
-                // use long to avoid overflow
-                long pos = 1000L * position / duration;
-                mProgress.setProgress((int) pos);
+                mProgress.setDuration(duration);
+                mProgress.setPosition(position);
             }
-            int percent = mPlayer.getBufferPercentage();
-            mProgress.setSecondaryProgress(percent * 10);
+            mProgress.setBufferedPosition(mPlayer.getBufferPosition());
         }
 
         if (mEndTime != null)
@@ -638,11 +625,13 @@ public class VideoControllerView extends FrameLayout {
 
         void pause();
 
-        int getDuration();
+        long getDuration();
 
-        int getCurrentPosition();
+        long getCurrentPosition();
 
-        void seekTo(int pos);
+        long getBufferPosition();
+
+        void seekTo(long pos);
 
         boolean isPlaying();
 
@@ -678,7 +667,7 @@ public class VideoControllerView extends FrameLayout {
                 return;
             }
 
-            int pos;
+            long pos;
             switch (msg.what) {
                 case FADE_OUT:
                     view.hide();

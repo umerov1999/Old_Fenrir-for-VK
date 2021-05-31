@@ -14,6 +14,7 @@ public class AnswerVKOfficial {
     public String iconType;
     public Long time;
     public List<ImageAdditional> images;
+    public List<Photo> attachments;
 
     public ImageAdditional getImage(int prefSize) {
         ImageAdditional result = null;
@@ -43,5 +44,12 @@ public class AnswerVKOfficial {
         private int calcAverageSize() {
             return (width + height) / 2;
         }
+    }
+
+    public static final class Attachment {
+        @SerializedName("type")
+        public String type;
+        @SerializedName("object_id")
+        public String object_id;
     }
 }

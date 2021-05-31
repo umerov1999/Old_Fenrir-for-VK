@@ -2,6 +2,7 @@ package dev.ragnarok.fenrir.domain;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.Collection;
@@ -17,7 +18,6 @@ import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.model.AudioCatalog;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.CatalogBlock;
-import dev.ragnarok.fenrir.model.IdPair;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
 
@@ -36,9 +36,9 @@ public interface IAudioInteractor {
 
     Single<List<Audio>> getAudiosByArtist(int accountId, String artist_id, int offset, int count);
 
-    Single<List<Audio>> getById(int accountId, List<IdPair> audios);
+    Single<List<Audio>> getById(int accountId, @NonNull List<Audio> audios);
 
-    Single<List<Audio>> getByIdOld(int accountId, List<IdPair> audios);
+    Single<List<Audio>> getByIdOld(int accountId, @NonNull List<Audio> audios);
 
     Single<String> getLyrics(int accountId, int lyrics_id);
 
@@ -73,6 +73,8 @@ public interface IAudioInteractor {
     Single<List<AudioPlaylist>> getDualPlaylists(int accountId, int owner_id, int first_playlist, int second_playlist);
 
     Single<Integer> reorder(int accountId, int ownerId, int audio_id, Integer before, Integer after);
+
+    Completable sendStartEvent(int accountId, String uuid, String audio_id);
 
     Single<List<AudioCatalog>> getCatalog(int accountId, String artist_id, String query);
 

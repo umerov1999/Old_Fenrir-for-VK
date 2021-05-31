@@ -17,8 +17,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.SeekBar
-import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.RecyclerView
@@ -71,6 +69,8 @@ import dev.ragnarok.fenrir.util.Utils.isEmpty
 import dev.ragnarok.fenrir.view.FadeAnimDrawable
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieShapeableImageView
 import dev.ragnarok.fenrir.view.pager.WeakPicassoLoadCallback
+import dev.ragnarok.fenrir.view.seek.DefaultTimeBar
+import dev.ragnarok.fenrir.view.seek.TimeBar
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
@@ -81,7 +81,7 @@ import java.io.OutputStream
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
-class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener {
+class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener {
     private val PLAYER_TAG = "PicassoPlayerTag"
 
     // Play and pause button
@@ -101,7 +101,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
     private var mGetLyrics: ImageView? = null
 
     // Progress
-    private var mProgress: SeekBar? = null
+    private var mProgress: DefaultTimeBar? = null
 
     // VK Additional action
     private var ivAdd: ImageView? = null
@@ -410,7 +410,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         tvAlbum?.isSelected = true
         mPreviousButton.setRepeatListener(mRewindListener)
         mNextButton.setRepeatListener(mFastForwardListener)
-        mProgress?.setOnSeekBarChangeListener(this)
+        mProgress?.addListener(this)
         ivSave = root.findViewById(R.id.audio_save)
         ivSave?.setOnClickListener {
             run {
@@ -672,11 +672,15 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         resolveAddButton()
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    override fun onProgressChanged(bar: SeekBar, progress: Int, fromuser: Boolean) {
-        if (!fromuser || MusicUtils.mService == null) {
+    override fun onScrubStart(timeBar: TimeBar?, position: Long) {
+        mFromTouch = true
+        if (MusicUtils.mService != null) {
+            mPosOverride = position
+        }
+    }
+
+    override fun onScrubMove(timeBar: TimeBar?, position: Long) {
+        if (MusicUtils.mService == null) {
             return
         }
         val now = SystemClock.elapsedRealtime()
@@ -688,26 +692,12 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                 mPosOverride = -1
             }
         }
-        mPosOverride = MusicUtils.duration() * progress / 1000
+        mPosOverride = position
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    override fun onStartTrackingTouch(bar: SeekBar) {
-        mLastSeekEventTime = 0
-        mFromTouch = true
-        mCurrentTime?.visibility = View.VISIBLE
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    override fun onStopTrackingTouch(bar: SeekBar) {
+    override fun onScrubStop(timeBar: TimeBar?, position: Long, canceled: Boolean) {
         if (mPosOverride != -1L) {
             MusicUtils.seek(mPosOverride)
-            val progress = (1000 * mPosOverride / MusicUtils.duration()).toInt()
-            bar.progress = progress
             mPosOverride = -1
         }
         mFromTouch = false
@@ -1069,7 +1059,9 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
         if (!MusicUtils.isInitialized()) {
             mCurrentTime?.text = "--:--"
             mTotalTime?.text = "--:--"
-            mProgress?.progress = 0
+            mProgress?.setDuration(DefaultTimeBar.TIME_UNSET)
+            mProgress?.setPosition(DefaultTimeBar.TIME_UNSET)
+            mProgress?.setBufferedPosition(DefaultTimeBar.TIME_UNSET)
             return 500
         }
         try {
@@ -1077,10 +1069,9 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
             val duration = MusicUtils.duration()
             if (pos >= 0 && duration > 0) {
                 refreshCurrentTimeText(pos)
-                val progress = (1000 * pos / duration).toInt()
-                mProgress?.progress = progress
-                val bufferProgress = (MusicUtils.bufferPercent().toFloat() * 10f).toInt()
-                mProgress?.secondaryProgress = bufferProgress
+                mProgress?.setDuration(duration)
+                mProgress?.setPosition(pos)
+                mProgress?.setBufferedPosition(MusicUtils.bufferPosition())
                 when {
                     mFromTouch -> {
                         return 500
@@ -1098,7 +1089,9 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), OnSeekBarChangeListener
                 }
             } else {
                 mCurrentTime?.text = "--:--"
-                mProgress?.progress = 0
+                mProgress?.setDuration(DefaultTimeBar.TIME_UNSET)
+                mProgress?.setPosition(DefaultTimeBar.TIME_UNSET)
+                mProgress?.setBufferedPosition(DefaultTimeBar.TIME_UNSET)
                 val current = if (mTotalTime?.tag == null) 0 else mTotalTime?.tag as Int
                 val next = if (current == mPlayerProgressStrings.size - 1) 0 else current + 1
                 mTotalTime?.tag = next

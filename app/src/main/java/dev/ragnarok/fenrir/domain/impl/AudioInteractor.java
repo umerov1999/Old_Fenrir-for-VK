@@ -2,6 +2,8 @@ package dev.ragnarok.fenrir.domain.impl;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +23,6 @@ import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.model.AudioCatalog;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.CatalogBlock;
-import dev.ragnarok.fenrir.model.IdPair;
 import dev.ragnarok.fenrir.player.util.MusicUtils;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppPerms;
@@ -29,7 +30,6 @@ import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
 import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
 
 public class AudioInteractor implements IAudioInteractor {
@@ -38,26 +38,6 @@ public class AudioInteractor implements IAudioInteractor {
 
     public AudioInteractor(INetworker networker) {
         this.networker = networker;
-    }
-
-    protected static String join(Collection<IdPair> audios, String delimiter) {
-        if (isNull(audios)) {
-            return null;
-        }
-
-        StringBuilder sb = new StringBuilder();
-        boolean firstTime = true;
-        for (IdPair pair : audios) {
-            if (firstTime) {
-                firstTime = false;
-            } else {
-                sb.append(delimiter);
-            }
-
-            sb.append(pair.ownerId).append("_").append(pair.id);
-        }
-
-        return sb.toString();
     }
 
     @Override
@@ -129,10 +109,10 @@ public class AudioInteractor implements IAudioInteractor {
     }
 
     @Override
-    public Single<List<Audio>> getById(int accountId, List<IdPair> audios) {
+    public Single<List<Audio>> getById(int accountId, @NonNull List<Audio> audios) {
         return networker.vkDefault(accountId)
                 .audio()
-                .getById(join(audios, ","))
+                .getById(audios)
                 .map(Utils::listEmptyIfNull)
                 .map(out -> {
                     List<Audio> ret = new ArrayList<>();
@@ -143,10 +123,10 @@ public class AudioInteractor implements IAudioInteractor {
     }
 
     @Override
-    public Single<List<Audio>> getByIdOld(int accountId, List<IdPair> audios) {
+    public Single<List<Audio>> getByIdOld(int accountId, @NonNull List<Audio> audios) {
         return networker.vkDefault(accountId)
                 .audio()
-                .getByIdOld(join(audios, ","))
+                .getByIdOld(audios)
                 .map(Utils::listEmptyIfNull)
                 .map(out -> {
                     List<Audio> ret = new ArrayList<>();
@@ -303,6 +283,14 @@ public class AudioInteractor implements IAudioInteractor {
                 .audio()
                 .reorder(ownerId, audio_id, before, after)
                 .map(resultId -> resultId);
+    }
+
+    @Override
+    public Completable sendStartEvent(int accountId, String uuid, String audio_id) {
+        return networker.vkDefault(accountId)
+                .audio()
+                .sendStartEvent(uuid, audio_id)
+                .ignoreElement();
     }
 
     @Override

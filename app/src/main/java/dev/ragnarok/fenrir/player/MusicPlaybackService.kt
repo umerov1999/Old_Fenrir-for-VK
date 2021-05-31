@@ -31,11 +31,11 @@ import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import com.squareup.picasso.Picasso.LoadedFrom
 import com.squareup.picasso.Target
 import dev.ragnarok.fenrir.*
+import dev.ragnarok.fenrir.Extensions.Companion.fromIOToMain
 import dev.ragnarok.fenrir.domain.IAudioInteractor
 import dev.ragnarok.fenrir.domain.InteractorFactory
 import dev.ragnarok.fenrir.media.exo.ExoUtil
 import dev.ragnarok.fenrir.model.Audio
-import dev.ragnarok.fenrir.model.IdPair
 import dev.ragnarok.fenrir.picasso.PicassoInstance
 import dev.ragnarok.fenrir.settings.Settings
 import dev.ragnarok.fenrir.util.DownloadWorkUtils.GetLocalTrackLink
@@ -488,7 +488,7 @@ class MusicPlaybackService : Service() {
                 coverBitmap = null
                 onceCloseMiniPlayer = false
             }
-            mPlayer?.setDataSource(audio.ownerId, audio.id, audio.url)
+            mPlayer?.setDataSource(audio)
             if (audio.thumb_image_big != null && UpdateMeta) {
                 coverAudio = audio.thumb_image_big
                 albumTitle = audio.album_title
@@ -519,6 +519,11 @@ class MusicPlaybackService : Service() {
     val bufferPercent: Int
         get() {
             synchronized(this) { return mPlayer?.bufferPercent ?: 0 }
+        }
+
+    val bufferPos: Long
+        get() {
+            synchronized(this) { return mPlayer?.bufferPos ?: 0 }
         }
 
     var shuffleMode: Int
@@ -910,21 +915,33 @@ class MusicPlaybackService : Service() {
             mService.get()?.notifyChange(PLAYSTATE_CHANGED)
         }
 
-        fun setDataSource(ownerId: Int, audioId: Int, url: String) {
-            if (Utils.isEmpty(url) || "https://vk.com/mp3/audio_api_unavailable.mp3" == url) {
-                compositeDisposable.add(audioInteractor.getById(
-                    Settings.get().accounts().current,
-                    listOf(IdPair(audioId, ownerId))
+        fun setDataSource(audio: Audio) {
+            val accountId = Settings.get().accounts().current
+            if (!Utils.isHiddenAccount(accountId) || !audio.isLocalServer || !audio.isLocal) {
+                compositeDisposable.add(
+                    audioInteractor.sendStartEvent(
+                        accountId,
+                        Utils.getDeviceId(mService.get()),
+                        audio.ownerId.toString() + "_" + audio.id
+                    )
+                        .fromIOToMain()
+                        .subscribe(RxUtils.dummy(), RxUtils.ignore())
                 )
-                    .compose(RxUtils.applySingleIOToMainSchedulers())
+            }
+            if (Utils.isEmpty(audio.url) || "https://vk.com/mp3/audio_api_unavailable.mp3" == audio.url) {
+                compositeDisposable.add(audioInteractor.getById(
+                    accountId,
+                    listOf(audio)
+                )
+                    .fromIOToMain()
                     .map { e: List<Audio> -> e[0].url }
                     .subscribe({ remoteUrl: String? -> this.setDataSource(remoteUrl) }) {
                         setDataSource(
-                            url
+                            audio.url
                         )
                     })
             } else {
-                setDataSource(url)
+                setDataSource(audio.url)
             }
         }
 
@@ -967,6 +984,9 @@ class MusicPlaybackService : Service() {
 
         val bufferPercent: Int
             get() = mCurrentMediaPlayer.bufferedPercentage
+
+        val bufferPos: Long
+            get() = mCurrentMediaPlayer.bufferedPosition
 
         /**
          * Constructor of `MultiPlayer`
@@ -1155,6 +1175,10 @@ class MusicPlaybackService : Service() {
             return mService.get()?.bufferPercent ?: 0
         }
 
+        override fun getBufferPosition(): Long {
+            return mService.get()?.bufferPos ?: 0
+        }
+
     }
 
     companion object {
@@ -1203,13 +1227,6 @@ class MusicPlaybackService : Service() {
         const val REPEAT_ALL = 2
         private var IDLE_DELAY = Constants.AUDIO_PLAYER_SERVICE_IDLE
         private const val MAX_QUEUE_SIZE = 200
-        private fun listToIdPair(audios: ArrayList<Audio>): List<IdPair> {
-            val result: MutableList<IdPair> = ArrayList()
-            for (item in audios) {
-                result.add(IdPair(item.id, item.ownerId))
-            }
-            return result
-        }
 
         @JvmStatic
         fun startForPlayList(
@@ -1224,7 +1241,7 @@ class MusicPlaybackService : Service() {
             if (Utils.isEmpty(url) || "https://vk.com/mp3/audio_api_unavailable.mp3" == url) {
                 try {
                     audios = interactor
-                        .getById(Settings.get().accounts().current, listToIdPair(audios))
+                        .getById(Settings.get().accounts().current, audios)
                         .subscribeOn(Schedulers.io())
                         .blockingGet() as ArrayList<Audio>
                 } catch (ignore: Throwable) {

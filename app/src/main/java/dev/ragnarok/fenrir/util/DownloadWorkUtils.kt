@@ -806,7 +806,7 @@ object DownloadWorkUtils {
                     val link = RxUtils.BlockingGetSingle(
                         InteractorFactory
                             .createAudioInteractor()
-                            .getById(account_id, listOf(IdPair(audio.id, audio.ownerId)))
+                            .getById(account_id, listOf(audio))
                             .map { e: List<Audio> -> e[0].url }, audio.url
                     )
                     if (!Utils.isEmpty(link)) {
@@ -818,7 +818,7 @@ object DownloadWorkUtils {
                     val link = RxUtils.BlockingGetSingle(
                         InteractorFactory
                             .createAudioInteractor()
-                            .getByIdOld(account_id, listOf(IdPair(audio.id, audio.ownerId)))
+                            .getByIdOld(account_id, listOf(audio))
                             .map { e: List<Audio> -> e[0].url }, audio.url
                     )
                     if (!Utils.isEmpty(link)) {

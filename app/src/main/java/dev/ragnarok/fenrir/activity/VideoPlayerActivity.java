@@ -335,12 +335,17 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
     }
 
     @Override
-    public int getCurrentPosition() {
+    public long getCurrentPosition() {
         return mPlayer.getCurrentPosition();
     }
 
     @Override
-    public int getDuration() {
+    public long getBufferPosition() {
+        return mPlayer.getBufferPosition();
+    }
+
+    @Override
+    public long getDuration() {
         return mPlayer.getDuration();
     }
 
@@ -355,7 +360,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
     }
 
     @Override
-    public void seekTo(int i) {
+    public void seekTo(long i) {
         mPlayer.seekTo(i);
     }
 

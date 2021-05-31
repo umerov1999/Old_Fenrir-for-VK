@@ -136,21 +136,20 @@
             app:layout_constraintStart_toEndOf="@+id/audio_player_current_time"
             tools:ignore="SmallSp" />
 
-        <SeekBar
+        <dev.ragnarok.fenrir.view.seek.DefaultTimeBar
             android:id="@+id/seek_player_pos"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/audio_player_current_time"
             android:layout_marginBottom="6dp"
-            android:max="1000"
-            android:progress="125"
-            android:progressBackgroundTint="@color/neutral"
-            android:progressTint="?colorOnSurface"
-            android:secondaryProgressTint="@color/neutral"
-            android:thumbTint="?colorOnSurface"
+            app:buffered_color="@color/neutral"
             app:layout_constraintBottom_toTopOf="@id/audio_save"
             app:layout_constraintEnd_toEndOf="@+id/audio_share"
-            app:layout_constraintStart_toStartOf="@+id/audio_add" />
+            app:layout_constraintStart_toStartOf="@+id/audio_add"
+            app:played_color="?colorOnSurface"
+            app:scrubber_color="?colorOnSurface"
+            app:scrubber_drawable="@drawable/seekbar_thumb_material_anim"
+            app:unplayed_color="@color/neutral" />
 
 
         <ImageView

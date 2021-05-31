@@ -41,9 +41,9 @@ import dev.ragnarok.fenrir.link.types.VideoLink;
 import dev.ragnarok.fenrir.link.types.WallCommentLink;
 import dev.ragnarok.fenrir.link.types.WallLink;
 import dev.ragnarok.fenrir.link.types.WallPostLink;
+import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.model.Commented;
 import dev.ragnarok.fenrir.model.CommentedType;
-import dev.ragnarok.fenrir.model.IdPair;
 import dev.ragnarok.fenrir.model.Peer;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.mvp.view.IVkPhotosView;
@@ -217,7 +217,7 @@ public class LinkHelper {
 
             case AbsLink.AUDIO_TRACK:
                 AudioTrackLink audioLink = (AudioTrackLink) link;
-                InteractorFactory.createAudioInteractor().getById(accountId, Collections.singletonList(new IdPair(audioLink.trackId, audioLink.ownerId)))
+                InteractorFactory.createAudioInteractor().getById(accountId, Collections.singletonList(new Audio().setId(audioLink.trackId).setOwnerId(audioLink.ownerId)))
                         .compose(RxUtils.applySingleIOToMainSchedulers())
                         .subscribe(t -> {
                             MusicPlaybackService.startForPlayList(activity, new ArrayList<>(t), 0, false);

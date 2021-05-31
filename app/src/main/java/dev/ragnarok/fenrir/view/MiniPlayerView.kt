@@ -11,7 +11,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
-import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import com.squareup.picasso.Transformation
@@ -28,17 +27,19 @@ import dev.ragnarok.fenrir.util.Objects
 import dev.ragnarok.fenrir.util.RxUtils
 import dev.ragnarok.fenrir.util.Utils
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView
+import dev.ragnarok.fenrir.view.seek.DefaultTimeBar
+import dev.ragnarok.fenrir.view.seek.TimeBar
 import io.reactivex.rxjava3.disposables.Disposable
 import java.lang.ref.WeakReference
 
-class MiniPlayerView : FrameLayout, OnSeekBarChangeListener {
+class MiniPlayerView : FrameLayout, TimeBar.OnScrubListener {
     private var mPlayerDisposable = Disposable.disposed()
     private var mAccountDisposable = Disposable.disposed()
     private var mAccountId = 0
     private lateinit var visual: RLottieImageView
     private lateinit var playCover: ImageView
     private lateinit var title: TextView
-    private lateinit var mProgress: SeekBar
+    private lateinit var mProgress: DefaultTimeBar
     private var mFromTouch = false
     private var mPosOverride: Long = -1
     private lateinit var root: View
@@ -95,7 +96,7 @@ class MiniPlayerView : FrameLayout, OnSeekBarChangeListener {
         title = root.findViewById(R.id.mini_artist)
         title.isSelected = true
         mProgress = root.findViewById(R.id.seek_player_pos)
-        mProgress.setOnSeekBarChangeListener(this)
+        mProgress.addListener(this)
     }
 
     private fun queueNextRefresh(delay: Long) {
@@ -200,23 +201,27 @@ class MiniPlayerView : FrameLayout, OnSeekBarChangeListener {
 
     private fun refreshCurrentTime(): Long {
         if (!MusicUtils.isInitialized()) {
+            mProgress.setDuration(DefaultTimeBar.TIME_UNSET)
+            mProgress.setPosition(DefaultTimeBar.TIME_UNSET)
+            mProgress.setBufferedPosition(DefaultTimeBar.TIME_UNSET)
             return 500
         }
         try {
             val pos = if (mPosOverride < 0) MusicUtils.position() else mPosOverride
             val duration = MusicUtils.duration()
             if (pos >= 0 && duration > 0) {
-                val progress = (1000 * pos / duration).toInt()
-                mProgress.progress = progress
-                val bufferProgress = (MusicUtils.bufferPercent().toFloat() * 10f).toInt()
-                mProgress.secondaryProgress = bufferProgress
+                mProgress.setDuration(duration)
+                mProgress.setPosition(pos)
+                mProgress.setBufferedPosition(MusicUtils.bufferPosition())
                 if (mFromTouch) {
                     return 500
                 } else if (!MusicUtils.isPlaying()) {
                     return 500
                 }
             } else {
-                mProgress.progress = 0
+                mProgress.setDuration(DefaultTimeBar.TIME_UNSET)
+                mProgress.setPosition(DefaultTimeBar.TIME_UNSET)
+                mProgress.setBufferedPosition(DefaultTimeBar.TIME_UNSET)
                 return 500
             }
             return 500
@@ -225,8 +230,15 @@ class MiniPlayerView : FrameLayout, OnSeekBarChangeListener {
         return 500
     }
 
-    override fun onProgressChanged(bar: SeekBar, progress: Int, fromuser: Boolean) {
-        if (!fromuser || MusicUtils.mService == null) {
+    override fun onScrubStart(timeBar: TimeBar?, position: Long) {
+        mFromTouch = true
+        if (MusicUtils.mService != null) {
+            mPosOverride = position
+        }
+    }
+
+    override fun onScrubMove(timeBar: TimeBar?, position: Long) {
+        if (MusicUtils.mService == null) {
             return
         }
         val now = SystemClock.elapsedRealtime()
@@ -238,14 +250,10 @@ class MiniPlayerView : FrameLayout, OnSeekBarChangeListener {
                 mPosOverride = -1
             }
         }
-        mPosOverride = MusicUtils.duration() * progress / 1000
+        mPosOverride = position
     }
 
-    override fun onStartTrackingTouch(seekBar: SeekBar) {
-        mFromTouch = true
-    }
-
-    override fun onStopTrackingTouch(seekBar: SeekBar) {
+    override fun onScrubStop(timeBar: TimeBar?, position: Long, canceled: Boolean) {
         if (mPosOverride != -1L) {
             MusicUtils.seek(mPosOverride)
             mPosOverride = -1

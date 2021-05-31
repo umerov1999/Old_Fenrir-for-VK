@@ -102,17 +102,17 @@ public class ExoVideoPlayer implements IVideoPlayer {
     }
 
     @Override
-    public int getDuration() {
-        return (int) player.getDuration();
+    public long getDuration() {
+        return player.getDuration();
     }
 
     @Override
-    public int getCurrentPosition() {
-        return (int) player.getCurrentPosition();
+    public long getCurrentPosition() {
+        return player.getCurrentPosition();
     }
 
     @Override
-    public void seekTo(int position) {
+    public void seekTo(long position) {
         player.seekTo(position);
     }
 
@@ -124,6 +124,11 @@ public class ExoVideoPlayer implements IVideoPlayer {
     @Override
     public int getBufferPercentage() {
         return player.getBufferedPercentage();
+    }
+
+    @Override
+    public long getBufferPosition() {
+        return player.getBufferedPosition();
     }
 
     @Override

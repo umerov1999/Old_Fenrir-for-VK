@@ -16,7 +16,6 @@ import java.util.Collections;
 import dev.ragnarok.fenrir.domain.IAudioInteractor;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
 import dev.ragnarok.fenrir.model.Audio;
-import dev.ragnarok.fenrir.model.IdPair;
 import dev.ragnarok.fenrir.mvp.presenter.base.RxSupportPresenter;
 import dev.ragnarok.fenrir.mvp.view.IAudioDuplicateView;
 import dev.ragnarok.fenrir.player.util.MusicUtils;
@@ -55,7 +54,7 @@ public class AudioDuplicatePresenter extends RxSupportPresenter<IAudioDuplicateV
 
     private void getMp3AndBitrate() {
         if (Utils.isEmpty(new_audio.getUrl()) || new_audio.isHLS()) {
-            audioListDisposable = mAudioInteractor.getByIdOld(accountId, Collections.singletonList(new IdPair(new_audio.getId(), new_audio.getOwnerId()))).compose(RxUtils.applySingleIOToMainSchedulers())
+            audioListDisposable = mAudioInteractor.getByIdOld(accountId, Collections.singletonList(new_audio)).compose(RxUtils.applySingleIOToMainSchedulers())
                     .subscribe(t -> getBitrate(t.get(0).getUrl(), t.get(0).getDuration()), e -> getBitrate(new_audio.getUrl(), new_audio.getDuration()));
         } else {
             getBitrate(new_audio.getUrl(), new_audio.getDuration());

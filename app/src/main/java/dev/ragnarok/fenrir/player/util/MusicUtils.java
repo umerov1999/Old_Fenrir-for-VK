@@ -496,13 +496,20 @@ public final class MusicUtils {
         return 0;
     }
 
-    /**
-     * @return The total length of the current track
-     */
     public static int bufferPercent() {
         if (mService != null) {
             try {
                 return mService.getBufferPercent();
+            } catch (RemoteException ignored) {
+            }
+        }
+        return 0;
+    }
+
+    public static long bufferPosition() {
+        if (mService != null) {
+            try {
+                return mService.getBufferPosition();
             } catch (RemoteException ignored) {
             }
         }

@@ -6,8 +6,8 @@ buildscript {
     ext.fenrirNdk = '21.4.7075529'
     ext.fenrirMinSDK = 22
     ext.fenrirTargetSDK = 29
-    ext.FenrirVersionCode = 107
-    ext.FenrirVersionName = '1.107'
+    ext.FenrirVersionCode = 108
+    ext.FenrirVersionName = '1.108'
 
     ext.kotlin_version = '1.5.10'
     ext.retrofitLibraryVersion = '2.9.0'
@@ -16,6 +16,7 @@ buildscript {
     ext.RxJavaVersion = '3.0.12'
     ext.GuavaVersion = '30.1.1-android'
     ext.exoLibraryVersion = '2.14.0'
+    ext.checkerQual = '3.13.0'
 
     repositories {
         google()

@@ -19,15 +19,17 @@ public interface IVideoPlayer {
 
     void release();
 
-    int getDuration();
+    long getDuration();
 
-    int getCurrentPosition();
+    long getCurrentPosition();
 
-    void seekTo(int position);
+    void seekTo(long position);
 
     boolean isPlaying();
 
     int getBufferPercentage();
+
+    long getBufferPosition();
 
     void setSurfaceHolder(SurfaceHolder holder);
 

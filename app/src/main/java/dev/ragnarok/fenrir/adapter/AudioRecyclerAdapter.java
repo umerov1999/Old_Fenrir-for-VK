@@ -39,7 +39,6 @@ import dev.ragnarok.fenrir.fragment.search.criteria.AudioSearchCriteria;
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.ModalBottomSheetDialogFragment;
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.OptionRequest;
 import dev.ragnarok.fenrir.model.Audio;
-import dev.ragnarok.fenrir.model.IdPair;
 import dev.ragnarok.fenrir.model.menu.AudioItem;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.picasso.transforms.PolyTransformation;
@@ -118,7 +117,7 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
 
     private void getMp3AndBitrate(int accountId, Audio audio) {
         if (Utils.isEmpty(audio.getUrl()) || audio.isHLS()) {
-            audioListDisposable = mAudioInteractor.getByIdOld(accountId, Collections.singletonList(new IdPair(audio.getId(), audio.getOwnerId()))).compose(RxUtils.applySingleIOToMainSchedulers())
+            audioListDisposable = mAudioInteractor.getByIdOld(accountId, Collections.singletonList(audio)).compose(RxUtils.applySingleIOToMainSchedulers())
                     .subscribe(t -> getBitrate(t.get(0).getUrl(), t.get(0).getDuration()), e -> getBitrate(audio.getUrl(), audio.getDuration()));
         } else {
             getBitrate(audio.getUrl(), audio.getDuration());

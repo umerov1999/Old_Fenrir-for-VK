@@ -1,6 +1,7 @@
 package dev.ragnarok.fenrir.api.interfaces;
 
 import androidx.annotation.CheckResult;
+import androidx.annotation.NonNull;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,7 +16,9 @@ import dev.ragnarok.fenrir.api.model.VkApiArtist;
 import dev.ragnarok.fenrir.api.model.VkApiLyrics;
 import dev.ragnarok.fenrir.api.model.response.AddToPlaylistResponse;
 import dev.ragnarok.fenrir.api.model.response.CatalogResponse;
+import dev.ragnarok.fenrir.api.model.response.SendStartEventResponse;
 import dev.ragnarok.fenrir.api.model.server.VkApiAudioUploadServer;
+import dev.ragnarok.fenrir.model.Audio;
 import io.reactivex.rxjava3.core.Single;
 
 
@@ -63,6 +66,9 @@ public interface IAudioApi {
     Single<Integer> reorder(int ownerId, int audio_id, Integer before, Integer after);
 
     @CheckResult
+    Single<SendStartEventResponse> sendStartEvent(String uuid, String audio_id);
+
+    @CheckResult
     Single<Items<VKApiAudio>> get(Integer playlist_id, Integer ownerId,
                                   Integer offset, Integer count, String accessKey);
 
@@ -89,10 +95,10 @@ public interface IAudioApi {
     Single<Items<VKApiAudio>> getRecommendationsByAudio(String audio, Integer count);
 
     @CheckResult
-    Single<List<VKApiAudio>> getById(String audios);
+    Single<List<VKApiAudio>> getById(@NonNull List<Audio> audios);
 
     @CheckResult
-    Single<List<VKApiAudio>> getByIdOld(String audios);
+    Single<List<VKApiAudio>> getByIdOld(@NonNull List<Audio> audios);
 
     @CheckResult
     Single<VkApiLyrics> getLyrics(int lyrics_id);

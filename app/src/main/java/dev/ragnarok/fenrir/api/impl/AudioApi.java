@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.api.impl;
 
+import androidx.annotation.NonNull;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -15,8 +18,10 @@ import dev.ragnarok.fenrir.api.model.VkApiArtist;
 import dev.ragnarok.fenrir.api.model.VkApiLyrics;
 import dev.ragnarok.fenrir.api.model.response.AddToPlaylistResponse;
 import dev.ragnarok.fenrir.api.model.response.CatalogResponse;
+import dev.ragnarok.fenrir.api.model.response.SendStartEventResponse;
 import dev.ragnarok.fenrir.api.model.server.VkApiAudioUploadServer;
 import dev.ragnarok.fenrir.api.services.IAudioService;
+import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.util.Objects;
 import io.reactivex.rxjava3.core.Single;
 
@@ -137,6 +142,14 @@ class AudioApi extends AbsApi implements IAudioApi {
     }
 
     @Override
+    public Single<SendStartEventResponse> sendStartEvent(String uuid, String audio_id) {
+        return provideService(IAudioService.class)
+                .flatMap(service -> service
+                        .sendStartEvent(uuid, audio_id)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
     public Single<Integer> deletePlaylist(int playlist_id, int ownerId) {
         return provideService(IAudioService.class)
                 .flatMap(service -> service
@@ -212,18 +225,28 @@ class AudioApi extends AbsApi implements IAudioApi {
     }
 
     @Override
-    public Single<List<VKApiAudio>> getById(String audios) {
+    public Single<List<VKApiAudio>> getById(@NonNull List<Audio> audios) {
+        ArrayList<AccessIdPair> ids = new ArrayList<>(audios.size());
+        for (Audio i : audios) {
+            ids.add(new AccessIdPair(i.getId(), i.getOwnerId(), i.getAccessKey()));
+        }
+        String audio_string = join(ids, ",", AccessIdPair::format);
         return provideService(IAudioService.class)
                 .flatMap(service -> service
-                        .getById(audios)
+                        .getById(audio_string)
                         .map(extractResponseWithErrorHandling()));
     }
 
     @Override
-    public Single<List<VKApiAudio>> getByIdOld(String audios) {
+    public Single<List<VKApiAudio>> getByIdOld(@NonNull List<Audio> audios) {
+        ArrayList<AccessIdPair> ids = new ArrayList<>(audios.size());
+        for (Audio i : audios) {
+            ids.add(new AccessIdPair(i.getId(), i.getOwnerId(), i.getAccessKey()));
+        }
+        String audio_string = join(ids, ",", AccessIdPair::format);
         return provideService(IAudioService.class)
                 .flatMap(service -> service
-                        .getByIdVersioned(audios, "5.90")
+                        .getByIdVersioned(audio_string, "5.90")
                         .map(extractResponseWithErrorHandling()));
     }
 

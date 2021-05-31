@@ -9,9 +9,13 @@ import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
+import dev.ragnarok.fenrir.api.model.VKApiPhoto;
+import dev.ragnarok.fenrir.domain.mappers.Dto2Model;
 import dev.ragnarok.fenrir.model.AnswerVKOfficial;
 import dev.ragnarok.fenrir.model.AnswerVKOfficialList;
+import dev.ragnarok.fenrir.util.Utils;
 
 public class AnswerVKOfficialDtoAdapter extends AbsAdapter implements JsonDeserializer<AnswerVKOfficialList> {
     private static final String TAG = AnswerVKOfficialDtoAdapter.class.getSimpleName();
@@ -26,6 +30,17 @@ public class AnswerVKOfficialDtoAdapter extends AbsAdapter implements JsonDeseri
 
         dtolist.items = new ArrayList<>();
         dtolist.fields = new ArrayList<>();
+        List<VKApiPhoto> photos = new ArrayList<>();
+
+        if (hasArray(root, "photos")) {
+            JsonArray temp = root.getAsJsonArray("photos");
+            for (JsonElement i : temp) {
+                if (!checkObject(i)) {
+                    continue;
+                }
+                photos.add(context.deserialize(i, VKApiPhoto.class));
+            }
+        }
 
         if (hasArray(root, "profiles")) {
             JsonArray temp = root.getAsJsonArray("profiles");
@@ -71,6 +86,7 @@ public class AnswerVKOfficialDtoAdapter extends AbsAdapter implements JsonDeseri
             }
             JsonObject root_item = i.getAsJsonObject();
             AnswerVKOfficial dto = new AnswerVKOfficial();
+
             dto.iconType = optString(root_item, "icon_type");
             dto.header = optString(root_item, "header");
             if (dto.header != null) {
@@ -85,11 +101,15 @@ public class AnswerVKOfficialDtoAdapter extends AbsAdapter implements JsonDeseri
             dto.time = optLong(root_item, "date");
             dto.iconURL = optString(root_item, "icon_url");
 
+            List<AnswerVKOfficial.Attachment> attachments = new ArrayList<>();
             if (hasObject(root_item, "main_item")) {
                 JsonObject main_item = root_item.get("main_item").getAsJsonObject();
                 if (hasArray(main_item, "image_object")) {
                     JsonArray jsonPhotos2 = main_item.get("image_object").getAsJsonArray();
                     dto.iconURL = jsonPhotos2.get(jsonPhotos2.size() - 1).getAsJsonObject().get("url").getAsString();
+                }
+                if ("photo".equals(optString(main_item, "type"))) {
+                    attachments.add(context.deserialize(main_item, AnswerVKOfficial.Attachment.class));
                 }
             }
             if (hasObject(root_item, "additional_item")) {
@@ -104,6 +124,32 @@ public class AnswerVKOfficialDtoAdapter extends AbsAdapter implements JsonDeseri
                         AnswerVKOfficial.ImageAdditional imgh = context.deserialize(s, AnswerVKOfficial.ImageAdditional.class);
                         if (imgh != null)
                             dto.images.add(imgh);
+                    }
+                }
+                if ("photo".equals(optString(additional_item, "type"))) {
+                    attachments.add(context.deserialize(additional_item, AnswerVKOfficial.Attachment.class));
+                }
+            }
+            if (hasArray(root_item, "attachments")) {
+                JsonArray temp = root_item.getAsJsonArray("attachments");
+                for (JsonElement a : temp) {
+                    if (!checkObject(a)) {
+                        continue;
+                    }
+                    attachments.add(context.deserialize(a, AnswerVKOfficial.Attachment.class));
+                }
+            }
+            for (AnswerVKOfficial.Attachment s : attachments) {
+                if (Utils.isEmpty(s.type) || Utils.isEmpty(s.object_id) || !s.type.equals("photo")) {
+                    continue;
+                }
+                for (VKApiPhoto v : photos) {
+                    if ((v.owner_id + "_" + v.id).equals(s.object_id)) {
+                        if (dto.attachments == null) {
+                            dto.attachments = new ArrayList<>();
+                        }
+                        dto.attachments.add(Dto2Model.transform(v));
+                        break;
                     }
                 }
             }

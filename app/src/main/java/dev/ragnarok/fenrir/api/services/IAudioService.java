@@ -12,6 +12,7 @@ import dev.ragnarok.fenrir.api.model.response.AddToPlaylistResponse;
 import dev.ragnarok.fenrir.api.model.response.BaseResponse;
 import dev.ragnarok.fenrir.api.model.response.BlockResponse;
 import dev.ragnarok.fenrir.api.model.response.CatalogResponse;
+import dev.ragnarok.fenrir.api.model.response.SendStartEventResponse;
 import dev.ragnarok.fenrir.api.model.server.VkApiAudioUploadServer;
 import io.reactivex.rxjava3.core.Single;
 import retrofit2.http.Field;
@@ -209,4 +210,9 @@ public interface IAudioService {
                                           @Field("audio_id") int audio_id,
                                           @Field("before") Integer before,
                                           @Field("after") Integer after);
+
+    @FormUrlEncoded
+    @POST("audio.sendStartEvent")
+    Single<BaseResponse<SendStartEventResponse>> sendStartEvent(@Field("uuid") String uuid,
+                                                                @Field("audio_id") String audio_id);
 }
