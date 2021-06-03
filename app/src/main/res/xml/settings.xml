@@ -99,6 +99,12 @@
 
         <SwitchPreference
             android:defaultValue="false"
+            android:key="notification_force_link"
+            android:title="@string/notification_force_link"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="false"
             android:key="load_history_notif"
             android:summary="@string/load_history_notif_summary"
             android:title="@string/load_history_notif"

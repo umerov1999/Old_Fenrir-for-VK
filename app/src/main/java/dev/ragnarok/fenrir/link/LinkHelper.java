@@ -39,6 +39,7 @@ import dev.ragnarok.fenrir.link.types.PollLink;
 import dev.ragnarok.fenrir.link.types.TopicLink;
 import dev.ragnarok.fenrir.link.types.VideoLink;
 import dev.ragnarok.fenrir.link.types.WallCommentLink;
+import dev.ragnarok.fenrir.link.types.WallCommentThreadLink;
 import dev.ragnarok.fenrir.link.types.WallLink;
 import dev.ragnarok.fenrir.link.types.WallPostLink;
 import dev.ragnarok.fenrir.model.Audio;
@@ -99,6 +100,13 @@ public class LinkHelper {
             case AbsLink.POLL:
                 PollLink pollLink = (PollLink) link;
                 openLinkInBrowser(activity, "https://vk.com/poll" + pollLink.ownerId + "_" + pollLink.Id);
+                break;
+
+            case AbsLink.WALL_COMMENT_THREAD:
+                WallCommentThreadLink wallCommentThreadLink = (WallCommentThreadLink) link;
+
+                Commented commentedThread = new Commented(wallCommentThreadLink.getPostId(), wallCommentThreadLink.getOwnerId(), CommentedType.POST, null);
+                PlaceFactory.getCommentsThreadPlace(accountId, commentedThread, wallCommentThreadLink.getCommentId(), wallCommentThreadLink.getThreadId()).tryOpenWith(activity);
                 break;
 
             case AbsLink.WALL_COMMENT:

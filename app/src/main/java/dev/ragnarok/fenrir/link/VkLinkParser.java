@@ -30,6 +30,7 @@ import dev.ragnarok.fenrir.link.types.PollLink;
 import dev.ragnarok.fenrir.link.types.TopicLink;
 import dev.ragnarok.fenrir.link.types.VideoLink;
 import dev.ragnarok.fenrir.link.types.WallCommentLink;
+import dev.ragnarok.fenrir.link.types.WallCommentThreadLink;
 import dev.ragnarok.fenrir.link.types.WallLink;
 import dev.ragnarok.fenrir.link.types.WallPostLink;
 import dev.ragnarok.fenrir.model.Peer;
@@ -65,6 +66,7 @@ public class VkLinkParser {
 
     //vk.com/wall-2345345_7834545?reply=15345346
     private static final Pattern PATTERN_WALL_POST_COMMENT = Pattern.compile("vk\\.com/wall(-?\\d*)_(\\d*)\\?reply=(\\d*)");
+    private static final Pattern PATTERN_WALL_POST_COMMENT_THREAD = Pattern.compile("vk\\.com/wall(-?\\d*)_(\\d*)\\?reply=(\\d*)&thread=(\\d*)");
     private static final Pattern PATTERN_BOARD = Pattern.compile("vk\\.com/board(\\d+)");
     private static final Pattern PATTERN_FEED_SEARCH = Pattern.compile("vk\\.com/feed\\?q=([^&]*)&section=search");
     private static final Pattern PATTERN_FENRIR_TRACK = Pattern.compile("vk\\.com/audio/(-?\\d*)_(\\d*)"); //+
@@ -87,7 +89,12 @@ public class VkLinkParser {
             return null;
         }
 
-        AbsLink vkLink = parseWallCommentLink(string);
+        AbsLink vkLink = parseWallCommentThreadLink(string);
+        if (vkLink != null) {
+            return vkLink;
+        }
+
+        vkLink = parseWallCommentLink(string);
         if (vkLink != null) {
             return vkLink;
         }
@@ -574,6 +581,16 @@ public class VkLinkParser {
         }
 
         return null;
+    }
+
+    private static AbsLink parseWallCommentThreadLink(String string) {
+        Matcher matcher = PATTERN_WALL_POST_COMMENT_THREAD.matcher(string);
+        if (!matcher.find()) {
+            return null;
+        }
+
+        WallCommentThreadLink link = new WallCommentThreadLink(parseInt(matcher.group(1)), parseInt(matcher.group(2)), parseInt(matcher.group(3)), parseInt(matcher.group(4)));
+        return link.isValid() ? link : null;
     }
 
     private static AbsLink parseWallCommentLink(String string) {

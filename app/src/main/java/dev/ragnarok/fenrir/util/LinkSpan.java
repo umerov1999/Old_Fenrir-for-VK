@@ -32,6 +32,10 @@ public class LinkSpan extends ClickableSpan {
 
     @Override
     public void onClick(@NonNull View widget) {
+        if (Settings.get().other().is_notification_force_link()) {
+            LinkHelper.openUrl((Activity) context, Settings.get().accounts().getCurrent(), link);
+            return;
+        }
         ModalBottomSheetDialogFragment.Builder menus = new ModalBottomSheetDialogFragment.Builder();
         menus.add(new OptionRequest(R.id.button_ok, context.getString(R.string.open), R.drawable.web));
         menus.add(new OptionRequest(R.id.button_cancel, context.getString(R.string.copy_simple), R.drawable.content_copy));

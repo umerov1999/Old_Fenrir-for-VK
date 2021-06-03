@@ -286,10 +286,11 @@ public class AudioInteractor implements IAudioInteractor {
     }
 
     @Override
-    public Completable sendStartEvent(int accountId, String uuid, String audio_id) {
+    public Completable trackEvents(int accountId, @NonNull Audio audio) {
+        String events = String.format("[{\"e\":\"audio_play\",\"audio_id\":\"%s\",\"source\":\"%s\",\"uuid\":%s,\"duration\":%d,\"start_time\":%d}]", audio.getOwnerId() + "_" + audio.getId(), "my", Long.valueOf(System.nanoTime()), audio.getDuration(), Long.valueOf(System.currentTimeMillis() / 1000));
         return networker.vkDefault(accountId)
                 .audio()
-                .sendStartEvent(uuid, audio_id)
+                .trackEvents(events)
                 .ignoreElement();
     }
 

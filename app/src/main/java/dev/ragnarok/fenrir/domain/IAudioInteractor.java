@@ -74,7 +74,7 @@ public interface IAudioInteractor {
 
     Single<Integer> reorder(int accountId, int ownerId, int audio_id, Integer before, Integer after);
 
-    Completable sendStartEvent(int accountId, String uuid, String audio_id);
+    Completable trackEvents(int accountId, @NonNull Audio audio);
 
     Single<List<AudioCatalog>> getCatalog(int accountId, String artist_id, String query);
 

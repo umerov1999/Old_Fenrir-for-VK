@@ -18,7 +18,6 @@ import dev.ragnarok.fenrir.api.model.VkApiArtist;
 import dev.ragnarok.fenrir.api.model.VkApiLyrics;
 import dev.ragnarok.fenrir.api.model.response.AddToPlaylistResponse;
 import dev.ragnarok.fenrir.api.model.response.CatalogResponse;
-import dev.ragnarok.fenrir.api.model.response.SendStartEventResponse;
 import dev.ragnarok.fenrir.api.model.server.VkApiAudioUploadServer;
 import dev.ragnarok.fenrir.api.services.IAudioService;
 import dev.ragnarok.fenrir.model.Audio;
@@ -142,10 +141,10 @@ class AudioApi extends AbsApi implements IAudioApi {
     }
 
     @Override
-    public Single<SendStartEventResponse> sendStartEvent(String uuid, String audio_id) {
+    public Single<Integer> trackEvents(String events) {
         return provideService(IAudioService.class)
                 .flatMap(service -> service
-                        .sendStartEvent(uuid, audio_id)
+                        .trackEvents(events)
                         .map(extractResponseWithErrorHandling()));
     }
 

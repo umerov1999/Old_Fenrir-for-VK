@@ -16,7 +16,6 @@ import dev.ragnarok.fenrir.api.model.VkApiArtist;
 import dev.ragnarok.fenrir.api.model.VkApiLyrics;
 import dev.ragnarok.fenrir.api.model.response.AddToPlaylistResponse;
 import dev.ragnarok.fenrir.api.model.response.CatalogResponse;
-import dev.ragnarok.fenrir.api.model.response.SendStartEventResponse;
 import dev.ragnarok.fenrir.api.model.server.VkApiAudioUploadServer;
 import dev.ragnarok.fenrir.model.Audio;
 import io.reactivex.rxjava3.core.Single;
@@ -66,7 +65,7 @@ public interface IAudioApi {
     Single<Integer> reorder(int ownerId, int audio_id, Integer before, Integer after);
 
     @CheckResult
-    Single<SendStartEventResponse> sendStartEvent(String uuid, String audio_id);
+    Single<Integer> trackEvents(String events);
 
     @CheckResult
     Single<Items<VKApiAudio>> get(Integer playlist_id, Integer ownerId,

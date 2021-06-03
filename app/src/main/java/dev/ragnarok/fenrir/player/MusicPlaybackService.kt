@@ -919,10 +919,9 @@ class MusicPlaybackService : Service() {
             val accountId = Settings.get().accounts().current
             if (!Utils.isHiddenAccount(accountId) || !audio.isLocalServer || !audio.isLocal) {
                 compositeDisposable.add(
-                    audioInteractor.sendStartEvent(
+                    audioInteractor.trackEvents(
                         accountId,
-                        Utils.getDeviceId(mService.get()),
-                        audio.ownerId.toString() + "_" + audio.id
+                        audio
                     )
                         .fromIOToMain()
                         .subscribe(RxUtils.dummy(), RxUtils.ignore())

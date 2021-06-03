@@ -289,6 +289,11 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public boolean is_notification_force_link() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("notification_force_link", false);
+    }
+
+    @Override
     public boolean isEnable_show_audio_top() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("show_audio_top", false);
     }

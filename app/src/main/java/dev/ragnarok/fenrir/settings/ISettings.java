@@ -129,6 +129,8 @@ public interface ISettings {
 
         boolean is_side_navigation();
 
+        boolean is_notification_force_link();
+
         boolean isEnable_show_audio_top();
 
         boolean isUse_internal_downloader();

@@ -1565,4 +1565,5 @@
     <string name="player_background">Настройка фона плеера</string>
     <string name="do_report">Отправить жалобу?</string>
     <string name="full_data">Полностью</string>
+    <string name="notification_force_link">Открывать ссылки сразу в уведомлениях</string>
 </resources>

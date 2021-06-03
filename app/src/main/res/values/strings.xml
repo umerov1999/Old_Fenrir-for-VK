@@ -1741,4 +1741,5 @@
     <string name="player_background">Player background cover settings</string>
     <string name="do_report">Send report?</string>
     <string name="full_data">Full</string>
+    <string name="notification_force_link">Force open link in notification page</string>
 </resources>
