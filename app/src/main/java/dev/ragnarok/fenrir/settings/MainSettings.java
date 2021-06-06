@@ -129,9 +129,9 @@ class MainSettings implements ISettings.IMainSettings {
     @PhotoSize
     private int restorePhotoPreviewSize() {
         try {
-            return Integer.parseInt(getDefaultPreferences().getString("photo_preview_size", String.valueOf(PhotoSize.X)));
+            return Integer.parseInt(getDefaultPreferences().getString("photo_preview_size", String.valueOf(PhotoSize.Y)));
         } catch (Exception e) {
-            return PhotoSize.X;
+            return PhotoSize.Y;
         }
     }
 

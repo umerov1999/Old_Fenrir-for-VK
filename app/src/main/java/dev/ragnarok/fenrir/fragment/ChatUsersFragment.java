@@ -171,6 +171,11 @@ public class ChatUsersFragment extends BaseMvpFragment<ChatMembersPresenter, ICh
         requestAddUser.launch(intent);
     }
 
+    @Override
+    public void setIsOwner(boolean isOwner) {
+        mAdapter.setIsOwner(isOwner);
+    }
+
     @NonNull
     @Override
     public IPresenterFactory<ChatMembersPresenter> getPresenterFactory(@Nullable Bundle saveInstanceState) {
@@ -184,5 +189,10 @@ public class ChatUsersFragment extends BaseMvpFragment<ChatMembersPresenter, ICh
     @Override
     public void onUserClick(AppChatUser user) {
         callPresenter(p -> p.fireUserClick(user));
+    }
+
+    @Override
+    public void onAdminToggleClick(boolean isAdmin, int ownerId) {
+        callPresenter(p -> p.fireAdminToggleClick(isAdmin, ownerId));
     }
 }

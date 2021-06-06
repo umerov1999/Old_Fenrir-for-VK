@@ -72,6 +72,8 @@ public class PeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private void bindCommunityHolder(CommunityHolder holder, Community community) {
         holder.tvName.setText(community.getName());
+        holder.tvName.setTextColor(Utils.getVerifiedColor(mContext, community.isVerified()));
+        holder.ivVerified.setVisibility(community.isVerified() ? View.VISIBLE : View.GONE);
         String status = "@" + community.getScreenName();
         holder.tvStatus.setText(status);
 
@@ -90,11 +92,11 @@ public class PeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private void bindUserHolder(PeopleHolder holder, User user) {
         holder.name.setText(user.getFullName());
-        holder.name.setTextColor(Utils.getVerifiedColor(mContext, user.isVerified()));
 
         holder.subtitle.setText(UserInfoResolveUtil.getUserActivityLine(mContext, user, true));
         holder.subtitle.setTextColor(user.isOnline() ? CurrentTheme.getColorPrimary(mContext) : STATUS_COLOR_OFFLINE);
 
+        holder.name.setTextColor(Utils.getVerifiedColor(mContext, user.isVerified()));
         holder.ivVerified.setVisibility(user.isVerified() ? View.VISIBLE : View.GONE);
         holder.blacklisted.setVisibility(user.getBlacklisted() ? View.VISIBLE : View.GONE);
 
@@ -157,24 +159,26 @@ public class PeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private final TextView tvName;
         private final TextView tvStatus;
         private final ImageView ivAvatar;
+        private final ImageView ivVerified;
 
         CommunityHolder(View root) {
             super(root);
             tvName = root.findViewById(R.id.item_group_name);
             tvStatus = root.findViewById(R.id.item_group_status);
             ivAvatar = root.findViewById(R.id.item_group_avatar);
+            ivVerified = itemView.findViewById(R.id.item_verified);
         }
     }
 
     private class PeopleHolder extends RecyclerView.ViewHolder {
 
-        final TextView name;
-        final TextView subtitle;
-        final ImageView avatar;
-        final ImageView online;
-        final ImageView blacklisted;
-        final ImageView ivVerified;
-        final ViewGroup avatarRoot;
+        private final TextView name;
+        private final TextView subtitle;
+        private final ImageView avatar;
+        private final ImageView online;
+        private final ImageView blacklisted;
+        private final ImageView ivVerified;
+        private final ViewGroup avatarRoot;
 
         PeopleHolder(View itemView) {
             super(itemView);

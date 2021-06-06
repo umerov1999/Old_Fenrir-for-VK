@@ -835,6 +835,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 " [" + GroupColumns.NAME + "] TEXT, " +
                 " [" + GroupColumns.SCREEN_NAME + "] TEXT, " +
                 " [" + GroupColumns.IS_CLOSED + "] INTEGER, " +
+                " [" + GroupColumns.IS_VERIFIED + "] BOOLEAN, " +
                 " [" + GroupColumns.IS_ADMIN + "] BOOLEAN, " +
                 " [" + GroupColumns.ADMIN_LEVEL + "] INTEGER, " +
                 " [" + GroupColumns.IS_MEMBER + "] BOOLEAN, " +

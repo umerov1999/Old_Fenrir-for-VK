@@ -22,4 +22,6 @@ public interface IChatMembersView extends IAccountDependencyView, IMvpView, IErr
     void displayRefreshing(boolean refreshing);
 
     void startSelectUsersActivity(int accountId);
+
+    void setIsOwner(boolean isOwner);
 }

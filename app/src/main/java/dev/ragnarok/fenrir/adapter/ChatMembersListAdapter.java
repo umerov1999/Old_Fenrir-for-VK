@@ -2,6 +2,7 @@ package dev.ragnarok.fenrir.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import dev.ragnarok.fenrir.model.User;
 import dev.ragnarok.fenrir.model.UserPlatform;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
+import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
@@ -36,11 +38,17 @@ public class ChatMembersListAdapter extends RecyclerView.Adapter<ChatMembersList
     private final int paddingForFirstLast;
     private List<AppChatUser> data;
     private ActionListener actionListener;
+    private RecyclerView recyclerView;
+    private boolean isOwner;
 
     public ChatMembersListAdapter(Context context, List<AppChatUser> users) {
         data = users;
         transformation = CurrentTheme.createTransformationForAvatar();
         paddingForFirstLast = Utils.is600dp(context) ? (int) Utils.dpToPx(16, context) : 0;
+    }
+
+    public void setIsOwner(boolean isOwner) {
+        this.isOwner = isOwner;
     }
 
     @NonNull
@@ -91,12 +99,31 @@ public class ChatMembersListAdapter extends RecyclerView.Adapter<ChatMembersList
         }
 
         holder.tvName.setText(user.getFullName());
-        boolean isCreator = user.getOwnerId() == item.getInvitedBy();
 
-        if (isCreator) {
-            holder.tvSubline.setText(R.string.creator_of_conversation);
+        if (item.isOwner()) {
+            holder.tvInvitedBy.setVisibility(View.GONE);
+            holder.tvAdmin.setVisibility(View.VISIBLE);
+            holder.tvAdmin.setText(R.string.creator_of_conversation);
+            holder.tvInvitedDate.setVisibility(View.GONE);
+        } else if (item.isAdmin()) {
+            holder.tvAdmin.setVisibility(View.VISIBLE);
+            holder.tvAdmin.setText(R.string.role_administrator);
+            holder.tvInvitedBy.setVisibility(View.VISIBLE);
+            holder.tvInvitedBy.setText(context.getString(R.string.invited_by, item.getInviter().getFullName()));
+            if (item.getJoin_date() > 0) {
+                holder.tvInvitedDate.setText(AppTextUtils.getDateFromUnixTime(context, item.getJoin_date()));
+            } else {
+                holder.tvInvitedDate.setVisibility(View.GONE);
+            }
         } else {
-            holder.tvSubline.setText(context.getString(R.string.invited_by, item.getInviter().getFullName()));
+            holder.tvInvitedBy.setVisibility(View.VISIBLE);
+            holder.tvInvitedBy.setText(context.getString(R.string.invited_by, item.getInviter().getFullName()));
+            holder.tvAdmin.setVisibility(View.GONE);
+            if (item.getJoin_date() > 0) {
+                holder.tvInvitedDate.setText(AppTextUtils.getDateFromUnixTime(context, item.getJoin_date()));
+            } else {
+                holder.tvInvitedDate.setVisibility(View.GONE);
+            }
         }
 
         if (nonEmpty(user.getDomain())) {
@@ -127,6 +154,18 @@ public class ChatMembersListAdapter extends RecyclerView.Adapter<ChatMembersList
     }
 
     @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        this.recyclerView = recyclerView;
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        this.recyclerView = null;
+    }
+
+    @Override
     public int getItemCount() {
         return data.size();
     }
@@ -144,25 +183,46 @@ public class ChatMembersListAdapter extends RecyclerView.Adapter<ChatMembersList
         void onRemoveClick(AppChatUser user);
 
         void onUserClick(AppChatUser user);
+
+        void onAdminToggleClick(boolean isAdmin, int ownerId);
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
         final OnlineView vOnline;
         final ImageView ivAvatar;
         final TextView tvName;
         final TextView tvDomain;
-        final TextView tvSubline;
+        final TextView tvInvitedBy;
+        final TextView tvInvitedDate;
+        final TextView tvAdmin;
         final View vRemove;
 
         ViewHolder(View root) {
             super(root);
+            itemView.setOnCreateContextMenuListener(this);
             vOnline = root.findViewById(R.id.item_user_online);
             ivAvatar = root.findViewById(R.id.item_user_avatar);
             tvName = root.findViewById(R.id.item_user_name);
-            tvSubline = root.findViewById(R.id.item_user_invited_by);
+            tvInvitedBy = root.findViewById(R.id.item_user_invited_by);
             vRemove = root.findViewById(R.id.item_user_remove);
             tvDomain = root.findViewById(R.id.item_user_domain);
+            tvInvitedDate = root.findViewById(R.id.item_user_invited_time);
+            tvAdmin = root.findViewById(R.id.item_user_admin);
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            int position = recyclerView.getChildAdapterPosition(v);
+            AppChatUser item = data.get(position);
+            if (isOwner && !item.isOwner()) {
+                menu.add(0, v.getId(), 0, item.isAdmin() ? R.string.disrate : R.string.assign_administrator).setOnMenuItemClickListener(it -> {
+                    if (actionListener != null) {
+                        actionListener.onAdminToggleClick(!item.isAdmin(), item.getId());
+                    }
+                    return true;
+                });
+            }
         }
     }
 }

@@ -281,6 +281,25 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
         callView(v -> showError(v, getCauseIfRuntime(throwable)));
     }
 
+    private boolean isExist(@NonNull Post post) {
+        for (Post i : wall) {
+            if (i.getOwnerId() == post.getOwnerId() && i.getVkid() == post.getVkid())
+                return true;
+        }
+        return false;
+    }
+
+    private int addAll(@NonNull List<Post> posts) {
+        int s = 0;
+        for (Post i : posts) {
+            if (!isExist(i)) {
+                wall.add(i);
+                s++;
+            }
+        }
+        return s;
+    }
+
     private void onActualDataReceived(int nextOffset, List<Post> posts, boolean append) {
         cacheCompositeDisposable.clear();
 
@@ -291,11 +310,11 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
         if (nonEmpty(posts)) {
             if (append) {
                 int sizeBefore = wall.size();
-                wall.addAll(posts);
-                callView(view -> view.notifyWallDataAdded(sizeBefore, posts.size()));
+                int sz = addAll(posts);
+                callView(view -> view.notifyWallDataAdded(sizeBefore, sz));
             } else {
                 wall.clear();
-                wall.addAll(posts);
+                addAll(posts);
                 callView(IWallView::notifyWallDataSetChanged);
             }
         }

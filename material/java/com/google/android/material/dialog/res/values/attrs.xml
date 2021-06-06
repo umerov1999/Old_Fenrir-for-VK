@@ -25,7 +25,6 @@
     <attr name="materialAlertDialogTitleIconStyle" format="reference"/>
     <attr name="materialAlertDialogTitleTextStyle" format="reference"/>
     <attr name="materialAlertDialogBodyTextStyle" format="reference"/>
-    <attr name="materialAlertDialogButtonSpacerVisibility" format="integer"/>
   </declare-styleable>
 
   <declare-styleable name="MaterialAlertDialog">

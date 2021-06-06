@@ -30,6 +30,7 @@ public class ChatMembersPresenter extends AccountDependencyPresenter<IChatMember
 
     private final List<AppChatUser> users;
     private boolean refreshing;
+    private boolean isOwner;
 
     public ChatMembersPresenter(int accountId, int chatId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
@@ -81,6 +82,14 @@ public class ChatMembersPresenter extends AccountDependencyPresenter<IChatMember
         this.users.clear();
         this.users.addAll(users);
 
+        isOwner = false;
+        for (AppChatUser i : users) {
+            if (i.getId() == getAccountId()) {
+                isOwner = i.isOwner();
+                break;
+            }
+        }
+        callView(v -> v.setIsOwner(isOwner));
         callView(IChatMembersView::notifyDataSetChanged);
     }
 
@@ -141,5 +150,11 @@ public class ChatMembersPresenter extends AccountDependencyPresenter<IChatMember
 
     public void fireUserClick(AppChatUser user) {
         callView(v -> v.openUserWall(getAccountId(), user.getMember()));
+    }
+
+    public void fireAdminToggleClick(boolean isAdmin, int ownerId) {
+        appendDisposable(messagesInteractor.setMemberRole(getAccountId(), chatId, ownerId, isAdmin)
+                .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                .subscribe(this::fireRefresh, this::onChatUsersAddError));
     }
 }

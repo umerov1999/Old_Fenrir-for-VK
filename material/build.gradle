@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 
-//1.4.0-beta01
+//1.4.0-rc01
 
 def srcDirs = [
   'com/google/android/material/animation',
@@ -29,7 +29,6 @@ def srcDirs = [
   'com/google/android/material/internal',
   'com/google/android/material/math',
   'com/google/android/material/menu',
-  'com/google/android/material/motion',
   'com/google/android/material/navigation',
   'com/google/android/material/navigationrail',
   'com/google/android/material/progressindicator',

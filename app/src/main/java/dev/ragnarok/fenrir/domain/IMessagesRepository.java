@@ -154,6 +154,8 @@ public interface IMessagesRepository {
 
     Single<Integer> recogniseAudioMessage(int accountId, Integer message_id, String audio_message_id);
 
+    Completable setMemberRole(int accountId, int chat_id, int member_id, boolean isAdmin);
+
     Completable markAsRead(int accountId, int peerId, int toId);
 
     Completable markAsImportant(int accountId, int peerId, @NonNull Collection<Integer> ids, Integer important);

@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import dev.ragnarok.fenrir.api.model.ChatUserDto;
 import dev.ragnarok.fenrir.api.model.IAttachmentToken;
 import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiChat;
@@ -16,6 +15,7 @@ import dev.ragnarok.fenrir.api.model.VkApiJsonString;
 import dev.ragnarok.fenrir.api.model.VkApiLongpollServer;
 import dev.ragnarok.fenrir.api.model.response.AttachmentsHistoryResponse;
 import dev.ragnarok.fenrir.api.model.response.ConversationDeleteResult;
+import dev.ragnarok.fenrir.api.model.response.ConversationMembersResponse;
 import dev.ragnarok.fenrir.api.model.response.ConversationsResponse;
 import dev.ragnarok.fenrir.api.model.response.DialogsResponse;
 import dev.ragnarok.fenrir.api.model.response.ItemsProfilesGroupsResponse;
@@ -40,10 +40,10 @@ public interface IMessagesApi {
     Single<Boolean> addChatUser(int chatId, int userId);
 
     @CheckResult
-    Single<Map<Integer, List<ChatUserDto>>> getChatUsers(Collection<Integer> chatIds, String fields, String nameCase);
+    Single<List<VKApiChat>> getChat(Integer chatId, Collection<Integer> chatIds, String fields, String name_case);
 
     @CheckResult
-    Single<List<VKApiChat>> getChat(Integer chatId, Collection<Integer> chatIds, String fields, String name_case);
+    Single<ConversationMembersResponse> getConversationMembers(Integer peer_id, String fields);
 
     @CheckResult
     Single<Boolean> editChat(int chatId, String title);
@@ -124,4 +124,7 @@ public interface IMessagesApi {
 
     @CheckResult
     Single<Integer> recogniseAudioMessage(Integer message_id, String audio_message_id);
+
+    @CheckResult
+    Single<Integer> setMemberRole(Integer peer_id, Integer member_id, String role);
 }

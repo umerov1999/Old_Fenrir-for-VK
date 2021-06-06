@@ -147,10 +147,10 @@ class GroupsApi extends AbsApi implements IGroupsApi {
     }
 
     @Override
-    public Single<Items<VKApiCommunity>> search(String query, String type, Integer countryId, Integer cityId, Boolean future, Boolean market, Integer sort, Integer offset, Integer count) {
+    public Single<Items<VKApiCommunity>> search(String query, String type, String filter, Integer countryId, Integer cityId, Boolean future, Boolean market, Integer sort, Integer offset, Integer count) {
         return provideService(IGroupsService.class, TokenType.USER)
                 .flatMap(service -> service
-                        .search(query, type, countryId, cityId, integerFromBoolean(future),
+                        .search(query, type, filter, countryId, cityId, integerFromBoolean(future),
                                 integerFromBoolean(market), sort, offset, count)
                         .map(extractResponseWithErrorHandling()));
     }

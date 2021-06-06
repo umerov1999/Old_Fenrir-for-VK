@@ -44,6 +44,7 @@ public class RelationshipColumns implements BaseColumns {
     public static final String FOREIGN_SUBJECT_GROUP_PHOTO_100 = "subject_group_photo_100";
     public static final String FOREIGN_SUBJECT_GROUP_PHOTO_200 = "subject_group_photo_200";
     public static final String FOREIGN_SUBJECT_GROUP_IS_CLOSED = "subject_group_is_closed";
+    public static final String FOREIGN_SUBJECT_GROUP_IS_VERIFIED = "subject_group_is_verified";
     public static final String FOREIGN_SUBJECT_GROUP_IS_ADMIN = "subject_group_is_admin";
     public static final String FOREIGN_SUBJECT_GROUP_ADMIN_LEVEL = "subject_group_admin_level";
     public static final String FOREIGN_SUBJECT_GROUP_IS_MEMBER = "subject_group_is_member";

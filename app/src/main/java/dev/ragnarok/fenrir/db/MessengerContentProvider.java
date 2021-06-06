@@ -367,6 +367,7 @@ public class MessengerContentProvider extends ContentProvider {
         sRelativeshipProjectionMap.put(RelationshipColumns.FOREIGN_SUBJECT_GROUP_PHOTO_100, GroupColumns.FULL_PHOTO_100 + " AS " + RelationshipColumns.FOREIGN_SUBJECT_GROUP_PHOTO_100);
         sRelativeshipProjectionMap.put(RelationshipColumns.FOREIGN_SUBJECT_GROUP_PHOTO_200, GroupColumns.FULL_PHOTO_200 + " AS " + RelationshipColumns.FOREIGN_SUBJECT_GROUP_PHOTO_200);
         sRelativeshipProjectionMap.put(RelationshipColumns.FOREIGN_SUBJECT_GROUP_IS_CLOSED, GroupColumns.FULL_IS_CLOSED + " AS " + RelationshipColumns.FOREIGN_SUBJECT_GROUP_IS_CLOSED);
+        sRelativeshipProjectionMap.put(RelationshipColumns.FOREIGN_SUBJECT_GROUP_IS_VERIFIED, GroupColumns.FULL_IS_VERIFIED + " AS " + RelationshipColumns.FOREIGN_SUBJECT_GROUP_IS_VERIFIED);
         sRelativeshipProjectionMap.put(RelationshipColumns.FOREIGN_SUBJECT_GROUP_IS_ADMIN, GroupColumns.FULL_IS_ADMIN + " AS " + RelationshipColumns.FOREIGN_SUBJECT_GROUP_IS_ADMIN);
         sRelativeshipProjectionMap.put(RelationshipColumns.FOREIGN_SUBJECT_GROUP_ADMIN_LEVEL, GroupColumns.FULL_ADMIN_LEVEL + " AS " + RelationshipColumns.FOREIGN_SUBJECT_GROUP_ADMIN_LEVEL);
         sRelativeshipProjectionMap.put(RelationshipColumns.FOREIGN_SUBJECT_GROUP_IS_MEMBER, GroupColumns.FULL_IS_MEMBER + " AS " + RelationshipColumns.FOREIGN_SUBJECT_GROUP_IS_MEMBER);
@@ -563,6 +564,7 @@ public class MessengerContentProvider extends ContentProvider {
         sGroupsProjectionMap.put(GroupColumns.NAME, GroupColumns.FULL_NAME);
         sGroupsProjectionMap.put(GroupColumns.SCREEN_NAME, GroupColumns.FULL_SCREEN_NAME);
         sGroupsProjectionMap.put(GroupColumns.IS_CLOSED, GroupColumns.FULL_IS_CLOSED);
+        sGroupsProjectionMap.put(GroupColumns.IS_VERIFIED, GroupColumns.FULL_IS_VERIFIED);
         sGroupsProjectionMap.put(GroupColumns.IS_ADMIN, GroupColumns.FULL_IS_ADMIN);
         sGroupsProjectionMap.put(GroupColumns.ADMIN_LEVEL, GroupColumns.FULL_ADMIN_LEVEL);
         sGroupsProjectionMap.put(GroupColumns.IS_MEMBER, GroupColumns.FULL_IS_MEMBER);

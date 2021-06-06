@@ -7,7 +7,6 @@ import java.util.Map;
 import dev.ragnarok.fenrir.api.IServiceProvider;
 import dev.ragnarok.fenrir.api.TokenType;
 import dev.ragnarok.fenrir.api.interfaces.IMessagesApi;
-import dev.ragnarok.fenrir.api.model.ChatUserDto;
 import dev.ragnarok.fenrir.api.model.IAttachmentToken;
 import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiChat;
@@ -17,6 +16,7 @@ import dev.ragnarok.fenrir.api.model.VkApiJsonString;
 import dev.ragnarok.fenrir.api.model.VkApiLongpollServer;
 import dev.ragnarok.fenrir.api.model.response.AttachmentsHistoryResponse;
 import dev.ragnarok.fenrir.api.model.response.ConversationDeleteResult;
+import dev.ragnarok.fenrir.api.model.response.ConversationMembersResponse;
 import dev.ragnarok.fenrir.api.model.response.ConversationsResponse;
 import dev.ragnarok.fenrir.api.model.response.DialogsResponse;
 import dev.ragnarok.fenrir.api.model.response.ItemsProfilesGroupsResponse;
@@ -78,20 +78,20 @@ class MessagesApi extends AbsApi implements IMessagesApi {
     }
 
     @Override
-    public Single<Map<Integer, List<ChatUserDto>>> getChatUsers(Collection<Integer> chatIds, String fields, String nameCase) {
-        return serviceRx(TokenType.USER)
-                .flatMap(service -> service
-                        .getChatUsers(join(chatIds, ","), fields, nameCase)
-                        .map(extractResponseWithErrorHandling()));
-    }
-
-    @Override
     public Single<List<VKApiChat>> getChat(Integer chatId, Collection<Integer> chatIds, String fields, String nameCase) {
         return serviceRx(TokenType.USER)
                 .flatMap(service -> service
                         .getChat(chatId, join(chatIds, ","), fields, nameCase)
                         .map(extractResponseWithErrorHandling())
                         .map(response -> listEmptyIfNull(response.chats)));
+    }
+
+    @Override
+    public Single<ConversationMembersResponse> getConversationMembers(Integer peer_id, String fields) {
+        return serviceRx(TokenType.USER, TokenType.COMMUNITY)
+                .flatMap(service -> service
+                        .getConversationMembers(peer_id, fields)
+                        .map(extractResponseWithErrorHandling()));
     }
 
     @Override
@@ -113,9 +113,17 @@ class MessagesApi extends AbsApi implements IMessagesApi {
 
     @Override
     public Single<Integer> recogniseAudioMessage(Integer message_id, String audio_message_id) {
-        return serviceRx(TokenType.USER)
+        return serviceRx(TokenType.USER, TokenType.COMMUNITY)
                 .flatMap(service -> service
                         .recogniseAudioMessage(message_id, audio_message_id)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<Integer> setMemberRole(Integer peer_id, Integer member_id, String role) {
+        return serviceRx(TokenType.USER, TokenType.COMMUNITY)
+                .flatMap(service -> service
+                        .setMemberRole(peer_id, member_id, role)
                         .map(extractResponseWithErrorHandling()));
     }
 

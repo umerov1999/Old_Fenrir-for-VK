@@ -3,6 +3,7 @@ package dev.ragnarok.fenrir.fragment;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -107,6 +108,8 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
 
         String screenName = nonEmpty(community.getScreenName()) ? "@" + community.getScreenName() : null;
         mHeaderHolder.tvScreenName.setText(screenName);
+        mHeaderHolder.tvName.setTextColor(Utils.getVerifiedColor(requireActivity(), community.isVerified()));
+        mHeaderHolder.tvScreenName.setTextColor(Utils.getVerifiedColor(requireActivity(), community.isVerified()));
 
         if (!details.isCanMessage())
             mHeaderHolder.fabMessage.setImageResource(R.drawable.close);
@@ -127,6 +130,15 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
             }
             PlaceFactory.getSingleURLPhotoPlace(cmt.getOriginalAvatar(), cmt.getFullName(), "club" + Math.abs(cmt.getId())).tryOpenWith(requireActivity());
         });
+        if (community.isVerified()) {
+            String cur = Settings.get().ui().getMainThemeKey();
+            if ("fire".equals(cur) || "fire_gray".equals(cur) || "yellow_violet".equals(cur)) {
+                mHeaderHolder.tvName.setTextColor(Color.parseColor("#df9d00"));
+                mHeaderHolder.tvScreenName.setTextColor(Color.parseColor("#df9d00"));
+                Utils.setBackgroundTint(mHeaderHolder.ivVerified, Color.parseColor("#df9d00"));
+            }
+        }
+        mHeaderHolder.ivVerified.setVisibility(community.isVerified() ? View.VISIBLE : View.GONE);
     }
 
     private void displayCommunityCover(String resource) {
@@ -389,6 +401,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
     private class GroupHeaderHolder {
         final ImageView vgCover;
         final ImageView ivAvatar;
+        final ImageView ivVerified;
         final TextView tvName;
         final TextView tvStatus;
         final ImageView tvAudioStatus;
@@ -436,6 +449,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
 
             paganSymbol = root.findViewById(R.id.pagan_symbol);
             Runes = root.findViewById(R.id.runes_container);
+            ivVerified = root.findViewById(R.id.item_verified);
 
             RecyclerView filterList = root.findViewById(R.id.post_filter_recyclerview);
             filterList.setLayoutManager(new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false));

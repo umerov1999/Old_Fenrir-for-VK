@@ -30,7 +30,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.CollectionInfoCompat;
-import androidx.core.widget.TextViewCompat;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.view.menu.MenuItemImpl;
 import androidx.appcompat.view.menu.MenuPresenter;
@@ -57,8 +56,6 @@ import java.util.ArrayList;
 @RestrictTo(LIBRARY_GROUP)
 public class NavigationMenuPresenter implements MenuPresenter {
 
-  public static final int NO_TEXT_APPEARANCE_SET = 0;
-
   private static final String STATE_HIERARCHY = "android:menu:list";
   private static final String STATE_ADAPTER = "android:menu:adapter";
   private static final String STATE_HEADER = "android:menu:header";
@@ -73,9 +70,8 @@ public class NavigationMenuPresenter implements MenuPresenter {
   NavigationMenuAdapter adapter;
   LayoutInflater layoutInflater;
 
-  int subheaderTextAppearance = NO_TEXT_APPEARANCE_SET;
-  @Nullable ColorStateList subheaderColor;
-  int textAppearance = NO_TEXT_APPEARANCE_SET;
+  int textAppearance;
+  boolean textAppearanceSet;
   ColorStateList textColor;
   ColorStateList iconTintList;
   Drawable itemBackground;
@@ -249,16 +245,6 @@ public class NavigationMenuPresenter implements MenuPresenter {
     return headerLayout.getChildAt(index);
   }
 
-  public void setSubheaderColor(@Nullable ColorStateList subheaderColor) {
-    this.subheaderColor = subheaderColor;
-    updateMenuView(false);
-  }
-
-  public void setSubheaderTextAppearance(@StyleRes int resId) {
-    subheaderTextAppearance = resId;
-    updateMenuView(false);
-  }
-
   @Nullable
   public ColorStateList getItemTintList() {
     return iconTintList;
@@ -281,6 +267,7 @@ public class NavigationMenuPresenter implements MenuPresenter {
 
   public void setItemTextAppearance(@StyleRes int resId) {
     textAppearance = resId;
+    textAppearanceSet = true;
     updateMenuView(false);
   }
 
@@ -508,7 +495,7 @@ public class NavigationMenuPresenter implements MenuPresenter {
           {
             NavigationMenuItemView itemView = (NavigationMenuItemView) holder.itemView;
             itemView.setIconTintList(iconTintList);
-            if (textAppearance != NO_TEXT_APPEARANCE_SET) {
+            if (textAppearanceSet) {
               itemView.setTextAppearance(textAppearance);
             }
             if (textColor != null) {
@@ -533,12 +520,6 @@ public class NavigationMenuPresenter implements MenuPresenter {
             TextView subHeader = (TextView) holder.itemView;
             NavigationMenuTextItem item = (NavigationMenuTextItem) items.get(position);
             subHeader.setText(item.getMenuItem().getTitle());
-            if (subheaderTextAppearance != NO_TEXT_APPEARANCE_SET) {
-              TextViewCompat.setTextAppearance(subHeader, subheaderTextAppearance);
-            }
-            if (subheaderColor != null) {
-              subHeader.setTextColor(subheaderColor);
-            }
             break;
           }
         case VIEW_TYPE_SEPARATOR:

@@ -51,4 +51,8 @@ public abstract class Owner extends AbsModel {
     public String getFullName() {
         throw new UnsupportedOperationException();
     }
+
+    public boolean isVerified() {
+        throw new UnsupportedOperationException();
+    }
 }

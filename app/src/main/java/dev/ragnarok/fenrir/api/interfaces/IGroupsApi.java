@@ -53,7 +53,7 @@ public interface IGroupsApi {
                                         Integer count, String fields, String filter);
 
     @CheckResult
-    Single<Items<VKApiCommunity>> search(String query, String type, Integer countryId, Integer cityId,
+    Single<Items<VKApiCommunity>> search(String query, String type, String filter, Integer countryId, Integer cityId,
                                          Boolean future, Boolean market, Integer sort, Integer offset, Integer count);
 
     @CheckResult

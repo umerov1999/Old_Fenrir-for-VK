@@ -1742,4 +1742,6 @@
     <string name="do_report">Send report?</string>
     <string name="full_data">Full</string>
     <string name="notification_force_link">Force open link in notification page</string>
+    <string name="disrate">Disrate</string>
+    <string name="assign_administrator">Assign Administrator</string>
 </resources>

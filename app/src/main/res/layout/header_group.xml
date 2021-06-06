@@ -50,12 +50,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/header_group_avatar"
+                <FrameLayout
+                    android:id="@+id/fragment_group_avatar_container"
                     android:layout_width="@dimen/avatar_size_big"
-                    android:layout_height="@dimen/avatar_size_big"
-                    android:background="@drawable/sel_button_round_5_white"
-                    android:padding="1.5dp" />
+                    android:layout_height="@dimen/avatar_size_big">
+
+                    <ImageView
+                        android:id="@+id/header_group_avatar"
+                        android:layout_width="@dimen/avatar_size_big"
+                        android:layout_height="@dimen/avatar_size_big"
+                        android:background="@drawable/sel_button_round_5_white"
+                        android:padding="1.5dp" />
+
+                    <ImageView
+                        android:id="@+id/item_verified"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="top|end"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/sel_button_round_5_white"
+                        android:backgroundTint="#009900"
+                        android:backgroundTintMode="add"
+                        android:padding="4dp"
+                        android:src="@drawable/verified"
+                        android:visibility="gone"
+                        app:tint="@color/white" />
+
+                </FrameLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

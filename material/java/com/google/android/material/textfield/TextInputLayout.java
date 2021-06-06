@@ -81,8 +81,6 @@ import androidx.annotation.VisibleForTesting;
 import androidx.core.content.ContextCompat;
 import androidx.core.text.BidiFormatter;
 import androidx.customview.view.AbsSavedState;
-import androidx.transition.Fade;
-import androidx.transition.TransitionManager;
 import com.google.android.material.animation.AnimationUtils;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.internal.CheckableImageButton;
@@ -184,8 +182,6 @@ public class TextInputLayout extends LinearLayout {
 
   /** Duration for the label's scale up and down animations. */
   private static final int LABEL_SCALE_ANIMATION_DURATION = 167;
-  private static final long PLACEHOLDER_FADE_DURATION = 87;
-  private static final long PLACEHOLDER_START_DELAY = 67;
 
   private static final int INVALID_MAX_LENGTH = -1;
   private static final int NO_WIDTH = -1;
@@ -216,8 +212,6 @@ public class TextInputLayout extends LinearLayout {
   private TextView placeholderTextView;
   @Nullable private ColorStateList placeholderTextColor;
   private int placeholderTextAppearance;
-  @Nullable private Fade placeholderFadeIn;
-  @Nullable private Fade placeholderFadeOut;
 
   @Nullable private ColorStateList counterTextColor;
   @Nullable private ColorStateList counterOverflowTextColor;
@@ -1001,7 +995,8 @@ public class TextInputLayout extends LinearLayout {
               .getDimensionPixelSize(R.dimen.material_filled_edittext_font_2_0_padding_top),
           ViewCompat.getPaddingEnd(editText),
           getResources()
-              .getDimensionPixelSize(R.dimen.material_filled_edittext_font_2_0_padding_bottom));
+              .getDimensionPixelSize(
+                  R.dimen.material_filled_edittext_font_2_0_padding_bottom));
     } else if (MaterialResources.isFontScaleAtLeast1_3(getContext())) {
       ViewCompat.setPaddingRelative(
           editText,
@@ -1599,8 +1594,8 @@ public class TextInputLayout extends LinearLayout {
   }
 
   /**
-   * Sets the maximum width of the text field. The layout will be at most this dimension wide if its
-   * {@code layout_width} is set to {@code wrap_content}.
+   * Sets the maximum width of the text field. The layout will be at most this dimension wide if
+   * its {@code layout_width} is set to {@code wrap_content}.
    *
    * @param maxWidth The maximum width to be set
    * @attr ref com.google.android.material.R.styleable#TextInputLayout_android_maxWidth
@@ -1615,8 +1610,8 @@ public class TextInputLayout extends LinearLayout {
   }
 
   /**
-   * Sets the maximum width of the text field. The layout will be at most this dimension wide if its
-   * {@code layout_width} is set to {@code wrap_content}.
+   * Sets the maximum width of the text field. The layout will be at most this dimension wide if
+   * its {@code layout_width} is set to {@code wrap_content}.
    *
    * @param maxWidthId The id of the maximum width dimension resource to be set
    * @attr ref com.google.android.material.R.styleable#TextInputLayout_android_maxWidth
@@ -2276,11 +2271,6 @@ public class TextInputLayout extends LinearLayout {
       placeholderTextView = new AppCompatTextView(getContext());
       placeholderTextView.setId(R.id.textinput_placeholder);
 
-      placeholderFadeIn = createPlaceholderFadeTransition();
-      placeholderFadeIn.setStartDelay(PLACEHOLDER_START_DELAY);
-
-      placeholderFadeOut = createPlaceholderFadeTransition();
-
       ViewCompat.setAccessibilityLiveRegion(
           placeholderTextView, ViewCompat.ACCESSIBILITY_LIVE_REGION_POLITE);
 
@@ -2292,13 +2282,6 @@ public class TextInputLayout extends LinearLayout {
       placeholderTextView = null;
     }
     this.placeholderEnabled = placeholderEnabled;
-  }
-
-  private Fade createPlaceholderFadeTransition() {
-    Fade placeholderFadeTransition = new Fade();
-    placeholderFadeTransition.setDuration(PLACEHOLDER_FADE_DURATION);
-    placeholderFadeTransition.setInterpolator(AnimationUtils.LINEAR_INTERPOLATOR);
-    return placeholderFadeTransition;
   }
 
   private void updatePlaceholderText() {
@@ -2316,7 +2299,6 @@ public class TextInputLayout extends LinearLayout {
   private void showPlaceholderText() {
     if (placeholderTextView != null && placeholderEnabled) {
       placeholderTextView.setText(placeholderText);
-      TransitionManager.beginDelayedTransition(inputFrame, placeholderFadeIn);
       placeholderTextView.setVisibility(VISIBLE);
       placeholderTextView.bringToFront();
     }
@@ -2325,7 +2307,6 @@ public class TextInputLayout extends LinearLayout {
   private void hidePlaceholderText() {
     if (placeholderTextView != null && placeholderEnabled) {
       placeholderTextView.setText(null);
-      TransitionManager.beginDelayedTransition(inputFrame, placeholderFadeOut);
       placeholderTextView.setVisibility(INVISIBLE);
     }
   }
@@ -2856,7 +2837,7 @@ public class TextInputLayout extends LinearLayout {
       super(source, loader);
       error = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source);
       isEndIconChecked = (source.readInt() == 1);
-      hintText = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source);
+      hintText =  TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source);
       helperText = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source);
       placeholderText = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source);
     }
@@ -3015,8 +2996,8 @@ public class TextInputLayout extends LinearLayout {
   }
 
   /**
-   * Sets whether the hint should expand to occupy the input area when the text field is unpopulated
-   * and not focused.
+   * Sets whether the hint should expand to occupy the input area when the text field is
+   * unpopulated and not focused.
    *
    * @see #isExpandedHintEnabled()
    * @attr ref com.google.android.material.R.styleable#TextInputLayout_hintExpadedEnabled
@@ -4106,7 +4087,7 @@ public class TextInputLayout extends LinearLayout {
     ((CutoutDrawable) boxBackground).setCutout(cutoutBounds);
   }
 
-  /** If stroke changed width, cutout bounds need to be recalculated. **/
+  /** If stroke changed width, cutout bounds need to be recalculated.  **/
   private void updateCutout() {
     if (cutoutEnabled() && !hintExpanded && boxLabelCutoutHeight != boxStrokeWidthPx) {
       closeCutout();

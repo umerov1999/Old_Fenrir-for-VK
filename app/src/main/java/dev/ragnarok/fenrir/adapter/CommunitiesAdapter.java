@@ -22,6 +22,7 @@ import dev.ragnarok.fenrir.model.Community;
 import dev.ragnarok.fenrir.model.DataWrapper;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.util.Objects;
+import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 
 public class CommunitiesAdapter extends MultyDataAdapter<Community, CommunitiesAdapter.Holder> {
@@ -57,6 +58,8 @@ public class CommunitiesAdapter extends MultyDataAdapter<Community, CommunitiesA
         ViewUtils.displayAvatar(holder.ivAvatar, transformation, community.getMaxSquareAvatar(), Constants.PICASSO_TAG);
 
         holder.tvName.setText(community.getFullName());
+        holder.tvName.setTextColor(Utils.getVerifiedColor(context, community.isVerified()));
+        holder.ivVerified.setVisibility(community.isVerified() ? View.VISIBLE : View.GONE);
         holder.subtitle.setText(R.string.community);
 
         SelectionUtils.addSelectionProfileSupport(context, holder.avatar_root, community);
@@ -86,14 +89,15 @@ public class CommunitiesAdapter extends MultyDataAdapter<Community, CommunitiesA
 
     static class Holder extends RecyclerView.ViewHolder {
 
-        final ViewGroup avatar_root;
-        final View headerRoot;
-        final TextView headerTitle;
+        private final ViewGroup avatar_root;
+        private final View headerRoot;
+        private final TextView headerTitle;
 
-        final View contentRoot;
-        final TextView tvName;
-        final ImageView ivAvatar;
-        final TextView subtitle;
+        private final View contentRoot;
+        private final TextView tvName;
+        private final ImageView ivAvatar;
+        private final TextView subtitle;
+        private final ImageView ivVerified;
 
         Holder(View root) {
             super(root);
@@ -104,6 +108,7 @@ public class CommunitiesAdapter extends MultyDataAdapter<Community, CommunitiesA
             ivAvatar = root.findViewById(R.id.avatar);
             subtitle = root.findViewById(R.id.subtitle);
             avatar_root = itemView.findViewById(R.id.avatar_root);
+            ivVerified = itemView.findViewById(R.id.item_verified);
         }
     }
 }

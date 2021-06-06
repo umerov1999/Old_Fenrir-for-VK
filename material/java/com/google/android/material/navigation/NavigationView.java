@@ -165,23 +165,6 @@ public class NavigationView extends ScrimInsetsFrameLayout {
 
     maxWidth = a.getDimensionPixelSize(R.styleable.NavigationView_android_maxWidth, 0);
 
-    ColorStateList subheaderColor = null;
-    if (a.hasValue(R.styleable.NavigationView_subheaderColor)) {
-      subheaderColor = a.getColorStateList(R.styleable.NavigationView_subheaderColor);
-    }
-
-    int subheaderTextAppearance = NavigationMenuPresenter.NO_TEXT_APPEARANCE_SET;
-    if (a.hasValue(R.styleable.NavigationView_subheaderTextAppearance)) {
-      subheaderTextAppearance =
-          a.getResourceId(R.styleable.NavigationView_subheaderTextAppearance, 0);
-    }
-
-    if (subheaderTextAppearance == NavigationMenuPresenter.NO_TEXT_APPEARANCE_SET
-            && subheaderColor == null) {
-      // If there isn't a text appearance set, we'll use a default text color
-      subheaderColor = createDefaultColorStateList(android.R.attr.textColorSecondary);
-    }
-
     final ColorStateList itemIconTint;
     if (a.hasValue(R.styleable.NavigationView_itemIconTint)) {
       itemIconTint = a.getColorStateList(R.styleable.NavigationView_itemIconTint);
@@ -189,9 +172,11 @@ public class NavigationView extends ScrimInsetsFrameLayout {
       itemIconTint = createDefaultColorStateList(android.R.attr.textColorSecondary);
     }
 
-    int textAppearance = NavigationMenuPresenter.NO_TEXT_APPEARANCE_SET;
+    boolean textAppearanceSet = false;
+    int textAppearance = 0;
     if (a.hasValue(R.styleable.NavigationView_itemTextAppearance)) {
       textAppearance = a.getResourceId(R.styleable.NavigationView_itemTextAppearance, 0);
+      textAppearanceSet = true;
     }
 
     if (a.hasValue(R.styleable.NavigationView_itemIconSize)) {
@@ -203,7 +188,7 @@ public class NavigationView extends ScrimInsetsFrameLayout {
       itemTextColor = a.getColorStateList(R.styleable.NavigationView_itemTextColor);
     }
 
-    if (textAppearance == NavigationMenuPresenter.NO_TEXT_APPEARANCE_SET && itemTextColor == null) {
+    if (!textAppearanceSet && itemTextColor == null) {
       // If there isn't a text appearance set, we'll use a default text color
       itemTextColor = createDefaultColorStateList(android.R.attr.textColorPrimary);
     }
@@ -237,13 +222,9 @@ public class NavigationView extends ScrimInsetsFrameLayout {
         });
     presenter.setId(PRESENTER_NAVIGATION_VIEW_ID);
     presenter.initForMenu(context, this.menu);
-    if (subheaderTextAppearance != NavigationMenuPresenter.NO_TEXT_APPEARANCE_SET) {
-      presenter.setSubheaderTextAppearance(subheaderTextAppearance);
-    }
-    presenter.setSubheaderColor(subheaderColor);
     presenter.setItemIconTintList(itemIconTint);
     presenter.setOverScrollMode(getOverScrollMode());
-    if (textAppearance != NavigationMenuPresenter.NO_TEXT_APPEARANCE_SET) {
+    if (textAppearanceSet) {
       presenter.setItemTextAppearance(textAppearance);
     }
     presenter.setItemTextColor(itemTextColor);

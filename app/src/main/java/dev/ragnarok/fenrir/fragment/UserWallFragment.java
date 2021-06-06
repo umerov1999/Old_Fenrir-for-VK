@@ -126,7 +126,6 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
         if (isNull(mHeaderHolder)) return;
 
         mHeaderHolder.tvName.setText(user.getFullName());
-        mHeaderHolder.tvName.setTextColor(Utils.getVerifiedColor(requireActivity(), user.isVerified()));
         mHeaderHolder.tvLastSeen.setText(UserInfoResolveUtil.getUserActivityLine(getContext(), user, true));
 
         if (!user.getCanWritePrivateMessage())
@@ -136,6 +135,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
 
         String screenName = nonEmpty(user.getDomain()) ? "@" + user.getDomain() : null;
         mHeaderHolder.tvScreenName.setText(screenName);
+        mHeaderHolder.tvName.setTextColor(Utils.getVerifiedColor(requireActivity(), user.isVerified()));
         mHeaderHolder.tvScreenName.setTextColor(Utils.getVerifiedColor(requireActivity(), user.isVerified()));
 
         String photoUrl = user.getMaxSquareAvatar();
@@ -156,9 +156,25 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
         if (Settings.get().other().isShow_donate_anim() && (user.isDonated() || Constants.IS_DONATE)) {
             mHeaderHolder.bDonate.setVisibility(View.VISIBLE);
             mHeaderHolder.bDonate.setAutoRepeat(true);
-            mHeaderHolder.bDonate.fromRes(R.raw.donater, Utils.dp(100), Utils.dp(100), new int[]{0xffffff, CurrentTheme.getColorPrimary(requireActivity()), 0x777777, CurrentTheme.getColorSecondary(requireActivity())});
+            String cur = Settings.get().ui().getMainThemeKey();
+            if ("fire".equals(cur) || "fire_gray".equals(cur) || "yellow_violet".equals(cur)) {
+                mHeaderHolder.tvName.setTextColor(Color.parseColor("#df9d00"));
+                mHeaderHolder.tvScreenName.setTextColor(Color.parseColor("#df9d00"));
+                Utils.setBackgroundTint(mHeaderHolder.ivVerified, Color.parseColor("#df9d00"));
+                mHeaderHolder.bDonate.fromRes(R.raw.donater_fire, Utils.dp(100), Utils.dp(100), null);
+            } else {
+                mHeaderHolder.bDonate.fromRes(R.raw.donater, Utils.dp(100), Utils.dp(100), new int[]{0xffffff, CurrentTheme.getColorPrimary(requireActivity()), 0x777777, CurrentTheme.getColorSecondary(requireActivity())});
+            }
             mHeaderHolder.bDonate.playAnimation();
         } else {
+            if (user.isVerified()) {
+                String cur = Settings.get().ui().getMainThemeKey();
+                if ("fire".equals(cur) || "fire_gray".equals(cur) || "yellow_violet".equals(cur)) {
+                    mHeaderHolder.tvName.setTextColor(Color.parseColor("#df9d00"));
+                    mHeaderHolder.tvScreenName.setTextColor(Color.parseColor("#df9d00"));
+                    Utils.setBackgroundTint(mHeaderHolder.ivVerified, Color.parseColor("#df9d00"));
+                }
+            }
             mHeaderHolder.bDonate.setImageDrawable(null);
             mHeaderHolder.bDonate.setVisibility(View.GONE);
         }

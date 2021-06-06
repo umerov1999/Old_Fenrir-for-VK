@@ -96,6 +96,7 @@ class OwnersStorage extends AbsStorage implements IOwnersStorage {
         cv.put(GroupColumns.NAME, dbo.getName());
         cv.put(GroupColumns.SCREEN_NAME, dbo.getScreenName());
         cv.put(GroupColumns.IS_CLOSED, dbo.getClosed());
+        cv.put(GroupColumns.IS_VERIFIED, dbo.isVerified());
         cv.put(GroupColumns.IS_ADMIN, dbo.isAdmin());
         cv.put(GroupColumns.ADMIN_LEVEL, dbo.getAdminLevel());
         cv.put(GroupColumns.IS_MEMBER, dbo.isMember());
@@ -139,6 +140,7 @@ class OwnersStorage extends AbsStorage implements IOwnersStorage {
                 .setName(cursor.getString(cursor.getColumnIndex(GroupColumns.NAME)))
                 .setScreenName(cursor.getString(cursor.getColumnIndex(GroupColumns.SCREEN_NAME)))
                 .setClosed(cursor.getInt(cursor.getColumnIndex(GroupColumns.IS_CLOSED)))
+                .setVerified(cursor.getInt(cursor.getColumnIndex(GroupColumns.IS_VERIFIED)) == 1)
                 .setAdmin(cursor.getInt(cursor.getColumnIndex(GroupColumns.IS_ADMIN)) == 1)
                 .setAdminLevel(cursor.getInt(cursor.getColumnIndex(GroupColumns.ADMIN_LEVEL)))
                 .setMember(cursor.getInt(cursor.getColumnIndex(GroupColumns.IS_MEMBER)) == 1)

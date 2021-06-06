@@ -213,17 +213,6 @@ public class MaterialToolbar extends Toolbar {
   }
 
   /**
-   * Gets the tint color of the toolbar's navigation icon, or null if no tint color has been set.
-   *
-   * @see #setNavigationIconTint(int)
-   */
-  @ColorInt
-  @Nullable
-  public Integer getNavigationIconTint() {
-    return navigationIconTint;
-  }
-
-  /**
    * Sets whether the title text corresponding to the {@link #setTitle(int)} method should be
    * centered horizontally within the toolbar.
    *
@@ -288,7 +277,7 @@ public class MaterialToolbar extends Toolbar {
   @Nullable
   private Drawable maybeTintNavigationIcon(@Nullable Drawable navigationIcon) {
     if (navigationIcon != null && navigationIconTint != null) {
-      Drawable wrappedNavigationIcon = DrawableCompat.wrap(navigationIcon.mutate());
+      Drawable wrappedNavigationIcon = DrawableCompat.wrap(navigationIcon);
       DrawableCompat.setTint(wrappedNavigationIcon, navigationIconTint);
       return wrappedNavigationIcon;
     } else {

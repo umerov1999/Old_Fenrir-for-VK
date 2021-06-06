@@ -72,6 +72,8 @@ public class OwnersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private void bindCommunityHolder(CommunityHolder holder, Community community) {
         holder.tvName.setText(community.getName());
+        holder.tvName.setTextColor(Utils.getVerifiedColor(mContext, community.isVerified()));
+        holder.ivVerified.setVisibility(community.isVerified() ? View.VISIBLE : View.GONE);
 
         String status = "@" + community.getScreenName();
         holder.tvStatus.setText(status);
@@ -158,24 +160,26 @@ public class OwnersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private final TextView tvName;
         private final TextView tvStatus;
         private final ImageView ivAvatar;
+        private final ImageView ivVerified;
 
         CommunityHolder(View root) {
             super(root);
             tvName = root.findViewById(R.id.item_group_name);
             tvStatus = root.findViewById(R.id.item_group_status);
             ivAvatar = root.findViewById(R.id.item_group_avatar);
+            ivVerified = itemView.findViewById(R.id.item_verified);
         }
     }
 
     private class PeopleHolder extends RecyclerView.ViewHolder {
 
-        final TextView name;
-        final TextView subtitle;
-        final ImageView avatar;
-        final ImageView online;
-        final ImageView ivVerified;
-        final ViewGroup avatarRoot;
-        final ImageView blacklisted;
+        private final TextView name;
+        private final TextView subtitle;
+        private final ImageView avatar;
+        private final ImageView online;
+        private final ImageView ivVerified;
+        private final ViewGroup avatarRoot;
+        private final ImageView blacklisted;
 
         PeopleHolder(View itemView) {
             super(itemView);

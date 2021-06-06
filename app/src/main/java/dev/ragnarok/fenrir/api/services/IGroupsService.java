@@ -96,6 +96,7 @@ public interface IGroupsService {
     @POST("groups.search")
     Single<BaseResponse<Items<VKApiCommunity>>> search(@Field("q") String query,
                                                        @Field("type") String type,
+                                                       @Field("fields") String fields,
                                                        @Field("country_id") Integer countryId,
                                                        @Field("city_id") Integer cityId,
                                                        @Field("future") Integer future,

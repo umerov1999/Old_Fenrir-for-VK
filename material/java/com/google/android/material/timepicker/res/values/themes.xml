@@ -19,13 +19,10 @@
 
   <style name="ThemeOverlay.MaterialComponents.TimePicker" parent="ThemeOverlay.MaterialComponents.Dialog">
     <item name="chipStyle">@style/Widget.MaterialComponents.TimePicker.Display</item>
-    <item name="textInputStyle">@style/Widget.MaterialComponents.TimePicker.Display.TextInputLayout</item>
-    <item name="materialDisplayDividerStyle">@style/Widget.MaterialComponents.TimePicker.Display.Divider</item>
     <item name="materialClockStyle">@style/Widget.MaterialComponents.TimePicker.Clock</item>
     <item name="imageButtonStyle">@style/Widget.MaterialComponents.TimePicker.ImageButton</item>
     <item name="materialButtonOutlinedStyle">@style/Widget.MaterialComponents.TimePicker.Button</item>
     <item name="textAppearanceOverline">@style/TextAppearance.MaterialComponents.TimePicker.Title</item>
-    <item name="elevationOverlayEnabled">false</item>
   </style>
 
 </resources>

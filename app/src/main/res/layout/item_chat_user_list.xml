@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/card_margin"
     android:background="?attr/selectableItemBackground"
     android:minHeight="64dp">
 
@@ -47,7 +48,17 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:textColor="?colorPrimary"
             tools:text="Name" />
+
+        <TextView
+            android:id="@+id/item_user_admin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            tools:text="Admin" />
 
         <TextView
             android:id="@+id/item_user_invited_by"
@@ -56,7 +67,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-            tools:text="Time" />
+            tools:text="Invited" />
 
         <TextView
             android:id="@+id/item_user_domain"
@@ -66,6 +77,17 @@
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             tools:text="\@Domain" />
+
+        <TextView
+            android:id="@+id/item_user_invited_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:textSize="10sp"
+            tools:ignore="SmallSp"
+            tools:text="Time" />
 
     </LinearLayout>
 

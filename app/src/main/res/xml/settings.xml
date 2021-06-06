@@ -162,7 +162,7 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
-            android:defaultValue="3"
+            android:defaultValue="4"
             android:entries="@array/preview_preview_size"
             android:entryValues="@array/preview_preview_size_values"
             android:key="photo_preview_size"

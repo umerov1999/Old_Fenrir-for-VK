@@ -169,6 +169,7 @@ public class Entity2Model {
                 .setName(dbo.getName())
                 .setScreenName(dbo.getScreenName())
                 .setClosed(dbo.getClosed())
+                .setVerified(dbo.isVerified())
                 .setAdmin(dbo.isAdmin())
                 .setAdminLevel(dbo.getAdminLevel())
                 .setMember(dbo.isMember())
@@ -425,6 +426,7 @@ public class Entity2Model {
                 .setAdmin(entity.isAdmin())
                 .setAdminLevel(entity.getAdminLevel())
                 .setClosed(entity.getClosed())
+                .setVerified(entity.isVerified())
                 .setMember(entity.isMember())
                 .setMemberStatus(entity.getMemberStatus())
                 .setType(entity.getType());

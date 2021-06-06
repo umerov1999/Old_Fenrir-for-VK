@@ -174,6 +174,19 @@ public abstract class AbsMessageListPresenter<V extends IBasicMessageListView> e
             String body = TextUtils.isEmpty(message.getDecryptedBody()) ? message.getBody() : message.getDecryptedBody();
             result.append(!firstTime ? "\n" : "");
             result.append(body);
+            if (message.isVoiceMessage()) {
+                if (!TextUtils.isEmpty(body)) {
+                    result.append("\n\n");
+                }
+                boolean firstTimeVoice = true;
+                for (VoiceMessage vs : message.getAttachments().getVoiceMessages()) {
+                    if (!TextUtils.isEmpty(vs.getTranscript())) {
+                        result.append(!firstTimeVoice ? "\n" : "");
+                        result.append(vs.getTranscript());
+                        firstTimeVoice = false;
+                    }
+                }
+            }
             firstTime = false;
         }
 

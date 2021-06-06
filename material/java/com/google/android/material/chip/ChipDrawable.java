@@ -355,9 +355,8 @@ public class ChipDrawable extends MaterialShapeDrawable
     setText(a.getText(R.styleable.Chip_android_text));
     TextAppearance textAppearance =
         MaterialResources.getTextAppearance(context, a, R.styleable.Chip_android_textAppearance);
-    float textSize = a.getDimension(
-        R.styleable.Chip_android_textSize, textAppearance.getTextSize());
-    textAppearance.setTextSize(textSize);
+    float textSize = a.getDimension(R.styleable.Chip_android_textSize, textAppearance.textSize);
+    textAppearance.textSize = textSize;
     setTextAppearance(textAppearance);
 
     int ellipsize = a.getInt(R.styleable.Chip_android_ellipsize, 0);
@@ -1077,10 +1076,10 @@ public class ChipDrawable extends MaterialShapeDrawable
 
     int newTextColor =
         textDrawableHelper.getTextAppearance() != null
-                && textDrawableHelper.getTextAppearance().getTextColor() != null
+                && textDrawableHelper.getTextAppearance().textColor != null
             ? textDrawableHelper
-            .getTextAppearance()
-            .getTextColor()
+                .getTextAppearance()
+                .textColor
                 .getColorForState(chipState, currentTextColor)
             : 0;
     if (currentTextColor != newTextColor) {
@@ -1148,8 +1147,8 @@ public class ChipDrawable extends MaterialShapeDrawable
 
   private static boolean isStateful(@Nullable TextAppearance textAppearance) {
     return textAppearance != null
-        && textAppearance.getTextColor() != null
-        && textAppearance.getTextColor().isStateful();
+        && textAppearance.textColor != null
+        && textAppearance.textColor.isStateful();
   }
 
   @Override
@@ -1375,7 +1374,7 @@ public class ChipDrawable extends MaterialShapeDrawable
   public void setTextSize(@Dimension float size) {
     TextAppearance textAppearance = getTextAppearance();
     if (textAppearance != null) {
-      textAppearance.setTextSize(size);
+      textAppearance.textSize = size;
       textDrawableHelper.getTextPaint().setTextSize(size);
       onTextSizeChange();
     }

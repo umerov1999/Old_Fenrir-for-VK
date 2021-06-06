@@ -30,6 +30,7 @@ import java.util.Set;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.link.internal.OwnerLinkSpanFactory;
 import dev.ragnarok.fenrir.model.ChatAction;
+import dev.ragnarok.fenrir.model.Community;
 import dev.ragnarok.fenrir.model.Dialog;
 import dev.ragnarok.fenrir.model.MessageType;
 import dev.ragnarok.fenrir.model.User;
@@ -270,9 +271,14 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 holder.ivVerified.setVisibility(View.GONE);
             }
         } else {
-            holder.ivVerified.setVisibility(View.GONE);
+            if (dialog.getInterlocutor() instanceof Community) {
+                holder.mDialogTitle.setTextColor(Utils.getVerifiedColor(mContext, dialog.getInterlocutor().isVerified()));
+                holder.ivVerified.setVisibility(dialog.getInterlocutor().isVerified() ? View.VISIBLE : View.GONE);
+            } else {
+                holder.ivVerified.setVisibility(View.GONE);
+                holder.mDialogTitle.setTextColor(Utils.getVerifiedColor(mContext, false));
+            }
             holder.blacklisted.setVisibility(View.GONE);
-            holder.mDialogTitle.setTextColor(Utils.getVerifiedColor(mContext, false));
         }
 
         Integer iconRes = ViewUtils.getOnlineIcon(online, onlineMobile, platform, app);

@@ -1566,4 +1566,6 @@
     <string name="do_report">Отправить жалобу?</string>
     <string name="full_data">Полностью</string>
     <string name="notification_force_link">Открывать ссылки сразу в уведомлениях</string>
+    <string name="disrate">Разжаловать</string>
+    <string name="assign_administrator">Назначить администратором</string>
 </resources>

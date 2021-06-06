@@ -283,6 +283,7 @@ public class Dto2Model {
                 .setName(community.name)
                 .setScreenName(community.screen_name)
                 .setClosed(community.is_closed)
+                .setVerified(community.verified)
                 .setAdmin(community.is_admin)
                 .setAdminLevel(community.admin_level)
                 .setMember(community.is_member)

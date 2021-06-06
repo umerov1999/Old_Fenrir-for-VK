@@ -3,7 +3,6 @@ package dev.ragnarok.fenrir.api.services;
 import java.util.List;
 import java.util.Map;
 
-import dev.ragnarok.fenrir.api.model.ChatUserDto;
 import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiMessage;
 import dev.ragnarok.fenrir.api.model.VkApiConversation;
@@ -13,6 +12,7 @@ import dev.ragnarok.fenrir.api.model.response.AttachmentsHistoryResponse;
 import dev.ragnarok.fenrir.api.model.response.BaseResponse;
 import dev.ragnarok.fenrir.api.model.response.ChatsInfoResponse;
 import dev.ragnarok.fenrir.api.model.response.ConversationDeleteResult;
+import dev.ragnarok.fenrir.api.model.response.ConversationMembersResponse;
 import dev.ragnarok.fenrir.api.model.response.ConversationsResponse;
 import dev.ragnarok.fenrir.api.model.response.DialogsResponse;
 import dev.ragnarok.fenrir.api.model.response.ItemsProfilesGroupsResponse;
@@ -83,26 +83,6 @@ public interface IMessageService {
                                               @Field("user_id") int userId);
 
     /**
-     * Returns a list of IDs of users participating in a chat.
-     *
-     * @param chatIds  Chat IDs. List of comma-separated numbers
-     * @param fields   Profile fields to return. List of comma-separated words
-     * @param nameCase Case for declension of user name and surname:
-     *                 nom — nominative (default)
-     *                 gen — genitive
-     *                 dat — dative
-     *                 acc — accusative
-     *                 ins — instrumental
-     *                 abl — prepositional
-     * @return Returns a list of IDs of chat participants.
-     */
-    @FormUrlEncoded
-    @POST("messages.getChatUsers")
-    Single<BaseResponse<Map<Integer, List<ChatUserDto>>>> getChatUsers(@Field("chat_ids") String chatIds,
-                                                                       @Field("fields") String fields,
-                                                                       @Field("name_case") String nameCase);
-
-    /**
      * Returns information about a chat.
      *
      * @param chatId   Chat ID.
@@ -123,6 +103,12 @@ public interface IMessageService {
                                                     @Field("chat_ids") String chatIds,
                                                     @Field("fields") String fields,
                                                     @Field("name_case") String nameCase);
+
+
+    @FormUrlEncoded
+    @POST("messages.getConversationMembers")
+    Single<BaseResponse<ConversationMembersResponse>> getConversationMembers(@Field("peer_id") Integer peer_id,
+                                                                             @Field("fields") String fields);
 
     /**
      * Edits the title of a chat.
@@ -403,4 +389,10 @@ public interface IMessageService {
     @POST("messages.recogniseAudioMessage")
     Single<BaseResponse<Integer>> recogniseAudioMessage(@Field("message_id") Integer message_id,
                                                         @Field("audio_message_id") String audio_message_id);
+
+    @FormUrlEncoded
+    @POST("messages.setMemberRole")
+    Single<BaseResponse<Integer>> setMemberRole(@Field("peer_id") Integer peer_id,
+                                                @Field("member_id") Integer member_id,
+                                                @Field("role") String role);
 }

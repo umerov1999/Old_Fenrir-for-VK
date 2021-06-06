@@ -35,8 +35,8 @@ import dev.ragnarok.fenrir.api.interfaces.IDocsApi;
 import dev.ragnarok.fenrir.api.interfaces.IMessagesApi;
 import dev.ragnarok.fenrir.api.interfaces.INetworker;
 import dev.ragnarok.fenrir.api.model.AttachmentsTokenCreator;
-import dev.ragnarok.fenrir.api.model.ChatUserDto;
 import dev.ragnarok.fenrir.api.model.IAttachmentToken;
+import dev.ragnarok.fenrir.api.model.VKApiConversationMembers;
 import dev.ragnarok.fenrir.api.model.VKApiMessage;
 import dev.ragnarok.fenrir.api.model.VkApiConversation;
 import dev.ragnarok.fenrir.api.model.VkApiDialog;
@@ -54,7 +54,6 @@ import dev.ragnarok.fenrir.crypt.CryptHelper;
 import dev.ragnarok.fenrir.crypt.KeyLocationPolicy;
 import dev.ragnarok.fenrir.crypt.KeyPairDoesNotExistException;
 import dev.ragnarok.fenrir.db.PeerStateEntity;
-import dev.ragnarok.fenrir.db.column.UserColumns;
 import dev.ragnarok.fenrir.db.interfaces.IDialogsStorage;
 import dev.ragnarok.fenrir.db.interfaces.IMessagesStorage;
 import dev.ragnarok.fenrir.db.interfaces.IStorages;
@@ -1143,34 +1142,34 @@ public class MessagesRepository implements IMessagesRepository {
     public Single<List<AppChatUser>> getChatUsers(int accountId, int chatId) {
         return networker.vkDefault(accountId)
                 .messages()
-                .getChat(chatId, null, UserColumns.API_FIELDS, null)
-                .map(chats -> {
-                    if (chats.isEmpty()) {
-                        throw new NotFoundException();
-                    }
-
-                    return chats.get(0);
-                })
+                .getConversationMembers(Peer.fromChatId(chatId), Constants.MAIN_OWNER_FIELDS)
                 .flatMap(chatDto -> {
-                    List<ChatUserDto> dtos = listEmptyIfNull(chatDto.users);
+                    List<VKApiConversationMembers> dtos = listEmptyIfNull(chatDto.conversationMembers);
+                    Collection<Integer> ownerIds;
 
-                    VKOwnIds ids = new VKOwnIds();
-                    List<Owner> owners = new ArrayList<>(dtos.size());
+                    if (nonEmpty(dtos)) {
+                        VKOwnIds vkOwnIds = new VKOwnIds();
+                        vkOwnIds.append(accountId);
 
-                    for (ChatUserDto dto : dtos) {
-                        ids.append(dto.invited_by);
-                        owners.add(Dto2Model.transformOwner(dto.user));
+                        for (VKApiConversationMembers dto : dtos) {
+                            vkOwnIds.append(dto.member_id);
+                            vkOwnIds.append(dto.invited_by);
+                        }
+                        ownerIds = vkOwnIds.getAll();
+                    } else {
+                        ownerIds = Collections.emptyList();
                     }
-
-                    boolean isAdmin = accountId == chatDto.admin_id;
-
-                    return ownersRepository.findBaseOwnersDataAsBundle(accountId, ids.getAll(), IOwnersRepository.MODE_ANY, owners)
+                    List<Owner> existsOwners = Dto2Model.transformOwners(chatDto.profiles, chatDto.groups);
+                    return ownersRepository.findBaseOwnersDataAsBundle(accountId, ownerIds, IOwnersRepository.MODE_ANY, existsOwners)
                             .map(ownersBundle -> {
                                 List<AppChatUser> models = new ArrayList<>(dtos.size());
 
-                                for (ChatUserDto dto : dtos) {
-                                    AppChatUser user = new AppChatUser(Dto2Model.transformOwner(dto.user), dto.invited_by, dto.type);
-                                    user.setCanRemove(isAdmin || user.getInvitedBy() == accountId);
+                                for (VKApiConversationMembers dto : dtos) {
+                                    AppChatUser user = new AppChatUser(ownersBundle.getById(dto.member_id), dto.invited_by);
+                                    user.setCanRemove(dto.can_kick);
+                                    user.setJoin_date(dto.join_date);
+                                    user.setAdmin(dto.is_admin);
+                                    user.setOwner(dto.is_owner);
 
                                     if (user.getInvitedBy() != 0) {
                                         user.setInviter(ownersBundle.getById(user.getInvitedBy()));
@@ -1213,7 +1212,7 @@ public class MessagesRepository implements IMessagesRepository {
                     for (User user : users) {
                         completable = completable.andThen(api.addChatUser(chatId, user.getId()).ignoreElement());
 
-                        AppChatUser chatUser = new AppChatUser(user, accountId, "profile")
+                        AppChatUser chatUser = new AppChatUser(user, accountId)
                                 .setCanRemove(true)
                                 .setInviter(iam);
 
@@ -1361,6 +1360,14 @@ public class MessagesRepository implements IMessagesRepository {
         return networker.vkDefault(accountId)
                 .messages()
                 .recogniseAudioMessage(message_id, audio_message_id);
+    }
+
+    @Override
+    public Completable setMemberRole(int accountId, int chat_id, int member_id, boolean isAdmin) {
+        return networker.vkDefault(accountId)
+                .messages()
+                .setMemberRole(Peer.fromChatId(chat_id), member_id, isAdmin ? "admin" : "member")
+                .ignoreElement();
     }
 
     @Override

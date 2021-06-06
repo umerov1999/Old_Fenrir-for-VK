@@ -27,6 +27,8 @@ public class CommunityEntity {
 
     private String photo200;
 
+    private boolean verified;
+
     public CommunityEntity(int id) {
         this.id = id;
     }
@@ -131,6 +133,15 @@ public class CommunityEntity {
 
     public CommunityEntity setPhoto200(String photo200) {
         this.photo200 = photo200;
+        return this;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public CommunityEntity setVerified(boolean verified) {
+        this.verified = verified;
         return this;
     }
 }

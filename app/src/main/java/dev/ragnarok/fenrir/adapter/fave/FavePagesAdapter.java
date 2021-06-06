@@ -53,14 +53,14 @@ public class FavePagesAdapter extends RecyclerView.Adapter<FavePagesAdapter.Hold
         FavePage favePage = data.get(position);
         holder.description.setText(favePage.getDescription());
         holder.name.setText(favePage.getOwner().getFullName());
+        holder.name.setTextColor(Utils.getVerifiedColor(context, favePage.getOwner().isVerified()));
+        holder.ivVerified.setVisibility(favePage.getOwner().isVerified() ? View.VISIBLE : View.GONE);
         ViewUtils.displayAvatar(holder.avatar, transformation, favePage.getOwner().getMaxSquareAvatar(), Constants.PICASSO_TAG);
 
         if (favePage.getType().equals(FavePageType.USER)) {
             holder.ivOnline.setVisibility(View.VISIBLE);
             User user = favePage.getUser();
-            holder.name.setTextColor(Utils.getVerifiedColor(context, user.isVerified()));
             holder.blacklisted.setVisibility(user.getBlacklisted() ? View.VISIBLE : View.GONE);
-            holder.ivVerified.setVisibility(user.isVerified() ? View.VISIBLE : View.GONE);
             Integer onlineIcon = ViewUtils.getOnlineIcon(true, user.isOnlineMobile(), user.getPlatform(), user.getOnlineApp());
             if (!user.isOnline())
                 holder.ivOnline.setCircleColor(CurrentTheme.getColorFromAttrs(R.attr.icon_color_inactive, context, "#000000"));

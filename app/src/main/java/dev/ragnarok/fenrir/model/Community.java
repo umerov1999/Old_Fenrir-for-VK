@@ -30,6 +30,7 @@ public class Community extends Owner {
     private String photo50;
     private String photo100;
     private String photo200;
+    private boolean verified;
 
     public Community(int id) {
         super(OwnerType.COMMUNITY);
@@ -50,6 +51,7 @@ public class Community extends Owner {
         photo50 = in.readString();
         photo100 = in.readString();
         photo200 = in.readString();
+        verified = in.readByte() != 0;
     }
 
     @Override
@@ -77,6 +79,7 @@ public class Community extends Owner {
         dest.writeString(photo50);
         dest.writeString(photo100);
         dest.writeString(photo200);
+        dest.writeByte((byte) (verified ? 1 : 0));
     }
 
     public String getName() {
@@ -205,5 +208,15 @@ public class Community extends Owner {
 
     public int getId() {
         return id;
+    }
+
+    @Override
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public Community setVerified(boolean verified) {
+        this.verified = verified;
+        return this;
     }
 }

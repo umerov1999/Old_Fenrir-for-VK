@@ -18,7 +18,7 @@ public class Constants {
     public static final boolean IS_DONATE = BuildConfig.IS_DONATE;
 
     public static final String API_VERSION = "5.131";
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 6;
 
     public static final @Account_Types
     int DEFAULT_ACCOUNT_TYPE = BuildConfig.DEFAULT_ACCOUNT_TYPE;
@@ -28,7 +28,7 @@ public class Constants {
     public static final String FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".file_provider";
 
     public static final String VK_ANDROID_APP_VERSION_NAME = "6.39";
-    public static final String VK_ANDROID_APP_VERSION_CODE = "8138";
+    public static final String VK_ANDROID_APP_VERSION_CODE = "8145";
     public static final String KATE_APP_VERSION_NAME = "74 lite";
     public static final String KATE_APP_VERSION_CODE = "492";
     public static final String KATE_RECEIPT_GMS_TOKEN = BuildConfig.KATE_RECEIPT_GMS_TOKEN;

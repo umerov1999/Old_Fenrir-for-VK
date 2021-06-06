@@ -19,25 +19,26 @@ public final class AppChatUser implements Parcelable, Identificable {
         }
     };
     private final Owner member;
-
     private final int invitedBy;
-
-    private final String type;
+    private long join_date;
     private Owner inviter;
     private boolean canRemove;
+    private boolean isAdmin;
+    private boolean isOwner;
 
-    public AppChatUser(Owner member, int invitedBy, String type) {
+    public AppChatUser(Owner member, int invitedBy) {
         this.member = member;
         this.invitedBy = invitedBy;
-        this.type = type;
     }
 
     private AppChatUser(Parcel in) {
         inviter = in.<ParcelableOwnerWrapper>readParcelable(ParcelableOwnerWrapper.class.getClassLoader()).get();
         member = in.<ParcelableOwnerWrapper>readParcelable(ParcelableOwnerWrapper.class.getClassLoader()).get();
         invitedBy = in.readInt();
-        type = in.readString();
         canRemove = in.readByte() != 0;
+        join_date = in.readLong();
+        isAdmin = in.readByte() != 0;
+        isOwner = in.readByte() != 0;
     }
 
     @Override
@@ -45,8 +46,10 @@ public final class AppChatUser implements Parcelable, Identificable {
         dest.writeParcelable(new ParcelableOwnerWrapper(inviter), flags);
         dest.writeParcelable(new ParcelableOwnerWrapper(member), flags);
         dest.writeInt(invitedBy);
-        dest.writeString(type);
         dest.writeByte((byte) (canRemove ? 1 : 0));
+        dest.writeLong(join_date);
+        dest.writeByte((byte) (isAdmin ? 1 : 0));
+        dest.writeByte((byte) (isOwner ? 1 : 0));
     }
 
     @Override
@@ -76,10 +79,6 @@ public final class AppChatUser implements Parcelable, Identificable {
         return invitedBy;
     }
 
-    public String getType() {
-        return type;
-    }
-
     public Owner getMember() {
         return member;
     }
@@ -87,5 +86,32 @@ public final class AppChatUser implements Parcelable, Identificable {
     @Override
     public int getId() {
         return member.getOwnerId();
+    }
+
+    public long getJoin_date() {
+        return join_date;
+    }
+
+    public AppChatUser setJoin_date(long join_date) {
+        this.join_date = join_date;
+        return this;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public AppChatUser setAdmin(boolean admin) {
+        isAdmin = admin;
+        return this;
+    }
+
+    public boolean isOwner() {
+        return isOwner;
+    }
+
+    public AppChatUser setOwner(boolean owner) {
+        isOwner = owner;
+        return this;
     }
 }

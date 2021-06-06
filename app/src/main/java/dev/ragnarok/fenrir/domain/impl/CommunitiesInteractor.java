@@ -68,7 +68,7 @@ public class CommunitiesInteractor implements ICommunitiesInteractor {
     public Single<List<Community>> search(int accountId, String q, String type, Integer countryId, Integer cityId, Boolean futureOnly, Integer sort, int count, int offset) {
         return networker.vkDefault(accountId)
                 .groups()
-                .search(q, type, countryId, cityId, futureOnly, null, sort, offset, count)
+                .search(q, type, GroupColumns.API_FIELDS, countryId, cityId, futureOnly, null, sort, offset, count)
                 .map(items -> {
                     List<VKApiCommunity> dtos = listEmptyIfNull(items.getItems());
                     return Dto2Model.transformCommunities(dtos);

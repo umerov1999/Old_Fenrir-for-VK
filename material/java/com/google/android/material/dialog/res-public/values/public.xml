@@ -50,7 +50,6 @@
   <public name="materialAlertDialogTitleIconStyle" type="attr"/>
   <public name="materialAlertDialogTitleTextStyle" type="attr"/>
   <public name="materialAlertDialogBodyTextStyle" type="attr"/>
-  <public name="materialAlertDialogButtonSpacerVisibility" type="attr"/>
 
   <public name="backgroundInsetStart" type="attr"/>
   <public name="backgroundInsetTop" type="attr"/>
