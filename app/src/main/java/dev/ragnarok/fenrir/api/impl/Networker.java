@@ -9,11 +9,13 @@ import dev.ragnarok.fenrir.api.VkMethodHttpClientFactory;
 import dev.ragnarok.fenrir.api.VkRetrofitProvider;
 import dev.ragnarok.fenrir.api.interfaces.IAccountApis;
 import dev.ragnarok.fenrir.api.interfaces.IAuthApi;
+import dev.ragnarok.fenrir.api.interfaces.IDonateCheckApi;
 import dev.ragnarok.fenrir.api.interfaces.ILocalServerApi;
 import dev.ragnarok.fenrir.api.interfaces.ILongpollApi;
 import dev.ragnarok.fenrir.api.interfaces.INetworker;
 import dev.ragnarok.fenrir.api.interfaces.IUploadApi;
 import dev.ragnarok.fenrir.api.services.IAuthService;
+import dev.ragnarok.fenrir.api.services.IDonateCheckService;
 import dev.ragnarok.fenrir.api.services.ILocalServerService;
 import dev.ragnarok.fenrir.settings.IProxySettings;
 
@@ -47,6 +49,11 @@ public class Networker implements INetworker {
     @Override
     public IAuthApi vkAuth() {
         return new AuthApi(() -> otherVkRetrofitProvider.provideAuthServiceRetrofit().map(wrapper -> wrapper.create(IAuthService.class)));
+    }
+
+    @Override
+    public IDonateCheckApi donateCheckApi() {
+        return new DonateCheckApi(() -> otherVkRetrofitProvider.provideDonateCheckRetrofit().map(wrapper -> wrapper.create(IDonateCheckService.class)));
     }
 
     @Override

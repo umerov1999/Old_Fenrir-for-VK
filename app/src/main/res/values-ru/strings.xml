@@ -664,6 +664,8 @@
     <string name="first_pagan">Первый языческий</string>
     <string name="repo">Репозиторий: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="repo_local_server">Репозиторий: https://github.com/umerov1999/FenrirMediaServer/releases</string>
+    <string name="is_donated">Донат на галочку</string>
+    <string name="is_donated_alert">Писать https://t.me/odin_is_my_god</string>
     <string name="project_dedicated_summary">Проект посвящён Арнольдове Екатерине, https://vk.com/id255645173</string>
     <string name="project_dedicated">Проект посвящён</string>
     <string name="comment">Комментарий</string>

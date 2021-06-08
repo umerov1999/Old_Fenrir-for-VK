@@ -136,6 +136,10 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
                 mHeaderHolder.tvName.setTextColor(Color.parseColor("#df9d00"));
                 mHeaderHolder.tvScreenName.setTextColor(Color.parseColor("#df9d00"));
                 Utils.setBackgroundTint(mHeaderHolder.ivVerified, Color.parseColor("#df9d00"));
+            } else if ("violet".equals(cur) || "violet_red".equals(cur)) {
+                mHeaderHolder.tvName.setTextColor(Color.parseColor("#9200f9"));
+                mHeaderHolder.tvScreenName.setTextColor(Color.parseColor("#9200f9"));
+                Utils.setBackgroundTint(mHeaderHolder.ivVerified, Color.parseColor("#9200f9"));
             }
         }
         mHeaderHolder.ivVerified.setVisibility(community.isVerified() ? View.VISIBLE : View.GONE);

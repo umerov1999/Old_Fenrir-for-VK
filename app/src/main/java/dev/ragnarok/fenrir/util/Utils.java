@@ -1352,6 +1352,15 @@ public class Utils {
         return false;
     }
 
+    public static <T> boolean isOneElementAssigned(@NonNull List<T> array, @NonNull List<T> args) {
+        for (T i : array) {
+            if (args.contains(i)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void safeObjectCall(@Nullable Object object, @NonNull safeCallInt function) {
         if (object != null) {
             function.call();

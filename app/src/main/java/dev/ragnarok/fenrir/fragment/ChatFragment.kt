@@ -175,7 +175,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         toolbar?.inflateMenu(R.menu.menu_chat)
         toolbar?.menu?.let { PrepareOptionsMenu(it) }
         toolbar?.setOnMenuItemClickListener { item: MenuItem ->
-            OptionsItemSelected(item)
+            optionsItemSelected(item)
         }
 
         stickersKeywordsView = root.findViewById(R.id.stickers)
@@ -1562,10 +1562,14 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         downloadChat()
     }
 
-    private fun OptionsItemSelected(item: MenuItem): Boolean {
+    private fun optionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.last_read -> {
-                recyclerView?.smoothScrollToPosition(presenter?.getConversation()!!.unreadCount)
+                presenter?.getConversation()?.unreadCount?.let {
+                    recyclerView?.smoothScrollToPosition(
+                        it
+                    )
+                }
                 return true
             }
             R.id.action_refresh -> {

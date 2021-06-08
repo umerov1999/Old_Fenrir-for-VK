@@ -10,6 +10,8 @@ public interface INetworker {
 
     IAuthApi vkAuth();
 
+    IDonateCheckApi donateCheckApi();
+
     ILocalServerApi localServerApi();
 
     ILongpollApi longpoll();

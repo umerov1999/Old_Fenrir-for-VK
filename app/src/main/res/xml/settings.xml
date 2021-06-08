@@ -252,12 +252,6 @@
             app:useSimpleSummaryProvider="true" />
 
         <SwitchPreference
-            android:defaultValue="true"
-            android:key="show_donate_anim"
-            android:title="@string/show_donate_anim"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
             android:defaultValue="false"
             android:key="disable_history"
             android:title="@string/disable_history"
@@ -874,6 +868,17 @@
     <PreferenceCategory
         android:title="@string/about_settings"
         app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="is_donated"
+            android:title="@string/is_donated"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="show_donate_anim"
+            android:title="@string/show_donate_anim"
+            app:iconSpaceReserved="false" />
 
         <Preference
             android:dependency="developer_mode"

@@ -220,6 +220,11 @@ public interface ISettings {
         PlayerCoverBackgroundSettings getPlayerCoverBackgroundSettings();
 
         void setPlayerCoverBackgroundSettings(@NonNull PlayerCoverBackgroundSettings settings);
+
+        void registerDonatesId(List<Integer> Ids);
+
+        @NonNull
+        List<Integer> getDonates();
     }
 
     interface IAccountsSettings {
