@@ -3,7 +3,6 @@ package dev.ragnarok.fenrir.fragment;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -110,6 +109,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
         mHeaderHolder.tvScreenName.setText(screenName);
         mHeaderHolder.tvName.setTextColor(Utils.getVerifiedColor(requireActivity(), community.isVerified()));
         mHeaderHolder.tvScreenName.setTextColor(Utils.getVerifiedColor(requireActivity(), community.isVerified()));
+        mHeaderHolder.ivVerified.setVisibility(community.isVerified() ? View.VISIBLE : View.GONE);
 
         if (!details.isCanMessage())
             mHeaderHolder.fabMessage.setImageResource(R.drawable.close);
@@ -130,19 +130,6 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
             }
             PlaceFactory.getSingleURLPhotoPlace(cmt.getOriginalAvatar(), cmt.getFullName(), "club" + Math.abs(cmt.getId())).tryOpenWith(requireActivity());
         });
-        if (community.isVerified()) {
-            String cur = Settings.get().ui().getMainThemeKey();
-            if ("fire".equals(cur) || "fire_gray".equals(cur) || "yellow_violet".equals(cur)) {
-                mHeaderHolder.tvName.setTextColor(Color.parseColor("#df9d00"));
-                mHeaderHolder.tvScreenName.setTextColor(Color.parseColor("#df9d00"));
-                Utils.setBackgroundTint(mHeaderHolder.ivVerified, Color.parseColor("#df9d00"));
-            } else if ("violet".equals(cur) || "violet_red".equals(cur)) {
-                mHeaderHolder.tvName.setTextColor(Color.parseColor("#9200f9"));
-                mHeaderHolder.tvScreenName.setTextColor(Color.parseColor("#9200f9"));
-                Utils.setBackgroundTint(mHeaderHolder.ivVerified, Color.parseColor("#9200f9"));
-            }
-        }
-        mHeaderHolder.ivVerified.setVisibility(community.isVerified() ? View.VISIBLE : View.GONE);
     }
 
     private void displayCommunityCover(String resource) {

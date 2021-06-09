@@ -85,7 +85,7 @@ public class SettingsBackup {
         settings.add(new SettingCollector("auto_read", SettingTypes.TYPE_BOOL));
         settings.add(new SettingCollector("not_update_dialogs", SettingTypes.TYPE_BOOL));
         settings.add(new SettingCollector("be_online", SettingTypes.TYPE_BOOL));
-        settings.add(new SettingCollector("show_donate_anim", SettingTypes.TYPE_BOOL));
+        settings.add(new SettingCollector("donate_anim_set", SettingTypes.TYPE_STRING));
         settings.add(new SettingCollector("use_stop_audio", SettingTypes.TYPE_BOOL));
         settings.add(new SettingCollector("blur_for_player", SettingTypes.TYPE_BOOL));
         settings.add(new SettingCollector("show_mini_player", SettingTypes.TYPE_BOOL));

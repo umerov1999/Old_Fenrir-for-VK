@@ -134,6 +134,18 @@
         <item>1</item>
     </string-array>
 
+    <string-array name="array_donate_anim_names">
+        <item>Disable</item>
+        <item>Lines</item>
+        <item>Fire Ring</item>
+    </string-array>
+
+    <string-array name="array_donate_anim_items" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
     <string-array name="array_pagan_symbol_names">
         <item>Disabled.</item>
         <item>Yggdrasil</item>

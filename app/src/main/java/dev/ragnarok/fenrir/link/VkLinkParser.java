@@ -28,6 +28,7 @@ import dev.ragnarok.fenrir.link.types.PhotoAlbumsLink;
 import dev.ragnarok.fenrir.link.types.PhotoLink;
 import dev.ragnarok.fenrir.link.types.PollLink;
 import dev.ragnarok.fenrir.link.types.TopicLink;
+import dev.ragnarok.fenrir.link.types.VideoAlbumLink;
 import dev.ragnarok.fenrir.link.types.VideoLink;
 import dev.ragnarok.fenrir.link.types.WallCommentLink;
 import dev.ragnarok.fenrir.link.types.WallCommentThreadLink;
@@ -57,12 +58,14 @@ public class VkLinkParser {
     private static final Pattern PATTERN_PHOTO = Pattern.compile("vk\\.com/(\\w)*(-)?(\\d)*(\\?z=)?photo(-?\\d*)_(\\d*)"); //+
     private static final Pattern PATTERN_VIDEO = Pattern.compile("vk\\.com/video(-?\\d*)_(\\d*)"); //+
     private static final Pattern PATTERN_PLAYLIST = Pattern.compile("vk\\.com/music/album/(-?\\d*)_(\\d*)_([^&]*)"); //+
+    private static final Pattern PATTERN_PLAYLIST_ALT = Pattern.compile("vk\\.com/.+(?:act=|z=)audio_playlist(-?\\d*)_(\\d*)(?:&access_hash=(\\w+))?");
     private static final Pattern PATTERN_DOC = Pattern.compile("vk\\.com/doc(-?\\d*)_(\\d*)"); //+
     private static final Pattern PATTERN_TOPIC = Pattern.compile("vk\\.com/topic-(\\d*)_(\\d*)"); //+
     private static final Pattern PATTERN_FAVE = Pattern.compile("vk\\.com/fave");
     private static final Pattern PATTERN_GROUP_ID = Pattern.compile("vk\\.com/(club|event|public)(\\d+)$"); //+
     private static final Pattern PATTERN_FAVE_WITH_SECTION = Pattern.compile("vk\\.com/fave\\?section=([\\w.]+)");
     private static final Pattern PATTERN_ACCESS_KEY = Pattern.compile("access_key=(\\w+)");
+    private static final Pattern PATTERN_VIDEO_ALBUM = Pattern.compile("vk\\.com/videos(-?\\d*)[?]section=album_(\\d*)");
 
     //vk.com/wall-2345345_7834545?reply=15345346
     private static final Pattern PATTERN_WALL_POST_COMMENT = Pattern.compile("vk\\.com/wall(-?\\d*)_(\\d*)\\?reply=(\\d*)");
@@ -246,7 +249,17 @@ public class VkLinkParser {
             return vkLink;
         }
 
+        vkLink = parseVideoAlbum(string);
+        if (vkLink != null) {
+            return vkLink;
+        }
+
         vkLink = parseVideo(string);
+        if (vkLink != null) {
+            return vkLink;
+        }
+
+        vkLink = parseAudioPlaylistAlt(string);
         if (vkLink != null) {
             return vkLink;
         }
@@ -459,6 +472,20 @@ public class VkLinkParser {
         return null;
     }
 
+    private static AbsLink parseVideoAlbum(String string) {
+        Matcher matcher = PATTERN_VIDEO_ALBUM.matcher(string);
+
+        try {
+            if (matcher.find()) {
+                return new VideoAlbumLink(parseInt(matcher.group(1)), parseInt(matcher.group(2)));
+            }
+        } catch (NumberFormatException ignored) {
+
+        }
+
+        return null;
+    }
+
     private static AbsLink parseVideo(String string) {
         Matcher matcher = PATTERN_VIDEO.matcher(string);
 
@@ -491,6 +518,19 @@ public class VkLinkParser {
         try {
             if (matcher.find()) {
                 return new AudioTrackLink(parseInt(matcher.group(1)), parseInt(matcher.group(2)));
+            }
+        } catch (NumberFormatException ignored) {
+
+        }
+
+        return null;
+    }
+
+    private static AbsLink parseAudioPlaylistAlt(String string) {
+        Matcher matcher = PATTERN_PLAYLIST_ALT.matcher(string);
+        try {
+            if (matcher.find()) {
+                return new AudioPlaylistLink(parseInt(matcher.group(1)), parseInt(matcher.group(2)), matcher.group(3));
             }
         } catch (NumberFormatException ignored) {
 

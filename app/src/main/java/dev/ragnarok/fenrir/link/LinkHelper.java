@@ -37,6 +37,7 @@ import dev.ragnarok.fenrir.link.types.PhotoAlbumsLink;
 import dev.ragnarok.fenrir.link.types.PhotoLink;
 import dev.ragnarok.fenrir.link.types.PollLink;
 import dev.ragnarok.fenrir.link.types.TopicLink;
+import dev.ragnarok.fenrir.link.types.VideoAlbumLink;
 import dev.ragnarok.fenrir.link.types.VideoLink;
 import dev.ragnarok.fenrir.link.types.WallCommentLink;
 import dev.ragnarok.fenrir.link.types.WallCommentThreadLink;
@@ -174,6 +175,12 @@ public class LinkHelper {
             case AbsLink.VIDEO:
                 VideoLink videoLink = (VideoLink) link;
                 PlaceFactory.getVideoPreviewPlace(accountId, videoLink.ownerId, videoLink.videoId, videoLink.access_key, null)
+                        .tryOpenWith(activity);
+                break;
+
+            case AbsLink.VIDEO_ALBUM:
+                VideoAlbumLink videoAlbumLink = (VideoAlbumLink) link;
+                PlaceFactory.getVideoAlbumPlace(accountId, videoAlbumLink.ownerId, videoAlbumLink.albumId, null, null)
                         .tryOpenWith(activity);
                 break;
 

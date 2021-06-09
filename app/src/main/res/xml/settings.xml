@@ -874,11 +874,14 @@
             android:title="@string/is_donated"
             app:iconSpaceReserved="false" />
 
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="show_donate_anim"
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/array_donate_anim_names"
+            android:entryValues="@array/array_donate_anim_items"
+            android:key="donate_anim_set"
             android:title="@string/show_donate_anim"
-            app:iconSpaceReserved="false" />
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
 
         <Preference
             android:dependency="developer_mode"

@@ -256,8 +256,12 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
-    public boolean isShow_donate_anim() {
-        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("show_donate_anim", true);
+    public int getDonate_anim_set() {
+        try {
+            return Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(app).getString("donate_anim_set", "1").trim());
+        } catch (Exception e) {
+            return 1;
+        }
     }
 
     @Override

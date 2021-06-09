@@ -152,40 +152,32 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
                         .into(mHeaderHolder.vgCover);
             }
         }
-        if (Settings.get().other().isShow_donate_anim() && user.isDonated()) {
+        int donate_anim = Settings.get().other().getDonate_anim_set();
+        if (donate_anim > 0 && user.isDonated()) {
             mHeaderHolder.bDonate.setVisibility(View.VISIBLE);
             mHeaderHolder.bDonate.setAutoRepeat(true);
-            String cur = Settings.get().ui().getMainThemeKey();
-            if ("fire".equals(cur) || "fire_gray".equals(cur) || "yellow_violet".equals(cur)) {
-                mHeaderHolder.tvName.setTextColor(Color.parseColor("#df9d00"));
-                mHeaderHolder.tvScreenName.setTextColor(Color.parseColor("#df9d00"));
-                Utils.setBackgroundTint(mHeaderHolder.ivVerified, Color.parseColor("#df9d00"));
-                mHeaderHolder.bDonate.fromRes(R.raw.donater_fire_yellow, Utils.dp(100), Utils.dp(100), null);
-            } else if ("violet".equals(cur) || "violet_red".equals(cur)) {
-                mHeaderHolder.tvName.setTextColor(Color.parseColor("#9200f9"));
-                mHeaderHolder.tvScreenName.setTextColor(Color.parseColor("#9200f9"));
-                Utils.setBackgroundTint(mHeaderHolder.ivVerified, Color.parseColor("#9200f9"));
-                mHeaderHolder.bDonate.fromRes(R.raw.donater_fire_violet, Utils.dp(100), Utils.dp(100), null);
-            } else {
-                mHeaderHolder.bDonate.fromRes(R.raw.donater, Utils.dp(100), Utils.dp(100), new int[]{0xffffff, CurrentTheme.getColorPrimary(requireActivity()), 0x777777, CurrentTheme.getColorSecondary(requireActivity())});
-            }
-            mHeaderHolder.bDonate.playAnimation();
-        } else {
-            if (user.isVerified()) {
+            if (donate_anim == 2) {
                 String cur = Settings.get().ui().getMainThemeKey();
                 if ("fire".equals(cur) || "fire_gray".equals(cur) || "yellow_violet".equals(cur)) {
                     mHeaderHolder.tvName.setTextColor(Color.parseColor("#df9d00"));
                     mHeaderHolder.tvScreenName.setTextColor(Color.parseColor("#df9d00"));
                     Utils.setBackgroundTint(mHeaderHolder.ivVerified, Color.parseColor("#df9d00"));
-                } else if ("violet".equals(cur) || "violet_red".equals(cur)) {
-                    mHeaderHolder.tvName.setTextColor(Color.parseColor("#9200f9"));
-                    mHeaderHolder.tvScreenName.setTextColor(Color.parseColor("#9200f9"));
-                    Utils.setBackgroundTint(mHeaderHolder.ivVerified, Color.parseColor("#9200f9"));
+                    mHeaderHolder.bDonate.fromRes(R.raw.donater_fire, Utils.dp(100), Utils.dp(100), null);
+                } else {
+                    mHeaderHolder.tvName.setTextColor(CurrentTheme.getColorPrimary(requireActivity()));
+                    mHeaderHolder.tvScreenName.setTextColor(CurrentTheme.getColorPrimary(requireActivity()));
+                    Utils.setBackgroundTint(mHeaderHolder.ivVerified, CurrentTheme.getColorPrimary(requireActivity()));
+                    mHeaderHolder.bDonate.fromRes(R.raw.donater_fire, Utils.dp(100), Utils.dp(100), new int[]{0xFF812E, CurrentTheme.getColorPrimary(requireActivity())}, true);
                 }
+            } else {
+                mHeaderHolder.bDonate.fromRes(R.raw.donater, Utils.dp(100), Utils.dp(100), new int[]{0xffffff, CurrentTheme.getColorPrimary(requireActivity()), 0x777777, CurrentTheme.getColorSecondary(requireActivity())});
             }
+            mHeaderHolder.bDonate.playAnimation();
+        } else {
             mHeaderHolder.bDonate.setImageDrawable(null);
             mHeaderHolder.bDonate.setVisibility(View.GONE);
         }
+        mHeaderHolder.ivVerified.setVisibility(user.isVerified() ? View.VISIBLE : View.GONE);
 
         Integer onlineIcon = ViewUtils.getOnlineIcon(true, user.isOnlineMobile(), user.getPlatform(), user.getOnlineApp());
         if (!user.isOnline())
@@ -199,7 +191,6 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
         if (user.getBlacklisted()) {
             Utils.ColoredSnack(requireView(), R.string.blacklisted, BaseTransientBottomBar.LENGTH_LONG, Color.parseColor("#ccc9a200")).show();
         }
-        mHeaderHolder.ivVerified.setVisibility(user.isVerified() ? View.VISIBLE : View.GONE);
     }
 
     @Override

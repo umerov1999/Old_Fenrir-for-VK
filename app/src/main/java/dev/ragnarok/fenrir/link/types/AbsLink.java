@@ -27,6 +27,7 @@ public abstract class AbsLink {
     public static final int POLL = 22;
     public static final int AUDIO_TRACK = 23;
     public static final int ARTISTS = 24;
+    public static final int VIDEO_ALBUM = 25;
 
     public final int type;
 

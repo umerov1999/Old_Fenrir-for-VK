@@ -53,7 +53,7 @@ public class RLottieImageView extends AppCompatImageView {
         a.recycle();
 
         if (FenrirNative.isNativeLoaded() && animRes != 0) {
-            drawable = new RLottieDrawable(animRes, "" + animRes, width, height, false, null);
+            drawable = new RLottieDrawable(animRes, "" + animRes, width, height, false, null, false);
             setAnimation(drawable);
             playAnimation();
         }
@@ -89,7 +89,7 @@ public class RLottieImageView extends AppCompatImageView {
             return;
         }
         autoRepeat = false;
-        setAnimation(new RLottieDrawable(ch, true, w, h, false, false, null));
+        setAnimation(new RLottieDrawable(ch, true, w, h, false, false, null, false));
         playAnimation();
     }
 
@@ -141,27 +141,27 @@ public class RLottieImageView extends AppCompatImageView {
     }
 
     public void fromRes(@RawRes int resId, int w, int h) {
-        fromRes(resId, w, h, null);
+        fromRes(resId, w, h, null, false);
     }
 
     public void fromRes(@RawRes int resId, int w, int h, int[] colorReplacement) {
+        fromRes(resId, w, h, colorReplacement, false);
+    }
+
+    public void fromRes(@RawRes int resId, int w, int h, int[] colorReplacement, boolean useMoveColor) {
         if (!FenrirNative.isNativeLoaded()) {
             return;
         }
         clearAnimationDrawable();
-        setAnimation(new RLottieDrawable(resId, "" + resId, w, h, false, colorReplacement));
+        setAnimation(new RLottieDrawable(resId, "" + resId, w, h, false, colorReplacement, useMoveColor));
     }
 
     public void fromFile(@NonNull File file, int w, int h) {
-        fromFile(file, w, h, null);
-    }
-
-    public void fromFile(@NonNull File file, int w, int h, int[] colorReplacement) {
         if (!FenrirNative.isNativeLoaded()) {
             return;
         }
         clearAnimationDrawable();
-        setAnimation(new RLottieDrawable(file, false, w, h, false, false, colorReplacement));
+        setAnimation(new RLottieDrawable(file, false, w, h, false, false, null, false));
     }
 
     public void clearAnimationDrawable() {

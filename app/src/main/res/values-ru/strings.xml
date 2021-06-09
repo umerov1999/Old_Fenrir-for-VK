@@ -58,6 +58,12 @@
         <item>Slidr</item>
     </string-array>
 
+    <string-array name="array_donate_anim_names">
+        <item>Выключить.</item>
+        <item>Линии</item>
+        <item>Огненное кольцо</item>
+    </string-array>
+
     <string-array name="array_pagan_symbol_names">
         <item>Выключен.</item>
         <item>Иггдрасиль</item>
