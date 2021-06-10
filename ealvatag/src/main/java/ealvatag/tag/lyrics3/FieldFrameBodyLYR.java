@@ -22,8 +22,6 @@
  */
 package ealvatag.tag.lyrics3;
 
-import androidx.annotation.NonNull;
-
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -43,7 +41,7 @@ public class FieldFrameBodyLYR extends AbstractLyrics3v2FieldFrameBody {
     /**
      *
      */
-    private ArrayList<Lyrics3Line> lines = new ArrayList<>();
+    private ArrayList<Lyrics3Line> lines = new ArrayList<Lyrics3Line>();
 
     /**
      * Creates a new FieldBodyLYR datatype.
@@ -91,7 +89,6 @@ public class FieldFrameBodyLYR extends AbstractLyrics3v2FieldFrameBody {
 
     /**
      * Creates a new FieldBodyLYR datatype.
-     *
      * @param byteBuffer
      * @throws ealvatag.tag.InvalidTagException
      */
@@ -168,7 +165,7 @@ public class FieldFrameBodyLYR extends AbstractLyrics3v2FieldFrameBody {
         Lyrics3Line newLine;
         ID3v2LyricLine currentLine;
         Lyrics3TimeStamp timeStamp;
-        HashMap<String, Lyrics3Line> lineMap = new HashMap<>();
+        HashMap<String, Lyrics3Line> lineMap = new HashMap<String, Lyrics3Line>();
 
         while (iterator.hasNext()) {
             currentLine = iterator.next();
@@ -240,6 +237,8 @@ public class FieldFrameBodyLYR extends AbstractLyrics3v2FieldFrameBody {
 
     /**
      *
+     *
+     *
      */
     public void read(ByteBuffer byteBuffer) throws InvalidTagException {
         String lineString;
@@ -266,15 +265,14 @@ public class FieldFrameBodyLYR extends AbstractLyrics3v2FieldFrameBody {
     /**
      * @return
      */
-    @NonNull
     public String toString() {
-        StringBuilder str = new StringBuilder(getIdentifier() + " : ");
+        String str = getIdentifier() + " : ";
 
         for (Object line : lines) {
-            str.append(line);
+            str += line.toString();
         }
 
-        return str.toString();
+        return str;
     }
 
     /**
@@ -323,7 +321,7 @@ public class FieldFrameBodyLYR extends AbstractLyrics3v2FieldFrameBody {
         String token;
         int offset = 0;
         int delim = lineString.indexOf(Lyrics3v2Fields.CRLF);
-        lines = new ArrayList<>();
+        lines = new ArrayList<Lyrics3Line>();
 
         Lyrics3Line line;
 
@@ -349,14 +347,14 @@ public class FieldFrameBodyLYR extends AbstractLyrics3v2FieldFrameBody {
      */
     private String writeString() {
         Lyrics3Line line;
-        StringBuilder str = new StringBuilder();
+        String str = "";
 
         for (Object line1 : lines) {
             line = (Lyrics3Line) line1;
-            str.append(line.writeString()).append(Lyrics3v2Fields.CRLF);
+            str += (line.writeString() + Lyrics3v2Fields.CRLF);
         }
 
-        return str.toString();
+        return str;
 
         //return str.substring(0,str.length()-2); // cut off the last CRLF pair
     }

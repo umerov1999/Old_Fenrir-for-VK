@@ -25,13 +25,21 @@ import java.nio.channels.FileChannel;
 
 import ealvatag.audio.exceptions.CannotReadException;
 import ealvatag.audio.exceptions.InvalidAudioFrameException;
+import ealvatag.logging.EalvaTagLog;
+import ealvatag.logging.EalvaTagLog.JLogger;
+import ealvatag.logging.EalvaTagLog.JLoggers;
+import ealvatag.logging.ErrorMessage;
 import ealvatag.tag.TagException;
 import ealvatag.tag.TagFieldContainer;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Replacement for AudioFileReader class
  */
 public abstract class AudioFileReader2 extends AudioFileReader {
+    private static final JLogger LOG = JLoggers.get(AudioFileReader2.class, EalvaTagLog.MARKER);
 
     /*
      * Reads the given file, and return an AudioFile object containing the Tag
@@ -44,6 +52,7 @@ public abstract class AudioFileReader2 extends AudioFileReader {
      */
     public AudioFileImpl read(File f, String extension, boolean ignoreArtwork)
             throws CannotReadException, IOException, TagException, InvalidAudioFrameException {
+        LOG.log(DEBUG, ErrorMessage.GENERAL_READ, f);
 
         try (FileChannel channel = new RandomAccessFile(f, "r").getChannel()) {
             String absolutePath = f.getAbsolutePath();
@@ -51,6 +60,7 @@ public abstract class AudioFileReader2 extends AudioFileReader {
             channel.position(0);
             return new AudioFileImpl(f, extension, info, getTag(channel, absolutePath, ignoreArtwork));
         } catch (FileNotFoundException e) {
+            LOG.log(WARN, e, "Unable to read file: %s", f);
             throw e;
         }
     }
@@ -61,7 +71,7 @@ public abstract class AudioFileReader2 extends AudioFileReader {
     protected abstract GenericAudioHeader getEncodingInfo(FileChannel channel, String fileName)
             throws CannotReadException, IOException;
 
-    protected GenericAudioHeader getEncodingInfo(RandomAccessFile raf) {
+    protected GenericAudioHeader getEncodingInfo(RandomAccessFile raf) throws CannotReadException, IOException {
         throw new UnsupportedOperationException("Old method not used in version 2");
     }
 
@@ -71,7 +81,7 @@ public abstract class AudioFileReader2 extends AudioFileReader {
     protected abstract TagFieldContainer getTag(FileChannel channel, String fileName, boolean ignoreArtwork)
             throws CannotReadException, IOException;
 
-    protected TagFieldContainer getTag(RandomAccessFile file, boolean ignoreArtwork) {
+    protected TagFieldContainer getTag(RandomAccessFile file, boolean ignoreArtwork) throws CannotReadException, IOException {
         throw new UnsupportedOperationException("Old method not used in version 2");
     }
 }

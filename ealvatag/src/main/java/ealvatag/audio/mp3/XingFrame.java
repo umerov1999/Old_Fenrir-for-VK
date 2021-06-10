@@ -1,12 +1,17 @@
 package ealvatag.audio.mp3;
 
-import androidx.annotation.NonNull;
-
 import java.io.EOFException;
 import java.util.Arrays;
 
+import ealvatag.audio.exceptions.InvalidAudioFrameException;
+import ealvatag.logging.EalvaTagLog;
+import ealvatag.logging.EalvaTagLog.JLogger;
+import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.utils.ArrayUtil;
 import okio.Buffer;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.INFO;
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
 
 /**
  * Xing Frame
@@ -27,6 +32,7 @@ import okio.Buffer;
  * It my then contain a Lame Frame ( a Lame frame is in essence an extended Xing Frame
  */
 public class XingFrame {
+    private static final JLogger LOG = JLoggers.get(XingFrame.class, EalvaTagLog.MARKER);
 
     //The offset into first frame varies based on the MPEG frame properties
     private static final int MPEG_VERSION_1_MODE_MONO_OFFSET = 21;
@@ -86,7 +92,7 @@ public class XingFrame {
         }
 
         if (readSize) {
-            skipLess += setAudioSize(buffer);
+            skipLess += setAudioSize(buffer, tempBuf);
         }
 
         //TODO TOC
@@ -97,13 +103,14 @@ public class XingFrame {
             try {
                 buffer.skip(XING_HEADER_BUFFER_SIZE - skipLess);
                 lameFrame = LameFrame.parseLameFrame(buffer, tempBuf);
-            } catch (EOFException ignored) {
+            } catch (EOFException e) {
+                LOG.log(INFO, "Not enough room for Lame header", e);
             }
         }
     }
 
     static XingFrame parseXingFrame(Buffer buffer)
-            throws EOFException {
+            throws InvalidAudioFrameException, EOFException {
         return new XingFrame(buffer);
     }
 
@@ -136,6 +143,7 @@ public class XingFrame {
         if ((!Arrays.equals(identifier, XING_VBR_ID)) && (!Arrays.equals(identifier, XING_CBR_ID))) {
             return null;
         }
+        LOG.log(TRACE, "Found Xing Frame");
         return buffer;
     }
 
@@ -147,6 +155,7 @@ public class XingFrame {
         //Is it VBR or CBR
         buffer.read(tempBuf, 0, XING_IDENTIFIER_BUFFER_SIZE);
         if (ArrayUtil.equals(tempBuf, XING_VBR_ID, XING_VBR_ID.length)) {
+            LOG.log(TRACE, "Is Vbr");
             vbr = true;
         }
         return XING_IDENTIFIER_BUFFER_SIZE;
@@ -178,7 +187,7 @@ public class XingFrame {
         return frameCount;
     }
 
-    private int setAudioSize(Buffer header) throws EOFException {
+    private int setAudioSize(Buffer header, byte[] frameSizeBuffer) throws EOFException {
         audioSize = header.readInt();
         isAudioSizeEnabled = true;
 //        ArrayUtil.fill(frameSizeBuffer, ArrayUtil.ZERO, XING_AUDIOSIZE_BUFFER_SIZE);
@@ -207,7 +216,6 @@ public class XingFrame {
         return vbr;
     }
 
-    @NonNull
     public String toString() {
         return "xingheader" + " vbr:" + vbr + " frameCountEnabled:" + isFrameCountEnabled + " frameCount:" +
                 frameCount + " audioSizeEnabled:" + isAudioSizeEnabled + " audioFileSize:" + audioSize;

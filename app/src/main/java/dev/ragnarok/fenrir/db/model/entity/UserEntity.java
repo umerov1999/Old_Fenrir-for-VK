@@ -33,6 +33,8 @@ public class UserEntity {
 
     private String domain;
 
+    private String maiden_name;
+
     private boolean friend;
     private int friendStatus;
     private boolean can_write_private_message;
@@ -235,6 +237,15 @@ public class UserEntity {
 
     public UserEntity setCan_access_closed(boolean can_access_closed) {
         this.can_access_closed = can_access_closed;
+        return this;
+    }
+
+    public String getMaiden_name() {
+        return maiden_name;
+    }
+
+    public UserEntity setMaiden_name(String maiden_name) {
+        this.maiden_name = maiden_name;
         return this;
     }
 }

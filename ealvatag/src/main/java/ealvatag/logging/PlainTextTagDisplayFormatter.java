@@ -18,8 +18,6 @@
 package ealvatag.logging;
 
 
-import androidx.annotation.NonNull;
-
 /*
  * For Formatting metadata contents of a file as simple text
  */
@@ -85,7 +83,6 @@ public class PlainTextTagDisplayFormatter extends AbstractTagDisplayFormatter {
         addElement(type, String.valueOf(value));
     }
 
-    @NonNull
     public String toString() {
         return sb.toString();
     }

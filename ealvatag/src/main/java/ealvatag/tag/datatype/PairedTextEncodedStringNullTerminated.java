@@ -1,7 +1,5 @@
 package ealvatag.tag.datatype;
 
-import androidx.annotation.NonNull;
-
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
@@ -12,6 +10,10 @@ import ealvatag.tag.InvalidDataTypeException;
 import ealvatag.tag.id3.AbstractTagFrameBody;
 import ealvatag.utils.EqualsUtil;
 import okio.Buffer;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Represents a data type that allow multiple Strings but they should be paired as key values, i.e should be 2,4,6..
@@ -24,11 +26,13 @@ public class PairedTextEncodedStringNullTerminated extends AbstractDataType {
         value = new PairedTextEncodedStringNullTerminated.ValuePairs();
     }
 
+    @SuppressWarnings("unused")
     public PairedTextEncodedStringNullTerminated(TextEncodedStringSizeTerminated object) {
         super(object);
         value = new PairedTextEncodedStringNullTerminated.ValuePairs();
     }
 
+    @SuppressWarnings("unused")
     public PairedTextEncodedStringNullTerminated(PairedTextEncodedStringNullTerminated object) {
         super(object);
     }
@@ -70,6 +74,7 @@ public class PairedTextEncodedStringNullTerminated extends AbstractDataType {
             }
             return true;
         } else {
+            LOG.log(ERROR, "value is null");
             return false;
         }
     }
@@ -84,6 +89,7 @@ public class PairedTextEncodedStringNullTerminated extends AbstractDataType {
      * @throws InvalidDataTypeException if unable to find any null terminated Strings
      */
     public void readByteArray(byte[] arr, int offset) throws InvalidDataTypeException {
+        LOG.log(DEBUG, "Reading PairTextEncodedStringNullTerminated from array from offset:%s", offset);
         //Continue until unable to read a null terminated String
         while (true) {
             try {
@@ -129,9 +135,11 @@ public class PairedTextEncodedStringNullTerminated extends AbstractDataType {
             }
 
             if (size == 0) {
+                LOG.log(WARN, "No null terminated Strings found");
                 throw new InvalidDataTypeException("No null terminated Strings found");
             }
         }
+        LOG.log(DEBUG, "Read  PairTextEncodedStringNullTerminated:%s size:%s", value, size);
     }
 
     @Override
@@ -174,9 +182,11 @@ public class PairedTextEncodedStringNullTerminated extends AbstractDataType {
             }
 
             if (this.size == 0) {
+                LOG.log(WARN, "No null terminated Strings found");
                 throw new InvalidDataTypeException("No null terminated Strings found");
             }
         }
+        LOG.log(DEBUG, "Read  PairTextEncodedStringNullTerminated:%s size:%s", value, size);
     }
 
     /**
@@ -185,6 +195,7 @@ public class PairedTextEncodedStringNullTerminated extends AbstractDataType {
      * @return byteBuffer that should be written to file to persist this dataType.
      */
     public byte[] writeByteArray() {
+        LOG.log(DEBUG, "Writing PairTextEncodedStringNullTerminated");
 
         int localSize = 0;
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -205,16 +216,17 @@ public class PairedTextEncodedStringNullTerminated extends AbstractDataType {
             }
         } catch (IOException ioe) {
             //This should never happen because the write is internal with the JVM it is not to a file
+            LOG.log(ERROR, "IOException in MultipleTextEncodedStringNullTerminated when writing byte array", ioe);
             throw new RuntimeException(ioe);
         }
 
         //Update size member variable
         size = localSize;
 
+        LOG.log(DEBUG, "Written PairTextEncodedStringNullTerminated");
         return buffer.toByteArray();
     }
 
-    @NonNull
     public String toString() {
         return value.toString();
     }
@@ -267,7 +279,6 @@ public class PairedTextEncodedStringNullTerminated extends AbstractDataType {
          *
          * @return a string representation of the value
          */
-        @NonNull
         public String toString() {
             StringBuilder sb = new StringBuilder();
             for (Pair next : mapping) {

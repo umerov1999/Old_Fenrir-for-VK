@@ -22,8 +22,6 @@
  */
 package ealvatag.tag.lyrics3;
 
-import androidx.annotation.NonNull;
-
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -43,7 +41,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
     /**
      *
      */
-    private HashMap<String, Lyrics3v2Field> fieldMap = new HashMap<>();
+    private HashMap<String, Lyrics3v2Field> fieldMap = new HashMap<String, Lyrics3v2Field>();
 
 
     public Lyrics3v2(Lyrics3v2 copyObject) {
@@ -98,9 +96,9 @@ public class Lyrics3v2 extends AbstractLyrics3 {
     /**
      * Creates a new Lyrics3v2 datatype.
      *
-     * @param byteBuffer
      * @throws TagNotFoundException
      * @throws IOException
+     * @param byteBuffer
      */
     public Lyrics3v2(ByteBuffer byteBuffer) throws TagNotFoundException, IOException {
         try {
@@ -216,7 +214,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
         seek(byteBuffer);
         filePointer = byteBuffer.position();
 
-        fieldMap = new HashMap<>();
+        fieldMap = new HashMap<String, Lyrics3v2Field>();
 
         Lyrics3v2Field lyric;
 
@@ -289,18 +287,17 @@ public class Lyrics3v2 extends AbstractLyrics3 {
     /**
      * @return
      */
-    @NonNull
     public String toString() {
         Iterator<Lyrics3v2Field> iterator = fieldMap.values().iterator();
         Lyrics3v2Field field;
-        StringBuilder str = new StringBuilder(getIdentifier() + " " + getSize() + "\n");
+        String str = getIdentifier() + " " + getSize() + "\n";
 
         while (iterator.hasNext()) {
             field = iterator.next();
-            str.append(field).append("\n");
+            str += (field + "\n");
         }
 
-        return str.toString();
+        return str;
     }
 
     /**
@@ -414,7 +411,6 @@ public class Lyrics3v2 extends AbstractLyrics3 {
 
     /**
      * TODO
-     *
      * @param byteBuffer
      * @return
      */

@@ -40,6 +40,9 @@ import java.util.regex.Matcher;
 
 import ealvatag.audio.io.FileOperator;
 import ealvatag.audio.mp3.MP3File;
+import ealvatag.logging.EalvaTagLog;
+import ealvatag.logging.EalvaTagLog.JLogger;
+import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.tag.FieldDataInvalidException;
 import ealvatag.tag.FieldKey;
 import ealvatag.tag.Key;
@@ -53,6 +56,8 @@ import ealvatag.tag.images.Artwork;
 import ealvatag.tag.reference.GenreTypes;
 import ealvatag.utils.StandardCharsets;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
 import static ealvatag.utils.Check.CANNOT_BE_NULL;
 import static ealvatag.utils.Check.CANNOT_BE_NULL_OR_EMPTY;
 import static ealvatag.utils.Check.checkArgNotNull;
@@ -73,6 +78,7 @@ public class ID3v1Tag extends AbstractID3v1Tag implements TagFieldContainer {
     static final ImmutableMap<FieldKey, ID3v1FieldKey> tagFieldToID3v11Field;
     private static final int FIELD_COMMENT_LENGTH = 30;
     private static final int FIELD_COMMENT_POS = 97;
+    private static final JLogger LOG = JLoggers.get(ID3v1Tag.class, EalvaTagLog.MARKER);
     private static final ImmutableMap<FieldKey, ID3v1FieldKey> tagFieldToID3v1Field;
     private static final byte RELEASE = 1;
     private static final byte MAJOR_VERSION = 0;
@@ -167,6 +173,7 @@ public class ID3v1Tag extends AbstractID3v1Tag implements TagFieldContainer {
         if (!seek(byteBuffer)) {
             throw new TagNotFoundException(loggingFilename + ":" + "ID3v1 tag not found");
         }
+        LOG.log(DEBUG, "%s:Reading v1 tag", loggingFilename);
         //Do single file read of data to cut down on file reads
         byte[] dataBuffer = new byte[TAG_LENGTH];
         byteBuffer.position(0);
@@ -183,8 +190,10 @@ public class ID3v1Tag extends AbstractID3v1Tag implements TagFieldContainer {
         }
         album = new String(dataBuffer, FIELD_ALBUM_POS, FIELD_ALBUM_LENGTH, StandardCharsets.ISO_8859_1).trim();
         m = AbstractID3v1Tag.endofStringPattern.matcher(album);
+        LOG.log(TRACE, "%s:Orig Album is:%s", loggingFilename, comment);
         if (m.find()) {
             album = album.substring(0, m.start());
+            LOG.log(TRACE, "%s:Album is:%s", loggingFilename, album);
         }
         year = new String(dataBuffer, FIELD_YEAR_POS, FIELD_YEAR_LENGTH, StandardCharsets.ISO_8859_1).trim();
         m = AbstractID3v1Tag.endofStringPattern.matcher(year);
@@ -193,8 +202,10 @@ public class ID3v1Tag extends AbstractID3v1Tag implements TagFieldContainer {
         }
         comment = new String(dataBuffer, FIELD_COMMENT_POS, FIELD_COMMENT_LENGTH, StandardCharsets.ISO_8859_1).trim();
         m = AbstractID3v1Tag.endofStringPattern.matcher(comment);
+        LOG.log(TRACE, "%s:Orig Comment is:%s", loggingFilename, comment);
         if (m.find()) {
             comment = comment.substring(0, m.start());
+            LOG.log(TRACE, "%s:Comment is:%s", loggingFilename, comment);
         }
         genre = dataBuffer[FIELD_GENRE_POS];
 
@@ -216,6 +227,7 @@ public class ID3v1Tag extends AbstractID3v1Tag implements TagFieldContainer {
      * Write this tag to the file, replacing any tag previously existing
      */
     public void write(RandomAccessFile file) throws IOException {
+        LOG.log(DEBUG, "Saving ID3v1 tag to file");
         byte[] buffer = new byte[TAG_LENGTH];
         int i;
         String str;
@@ -262,6 +274,7 @@ public class ID3v1Tag extends AbstractID3v1Tag implements TagFieldContainer {
             buffer[offset] = genre;
         }
         file.write(buffer);
+        LOG.log(DEBUG, "Saved ID3v1 tag to file");
     }
 
     /**
@@ -322,7 +335,7 @@ public class ID3v1Tag extends AbstractID3v1Tag implements TagFieldContainer {
     public ImmutableList<TagField> getAlbum() {
         String firstAlbum = getFirstAlbum();
         if (firstAlbum.length() > 0) {
-            return ImmutableList.of(new ID3v1TagField(ID3v1FieldKey.ALBUM.name(), firstAlbum));
+            return ImmutableList.<TagField>of(new ID3v1TagField(ID3v1FieldKey.ALBUM.name(), firstAlbum));
         } else {
             return ImmutableList.of();
         }
@@ -342,7 +355,7 @@ public class ID3v1Tag extends AbstractID3v1Tag implements TagFieldContainer {
     public ImmutableList<TagField> getArtist() {
         String firstArtist = getFirstArtist();
         if (firstArtist.length() > 0) {
-            return ImmutableList.of(new ID3v1TagField(ID3v1FieldKey.ARTIST.name(), firstArtist));
+            return ImmutableList.<TagField>of(new ID3v1TagField(ID3v1FieldKey.ARTIST.name(), firstArtist));
         } else {
             return ImmutableList.of();
         }
@@ -361,7 +374,7 @@ public class ID3v1Tag extends AbstractID3v1Tag implements TagFieldContainer {
      */
     public ImmutableList<TagField> getComment() {
         if (getFirstComment().length() > 0) {
-            return ImmutableList.of(new ID3v1TagField(ID3v1FieldKey.COMMENT.name(), getFirstComment()));
+            return ImmutableList.<TagField>of(new ID3v1TagField(ID3v1FieldKey.COMMENT.name(), getFirstComment()));
         } else {
             return ImmutableList.of();
         }
@@ -385,7 +398,7 @@ public class ID3v1Tag extends AbstractID3v1Tag implements TagFieldContainer {
     public ImmutableList<TagField> getGenre() {
         String firstGenre = getFirst(FieldKey.GENRE);
         if (firstGenre.length() > 0) {
-            return ImmutableList.of(new ID3v1TagField(ID3v1FieldKey.GENRE.name(), firstGenre));
+            return ImmutableList.<TagField>of(new ID3v1TagField(ID3v1FieldKey.GENRE.name(), firstGenre));
         } else {
             return ImmutableList.of();
         }
@@ -416,7 +429,7 @@ public class ID3v1Tag extends AbstractID3v1Tag implements TagFieldContainer {
     public ImmutableList<TagField> getTitle() {
         String firstTitle = getFirst(FieldKey.TITLE);
         if (firstTitle.length() > 0) {
-            return ImmutableList.of(new ID3v1TagField(ID3v1FieldKey.TITLE.name(), firstTitle));
+            return ImmutableList.<TagField>of(new ID3v1TagField(ID3v1FieldKey.TITLE.name(), firstTitle));
         } else {
             return ImmutableList.of();
         }
@@ -437,7 +450,7 @@ public class ID3v1Tag extends AbstractID3v1Tag implements TagFieldContainer {
      */
     public ImmutableList<TagField> getYear() {
         if (getFirst(FieldKey.YEAR).length() > 0) {
-            return ImmutableList.of(new ID3v1TagField(ID3v1FieldKey.YEAR.name(), getFirst(FieldKey.YEAR)));
+            return ImmutableList.<TagField>of(new ID3v1TagField(ID3v1FieldKey.YEAR.name(), getFirst(FieldKey.YEAR)));
         } else {
             return ImmutableList.of();
         }
@@ -658,11 +671,11 @@ public class ID3v1Tag extends AbstractID3v1Tag implements TagFieldContainer {
         return this;
     }
 
-    public Tag setArtwork(Artwork artwork) throws IllegalArgumentException, UnsupportedFieldException {
+    public Tag setArtwork(Artwork artwork) throws IllegalArgumentException, UnsupportedFieldException, FieldDataInvalidException {
         throw new UnsupportedFieldException(FieldKey.COVER_ART.name());
     }
 
-    public Tag addArtwork(Artwork artwork) throws IllegalArgumentException, UnsupportedFieldException {
+    public Tag addArtwork(Artwork artwork) throws IllegalArgumentException, UnsupportedFieldException, FieldDataInvalidException {
         throw new UnsupportedFieldException(FieldKey.COVER_ART.name());
     }
 
@@ -696,7 +709,8 @@ public class ID3v1Tag extends AbstractID3v1Tag implements TagFieldContainer {
      * Create Tag Field using generic key
      */
     public TagField createField(FieldKey genericKey, String... values) throws IllegalArgumentException,
-            UnsupportedFieldException {
+            UnsupportedFieldException,
+            FieldDataInvalidException {
         ID3v1FieldKey idv1FieldKey = getFieldMap().get(checkArgNotNull(genericKey, CANNOT_BE_NULL, "genericKey"));
         if (idv1FieldKey == null) {
             throw new UnsupportedFieldException(genericKey.name());
@@ -708,7 +722,7 @@ public class ID3v1Tag extends AbstractID3v1Tag implements TagFieldContainer {
         return tagFieldToID3v1Field;
     }
 
-    public TagField createArtwork(Artwork artwork) throws UnsupportedFieldException {
+    public TagField createArtwork(Artwork artwork) throws UnsupportedFieldException, FieldDataInvalidException {
         throw new UnsupportedFieldException(FieldKey.COVER_ART.name());
     }
 
@@ -785,7 +799,7 @@ public class ID3v1Tag extends AbstractID3v1Tag implements TagFieldContainer {
     public Optional<TagField> getFirstField(FieldKey genericKey)
             throws IllegalArgumentException, UnsupportedFieldException {
         List<TagField> l = getFields(genericKey);
-        return (l.size() != 0) ? Optional.fromNullable(l.get(0)) : Optional.absent();
+        return (l.size() != 0) ? Optional.fromNullable(l.get(0)) : Optional.<TagField>absent();
     }
 
     public TagField createCompilationField(boolean value) throws UnsupportedFieldException {
@@ -825,7 +839,7 @@ public class ID3v1Tag extends AbstractID3v1Tag implements TagFieldContainer {
      * @return genre or empty string if not valid
      */
     String getFirstGenre() {
-        int genreId = genre & BYTE_TO_UNSIGNED;
+        Integer genreId = genre & BYTE_TO_UNSIGNED;
         String genreValue = GenreTypes.getInstanceOf().getValue(genreId);
         if (genreValue == null) {
             return "";

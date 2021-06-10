@@ -17,7 +17,7 @@ import okio.Buffer;
  */
 public class FrameBodyTCMP extends AbstractFrameBodyTextInfo implements ID3v24FrameBody, ID3v23FrameBody {
     //TODO does iTunes have to have null terminator?
-    static final String IS_COMPILATION = "1\u0000";
+    static String IS_COMPILATION = "1\u0000";
 
     /**
      * Creates a new FrameBodyTCMP datatype, with compilation enabled

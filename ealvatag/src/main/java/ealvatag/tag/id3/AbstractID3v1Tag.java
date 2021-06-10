@@ -31,6 +31,13 @@ import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
+import ealvatag.logging.EalvaTagLog;
+import ealvatag.logging.EalvaTagLog.JLogger;
+import ealvatag.logging.EalvaTagLog.JLoggers;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+
 /**
  * This is the abstract base class for all ID3v1 tags.
  *
@@ -38,7 +45,6 @@ import java.util.regex.Pattern;
  * @author : Paul Taylor
  */
 abstract public class AbstractID3v1Tag extends AbstractID3Tag {
-
     //Tag ID as held in file
     public static final String TAG = "TAG";
     protected static final byte[] TAG_ID = {(byte) 'T', (byte) 'A', (byte) 'G'};
@@ -64,10 +70,11 @@ abstract public class AbstractID3v1Tag extends AbstractID3Tag {
     protected static final String TYPE_ALBUM = "album";
     protected static final String TYPE_YEAR = "year";
     protected static final String TYPE_GENRE = "genre";
-    //Used to detect end of field in String constructed from Data
-    protected static final Pattern endofStringPattern = Pattern.compile("\\x00");
     //If field is less than maximum field length this is how it is terminated
     static final byte END_OF_FIELD = (byte) 0;
+    private static final JLogger LOG = JLoggers.get(AbstractID3v1Tag.class, EalvaTagLog.MARKER);
+    //Used to detect end of field in String constructed from Data
+    protected static Pattern endofStringPattern = Pattern.compile("\\x00");
 
     /**
      * Does a v1tag or a v11tag exist
@@ -98,6 +105,8 @@ abstract public class AbstractID3v1Tag extends AbstractID3Tag {
      * @throws IOException if there was a problem accessing the file
      */
     public void delete(RandomAccessFile file) throws IOException {
+        //Read into Byte Buffer
+        LOG.log(DEBUG, "Deleting ID3v1 from file if exists");
 
         FileChannel fc;
         ByteBuffer byteBuffer;
@@ -112,9 +121,13 @@ abstract public class AbstractID3v1Tag extends AbstractID3Tag {
         byteBuffer.rewind();
         if (seekForV1OrV11Tag(byteBuffer)) {
             try {
+                LOG.log(DEBUG, "Deleted ID3v1 tag");
                 file.setLength(file.length() - TAG_LENGTH);
-            } catch (IOException ignored) {
+            } catch (IOException ex) {
+                LOG.log(ERROR, "Unable to delete existing ID3v1 Tag", ex);
             }
+        } else {
+            LOG.log(DEBUG, "Unable to find ID3v1 tag to deleteField");
         }
     }
 }

@@ -187,6 +187,9 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
                 paganSymbol.setImageResource(R.drawable.ic_hell);
                 break;
             case 10:
+                paganSymbol.setImageResource(R.drawable.ic_fireshow);
+                break;
+            case 11:
                 if (FenrirNative.isNativeLoaded()) {
                     paganSymbol.fromRes(R.raw.fire_fan, Utils.dp(180), Utils.dp(140), new int[]{
                             0xffffff,
@@ -201,7 +204,7 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
                     paganSymbol.setImageResource(R.drawable.ic_igdr);
                 }
                 break;
-            case 11:
+            case 12:
                 paganSymbol.setImageResource(R.drawable.ic_odin);
                 break;
             default:

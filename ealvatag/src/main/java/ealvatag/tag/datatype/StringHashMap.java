@@ -20,8 +20,6 @@
  */
 package ealvatag.tag.datatype;
 
-import androidx.annotation.NonNull;
-
 import com.google.common.base.Strings;
 
 import java.nio.charset.Charset;
@@ -84,7 +82,6 @@ public class StringHashMap extends StringFixedLength {
                 super.equals(obj);
     }
 
-    @NonNull
     public String toString() {
         if (value != null) {
             return Strings.nullToEmpty(simpleStringStringMap.getValue(value.toString()));

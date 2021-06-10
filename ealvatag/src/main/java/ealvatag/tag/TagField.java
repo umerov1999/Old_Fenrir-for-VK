@@ -99,4 +99,14 @@ public interface TagField {
      * @return <code>true</code> if no data is stored (or empty String).
      */
     boolean isEmpty();
+
+    /**
+     * This method returns a human readable description of the fields contents.<br>
+     * For text fields it should be the text itself. Other fields containing
+     * images may return a formatted string with image properties like width,
+     * height and so on.
+     *
+     * @return Description of the fields content.
+     */
+    String toString();
 }

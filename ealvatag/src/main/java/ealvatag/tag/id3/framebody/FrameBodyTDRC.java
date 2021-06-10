@@ -28,6 +28,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import ealvatag.logging.EalvaTagLog;
+import ealvatag.logging.EalvaTagLog.JLogger;
+import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.tag.InvalidTagException;
 import ealvatag.tag.datatype.DataTypes;
 import ealvatag.tag.id3.ID3v23Frames;
@@ -35,15 +38,13 @@ import ealvatag.tag.id3.ID3v24Frames;
 import ealvatag.tag.id3.valuepair.TextEncoding;
 import okio.Buffer;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.INFO;
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+
 
 public class FrameBodyTDRC extends AbstractFrameBodyTextInfo implements ID3v24FrameBody {
-    private static final List<SimpleDateFormat> formatters = new ArrayList<>();
-    private static final int PRECISION_SECOND = 0;
-    private static final int PRECISION_MINUTE = 1;
-    private static final int PRECISION_HOUR = 2;
-    private static final int PRECISION_DAY = 3;
-    private static final int PRECISION_MONTH = 4;
-    private static final int PRECISION_YEAR = 5;
+    private static final JLogger LOG = JLoggers.get(FrameBodyTDRC.class, EalvaTagLog.MARKER);
     private static final SimpleDateFormat formatYearIn;
     private static final SimpleDateFormat formatYearOut;
     private static final SimpleDateFormat formatDateIn;
@@ -52,6 +53,13 @@ public class FrameBodyTDRC extends AbstractFrameBodyTextInfo implements ID3v24Fr
     private static final SimpleDateFormat formatTimeIn;
     private static final SimpleDateFormat formatTimeOut;
     private static final SimpleDateFormat formatHoursOut;
+    private static final List<SimpleDateFormat> formatters = new ArrayList<>();
+    private static final int PRECISION_SECOND = 0;
+    private static final int PRECISION_MINUTE = 1;
+    private static final int PRECISION_HOUR = 2;
+    private static final int PRECISION_DAY = 3;
+    private static final int PRECISION_MONTH = 4;
+    private static final int PRECISION_YEAR = 5;
 
     static {
         //This is allowable v24 format , we use UK Locale not because we are restricting to UK
@@ -181,7 +189,8 @@ public class FrameBodyTDRC extends AbstractFrameBodyTextInfo implements ID3v24Fr
         try {
             Date date = parseDate.parse(text);
             return formatDate.format(date);
-        } catch (ParseException ignored) {
+        } catch (ParseException e) {
+            LOG.log(WARN, "Unable to parse:%s", text);
         }
         return "";
     }
@@ -252,6 +261,7 @@ public class FrameBodyTDRC extends AbstractFrameBodyTextInfo implements ID3v24Fr
     }
 
     public void setYear(String year) {
+        LOG.log(TRACE, "Setting year to %s", year);
         this.year = year;
     }
 
@@ -260,6 +270,7 @@ public class FrameBodyTDRC extends AbstractFrameBodyTextInfo implements ID3v24Fr
     }
 
     public void setTime(String time) {
+        LOG.log(TRACE, "Setting time to %s", time);
         this.time = time;
     }
 
@@ -268,6 +279,7 @@ public class FrameBodyTDRC extends AbstractFrameBodyTextInfo implements ID3v24Fr
     }
 
     public void setDate(String date) {
+        LOG.log(TRACE, "Setting date to %s", date);
         this.date = date;
     }
 
@@ -290,6 +302,7 @@ public class FrameBodyTDRC extends AbstractFrameBodyTextInfo implements ID3v24Fr
                 //Do nothing;
             } catch (NumberFormatException nfe) {
                 //Do nothing except log warning because not really expecting this to happen
+                LOG.log(WARN, "Date Formatter:%s failed to parse:%s", formatters.get(i).toPattern(), getText(), nfe);
             }
         }
     }
@@ -300,6 +313,7 @@ public class FrameBodyTDRC extends AbstractFrameBodyTextInfo implements ID3v24Fr
     //TODO currently if user has entered Year and Month, we only store in v23, should we store month with
     //first day
     private void extractID3v23Formats(Date dateRecord, int precision) {
+        LOG.log(INFO, "Precision is:" + precision + "for date:" + dateRecord);
 
         //Precision Year
         if (precision == PRECISION_YEAR) {

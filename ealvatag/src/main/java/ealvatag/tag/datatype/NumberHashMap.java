@@ -20,8 +20,6 @@
  */
 package ealvatag.tag.datatype;
 
-import androidx.annotation.NonNull;
-
 import ealvatag.logging.ErrorMessage;
 import ealvatag.tag.InvalidDataTypeException;
 import ealvatag.tag.id3.AbstractTagFrameBody;
@@ -35,6 +33,8 @@ import ealvatag.tag.id3.valuepair.SynchronisedLyricsContentType;
 import ealvatag.tag.id3.valuepair.TextEncoding;
 import ealvatag.tag.reference.PictureTypes;
 import ealvatag.utils.EqualsUtil;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Represents a number that acts as a key into an enumeration of values
@@ -142,11 +142,12 @@ public class NumberHashMap extends NumberFixedLength {
         if (!simpleIntStringMap.containsKey(intValue)) {
             if (!hasEmptyValue) {
                 throw new InvalidDataTypeException(ErrorMessage.MP3_REFERENCE_KEY_INVALID, identifier, intValue);
+            } else if (identifier.equals(DataTypes.OBJ_PICTURE_TYPE)) {
+                LOG.log(WARN, ErrorMessage.MP3_PICTURE_TYPE_INVALID, value);
             }
         }
     }
 
-    @NonNull
     public String toString() {
         if (value == null) {
             return "";

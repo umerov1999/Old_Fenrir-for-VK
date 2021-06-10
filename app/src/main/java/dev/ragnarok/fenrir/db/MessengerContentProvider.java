@@ -334,6 +334,7 @@ public class MessengerContentProvider extends ContentProvider {
         sUsersProjectionMap.put(UserColumns.IS_BLACK_LISTED, UserColumns.FULL_IS_BLACK_LISTED);
         sUsersProjectionMap.put(UserColumns.IS_CAN_ACCESS_CLOSED, UserColumns.FULL_IS_CAN_ACCESS_CLOSED);
         sUsersProjectionMap.put(UserColumns.IS_VERIFIED, UserColumns.FULL_IS_VERIFIED);
+        sUsersProjectionMap.put(UserColumns.MAIDEN_NAME, UserColumns.FULL_MAIDEN_NAME);
 
         sRelativeshipProjectionMap = new HashMap<>();
         sRelativeshipProjectionMap.put(BaseColumns._ID, RelationshipColumns.FULL_ID);
@@ -360,6 +361,7 @@ public class MessengerContentProvider extends ContentProvider {
         sRelativeshipProjectionMap.put(RelationshipColumns.FOREIGN_SUBJECT_IS_BLACK_LISTED, UserColumns.FULL_IS_BLACK_LISTED + " AS " + RelationshipColumns.FOREIGN_SUBJECT_IS_BLACK_LISTED);
         sRelativeshipProjectionMap.put(RelationshipColumns.FOREIGN_SUBJECT_IS_CAN_ACCESS_CLOSED, UserColumns.FULL_IS_CAN_ACCESS_CLOSED + " AS " + RelationshipColumns.FOREIGN_SUBJECT_IS_CAN_ACCESS_CLOSED);
         sRelativeshipProjectionMap.put(RelationshipColumns.FOREIGN_SUBJECT_IS_VERIFIED, UserColumns.FULL_IS_VERIFIED + " AS " + RelationshipColumns.FOREIGN_SUBJECT_IS_VERIFIED);
+        sRelativeshipProjectionMap.put(RelationshipColumns.FOREIGN_SUBJECT_MAIDEN_NAME, UserColumns.FULL_MAIDEN_NAME + " AS " + RelationshipColumns.FOREIGN_SUBJECT_MAIDEN_NAME);
 
         sRelativeshipProjectionMap.put(RelationshipColumns.FOREIGN_SUBJECT_GROUP_NAME, GroupColumns.FULL_NAME + " AS " + RelationshipColumns.FOREIGN_SUBJECT_GROUP_NAME);
         sRelativeshipProjectionMap.put(RelationshipColumns.FOREIGN_SUBJECT_GROUP_SCREEN_NAME, GroupColumns.FULL_SCREEN_NAME + " AS " + RelationshipColumns.FOREIGN_SUBJECT_GROUP_SCREEN_NAME);

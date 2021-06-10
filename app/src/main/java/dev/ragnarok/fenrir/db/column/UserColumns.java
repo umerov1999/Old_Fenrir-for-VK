@@ -5,7 +5,7 @@ import android.provider.BaseColumns;
 public final class UserColumns implements BaseColumns {
 
     public static final String API_FIELDS = "first_name,last_name,online,online_mobile,photo_50," +
-            "photo_100,photo_200,last_seen,platform,status,photo_max_orig,online_app,sex,domain,is_friend,friend_status,blacklisted_by_me,blacklisted,can_write_private_message,can_access_closed,verified,screen_name,is_favorite,is_subscribed";
+            "photo_100,photo_200,last_seen,platform,status,photo_max_orig,online_app,sex,domain,is_friend,friend_status,blacklisted_by_me,blacklisted,can_write_private_message,can_access_closed,verified,screen_name,is_favorite,is_subscribed,maiden_name";
     /**
      * The table name of books = "books"
      */
@@ -32,6 +32,7 @@ public final class UserColumns implements BaseColumns {
     public static final String IS_BLACK_LISTED = "is_black_listed";
     public static final String IS_CAN_ACCESS_CLOSED = "is_can_access_closed";
     public static final String IS_VERIFIED = "is_verified";
+    public static final String MAIDEN_NAME = "maiden_name";
     /**
      * The id of the user, includes tablename prefix
      * <P>Type: INT</P>
@@ -58,6 +59,7 @@ public final class UserColumns implements BaseColumns {
     public static final String FULL_IS_BLACK_LISTED = TABLENAME + "." + IS_BLACK_LISTED;
     public static final String FULL_IS_CAN_ACCESS_CLOSED = TABLENAME + "." + IS_CAN_ACCESS_CLOSED;
     public static final String FULL_IS_VERIFIED = TABLENAME + "." + IS_VERIFIED;
+    public static final String FULL_MAIDEN_NAME = TABLENAME + "." + MAIDEN_NAME;
 
     // This class cannot be instantiated
     private UserColumns() {

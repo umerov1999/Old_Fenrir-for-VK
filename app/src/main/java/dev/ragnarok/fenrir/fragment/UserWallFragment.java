@@ -1,6 +1,7 @@
 package dev.ragnarok.fenrir.fragment;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -74,6 +75,7 @@ import me.minetsh.imaging.IMGEditActivity;
 
 import static dev.ragnarok.fenrir.util.Objects.isNull;
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
 import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPresenter>
@@ -120,11 +122,16 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
     });
     private UserHeaderHolder mHeaderHolder;
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void displayBaseUserInfo(User user) {
         if (isNull(mHeaderHolder)) return;
 
-        mHeaderHolder.tvName.setText(user.getFullName());
+        if (Utils.isEmpty(user.getMaiden_name())) {
+            mHeaderHolder.tvName.setText(user.getFullName());
+        } else {
+            mHeaderHolder.tvName.setText(firstNonEmptyString(user.getFullName(), " ") + " (" + user.getMaiden_name() + ")");
+        }
         mHeaderHolder.tvLastSeen.setText(UserInfoResolveUtil.getUserActivityLine(getContext(), user, true));
 
         if (!user.getCanWritePrivateMessage())

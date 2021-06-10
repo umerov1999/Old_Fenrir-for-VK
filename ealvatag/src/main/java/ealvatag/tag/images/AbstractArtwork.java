@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+import ealvatag.audio.flac.metadatablock.MetadataBlockDataPicture;
 import ealvatag.tag.id3.valuepair.ImageFormats;
 import ealvatag.tag.reference.PictureTypes;
 
@@ -49,6 +50,21 @@ public abstract class AbstractArtwork implements Artwork {
         setMimeType(ImageFormats.getMimeTypeForBinarySignature(imagedata));
         setDescription("");
         setPictureType(PictureTypes.DEFAULT_ID);
+        return this;
+    }
+
+    public Artwork setFromMetadataBlockDataPicture(MetadataBlockDataPicture coverArt) {
+        setMimeType(coverArt.getMimeType());
+        setDescription(coverArt.getDescription());
+        setPictureType(coverArt.getPictureType());
+        if (coverArt.isImageUrl()) {
+            setLinked(coverArt.isImageUrl());
+            setImageUrl(coverArt.getImageUrl());
+        } else {
+            setBinaryData(coverArt.getImageData());
+        }
+        setWidth(coverArt.getWidth());
+        setHeight(coverArt.getHeight());
         return this;
     }
 

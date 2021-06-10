@@ -16,8 +16,6 @@
  */
 package ealvatag.tag.datatype;
 
-import androidx.annotation.NonNull;
-
 import java.io.EOFException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +23,8 @@ import java.util.List;
 import ealvatag.tag.InvalidDataTypeException;
 import ealvatag.tag.id3.AbstractTagFrameBody;
 import okio.Buffer;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
 
 /**
  * Represents a list of {@link Cloneable}(!!) {@link AbstractDataType}s, continuing until the end of the buffer.
@@ -36,7 +36,7 @@ public abstract class AbstractDataTypeList<T extends AbstractDataType> extends A
 
     public AbstractDataTypeList(String identifier, AbstractTagFrameBody frameBody) {
         super(identifier, frameBody);
-        setValue(new ArrayList<>());
+        setValue(new ArrayList<T>());
     }
 
     /**
@@ -56,7 +56,7 @@ public abstract class AbstractDataTypeList<T extends AbstractDataType> extends A
     }
 
     public void setValue(List<T> list) {
-        super.setValue(list == null ? new ArrayList<T>() : new ArrayList<>(list));
+        super.setValue(list == null ? new ArrayList<T>() : new ArrayList<T>(list));
     }
 
     /**
@@ -132,6 +132,7 @@ public abstract class AbstractDataTypeList<T extends AbstractDataType> extends A
      * @return a byte array that that contains the data that should be persisted to file
      */
     public byte[] writeByteArray() {
+        LOG.log(DEBUG, "Writing DataTypeList %s", getIdentifier());
         byte[] buffer = new byte[getSize()];
         int offset = 0;
         for (AbstractDataType data : getValue()) {
@@ -148,7 +149,6 @@ public abstract class AbstractDataTypeList<T extends AbstractDataType> extends A
         return getValue() != null ? getValue().hashCode() : 0;
     }
 
-    @NonNull
     @Override
     public String toString() {
         return getValue() != null ? getValue().toString() : "%s";

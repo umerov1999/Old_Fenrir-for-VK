@@ -5,6 +5,11 @@ import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 
 import ealvatag.audio.mp3.MPEGFrameHeader;
+import ealvatag.logging.EalvaTagLog;
+import ealvatag.logging.EalvaTagLog.JLogger;
+import ealvatag.logging.EalvaTagLog.JLoggers;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
 
 /**
  * Performs unsynchronization and synchronization tasks on a buffer.
@@ -13,6 +18,7 @@ import ealvatag.audio.mp3.MPEGFrameHeader;
  */
 class ID3Unsynchronization {
     //Logger
+    private static final JLogger LOG = JLoggers.get(ID3Unsynchronization.class, EalvaTagLog.MARKER);
 
 
     /**
@@ -26,6 +32,7 @@ class ID3Unsynchronization {
         for (int i = 0; i < abySource.length - 1; i++) {
             if (((abySource[i] & MPEGFrameHeader.SYNC_BYTE1) == MPEGFrameHeader.SYNC_BYTE1) &&
                     ((abySource[i + 1] & MPEGFrameHeader.SYNC_BYTE2) == MPEGFrameHeader.SYNC_BYTE2)) {
+                LOG.log(TRACE, "Unsynchronisation required found bit at:%s", i);
                 return true;
             }
         }
@@ -61,10 +68,12 @@ class ID3Unsynchronization {
                     int secondByte = input.read();
                     if ((secondByte & MPEGFrameHeader.SYNC_BYTE2) == MPEGFrameHeader.SYNC_BYTE2) {
                         // we need to unsynchronize here
+                        LOG.log(TRACE, "Writing unsynchronisation bit at:%s", count);
                         output.write(0);
 
                     } else if (secondByte == 0) {
                         // we need to unsynchronize here
+                        LOG.log(TRACE, "Inserting zero unsynchronisation bit at:%s", count);
                         output.write(0);
                     }
                     input.reset();
@@ -74,6 +83,7 @@ class ID3Unsynchronization {
         // if we needed to unsynchronize anything, and this tag ends with 0xff, we have to append a zero byte,
         // which will be removed on de-unsynchronization later
         if ((abySource[abySource.length - 1] & MPEGFrameHeader.SYNC_BYTE1) == MPEGFrameHeader.SYNC_BYTE1) {
+            LOG.log(TRACE, "Adding unsynchronisation bit at end of stream");
             output.write(0);
         }
         return output.toByteArray();

@@ -22,6 +22,11 @@ import java.io.RandomAccessFile;
 
 import ealvatag.audio.exceptions.CannotReadException;
 import ealvatag.audio.exceptions.InvalidAudioFrameException;
+import ealvatag.logging.EalvaTagLog;
+import ealvatag.logging.EalvaTagLog.JLogger;
+import ealvatag.logging.EalvaTagLog.JLoggers;
+import ealvatag.logging.EalvaTagLog.LogLevel;
+import ealvatag.logging.ErrorMessage;
 import ealvatag.tag.TagException;
 import ealvatag.tag.TagFieldContainer;
 
@@ -37,9 +42,9 @@ import ealvatag.tag.TagFieldContainer;
 
 public abstract class AudioFileReader {
 
-    // Logger Object
     protected static final int MINIMUM_SIZE_FOR_VALID_AUDIO_FILE = 100;
-
+    // Logger Object
+    private static final JLogger LOG = JLoggers.get(AudioFileReader.class, EalvaTagLog.MARKER);
 
     /*
      * Returns the encoding info object associated wih the current File.
@@ -71,6 +76,7 @@ public abstract class AudioFileReader {
             IOException,
             TagException,
             InvalidAudioFrameException {
+        LOG.log(LogLevel.TRACE, ErrorMessage.GENERAL_READ, file);
         try (RandomAccessFile raf = new RandomAccessFile(file, "r")) {
             raf.seek(0);
             return makeAudioFile(raf, file, extension, ignoreArtwork);

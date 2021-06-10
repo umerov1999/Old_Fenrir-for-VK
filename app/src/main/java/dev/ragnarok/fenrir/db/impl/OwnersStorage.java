@@ -132,6 +132,7 @@ class OwnersStorage extends AbsStorage implements IOwnersStorage {
         cv.put(UserColumns.IS_BLACK_LISTED, dbo.getBlacklisted());
         cv.put(UserColumns.IS_VERIFIED, dbo.isVerified());
         cv.put(UserColumns.IS_CAN_ACCESS_CLOSED, dbo.isCan_access_closed());
+        cv.put(UserColumns.MAIDEN_NAME, dbo.getMaiden_name());
         return cv;
     }
 
@@ -173,7 +174,8 @@ class OwnersStorage extends AbsStorage implements IOwnersStorage {
                 .setBlacklisted_by_me(cursor.getInt(cursor.getColumnIndex(UserColumns.IS_USER_BLACK_LIST)) == 1)
                 .setBlacklisted(cursor.getInt(cursor.getColumnIndex(UserColumns.IS_BLACK_LISTED)) == 1)
                 .setVerified(cursor.getInt(cursor.getColumnIndex(UserColumns.IS_VERIFIED)) == 1)
-                .setCan_access_closed(cursor.getInt(cursor.getColumnIndex(UserColumns.IS_CAN_ACCESS_CLOSED)) == 1);
+                .setCan_access_closed(cursor.getInt(cursor.getColumnIndex(UserColumns.IS_CAN_ACCESS_CLOSED)) == 1)
+                .setMaiden_name(cursor.getString(cursor.getColumnIndex(UserColumns.MAIDEN_NAME)));
     }
 
     @Override

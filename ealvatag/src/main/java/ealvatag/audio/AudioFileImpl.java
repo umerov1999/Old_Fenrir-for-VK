@@ -18,8 +18,6 @@
  */
 package ealvatag.audio;
 
-import androidx.annotation.NonNull;
-
 import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.io.Files;
@@ -58,10 +56,10 @@ import static ealvatag.utils.Check.checkArgNotNullOrEmpty;
  * @since v0.01
  */
 public class AudioFileImpl implements AudioFile {
-    protected final String extension;         // we parsed it once to find the reader, so let's store it and not keep parsing
     protected File file;
     protected AudioHeader audioHeader;
     protected TagFieldContainer tag;
+    protected String extension;         // we parsed it once to find the reader, so let's store it and not keep parsing
 
     /**
      * These constructors are used by the different readers, users should not use them.
@@ -83,7 +81,7 @@ public class AudioFileImpl implements AudioFile {
         this.tag = tag;
     }
 
-    protected AudioFileImpl(File file, String extension) {
+    protected AudioFileImpl(File file, String extension) throws FileNotFoundException {
         checkArgNotNull(file);
         checkArgNotNullOrEmpty(extension);
         this.file = file;
@@ -140,7 +138,7 @@ public class AudioFileImpl implements AudioFile {
 
     @Override
     public Optional<Tag> getTag() {
-        return Optional.fromNullable(tag);
+        return Optional.fromNullable((Tag) tag);
     }
 
     @Override
@@ -158,16 +156,21 @@ public class AudioFileImpl implements AudioFile {
     }
 
     @Override
-    public Tag getTagOrSetNewDefault() throws UnsupportedFileType {
+    public Tag getTagOrSetNewDefault() throws UnsupportedFileType, CannotWriteException {
         return getTag().or(makeTagSupplier());
     }
 
-    private Supplier<Tag> makeTagSupplier() {
-        return () -> setTag(makeDefaultTag());
+    private Supplier<Tag> makeTagSupplier() throws CannotWriteException {
+        return new Supplier<Tag>() {
+            @Override
+            public Tag get() {
+                return setTag(makeDefaultTag());
+            }
+        };
     }
 
     @Override
-    public Tag getConvertedTagOrSetNewDefault() {
+    public Tag getConvertedTagOrSetNewDefault() throws CannotWriteException {
         /* TODO Currently only works for Dsf We need additional check here for Wav and Aif because they wrap the ID3
         tag so never return
          * null for getTag() and the wrapper stores the location of the existing tag, would that be broken if tag set
@@ -249,18 +252,20 @@ public class AudioFileImpl implements AudioFile {
     /**
      * Optional debugging method. Must override to do anything interesting.
      */
+    @SuppressWarnings("unused")
     public String displayStructureAsPlainText() {
         return "";
     }
 
 
-    @NonNull
     @Override
     public String toString() {
-        return "AudioFileImpl{" + "file=" + file +
-                ", audioHeader=" + audioHeader +
-                ", tag=" + tag +
-                ", extension='" + extension + '\'' +
-                '}';
+        StringBuilder sb = new StringBuilder("AudioFileImpl{");
+        sb.append("file=").append(file);
+        sb.append(", audioHeader=").append(audioHeader);
+        sb.append(", tag=").append(tag);
+        sb.append(", extension='").append(extension).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

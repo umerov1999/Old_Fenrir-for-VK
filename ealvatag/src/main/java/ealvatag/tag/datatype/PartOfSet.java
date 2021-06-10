@@ -1,7 +1,5 @@
 package ealvatag.tag.datatype;
 
-import androidx.annotation.NonNull;
-
 import java.io.EOFException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -22,6 +20,11 @@ import ealvatag.tag.options.PadNumberOption;
 import ealvatag.utils.EqualsUtil;
 import ealvatag.utils.StandardCharsets;
 import okio.Buffer;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Represents the form 01/10 whereby the second part is optional. This is used by frame such as TRCK and TPOS and MVNM
@@ -50,6 +53,7 @@ public class PartOfSet extends AbstractString {
     /**
      * Copy constructor
      */
+    @SuppressWarnings("unused")
     public PartOfSet(PartOfSet object) {
         super(object);
     }
@@ -81,6 +85,7 @@ public class PartOfSet extends AbstractString {
      * @param offset this is where to start reading in the buffer for this field
      */
     public void readByteArray(byte[] arr, int offset) throws InvalidDataTypeException {
+        LOG.log(TRACE, "Reading from array from offset:%s", offset);
 
         //Get the Specified Decoder
         CharsetDecoder decoder = getTextEncodingCharSet().newDecoder();
@@ -90,7 +95,9 @@ public class PartOfSet extends AbstractString {
         CharBuffer outBuffer = CharBuffer.allocate(arr.length - offset);
         decoder.reset();
         CoderResult coderResult = decoder.decode(inBuffer, outBuffer, true);
-        coderResult.isError();
+        if (coderResult.isError()) {
+            LOG.log(WARN, "Decoding error:%s", coderResult);
+        }
         decoder.flush(outBuffer);
         outBuffer.flip();
 
@@ -100,6 +107,7 @@ public class PartOfSet extends AbstractString {
 
         //SetSize, important this is correct for finding the next datatype
         setSize(arr.length - offset);
+        LOG.log(DEBUG, "Read SizeTerminatedString:{] size:%s", value, size);
     }
 
     @Override
@@ -154,6 +162,7 @@ public class PartOfSet extends AbstractString {
         }
         //Should never happen so if does throw a RuntimeException
         catch (CharacterCodingException ce) {
+            LOG.log(ERROR, "Character coding", ce);
             throw new RuntimeException(ce);
         }
         setSize(data.length);
@@ -164,7 +173,6 @@ public class PartOfSet extends AbstractString {
         return (PartOfSetValue) value;
     }
 
-    @NonNull
     public String toString() {
         return value == null ? "" : value.toString();
     }
@@ -373,7 +381,6 @@ public class PartOfSet extends AbstractString {
             return sb.toString();
         }
 
-        @NonNull
         public String toString() {
 
             //Don't Pad

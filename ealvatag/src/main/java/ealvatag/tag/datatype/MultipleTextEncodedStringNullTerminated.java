@@ -1,7 +1,5 @@
 package ealvatag.tag.datatype;
 
-import androidx.annotation.NonNull;
-
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
@@ -12,6 +10,10 @@ import java.util.ListIterator;
 import ealvatag.tag.InvalidDataTypeException;
 import ealvatag.tag.id3.AbstractTagFrameBody;
 import okio.Buffer;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Represents a data type that supports multiple terminated Strings (there may only be one)
@@ -25,16 +27,19 @@ public class MultipleTextEncodedStringNullTerminated extends AbstractDataType {
      *
      * @param identifier identifies the frame type
      */
+    @SuppressWarnings("unused")
     public MultipleTextEncodedStringNullTerminated(String identifier, AbstractTagFrameBody frameBody) {
         super(identifier, frameBody);
         value = new MultipleTextEncodedStringNullTerminated.Values();
     }
 
+    @SuppressWarnings("unused")
     public MultipleTextEncodedStringNullTerminated(TextEncodedStringSizeTerminated object) {
         super(object);
         value = new MultipleTextEncodedStringNullTerminated.Values();
     }
 
+    @SuppressWarnings("unused")
     public MultipleTextEncodedStringNullTerminated(MultipleTextEncodedStringNullTerminated object) {
         super(object);
     }
@@ -59,8 +64,8 @@ public class MultipleTextEncodedStringNullTerminated extends AbstractDataType {
         if (null == value) return false;
         List<String> list = ((Values) value).getList();
         if (list.isEmpty()) return false;
-        for (String s : list) {
-            if (!new TextEncodedStringNullTerminated(identifier, frameBody, s).canBeEncoded())
+        for (ListIterator<String> li = list.listIterator(); li.hasNext(); ) {
+            if (!new TextEncodedStringNullTerminated(identifier, frameBody, li.next()).canBeEncoded())
                 return false;
         }
         return true;
@@ -76,6 +81,7 @@ public class MultipleTextEncodedStringNullTerminated extends AbstractDataType {
      * @throws InvalidDataTypeException if unable to find any null terminated Strings
      */
     public void readByteArray(byte[] arr, int offset) throws InvalidDataTypeException {
+        LOG.log(DEBUG, "Reading MultipleTextEncodedStringNullTerminated from array from offset:%s", offset);
         //Continue until unable to read a null terminated String
         while (true) {
             try {
@@ -95,6 +101,8 @@ public class MultipleTextEncodedStringNullTerminated extends AbstractDataType {
 
                         //Increment Offset to start of next datatype.
                         offset += next.getSize();
+                    } else {
+                        LOG.log(ERROR, "value is null");
                     }
                 }
             } catch (InvalidDataTypeException idte) {
@@ -102,9 +110,11 @@ public class MultipleTextEncodedStringNullTerminated extends AbstractDataType {
             }
 
             if (size == 0) {
+                LOG.log(WARN, "No null terminated Strings found");
                 throw new InvalidDataTypeException("No null terminated Strings found");
             }
         }
+        LOG.log(DEBUG, "Read  MultipleTextEncodedStringNullTerminated:%s size:%s", value, size);
     }
 
     @Override
@@ -121,6 +131,8 @@ public class MultipleTextEncodedStringNullTerminated extends AbstractDataType {
 
                     //Add to size calculation
                     runningSize -= next.getSize();
+                } else {
+                    LOG.log(ERROR, "value is null");
                 }
             }
         }
@@ -132,27 +144,32 @@ public class MultipleTextEncodedStringNullTerminated extends AbstractDataType {
      * @return byte[] that should be written to file to persist this data type.
      */
     public byte[] writeByteArray() {
+        LOG.log(DEBUG, "Writing MultipleTextEncodedStringNullTerminated");
 
         int localSize = 0;
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         try {
             if (null != value) {
-                for (String s : ((Values) value).getList()) {
+                for (ListIterator<String> li = ((Values) value).getList().listIterator(); li.hasNext(); ) {
                     TextEncodedStringNullTerminated next =
-                            new TextEncodedStringNullTerminated(identifier, frameBody, s);
+                            new TextEncodedStringNullTerminated(identifier, frameBody, li.next());
                     buffer.write(next.writeByteArray());
                     localSize += next.getSize();
                 }
             } else {
+                LOG.log(ERROR, "value is null");
                 return EMPTY_BYTE_ARRAY;
             }
         } catch (IOException ioe) {
             //This should never happen because the write is internal with the JVM it is not to a file
+            LOG.log(ERROR, "IOException in MultipleTextEncodedStringNullTerminated when writing byte array", ioe);
             throw new RuntimeException(ioe);
         }
 
         //Update size member variable
         size = localSize;
+
+        LOG.log(DEBUG, "Written MultipleTextEncodedStringNullTerminated");
         return buffer.toByteArray();
     }
 
@@ -198,7 +215,6 @@ public class MultipleTextEncodedStringNullTerminated extends AbstractDataType {
          *
          * @return a string representation of the value
          */
-        @NonNull
         public String toString() {
             StringBuilder sb = new StringBuilder();
             for (ListIterator<String> li = valueList.listIterator(); li.hasNext(); ) {

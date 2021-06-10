@@ -20,7 +20,7 @@
  */
 package ealvatag.tag.datatype;
 
-import androidx.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.EOFException;
 import java.util.ArrayList;
@@ -28,6 +28,9 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 import ealvatag.audio.mp3.MP3File;
+import ealvatag.logging.EalvaTagLog;
+import ealvatag.logging.EalvaTagLog.JLogger;
+import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.tag.InvalidDataTypeException;
 import ealvatag.tag.id3.AbstractTagFrameBody;
 import okio.Buffer;
@@ -37,6 +40,7 @@ import okio.Buffer;
  * Section 4. ID3v2 frame overview at http://www.id3.org/id3v2.4.0-structure.txt
  */
 public abstract class AbstractDataType {
+    protected static JLogger LOG = JLoggers.get(AbstractDataType.class, EalvaTagLog.MARKER);  // TODO: 3/14/17 make this private!!
 
     /**
      * Holds the data
@@ -48,7 +52,7 @@ public abstract class AbstractDataType {
      * Holds the key such as "Text" or "PictureType", the naming of keys are fairly arbitary but are intended
      * to make it easier to for the developer, the keys themseleves are not written to the tag.
      */
-    protected String identifier;
+    protected String identifier = "";
 
     /**
      * Holds the calling body, allows an datatype to query other objects in the
@@ -179,7 +183,6 @@ public abstract class AbstractDataType {
      *
      * @return value held by this Object
      */
-    @Nullable
     public Object getValue() {
         return value;
     }
@@ -188,7 +191,7 @@ public abstract class AbstractDataType {
      * Set the value held by this datatype, this is used typically used when the
      * user wants to modify the value in an existing frame.
      */
-    public void setValue(@Nullable Object value) {
+    public void setValue(Object value) {
         this.value = value;
     }
 

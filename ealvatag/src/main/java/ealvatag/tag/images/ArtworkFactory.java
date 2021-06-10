@@ -3,7 +3,7 @@ package ealvatag.tag.images;
 import java.io.File;
 import java.io.IOException;
 
-import ealvatag.tag.TagOptionSingleton;
+import ealvatag.audio.flac.metadatablock.MetadataBlockDataPicture;
 
 /**
  * Get appropriate Artwork class
@@ -11,17 +11,18 @@ import ealvatag.tag.TagOptionSingleton;
 public class ArtworkFactory {
 
     public static Artwork getNew() {
-        return TagOptionSingleton.getInstance().isAndroid() ? new AndroidArtwork()
-                : new StandardArtwork();
+        return new StandardArtwork();
+    }
+
+    public static Artwork createArtworkFromMetadataBlockDataPicture(MetadataBlockDataPicture coverArt) {
+        return StandardArtwork.createArtworkFromMetadataBlockDataPicture(coverArt);
     }
 
     public static Artwork createArtworkFromFile(File file) throws IOException {
-        return TagOptionSingleton.getInstance().isAndroid() ? AndroidArtwork.createArtworkFromFile(file)
-                : StandardArtwork.createArtworkFromFile(file);
+        return StandardArtwork.createArtworkFromFile(file);
     }
 
-    public static Artwork createLinkedArtworkFromURL(String link) {
-        return TagOptionSingleton.getInstance().isAndroid() ? AndroidArtwork.createLinkedArtworkFromURL(link)
-                : StandardArtwork.createLinkedArtworkFromURL(link);
+    public static Artwork createLinkedArtworkFromURL(String link) throws IOException {
+        return StandardArtwork.createLinkedArtworkFromURL(link);
     }
 }

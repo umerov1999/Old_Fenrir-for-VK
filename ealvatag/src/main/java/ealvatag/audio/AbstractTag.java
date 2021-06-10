@@ -34,8 +34,6 @@
  */
 package ealvatag.audio;
 
-import androidx.annotation.NonNull;
-
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
@@ -190,7 +188,9 @@ public abstract class AbstractTag implements TagFieldContainer {
     public List<TagField> getAll() {
         List<TagField> fieldList = new ArrayList<>();
         for (List<TagField> listOfFields : fields.values()) {
-            fieldList.addAll(listOfFields);
+            for (TagField next : listOfFields) {
+                fieldList.add(next);
+            }
         }
         return fieldList;
     }
@@ -301,7 +301,7 @@ public abstract class AbstractTag implements TagFieldContainer {
 
     @Override
     public Iterator<TagField> getFields() {
-        Iterator<Map.Entry<String, List<TagField>>> it = fields.entrySet().iterator();
+        final Iterator<Map.Entry<String, List<TagField>>> it = fields.entrySet().iterator();
         return new Iterator<TagField>() {
             private Iterator<TagField> fieldsIt;
 
@@ -352,7 +352,7 @@ public abstract class AbstractTag implements TagFieldContainer {
     @Override
     public Optional<TagField> getFirstField(String id) throws IllegalArgumentException, UnsupportedFieldException {
         List<TagField> l = getFieldList(id);
-        return l.size() != 0 ? Optional.fromNullable(l.get(0)) : Optional.absent();
+        return l.size() != 0 ? Optional.fromNullable(l.get(0)) : Optional.<TagField>absent();
     }
 
     @Override
@@ -398,7 +398,6 @@ public abstract class AbstractTag implements TagFieldContainer {
         }
     }
 
-    @NonNull
     public String toString() {
         StringBuilder out = new StringBuilder();
         out.append("Tag content:\n");

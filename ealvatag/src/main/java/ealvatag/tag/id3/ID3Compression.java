@@ -5,8 +5,12 @@ import java.util.Locale;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
+import ealvatag.logging.EalvaTagLog;
+import ealvatag.logging.EalvaTagLog.JLogger;
+import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.tag.InvalidFrameException;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
 import static ealvatag.logging.ErrorMessage.ID3_UNABLE_TO_DECOMPRESS_FRAME;
 
 /**
@@ -17,6 +21,7 @@ import static ealvatag.logging.ErrorMessage.ID3_UNABLE_TO_DECOMPRESS_FRAME;
 //TODO also need to support compress framedata
 @SuppressWarnings("Duplicates")
 class ID3Compression {
+    private static final JLogger LOG = JLoggers.get(ID3Compression.class, EalvaTagLog.MARKER);
 
     /**
      * Decompress realFrameSize bytes to decompressedFrameSize bytes and return as ByteBuffer
@@ -26,6 +31,7 @@ class ID3Compression {
                                  ByteBuffer byteBuffer,
                                  int decompressedFrameSize,
                                  int realFrameSize) throws InvalidFrameException {
+        LOG.log(DEBUG, "%s:About to decompress %s bytes, expect result to be:%s bytes", filename, realFrameSize, decompressedFrameSize);
         // Decompress the bytes into this buffer, size initialized from header field
         byte[] result = new byte[decompressedFrameSize];
         byte[] input = new byte[realFrameSize];
@@ -40,7 +46,9 @@ class ID3Compression {
         decompresser.setInput(input);
         try {
             int inflatedTo = decompresser.inflate(result);
+            LOG.log(DEBUG, "%s:Decompressed to %s bytes", inflatedTo);
         } catch (DataFormatException dfe) {
+            LOG.log(DEBUG, "Unable to decompress this frame:%s", identifier, dfe);
 
             //Update position of main buffer, so no attempt is made to reread these bytes
             byteBuffer.position(byteBuffer.position() + realFrameSize);

@@ -50,7 +50,6 @@ public class FieldFrameBodyINF extends AbstractLyrics3v2FieldFrameBody {
 
     /**
      * Creates a new FieldBodyINF datatype.
-     *
      * @param byteBuffer
      * @throws ealvatag.tag.InvalidTagException
      */

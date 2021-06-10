@@ -1,7 +1,11 @@
 package ealvatag.tag.images;
 
+import android.graphics.Bitmap;
+
 import java.io.File;
 import java.io.IOException;
+
+import ealvatag.audio.flac.metadatablock.MetadataBlockDataPicture;
 
 /**
  * Represents artwork in a format independent  way
@@ -27,6 +31,19 @@ public interface Artwork {
 
     Artwork setWidth(int width);
 
+    /**
+     * Should be called when you wish to prime the artwork for saving.
+     *
+     * @return true if successful or if AndroidArtwork (always returns true)
+     */
+    boolean setImageFromData();
+
+    /**
+     * @return a BufferedImage if not on the Android platform. Null on Android
+     * @throws IllegalArgumentException if error reading the image data
+     */
+    Bitmap getImage() throws IllegalArgumentException;
+
     boolean isLinked();
 
     Artwork setLinked(boolean linked);
@@ -40,4 +57,11 @@ public interface Artwork {
     Artwork setPictureType(int pictureType);
 
     Artwork setFromFile(File file) throws IOException;
+
+    /**
+     * Populate Artwork from MetadataBlockDataPicture as used by Flac and VorbisComment
+     *
+     * @param coverArt block data picture
+     */
+    Artwork setFromMetadataBlockDataPicture(MetadataBlockDataPicture coverArt);
 }

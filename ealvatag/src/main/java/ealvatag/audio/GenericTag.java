@@ -16,8 +16,6 @@
  */
 package ealvatag.audio;
 
-import androidx.annotation.NonNull;
-
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 
@@ -147,7 +145,7 @@ public abstract class GenericTag extends AbstractTag {
      *
      * @author Raphaël Slinckx
      */
-    protected static class GenericTagTextField implements TagTextField {
+    protected class GenericTagTextField implements TagTextField {
 
         /**
          * Stores the identifier.
@@ -226,7 +224,6 @@ public abstract class GenericTag extends AbstractTag {
             return "".equals(content);
         }
 
-        @NonNull
         @Override
         public String toString() {
             return getContent();

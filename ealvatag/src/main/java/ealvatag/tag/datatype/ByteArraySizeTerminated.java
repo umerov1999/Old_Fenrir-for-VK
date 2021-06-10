@@ -20,13 +20,13 @@
  */
 package ealvatag.tag.datatype;
 
-import androidx.annotation.NonNull;
-
 import java.io.EOFException;
 
 import ealvatag.tag.InvalidDataTypeException;
 import ealvatag.tag.id3.AbstractTagFrameBody;
 import okio.Buffer;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
 
 /**
  * Represents a stream of bytes, continuing until the end of the buffer. Usually used for binary data or where
@@ -94,7 +94,6 @@ public class ByteArraySizeTerminated extends AbstractDataType {
      *
      * @return the number of bytes
      */
-    @NonNull
     public String toString() {
         return getSize() + " bytes";
     }
@@ -105,6 +104,7 @@ public class ByteArraySizeTerminated extends AbstractDataType {
      * @return a byte array that that contians the data that should be perisisted to file
      */
     public byte[] writeByteArray() {
+        LOG.log(DEBUG, "Writing byte array %s", getIdentifier());
         return (byte[]) value;
     }
 }

@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.Locale;
 
 import ealvatag.audio.mp3.MP3File;
+import ealvatag.logging.EalvaTagLog;
+import ealvatag.logging.EalvaTagLog.JLogger;
+import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.tag.InvalidDataTypeException;
 import ealvatag.tag.InvalidFrameException;
 import ealvatag.tag.InvalidTagException;
@@ -35,6 +38,9 @@ import ealvatag.tag.datatype.AbstractDataType;
 import ealvatag.tag.id3.AbstractTagFrameBody;
 import okio.Buffer;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 import static ealvatag.logging.ErrorMessage.INVALID_DATATYPE;
 
 /**
@@ -42,6 +48,7 @@ import static ealvatag.logging.ErrorMessage.INVALID_DATATYPE;
  */
 @SuppressWarnings("Duplicates")
 public abstract class AbstractID3v2FrameBody extends AbstractTagFrameBody {
+    private static final JLogger LOG = JLoggers.get(AbstractID3v2FrameBody.class, EalvaTagLog.MARKER);
 
     private static final String TYPE_BODY = "body";
 
@@ -142,6 +149,7 @@ public abstract class AbstractID3v2FrameBody extends AbstractTagFrameBody {
     //and providing extra work for the garbage collector.
     public void read(ByteBuffer byteBuffer) throws InvalidTagException {
         int frameBodySize = getSize();
+        LOG.log(DEBUG, "Reading body for %s:%s", getIdentifier(), frameBodySize);
 
         //Allocate a buffer to the size of the Frame Body and read from file
         byte[] buffer = new byte[frameBodySize];
@@ -157,10 +165,12 @@ public abstract class AbstractID3v2FrameBody extends AbstractTagFrameBody {
         for (int i = 0, size = dataTypeList.size(); i < size; i++) {
             AbstractDataType object = getDataTypeList().get(i);
             //correct dataType.
+            LOG.log(TRACE, "offset%s", offset);
 
             //The read has extended further than the defined frame size (ok to extend upto
             //size because the next datatype may be of length 0.)
             if (offset > (frameBodySize)) {
+                LOG.log(WARN, "Invalid Size for FrameBody");
                 throw new InvalidFrameException("Invalid size for Frame Body");
             }
 
@@ -169,6 +179,7 @@ public abstract class AbstractID3v2FrameBody extends AbstractTagFrameBody {
             try {
                 object.readByteArray(buffer, offset);
             } catch (InvalidDataTypeException e) {
+                LOG.log(WARN, "Problem reading datatype within Frame Body", e);
                 throw e;
             }
             //Increment Offset to start of next datatype.
@@ -209,6 +220,7 @@ public abstract class AbstractID3v2FrameBody extends AbstractTagFrameBody {
      * Write the contents of this datatype to the byte array
      */
     public void write(ByteArrayOutputStream tagBuffer) {
+        LOG.log(DEBUG, "Writing frame body for %s:Est Size:%s", getIdentifier(), size);
         //Write the various fields to file in order
         List<AbstractDataType> dataTypeList = getDataTypeList();
         for (int i = 0, size = dataTypeList.size(); i < size; i++) {
@@ -223,6 +235,8 @@ public abstract class AbstractID3v2FrameBody extends AbstractTagFrameBody {
             }
         }
         setSize();
+        LOG.log(DEBUG, "Written frame body for %s:Real Size:%s", getIdentifier(), size);
+
     }
 
     /**

@@ -38,6 +38,7 @@ public class User extends Owner implements Identificable {
     @Sex
     private int sex;
     private String domain;
+    private String maiden_name;
     private boolean friend;
     private int friendStatus;
     private boolean can_write_private_message;
@@ -70,6 +71,7 @@ public class User extends Owner implements Identificable {
         //noinspection ResourceType
         sex = in.readInt();
         domain = in.readString();
+        maiden_name = in.readString();
         friend = in.readByte() != 0;
         friendStatus = in.readInt();
         can_write_private_message = in.readByte() != 0;
@@ -306,6 +308,7 @@ public class User extends Owner implements Identificable {
         dest.writeString(status);
         dest.writeInt(sex);
         dest.writeString(domain);
+        dest.writeString(maiden_name);
         dest.writeByte((byte) (friend ? 1 : 0));
         dest.writeInt(friendStatus);
         dest.writeByte((byte) (can_write_private_message ? 1 : 0));
@@ -342,5 +345,14 @@ public class User extends Owner implements Identificable {
     @Override
     public String getOriginalAvatar() {
         return firstNonEmptyString(photoMax, photo200, photo100, photo50);
+    }
+
+    public String getMaiden_name() {
+        return maiden_name;
+    }
+
+    public User setMaiden_name(String maiden_name) {
+        this.maiden_name = maiden_name;
+        return this;
     }
 }

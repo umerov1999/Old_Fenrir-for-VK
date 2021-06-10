@@ -391,7 +391,8 @@ public class Dto2Model {
                 .setBlacklisted(user.blacklisted)
                 .setBlacklisted_by_me(user.blacklisted_by_me)
                 .setCan_access_closed(user.can_access_closed)
-                .setVerified(user.verified);
+                .setVerified(user.verified)
+                .setMaiden_name(user.maiden_name);
     }
 
     @NonNull

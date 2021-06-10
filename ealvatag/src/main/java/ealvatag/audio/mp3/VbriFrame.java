@@ -1,13 +1,16 @@
 package ealvatag.audio.mp3;
 
-import androidx.annotation.NonNull;
-
 import com.google.common.base.MoreObjects;
 
 import java.io.EOFException;
 import java.util.Arrays;
 
+import ealvatag.logging.EalvaTagLog;
+import ealvatag.logging.EalvaTagLog.JLogger;
+import ealvatag.logging.EalvaTagLog.JLoggers;
 import okio.Buffer;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
 
 /**
  * Vrbi Frame
@@ -39,6 +42,7 @@ import okio.Buffer;
  * entries, you can calculate the length of this field.
  */
 public class VbriFrame {
+    private static final JLogger LOG = JLoggers.get(VbriFrame.class, EalvaTagLog.MARKER);
 
     //The offset into frame
     private static final int VBRI_OFFSET = MPEGFrameHeader.HEADER_SIZE + 32;
@@ -89,6 +93,7 @@ public class VbriFrame {
         if ((!Arrays.equals(identifier, VBRI_VBR_ID))) {
             return null;
         }
+        LOG.log(TRACE, "Found VBRI Frame");
         return buffer;
     }
 
@@ -133,7 +138,6 @@ public class VbriFrame {
     }
 
 
-    @NonNull
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)

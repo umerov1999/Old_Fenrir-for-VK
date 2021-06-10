@@ -37,6 +37,7 @@ import okio.Okio;
  *       each {@code FileOperator} should not be.
  * </ul>
  */
+@SuppressWarnings("unused")
 public final class FileOperator {
     private static final int BUFFER_SIZE = 8192;
 

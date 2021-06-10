@@ -23,8 +23,6 @@
 
 package ealvatag.tag.lyrics3;
 
-import androidx.annotation.NonNull;
-
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -108,8 +106,8 @@ public class Lyrics3v2Field extends AbstractTagFrame {
     /**
      * Creates a new Lyrics3v2Field datatype.
      *
-     * @param byteBuffer
      * @throws InvalidTagException
+     * @param byteBuffer
      */
     public Lyrics3v2Field(ByteBuffer byteBuffer) throws InvalidTagException {
         read(byteBuffer);
@@ -160,7 +158,6 @@ public class Lyrics3v2Field extends AbstractTagFrame {
     /**
      * @return
      */
-    @NonNull
     public String toString() {
         if (frameBody == null) {
             return "";

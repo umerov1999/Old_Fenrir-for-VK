@@ -24,18 +24,24 @@ import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharsetEncoder;
 
+import ealvatag.logging.EalvaTagLog;
+import ealvatag.logging.EalvaTagLog.JLogger;
+import ealvatag.logging.EalvaTagLog.JLoggers;
+import ealvatag.logging.ErrorMessage;
 import ealvatag.tag.InvalidTagException;
 import ealvatag.tag.datatype.DataTypes;
 import ealvatag.tag.datatype.StringSizeTerminated;
 import ealvatag.utils.StandardCharsets;
 import okio.Buffer;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 import static ealvatag.utils.Check.checkArgNotNull;
 
 /**
  * Abstract super class of all URL Frames
  */
 public abstract class AbstractFrameBodyUrlLink extends AbstractID3v2FrameBody {
+    private static final JLogger LOG = JLoggers.get(AbstractFrameBodyUrlLink.class, EalvaTagLog.MARKER);
 
     /**
      * Creates a new FrameBodyUrlLink datatype.
@@ -104,10 +110,13 @@ public abstract class AbstractFrameBodyUrlLink extends AbstractID3v2FrameBody {
 
             //We still cant convert so just set log error and set to blank to allow save to continue
             if (!encoder.canEncode(getUrlLink())) {
+                LOG.log(WARN, ErrorMessage.MP3_UNABLE_TO_ENCODE_URL, origUrl);
                 setUrlLink("");
             }
             //it was ok, just note the modification made
-
+            else {
+                LOG.log(WARN, ErrorMessage.MP3_URL_SAVED_ENCODED, origUrl, getUrlLink());
+            }
         }
         super.write(tagBuffer);
     }
@@ -133,6 +142,7 @@ public abstract class AbstractFrameBodyUrlLink extends AbstractID3v2FrameBody {
         } catch (UnsupportedEncodingException uee) {
             //Should never happen as utf-8 is always availablebut in case it does we just return the utl
             //unmodified
+            LOG.log(WARN, "Uable to url encode because utf-8 charset not available", uee);
             return url;
         }
     }

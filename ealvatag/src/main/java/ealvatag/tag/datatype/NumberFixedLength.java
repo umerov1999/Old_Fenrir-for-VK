@@ -20,8 +20,6 @@
  */
 package ealvatag.tag.datatype;
 
-import androidx.annotation.NonNull;
-
 import com.google.common.base.Preconditions;
 
 import java.io.EOFException;
@@ -30,6 +28,8 @@ import ealvatag.tag.InvalidDataTypeException;
 import ealvatag.tag.id3.AbstractTagFrameBody;
 import ealvatag.tag.id3.ID3Tags;
 import okio.Buffer;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
 
 
 /**
@@ -118,6 +118,7 @@ public class NumberFixedLength extends AbstractDataType {
             lvalue += (array[i] & 0xff);
         }
         value = lvalue;
+        LOG.log(DEBUG, "Read NumberFixedlength:" + value);
     }
 
     @Override
@@ -133,7 +134,6 @@ public class NumberFixedLength extends AbstractDataType {
     /**
      * @return String representation of this datatype
      */
-    @NonNull
     public String toString() {
         if (value == null) {
             return "";

@@ -445,7 +445,8 @@ public class Dto2Entity {
                 .setBlacklisted_by_me(user.blacklisted_by_me)
                 .setBlacklisted(user.blacklisted)
                 .setCan_access_closed(user.can_access_closed)
-                .setVerified(user.verified);
+                .setVerified(user.verified)
+                .setMaiden_name(user.maiden_name);
     }
 
     public static CommunityDetailsEntity mapCommunityDetails(VKApiCommunity dto) {

@@ -17,11 +17,11 @@ import ealvatag.tag.TagFieldContainer;
  * because done elsewhere
  */
 public class MP3FileReader extends AudioFileReader {
-    protected GenericAudioHeader getEncodingInfo(RandomAccessFile raf) {
+    protected GenericAudioHeader getEncodingInfo(RandomAccessFile raf) throws CannotReadException, IOException {
         throw new RuntimeException("MP3FileReader.getEncodingInfo should be called");
     }
 
-    protected TagFieldContainer getTag(RandomAccessFile raf, boolean ignoreArtwork) {
+    protected TagFieldContainer getTag(RandomAccessFile raf, boolean ignoreArtwork) throws CannotReadException, IOException {
         throw new RuntimeException("MP3FileReader.getEncodingInfo should be called");
     }
 

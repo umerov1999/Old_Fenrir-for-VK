@@ -20,8 +20,6 @@
  */
 package ealvatag.tag.datatype;
 
-import androidx.annotation.NonNull;
-
 import java.io.EOFException;
 
 import ealvatag.tag.InvalidDataTypeException;
@@ -32,7 +30,7 @@ import okio.Buffer;
  * Represents a bit flag within a byte
  */
 public class BooleanByte extends AbstractDataType {
-    private final int bitPosition;
+    private int bitPosition = -1;
 
     public BooleanByte(String identifier, AbstractTagFrameBody frameBody, int bitPosition) {
         super(identifier, frameBody);
@@ -82,7 +80,6 @@ public class BooleanByte extends AbstractDataType {
         value = newValue == 1;
     }
 
-    @NonNull
     public String toString() {
         return "" + value;
     }

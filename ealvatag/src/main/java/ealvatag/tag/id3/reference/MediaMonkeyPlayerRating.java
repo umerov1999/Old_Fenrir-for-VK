@@ -75,7 +75,7 @@ public class MediaMonkeyPlayerRating extends ID3Rating {
     }
 
     public int convertRatingToFiveStarScale(int value) {
-        int newValue;
+        int newValue = 0;
         if (value <= 0) {
             newValue = 0;
         } else if (value <= 1) {
@@ -83,6 +83,12 @@ public class MediaMonkeyPlayerRating extends ID3Rating {
         } else if (value <= 8) {
             newValue = 0;
         } else if (value <= 18) {
+            newValue = 1;
+        } else if (value <= 28) {
+            newValue = 1;
+        } else if (value <= 28) {
+            newValue = 1;
+        } else if (value <= 28) {
             newValue = 1;
         } else if (value <= 28) {
             newValue = 1;

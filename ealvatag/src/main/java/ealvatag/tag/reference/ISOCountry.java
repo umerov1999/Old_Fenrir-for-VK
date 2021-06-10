@@ -18,12 +18,12 @@ public class ISOCountry {
     private static final Map<String, Country> descriptionMap;
 
     static {
-        codeMap = new HashMap<>();
+        codeMap = new HashMap<String, Country>();
         for (Country country : Country.values()) {
             codeMap.put(country.code, country);
         }
 
-        descriptionMap = new HashMap<>();
+        descriptionMap = new HashMap<String, Country>();
         for (Country country : Country.values()) {
             descriptionMap.put(country.description, country);
         }
@@ -47,7 +47,7 @@ public class ISOCountry {
     }
 
     public static String[] getDescriptionsAsArray() {
-        List<String> descriptions = new ArrayList<>();
+        List<String> descriptions = new ArrayList<String>();
         for (Country country : Country.values()) {
             descriptions.add(country.description);
         }

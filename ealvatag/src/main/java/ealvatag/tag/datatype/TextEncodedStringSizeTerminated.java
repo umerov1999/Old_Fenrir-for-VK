@@ -20,6 +20,10 @@ import ealvatag.tag.id3.AbstractTagFrameBody;
 import ealvatag.utils.StandardCharsets;
 import okio.Buffer;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+
 /**
  * Represents a String which is not delimited by null character.
  * <p>
@@ -63,7 +67,7 @@ public class TextEncodedStringSizeTerminated extends AbstractString {
         List<String> values = Arrays.asList(valuesarray);
         //Read only list so if empty have to create new list
         if (values.size() == 0) {
-            values = new ArrayList<>(1);
+            values = new ArrayList<String>(1);
             values.add("");
         }
         return values;
@@ -91,6 +95,7 @@ public class TextEncodedStringSizeTerminated extends AbstractString {
      * @throws IndexOutOfBoundsException if offset is not within arr bounds
      */
     public void readByteArray(byte[] arr, int offset) throws InvalidDataTypeException {
+        LOG.log(TRACE, "Reading from array from offset:%s", offset);
 
 
         //Decode sliced inBuffer
@@ -110,7 +115,9 @@ public class TextEncodedStringSizeTerminated extends AbstractString {
 
         CharsetDecoder decoder = getCorrectDecoder(inBuffer);
         CoderResult coderResult = decoder.decode(inBuffer, outBuffer, true);
-        coderResult.isError();
+        if (coderResult.isError()) {
+            LOG.log(WARN, "Decoding error:%s", coderResult);
+        }
         decoder.flush(outBuffer);
         outBuffer.flip();
 
@@ -123,6 +130,7 @@ public class TextEncodedStringSizeTerminated extends AbstractString {
         }
         //SetSize, important this is correct for finding the next datatype
         setSize(arr.length - offset);
+        LOG.log(TRACE, "Read SizeTerminatedString:%s size:%s", value, size);
 
     }
 
@@ -307,6 +315,7 @@ public class TextEncodedStringSizeTerminated extends AbstractString {
         }
         //https://bitbucket.org/ijabz/jaudiotagger/issue/1/encoding-metadata-to-utf-16-can-fail-if
         catch (CharacterCodingException ce) {
+            LOG.log(ERROR, "Character coding charset:%s value:%s", charset, value, ce);
             throw new RuntimeException(ce);
         }
         return data;
@@ -365,6 +374,7 @@ public class TextEncodedStringSizeTerminated extends AbstractString {
             }
             return sb.toString();
         } else {
+            LOG.log(ERROR, "value is null");
             return "";
         }
     }

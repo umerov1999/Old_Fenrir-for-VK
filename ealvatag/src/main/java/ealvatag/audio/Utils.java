@@ -28,10 +28,15 @@ import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 
+import ealvatag.logging.EalvaTagLog;
+import ealvatag.logging.EalvaTagLog.JLogger;
+import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.utils.ArrayUtil;
 import ealvatag.utils.FileTypeUtil;
 import okio.Buffer;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
 import static ealvatag.utils.StandardCharsets.ISO_8859_1;
 import static ealvatag.utils.StandardCharsets.US_ASCII;
 
@@ -42,6 +47,7 @@ import static ealvatag.utils.StandardCharsets.US_ASCII;
  */
 public class Utils {
     private static final char VBR_IDENTIFIER_PREFIX = '~';
+    private static final JLogger LOG = JLoggers.get(Utils.class, EalvaTagLog.MARKER);
     private static final int MAX_BASE_TEMP_FILENAME_LENGTH = 20;
     public static int BITS_IN_BYTE_MULTIPLIER = 8;
     public static int KILOBYTE_MULTIPLIER = 1000;
@@ -322,8 +328,10 @@ public class Utils {
      * @return true if successful, else false
      */
     static boolean rename(File fromFile, File toFile) {
+        LOG.log(TRACE, "Renaming From:%s to: %s", fromFile.getAbsolutePath(), toFile.getAbsolutePath());
 
         if (toFile.exists()) {
+            LOG.log(ERROR, "Destination File:%s already exists", toFile);
             return false;
         }
 
@@ -336,6 +344,7 @@ public class Utils {
                 //so we need to delete the file we have just created
                 boolean deleteResult = fromFile.delete();
                 if (!deleteResult) {
+                    LOG.log(ERROR, "Unable to delete File:%s", fromFile);
                     //noinspection ResultOfMethodCallIgnored
                     toFile.delete();
                     return false;

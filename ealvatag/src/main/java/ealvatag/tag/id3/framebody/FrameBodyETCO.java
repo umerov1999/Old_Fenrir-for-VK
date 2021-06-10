@@ -25,6 +25,9 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
+import ealvatag.logging.EalvaTagLog;
+import ealvatag.logging.EalvaTagLog.JLogger;
+import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.tag.InvalidTagException;
 import ealvatag.tag.datatype.DataTypes;
 import ealvatag.tag.datatype.EventTimingCode;
@@ -33,6 +36,8 @@ import ealvatag.tag.datatype.NumberHashMap;
 import ealvatag.tag.id3.ID3v24Frames;
 import ealvatag.tag.id3.valuepair.EventTimingTimestampTypes;
 import okio.Buffer;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Event timing codes frame.
@@ -110,6 +115,7 @@ import okio.Buffer;
 public class FrameBodyETCO extends AbstractID3v2FrameBody implements ID3v24FrameBody, ID3v23FrameBody {
     public static final int MPEG_FRAMES = 1;
     public static final int MILLISECONDS = 2;
+    private static final JLogger LOG = JLoggers.get(FrameBodyETCO.class, EalvaTagLog.MARKER);
 
     /**
      * Creates a new FrameBodyETCO datatype.
@@ -177,7 +183,7 @@ public class FrameBodyETCO extends AbstractID3v2FrameBody implements ID3v24Frame
      * @return map of timing codes
      */
     public Map<Long, int[]> getTimingCodes() {
-        Map<Long, int[]> map = new LinkedHashMap<>();
+        Map<Long, int[]> map = new LinkedHashMap<Long, int[]>();
         List<EventTimingCode> codes = (List<EventTimingCode>) getObjectValue(DataTypes.OBJ_TIMED_EVENT_LIST);
         long lastTimestamp = 0;
         for (EventTimingCode code : codes) {
@@ -204,7 +210,7 @@ public class FrameBodyETCO extends AbstractID3v2FrameBody implements ID3v24Frame
      */
     public List<Long> getTimestamps(int... type) {
         Set<Integer> typeSet = toSet(type);
-        List<Long> list = new ArrayList<>();
+        List<Long> list = new ArrayList<Long>();
         List<EventTimingCode> codes = (List<EventTimingCode>) getObjectValue(DataTypes.OBJ_TIMED_EVENT_LIST);
         long lastTimestamp = 0;
         for (EventTimingCode code : codes) {
@@ -299,7 +305,10 @@ public class FrameBodyETCO extends AbstractID3v2FrameBody implements ID3v24Frame
         long lastTimestamp = 0;
         for (EventTimingCode code : codes) {
             long translatedTimestamp = code.getTimestamp() == 0 ? lastTimestamp : code.getTimestamp();
-            code.getTimestamp();// throw exception???
+            if (code.getTimestamp() < lastTimestamp) {
+                LOG.log(WARN, "Event codes are not in chronological order. %s is followed by %s", lastTimestamp, code.getTimestamp());
+                // throw exception???
+            }
             lastTimestamp = translatedTimestamp;
         }
     }

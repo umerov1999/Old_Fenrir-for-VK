@@ -13,14 +13,15 @@
  */
 package ealvatag.tag.datatype;
 
-import androidx.annotation.NonNull;
-
 import java.io.EOFException;
 
 import ealvatag.tag.InvalidDataTypeException;
 import ealvatag.tag.id3.AbstractTagFrameBody;
 import ealvatag.tag.id3.valuepair.EventTimingTypes;
 import okio.Buffer;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * A single synchronized tempo code. Part of a list of temnpo codes
@@ -91,9 +92,12 @@ public class SynchronisedTempoCode extends AbstractDataType implements Cloneable
         int localOffset = originalOffset;
         int size = getSize();
 
+        LOG.log(TRACE, "offset:%s", localOffset);
+
         //The read has extended further than the defined frame size (ok to extend upto
         //size because the next datatype may be of length 0.)
         if (originalOffset > buffer.length - size) {
+            LOG.log(WARN, "Invalid size for FrameBody");
             throw new InvalidDataTypeException("Invalid size for FrameBody");
         }
 
@@ -145,16 +149,14 @@ public class SynchronisedTempoCode extends AbstractDataType implements Cloneable
         return result;
     }
 
-    @NonNull
     @Override
     public String toString() {
         return "" + getTempo() + " (\"" + EventTimingTypes.getInstanceOf().getValue(getTempo()) + "\"), " +
                 getTimestamp();
     }
 
-    @NonNull
     @Override
-    public Object clone() {
+    public Object clone() throws CloneNotSupportedException {
         return new SynchronisedTempoCode(this);
     }
 }

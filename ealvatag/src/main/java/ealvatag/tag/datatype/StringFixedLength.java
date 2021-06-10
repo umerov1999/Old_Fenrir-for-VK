@@ -34,6 +34,11 @@ import ealvatag.tag.id3.AbstractTagFrameBody;
 import ealvatag.utils.StandardCharsets;
 import okio.Buffer;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+
 
 /**
  * Represents a fixed length String, whereby the length of the String is known. The String
@@ -80,11 +85,13 @@ public class StringFixedLength extends AbstractString {
      * @param offset this is where to start reading in the buffer for this field
      */
     public void readByteArray(byte[] arr, int offset) throws InvalidDataTypeException {
+        LOG.log(DEBUG, "Reading from array from offset:%s", offset);
         try {
             CharsetDecoder decoder = getTextEncodingCharSet().newDecoder();
 
             //Decode buffer if runs into problems should through exception which we
             //catch and then set value to empty string.
+            LOG.log(TRACE, "Array length is:%s offset is:%s size is:%s", arr.length, offset, size);
 
 
             if (arr.length - offset < size) {
@@ -93,8 +100,10 @@ public class StringFixedLength extends AbstractString {
             }
             value = decoder.decode(ByteBuffer.wrap(arr, offset, size)).toString();
         } catch (CharacterCodingException ce) {
+            LOG.log(ERROR, "Character encoding, value:%s", value, ce);
             value = "";
         }
+        LOG.log(DEBUG, "Read StringFixedLength:%s", value);
     }
 
     @Override
@@ -121,6 +130,7 @@ public class StringFixedLength extends AbstractString {
 
         //Create with a series of empty of spaces to try and ensure integrity of field
         if (value == null) {
+            LOG.log(WARN, "Value of StringFixedlength Field is null using default value instead");
             data = new byte[size];
             for (int i = 0; i < size; i++) {
                 data[i] = ' ';
@@ -134,12 +144,13 @@ public class StringFixedLength extends AbstractString {
             if (StandardCharsets.UTF_16.equals(charset)) {
                 //Note remember LE BOM is ff fe but tis is handled by encoder Unicode char is fe ff
                 encoder = StandardCharsets.UTF_16LE.newEncoder();
-                dataBuffer = encoder.encode(CharBuffer.wrap("\uFEFF" + value));
+                dataBuffer = encoder.encode(CharBuffer.wrap('\ufeff' + (String) value));
             } else {
                 encoder = charset.newEncoder();
                 dataBuffer = encoder.encode(CharBuffer.wrap((String) value));
             }
         } catch (CharacterCodingException ce) {
+            LOG.log(WARN, "There was a problem writing the following StringFixedlength Field:%s using default value instead", value, ce);
             data = new byte[size];
             for (int i = 0; i < size; i++) {
                 data[i] = ' ';
@@ -158,12 +169,23 @@ public class StringFixedLength extends AbstractString {
             }
             //There is more data available than allowed for this field strip
             else if (dataBuffer.limit() > size) {
+                LOG.log(WARN, "There was a problem writing the following StringFixedlength Field:%s when converted to bytes has length of:%s" +
+                                " but field was defined with length of:%s too long so stripping extra length",
+                        value,
+                        dataBuffer.limit(),
+                        size);
                 data = new byte[size];
                 dataBuffer.get(data, 0, size);
                 return data;
             }
             //There is not enough data
             else {
+                LOG.log(WARN, "There was a problem writing the following StringFixedlength Field:%s when converted to bytes has length of:%s" +
+                                " but field was defined with length of:%s too short so padding with spaces to make up extra length",
+                        value,
+                        dataBuffer.limit(),
+                        size);
+
                 data = new byte[size];
                 dataBuffer.get(data, 0, dataBuffer.limit());
 
@@ -173,6 +195,7 @@ public class StringFixedLength extends AbstractString {
                 return data;
             }
         } else {
+            LOG.log(WARN, "There was a serious problem writing the following StringFixedlength Field:%s using default value instead", value);
             data = new byte[size];
             for (int i = 0; i < size; i++) {
                 data[i] = ' ';

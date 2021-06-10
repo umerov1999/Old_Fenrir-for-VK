@@ -6,8 +6,6 @@
  */
 package ealvatag.utils.tree;
 
-import androidx.annotation.NonNull;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -211,7 +209,7 @@ public class EventListenerList implements Serializable {
         // Is l on the list?
         int index = -1;
         for (int i = listenerList.length - 2; i >= 0; i -= 2) {
-            if ((listenerList[i] == t) && (listenerList[i + 1].equals(l))) {
+            if ((listenerList[i] == t) && (listenerList[i + 1].equals(l) == true)) {
                 index = i;
                 break;
             }
@@ -242,7 +240,7 @@ public class EventListenerList implements Serializable {
         for (int i = 0; i < lList.length; i += 2) {
             Class t = (Class) lList[i];
             EventListener l = (EventListener) lList[i + 1];
-            if ((l instanceof Serializable)) {
+            if ((l != null) && (l instanceof Serializable)) {
                 s.writeObject(t.getName());
                 s.writeObject(l);
             }
@@ -267,15 +265,14 @@ public class EventListenerList implements Serializable {
     /**
      * Returns a string representation of the EventListenerList.
      */
-    @NonNull
     public String toString() {
         Object[] lList = listenerList;
-        StringBuilder s = new StringBuilder("EventListenerList: ");
-        s.append(lList.length / 2).append(" listeners: ");
+        String s = "EventListenerList: ";
+        s += lList.length / 2 + " listeners: ";
         for (int i = 0; i <= lList.length - 2; i += 2) {
-            s.append(" type ").append(((Class) lList[i]).getName());
-            s.append(" listener ").append(lList[i + 1]);
+            s += " type " + ((Class) lList[i]).getName();
+            s += " listener " + lList[i + 1];
         }
-        return s.toString();
+        return s;
     }
 }

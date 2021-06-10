@@ -17,8 +17,6 @@
 
 package ealvatag.tag.id3;
 
-import androidx.annotation.NonNull;
-
 import java.io.IOException;
 
 import okio.Buffer;
@@ -59,7 +57,7 @@ public class Id3SynchronizingSink extends ForwardingSink {
     }
 
     @Override
-    public void write(@NonNull Buffer source, long byteCount) throws IOException {
+    public void write(Buffer source, long byteCount) throws IOException {
         for (int i = 0; i < byteCount; i++) {
             byte current = source.readByte();
             if (lastByteWasFF) {

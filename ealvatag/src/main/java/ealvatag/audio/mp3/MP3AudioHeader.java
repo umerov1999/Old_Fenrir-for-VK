@@ -17,8 +17,6 @@
  */
 package ealvatag.audio.mp3;
 
-import androidx.annotation.NonNull;
-
 import com.google.common.base.MoreObjects;
 
 import java.io.EOFException;
@@ -28,10 +26,17 @@ import java.util.concurrent.TimeUnit;
 import ealvatag.audio.AudioHeader;
 import ealvatag.audio.exceptions.InvalidAudioFrameException;
 import ealvatag.audio.io.FileOperator;
+import ealvatag.logging.EalvaTagLog;
+import ealvatag.logging.EalvaTagLog.JLogger;
+import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.logging.ErrorMessage;
 import ealvatag.utils.TimeUnits;
 import okio.Buffer;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 /**
@@ -56,6 +61,7 @@ import static java.util.concurrent.TimeUnit.NANOSECONDS;
  * Layer III file but MP2 Layer II), MP1 Layer I) and MPEG-2 files are sometimes used and named with
  * the .mp3 suffix so this library attempts to supports all these formats.
  */
+@SuppressWarnings("unused")
 public class MP3AudioHeader implements AudioHeader {
     private static final double NANOSECONDS_IN_A_SECOND = 1000000000;
     private static final int CONVERT_TO_KILOBITS = 1000;
@@ -69,6 +75,8 @@ public class MP3AudioHeader implements AudioHeader {
     private final static int MIN_BUFFER_REMAINING_REQUIRED =
             MPEGFrameHeader.HEADER_SIZE + XingFrame.MAX_BUFFER_SIZE_NEEDED_TO_READ_XING;
     private static final int NO_SECONDS_IN_HOUR = 3600;
+    //Logger
+    public static JLogger LOG = JLoggers.get(MP3AudioHeader.class, EalvaTagLog.MARKER);
     MPEGFrameHeader mp3FrameHeader;
     private XingFrame mp3XingFrame;
     private VbriFrame mp3VbriFrame;
@@ -86,6 +94,7 @@ public class MP3AudioHeader implements AudioHeader {
     MP3AudioHeader(FileOperator fileOperator, long startByte, String fileName) throws IOException,
             InvalidAudioFrameException {
         if (!seek(fileOperator, startByte, fileName)) {
+            LOG.log(ERROR, ErrorMessage.NO_AUDIO_HEADER_FOUND, fileName);
             throw new InvalidAudioFrameException(ErrorMessage.NO_AUDIO_HEADER_FOUND, fileName);
         }
     }
@@ -129,6 +138,8 @@ public class MP3AudioHeader implements AudioHeader {
 
                 if (MPEGFrameHeader.isMPEGFrame(buffer)) {  // doesn't move buffer position
                     try {
+                        LOG.log(TRACE, "Found Possible header at:%s", filePointerCount);
+
                         mp3FrameHeader = MPEGFrameHeader.parseMPEGHeader(buffer);  // doesn't move buffer position
                         syncFound = true;
 
@@ -136,13 +147,20 @@ public class MP3AudioHeader implements AudioHeader {
 
                         Buffer xingFrameBuffer = XingFrame.isXingFrame(buffer.clone(), mp3FrameHeader);
                         if (xingFrameBuffer != null) {
-                            mp3XingFrame = XingFrame.parseXingFrame(xingFrameBuffer);
-                            xingFrameBuffer.skip(xingFrameBuffer.size());
+                            LOG.log(TRACE, "Found Possible XingHeader");
+                            try {
+                                mp3XingFrame = XingFrame.parseXingFrame(xingFrameBuffer);
+                                xingFrameBuffer.skip(xingFrameBuffer.size());
+                            } catch (InvalidAudioFrameException ex) {
+                                // We Ignore because even if Xing Header is corrupted
+                                //doesn't mean file is corrupted
+                            }
                             break;
                         }
 
                         Buffer vbriFrameBuffer = VbriFrame.isVbriFrame(buffer.clone());
                         if (vbriFrameBuffer != null) {
+                            LOG.log(TRACE, "Found Possible VbriHeader");
                             mp3VbriFrame = VbriFrame.parseVBRIFrame(vbriFrameBuffer);
                             vbriFrameBuffer.skip(vbriFrameBuffer.size());
                             break;
@@ -173,10 +191,15 @@ public class MP3AudioHeader implements AudioHeader {
 
             }
         } catch (EOFException ex) {
+            LOG.log(WARN, "Reached end of file without finding sync match", ex);
             syncFound = false;
+        } catch (IOException iox) {
+            LOG.log(ERROR, "IOException occurred while trying to find sync", iox);
+            throw iox;
         }
 
         //Return to start of audio header
+        LOG.log(TRACE, "Return found matching mp3 header starting at %s", filePointerCount);
         setFileSize(fileOperator.getFileChannel().size());
         setMp3StartByte(filePointerCount);
         setTimePerFrame();
@@ -189,6 +212,10 @@ public class MP3AudioHeader implements AudioHeader {
 
     private boolean isNextFrameValid(long filePointerCount, Buffer bb, FileOperator fileOperator, String seekFileName)
             throws IOException {
+        LOG.log(TRACE, "Checking next frame %s:fpc:%sskipping to:%s",
+                seekFileName,
+                filePointerCount,
+                (filePointerCount + mp3FrameHeader.getFrameLength()));
         boolean result = false;
 
         long fileSize = fileOperator.getFileChannel().size();
@@ -197,17 +224,20 @@ public class MP3AudioHeader implements AudioHeader {
         //have gone wrong because frames are not this large, so just return false
         //bad frame header
         if (mp3FrameHeader.getFrameLength() > (FILE_BUFFER_SIZE - MIN_BUFFER_REMAINING_REQUIRED)) {
+            LOG.log(DEBUG, "Frame size is too large to be a frame:%s", mp3FrameHeader.getFrameLength());
             return false;
         }
 
         //Check for end of buffer if not enough room get some more
         if (bb.size() <= MIN_BUFFER_REMAINING_REQUIRED + mp3FrameHeader.getFrameLength()) {
+            LOG.log(DEBUG, "Buffer too small, need to reload, buffer size:%s", bb.size());
             bb.clear();
             long byteCount = Math.max(Math.min(FILE_BUFFER_SIZE, fileSize - filePointerCount), 0);
             fileOperator.read(filePointerCount, bb, byteCount);
             //Not enough left
             if (bb.size() <= MIN_BUFFER_REMAINING_REQUIRED) {
                 //No mp3 exists
+                LOG.log(DEBUG, "Nearly at end of file, no header found:");
                 return false;
             }
         }
@@ -217,9 +247,14 @@ public class MP3AudioHeader implements AudioHeader {
         if (MPEGFrameHeader.isMPEGFrame(bb)) {
             try {
                 MPEGFrameHeader.parseMPEGHeader(bb);
+                LOG.log(DEBUG, "Check next frame confirms is an audio header ");
                 result = true;
-            } catch (InvalidAudioFrameException ignored) {
+            } catch (InvalidAudioFrameException ex) {
+                LOG.log(DEBUG, "Check next frame has identified this is not an audio header");
+                result = false;
             }
+        } else {
+            LOG.log(DEBUG, "isMPEGFrame has identified this is not an audio header");
         }
         return result;
     }
@@ -515,7 +550,6 @@ public class MP3AudioHeader implements AudioHeader {
         this.audioDataEndPosition = audioDataEndPosition;
     }
 
-    @NonNull
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)

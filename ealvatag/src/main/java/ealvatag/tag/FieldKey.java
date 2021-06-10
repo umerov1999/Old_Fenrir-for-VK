@@ -1,6 +1,6 @@
 package ealvatag.tag;
 
-import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This is an enumeration of all possible fields. Some tag types do not support all these fields
@@ -159,10 +159,10 @@ public enum FieldKey {
     WORK_TYPE("Work Type"),
     YEAR("Year");
 
-    @NonNull
+    @NotNull
     private final String title;
 
-    FieldKey(@NonNull String title) {
+    FieldKey(@NotNull String title) {
         this.title = title;
     }
 

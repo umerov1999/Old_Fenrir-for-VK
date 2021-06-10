@@ -20,10 +20,7 @@
  */
 package ealvatag.tag.datatype;
 
-import androidx.annotation.NonNull;
-
 import java.io.EOFException;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -36,7 +33,7 @@ public class Lyrics3Line extends AbstractDataType {
     /**
      *
      */
-    private LinkedList<Lyrics3TimeStamp> timeStamp = new LinkedList<>();
+    private LinkedList<Lyrics3TimeStamp> timeStamp = new LinkedList<Lyrics3TimeStamp>();
 
     /**
      *
@@ -156,7 +153,7 @@ public class Lyrics3Line extends AbstractDataType {
         }
         int delim;
         Lyrics3TimeStamp time;
-        timeStamp = new LinkedList<>();
+        timeStamp = new LinkedList<Lyrics3TimeStamp>();
         delim = lineString.indexOf("[", offset);
         while (delim >= 0) {
             offset = lineString.indexOf("]", delim) + 1;
@@ -171,11 +168,10 @@ public class Lyrics3Line extends AbstractDataType {
     /**
      * @return
      */
-    @NonNull
     public String toString() {
-        StringBuilder str = new StringBuilder();
+        String str = "";
         for (Object aTimeStamp : timeStamp) {
-            str.append(aTimeStamp);
+            str += aTimeStamp.toString();
         }
         return "timeStamp = " + str + ", lyric = " + lyric + "\n";
     }
@@ -184,22 +180,22 @@ public class Lyrics3Line extends AbstractDataType {
      * @return
      */
     public String writeString() {
-        StringBuilder str = new StringBuilder();
+        String str = "";
         Lyrics3TimeStamp time;
         for (Object aTimeStamp : timeStamp) {
             time = (Lyrics3TimeStamp) aTimeStamp;
-            str.append(time.writeString());
+            str += time.writeString();
         }
         return str + lyric;
     }
 
     public void readByteArray(byte[] arr, int offset) throws InvalidDataTypeException {
-        readString(Arrays.toString(arr), offset);
+        readString(arr.toString(), offset);
     }
 
     @Override
     public void read(Buffer buffer, int size) throws EOFException, InvalidDataTypeException {
-        readString(Arrays.toString(buffer.readByteArray()), 0);
+        readString(buffer.readByteArray().toString(), 0);
     }
 
     public byte[] writeByteArray() {

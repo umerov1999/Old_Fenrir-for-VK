@@ -20,8 +20,6 @@
  */
 package ealvatag.tag.datatype;
 
-import androidx.annotation.NonNull;
-
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
@@ -33,6 +31,8 @@ import ealvatag.tag.id3.AbstractTagFrameBody;
 import ealvatag.tag.id3.valuepair.TextEncoding;
 import ealvatag.utils.StandardCharsets;
 import okio.Buffer;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
 
 /**
  * A partial implementation for String based ID3 fields
@@ -72,9 +72,7 @@ public abstract class AbstractString extends AbstractDataType {
      *
      * @return a string representation of the value
      */
-    @NonNull
     public String toString() {
-        assert value != null;
         return (String) value;
     }
 
@@ -92,7 +90,12 @@ public abstract class AbstractString extends AbstractDataType {
         Charset charset = encoding.getCharsetForId(textEncoding);
         CharsetEncoder encoder = charset.newEncoder();
 
-        return encoder.canEncode((String) value);
+        if (encoder.canEncode((String) value)) {
+            return true;
+        } else {
+            LOG.log(TRACE, "Failed Trying to decode %s with %s", value, encoder);
+            return false;
+        }
     }
 
     /**
@@ -112,17 +115,20 @@ public abstract class AbstractString extends AbstractDataType {
             if (inBuffer.getChar(0) == 0xfffe || inBuffer.getChar(0) == 0xfeff) {
                 //Get the Specified Decoder
                 decoder = getTextEncodingCharSet().newDecoder();
+                decoder.reset();
             } else {
                 if (inBuffer.get(0) == 0) {
                     decoder = StandardCharsets.UTF_16BE.newDecoder();
+                    decoder.reset();
                 } else {
                     decoder = StandardCharsets.UTF_16LE.newDecoder();
+                    decoder.reset();
                 }
             }
         } else {
             decoder = getTextEncodingCharSet().newDecoder();
+            decoder.reset();
         }
-        decoder.reset();
         return decoder;
     }
 

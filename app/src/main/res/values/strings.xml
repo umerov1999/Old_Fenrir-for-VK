@@ -157,6 +157,7 @@
         <item>Fenrir</item>
         <item>Triskel</item>
         <item>Hel</item>
+        <item>Fire</item>
         <item>Fire Fan</item>
         <item>Odin</item>
     </string-array>
@@ -174,6 +175,7 @@
         <item>9</item>
         <item>10</item>
         <item>11</item>
+        <item>12</item>
     </string-array>
 
     <string-array name="array_accounts_input">

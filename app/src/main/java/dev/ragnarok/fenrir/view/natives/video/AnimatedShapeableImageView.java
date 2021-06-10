@@ -67,7 +67,7 @@ public class AnimatedShapeableImageView extends ShapeableImageView {
             decoderCallback.onLoaded(false);
             return;
         }
-        setAnimation(new AnimatedFileDrawable(ch, 0, defaultWidth, defaultHeight));
+        setAnimation(new AnimatedFileDrawable(ch, 0, defaultWidth, defaultHeight, () -> decoderCallback.onLoaded(false)));
         playAnimation();
     }
 
@@ -118,10 +118,11 @@ public class AnimatedShapeableImageView extends ShapeableImageView {
 
     public void fromFile(@NonNull File file) {
         if (!FenrirNative.isNativeLoaded()) {
+            decoderCallback.onLoaded(false);
             return;
         }
         clearAnimationDrawable();
-        setAnimation(new AnimatedFileDrawable(file, 0, defaultWidth, defaultHeight));
+        setAnimation(new AnimatedFileDrawable(file, 0, defaultWidth, defaultHeight, () -> decoderCallback.onLoaded(false)));
     }
 
     public void clearAnimationDrawable() {

@@ -23,12 +23,19 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 
+import ealvatag.audio.exceptions.CannotReadException;
 import ealvatag.audio.exceptions.CannotWriteException;
 import ealvatag.audio.exceptions.NoWritePermissionsException;
+import ealvatag.logging.EalvaTagLog;
+import ealvatag.logging.EalvaTagLog.JLogger;
+import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.logging.ErrorMessage;
 import ealvatag.tag.Tag;
 import ealvatag.tag.TagFieldContainer;
 import ealvatag.tag.TagOptionSingleton;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Different write because ...??
@@ -36,6 +43,7 @@ import ealvatag.tag.TagOptionSingleton;
  * Created by Paul on 28/01/2016.
  */
 public abstract class AudioFileWriter2 extends AudioFileWriter {
+    private static final JLogger LOG = JLoggers.get(AudioFileWriter2.class, EalvaTagLog.MARKER);
 
     /**
      * Delete the tag (if any) present in the given file
@@ -50,12 +58,14 @@ public abstract class AudioFileWriter2 extends AudioFileWriter {
         try (FileChannel channel = new RandomAccessFile(file, "rw").getChannel()) {
             deleteTag(af.getTag().orNull(), channel, file.getAbsolutePath());
         } catch (IOException e) {
+            LOG.log(WARN, e, ErrorMessage.GENERAL_DELETE_FAILED, file);
             throw new CannotWriteException(e, ErrorMessage.GENERAL_DELETE_FAILED, file);
         }
     }
 
     private void checkCanWriteAndSize(AudioFile af, File file) throws CannotWriteException {
         if (TagOptionSingleton.getInstance().isCheckIsWritable() && !file.canWrite()) {
+            LOG.log(ERROR, ErrorMessage.NO_PERMISSIONS_TO_WRITE_TO_FILE, file);
             throw new CannotWriteException(ErrorMessage.GENERAL_DELETE_FAILED, file);
         }
 
@@ -78,11 +88,14 @@ public abstract class AudioFileWriter2 extends AudioFileWriter {
         } catch (FileNotFoundException e) {
             if (file.exists()) {
                 // file exists, permission error
+                LOG.log(WARN, ErrorMessage.GENERAL_WRITE_FAILED_TO_OPEN_FILE_FOR_EDITING, file);
                 throw new NoWritePermissionsException(e, ErrorMessage.GENERAL_WRITE_FAILED_TO_OPEN_FILE_FOR_EDITING, file);
             } else {
+                LOG.log(WARN, ErrorMessage.GENERAL_WRITE_FAILED_BECAUSE_FILE_NOT_FOUND, file);
                 throw new CannotWriteException(e, ErrorMessage.GENERAL_WRITE_FAILED_BECAUSE_FILE_NOT_FOUND, file);
             }
         } catch (IOException e) {
+            LOG.log(WARN, e, ErrorMessage.GENERAL_WRITE_FAILED_BECAUSE, file);
             throw new CannotWriteException(e);
         }
     }
@@ -90,13 +103,15 @@ public abstract class AudioFileWriter2 extends AudioFileWriter {
     protected abstract void deleteTag(Tag tag, FileChannel channel, String fileName) throws CannotWriteException;
 
 
-    public void deleteTag(Tag tag, RandomAccessFile raf, RandomAccessFile tempRaf) {
+    public void deleteTag(Tag tag, RandomAccessFile raf, RandomAccessFile tempRaf)
+            throws CannotReadException, CannotWriteException, IOException {
         throw new UnsupportedOperationException("Old method not used in version 2");
     }
 
     protected abstract void writeTag(TagFieldContainer tag, FileChannel channel, String fileName) throws CannotWriteException;
 
-    protected void writeTag(AudioFile audioFile, TagFieldContainer tag, RandomAccessFile raf, RandomAccessFile rafTemp) {
+    protected void writeTag(AudioFile audioFile, TagFieldContainer tag, RandomAccessFile raf, RandomAccessFile rafTemp)
+            throws CannotReadException, CannotWriteException, IOException {
         throw new UnsupportedOperationException("Old method not used in version 2");
     }
 }

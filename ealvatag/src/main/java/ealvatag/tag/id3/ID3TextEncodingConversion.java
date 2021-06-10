@@ -1,12 +1,18 @@
 package ealvatag.tag.id3;
 
+import ealvatag.logging.EalvaTagLog;
+import ealvatag.logging.EalvaTagLog.JLogger;
+import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.tag.TagOptionSingleton;
 import ealvatag.tag.id3.valuepair.TextEncoding;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Functions to encode text according to encodingoptions and ID3 version
  */
 public class ID3TextEncodingConversion {
+    private static final JLogger LOG = JLoggers.get(ID3TextEncodingConversion.class, EalvaTagLog.MARKER);
 
 
     /**
@@ -23,6 +29,7 @@ public class ID3TextEncodingConversion {
 
         //Should not happen, assume v23 and provide a warning
         if (header == null) {
+            LOG.log(WARN, "Header has not yet been set for this framebody");
 
             if (TagOptionSingleton.getInstance().isResetTextEncodingForExistingFrames()) {
                 return TagOptionSingleton.getInstance().getId3v23DefaultTextEncoding();
@@ -56,6 +63,7 @@ public class ID3TextEncodingConversion {
      */
     public static byte getUnicodeTextEncoding(AbstractTagFrame header) {
         if (header == null) {
+            LOG.log(WARN, "Header has not yet been set for this framebody");
             return TextEncoding.UTF_16;
         } else if (header instanceof ID3v24Frame) {
             return TagOptionSingleton.getInstance().getId3v24UnicodeTextEncoding();

@@ -17,10 +17,14 @@
 
 package ealvatag.tag.images;
 
+import android.graphics.Bitmap;
+
 import com.google.common.base.Optional;
 
 import java.io.File;
 import java.io.IOException;
+
+import ealvatag.audio.flac.metadatablock.MetadataBlockDataPicture;
 
 /**
  * A no-op implementation of {@link Artwork}. Works very well with {@link Optional<Artwork>} if caller is unconcerned with results
@@ -84,6 +88,16 @@ public final class NullArtwork implements Artwork {
     }
 
     @Override
+    public boolean setImageFromData() {
+        return false;
+    }
+
+    @Override
+    public Bitmap getImage() throws IllegalArgumentException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public boolean isLinked() {
         return false;
     }
@@ -115,6 +129,11 @@ public final class NullArtwork implements Artwork {
 
     @Override
     public Artwork setFromFile(File file) throws IOException {
+        return this;
+    }
+
+    @Override
+    public Artwork setFromMetadataBlockDataPicture(MetadataBlockDataPicture coverArt) {
         return this;
     }
 }

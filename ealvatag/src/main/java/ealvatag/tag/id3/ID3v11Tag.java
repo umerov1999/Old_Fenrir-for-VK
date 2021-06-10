@@ -36,6 +36,9 @@ import java.util.regex.Matcher;
 
 import ealvatag.audio.io.FileOperator;
 import ealvatag.audio.mp3.MP3File;
+import ealvatag.logging.EalvaTagLog;
+import ealvatag.logging.EalvaTagLog.JLogger;
+import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.tag.FieldKey;
 import ealvatag.tag.Tag;
 import ealvatag.tag.TagException;
@@ -53,6 +56,8 @@ import ealvatag.tag.id3.framebody.FrameBodyTRCK;
 import ealvatag.tag.reference.GenreTypes;
 import ealvatag.utils.StandardCharsets;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 import static ealvatag.utils.Check.CANNOT_BE_NULL;
 import static ealvatag.utils.Check.checkArgNotNull;
 
@@ -63,6 +68,7 @@ import static ealvatag.utils.Check.checkArgNotNull;
  * @author : Paul Taylor
  */
 public class ID3v11Tag extends ID3v1Tag {
+    private static final JLogger LOG = JLoggers.get(ID3v11Tag.class, EalvaTagLog.MARKER);
 
     //For writing output
     private static final String TYPE_TRACK = "track";
@@ -74,9 +80,11 @@ public class ID3v11Tag extends ID3v1Tag {
     private static final int FIELD_COMMENT_LENGTH = 28;
     private static final int FIELD_COMMENT_POS = 97;
 
+    @SuppressWarnings("unused")
     private static final int FIELD_TRACK_INDICATOR_LENGTH = 1;
     private static final int FIELD_TRACK_INDICATOR_POS = 125;
 
+    @SuppressWarnings("unused")
     private static final int FIELD_TRACK_LENGTH = 1;
     private static final int FIELD_TRACK_POS = 126;
     private static final byte RELEASE = 1;
@@ -128,47 +136,48 @@ public class ID3v11Tag extends ID3v1Tag {
                     id3tag = (ID3v24Tag) mp3tag;
                 }
                 ID3v24Frame frame;
-                StringBuilder text;
+                String text;
                 if (id3tag.hasFrame(ID3v24Frames.FRAME_ID_TITLE)) {
                     frame = (ID3v24Frame) id3tag.getFrame(ID3v24Frames.FRAME_ID_TITLE);
-                    text = new StringBuilder(((FrameBodyTIT2) frame.getBody()).getText());
-                    title = ID3Tags.truncate(text.toString(), FIELD_TITLE_LENGTH);
+                    text = ((FrameBodyTIT2) frame.getBody()).getText();
+                    title = ID3Tags.truncate(text, FIELD_TITLE_LENGTH);
                 }
                 if (id3tag.hasFrame(ID3v24Frames.FRAME_ID_ARTIST)) {
                     frame = (ID3v24Frame) id3tag.getFrame(ID3v24Frames.FRAME_ID_ARTIST);
-                    text = new StringBuilder(((FrameBodyTPE1) frame.getBody()).getText());
-                    artist = ID3Tags.truncate(text.toString(), FIELD_ARTIST_LENGTH);
+                    text = ((FrameBodyTPE1) frame.getBody()).getText();
+                    artist = ID3Tags.truncate(text, FIELD_ARTIST_LENGTH);
                 }
                 if (id3tag.hasFrame(ID3v24Frames.FRAME_ID_ALBUM)) {
                     frame = (ID3v24Frame) id3tag.getFrame(ID3v24Frames.FRAME_ID_ALBUM);
-                    text = new StringBuilder(((FrameBodyTALB) frame.getBody()).getText());
-                    album = ID3Tags.truncate(text.toString(), FIELD_ALBUM_LENGTH);
+                    text = ((FrameBodyTALB) frame.getBody()).getText();
+                    album = ID3Tags.truncate(text, FIELD_ALBUM_LENGTH);
                 }
                 if (id3tag.hasFrame(ID3v24Frames.FRAME_ID_YEAR)) {
                     frame = (ID3v24Frame) id3tag.getFrame(ID3v24Frames.FRAME_ID_YEAR);
-                    text = new StringBuilder(((FrameBodyTDRC) frame.getBody()).getText());
-                    year = ID3Tags.truncate(text.toString(), FIELD_YEAR_LENGTH);
+                    text = ((FrameBodyTDRC) frame.getBody()).getText();
+                    year = ID3Tags.truncate(text, FIELD_YEAR_LENGTH);
                 }
 
                 if (id3tag.hasFrame(ID3v24Frames.FRAME_ID_COMMENT)) {
                     Iterator iterator = id3tag.getFrameOfType(ID3v24Frames.FRAME_ID_COMMENT);
-                    text = new StringBuilder();
+                    text = "";
                     while (iterator.hasNext()) {
                         frame = (ID3v24Frame) iterator.next();
-                        text.append(((FrameBodyCOMM) frame.getBody()).getText()).append(" ");
+                        text += (((FrameBodyCOMM) frame.getBody()).getText() + " ");
                     }
-                    comment = ID3Tags.truncate(text.toString(), FIELD_COMMENT_LENGTH);
+                    comment = ID3Tags.truncate(text, FIELD_COMMENT_LENGTH);
                 }
                 if (id3tag.hasFrame(ID3v24Frames.FRAME_ID_GENRE)) {
                     frame = (ID3v24Frame) id3tag.getFrame(ID3v24Frames.FRAME_ID_GENRE);
-                    text = new StringBuilder(((FrameBodyTCON) frame.getBody()).getText());
+                    text = ((FrameBodyTCON) frame.getBody()).getText();
                     try {
-                        genre = (byte) ID3Tags.findNumber(text.toString());
+                        genre = (byte) ID3Tags.findNumber(text);
                     } catch (TagException ex) {
-                        Integer genreId = GenreTypes.getInstanceOf().getIdForValue(text.toString());
+                        Integer genreId = GenreTypes.getInstanceOf().getIdForValue(text);
                         if (null != genreId) {
                             genre = genreId.byteValue();
                         } else {
+                            LOG.log(WARN, "%s:Unable to convert TCON frame to format suitable for v11 tag", loggingFilename, ex);
                             genre = (byte) ID3v1Tag.GENRE_UNDEFINED;
                         }
                     }
@@ -246,6 +255,7 @@ public class ID3v11Tag extends ID3v1Tag {
         return String.valueOf(track & BYTE_TO_UNSIGNED);
     }
 
+    @SuppressWarnings("unused")
     public void addTrack(String track) {
         setTrack(track);
     }
@@ -253,7 +263,7 @@ public class ID3v11Tag extends ID3v1Tag {
     public ImmutableList<TagField> getTrack() {
         String firstTrack = getFirst(FieldKey.TRACK);
         if (firstTrack.length() > 0) {
-            return ImmutableList.of(new ID3v1TagField(ID3v1FieldKey.TRACK.name(), firstTrack));
+            return ImmutableList.<TagField>of(new ID3v1TagField(ID3v1FieldKey.TRACK.name(), firstTrack));
         } else {
             return ImmutableList.of();
         }
@@ -417,6 +427,7 @@ public class ID3v11Tag extends ID3v1Tag {
         if (!seek(byteBuffer)) {
             throw new TagNotFoundException("ID3v1 tag not found");
         }
+        LOG.log(DEBUG, "Reading v1.1 tag");
 
         //Do single file read of data to cut down on file reads
         byte[] dataBuffer = new byte[TAG_LENGTH];
@@ -459,6 +470,7 @@ public class ID3v11Tag extends ID3v1Tag {
      * @throws IOException thrown if there were problems writing to the file
      */
     public void write(RandomAccessFile file) throws IOException {
+        LOG.log(DEBUG, "Saving ID3v11 tag to file");
         byte[] buffer = new byte[TAG_LENGTH];
         int i;
         String str;
@@ -507,6 +519,8 @@ public class ID3v11Tag extends ID3v1Tag {
             buffer[offset] = genre;
         }
         file.write(buffer);
+
+        LOG.log(DEBUG, "Saved ID3v11 tag to file");
     }
 
 

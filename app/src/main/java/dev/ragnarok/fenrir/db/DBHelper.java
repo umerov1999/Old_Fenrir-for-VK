@@ -716,6 +716,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 " [" + UserColumns.USER_STATUS + "] TEXT, " +
                 " [" + UserColumns.SEX + "] INTEGER, " +
                 " [" + UserColumns.DOMAIN + "] TEXT, " +
+                " [" + UserColumns.MAIDEN_NAME + "] TEXT, " +
                 " [" + UserColumns.IS_FRIEND + "] BOOLEAN, " +
                 " [" + UserColumns.FRIEND_STATUS + "] INTEGER, " +
                 " [" + UserColumns.WRITE_MESSAGE_STATUS + "] BOOLEAN, " +

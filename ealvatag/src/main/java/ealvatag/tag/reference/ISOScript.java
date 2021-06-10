@@ -17,12 +17,12 @@ public class ISOScript {
     private static final Map<String, Script> descriptionMap;
 
     static {
-        codeMap = new HashMap<>();
+        codeMap = new HashMap<String, Script>();
         for (Script script : Script.values()) {
             codeMap.put(script.code, script);
         }
 
-        descriptionMap = new HashMap<>();
+        descriptionMap = new HashMap<String, Script>();
         for (Script script : Script.values()) {
             descriptionMap.put(script.description, script);
         }
@@ -46,7 +46,7 @@ public class ISOScript {
     }
 
     public static String[] getDescriptionsAsArray() {
-        List<String> descriptions = new ArrayList<>();
+        List<String> descriptions = new ArrayList<String>();
         for (Script script : Script.values()) {
             descriptions.add(script.description);
         }

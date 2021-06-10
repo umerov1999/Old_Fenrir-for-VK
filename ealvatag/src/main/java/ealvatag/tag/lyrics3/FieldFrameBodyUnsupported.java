@@ -22,8 +22,6 @@
  */
 package ealvatag.tag.lyrics3;
 
-import androidx.annotation.NonNull;
-
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -60,7 +58,6 @@ public class FieldFrameBodyUnsupported extends AbstractLyrics3v2FieldFrameBody {
 
     /**
      * Creates a new FieldBodyUnsupported datatype.
-     *
      * @param byteBuffer
      * @throws ealvatag.tag.InvalidTagException
      */
@@ -131,7 +128,6 @@ public class FieldFrameBodyUnsupported extends AbstractLyrics3v2FieldFrameBody {
     /**
      * @return
      */
-    @NonNull
     public String toString() {
         return getIdentifier() + " : " + (new String(value));
     }

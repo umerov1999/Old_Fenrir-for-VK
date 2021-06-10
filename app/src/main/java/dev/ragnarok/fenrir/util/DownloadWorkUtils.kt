@@ -837,7 +837,7 @@ object DownloadWorkUtils {
             ) doHLSDownload(audio.url, file_v, true) else doDownload(audio.url, file_v, true)
             if (ret) {
                 val cover =
-                    Utils.firstNonEmptyString(audio.thumb_image_very_big, audio.thumb_image_little)
+                    Utils.firstNonEmptyString(audio.thumb_image_very_big, audio.thumb_image_big, audio.thumb_image_little)
                 var updated_tag = false
                 if (needCover && !Utils.isEmpty(cover)) {
                     val cover_file = DownloadInfo(file_v.file, file_v.path, "jpg")

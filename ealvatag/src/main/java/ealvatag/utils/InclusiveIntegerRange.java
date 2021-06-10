@@ -17,8 +17,6 @@
 
 package ealvatag.utils;
 
-import androidx.annotation.NonNull;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 
@@ -27,7 +25,7 @@ import com.google.common.base.Preconditions;
  * <p>
  * Created by Eric on 8/22/2015.
  */
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class InclusiveIntegerRange {
     private final int lowerBounds;
     private final int upperBounds;
@@ -58,7 +56,10 @@ public class InclusiveIntegerRange {
         if (value < lowerBounds) {
             return lowerBounds;
         }
-        return Math.min(value, upperBounds);
+        if (value > upperBounds) {
+            return upperBounds;
+        }
+        return value;
     }
 
     public int clampToRange(float value) {
@@ -85,7 +86,6 @@ public class InclusiveIntegerRange {
         return hash;
     }
 
-    @NonNull
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)

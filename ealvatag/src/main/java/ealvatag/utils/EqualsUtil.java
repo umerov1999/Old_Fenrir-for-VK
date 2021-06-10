@@ -1,8 +1,6 @@
 package ealvatag.utils;
 
 
-import java.util.Objects;
-
 /**
  * Collected methods which allow easy implementation of <code>equals</code>.
  * <p>
@@ -59,7 +57,7 @@ public final class EqualsUtil {
      * arrays. See class comment.
      */
     static public boolean areEqual(Object aThis, Object aThat) {
-        return Objects.equals(aThis, aThat);
+        return aThis == null ? aThat == null : aThis.equals(aThat);
     }
 }
 

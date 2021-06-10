@@ -1,5 +1,6 @@
 package ealvatag.audio.mp3;
 
+import java.io.IOException;
 import java.io.RandomAccessFile;
 
 import ealvatag.audio.AudioFile;
@@ -38,11 +39,11 @@ public class MP3FileWriter extends AudioFileWriter {
         af.save();
     }
 
-    protected void writeTag(AudioFile audioFile, TagFieldContainer tag, RandomAccessFile raf, RandomAccessFile rafTemp) {
+    protected void writeTag(AudioFile audioFile, TagFieldContainer tag, RandomAccessFile raf, RandomAccessFile rafTemp) throws CannotWriteException, IOException {
         throw new RuntimeException("MP3FileReaderwriteTag should not be called");
     }
 
-    protected void deleteTag(Tag tag, RandomAccessFile raf, RandomAccessFile tempRaf) {
+    protected void deleteTag(Tag tag, RandomAccessFile raf, RandomAccessFile tempRaf) throws CannotWriteException, IOException {
         throw new RuntimeException("MP3FileReader.getEncodingInfo should be called");
     }
 }

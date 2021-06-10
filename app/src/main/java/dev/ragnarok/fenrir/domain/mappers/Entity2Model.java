@@ -401,7 +401,8 @@ public class Entity2Model {
                 .setBlacklisted(entity.getBlacklisted())
                 .setBlacklisted_by_me(entity.getBlacklisted_by_me())
                 .setVerified(entity.isVerified())
-                .setCan_access_closed(entity.isCan_access_closed());
+                .setCan_access_closed(entity.isCan_access_closed())
+                .setMaiden_name(entity.getMaiden_name());
     }
 
     public static FavePage map(FavePageEntity entity) {
