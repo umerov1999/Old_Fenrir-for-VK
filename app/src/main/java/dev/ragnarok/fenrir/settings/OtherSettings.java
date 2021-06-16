@@ -475,6 +475,11 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public boolean isRecording_to_opus() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("recording_to_opus", false);
+    }
+
+    @Override
     public boolean isDisable_sensored_voice() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("disable_sensored_voice", false);
     }

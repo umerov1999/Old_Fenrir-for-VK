@@ -837,14 +837,18 @@ object DownloadWorkUtils {
             ) doHLSDownload(audio.url, file_v, true) else doDownload(audio.url, file_v, true)
             if (ret) {
                 val cover =
-                    Utils.firstNonEmptyString(audio.thumb_image_very_big, audio.thumb_image_big, audio.thumb_image_little)
+                    Utils.firstNonEmptyString(
+                        audio.thumb_image_very_big,
+                        audio.thumb_image_big,
+                        audio.thumb_image_little
+                    )
                 var updated_tag = false
                 if (needCover && !Utils.isEmpty(cover)) {
                     val cover_file = DownloadInfo(file_v.file, file_v.path, "jpg")
                     if (doDownload(cover, cover_file, false)) {
                         try {
                             val audioFile = AudioFileIO.read(File(file_v.build()))
-                            var tag: Tag = audioFile.tagOrSetNewDefault
+                            var tag: Tag = audioFile.convertedTagOrSetNewDefault
                             if (tag is ID3v1Tag || tag is ID3v11Tag) {
                                 tag = audioFile.setNewDefaultTag(); }
 
@@ -857,6 +861,9 @@ object DownloadWorkUtils {
                                 tag.setField(FieldKey.TITLE, audio.title)
                             if (!Utils.isEmpty(audio.album_title))
                                 tag.setField(FieldKey.ALBUM, audio.album_title)
+                            if (!tag.getValue(FieldKey.GENRE).isPresent && audio.genreByID3 != 0) {
+                                tag.setField(FieldKey.GENRE, audio.genreByID3.toString())
+                            }
                             if (audio.lyricsId != 0) {
                                 val LyricString: String? = RxUtils.BlockingGetSingle(
                                     InteractorFactory.createAudioInteractor()

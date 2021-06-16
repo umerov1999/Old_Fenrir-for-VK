@@ -26,8 +26,8 @@ import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class VideosLocalServerPresenter extends AccountDependencyPresenter<IVideosLocalServerView> {
 
-    private static final int SEARCH_COUNT = 20;
-    private static final int GET_COUNT = 50;
+    private static final int SEARCH_COUNT = 50;
+    private static final int GET_COUNT = 100;
     private static final int WEB_SEARCH_DELAY = 1000;
     private final List<Video> videos;
     private final ILocalServerInteractor fInteractor;
@@ -185,7 +185,7 @@ public class VideosLocalServerPresenter extends AccountDependencyPresenter<IVide
         }
 
         if (search_at.isSearchMode()) {
-            search_at.reset();
+            search_at.reset(false);
             search(sleep_search);
         } else {
             loadActualData(0);

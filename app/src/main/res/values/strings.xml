@@ -810,7 +810,7 @@
     <string name="repo">Repository: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="repo_local_server">Repository: https://github.com/umerov1999/FenrirMediaServer/releases</string>
     <string name="is_donated">Donate for verification</string>
-    <string name="is_donated_alert">Contact https://t.me/odin_is_my_god</string>
+    <string name="is_donated_alert">Not included in the full version, it costs 60 rubles. Transfer money to 5469380058840926 and in the comments, be sure to link to your page. I will exhibit within 2 days</string>
     <string name="project_dedicated_summary">Project Dedicated for Arnoldova Ekaterina, https://vk.com/id255645173</string>
     <string name="project_dedicated">Project Dedicated</string>
     <string name="comment">Comment</string>
@@ -1464,6 +1464,7 @@
     <string name="rock">Rock</string>
     <string name="speech" translatable="false">Speech</string>
     <string name="trance">Trance</string>
+    <string name="jazz_and_blues">Jazz and blues</string>
     <string name="top">Popular</string>
     <string name="gift">Present</string>
     <string name="gifts">Presents</string>
@@ -1730,7 +1731,10 @@
     <string name="error_dir_access">Directory cannot be accessed</string>
     <string name="label_parent_dir" translatable="false">..</string>
     <string name="show_donate_anim">Show donate animation</string>
-    <string name="discography">Discography</string>
+    <string name="go_discography">Go Discography</string>
+    <string name="return_away">Return</string>
+    <string name="reverse_time">From old to new</string>
+    <string name="local_server_sync">Synchronize the remote list</string>
     <string name="update_time">Set current time</string>
     <string name="max_bitmap_resolution">Max bitmap Resolution</string>
     <string name="artists">Artists</string>
@@ -1760,4 +1764,7 @@
     <string name="notification_force_link">Force open link in notification page</string>
     <string name="disrate">Disrate</string>
     <string name="assign_administrator">Assign Administrator</string>
+    <string name="do_convert">Converting…</string>
+    <string name="recording_to_opus">Recording voice to Opus</string>
+    <string name="recording_to_opus_summary">Experimental, Android 10 and up</string>
 </resources>

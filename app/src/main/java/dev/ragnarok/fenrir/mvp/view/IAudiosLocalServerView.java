@@ -16,4 +16,6 @@ public interface IAudiosLocalServerView extends IMvpView, IErrorView, IAccountDe
     void notifyDataAdded(int position, int count);
 
     void displayLoading(boolean loading);
+
+    void displayOptionsDialog(boolean isReverse, boolean isDiscography);
 }

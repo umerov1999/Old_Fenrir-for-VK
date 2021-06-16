@@ -163,6 +163,18 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         }
     }
 
+    private val requestFile = registerForActivityResult(
+        StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            result.data?.getStringExtra(FileManagerFragment.returnFileParameter)?.let {
+                if (CheckDonate.isFullVersion(requireActivity())) {
+                    presenter?.sendRecordingCustomMessageImpl(requireActivity(), it)
+                }
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -452,6 +464,14 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
 
     override fun onRecordSendClick() {
         presenter?.fireRecordSendClick()
+    }
+
+    override fun onRecordCustomClick() {
+        if (!AppPerms.hasReadWriteStoragePermission(requireActivity())) {
+            requestSendCustomVoicePermission.launch()
+            return
+        }
+        requestFile.launch(Intent(requireActivity(), FileManagerActivity::class.java))
     }
 
     override fun onResumePauseClick() {
@@ -1540,6 +1560,16 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         )
     ) {
         ScreenshotHelper.makeScreenshot(requireActivity())
+    }
+
+    private val requestSendCustomVoicePermission = AppPerms.requestPermissions(
+        this,
+        arrayOf(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+    ) {
+        requestFile.launch(Intent(requireActivity(), FileManagerActivity::class.java))
     }
 
     private fun downloadChat() {

@@ -34,7 +34,6 @@ import dev.ragnarok.fenrir.settings.Settings;
 
 public class AudiosTabsFragment extends BaseFragment {
 
-    public static final int LOCAL_DISCOGRAPHY = -7;
     public static final int LOCAL_SERVER = -6;
     public static final int LOCAL = -5;
     public static final int CATALOG = -4;
@@ -97,8 +96,6 @@ public class AudiosTabsFragment extends BaseFragment {
                 tab.setText(getString(R.string.local_audios));
             else if (fid == LOCAL_SERVER)
                 tab.setText(getString(R.string.on_server));
-            else if (fid == LOCAL_DISCOGRAPHY)
-                tab.setText(getString(R.string.discography));
             else
                 tab.setText(VKApiAudio.Genre.getTitleByGenre(requireActivity(), fid));
         }).attach();
@@ -129,8 +126,6 @@ public class AudiosTabsFragment extends BaseFragment {
             return fragment;
         } else if (option_menu == LOCAL_SERVER) {
             return AudiosLocalServerFragment.newInstance(getAccountId());
-        } else if (option_menu == LOCAL_DISCOGRAPHY) {
-            return DiscographyLocalServerFragment.newInstance(getAccountId());
         } else if (option_menu == MY_AUDIO) {
             Bundle args = AudiosFragment.buildArgs(getAccountId(), ownerId, null, null);
             args.putBoolean(AudiosFragment.EXTRA_IN_TABS_CONTAINER, true);
@@ -154,7 +149,6 @@ public class AudiosTabsFragment extends BaseFragment {
                 adapter.addFragment(LOCAL);
                 if (Settings.get().other().getLocalServer().enabled) {
                     adapter.addFragment(LOCAL_SERVER);
-                    adapter.addFragment(LOCAL_DISCOGRAPHY);
                 }
                 if (Settings.get().accounts().getType(Settings.get().accounts().getCurrent()) == Account_Types.VK_ANDROID || Settings.get().accounts().getType(Settings.get().accounts().getCurrent()) == Account_Types.VK_ANDROID_HIDDEN) {
                     adapter.addFragment(CATALOG);

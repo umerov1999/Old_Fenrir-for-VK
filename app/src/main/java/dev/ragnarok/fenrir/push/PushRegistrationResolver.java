@@ -68,7 +68,7 @@ public class PushRegistrationResolver implements IPushRegistrationResolver {
                         return Completable.complete();
                     }
 
-                    if (settings.accounts().getType(settings.accounts().getCurrent()) != Constants.DEFAULT_ACCOUNT_TYPE)
+                    if (accountId <= 0 || settings.accounts().getType(settings.accounts().getCurrent()) != Constants.DEFAULT_ACCOUNT_TYPE)
                         return Completable.never();
 
                     Set<VkPushRegistration> needUnregister = new HashSet<>(0);

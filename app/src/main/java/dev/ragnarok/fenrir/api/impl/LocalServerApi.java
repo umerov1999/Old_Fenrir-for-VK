@@ -39,16 +39,16 @@ class LocalServerApi implements ILocalServerApi {
     }
 
     @Override
-    public Single<Items<VKApiAudio>> getAudios(Integer offset, Integer count) {
+    public Single<Items<VKApiAudio>> getAudios(Integer offset, Integer count, boolean reverse) {
         return service.provideLocalServerService()
-                .flatMap(service -> service.getAudios(offset, count)
+                .flatMap(service -> service.getAudios(offset, count, reverse ? 1 : 0)
                         .map(extractResponseWithErrorHandling()));
     }
 
     @Override
-    public Single<Items<VKApiAudio>> getDiscography(Integer offset, Integer count) {
+    public Single<Items<VKApiAudio>> getDiscography(Integer offset, Integer count, boolean reverse) {
         return service.provideLocalServerService()
-                .flatMap(service -> service.getDiscography(offset, count)
+                .flatMap(service -> service.getDiscography(offset, count, reverse ? 1 : 0)
                         .map(extractResponseWithErrorHandling()));
     }
 

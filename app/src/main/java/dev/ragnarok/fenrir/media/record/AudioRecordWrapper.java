@@ -27,6 +27,10 @@ public class AudioRecordWrapper {
         mFileExt = builder.mFileExt;
     }
 
+    public static File getRecordingDirectory(Context context) {
+        return context.getExternalFilesDir(Environment.DIRECTORY_RINGTONES);
+    }
+
     public void doRecord() throws AudioRecordException {
         if (mRecorder == null) {
             File file = getTmpRecordFile();
@@ -120,7 +124,7 @@ public class AudioRecordWrapper {
             long currentTime = System.currentTimeMillis();
             String destFileName = "record_" + currentTime + "." + mFileExt;
 
-            File destFile = new File(getRecordingDirectory(), destFileName);
+            File destFile = new File(getRecordingDirectory(mContext), destFileName);
 
             File file = new File(filePath);
             boolean renamed = file.renameTo(destFile);
@@ -138,26 +142,17 @@ public class AudioRecordWrapper {
         return mRecorder == null ? Recorder.Status.NO_RECORD : mRecorder.getStatus();
     }
 
-    private File getRecordingDirectory() {
-        return mContext.getExternalFilesDir(Environment.DIRECTORY_RINGTONES);
-    }
-
     public File getTmpRecordFile() {
-        return new File(getRecordingDirectory(), TEMP_FILE_NAME + "." + mFileExt);
+        return new File(getRecordingDirectory(mContext), TEMP_FILE_NAME + "." + mFileExt);
     }
 
     public static final class Builder {
 
         private final Context mContext;
-        private String mFileExt = "mp3";
+        private final String mFileExt = Recorder.isOpusSupported() ? "ogg" : "mp3";
 
         public Builder(Context context) {
             mContext = context;
-        }
-
-        public Builder setFileExt(String fileExt) {
-            mFileExt = fileExt;
-            return this;
         }
 
         public AudioRecordWrapper build() {

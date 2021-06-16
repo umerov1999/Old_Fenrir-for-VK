@@ -14,12 +14,14 @@ public interface ILocalServerService {
     @FormUrlEncoded
     @POST("audio.get")
     Single<BaseResponse<Items<VKApiAudio>>> getAudios(@Field("offset") Integer offset,
-                                                      @Field("count") Integer count);
+                                                      @Field("count") Integer count,
+                                                      @Field("reverse") Integer reverse);
 
     @FormUrlEncoded
     @POST("discography.get")
     Single<BaseResponse<Items<VKApiAudio>>> getDiscography(@Field("offset") Integer offset,
-                                                           @Field("count") Integer count);
+                                                           @Field("count") Integer count,
+                                                           @Field("reverse") Integer reverse);
 
     @FormUrlEncoded
     @POST("video.get")

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.StatFs;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -78,11 +77,6 @@ public class FileManagerFragment extends Fragment implements FileManagerAdapter.
     private File path;
     private FilenameFilter filter;
     private DirectoryScrollPositions directoryScrollPositions;
-
-    public static long getFreeSpace(String path) {
-        StatFs stat = new StatFs(path);
-        return stat.getAvailableBlocksLong() * stat.getBlockSizeLong();
-    }
 
     public static String formatBytes(long bytes) {
         // TODO: add flag to which part is needed (e.g. GB, MB, KB or bytes)
@@ -335,15 +329,6 @@ public class FileManagerFragment extends Fragment implements FileManagerAdapter.
             curDirString = "/";
         }
 
-        long freeSpace = getFreeSpace(curDirString);
-        String formattedSpaceString = formatBytes(freeSpace);
-        if (freeSpace == 0) {
-            File currentDir = new File(curDirString);
-            if (!currentDir.canWrite()) {
-                formattedSpaceString = "NON Writable";
-            }
-        }
-
         tvCurrentDir.setText(curDirString);
     }
 
@@ -444,7 +429,7 @@ public class FileManagerFragment extends Fragment implements FileManagerAdapter.
 
     @Override
     public void onClick(int position, FileItem item) {
-        String chosenFile = fileList.get(position).file;
+        String chosenFile = item.file;
         File sel = new File(path + "/" + chosenFile);
 
         if (sel.isDirectory()) {
@@ -528,13 +513,6 @@ public class FileManagerFragment extends Fragment implements FileManagerAdapter.
                 dest.writeString(key);
                 dest.writeParcelable(value, flags);
             }
-        }
-    }
-
-    private static class ItemFileNameComparator implements Comparator<FileItem> {
-        @Override
-        public int compare(FileItem lhs, FileItem rhs) {
-            return lhs.file.toLowerCase().compareTo(rhs.file.toLowerCase());
         }
     }
 

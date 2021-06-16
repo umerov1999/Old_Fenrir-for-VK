@@ -161,7 +161,7 @@ class UsersApi extends AbsApi implements IUsersApi {
             ids.add(join(domains, ","));
         }
 
-        return provideService(IUsersService.class, TokenType.USER, TokenType.SERVICE)
+        return provideService(IUsersService.class, TokenType.USER, TokenType.COMMUNITY, TokenType.SERVICE)
                 .flatMap(service -> service
                         .get(join(ids, ","), fields, nameCase)
                         .map(extractResponseWithErrorHandling()));

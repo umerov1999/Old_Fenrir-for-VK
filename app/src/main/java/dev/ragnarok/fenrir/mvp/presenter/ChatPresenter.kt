@@ -40,6 +40,7 @@ import dev.ragnarok.fenrir.media.record.AudioRecordException
 import dev.ragnarok.fenrir.media.record.AudioRecordWrapper
 import dev.ragnarok.fenrir.media.record.Recorder
 import dev.ragnarok.fenrir.model.*
+import dev.ragnarok.fenrir.module.encoder.ToMp4Audio
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated
 import dev.ragnarok.fenrir.mvp.view.IChatView
 import dev.ragnarok.fenrir.place.PlaceFactory
@@ -75,7 +76,6 @@ class ChatPresenter(
     private var peer: Peer
     private var subtitle: String? = null
     private val audioRecordWrapper: AudioRecordWrapper = AudioRecordWrapper.Builder(App.instance)
-        .setFileExt(RECORD_EXT_MP3)
         .build()
     private var endOfContent: Boolean = false
     private var outConfig: ChatConfig
@@ -1032,6 +1032,31 @@ class ChatPresenter(
         view?.ScrollTo(0)
         val builder = SaveMessageBuilder(messagesOwnerId, peerId).setVoiceMessageFile(file)
         this.sendMessage(builder)
+    }
+
+    fun sendRecordingCustomMessageImpl(context: Context, file: String) {
+        val to = File(AudioRecordWrapper.getRecordingDirectory(context), "converted.mp3")
+        to.delete()
+        CustomToast.CreateCustomToast(context).showToastInfo(R.string.do_convert)
+        appendDisposable(
+            Single.create<Boolean> {
+                it.onSuccess(ToMp4Audio.ToMp4Audio(file, to.absolutePath))
+            }.fromIOToMain()
+                .subscribe({ o ->
+                    if (o) {
+                        CustomToast.CreateCustomToast(context).showToastInfo(R.string.success)
+                        sendRecordingMessageImpl(to)
+                    } else {
+                        CustomToast.CreateCustomToast(context).showToastError(R.string.error)
+                        sendRecordingMessageImpl(File(file))
+                    }
+                }, {
+                    run {
+                        CustomToast.CreateCustomToast(context).showToastError(R.string.error)
+                        sendRecordingMessageImpl(File(file))
+                    }
+                })
+        )
     }
 
     fun fireRecordSendClick() {
@@ -2520,7 +2545,6 @@ class ChatPresenter(
     companion object {
 
         private const val COUNT = 30
-        private const val RECORD_EXT_MP3 = "mp3"
 
         private const val SAVE_PEER = "save_peer"
         private const val SAVE_DRAFT_MESSAGE_TEXT = "save_draft_message_text"

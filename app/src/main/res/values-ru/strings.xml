@@ -671,8 +671,8 @@
     <string name="first_pagan">Первый языческий</string>
     <string name="repo">Репозиторий: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="repo_local_server">Репозиторий: https://github.com/umerov1999/FenrirMediaServer/releases</string>
-    <string name="is_donated">Донат на галочку</string>
-    <string name="is_donated_alert">Писать https://t.me/odin_is_my_god</string>
+    <string name="is_donated">Донат на галочку верефикации</string>
+    <string name="is_donated_alert">Не входит в полную версию, стоит 60₽. Переводить на 5469380058840926 и в коментарии обязательно ссылку на свою страницу. В течении 2 суток выставлю</string>
     <string name="project_dedicated_summary">Проект посвящён Арнольдове Екатерине, https://vk.com/id255645173</string>
     <string name="project_dedicated">Проект посвящён</string>
     <string name="comment">Комментарий</string>
@@ -1283,6 +1283,7 @@
     <string name="reggae">Рэгги</string>
     <string name="rock">Рок</string>
     <string name="trance">Транс</string>
+    <string name="jazz_and_blues">Джаз и блюз</string>
     <string name="top">Популярные</string>
     <string name="gift">Подарок</string>
     <string name="gifts">Подарки</string>
@@ -1547,7 +1548,10 @@
     <string name="last_edit">Модификация: %1$s, %2$s</string>
     <string name="error_dir_access">Каталог недоступен</string>
     <string name="show_donate_anim">Донатная анимация</string>
-    <string name="discography">Дискография</string>
+    <string name="go_discography">Перейти к дискографии</string>
+    <string name="reverse_time">От старых к новым</string>
+    <string name="local_server_sync">Синхронизировать список скачанных</string>
+    <string name="return_away">Вернуться</string>
     <string name="update_time">Задать текущее время</string>
     <string name="max_bitmap_resolution">Максимальное разрешение картинки</string>
     <string name="artists">Артисты</string>
@@ -1577,4 +1581,7 @@
     <string name="notification_force_link">Открывать ссылки сразу в уведомлениях</string>
     <string name="disrate">Разжаловать</string>
     <string name="assign_administrator">Назначить администратором</string>
+    <string name="do_convert">Конвертируется…</string>
+    <string name="recording_to_opus">Запись голосовых в opus</string>
+    <string name="recording_to_opus_summary">Эксперементально, Android 10 и выше</string>
 </resources>

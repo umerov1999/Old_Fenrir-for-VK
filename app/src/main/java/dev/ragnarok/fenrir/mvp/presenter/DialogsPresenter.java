@@ -275,6 +275,9 @@ public class DialogsPresenter extends AccountDependencyPresenter<IDialogsView> {
     }
 
     private void receiveStickers() {
+        if (getAccountId() <= 0) {
+            return;
+        }
         try {
             //noinspection ResultOfMethodCallIgnored
             InteractorFactory.createStickersInteractor()

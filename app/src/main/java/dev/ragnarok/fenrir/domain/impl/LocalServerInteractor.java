@@ -42,9 +42,9 @@ public class LocalServerInteractor implements ILocalServerInteractor {
     }
 
     @Override
-    public Single<List<Audio>> getAudios(int offset, int count) {
+    public Single<List<Audio>> getAudios(int offset, int count, boolean reverse) {
         return networker.localServerApi()
-                .getAudios(offset, count)
+                .getAudios(offset, count, reverse)
                 .map(items -> listEmptyIfNull(items.getItems()))
                 .map(out -> {
                     List<Audio> ret = new ArrayList<>();
@@ -55,9 +55,9 @@ public class LocalServerInteractor implements ILocalServerInteractor {
     }
 
     @Override
-    public Single<List<Audio>> getDiscography(int offset, int count) {
+    public Single<List<Audio>> getDiscography(int offset, int count, boolean reverse) {
         return networker.localServerApi()
-                .getDiscography(offset, count)
+                .getDiscography(offset, count, reverse)
                 .map(items -> listEmptyIfNull(items.getItems()))
                 .map(out -> {
                     List<Audio> ret = new ArrayList<>();

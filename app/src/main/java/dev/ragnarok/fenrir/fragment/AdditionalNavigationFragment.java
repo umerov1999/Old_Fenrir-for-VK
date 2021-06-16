@@ -27,8 +27,8 @@ import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.adapter.MenuListAdapter;
 import dev.ragnarok.fenrir.domain.IOwnersRepository;
 import dev.ragnarok.fenrir.domain.Repository;
+import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.SwitchableCategory;
-import dev.ragnarok.fenrir.model.User;
 import dev.ragnarok.fenrir.model.drawer.AbsMenuItem;
 import dev.ragnarok.fenrir.model.drawer.RecentChat;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
@@ -124,7 +124,7 @@ public class AdditionalNavigationFragment extends AbsNavigationFragment implemen
         if (mAccountId != ISettings.IAccountsSettings.INVALID_ID) {
             mCompositeDisposable.add(ownersRepository.getBaseOwnerInfo(mAccountId, mAccountId, IOwnersRepository.MODE_ANY)
                     .compose(RxUtils.applySingleIOToMainSchedulers())
-                    .subscribe(owner -> refreshHeader((User) owner), ignore()));
+                    .subscribe(owner -> refreshHeader(owner), ignore()));
         }
     }
 
@@ -279,7 +279,7 @@ public class AdditionalNavigationFragment extends AbsNavigationFragment implemen
         refreshNavigationItems();
     }
 
-    private void refreshHeader(User user) {
+    private void refreshHeader(Owner user) {
         if (!isAdded()) return;
 
         String avaUrl = user.getMaxSquareAvatar();

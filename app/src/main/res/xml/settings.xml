@@ -836,6 +836,14 @@
             app:iconSpaceReserved="false" />
 
         <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="developer_mode"
+            android:key="recording_to_opus"
+            android:summary="@string/recording_to_opus_summary"
+            android:title="@string/recording_to_opus"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
             android:icon="@drawable/low_battery"
             android:key="keep_longpoll"
             android:summary="@string/settings_keep_longpoll_summary"

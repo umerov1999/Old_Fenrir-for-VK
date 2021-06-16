@@ -132,6 +132,7 @@ public class SettingsBackup {
         settings.add(new SettingCollector("is_side_navigation", SettingTypes.TYPE_BOOL));
         settings.add(new SettingCollector("chats_notification_backup", SettingTypes.TYPE_STRING));
         settings.add(new SettingCollector("notification_force_link", SettingTypes.TYPE_BOOL));
+        settings.add(new SettingCollector("recording_to_opus", SettingTypes.TYPE_BOOL));
     }
 
     public @Nullable

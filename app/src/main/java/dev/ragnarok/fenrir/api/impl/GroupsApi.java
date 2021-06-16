@@ -63,7 +63,7 @@ class GroupsApi extends AbsApi implements IGroupsApi {
 
     @Override
     public Completable editManager(int groupId, int userId, String role, Boolean isContact, String contactPosition, String contactPhone, String contactEmail) {
-        return provideService(IGroupsService.class, TokenType.USER)
+        return provideService(IGroupsService.class, TokenType.USER, TokenType.COMMUNITY)
                 .flatMapCompletable(service -> service
                         .editManager(groupId, userId, role, integerFromBoolean(isContact), contactPosition, contactPhone, contactEmail)
                         .map(extractResponseWithErrorHandling())
@@ -72,7 +72,7 @@ class GroupsApi extends AbsApi implements IGroupsApi {
 
     @Override
     public Completable unban(int groupId, int ownerId) {
-        return provideService(IGroupsService.class, TokenType.USER)
+        return provideService(IGroupsService.class, TokenType.USER, TokenType.COMMUNITY)
                 .flatMapCompletable(service -> service
                         .unban(groupId, ownerId)
                         .map(extractResponseWithErrorHandling())
@@ -81,7 +81,7 @@ class GroupsApi extends AbsApi implements IGroupsApi {
 
     @Override
     public Completable ban(int groupId, int ownerId, Long endDate, Integer reason, String comment, Boolean commentVisible) {
-        return provideService(IGroupsService.class, TokenType.USER)
+        return provideService(IGroupsService.class, TokenType.USER, TokenType.COMMUNITY)
                 .flatMapCompletable(service -> service
                         .ban(groupId, ownerId, endDate, reason, comment, integerFromBoolean(commentVisible))
                         .map(extractResponseWithErrorHandling())
@@ -90,7 +90,7 @@ class GroupsApi extends AbsApi implements IGroupsApi {
 
     @Override
     public Single<GroupSettingsDto> getSettings(int groupId) {
-        return provideService(IGroupsService.class, TokenType.USER)
+        return provideService(IGroupsService.class, TokenType.USER, TokenType.COMMUNITY)
                 .flatMap(service -> service
                         .getSettings(groupId)
                         .map(extractResponseWithErrorHandling()));
@@ -98,14 +98,14 @@ class GroupsApi extends AbsApi implements IGroupsApi {
 
     @Override
     public Single<Items<VkApiMarketAlbum>> getMarketAlbums(int owner_id, int offset, int count) {
-        return provideService(IGroupsService.class, TokenType.USER)
+        return provideService(IGroupsService.class, TokenType.USER, TokenType.COMMUNITY)
                 .flatMap(service -> service.getMarketAlbums(owner_id, offset, count)
                         .map(extractResponseWithErrorHandling()));
     }
 
     @Override
     public Single<Items<VkApiMarket>> getMarket(int owner_id, int album_id, int offset, int count, Integer extended) {
-        return provideService(IGroupsService.class, TokenType.USER)
+        return provideService(IGroupsService.class, TokenType.USER, TokenType.COMMUNITY)
                 .flatMap(service -> service.getMarket(owner_id, album_id, offset, count, extended)
                         .map(extractResponseWithErrorHandling()));
     }
@@ -113,21 +113,21 @@ class GroupsApi extends AbsApi implements IGroupsApi {
     @Override
     public Single<Items<VkApiMarket>> getMarketById(Collection<AccessIdPair> ids) {
         String markets = join(ids, ",", AccessIdPair::format);
-        return provideService(IGroupsService.class, TokenType.USER)
+        return provideService(IGroupsService.class, TokenType.USER, TokenType.COMMUNITY)
                 .flatMap(service -> service.getMarketById(markets, 1)
                         .map(extractResponseWithErrorHandling()));
     }
 
     @Override
     public Single<Items<VkApiBanned>> getBanned(int groupId, Integer offset, Integer count, String fields, Integer userId) {
-        return provideService(IGroupsService.class, TokenType.USER)
+        return provideService(IGroupsService.class, TokenType.USER, TokenType.COMMUNITY)
                 .flatMap(service -> service.getBanned(groupId, offset, count, fields, userId)
                         .map(extractResponseWithErrorHandling()));
     }
 
     @Override
     public Single<VKApiCommunity> getWallInfo(String groupId, String fields) {
-        return provideService(IGroupsService.class, TokenType.USER)
+        return provideService(IGroupsService.class, TokenType.USER, TokenType.COMMUNITY)
                 .flatMap(service -> service.getGroupWallInfo("var group_id = Args.group_id; var fields = Args.fields; var negative_group_id = -group_id; var group_info = API.groups.getById({\"v\":\"" + Constants.API_VERSION + "\", \"group_id\":group_id, \"fields\":fields}); var all_wall_count = API.wall.get({\"v\":\"" + Constants.API_VERSION + "\",\"owner_id\":negative_group_id, \"count\":1, \"filter\":\"all\"}).count; var owner_wall_count = API.wall.get({\"v\":\"" + Constants.API_VERSION + "\",\"owner_id\":negative_group_id, \"count\":1, \"filter\":\"owner\"}).count; var suggests_wall_count = API.wall.get({\"v\":\"" + Constants.API_VERSION + "\",\"owner_id\":negative_group_id, \"count\":1, \"filter\":\"suggests\"}).count; var postponed_wall_count = API.wall.get({\"v\":\"" + Constants.API_VERSION + "\",\"owner_id\":negative_group_id, \"count\":1, \"filter\":\"postponed\"}).count; return {\"group_info\": group_info, \"all_wall_count\":all_wall_count, \"owner_wall_count\":owner_wall_count, \"suggests_wall_count\":suggests_wall_count, \"postponed_wall_count\":postponed_wall_count };", groupId, fields)
                         .map(extractResponseWithErrorHandling()))
                 .map(response -> {
@@ -141,7 +141,7 @@ class GroupsApi extends AbsApi implements IGroupsApi {
 
     @Override
     public Single<Items<VKApiUser>> getMembers(String groupId, Integer sort, Integer offset, Integer count, String fields, String filter) {
-        return provideService(IGroupsService.class, TokenType.USER)
+        return provideService(IGroupsService.class, TokenType.USER, TokenType.COMMUNITY)
                 .flatMap(service -> service.getMembers(groupId, sort, offset, count, fields, filter)
                         .map(extractResponseWithErrorHandling()));
     }
@@ -212,7 +212,7 @@ class GroupsApi extends AbsApi implements IGroupsApi {
 
     @Override
     public Single<Items<VKApiGroupChats>> getChats(int groupId, Integer offset, Integer count) {
-        return provideService(IGroupsService.class, TokenType.USER)
+        return provideService(IGroupsService.class, TokenType.USER, TokenType.COMMUNITY)
                 .flatMap(service -> service
                         .getChats(groupId, offset, count)
                         .map(extractResponseWithErrorHandling()));

@@ -72,7 +72,7 @@ public class LoginActivity extends Activity {
     }
 
     private static ArrayList<Token> tryExtractAccessTokens(String url) throws Exception {
-        Pattern p = Pattern.compile("access_token_(\\d*)=(.*?)&");
+        Pattern p = Pattern.compile("access_token_(\\d*)=(.*?)(&|$)");
 
         ArrayList<Token> tokens = new ArrayList<>();
 
@@ -125,6 +125,9 @@ public class LoginActivity extends Activity {
             String groupIds = getIntent().getStringExtra(EXTRA_GROUP_IDS);
 
             try {
+                if (!Utils.isEmpty(groupIds)) {
+                    webview.getSettings().setUserAgentString(Constants.KATE_USER_AGENT);
+                }
                 String url = Auth.getUrl(clientId, scope, groupIds);
                 webview.loadUrl(url);
             } catch (UnsupportedEncodingException e) {

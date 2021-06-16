@@ -195,6 +195,8 @@ public interface ISettings {
 
         boolean isEnable_cache_ui_anim();
 
+        boolean isRecording_to_opus();
+
         int getPaganSymbol();
 
         boolean isRunes_show();

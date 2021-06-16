@@ -1,6 +1,7 @@
 package dev.ragnarok.fenrir.media.voice;
 
 import android.content.Context;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,6 +43,10 @@ public class ExoVoicePlayer implements IVoicePlayer {
         app = context.getApplicationContext();
         proxyConfig = config;
         status = STATUS_NO_PLAYBACK;
+    }
+
+    private static boolean isOpusSupported() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q || Settings.get().other().isEnable_native() || Settings.get().other().getFFmpegPlugin() != 0;
     }
 
     @Override
@@ -90,7 +95,7 @@ public class ExoVoicePlayer implements IVoicePlayer {
 
         String userAgent = Constants.USER_AGENT(Account_Types.BY_TYPE);
 
-        String url = playingEntry.getAudio().getLinkMp3();
+        String url = isOpusSupported() ? Utils.firstNonEmptyString(playingEntry.getAudio().getLinkOgg(), playingEntry.getAudio().getLinkMp3()) : playingEntry.getAudio().getLinkMp3();
 
         MediaSource mediaSource = new ProgressiveMediaSource.Factory(Utils.getExoPlayerFactory(userAgent, proxyConfig)).createMediaSource(Utils.makeMediaItem(url));
         exoPlayer.setRepeatMode(Player.REPEAT_MODE_OFF);
@@ -145,6 +150,13 @@ public class ExoVoicePlayer implements IVoicePlayer {
         }
     }
 
+    private long getDuration() {
+        if (isNull(playingEntry) || isNull(playingEntry.getAudio()) || playingEntry.getAudio().getDuration() == 0) {
+            return Math.max(exoPlayer.getDuration(), 1);
+        }
+        return playingEntry.getAudio().getDuration() * 1000;
+    }
+
     @Override
     public float getProgress() {
         if (isNull(exoPlayer)) {
@@ -155,7 +167,7 @@ public class ExoVoicePlayer implements IVoicePlayer {
             return 0f;
         }
 
-        long duration = exoPlayer.getDuration();
+        long duration = getDuration();
         long position = exoPlayer.getCurrentPosition();
         return (float) position / (float) duration;
     }

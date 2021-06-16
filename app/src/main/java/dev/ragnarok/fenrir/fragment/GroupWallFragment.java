@@ -328,7 +328,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
 
     @Override
     public void startLoginCommunityActivity(int groupId) {
-        Intent intent = LoginActivity.createIntent(requireActivity(), String.valueOf(Constants.API_ID), "messages,photos,docs,manage", Collections.singletonList(groupId));
+        Intent intent = LoginActivity.createIntent(requireActivity(), "2685278", "messages,photos,docs,manage", Collections.singletonList(groupId));
         requestCommunity.launch(intent);
     }
 

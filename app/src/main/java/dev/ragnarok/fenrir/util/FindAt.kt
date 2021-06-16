@@ -40,9 +40,12 @@ class FindAt {
         return false
     }
 
-    fun reset(): FindAt {
+    fun reset(clear: Boolean): FindAt {
         this.offset = 0
         this.ended = false
+        if (clear) {
+            q = null
+        }
         return this
     }
 

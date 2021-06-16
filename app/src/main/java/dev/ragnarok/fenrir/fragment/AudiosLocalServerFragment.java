@@ -21,6 +21,7 @@ import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.adapter.AudioLocalServerRecyclerAdapter;
+import dev.ragnarok.fenrir.dialog.DialogLocalServerOptionDialog;
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
 import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener;
 import dev.ragnarok.fenrir.listener.PicassoPauseOnScrollListener;
@@ -47,6 +48,7 @@ public class AudiosLocalServerFragment extends BaseMvpFragment<AudiosLocalServer
             () -> CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text));
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private AudioLocalServerRecyclerAdapter mAudioRecyclerAdapter;
+    private MySearchView searchView;
 
     public static AudiosLocalServerFragment newInstance(int accountId) {
         Bundle args = new Bundle();
@@ -56,18 +58,26 @@ public class AudiosLocalServerFragment extends BaseMvpFragment<AudiosLocalServer
         return fragment;
     }
 
+    private void clearSearch() {
+        if (nonNull(searchView)) {
+            searchView.setOnQueryTextListener(null);
+            searchView.clear();
+            searchView.setOnQueryTextListener(this);
+        }
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_local_server_music, container, false);
 
-        MySearchView searchView = root.findViewById(R.id.searchview);
+        searchView = root.findViewById(R.id.searchview);
         searchView.setOnQueryTextListener(this);
         searchView.setRightButtonVisibility(true);
         searchView.setLeftIcon(R.drawable.magnify);
-        searchView.setRightIcon(R.drawable.refresh);
+        searchView.setRightIcon(R.drawable.dots_vertical);
         searchView.setQuery("", true);
-        searchView.setOnAdditionalButtonClickListener(() -> DownloadWorkUtils.doSyncRemoteAudio(requireActivity()));
         searchView.setOnAdditionalButtonLongClickListener(() -> Utils.checkMusicInPC(requireActivity()));
+        searchView.setOnAdditionalButtonClickListener(() -> callPresenter(AudiosLocalServerPresenter::fireOptions));
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
         mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(p -> p.fireRefresh(false)));
@@ -139,6 +149,27 @@ public class AudiosLocalServerFragment extends BaseMvpFragment<AudiosLocalServer
         if (nonNull(mSwipeRefreshLayout)) {
             mSwipeRefreshLayout.setRefreshing(loading);
         }
+    }
+
+    @Override
+    public void displayOptionsDialog(boolean isReverse, boolean isDiscography) {
+        DialogLocalServerOptionDialog.newInstance(isDiscography, isReverse, new DialogLocalServerOptionDialog.DialogLocalServerOptionListener() {
+            @Override
+            public void onReverse(boolean reverse) {
+                callPresenter(p -> p.updateReverse(reverse));
+            }
+
+            @Override
+            public void onDiscography(boolean discography) {
+                clearSearch();
+                callPresenter(p -> p.updateDiscography(discography));
+            }
+
+            @Override
+            public void onSync() {
+                DownloadWorkUtils.doSyncRemoteAudio(requireActivity());
+            }
+        }).show(getChildFragmentManager(), "dialog-local-server-options");
     }
 
     @Override

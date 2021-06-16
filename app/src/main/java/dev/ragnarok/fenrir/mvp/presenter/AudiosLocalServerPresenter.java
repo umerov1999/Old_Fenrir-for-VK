@@ -30,8 +30,8 @@ import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class AudiosLocalServerPresenter extends AccountDependencyPresenter<IAudiosLocalServerView> {
 
-    private static final int SEARCH_COUNT = 20;
-    private static final int GET_COUNT = 50;
+    private static final int SEARCH_COUNT = 50;
+    private static final int GET_COUNT = 100;
     private static final int WEB_SEARCH_DELAY = 1000;
     private final List<Audio> audios;
     private final ILocalServerInteractor fInteractor;
@@ -41,6 +41,8 @@ public class AudiosLocalServerPresenter extends AccountDependencyPresenter<IAudi
     private boolean endOfContent;
     private boolean actualDataLoading;
     private FindAt search_at;
+    private boolean reverse;
+    private boolean discography;
     private boolean doAudioLoadTabs;
 
     public AudiosLocalServerPresenter(int accountId, @Nullable Bundle savedInstanceState) {
@@ -48,6 +50,25 @@ public class AudiosLocalServerPresenter extends AccountDependencyPresenter<IAudi
         audios = new ArrayList<>();
         fInteractor = InteractorFactory.createLocalServerInteractor();
         search_at = new FindAt();
+    }
+
+    public void updateReverse(boolean reverse) {
+        this.reverse = reverse;
+        if (!search_at.isSearchMode()) {
+            fireRefresh(false);
+        }
+    }
+
+    public void updateDiscography(boolean discography) {
+        this.discography = discography;
+        if (search_at.isSearchMode()) {
+            search_at.reset(true);
+        }
+        fireRefresh(false);
+    }
+
+    public void fireOptions() {
+        callView(v -> v.displayOptionsDialog(reverse, discography));
     }
 
     @Override
@@ -61,7 +82,7 @@ public class AudiosLocalServerPresenter extends AccountDependencyPresenter<IAudi
 
         resolveRefreshingView();
 
-        appendDisposable(fInteractor.getAudios(offset, GET_COUNT)
+        appendDisposable((discography ? fInteractor.getDiscography(offset, GET_COUNT, reverse) : fInteractor.getAudios(offset, GET_COUNT, reverse))
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(data -> onActualDataReceived(offset, data), this::onActualDataGetError));
 
@@ -130,7 +151,7 @@ public class AudiosLocalServerPresenter extends AccountDependencyPresenter<IAudi
     private void doSearch() {
         actualDataLoading = true;
         resolveRefreshingView();
-        appendDisposable(fInteractor.searchAudios(search_at.getQuery(), search_at.getOffset(), SEARCH_COUNT)
+        appendDisposable((discography ? fInteractor.searchDiscography(search_at.getQuery(), search_at.getOffset(), SEARCH_COUNT) : fInteractor.searchAudios(search_at.getQuery(), search_at.getOffset(), SEARCH_COUNT))
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(data -> onSearched(new FindAt(Objects.requireNonNull(search_at.getQuery()), search_at.getOffset() + SEARCH_COUNT, data.size() < SEARCH_COUNT), data), this::onActualDataGetError));
     }
@@ -211,7 +232,7 @@ public class AudiosLocalServerPresenter extends AccountDependencyPresenter<IAudi
         }
 
         if (search_at.isSearchMode()) {
-            search_at.reset();
+            search_at.reset(false);
             search(sleep_search);
         } else {
             loadActualData(0);

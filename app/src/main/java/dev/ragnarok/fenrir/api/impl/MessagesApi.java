@@ -51,7 +51,7 @@ class MessagesApi extends AbsApi implements IMessagesApi {
 
     @Override
     public Single<Boolean> removeChatMember(int chatId, int memberId) {
-        return serviceRx(TokenType.USER)
+        return serviceRx(TokenType.USER, TokenType.COMMUNITY)
                 .flatMap(service -> service
                         .removeChatUser(chatId, memberId)
                         .map(extractResponseWithErrorHandling())
@@ -60,7 +60,7 @@ class MessagesApi extends AbsApi implements IMessagesApi {
 
     @Override
     public Single<Boolean> deleteChatPhoto(int chatId) {
-        return serviceRx(TokenType.USER)
+        return serviceRx(TokenType.USER, TokenType.COMMUNITY)
                 .flatMap(service -> service
                         .deleteChatPhoto(chatId)
                         .map(extractResponseWithErrorHandling())
@@ -69,7 +69,7 @@ class MessagesApi extends AbsApi implements IMessagesApi {
 
     @Override
     public Single<Boolean> addChatUser(int chatId, int userId) {
-        return serviceRx(TokenType.USER)
+        return serviceRx(TokenType.USER, TokenType.COMMUNITY)
                 .flatMap(service -> service
                         .addChatUser(chatId, userId)
                         .map(extractResponseWithErrorHandling())
@@ -79,7 +79,7 @@ class MessagesApi extends AbsApi implements IMessagesApi {
 
     @Override
     public Single<List<VKApiChat>> getChat(Integer chatId, Collection<Integer> chatIds, String fields, String nameCase) {
-        return serviceRx(TokenType.USER)
+        return serviceRx(TokenType.USER, TokenType.COMMUNITY)
                 .flatMap(service -> service
                         .getChat(chatId, join(chatIds, ","), fields, nameCase)
                         .map(extractResponseWithErrorHandling())
@@ -96,7 +96,7 @@ class MessagesApi extends AbsApi implements IMessagesApi {
 
     @Override
     public Single<Boolean> editChat(int chatId, String title) {
-        return serviceRx(TokenType.USER)
+        return serviceRx(TokenType.USER, TokenType.COMMUNITY)
                 .flatMap(service -> service
                         .editChat(chatId, title)
                         .map(extractResponseWithErrorHandling())
@@ -105,7 +105,7 @@ class MessagesApi extends AbsApi implements IMessagesApi {
 
     @Override
     public Single<Integer> createChat(Collection<Integer> userIds, String title) {
-        return serviceRx(TokenType.USER)
+        return serviceRx(TokenType.USER, TokenType.COMMUNITY)
                 .flatMap(service -> service
                         .createChat(join(userIds, ","), title)
                         .map(extractResponseWithErrorHandling()));
@@ -314,7 +314,7 @@ class MessagesApi extends AbsApi implements IMessagesApi {
 
     @Override
     public Single<ConversationsResponse> searchConversations(String query, Integer count, Integer extended, String fields) {
-        return serviceRx(TokenType.USER)
+        return serviceRx(TokenType.USER, TokenType.COMMUNITY)
                 .flatMap(service -> service
                         .searchConversations(query, count, extended, fields)
                         .map(extractResponseWithErrorHandling()));

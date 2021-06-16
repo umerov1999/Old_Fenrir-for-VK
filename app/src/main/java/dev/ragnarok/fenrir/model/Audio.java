@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import dev.ragnarok.fenrir.api.model.VKApiAudio;
 import dev.ragnarok.fenrir.util.Utils;
 
 import static dev.ragnarok.fenrir.util.Utils.stringEmptyIfNull;
@@ -290,6 +291,49 @@ public class Audio extends AbsModel {
     public Audio setGenre(int genre) {
         this.genre = genre;
         return this;
+    }
+
+    public int getGenreByID3() {
+        switch (genre) {
+            case VKApiAudio.Genre.ROCK:
+                return 17;
+            case VKApiAudio.Genre.POP:
+            case VKApiAudio.Genre.INDIE_POP:
+                return 13;
+            case VKApiAudio.Genre.EASY_LISTENING:
+                return 98;
+            case VKApiAudio.Genre.DANCE_AND_HOUSE:
+                return 125;
+            case VKApiAudio.Genre.INSTRUMENTAL:
+                return 33;
+            case VKApiAudio.Genre.METAL:
+                return 9;
+            case VKApiAudio.Genre.DRUM_AND_BASS:
+                return 127;
+            case VKApiAudio.Genre.TRANCE:
+                return 31;
+            case VKApiAudio.Genre.CHANSON:
+                return 102;
+            case VKApiAudio.Genre.ETHNIC:
+                return 48;
+            case VKApiAudio.Genre.ACOUSTIC_AND_VOCAL:
+                return 99;
+            case VKApiAudio.Genre.REGGAE:
+                return 16;
+            case VKApiAudio.Genre.CLASSICAL:
+                return 32;
+            case VKApiAudio.Genre.OTHER:
+                return 12;
+            case VKApiAudio.Genre.SPEECH:
+                return 101;
+            case VKApiAudio.Genre.ALTERNATIVE:
+                return 20;
+            case VKApiAudio.Genre.ELECTROPOP_AND_DISCO:
+                return 52;
+            case VKApiAudio.Genre.JAZZ_AND_BLUES:
+                return 8;
+        }
+        return 0;
     }
 
     public String getAccessKey() {

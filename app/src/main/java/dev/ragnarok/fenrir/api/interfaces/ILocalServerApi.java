@@ -12,10 +12,10 @@ public interface ILocalServerApi {
     Single<Items<VKApiVideo>> getVideos(Integer offset, Integer count);
 
     @CheckResult
-    Single<Items<VKApiAudio>> getAudios(Integer offset, Integer count);
+    Single<Items<VKApiAudio>> getAudios(Integer offset, Integer count, boolean reverse);
 
     @CheckResult
-    Single<Items<VKApiAudio>> getDiscography(Integer offset, Integer count);
+    Single<Items<VKApiAudio>> getDiscography(Integer offset, Integer count, boolean reverse);
 
     @CheckResult
     Single<Items<VKApiVideo>> searchVideos(String query, Integer offset, Integer count);

@@ -239,7 +239,7 @@ public class TagOptionSingleton {
     private long writeChunkSize = (4 * 1024 * 1024);
     private boolean isWriteMp4GenresAsText;
     private boolean isWriteMp3GenresAsText;
-    private ID3V2Version id3v2Version = ID3V2Version.ID3_V23;
+    private ID3V2Version id3v2Version = ID3V2Version.ID3_V24;
     /**
      * Whether Files.isWritable should be used to check if a file can be written. In some
      * cases, isWritable can return false negatives.
@@ -671,7 +671,7 @@ public class TagOptionSingleton {
         writeChunkSize = 5000000;
         isWriteMp4GenresAsText = false;
         padNumberTotalLength = PadNumberOption.PAD_ONE_ZERO;
-        id3v2Version = ID3V2Version.ID3_V23;
+        id3v2Version = ID3V2Version.ID3_V24;
         checkIsWritable = false;
         preserveFileIdentity = false;
 

@@ -95,6 +95,12 @@ public class DialogNotifOptionsDialog extends BottomSheetDialogFragment {
         return root;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        dismiss();
+    }
+
     private void onSaveClick() {
         int newMask = 0;
         if (scEnable.isChecked()) {

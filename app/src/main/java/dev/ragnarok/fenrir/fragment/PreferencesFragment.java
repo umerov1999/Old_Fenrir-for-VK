@@ -12,7 +12,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -20,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,9 +32,12 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 import com.squareup.picasso.BitmapSafeResize;
@@ -70,6 +77,7 @@ import dev.ragnarok.fenrir.filepicker.model.DialogConfigs;
 import dev.ragnarok.fenrir.filepicker.model.DialogProperties;
 import dev.ragnarok.fenrir.filepicker.view.FilePickerDialog;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
+import dev.ragnarok.fenrir.media.record.AudioRecordWrapper;
 import dev.ragnarok.fenrir.model.LocalPhoto;
 import dev.ragnarok.fenrir.model.SwitchableCategory;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
@@ -87,6 +95,7 @@ import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
+import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 
 import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 
@@ -167,7 +176,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     new File(cache, child).delete();
                 }
             }
-            cache = context.getExternalFilesDir(Environment.DIRECTORY_RINGTONES);
+            cache = AudioRecordWrapper.getRecordingDirectory(context);
             if (cache.exists() && cache.isDirectory()) {
                 String[] children = cache.list();
                 assert children != null;
@@ -564,10 +573,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 new MaterialAlertDialogBuilder(requireActivity())
                         .setView(view)
                         .setOnDismissListener(dialog -> {
-                            View view1 = View.inflate(requireActivity(), R.layout.dialog_dedicated, null);
-                            new MaterialAlertDialogBuilder(requireActivity())
-                                    .setView(view1)
-                                    .show();
+                            showDedicated();
                         })
                         .show();
                 return true;
@@ -575,10 +581,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
 
         findPreference("dedicated").setOnPreferenceClickListener(preference -> {
-            View view = View.inflate(requireActivity(), R.layout.dialog_dedicated, null);
-            new MaterialAlertDialogBuilder(requireActivity())
-                    .setView(view)
-                    .show();
+            showDedicated();
             return true;
         });
 
@@ -1089,6 +1092,24 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         lp.setEntryValues(enabledCategoriesValues.toArray(new CharSequence[0]));
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private void showDedicated() {
+        View view = View.inflate(requireActivity(), R.layout.dialog_dedicated, null);
+        RecyclerView pager = view.findViewById(R.id.dedicated_pager);
+        pager.setLayoutManager(new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false));
+        pager.setAdapter(new ImageDedicatedAdapter(new int[]{R.drawable.dedicated, R.drawable.dedicated1, R.drawable.dedicated2}));
+        RLottieImageView anim = view.findViewById(R.id.dedicated_anim);
+        pager.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                anim.clearAnimationDrawable();
+            }
+            return false;
+        });
+        new MaterialAlertDialogBuilder(requireActivity())
+                .setView(view)
+                .show();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -1110,5 +1131,39 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 .setBarsColored(requireActivity(), true)
                 .build()
                 .apply(requireActivity());
+    }
+
+    private static final class ImageHolder extends RecyclerView.ViewHolder {
+        ImageHolder(View rootView) {
+            super(rootView);
+        }
+    }
+
+    private static class ImageDedicatedAdapter extends RecyclerView.Adapter<ImageHolder> {
+
+        private final @DrawableRes
+        int[] drawables;
+
+        public ImageDedicatedAdapter(@DrawableRes int[] drawables) {
+            this.drawables = drawables;
+        }
+
+        @NonNull
+        @Override
+        public ImageHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return new ImageHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dedicated, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ImageHolder holder, int position) {
+            @DrawableRes int res = drawables[position];
+            ShapeableImageView imageView = holder.itemView.findViewById(R.id.dedicated_photo);
+            imageView.setImageResource(res);
+        }
+
+        @Override
+        public int getItemCount() {
+            return drawables.length;
+        }
     }
 }

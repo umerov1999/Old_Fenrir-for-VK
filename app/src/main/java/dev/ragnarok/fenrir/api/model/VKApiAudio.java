@@ -114,9 +114,7 @@ public class VKApiAudio implements VKApiAttachment {
         public static final int SPEECH = 19;
         public static final int ALTERNATIVE = 21;
         public static final int ELECTROPOP_AND_DISCO = 22;
-
-        private Genre() {
-        }
+        public static final int JAZZ_AND_BLUES = 1001;
 
         public static String getTitleByGenre(@NonNull Context context, int genre) {
             switch (genre) {
@@ -158,6 +156,8 @@ public class VKApiAudio implements VKApiAttachment {
                     return "#" + context.getString(R.string.speech);
                 case TRANCE:
                     return "#" + context.getString(R.string.trance);
+                case JAZZ_AND_BLUES:
+                    return "#" + context.getString(R.string.jazz_and_blues);
 
             }
             return null;

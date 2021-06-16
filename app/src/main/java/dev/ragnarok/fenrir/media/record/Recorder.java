@@ -8,6 +8,8 @@ import androidx.annotation.RequiresApi;
 
 import java.io.IOException;
 
+import dev.ragnarok.fenrir.settings.Settings;
+
 public class Recorder {
 
     private final String mFilePath;
@@ -29,13 +31,24 @@ public class Recorder {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
     }
 
+    public static boolean isOpusSupported() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && Settings.get().other().isRecording_to_opus();
+    }
+
     public void prepare() throws IOException {
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-        mRecorder.setAudioSamplingRate(44100);
-        mRecorder.setAudioEncodingBitRate(96000);
+        if (isOpusSupported()) {
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.OGG);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.OPUS);
+            mRecorder.setAudioSamplingRate(44100);
+            mRecorder.setAudioEncodingBitRate(16000);
+        } else {
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+            mRecorder.setAudioSamplingRate(44100);
+            mRecorder.setAudioEncodingBitRate(96000);
+        }
         mRecorder.setOutputFile(mFilePath);
         mRecorder.prepare();
     }

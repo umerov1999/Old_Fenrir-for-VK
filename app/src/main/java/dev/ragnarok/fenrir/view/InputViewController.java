@@ -83,6 +83,13 @@ public class InputViewController {
 
         mButtonSend = rootView.findViewById(R.id.buttonSend);
         mButtonSend.setOnClickListener(v -> onSendButtonClick());
+        mButtonSend.setOnLongClickListener(v -> {
+            if (canStartRecording && mCurrentMode == Mode.NORMAL && mRecordActionsCallback != null) {
+                mRecordActionsCallback.onRecordCustomClick();
+                return true;
+            }
+            return false;
+        });
 
         tvAttCount = rootView.findViewById(R.id.fragment_input_att_count);
 
@@ -457,6 +464,8 @@ public class InputViewController {
         void onSwithToRecordMode();
 
         void onRecordSendClick();
+
+        void onRecordCustomClick();
 
         void onResumePauseClick();
     }

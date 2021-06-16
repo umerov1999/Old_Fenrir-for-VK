@@ -8,6 +8,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.PowerManager;
 
 import androidx.annotation.NonNull;
@@ -70,6 +71,10 @@ public class ExoVoicePlayerSensored implements IVoicePlayer, SensorEventListener
         Registered = false;
         ProximitRegistered = false;
         HasPlaying = false;
+    }
+
+    private static boolean isOpusSupported() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q || Settings.get().other().isEnable_native() || Settings.get().other().getFFmpegPlugin() != 0;
     }
 
     @Override
@@ -174,7 +179,7 @@ public class ExoVoicePlayerSensored implements IVoicePlayer, SensorEventListener
         // MediaSource videoSource = new ExtractorMediaSource(mp4VideoUri, dataSourceFactory, extractorsFactory, null, null);
         // FOR LIVESTREAM LINK:
 
-        String url = playingEntry.getAudio().getLinkMp3();
+        String url = isOpusSupported() ? Utils.firstNonEmptyString(playingEntry.getAudio().getLinkOgg(), playingEntry.getAudio().getLinkMp3()) : playingEntry.getAudio().getLinkMp3();
 
         MediaSource mediaSource = new ProgressiveMediaSource.Factory(Utils.getExoPlayerFactory(userAgent, proxyConfig)).createMediaSource(Utils.makeMediaItem(url));
         exoPlayer.setRepeatMode(Player.REPEAT_MODE_OFF);
@@ -242,6 +247,13 @@ public class ExoVoicePlayerSensored implements IVoicePlayer, SensorEventListener
         }
     }
 
+    private long getDuration() {
+        if (isNull(playingEntry) || isNull(playingEntry.getAudio()) || playingEntry.getAudio().getDuration() == 0) {
+            return Math.max(exoPlayer.getDuration(), 1);
+        }
+        return playingEntry.getAudio().getDuration() * 1000;
+    }
+
     @Override
     public float getProgress() {
         if (isNull(exoPlayer)) {
@@ -252,8 +264,7 @@ public class ExoVoicePlayerSensored implements IVoicePlayer, SensorEventListener
             return 0f;
         }
 
-        //long duration = playingEntry.getAudio().getDuration() * 1000;
-        long duration = exoPlayer.getDuration();
+        long duration = getDuration();
         long position = exoPlayer.getCurrentPosition();
         return (float) position / (float) duration;
     }
