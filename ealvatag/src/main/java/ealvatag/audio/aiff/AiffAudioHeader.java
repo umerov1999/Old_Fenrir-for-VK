@@ -24,6 +24,7 @@ public class AiffAudioHeader extends GenericAudioHeader {
     private String name;
     private String author;
     private String copyright;
+
     public AiffAudioHeader() {
         applicationIdentifiers = new ArrayList<String>();
         comments = new ArrayList<String>();

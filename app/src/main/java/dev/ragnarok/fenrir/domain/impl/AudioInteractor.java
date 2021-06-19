@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.domain.impl;
 
+import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
+
 import android.content.Context;
 
 import androidx.annotation.NonNull;
@@ -23,14 +25,12 @@ import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.model.AudioCatalog;
 import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.model.CatalogBlock;
-import dev.ragnarok.fenrir.player.util.MusicUtils;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
-
-import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
 
 public class AudioInteractor implements IAudioInteractor {
 
@@ -370,10 +370,10 @@ public class AudioInteractor implements IAudioInteractor {
                 t.onComplete();
                 return;
             }
-            MusicUtils.CachedAudios.clear();
+            MusicPlaybackController.CachedAudios.clear();
             for (File u : file_list) {
                 if (u.isFile())
-                    MusicUtils.CachedAudios.add(u.getName());
+                    MusicPlaybackController.CachedAudios.add(u.getName());
             }
         });
     }

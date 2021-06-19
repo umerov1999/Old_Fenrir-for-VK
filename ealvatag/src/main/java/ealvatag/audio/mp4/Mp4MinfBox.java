@@ -17,6 +17,8 @@
 
 package ealvatag.audio.mp4;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+
 import com.google.common.base.Preconditions;
 
 import java.io.IOException;
@@ -29,8 +31,6 @@ import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.logging.ErrorMessage;
 import okio.BufferedSource;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
 
 /**
  * Represents an mp4 trak box

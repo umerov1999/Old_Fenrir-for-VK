@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.adapter;
 
+import static dev.ragnarok.fenrir.player.MusicPlaybackController.observeServiceBinding;
+
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -41,7 +43,7 @@ import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.picasso.transforms.PolyTransformation;
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation;
 import dev.ragnarok.fenrir.place.PlaceFactory;
-import dev.ragnarok.fenrir.player.util.MusicUtils;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppTextUtils;
@@ -53,8 +55,6 @@ import dev.ragnarok.fenrir.view.WeakViewAnimatorAdapter;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.Disposable;
-
-import static dev.ragnarok.fenrir.player.util.MusicUtils.observeServiceBinding;
 
 public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRecyclerAdapter.AudioHolder> {
 
@@ -68,7 +68,7 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
     public AudioLocalRecyclerAdapter(Context context, List<Audio> data) {
         this.data = data;
         mContext = context;
-        currAudio = MusicUtils.getCurrentAudio();
+        currAudio = MusicPlaybackController.getCurrentAudio();
     }
 
     public void setItems(List<Audio> data) {
@@ -128,7 +128,7 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
             holder.play_cover.clearColorFilter();
             return;
         }
-        switch (MusicUtils.PlayerStatus()) {
+        switch (MusicPlaybackController.PlayerStatus()) {
             case 1:
                 Utils.doWavesLottie(holder.visual, true);
                 holder.play_cover.setColorFilter(Color.parseColor("#44000000"));
@@ -186,11 +186,11 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
         }
 
         holder.play.setOnClickListener(v -> {
-            if (MusicUtils.isNowPlayingOrPreparingOrPaused(audio)) {
+            if (MusicPlaybackController.isNowPlayingOrPreparingOrPaused(audio)) {
                 if (!Settings.get().other().isUse_stop_audio()) {
-                    MusicUtils.playOrPause();
+                    MusicPlaybackController.playOrPause();
                 } else {
-                    MusicUtils.stop();
+                    MusicPlaybackController.stop();
                 }
             } else {
                 if (mClickListener != null) {
@@ -206,6 +206,9 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
 
             menus.add(new OptionRequest(AudioItem.save_item_audio, mContext.getString(R.string.upload), R.drawable.web));
             menus.add(new OptionRequest(AudioItem.play_item_audio, mContext.getString(R.string.play), R.drawable.play));
+            if (MusicPlaybackController.canPlayAfterCurrent(audio)) {
+                menus.add(new OptionRequest(AudioItem.play_item_after_current_audio, mContext.getString(R.string.play_audio_after_current), R.drawable.play_next));
+            }
             menus.add(new OptionRequest(AudioItem.bitrate_item_audio, mContext.getString(R.string.get_bitrate), R.drawable.high_quality));
             menus.add(new OptionRequest(AudioItem.add_item_audio, mContext.getString(R.string.delete), R.drawable.ic_outline_delete));
 
@@ -225,6 +228,9 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
                             if (Settings.get().other().isShow_mini_player())
                                 PlaceFactory.getPlayerPlace(Settings.get().accounts().getCurrent()).tryOpenWith(mContext);
                         }
+                        break;
+                    case AudioItem.play_item_after_current_audio:
+                        MusicPlaybackController.playAfterCurrent(audio);
                         break;
                     case AudioItem.bitrate_item_audio:
                         getLocalBitrate(audio.getUrl());
@@ -268,18 +274,18 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
         audioListDisposable.dispose();
     }
 
-    private void onServiceBindEvent(@MusicUtils.PlayerStatus int status) {
+    private void onServiceBindEvent(@MusicPlaybackController.PlayerStatus int status) {
         switch (status) {
-            case MusicUtils.PlayerStatus.UPDATE_TRACK_INFO:
-            case MusicUtils.PlayerStatus.SERVICE_KILLED:
-            case MusicUtils.PlayerStatus.UPDATE_PLAY_PAUSE:
+            case MusicPlaybackController.PlayerStatus.UPDATE_TRACK_INFO:
+            case MusicPlaybackController.PlayerStatus.SERVICE_KILLED:
+            case MusicPlaybackController.PlayerStatus.UPDATE_PLAY_PAUSE:
                 updateAudio(currAudio);
-                currAudio = MusicUtils.getCurrentAudio();
+                currAudio = MusicPlaybackController.getCurrentAudio();
                 updateAudio(currAudio);
                 break;
-            case MusicUtils.PlayerStatus.REPEATMODE_CHANGED:
-            case MusicUtils.PlayerStatus.SHUFFLEMODE_CHANGED:
-            case MusicUtils.PlayerStatus.UPDATE_PLAY_LIST:
+            case MusicPlaybackController.PlayerStatus.REPEATMODE_CHANGED:
+            case MusicPlaybackController.PlayerStatus.SHUFFLEMODE_CHANGED:
+            case MusicPlaybackController.PlayerStatus.UPDATE_PLAY_LIST:
                 break;
         }
     }

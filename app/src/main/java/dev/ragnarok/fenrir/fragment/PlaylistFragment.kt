@@ -20,8 +20,8 @@ import dev.ragnarok.fenrir.adapter.AudioRecyclerAdapter
 import dev.ragnarok.fenrir.listener.BackPressCallback
 import dev.ragnarok.fenrir.model.Audio
 import dev.ragnarok.fenrir.place.PlaceFactory
+import dev.ragnarok.fenrir.player.MusicPlaybackController
 import dev.ragnarok.fenrir.player.MusicPlaybackService.Companion.startForPlayList
-import dev.ragnarok.fenrir.player.util.MusicUtils
 import dev.ragnarok.fenrir.settings.Settings
 import dev.ragnarok.fenrir.util.AppPerms
 import dev.ragnarok.fenrir.util.CustomToast.Companion.CreateCustomToast
@@ -76,7 +76,7 @@ class PlaylistFragment : BottomSheetDialogFragment(), AudioRecyclerAdapter.Click
         mRecyclerView?.layoutManager = manager
         val Goto: FloatingActionButton = root.findViewById(R.id.goto_button)
         Goto.setOnLongClickListener {
-            val curr = MusicUtils.getCurrentAudio()
+            val curr = MusicPlaybackController.getCurrentAudio()
             if (curr != null) {
                 PlaceFactory.getPlayerPlace(Settings.get().accounts().current)
                     .tryOpenWith(requireActivity())
@@ -84,7 +84,7 @@ class PlaylistFragment : BottomSheetDialogFragment(), AudioRecyclerAdapter.Click
             false
         }
         Goto.setOnClickListener {
-            val curr = MusicUtils.getCurrentAudio()
+            val curr = MusicPlaybackController.getCurrentAudio()
             if (curr != null) {
                 val index = getAudioPos(curr)
                 if (index >= 0) {
@@ -128,7 +128,7 @@ class PlaylistFragment : BottomSheetDialogFragment(), AudioRecyclerAdapter.Click
         mAdapter = AudioRecyclerAdapter(requireActivity(), mData, false, false, 0, null)
         mAdapter?.setClickListener(this)
         mRecyclerView?.adapter = mAdapter
-        val my = MusicUtils.getCurrentAudio()
+        val my = MusicPlaybackController.getCurrentAudio()
         if (my != null) {
             var index = 0
             var o = 0
@@ -144,8 +144,8 @@ class PlaylistFragment : BottomSheetDialogFragment(), AudioRecyclerAdapter.Click
     }
 
     override fun onClick(position: Int, catalog: Int, audio: Audio) {
-        if (MusicUtils.getQueue() == mData) {
-            MusicUtils.skip(position)
+        if (MusicPlaybackController.getQueue() == mData) {
+            MusicPlaybackController.skip(position)
         } else {
             startForPlayList(requireActivity(), mData, position, false)
         }

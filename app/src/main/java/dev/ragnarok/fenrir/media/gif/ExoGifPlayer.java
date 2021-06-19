@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.media.gif;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.view.SurfaceHolder;
 
 import androidx.annotation.NonNull;
@@ -20,8 +22,6 @@ import dev.ragnarok.fenrir.model.VideoSize;
 import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.Logger;
 import dev.ragnarok.fenrir.util.Utils;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class ExoGifPlayer implements IGifPlayer {
 

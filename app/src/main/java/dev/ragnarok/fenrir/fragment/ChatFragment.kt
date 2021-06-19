@@ -169,7 +169,19 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         if (result.resultCode == RESULT_OK) {
             result.data?.getStringExtra(FileManagerFragment.returnFileParameter)?.let {
                 if (CheckDonate.isFullVersion(requireActivity())) {
-                    presenter?.sendRecordingCustomMessageImpl(requireActivity(), it)
+                    MaterialAlertDialogBuilder(requireActivity())
+                        .setTitle(R.string.info)
+                        .setMessage(R.string.do_convert_request)
+                        .setPositiveButton(R.string.button_yes) { _, _ ->
+                            presenter?.sendRecordingCustomMessageImpl(
+                                requireActivity(),
+                                it
+                            )
+                        }
+                        .setNegativeButton(R.string.button_cancel) { _, _ ->
+                            presenter?.sendRecordingMessageImpl(File(it))
+                        }
+                        .show()
                 }
             }
         }

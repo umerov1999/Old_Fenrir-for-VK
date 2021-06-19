@@ -15,6 +15,8 @@
  */
 package com.squareup.picasso;
 
+import static androidx.annotation.RestrictTo.Scope.LIBRARY;
+
 import android.annotation.SuppressLint;
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -25,8 +27,6 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
-
-import static androidx.annotation.RestrictTo.Scope.LIBRARY;
 
 @RestrictTo(LIBRARY)
 public final class PicassoProvider extends ContentProvider {

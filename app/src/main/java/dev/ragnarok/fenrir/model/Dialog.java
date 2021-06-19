@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.model;
 
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,8 +11,6 @@ import androidx.annotation.NonNull;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.api.model.Identificable;
 import dev.ragnarok.fenrir.util.Objects;
-
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
 
 public class Dialog implements Identificable, Parcelable {
 

@@ -39,6 +39,7 @@ public enum Mp4AudioProfile {
     private static final Mp4AudioProfile[] values = values();
     private final int id;
     private final String description;
+
     /**
      * @param id          it is stored as in file
      * @param description human readable description

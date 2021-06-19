@@ -20,6 +20,8 @@
  */
 package ealvatag.tag.id3.framebody;
 
+import static ealvatag.utils.Check.checkArgNotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -31,8 +33,6 @@ import ealvatag.tag.datatype.TextEncodedStringSizeTerminated;
 import ealvatag.tag.id3.ID3TextEncodingConversion;
 import ealvatag.tag.id3.valuepair.TextEncoding;
 import okio.Buffer;
-
-import static ealvatag.utils.Check.checkArgNotNull;
 
 /**
  * Abstract representation of a Text Frame

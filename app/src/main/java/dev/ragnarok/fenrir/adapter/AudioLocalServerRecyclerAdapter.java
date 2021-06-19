@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.adapter;
 
+import static dev.ragnarok.fenrir.player.MusicPlaybackController.observeServiceBinding;
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -41,7 +44,7 @@ import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.picasso.transforms.PolyTransformation;
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation;
 import dev.ragnarok.fenrir.place.PlaceFactory;
-import dev.ragnarok.fenrir.player.util.MusicUtils;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppPerms;
@@ -54,9 +57,6 @@ import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleOnSubscribe;
 import io.reactivex.rxjava3.disposables.Disposable;
-
-import static dev.ragnarok.fenrir.player.util.MusicUtils.observeServiceBinding;
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
 
 public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioLocalServerRecyclerAdapter.AudioHolder> {
 
@@ -71,7 +71,7 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
     public AudioLocalServerRecyclerAdapter(Context context, List<Audio> data) {
         this.data = data;
         mContext = context;
-        currAudio = MusicUtils.getCurrentAudio();
+        currAudio = MusicPlaybackController.getCurrentAudio();
         mAudioInteractor = InteractorFactory.createLocalServerInteractor();
     }
 
@@ -121,7 +121,7 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
             holder.play_cover.clearColorFilter();
             return;
         }
-        switch (MusicUtils.PlayerStatus()) {
+        switch (MusicPlaybackController.PlayerStatus()) {
             case 1:
                 Utils.doWavesLottie(holder.visual, true);
                 holder.play_cover.setColorFilter(Color.parseColor("#44000000"));
@@ -197,11 +197,11 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
         });
 
         holder.play.setOnClickListener(v -> {
-            if (MusicUtils.isNowPlayingOrPreparingOrPaused(audio)) {
+            if (MusicPlaybackController.isNowPlayingOrPreparingOrPaused(audio)) {
                 if (!Settings.get().other().isUse_stop_audio()) {
-                    MusicUtils.playOrPause();
+                    MusicPlaybackController.playOrPause();
                 } else {
-                    MusicUtils.stop();
+                    MusicPlaybackController.stop();
                 }
             } else {
                 if (mClickListener != null) {
@@ -241,6 +241,9 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
 
             menus.add(new OptionRequest(AudioItem.save_item_audio, mContext.getString(R.string.download), R.drawable.save));
             menus.add(new OptionRequest(AudioItem.play_item_audio, mContext.getString(R.string.play), R.drawable.play));
+            if (MusicPlaybackController.canPlayAfterCurrent(audio)) {
+                menus.add(new OptionRequest(AudioItem.play_item_after_current_audio, mContext.getString(R.string.play_audio_after_current), R.drawable.play_next));
+            }
             menus.add(new OptionRequest(AudioItem.bitrate_item_audio, mContext.getString(R.string.get_bitrate), R.drawable.high_quality));
             menus.add(new OptionRequest(AudioItem.add_item_audio, mContext.getString(R.string.delete), R.drawable.ic_outline_delete));
             menus.add(new OptionRequest(AudioItem.edit_track, mContext.getString(R.string.update_time), R.drawable.ic_recent));
@@ -277,6 +280,9 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
                             if (Settings.get().other().isShow_mini_player())
                                 PlaceFactory.getPlayerPlace(Settings.get().accounts().getCurrent()).tryOpenWith(mContext);
                         }
+                        break;
+                    case AudioItem.play_item_after_current_audio:
+                        MusicPlaybackController.playAfterCurrent(audio);
                         break;
                     case AudioItem.bitrate_item_audio:
                         getBitrate(audio.getUrl(), audio.getDuration());
@@ -349,18 +355,18 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
         audioListDisposable.dispose();
     }
 
-    private void onServiceBindEvent(@MusicUtils.PlayerStatus int status) {
+    private void onServiceBindEvent(@MusicPlaybackController.PlayerStatus int status) {
         switch (status) {
-            case MusicUtils.PlayerStatus.UPDATE_TRACK_INFO:
-            case MusicUtils.PlayerStatus.SERVICE_KILLED:
-            case MusicUtils.PlayerStatus.UPDATE_PLAY_PAUSE:
+            case MusicPlaybackController.PlayerStatus.UPDATE_TRACK_INFO:
+            case MusicPlaybackController.PlayerStatus.SERVICE_KILLED:
+            case MusicPlaybackController.PlayerStatus.UPDATE_PLAY_PAUSE:
                 updateAudio(currAudio);
-                currAudio = MusicUtils.getCurrentAudio();
+                currAudio = MusicPlaybackController.getCurrentAudio();
                 updateAudio(currAudio);
                 break;
-            case MusicUtils.PlayerStatus.REPEATMODE_CHANGED:
-            case MusicUtils.PlayerStatus.SHUFFLEMODE_CHANGED:
-            case MusicUtils.PlayerStatus.UPDATE_PLAY_LIST:
+            case MusicPlaybackController.PlayerStatus.REPEATMODE_CHANGED:
+            case MusicPlaybackController.PlayerStatus.SHUFFLEMODE_CHANGED:
+            case MusicPlaybackController.PlayerStatus.UPDATE_PLAY_LIST:
                 break;
         }
     }

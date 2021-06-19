@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment.search;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -28,12 +30,10 @@ import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.search.AudiosSearchPresenter;
 import dev.ragnarok.fenrir.mvp.view.search.IAudioSearchView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
-import dev.ragnarok.fenrir.player.util.MusicUtils;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 
 public class AudiosSearchFragment extends AbsSearchFragment<AudiosSearchPresenter, IAudioSearchView, Audio, AudioRecyclerAdapter> implements IAudioSearchView {
@@ -96,7 +96,7 @@ public class AudiosSearchFragment extends AbsSearchFragment<AudiosSearchPresente
             Goto.setImageResource(R.drawable.audio_player);
         if (!isSelectMode) {
             Goto.setOnLongClickListener(v -> {
-                Audio curr = MusicUtils.getCurrentAudio();
+                Audio curr = MusicPlaybackController.getCurrentAudio();
                 if (curr != null) {
                     PlaceFactory.getPlayerPlace(Settings.get().accounts().getCurrent()).tryOpenWith(requireActivity());
                 } else
@@ -111,7 +111,7 @@ public class AudiosSearchFragment extends AbsSearchFragment<AudiosSearchPresente
                 requireActivity().setResult(Activity.RESULT_OK, intent);
                 requireActivity().finish();
             } else {
-                Audio curr = MusicUtils.getCurrentAudio();
+                Audio curr = MusicPlaybackController.getCurrentAudio();
                 if (curr != null) {
                     int index = callPresenter(p -> p.getAudioPos(curr), -1);
                     if (index >= 0) {

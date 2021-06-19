@@ -1,25 +1,5 @@
 package dev.ragnarok.fenrir.api.adapters;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-
-import java.lang.reflect.Type;
-import java.util.Collections;
-
-import dev.ragnarok.fenrir.api.model.VKApiAudio;
-import dev.ragnarok.fenrir.api.model.VKApiCareer;
-import dev.ragnarok.fenrir.api.model.VKApiCity;
-import dev.ragnarok.fenrir.api.model.VKApiCountry;
-import dev.ragnarok.fenrir.api.model.VKApiMilitary;
-import dev.ragnarok.fenrir.api.model.VKApiSchool;
-import dev.ragnarok.fenrir.api.model.VKApiUniversity;
-import dev.ragnarok.fenrir.api.model.VKApiUser;
-import dev.ragnarok.fenrir.api.util.VKStringUtils;
-
 import static dev.ragnarok.fenrir.api.model.VKApiUser.CAMERA_50;
 import static dev.ragnarok.fenrir.api.model.VKApiUser.Field.ABOUT;
 import static dev.ragnarok.fenrir.api.model.VKApiUser.Field.ACTIVITIES;
@@ -58,6 +38,26 @@ import static dev.ragnarok.fenrir.api.model.VKApiUser.Field.TV;
 import static dev.ragnarok.fenrir.api.model.VKApiUser.Field.UNIVERSITIES;
 import static dev.ragnarok.fenrir.api.model.VKApiUser.Field.VERIFIED;
 import static dev.ragnarok.fenrir.api.model.VKApiUser.Field.WALL_DEFAULT;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+
+import java.lang.reflect.Type;
+import java.util.Collections;
+
+import dev.ragnarok.fenrir.api.model.VKApiAudio;
+import dev.ragnarok.fenrir.api.model.VKApiCareer;
+import dev.ragnarok.fenrir.api.model.VKApiCity;
+import dev.ragnarok.fenrir.api.model.VKApiCountry;
+import dev.ragnarok.fenrir.api.model.VKApiMilitary;
+import dev.ragnarok.fenrir.api.model.VKApiSchool;
+import dev.ragnarok.fenrir.api.model.VKApiUniversity;
+import dev.ragnarok.fenrir.api.model.VKApiUser;
+import dev.ragnarok.fenrir.api.util.VKStringUtils;
 
 public class UserDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApiUser> {
     private static final String TAG = UserDtoAdapter.class.getSimpleName();

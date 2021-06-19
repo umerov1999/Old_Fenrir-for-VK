@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.db.impl;
 
+import static dev.ragnarok.fenrir.util.Utils.join;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.BaseColumns;
@@ -12,8 +14,6 @@ import java.util.List;
 
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
-
-import static dev.ragnarok.fenrir.util.Utils.join;
 
 public class ContactsUtils {
     public static Single<String> getAllContacts(@NonNull Context context) {

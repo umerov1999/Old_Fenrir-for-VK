@@ -11,7 +11,7 @@ import dev.ragnarok.fenrir.model.SentMsg
 import dev.ragnarok.fenrir.module.FenrirNative
 import dev.ragnarok.fenrir.module.rlottie.RLottieDrawable
 import dev.ragnarok.fenrir.picasso.PicassoInstance
-import dev.ragnarok.fenrir.player.util.MusicUtils
+import dev.ragnarok.fenrir.player.MusicPlaybackController
 import dev.ragnarok.fenrir.service.ErrorLocalizer
 import dev.ragnarok.fenrir.service.KeepLongpollService
 import dev.ragnarok.fenrir.settings.Settings
@@ -38,7 +38,7 @@ class App : Application() {
         FenrirNative.updateAppContext(this)
         RLottieDrawable.setCacheResourceAnimation(Settings.get().other().isEnable_cache_ui_anim)
         TagOptionSingleton.getInstance().isAndroid = true
-        MusicUtils.registerBroadcast(this)
+        MusicPlaybackController.registerBroadcast(this)
         PicassoInstance.init(this, Injection.provideProxySettings())
         if (Settings.get().other().isKeepLongpoll) {
             KeepLongpollService.start(this)

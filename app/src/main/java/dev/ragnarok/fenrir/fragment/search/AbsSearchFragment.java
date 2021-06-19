@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment.search;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +25,6 @@ import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener;
 import dev.ragnarok.fenrir.mvp.presenter.search.AbsSearchPresenter;
 import dev.ragnarok.fenrir.mvp.view.search.IBaseSearchView;
 import dev.ragnarok.fenrir.util.ViewUtils;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public abstract class AbsSearchFragment<P extends AbsSearchPresenter<V, ?, T, ?>, V extends IBaseSearchView<T>, T, A extends RecyclerView.Adapter<?>>
         extends PlaceSupportMvpFragment<P, V> implements IBaseSearchView<T> {

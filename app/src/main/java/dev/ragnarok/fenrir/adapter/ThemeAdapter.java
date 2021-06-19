@@ -14,7 +14,11 @@ import java.util.List;
 
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.ThemeValue;
+import dev.ragnarok.fenrir.module.FenrirNative;
+import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.Utils;
+import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 
 public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> {
 
@@ -35,11 +39,26 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ThemeValue category = data.get(position);
         boolean isDark = Settings.get().ui().isDarkModeEnabled(holder.itemView.getContext());
+        boolean isSelected = Settings.get().ui().getMainThemeKey().equals(category.id);
 
         holder.title.setText(category.name);
         holder.primary.setBackgroundColor(isDark ? category.color_night_primary : category.color_day_primary);
         holder.secondary.setBackgroundColor(isDark ? category.color_night_secondary : category.color_day_secondary);
-        holder.selected.setVisibility(Settings.get().ui().getMainThemeKey().equals(category.id) ? View.VISIBLE : View.GONE);
+        holder.selected.setVisibility(isSelected ? View.VISIBLE : View.GONE);
+
+        if (Utils.hasMarshmallow() && FenrirNative.isNativeLoaded()) {
+            if (isSelected) {
+                holder.selected.fromRes(R.raw.theme_selected, Utils.dp(120), Utils.dp(120), new int[]{0x333333, CurrentTheme.getColorWhite(holder.selected.getContext()), 0x777777, CurrentTheme.getColorPrimary(holder.selected.getContext()), 0x999999, CurrentTheme.getColorSecondary(holder.selected.getContext())});
+                holder.selected.playAnimation();
+            } else {
+                holder.selected.stopAnimation();
+            }
+        } else {
+            if (isSelected) {
+                holder.selected.setImageResource(R.drawable.theme_select);
+            }
+        }
+
         holder.clicked.setOnClickListener(v -> clickListener.onClick(position, category));
         holder.gradient.setBackground(new GradientDrawable(GradientDrawable.Orientation.TL_BR,
                 new int[]{isDark ? category.color_night_primary : category.color_day_primary, isDark ? category.color_night_secondary : category.color_day_secondary}));
@@ -67,7 +86,7 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
 
         final ImageView primary;
         final ImageView secondary;
-        final ImageView selected;
+        final RLottieImageView selected;
         final ImageView gradient;
         final ViewGroup clicked;
         final TextView title;

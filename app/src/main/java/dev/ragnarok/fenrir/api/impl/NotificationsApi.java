@@ -1,5 +1,9 @@
 package dev.ragnarok.fenrir.api.impl;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,10 +15,6 @@ import dev.ragnarok.fenrir.api.model.response.NotificationsResponse;
 import dev.ragnarok.fenrir.api.services.INotificationsService;
 import dev.ragnarok.fenrir.model.AnswerVKOfficialList;
 import io.reactivex.rxjava3.core.Single;
-
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 
 class NotificationsApi extends AbsApi implements INotificationsApi {

@@ -1,9 +1,9 @@
 package dev.ragnarok.fenrir.model;
 
-import android.os.Parcel;
-
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
+
+import android.os.Parcel;
 
 public class Document extends AbsModel {
 

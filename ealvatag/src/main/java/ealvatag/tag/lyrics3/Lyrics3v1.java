@@ -71,9 +71,9 @@ public class Lyrics3v1 extends AbstractLyrics3 {
     /**
      * Creates a new Lyrics3v1 datatype.
      *
+     * @param byteBuffer
      * @throws TagNotFoundException
      * @throws java.io.IOException
-     * @param byteBuffer
      */
     public Lyrics3v1(ByteBuffer byteBuffer) throws TagNotFoundException, java.io.IOException {
         try {

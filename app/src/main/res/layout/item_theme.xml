@@ -48,11 +48,12 @@
             tools:text="Theme Name" />
     </LinearLayout>
 
-    <ImageView
+    <dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView
         android:id="@+id/selected"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:src="@drawable/theme_select"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:loopAnimation="true"
+        tools:src="@drawable/theme_select" />
 
 </com.google.android.material.card.MaterialCardView>

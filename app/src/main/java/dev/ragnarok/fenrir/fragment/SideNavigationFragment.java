@@ -1,5 +1,22 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.BOOKMARKS;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.DIALOGS;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.DOCS;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.FEED;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.FEEDBACK;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.FRIENDS;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.GROUPS;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.MUSIC;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.NEWSFEED_COMMENTS;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.PHOTOS;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.SEARCH;
+import static dev.ragnarok.fenrir.model.SideSwitchableCategory.VIDEOS;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.RxUtils.ignore;
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -40,23 +57,6 @@ import dev.ragnarok.fenrir.settings.NightMode;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.RxUtils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-
-import static dev.ragnarok.fenrir.model.SideSwitchableCategory.BOOKMARKS;
-import static dev.ragnarok.fenrir.model.SideSwitchableCategory.DIALOGS;
-import static dev.ragnarok.fenrir.model.SideSwitchableCategory.DOCS;
-import static dev.ragnarok.fenrir.model.SideSwitchableCategory.FEED;
-import static dev.ragnarok.fenrir.model.SideSwitchableCategory.FEEDBACK;
-import static dev.ragnarok.fenrir.model.SideSwitchableCategory.FRIENDS;
-import static dev.ragnarok.fenrir.model.SideSwitchableCategory.GROUPS;
-import static dev.ragnarok.fenrir.model.SideSwitchableCategory.MUSIC;
-import static dev.ragnarok.fenrir.model.SideSwitchableCategory.NEWSFEED_COMMENTS;
-import static dev.ragnarok.fenrir.model.SideSwitchableCategory.PHOTOS;
-import static dev.ragnarok.fenrir.model.SideSwitchableCategory.SEARCH;
-import static dev.ragnarok.fenrir.model.SideSwitchableCategory.VIDEOS;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.RxUtils.ignore;
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class SideNavigationFragment extends AbsNavigationFragment implements MenuListAdapter.ActionListener {
 

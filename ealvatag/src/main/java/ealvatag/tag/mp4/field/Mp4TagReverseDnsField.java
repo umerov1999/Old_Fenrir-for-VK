@@ -1,5 +1,8 @@
 package ealvatag.tag.mp4.field;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.INFO;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -21,9 +24,6 @@ import ealvatag.tag.mp4.atom.Mp4MeanBox;
 import ealvatag.tag.mp4.atom.Mp4NameBox;
 import ealvatag.utils.StandardCharsets;
 import okio.Buffer;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.INFO;
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Represents reverse dns field, used for custom information

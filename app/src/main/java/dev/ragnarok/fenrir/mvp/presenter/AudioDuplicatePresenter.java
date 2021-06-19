@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import static dev.ragnarok.fenrir.player.MusicPlaybackController.observeServiceBinding;
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
@@ -18,15 +21,12 @@ import dev.ragnarok.fenrir.domain.InteractorFactory;
 import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.mvp.presenter.base.RxSupportPresenter;
 import dev.ragnarok.fenrir.mvp.view.IAudioDuplicateView;
-import dev.ragnarok.fenrir.player.util.MusicUtils;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 import dev.ragnarok.fenrir.util.Mp3InfoHelper;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.Disposable;
-
-import static dev.ragnarok.fenrir.player.util.MusicUtils.observeServiceBinding;
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 
 
 public class AudioDuplicatePresenter extends RxSupportPresenter<IAudioDuplicateView> {
@@ -115,16 +115,16 @@ public class AudioDuplicatePresenter extends RxSupportPresenter<IAudioDuplicateV
                         this::onDataGetError);
     }
 
-    private void onServiceBindEvent(@MusicUtils.PlayerStatus int status) {
+    private void onServiceBindEvent(@MusicPlaybackController.PlayerStatus int status) {
         switch (status) {
-            case MusicUtils.PlayerStatus.UPDATE_TRACK_INFO:
-            case MusicUtils.PlayerStatus.SERVICE_KILLED:
-            case MusicUtils.PlayerStatus.UPDATE_PLAY_PAUSE:
+            case MusicPlaybackController.PlayerStatus.UPDATE_TRACK_INFO:
+            case MusicPlaybackController.PlayerStatus.SERVICE_KILLED:
+            case MusicPlaybackController.PlayerStatus.UPDATE_PLAY_PAUSE:
                 callView(v -> v.displayData(new_audio, old_audio));
                 break;
-            case MusicUtils.PlayerStatus.REPEATMODE_CHANGED:
-            case MusicUtils.PlayerStatus.SHUFFLEMODE_CHANGED:
-            case MusicUtils.PlayerStatus.UPDATE_PLAY_LIST:
+            case MusicPlaybackController.PlayerStatus.REPEATMODE_CHANGED:
+            case MusicPlaybackController.PlayerStatus.SHUFFLEMODE_CHANGED:
+            case MusicPlaybackController.PlayerStatus.UPDATE_PLAY_LIST:
                 break;
         }
     }

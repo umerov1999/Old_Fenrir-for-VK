@@ -1,4 +1,4 @@
-package dev.ragnarok.fenrir.player.util;
+package dev.ragnarok.fenrir.player;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -27,8 +27,6 @@ import java.util.WeakHashMap;
 
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.Audio;
-import dev.ragnarok.fenrir.player.IAudioPlayerService;
-import dev.ragnarok.fenrir.player.MusicPlaybackService;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Logger;
 import dev.ragnarok.fenrir.util.Objects;
@@ -36,14 +34,14 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 
 
-public final class MusicUtils {
+public final class MusicPlaybackController {
 
     public static final HashMap<Integer, ArrayList<Audio>> Audios = new HashMap<>();
     public static final Set<String> CachedAudios = new ArraySet<>();
     public static final Set<String> RemoteAudios = new ArraySet<>();
     private static final WeakHashMap<Context, ServiceBinder> mConnectionMap;
     private static final PublishSubject<Integer> SERVICE_BIND_PUBLISHER = PublishSubject.create();
-    private static final String TAG = MusicUtils.class.getSimpleName();
+    private static final String TAG = MusicPlaybackController.class.getSimpleName();
     public static IAudioPlayerService mService;
     private static int sForegroundActivities;
 
@@ -52,7 +50,7 @@ public final class MusicUtils {
     }
 
     /* This class is never initiated */
-    private MusicUtils() {
+    private MusicPlaybackController() {
     }
 
     public static void registerBroadcast(@NonNull Context appContext) {
@@ -279,6 +277,25 @@ public final class MusicUtils {
                 }
             }
         } catch (RemoteException ignored) {
+        }
+    }
+
+    public static boolean canPlayAfterCurrent(@NonNull Audio audio) {
+        if (mService != null) {
+            try {
+                return mService.canPlayAfterCurrent(audio);
+            } catch (RemoteException ignored) {
+            }
+        }
+        return false;
+    }
+
+    public static void playAfterCurrent(@NonNull Audio audio) {
+        if (mService != null) {
+            try {
+                mService.playAfterCurrent(audio);
+            } catch (RemoteException ignored) {
+            }
         }
     }
 

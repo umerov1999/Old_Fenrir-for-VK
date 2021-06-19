@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.dialog;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,8 +28,6 @@ import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.DirectAuthPresenter;
 import dev.ragnarok.fenrir.mvp.view.IDirectAuthView;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class DirectAuthDialog extends BaseMvpDialogFragment<DirectAuthPresenter, IDirectAuthView> implements IDirectAuthView {
 

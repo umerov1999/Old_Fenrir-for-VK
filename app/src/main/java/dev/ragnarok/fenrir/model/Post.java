@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.model;
 
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
+
 import android.os.Parcel;
 
 import androidx.annotation.NonNull;
@@ -9,9 +12,6 @@ import java.util.List;
 
 import dev.ragnarok.fenrir.api.model.VKApiPost;
 import dev.ragnarok.fenrir.util.Objects;
-
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
 
 public class Post extends AbsModel implements Cloneable {
 

@@ -18,6 +18,9 @@
  */
 package ealvatag.audio.ogg.util;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -32,9 +35,6 @@ import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.logging.ErrorMessage;
 import ealvatag.tag.id3.AbstractID3v2Tag;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 
 /**
@@ -73,12 +73,12 @@ public class OggPageHeader {
     private static final int FIELD_STREAM_STRUCTURE_VERSION_POS = 4;
     private static final int FIELD_ABSOLUTE_GRANULE_POS = 6;
     private static final int FIELD_STREAM_SERIAL_NO_POS = 14;
-//    public static final int FIELD_SEGMENT_TABLE_POS = 27;
+    //    public static final int FIELD_SEGMENT_TABLE_POS = 27;
     //    public static final int FIELD_STREAM_STRUCTURE_VERSION_LENGTH = 1;
 //    public static final int FIELD_HEADER_TYPE_FLAG_LENGTH = 1;
     private static final int FIELD_ABSOLUTE_GRANULE_LENGTH = 8;
     public static JLogger LOG = JLoggers.get(OggPageHeader.class, EalvaTagLog.MARKER);
-//    public static final int FIELD_STREAM_SERIAL_NO_LENGTH = 4;
+    //    public static final int FIELD_STREAM_SERIAL_NO_LENGTH = 4;
 //    public static final int FIELD_PAGE_SEQUENCE_NO_LENGTH = 4;
 //    public static final int FIELD_PAGE_CHECKSUM_LENGTH = 4;
 //    public static final int FIELD_PAGE_SEGMENTS_LENGTH = 1;

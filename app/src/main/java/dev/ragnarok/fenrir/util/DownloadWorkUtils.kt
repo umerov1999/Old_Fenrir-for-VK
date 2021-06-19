@@ -25,7 +25,7 @@ import dev.ragnarok.fenrir.longpoll.NotificationHelper
 import dev.ragnarok.fenrir.model.*
 import dev.ragnarok.fenrir.module.FenrirNative
 import dev.ragnarok.fenrir.module.hls.TSDemuxer
-import dev.ragnarok.fenrir.player.util.MusicUtils
+import dev.ragnarok.fenrir.player.MusicPlaybackController
 import dev.ragnarok.fenrir.service.QuickReplyService
 import dev.ragnarok.fenrir.settings.ISettings
 import dev.ragnarok.fenrir.settings.Settings
@@ -190,7 +190,7 @@ object DownloadWorkUtils {
             }
             return 1
         }
-        for (i in MusicUtils.RemoteAudios) {
+        for (i in MusicPlaybackController.RemoteAudios) {
             if (i.equals(file_name, true))
                 return 2
         }
@@ -203,11 +203,11 @@ object DownloadWorkUtils {
             return 1
         }
         val audioName = makeLegalFilename(audio.artist + " - " + audio.title, "mp3")
-        for (i in MusicUtils.CachedAudios) {
+        for (i in MusicPlaybackController.CachedAudios) {
             if (i.equals(audioName, true))
                 return 1
         }
-        for (i in MusicUtils.RemoteAudios) {
+        for (i in MusicPlaybackController.RemoteAudios) {
             if (i.equals(audioName, true))
                 return 2
         }
@@ -952,7 +952,7 @@ object DownloadWorkUtils {
                     NotificationHelper.NOTIFICATION_DOWNLOAD,
                     NotificationHelper.NOTIFICATION_DOWNLOADING
                 )
-                MusicUtils.CachedAudios.add(file_v.buildFilename())
+                MusicPlaybackController.CachedAudios.add(file_v.buildFilename())
                 Utils.inMainThread {
                     CustomToast.CreateCustomToast(applicationContext)
                         .showToastBottom(if (updated_tag) R.string.tag_modified else R.string.saved)

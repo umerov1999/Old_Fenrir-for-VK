@@ -542,8 +542,12 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
     }
 
     override fun goBack() {
-        if (isAdded && canGoBack()) {
-            requireActivity().supportFragmentManager.popBackStack()
+        if (isAdded) {
+            if (canGoBack()) {
+                requireActivity().supportFragmentManager.popBackStack()
+            } else {
+                requireActivity().finish()
+            }
         }
     }
 

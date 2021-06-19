@@ -1,5 +1,9 @@
 package dev.ragnarok.fenrir.adapter.fave;
 
+import static dev.ragnarok.fenrir.api.model.VkApiPostSource.Data.PROFILE_ACTIVITY;
+import static dev.ragnarok.fenrir.api.model.VkApiPostSource.Data.PROFILE_PHOTO;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.content.Context;
 import android.view.ContextMenu;
 import android.view.View;
@@ -27,10 +31,6 @@ import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.CircleCounterButton;
 import dev.ragnarok.fenrir.view.emoji.EmojiconTextView;
-
-import static dev.ragnarok.fenrir.api.model.VkApiPostSource.Data.PROFILE_ACTIVITY;
-import static dev.ragnarok.fenrir.api.model.VkApiPostSource.Data.PROFILE_PHOTO;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class FavePostAdapter extends RecyclerBindableAdapter<Post, RecyclerView.ViewHolder> {
 

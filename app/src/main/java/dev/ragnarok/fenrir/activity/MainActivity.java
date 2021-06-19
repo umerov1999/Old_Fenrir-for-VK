@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.activity;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
@@ -162,8 +165,8 @@ import dev.ragnarok.fenrir.mvp.view.IVkPhotosView;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.place.PlaceProvider;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 import dev.ragnarok.fenrir.player.MusicPlaybackService;
-import dev.ragnarok.fenrir.player.util.MusicUtils;
 import dev.ragnarok.fenrir.push.IPushRegistrationResolver;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.ISettings;
@@ -181,9 +184,6 @@ import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.zoomhelper.ZoomHelper;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class MainActivity extends AppCompatActivity implements AbsNavigationFragment.NavigationDrawerCallbacks,
         OnSectionResumeCallback, AppStyleable, PlaceProvider, ServiceConnection, NavigationBarView.OnItemSelectedListener {
@@ -256,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
         resolveToolbarNavigationIcon();
         keyboardHide();
     };
-    private MusicUtils.ServiceToken mAudioPlayServiceToken;
+    private MusicPlaybackController.ServiceToken mAudioPlayServiceToken;
     private boolean mDestroyed;
     /**
      * First - DrawerItem, second - Clear back stack before adding
@@ -328,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
 
         mCompositeDisposable.add(Injection.provideProxySettings()
                 .observeActive().observeOn(Injection.provideMainThreadScheduler())
-                .subscribe(o -> MusicUtils.stop()));
+                .subscribe(o -> MusicPlaybackController.stop()));
 
         mCompositeDisposable.add(Stores.getInstance()
                 .dialogs()
@@ -462,7 +462,7 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
 
     private void bindToAudioPlayService() {
         if (!isActivityDestroyed() && mAudioPlayServiceToken == null) {
-            mAudioPlayServiceToken = MusicUtils.bindToServiceWithoutStart(this, this);
+            mAudioPlayServiceToken = MusicPlaybackController.bindToServiceWithoutStart(this, this);
         }
     }
 
@@ -527,7 +527,7 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
         mAccountId = newAccountId;
         Accounts.showAccountSwitchedToast(this);
         updateNotificationCount(newAccountId);
-        MusicUtils.stop();
+        MusicPlaybackController.stop();
     }
 
     @Override
@@ -853,7 +853,7 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
 
     private void unbindFromAudioPlayService() {
         if (mAudioPlayServiceToken != null) {
-            MusicUtils.unbindFromService(mAudioPlayServiceToken);
+            MusicPlaybackController.unbindFromService(mAudioPlayServiceToken);
             mAudioPlayServiceToken = null;
         }
     }

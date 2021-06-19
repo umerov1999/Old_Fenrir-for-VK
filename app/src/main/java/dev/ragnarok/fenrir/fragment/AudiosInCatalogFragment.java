@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.Manifest;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -36,13 +38,11 @@ import dev.ragnarok.fenrir.mvp.presenter.AudiosInCatalogPresenter;
 import dev.ragnarok.fenrir.mvp.view.IAudiosInCatalogView;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
-import dev.ragnarok.fenrir.player.util.MusicUtils;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.ViewUtils;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class AudiosInCatalogFragment extends BaseMvpFragment<AudiosInCatalogPresenter, IAudiosInCatalogView>
         implements IAudiosInCatalogView {
@@ -103,7 +103,7 @@ public class AudiosInCatalogFragment extends BaseMvpFragment<AudiosInCatalogPres
         Goto.setImageResource(R.drawable.audio_player);
 
         Goto.setOnLongClickListener(v -> {
-            Audio curr = MusicUtils.getCurrentAudio();
+            Audio curr = MusicPlaybackController.getCurrentAudio();
             if (curr != null) {
                 PlaceFactory.getPlayerPlace(Settings.get().accounts().getCurrent()).tryOpenWith(requireActivity());
             } else
@@ -111,7 +111,7 @@ public class AudiosInCatalogFragment extends BaseMvpFragment<AudiosInCatalogPres
             return false;
         });
         Goto.setOnClickListener(v -> {
-            Audio curr = MusicUtils.getCurrentAudio();
+            Audio curr = MusicPlaybackController.getCurrentAudio();
             if (curr != null) {
                 int index = callPresenter(p -> p.getAudioPos(curr), -1);
                 if (index >= 0) {

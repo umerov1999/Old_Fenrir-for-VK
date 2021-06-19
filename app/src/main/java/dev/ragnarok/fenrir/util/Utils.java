@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.util;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -97,7 +99,7 @@ import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.ProxyConfig;
 import dev.ragnarok.fenrir.model.Sticker;
 import dev.ragnarok.fenrir.module.rlottie.RLottieDrawable;
-import dev.ragnarok.fenrir.player.util.MusicUtils;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 import dev.ragnarok.fenrir.service.ErrorLocalizer;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
@@ -110,8 +112,6 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-
-import static dev.ragnarok.fenrir.util.Objects.isNull;
 
 public class Utils {
     private static final List<Integer> reload_news = new ArrayList<>();
@@ -1164,6 +1164,8 @@ public class Utils {
             case "violet_green":
             case "violet_yellow":
                 return Color.parseColor("#8500ff");
+            case "fuxia_neon_yellow":
+                return Color.parseColor("#fe59c2");
             case "green_violet":
                 return Color.parseColor("#268000");
             case "gray":
@@ -1660,7 +1662,7 @@ public class Utils {
             JsonReader reader = new JsonReader(new InputStreamReader(new FileInputStream(audios), StandardCharsets.UTF_8));
             reader.beginArray();
             while (reader.hasNext()) {
-                MusicUtils.RemoteAudios.add(reader.nextString());
+                MusicPlaybackController.RemoteAudios.add(reader.nextString());
             }
         } catch (Throwable ignore) {
             CustomToast.CreateCustomToast(context).showToastError(R.string.remote_audio_error);

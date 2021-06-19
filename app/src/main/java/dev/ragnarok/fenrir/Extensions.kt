@@ -118,6 +118,23 @@ class Extensions {
             }
         }
 
+        fun <T> MutableList<T>.insert(index: Int, element: T) {
+            if (index <= size) {
+                add(index, element)
+            } else {
+                add(element)
+            }
+        }
+
+        fun <T> MutableList<T>.insertAfter(index: Int, element: T) {
+            val cur = index + 1
+            if (cur <= size) {
+                add(cur, element)
+            } else {
+                add(element)
+            }
+        }
+
         open class StubAnimatorListener : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {
 

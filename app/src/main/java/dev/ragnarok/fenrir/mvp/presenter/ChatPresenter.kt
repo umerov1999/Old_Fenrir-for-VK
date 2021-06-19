@@ -1028,7 +1028,7 @@ class ChatPresenter(
         startRecordImpl()
     }
 
-    private fun sendRecordingMessageImpl(file: File) {
+    fun sendRecordingMessageImpl(file: File) {
         view?.ScrollTo(0)
         val builder = SaveMessageBuilder(messagesOwnerId, peerId).setVoiceMessageFile(file)
         this.sendMessage(builder)

@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.Manifest;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -30,7 +32,7 @@ import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.AudiosLocalServerPresenter;
 import dev.ragnarok.fenrir.mvp.view.IAudiosLocalServerView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
-import dev.ragnarok.fenrir.player.util.MusicUtils;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
@@ -38,8 +40,6 @@ import dev.ragnarok.fenrir.util.DownloadWorkUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.MySearchView;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class AudiosLocalServerFragment extends BaseMvpFragment<AudiosLocalServerPresenter, IAudiosLocalServerView>
         implements MySearchView.OnQueryTextListener, AudioLocalServerRecyclerAdapter.ClickListener, IAudiosLocalServerView {
@@ -97,7 +97,7 @@ public class AudiosLocalServerFragment extends BaseMvpFragment<AudiosLocalServer
         Goto.setImageResource(R.drawable.audio_player);
 
         Goto.setOnLongClickListener(v -> {
-            Audio curr = MusicUtils.getCurrentAudio();
+            Audio curr = MusicPlaybackController.getCurrentAudio();
             if (curr != null) {
                 PlaceFactory.getPlayerPlace(Settings.get().accounts().getCurrent()).tryOpenWith(requireActivity());
             } else
@@ -105,7 +105,7 @@ public class AudiosLocalServerFragment extends BaseMvpFragment<AudiosLocalServer
             return false;
         });
         Goto.setOnClickListener(v -> {
-            Audio curr = MusicUtils.getCurrentAudio();
+            Audio curr = MusicPlaybackController.getCurrentAudio();
             if (curr != null) {
                 int index = callPresenter(p -> p.getAudioPos(curr), -1);
                 if (index >= 0) {

@@ -1,5 +1,9 @@
 package ealvatag.audio.dsf;
 
+import static ealvatag.audio.dsf.DsdChunk.CHUNKSIZE_LENGTH;
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -11,10 +15,6 @@ import ealvatag.audio.iff.IffHeaderChunk;
 import ealvatag.logging.EalvaTagLog;
 import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
-
-import static ealvatag.audio.dsf.DsdChunk.CHUNKSIZE_LENGTH;
-import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 
 /**

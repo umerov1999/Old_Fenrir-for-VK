@@ -18,6 +18,8 @@
  */
 package ealvatag.tag.mp4.field;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
@@ -30,8 +32,6 @@ import ealvatag.tag.id3.valuepair.ImageFormats;
 import ealvatag.tag.mp4.Mp4FieldKey;
 import ealvatag.tag.mp4.atom.Mp4DataBox;
 import ealvatag.tag.mp4.atom.Mp4NameBox;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Represents Cover Art

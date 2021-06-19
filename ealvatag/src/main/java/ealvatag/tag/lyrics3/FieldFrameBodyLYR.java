@@ -89,6 +89,7 @@ public class FieldFrameBodyLYR extends AbstractLyrics3v2FieldFrameBody {
 
     /**
      * Creates a new FieldBodyLYR datatype.
+     *
      * @param byteBuffer
      * @throws ealvatag.tag.InvalidTagException
      */
@@ -236,8 +237,6 @@ public class FieldFrameBodyLYR extends AbstractLyrics3v2FieldFrameBody {
     }
 
     /**
-     *
-     *
      *
      */
     public void read(ByteBuffer byteBuffer) throws InvalidTagException {

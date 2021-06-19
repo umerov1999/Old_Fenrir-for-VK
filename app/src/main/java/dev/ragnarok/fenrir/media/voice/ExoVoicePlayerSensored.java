@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.media.voice;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -28,14 +31,11 @@ import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.media.exo.ExoUtil;
 import dev.ragnarok.fenrir.model.ProxyConfig;
 import dev.ragnarok.fenrir.model.VoiceMessage;
-import dev.ragnarok.fenrir.player.util.MusicUtils;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Logger;
 import dev.ragnarok.fenrir.util.Optional;
 import dev.ragnarok.fenrir.util.Utils;
-
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class ExoVoicePlayerSensored implements IVoicePlayer, SensorEventListener {
 
@@ -98,9 +98,9 @@ public class ExoVoicePlayerSensored implements IVoicePlayer, SensorEventListener
             return;
         try {
             Registered = true;
-            if (MusicUtils.isPlaying() || MusicUtils.isPreparing()) {
-                MusicUtils.notifyForegroundStateChanged(app, true);
-                MusicUtils.playOrPause();
+            if (MusicPlaybackController.isPlaying() || MusicPlaybackController.isPreparing()) {
+                MusicPlaybackController.notifyForegroundStateChanged(app, true);
+                MusicPlaybackController.playOrPause();
                 HasPlaying = true;
             }
             isProximityNear = false;
@@ -121,8 +121,8 @@ public class ExoVoicePlayerSensored implements IVoicePlayer, SensorEventListener
             sensorManager.unregisterListener(this);
             app.unregisterReceiver(headset);
             if (HasPlaying) {
-                MusicUtils.playOrPause();
-                MusicUtils.notifyForegroundStateChanged(app, false);
+                MusicPlaybackController.playOrPause();
+                MusicPlaybackController.notifyForegroundStateChanged(app, false);
             }
             HasPlaying = false;
             if (ProximitRegistered) {

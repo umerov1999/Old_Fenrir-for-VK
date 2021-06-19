@@ -1,5 +1,7 @@
 package ealvatag.audio.mp4.atom;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+
 import com.google.common.base.MoreObjects;
 
 import java.io.IOException;
@@ -17,8 +19,6 @@ import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.utils.StandardCharsets;
 import okio.BufferedSource;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Ftyp (File Type) is the first atom, can be used to help identify the mp4 container type

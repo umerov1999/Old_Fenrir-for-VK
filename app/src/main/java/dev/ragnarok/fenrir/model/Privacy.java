@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.model;
 
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.join;
+
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -11,9 +14,6 @@ import java.util.Collections;
 import java.util.List;
 
 import dev.ragnarok.fenrir.R;
-
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.join;
 
 public class Privacy implements Parcelable, Cloneable {
 

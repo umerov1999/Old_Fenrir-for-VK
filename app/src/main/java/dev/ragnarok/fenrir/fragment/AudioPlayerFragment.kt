@@ -48,12 +48,12 @@ import dev.ragnarok.fenrir.module.qrcode.QrGenerator.generateQR
 import dev.ragnarok.fenrir.picasso.PicassoInstance
 import dev.ragnarok.fenrir.picasso.transforms.BlurTransformation
 import dev.ragnarok.fenrir.place.PlaceFactory
+import dev.ragnarok.fenrir.player.MusicPlaybackController
+import dev.ragnarok.fenrir.player.MusicPlaybackController.PlayerStatus
 import dev.ragnarok.fenrir.player.ui.PlayPauseButton
 import dev.ragnarok.fenrir.player.ui.RepeatButton
 import dev.ragnarok.fenrir.player.ui.RepeatingImageButton
 import dev.ragnarok.fenrir.player.ui.ShuffleButton
-import dev.ragnarok.fenrir.player.util.MusicUtils
-import dev.ragnarok.fenrir.player.util.MusicUtils.PlayerStatus
 import dev.ragnarok.fenrir.service.ErrorLocalizer
 import dev.ragnarok.fenrir.settings.CurrentTheme
 import dev.ragnarok.fenrir.settings.Settings
@@ -196,7 +196,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
                 ivBackground?.let {
                     if (it.drawable is Animatable) {
                         (it.drawable as Animatable).apply {
-                            if (MusicUtils.isPlaying()) {
+                            if (MusicPlaybackController.isPlaying()) {
                                 start()
                             } else {
                                 stop()
@@ -237,7 +237,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
         if (!FenrirNative.isNativeLoaded()) {
             return
         }
-        val audio = MusicUtils.getCurrentAudio() ?: return
+        val audio = MusicPlaybackController.getCurrentAudio() ?: return
         val qr = Utils.renderSVG(
             generateQR(
                 "https://vk.com/audio/" + audio.ownerId + "_" + audio.id,
@@ -326,7 +326,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
                     icon = R.drawable.ic_menu_24_white
                     iconColor = CurrentTheme.getColorSecondary(requireActivity())
                     callback = {
-                        val tmpList = MusicUtils.getQueue()
+                        val tmpList = MusicPlaybackController.getQueue()
                         if (!isEmpty(tmpList)) {
                             PlaylistFragment.newInstance(ArrayList(tmpList))
                                 .show(childFragmentManager, "audio_playlist")
@@ -341,10 +341,10 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
                         val clipboard =
                             requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         var Artist =
-                            if (MusicUtils.getArtistName() != null) MusicUtils.getArtistName() else ""
-                        if (MusicUtils.getAlbumName() != null) Artist += " (" + MusicUtils.getAlbumName() + ")"
+                            if (MusicPlaybackController.getArtistName() != null) MusicPlaybackController.getArtistName() else ""
+                        if (MusicPlaybackController.getAlbumName() != null) Artist += " (" + MusicPlaybackController.getAlbumName() + ")"
                         val Name =
-                            if (MusicUtils.getTrackName() != null) MusicUtils.getTrackName() else ""
+                            if (MusicPlaybackController.getTrackName() != null) MusicPlaybackController.getTrackName() else ""
                         val clip = ClipData.newPlainText("response", "$Artist - $Name")
                         clipboard.setPrimaryClip(clip)
                         CreateCustomToast(requireActivity()).showToast(R.string.copied_to_clipboard)
@@ -366,7 +366,11 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
                         PlaceFactory.getSingleTabSearchPlace(
                             mAccountId,
                             SearchContentType.AUDIOS,
-                            AudioSearchCriteria(MusicUtils.getArtistName(), true, false)
+                            AudioSearchCriteria(
+                                MusicPlaybackController.getArtistName(),
+                                true,
+                                false
+                            )
                         ).tryOpenWith(requireActivity())
                         dismissAllowingStateLoss()
                     }
@@ -398,7 +402,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
                     playDispose = Observable.just(Object())
                         .delay(400, TimeUnit.MILLISECONDS)
                         .toMainThread()
-                        .subscribe { MusicUtils.skip(position) }
+                        .subscribe { MusicPlaybackController.skip(position) }
                     ivCoverPager?.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                 }
             }
@@ -457,7 +461,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
         resolveAddButton()
 
         mTimeHandler = TimeHandler(this)
-        appendDisposable(MusicUtils.observeServiceBinding()
+        appendDisposable(MusicPlaybackController.observeServiceBinding()
             .toMainThread()
             .subscribe { onServiceBindEvent(it) })
         return root
@@ -470,7 +474,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
 
     @SuppressLint("ShowToast")
     private fun onSaveButtonClick(v: View) {
-        val audio = MusicUtils.getCurrentAudio() ?: return
+        val audio = MusicPlaybackController.getCurrentAudio() ?: return
         when (doDownloadAudio(
             requireActivity(),
             audio,
@@ -539,7 +543,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
     }
 
     private fun onAddButtonClick() {
-        val audio = MusicUtils.getCurrentAudio() ?: return
+        val audio = MusicPlaybackController.getCurrentAudio() ?: return
         if (audio.isLocal || audio.isLocalServer) {
             CreateCustomToast(requireActivity()).showToastError(R.string.not_supported)
             return
@@ -586,7 +590,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
     }
 
     private fun onLyrics() {
-        val audio = MusicUtils.getCurrentAudio() ?: return
+        val audio = MusicPlaybackController.getCurrentAudio() ?: return
         get_lyrics(audio)
     }
 
@@ -641,8 +645,8 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
 
     private fun onAudioLyricsReceived(Text: String) {
         var title: String? = null
-        if (MusicUtils.getCurrentAudio() != null) title =
-            MusicUtils.getCurrentAudio()?.artistAndTitle
+        if (MusicPlaybackController.getCurrentAudio() != null) title =
+            MusicPlaybackController.getCurrentAudio()?.artistAndTitle
         val dlgAlert = MaterialAlertDialogBuilder(requireActivity())
         dlgAlert.setIcon(R.drawable.dir_song)
         dlgAlert.setMessage(Text)
@@ -665,7 +669,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
         } else {
             CreateCustomToast(requireActivity()).showToast(R.string.restored)
         }
-        val current = MusicUtils.getCurrentAudio()
+        val current = MusicPlaybackController.getCurrentAudio()
         if (Objects.nonNull(current) && current?.id == id && current.ownerId == ownerId) {
             current.isDeleted = deleted
         }
@@ -674,13 +678,13 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
 
     override fun onScrubStart(timeBar: TimeBar?, position: Long) {
         mFromTouch = true
-        if (MusicUtils.mService != null) {
+        if (MusicPlaybackController.mService != null) {
             mPosOverride = position
         }
     }
 
     override fun onScrubMove(timeBar: TimeBar?, position: Long) {
-        if (MusicUtils.mService == null) {
+        if (MusicPlaybackController.mService == null) {
             return
         }
         val now = SystemClock.elapsedRealtime()
@@ -697,7 +701,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
 
     override fun onScrubStop(timeBar: TimeBar?, position: Long, canceled: Boolean) {
         if (mPosOverride != -1L) {
-            MusicUtils.seek(mPosOverride)
+            MusicPlaybackController.seek(mPosOverride)
             mPosOverride = -1
         }
         mFromTouch = false
@@ -725,7 +729,10 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
         // Refresh the current time
         val next = refreshCurrentTime()
         queueNextRefresh(next)
-        MusicUtils.notifyForegroundStateChanged(requireActivity(), MusicUtils.isPlaying())
+        MusicPlaybackController.notifyForegroundStateChanged(
+            requireActivity(),
+            MusicPlaybackController.isPlaying()
+        )
     }
 
     /**
@@ -733,7 +740,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
      */
     override fun onStop() {
         super.onStop()
-        MusicUtils.notifyForegroundStateChanged(requireActivity(), false)
+        MusicPlaybackController.notifyForegroundStateChanged(requireActivity(), false)
     }
 
     /**
@@ -750,7 +757,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
     }
 
     private fun updateCovers() {
-        coverAdapter?.updateAudios(MusicUtils.getQueue())
+        coverAdapter?.updateAudios(MusicPlaybackController.getQueue())
     }
 
     val target = object : Target {
@@ -763,7 +770,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
                         it,
                         requireActivity(),
                         bitmap,
-                        MusicUtils.isPlaying()
+                        MusicPlaybackController.isPlaying()
                     )
                 }
             }
@@ -788,7 +795,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
      * Sets the track name, album name, and album art.
      */
     private fun updateNowPlayingInfo() {
-        val audioTrack = MusicUtils.getCurrentAudio()
+        val audioTrack = MusicPlaybackController.getCurrentAudio()
         if (mGetLyrics != null) {
             if (audioTrack != null && audioTrack.lyricsId != 0) mGetLyrics?.visibility =
                 View.VISIBLE else mGetLyrics?.visibility = View.GONE
@@ -826,13 +833,13 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
             }
         }
 
-        MusicUtils.getCurrentAudioPos()?.let {
+        MusicPlaybackController.getCurrentAudioPos()?.let {
             currentPage = it
             ivCoverPager?.setCurrentItem(it, false)
         }
 
         resolveAddButton()
-        val current = MusicUtils.getCurrentAudio()
+        val current = MusicPlaybackController.getCurrentAudio()
         if (current != null) {
             when {
                 TrackIsDownloaded(current) == 1 -> {
@@ -861,9 +868,12 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
         if (!isAdded || mTotalTime == null) {
             return
         }
-        if (MusicUtils.isInitialized()) {
+        if (MusicPlaybackController.isInitialized()) {
             mTotalTime?.text =
-                MusicUtils.makeTimeString(requireActivity(), MusicUtils.duration() / 1000)
+                MusicPlaybackController.makeTimeString(
+                    requireActivity(),
+                    MusicPlaybackController.duration() / 1000
+                )
         }
     }
 
@@ -889,7 +899,10 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
         try {
             val effects = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
             effects.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, requireActivity().packageName)
-            effects.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, MusicUtils.getAudioSessionId())
+            effects.putExtra(
+                AudioEffect.EXTRA_AUDIO_SESSION,
+                MusicPlaybackController.getAudioSessionId()
+            )
             effects.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
             requestEqualizer.launch(effects)
         } catch (ignored: ActivityNotFoundException) {
@@ -910,7 +923,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
         }
 
     private fun shareAudio() {
-        val current = MusicUtils.getCurrentAudio() ?: return
+        val current = MusicPlaybackController.getCurrentAudio() ?: return
         if (current.isLocal || current.isLocalServer) {
             CreateCustomToast(requireActivity()).showToastError(R.string.not_supported)
             return
@@ -921,7 +934,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
     private fun resolveAddButton() {
         if (Settings.get().main().isPlayer_support_volume) return
         if (!isAdded) return
-        val currentAudio = MusicUtils.getCurrentAudio() ?: return
+        val currentAudio = MusicPlaybackController.getCurrentAudio() ?: return
         //ivAdd.setVisibility(currentAudio == null ? View.INVISIBLE : View.VISIBLE);
         val myAudio = currentAudio.ownerId == mAccountId
         val icon =
@@ -931,7 +944,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
 
     private fun broadcastAudio() {
         mBroadcastDisposable.clear()
-        val currentAudio = MusicUtils.getCurrentAudio() ?: return
+        val currentAudio = MusicPlaybackController.getCurrentAudio() ?: return
         if (currentAudio.isLocal || currentAudio.isLocalServer) {
             return
         }
@@ -958,8 +971,8 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
 
     private fun resolveControlViews() {
         if (!isAdded || mProgress == null) return
-        val preparing = MusicUtils.isPreparing()
-        val initialized = MusicUtils.isInitialized()
+        val preparing = MusicPlaybackController.isPreparing()
+        val initialized = MusicPlaybackController.isInitialized()
         mProgress?.isEnabled = !preparing && initialized
         //mProgress?.isIndeterminate = preparing
     }
@@ -972,11 +985,11 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
      */
     private fun scanBackward(repcnt: Int, deltal: Long) {
         var delta = deltal
-        if (MusicUtils.mService == null) {
+        if (MusicPlaybackController.mService == null) {
             return
         }
         if (repcnt == 0) {
-            mStartSeekPos = MusicUtils.position()
+            mStartSeekPos = MusicPlaybackController.position()
             mLastSeekEventTime = 0
         } else {
             delta = if (delta < 5000) {
@@ -989,13 +1002,13 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
             var newpos = mStartSeekPos - delta
             if (newpos < 0) {
                 // move to previous track
-                MusicUtils.previous(requireActivity())
-                val duration = MusicUtils.duration()
+                MusicPlaybackController.previous(requireActivity())
+                val duration = MusicPlaybackController.duration()
                 mStartSeekPos += duration
                 newpos += duration
             }
             if (delta - mLastSeekEventTime > 250 || repcnt < 0) {
-                MusicUtils.seek(newpos)
+                MusicPlaybackController.seek(newpos)
                 mLastSeekEventTime = delta
             }
             mPosOverride = if (repcnt >= 0) {
@@ -1015,11 +1028,11 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
      */
     private fun scanForward(repcnt: Int, deltal: Long) {
         var delta = deltal
-        if (MusicUtils.mService == null) {
+        if (MusicPlaybackController.mService == null) {
             return
         }
         if (repcnt == 0) {
-            mStartSeekPos = MusicUtils.position()
+            mStartSeekPos = MusicPlaybackController.position()
             mLastSeekEventTime = 0
         } else {
             delta = if (delta < 5000) {
@@ -1030,15 +1043,15 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
                 50000 + (delta - 5000) * 40
             }
             var newpos = mStartSeekPos + delta
-            val duration = MusicUtils.duration()
+            val duration = MusicPlaybackController.duration()
             if (newpos >= duration) {
                 // move to next track
-                MusicUtils.next()
+                MusicPlaybackController.next()
                 mStartSeekPos -= duration // is OK to go negative
                 newpos -= duration
             }
             if (delta - mLastSeekEventTime > 250 || repcnt < 0) {
-                MusicUtils.seek(newpos)
+                MusicPlaybackController.seek(newpos)
                 mLastSeekEventTime = delta
             }
             mPosOverride = if (repcnt >= 0) {
@@ -1051,12 +1064,12 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
     }
 
     private fun refreshCurrentTimeText(pos: Long) {
-        mCurrentTime?.text = MusicUtils.makeTimeString(requireActivity(), pos / 1000)
+        mCurrentTime?.text = MusicPlaybackController.makeTimeString(requireActivity(), pos / 1000)
     }
 
     private fun refreshCurrentTime(): Long {
         //Logger.d("refreshTime", String.valueOf(mService == null));
-        if (!MusicUtils.isInitialized()) {
+        if (!MusicPlaybackController.isInitialized()) {
             mCurrentTime?.text = "--:--"
             mTotalTime?.text = "--:--"
             mProgress?.setDuration(DefaultTimeBar.TIME_UNSET)
@@ -1065,18 +1078,18 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
             return 500
         }
         try {
-            val pos = if (mPosOverride < 0) MusicUtils.position() else mPosOverride
-            val duration = MusicUtils.duration()
+            val pos = if (mPosOverride < 0) MusicPlaybackController.position() else mPosOverride
+            val duration = MusicPlaybackController.duration()
             if (pos >= 0 && duration > 0) {
                 refreshCurrentTimeText(pos)
                 mProgress?.setDuration(duration)
                 mProgress?.setPosition(pos)
-                mProgress?.setBufferedPosition(MusicUtils.bufferPosition())
+                mProgress?.setBufferedPosition(MusicPlaybackController.bufferPosition())
                 when {
                     mFromTouch -> {
                         return 500
                     }
-                    MusicUtils.isPlaying() -> {
+                    MusicPlaybackController.isPlaying() -> {
                         mCurrentTime?.visibility = View.VISIBLE
                     }
                     else -> {

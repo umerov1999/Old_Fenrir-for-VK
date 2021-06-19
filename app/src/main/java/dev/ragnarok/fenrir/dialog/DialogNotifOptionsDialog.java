@@ -1,5 +1,13 @@
 package dev.ragnarok.fenrir.dialog;
 
+import static dev.ragnarok.fenrir.settings.NotificationsPrefs.FLAG_HIGH_PRIORITY;
+import static dev.ragnarok.fenrir.settings.NotificationsPrefs.FLAG_LED;
+import static dev.ragnarok.fenrir.settings.NotificationsPrefs.FLAG_SHOW_NOTIF;
+import static dev.ragnarok.fenrir.settings.NotificationsPrefs.FLAG_SOUND;
+import static dev.ragnarok.fenrir.settings.NotificationsPrefs.FLAG_VIBRO;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.hasFlag;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +22,6 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.settings.Settings;
-
-import static dev.ragnarok.fenrir.settings.NotificationsPrefs.FLAG_HIGH_PRIORITY;
-import static dev.ragnarok.fenrir.settings.NotificationsPrefs.FLAG_LED;
-import static dev.ragnarok.fenrir.settings.NotificationsPrefs.FLAG_SHOW_NOTIF;
-import static dev.ragnarok.fenrir.settings.NotificationsPrefs.FLAG_SOUND;
-import static dev.ragnarok.fenrir.settings.NotificationsPrefs.FLAG_VIBRO;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.hasFlag;
 
 public class DialogNotifOptionsDialog extends BottomSheetDialogFragment {
 

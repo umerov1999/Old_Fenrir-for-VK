@@ -1,5 +1,7 @@
 package ealvatag.tag.mp4.field;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -12,8 +14,6 @@ import ealvatag.logging.ErrorMessage;
 import ealvatag.tag.mp4.Mp4FieldKey;
 import ealvatag.tag.mp4.atom.Mp4DataBox;
 import ealvatag.tag.reference.GenreTypes;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Represents the Genre field , when user has selected from the set list of genres

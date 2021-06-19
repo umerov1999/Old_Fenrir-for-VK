@@ -1,5 +1,10 @@
 package ealvatag.tag.datatype;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import java.io.EOFException;
@@ -18,11 +23,6 @@ import ealvatag.tag.exceptions.IllegalCharsetException;
 import ealvatag.tag.id3.AbstractTagFrameBody;
 import ealvatag.utils.StandardCharsets;
 import okio.Buffer;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
-import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Represents a String whose size is determined by finding of a null character at the end of the String.

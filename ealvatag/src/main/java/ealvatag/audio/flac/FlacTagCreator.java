@@ -18,6 +18,8 @@
  */
 package ealvatag.audio.flac;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.ListIterator;
@@ -33,8 +35,6 @@ import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.tag.TagFieldContainer;
 import ealvatag.tag.flac.FlacTag;
 import ealvatag.tag.vorbiscomment.VorbisCommentCreator;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
 
 /**
  * Create the tag data ready for writing to flac file

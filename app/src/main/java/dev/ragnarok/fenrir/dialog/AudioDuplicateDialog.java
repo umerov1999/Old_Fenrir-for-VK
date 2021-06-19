@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.dialog;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -39,14 +41,12 @@ import dev.ragnarok.fenrir.picasso.Content_Local;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.picasso.transforms.PolyTransformation;
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 import dev.ragnarok.fenrir.player.MusicPlaybackService;
-import dev.ragnarok.fenrir.player.util.MusicUtils;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class AudioDuplicateDialog extends BaseMvpDialogFragment<AudioDuplicatePresenter, IAudioDuplicateView>
         implements IAudioDuplicateView {
@@ -144,12 +144,12 @@ public class AudioDuplicateDialog extends BaseMvpDialogFragment<AudioDuplicatePr
     }
 
     private void updateAudioStatus(AudioHolder holder, Audio audio) {
-        if (!audio.equals(MusicUtils.getCurrentAudio())) {
+        if (!audio.equals(MusicPlaybackController.getCurrentAudio())) {
             holder.visual.setImageResource(Utils.isEmpty(audio.getUrl()) ? R.drawable.audio_died : R.drawable.song);
             holder.play_cover.clearColorFilter();
             return;
         }
-        switch (MusicUtils.PlayerStatus()) {
+        switch (MusicPlaybackController.PlayerStatus()) {
             case 1:
                 Utils.doWavesLottie(holder.visual, true);
                 holder.play_cover.setColorFilter(Color.parseColor("#44000000"));
@@ -193,11 +193,11 @@ public class AudioDuplicateDialog extends BaseMvpDialogFragment<AudioDuplicatePr
             holder.play_cover.setImageResource(getAudioCoverSimple());
         }
         holder.play.setOnClickListener(v -> {
-            if (MusicUtils.isNowPlayingOrPreparingOrPaused(audio)) {
+            if (MusicPlaybackController.isNowPlayingOrPreparingOrPaused(audio)) {
                 if (!Settings.get().other().isUse_stop_audio()) {
-                    MusicUtils.playOrPause();
+                    MusicPlaybackController.playOrPause();
                 } else {
-                    MusicUtils.stop();
+                    MusicPlaybackController.stop();
                 }
             } else {
                 MusicPlaybackService.startForPlayList(requireActivity(), new ArrayList<>(Collections.singletonList(audio)), 0, false);

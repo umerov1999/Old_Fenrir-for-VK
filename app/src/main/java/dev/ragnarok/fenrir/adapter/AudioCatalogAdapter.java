@@ -25,8 +25,8 @@ import dev.ragnarok.fenrir.model.Link;
 import dev.ragnarok.fenrir.model.Video;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.place.PlaceFactory;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 import dev.ragnarok.fenrir.player.MusicPlaybackService;
-import dev.ragnarok.fenrir.player.util.MusicUtils;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
@@ -108,7 +108,7 @@ public class AudioCatalogAdapter extends RecyclerView.Adapter<AudioCatalogAdapte
             holder.list.addOnScrollListener(new PicassoPauseOnScrollListener(Constants.PICASSO_TAG));
             holder.list.setAdapter(adapter);
         } else if (!Utils.isEmpty(category.getAudios())) {
-            Audio current = MusicUtils.getCurrentAudio();
+            Audio current = MusicPlaybackController.getCurrentAudio();
             int scroll_to = category.getAudios().indexOf(current);
             AudioRecyclerAdapter adapter = new AudioRecyclerAdapter(mContext, category.getAudios(), false, false, position, null);
             adapter.setClickListener(this);

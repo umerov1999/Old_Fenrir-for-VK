@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.push.message;
 
+import static java.lang.Integer.parseInt;
+import static dev.ragnarok.fenrir.push.NotificationUtils.configOtherPushNotification;
+
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -26,9 +29,6 @@ import dev.ragnarok.fenrir.push.OwnerInfo;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Logger;
 import dev.ragnarok.fenrir.util.Utils;
-
-import static dev.ragnarok.fenrir.push.NotificationUtils.configOtherPushNotification;
-import static java.lang.Integer.parseInt;
 
 public class NewPostPushMessage {
     private static final Pattern PATTERN_WALL_POST = Pattern.compile("vk.com/(?:[\\w.\\d]+\\?(?:[\\w=&]+)?w=)?wall(-?\\d*)_(\\d*)");

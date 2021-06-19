@@ -15,6 +15,8 @@
  */
 package com.squareup.picasso;
 
+import static com.squareup.picasso.Utils.checkNotNull;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.NetworkInfo;
@@ -25,8 +27,6 @@ import androidx.annotation.Nullable;
 import java.io.IOException;
 
 import okio.Source;
-
-import static com.squareup.picasso.Utils.checkNotNull;
 
 /**
  * {@code RequestHandler} allows you to extend Picasso to load images in ways that are not

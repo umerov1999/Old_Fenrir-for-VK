@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.Manifest;
 import android.os.Bundle;
 import android.view.HapticFeedbackConstants;
@@ -45,15 +47,13 @@ import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IAudiosByArtistView;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
-import dev.ragnarok.fenrir.player.util.MusicUtils;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.DownloadWorkUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class AudiosByArtistFragment extends BaseMvpFragment<AudiosByArtistPresenter, IAudiosByArtistView>
         implements IAudiosByArtistView {
@@ -143,7 +143,7 @@ public class AudiosByArtistFragment extends BaseMvpFragment<AudiosByArtistPresen
 
         Goto.setOnLongClickListener(v -> {
             if (!isSaveMode) {
-                Audio curr = MusicUtils.getCurrentAudio();
+                Audio curr = MusicPlaybackController.getCurrentAudio();
                 if (curr != null) {
                     PlaceFactory.getPlayerPlace(Settings.get().accounts().getCurrent()).tryOpenWith(requireActivity());
                 } else {
@@ -182,7 +182,7 @@ public class AudiosByArtistFragment extends BaseMvpFragment<AudiosByArtistPresen
                     object.enqueue();
                 }
             } else {
-                Audio curr = MusicUtils.getCurrentAudio();
+                Audio curr = MusicPlaybackController.getCurrentAudio();
                 if (curr != null) {
                     int index = callPresenter(p -> p.getAudioPos(curr), -1);
                     if (index >= 0) {

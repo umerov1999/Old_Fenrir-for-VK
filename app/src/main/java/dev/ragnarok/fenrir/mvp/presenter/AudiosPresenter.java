@@ -1,5 +1,10 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
@@ -25,8 +30,8 @@ import dev.ragnarok.fenrir.model.AudioPlaylist;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IAudiosView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 import dev.ragnarok.fenrir.player.MusicPlaybackService;
-import dev.ragnarok.fenrir.player.util.MusicUtils;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.DownloadWorkUtils;
 import dev.ragnarok.fenrir.util.FindAtWithContent;
@@ -35,11 +40,6 @@ import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
-
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
 
@@ -109,8 +109,8 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
             doAudioLoadTabs = true;
         }
         if (audios.isEmpty()) {
-            if (!iSSelectMode && isNull(albumId) && MusicUtils.Audios.containsKey(ownerId)) {
-                audios.addAll(Objects.requireNonNull(MusicUtils.Audios.get(ownerId)));
+            if (!iSSelectMode && isNull(albumId) && MusicPlaybackController.Audios.containsKey(ownerId)) {
+                audios.addAll(Objects.requireNonNull(MusicPlaybackController.Audios.get(ownerId)));
                 actualReceived = true;
                 setLoadingNow(false);
                 callView(IAudiosView::notifyListChanged);
@@ -141,19 +141,19 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
         actualReceived = true;
         if (offset == 0) {
             if (isNull(albumId) && !iSSelectMode) {
-                if (MusicUtils.Audios.containsKey(ownerId)) {
-                    Objects.requireNonNull(MusicUtils.Audios.get(ownerId)).clear();
+                if (MusicPlaybackController.Audios.containsKey(ownerId)) {
+                    Objects.requireNonNull(MusicPlaybackController.Audios.get(ownerId)).clear();
                 } else {
-                    MusicUtils.Audios.put(ownerId, new ArrayList<>(data.size()));
+                    MusicPlaybackController.Audios.put(ownerId, new ArrayList<>(data.size()));
                 }
-                Objects.requireNonNull(MusicUtils.Audios.get(ownerId)).addAll(data);
+                Objects.requireNonNull(MusicPlaybackController.Audios.get(ownerId)).addAll(data);
             }
             audios.clear();
             audios.addAll(data);
             callView(IAudiosView::notifyListChanged);
         } else {
-            if (isNull(albumId) && !iSSelectMode && MusicUtils.Audios.containsKey(ownerId)) {
-                Objects.requireNonNull(MusicUtils.Audios.get(ownerId)).addAll(data);
+            if (isNull(albumId) && !iSSelectMode && MusicPlaybackController.Audios.containsKey(ownerId)) {
+                Objects.requireNonNull(MusicPlaybackController.Audios.get(ownerId)).addAll(data);
             }
             int startOwnSize = audios.size();
             audios.addAll(data);
@@ -435,12 +435,12 @@ public class AudiosPresenter extends AccountDependencyPresenter<IAudiosView> {
                 audios.clear();
                 audios.addAll(data);
                 if (isNull(albumId) && !iSSelectMode) {
-                    if (MusicUtils.Audios.containsKey(ownerId)) {
-                        Objects.requireNonNull(MusicUtils.Audios.get(ownerId)).clear();
+                    if (MusicPlaybackController.Audios.containsKey(ownerId)) {
+                        Objects.requireNonNull(MusicPlaybackController.Audios.get(ownerId)).clear();
                     } else {
-                        MusicUtils.Audios.put(ownerId, new ArrayList<>(data.size()));
+                        MusicPlaybackController.Audios.put(ownerId, new ArrayList<>(data.size()));
                     }
-                    Objects.requireNonNull(MusicUtils.Audios.get(ownerId)).addAll(data);
+                    Objects.requireNonNull(MusicPlaybackController.Audios.get(ownerId)).addAll(data);
                 }
                 callView(IAudiosView::notifyListChanged);
             }

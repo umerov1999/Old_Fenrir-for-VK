@@ -1,5 +1,10 @@
 package dev.ragnarok.fenrir.adapter;
 
+import static dev.ragnarok.fenrir.player.MusicPlaybackController.observeServiceBinding;
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
+
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -44,7 +49,7 @@ import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.picasso.transforms.PolyTransformation;
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation;
 import dev.ragnarok.fenrir.place.PlaceFactory;
-import dev.ragnarok.fenrir.player.util.MusicUtils;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppPerms;
@@ -60,17 +65,12 @@ import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleOnSubscribe;
 import io.reactivex.rxjava3.disposables.Disposable;
 
-import static dev.ragnarok.fenrir.player.util.MusicUtils.observeServiceBinding;
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
-
 public class AudioContainer extends LinearLayout {
     private final IAudioInteractor mAudioInteractor = InteractorFactory.createAudioInteractor();
     private Disposable mPlayerDisposable = Disposable.disposed();
     private Disposable audioListDisposable = Disposable.disposed();
     private List<Audio> audios = Collections.emptyList();
-    private Audio currAudio = MusicUtils.getCurrentAudio();
+    private Audio currAudio = MusicPlaybackController.getCurrentAudio();
 
     public AudioContainer(Context context) {
         super(context);
@@ -103,7 +103,7 @@ public class AudioContainer extends LinearLayout {
             holder.play_cover.clearColorFilter();
             return;
         }
-        switch (MusicUtils.PlayerStatus()) {
+        switch (MusicPlaybackController.PlayerStatus()) {
             case 1:
                 Utils.doWavesLottie(holder.visual, true);
                 holder.play_cover.setColorFilter(Color.parseColor("#44000000"));
@@ -235,13 +235,13 @@ public class AudioContainer extends LinearLayout {
                 });
 
                 holder.ibPlay.setOnClickListener(v -> {
-                    if (MusicUtils.isNowPlayingOrPreparingOrPaused(audio)) {
+                    if (MusicPlaybackController.isNowPlayingOrPreparingOrPaused(audio)) {
                         if (!Settings.get().other().isUse_stop_audio()) {
                             updateAudioStatus(holder, audio);
-                            MusicUtils.playOrPause();
+                            MusicPlaybackController.playOrPause();
                         } else {
                             updateAudioStatus(holder, audio);
-                            MusicUtils.stop();
+                            MusicPlaybackController.stop();
                         }
                     } else {
                         updateAudioStatus(holder, audio);
@@ -301,6 +301,9 @@ public class AudioContainer extends LinearLayout {
                     ModalBottomSheetDialogFragment.Builder menus = new ModalBottomSheetDialogFragment.Builder();
 
                     menus.add(new OptionRequest(AudioItem.play_item_audio, getContext().getString(R.string.play), R.drawable.play));
+                    if (MusicPlaybackController.canPlayAfterCurrent(audio)) {
+                        menus.add(new OptionRequest(AudioItem.play_item_after_current_audio, getContext().getString(R.string.play_audio_after_current), R.drawable.play_next));
+                    }
                     if (audio.getOwnerId() != Settings.get().accounts().getCurrent()) {
                         menus.add(new OptionRequest(AudioItem.add_item_audio, getContext().getString(R.string.action_add), R.drawable.list_add));
                         menus.add(new OptionRequest(AudioItem.add_and_download_button, getContext().getString(R.string.add_and_download_button), R.drawable.add_download));
@@ -330,6 +333,9 @@ public class AudioContainer extends LinearLayout {
                             case AudioItem.play_item_audio:
                                 mAttachmentsActionCallback.onAudioPlay(finalG, audios);
                                 PlaceFactory.getPlayerPlace(Settings.get().accounts().getCurrent()).tryOpenWith(getContext());
+                                break;
+                            case AudioItem.play_item_after_current_audio:
+                                MusicPlaybackController.playAfterCurrent(audio);
                                 break;
                             case AudioItem.share_button:
                                 SendAttachmentsActivity.startForSendAttachments(getContext(), Settings.get().accounts().getCurrent(), audio);
@@ -411,12 +417,12 @@ public class AudioContainer extends LinearLayout {
                 .subscribe(this::onServiceBindEvent);
     }
 
-    private void onServiceBindEvent(@MusicUtils.PlayerStatus int status) {
+    private void onServiceBindEvent(@MusicPlaybackController.PlayerStatus int status) {
         switch (status) {
-            case MusicUtils.PlayerStatus.UPDATE_TRACK_INFO:
-            case MusicUtils.PlayerStatus.UPDATE_PLAY_PAUSE:
-            case MusicUtils.PlayerStatus.SERVICE_KILLED:
-                currAudio = MusicUtils.getCurrentAudio();
+            case MusicPlaybackController.PlayerStatus.UPDATE_TRACK_INFO:
+            case MusicPlaybackController.PlayerStatus.UPDATE_PLAY_PAUSE:
+            case MusicPlaybackController.PlayerStatus.SERVICE_KILLED:
+                currAudio = MusicPlaybackController.getCurrentAudio();
                 if (getChildCount() < audios.size())
                     return;
                 for (int g = 0; g < audios.size(); g++) {
@@ -425,9 +431,9 @@ public class AudioContainer extends LinearLayout {
                     updateAudioStatus(holder, audios.get(g));
                 }
                 break;
-            case MusicUtils.PlayerStatus.REPEATMODE_CHANGED:
-            case MusicUtils.PlayerStatus.SHUFFLEMODE_CHANGED:
-            case MusicUtils.PlayerStatus.UPDATE_PLAY_LIST:
+            case MusicPlaybackController.PlayerStatus.REPEATMODE_CHANGED:
+            case MusicPlaybackController.PlayerStatus.SHUFFLEMODE_CHANGED:
+            case MusicPlaybackController.PlayerStatus.UPDATE_PLAY_LIST:
                 break;
         }
     }
@@ -435,7 +441,7 @@ public class AudioContainer extends LinearLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        currAudio = MusicUtils.getCurrentAudio();
+        currAudio = MusicPlaybackController.getCurrentAudio();
         if (!isEmpty(audios)) {
             mPlayerDisposable = observeServiceBinding()
                     .compose(RxUtils.applyObservableIOToMainSchedulers())

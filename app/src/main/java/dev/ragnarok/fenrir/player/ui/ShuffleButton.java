@@ -8,8 +8,8 @@ import android.view.View.OnClickListener;
 import androidx.appcompat.widget.AppCompatImageButton;
 
 import dev.ragnarok.fenrir.R;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 import dev.ragnarok.fenrir.player.MusicPlaybackService;
-import dev.ragnarok.fenrir.player.util.MusicUtils;
 
 public class ShuffleButton extends AppCompatImageButton implements OnClickListener {
     public ShuffleButton(Context context, AttributeSet attrs) {
@@ -19,12 +19,12 @@ public class ShuffleButton extends AppCompatImageButton implements OnClickListen
 
     @Override
     public void onClick(View v) {
-        MusicUtils.cycleShuffle();
+        MusicPlaybackController.cycleShuffle();
         updateShuffleState();
     }
 
     public void updateShuffleState() {
-        switch (MusicUtils.getShuffleMode()) {
+        switch (MusicPlaybackController.getShuffleMode()) {
             case MusicPlaybackService.SHUFFLE:
                 setImageResource(R.drawable.shuffle);
                 break;

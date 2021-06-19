@@ -7,8 +7,9 @@
     </string-array>
 
     <string-array name="array_end_list_anim_names">
-        <item>Success</item>
-        <item>Balls</item>
+        <item>Успешно</item>
+        <item>Круги</item>
+        <item>Волна</item>
     </string-array>
 
     <string-array name="array_chat_background_names">
@@ -1584,4 +1585,6 @@
     <string name="do_convert">Конвертируется…</string>
     <string name="recording_to_opus">Запись голосовых в opus</string>
     <string name="recording_to_opus_summary">Эксперементально, Android 10 и выше</string>
+    <string name="do_convert_request">Конвертировать?</string>
+    <string name="play_audio_after_current">Играть следующим</string>
 </resources>

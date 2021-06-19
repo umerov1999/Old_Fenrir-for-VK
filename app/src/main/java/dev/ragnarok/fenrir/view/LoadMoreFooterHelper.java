@@ -45,9 +45,14 @@ public class LoadMoreFooterHelper {
                 holder.tvEndOfList.setVisibility(View.VISIBLE);
                 holder.tvEndOfList.setAutoRepeat(false);
                 if (animation_id == 0) {
+                    holder.tvEndOfList.setAutoRepeat(false);
                     holder.tvEndOfList.fromRes(R.raw.end_list_succes, Utils.dp(40), Utils.dp(40), new int[]{0xffffff, CurrentTheme.getColorControlNormal(holder.bLoadMore.getContext())});
-                } else {
+                } else if (animation_id == 1) {
+                    holder.tvEndOfList.setAutoRepeat(false);
                     holder.tvEndOfList.fromRes(R.raw.end_list_balls, Utils.dp(40), Utils.dp(40), new int[]{0xffffff, CurrentTheme.getColorControlNormal(holder.bLoadMore.getContext())});
+                } else {
+                    holder.tvEndOfList.setAutoRepeat(true);
+                    holder.tvEndOfList.fromRes(R.raw.end_list_wave, Utils.dp(80), Utils.dp(40), new int[]{0x777777, CurrentTheme.getColorPrimary(holder.bLoadMore.getContext()), 0x333333, CurrentTheme.getColorSecondary(holder.bLoadMore.getContext())});
                 }
                 holder.tvEndOfList.playAnimation();
                 holder.bLoadMore.setVisibility(View.INVISIBLE);

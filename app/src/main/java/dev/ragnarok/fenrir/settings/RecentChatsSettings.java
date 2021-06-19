@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.settings;
 
+import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
+
 import android.content.Context;
 
 import androidx.preference.PreferenceManager;
@@ -13,8 +15,6 @@ import java.util.Set;
 
 import dev.ragnarok.fenrir.model.drawer.AbsMenuItem;
 import dev.ragnarok.fenrir.model.drawer.RecentChat;
-
-import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
 
 class RecentChatsSettings implements ISettings.IRecentChats {
 

@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -96,8 +98,6 @@ import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
-
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 
 public class PreferencesFragment extends PreferenceFragmentCompat {
 
@@ -1097,7 +1097,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         View view = View.inflate(requireActivity(), R.layout.dialog_dedicated, null);
         RecyclerView pager = view.findViewById(R.id.dedicated_pager);
         pager.setLayoutManager(new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false));
-        pager.setAdapter(new ImageDedicatedAdapter(new int[]{R.drawable.dedicated, R.drawable.dedicated1, R.drawable.dedicated2}));
+        pager.setAdapter(new ImageDedicatedAdapter(new int[]{R.drawable.dedicated1, R.drawable.dedicated2, R.drawable.dedicated3, R.drawable.dedicated4}));
         RLottieImageView anim = view.findViewById(R.id.dedicated_anim);
         pager.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {

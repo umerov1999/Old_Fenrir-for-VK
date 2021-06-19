@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.api.impl;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 import com.google.gson.Gson;
 
 import dev.ragnarok.fenrir.Injection;
@@ -19,9 +22,6 @@ import io.reactivex.rxjava3.exceptions.Exceptions;
 import io.reactivex.rxjava3.functions.Function;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 
 public class AuthApi implements IAuthApi {

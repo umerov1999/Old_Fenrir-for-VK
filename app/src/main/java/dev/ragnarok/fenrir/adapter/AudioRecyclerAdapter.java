@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.adapter;
 
+import static dev.ragnarok.fenrir.player.MusicPlaybackController.observeServiceBinding;
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -44,7 +47,7 @@ import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.picasso.transforms.PolyTransformation;
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation;
 import dev.ragnarok.fenrir.place.PlaceFactory;
-import dev.ragnarok.fenrir.player.util.MusicUtils;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppPerms;
@@ -59,9 +62,6 @@ import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleOnSubscribe;
 import io.reactivex.rxjava3.disposables.Disposable;
-
-import static dev.ragnarok.fenrir.player.util.MusicUtils.observeServiceBinding;
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
 
 public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRecyclerAdapter.AudioHolder> {
 
@@ -86,7 +86,7 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
         this.iSSelectMode = iSSelectMode;
         this.iCatalogBlock = iCatalogBlock;
         this.playlist_id = playlist_id;
-        currAudio = MusicUtils.getCurrentAudio();
+        currAudio = MusicPlaybackController.getCurrentAudio();
         isLongPressDownload = Settings.get().main().isUse_long_click_download();
     }
 
@@ -176,18 +176,18 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
         audioListDisposable.dispose();
     }
 
-    private void onServiceBindEvent(@MusicUtils.PlayerStatus int status) {
+    private void onServiceBindEvent(@MusicPlaybackController.PlayerStatus int status) {
         switch (status) {
-            case MusicUtils.PlayerStatus.UPDATE_TRACK_INFO:
-            case MusicUtils.PlayerStatus.SERVICE_KILLED:
-            case MusicUtils.PlayerStatus.UPDATE_PLAY_PAUSE:
+            case MusicPlaybackController.PlayerStatus.UPDATE_TRACK_INFO:
+            case MusicPlaybackController.PlayerStatus.SERVICE_KILLED:
+            case MusicPlaybackController.PlayerStatus.UPDATE_PLAY_PAUSE:
                 updateAudio(currAudio);
-                currAudio = MusicUtils.getCurrentAudio();
+                currAudio = MusicPlaybackController.getCurrentAudio();
                 updateAudio(currAudio);
                 break;
-            case MusicUtils.PlayerStatus.REPEATMODE_CHANGED:
-            case MusicUtils.PlayerStatus.SHUFFLEMODE_CHANGED:
-            case MusicUtils.PlayerStatus.UPDATE_PLAY_LIST:
+            case MusicPlaybackController.PlayerStatus.REPEATMODE_CHANGED:
+            case MusicPlaybackController.PlayerStatus.SHUFFLEMODE_CHANGED:
+            case MusicPlaybackController.PlayerStatus.UPDATE_PLAY_LIST:
                 break;
         }
     }
@@ -200,29 +200,29 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
         }
     }
 /*
-    private void onServiceBindEvent(@MusicUtils.PlayerStatus int status) {
+    private void onServiceBindEvent(@MusicPlaybackController.PlayerStatus int status) {
         switch (status) {
-            case MusicUtils.PlayerStatus.UPDATE_TRACK_INFO:
+            case MusicPlaybackController.PlayerStatus.UPDATE_TRACK_INFO:
                 Audio old = currAudio;
-                currAudio = MusicUtils.getCurrentAudio();
+                currAudio = MusicPlaybackController.getCurrentAudio();
                 if (!Objects.equals(old, currAudio)) {
                     updateAudio(old);
                     updateAudio(currAudio);
                 }
                 break;
-            case MusicUtils.PlayerStatus.UPDATE_PLAY_PAUSE:
+            case MusicPlaybackController.PlayerStatus.UPDATE_PLAY_PAUSE:
                 updateAudio(currAudio);
                 break;
-            case MusicUtils.PlayerStatus.SERVICE_KILLED:
+            case MusicPlaybackController.PlayerStatus.SERVICE_KILLED:
                 Audio del = currAudio;
                 currAudio = null;
                 if (del != null) {
                     updateAudio(del);
                 }
                 break;
-            case MusicUtils.PlayerStatus.REPEATMODE_CHANGED:
-            case MusicUtils.PlayerStatus.SHUFFLEMODE_CHANGED:
-            case MusicUtils.PlayerStatus.UPDATE_PLAY_LIST:
+            case MusicPlaybackController.PlayerStatus.REPEATMODE_CHANGED:
+            case MusicPlaybackController.PlayerStatus.SHUFFLEMODE_CHANGED:
+            case MusicPlaybackController.PlayerStatus.UPDATE_PLAY_LIST:
                 break;
         }
     }
@@ -243,7 +243,7 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
             holder.play_cover.clearColorFilter();
             return;
         }
-        switch (MusicUtils.PlayerStatus()) {
+        switch (MusicPlaybackController.PlayerStatus()) {
             case 1:
                 Utils.doWavesLottie(holder.visual, true);
                 holder.play_cover.setColorFilter(Color.parseColor("#44000000"));
@@ -342,11 +342,11 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
         });
 
         holder.play.setOnClickListener(v -> {
-            if (MusicUtils.isNowPlayingOrPreparingOrPaused(audio)) {
+            if (MusicPlaybackController.isNowPlayingOrPreparingOrPaused(audio)) {
                 if (!Settings.get().other().isUse_stop_audio()) {
-                    MusicUtils.playOrPause();
+                    MusicPlaybackController.playOrPause();
                 } else {
-                    MusicUtils.stop();
+                    MusicPlaybackController.stop();
                 }
             } else {
                 if (mClickListener != null) {
@@ -387,6 +387,9 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
                 ModalBottomSheetDialogFragment.Builder menus = new ModalBottomSheetDialogFragment.Builder();
 
                 menus.add(new OptionRequest(AudioItem.play_item_audio, mContext.getString(R.string.play), R.drawable.play));
+                if (MusicPlaybackController.canPlayAfterCurrent(audio)) {
+                    menus.add(new OptionRequest(AudioItem.play_item_after_current_audio, mContext.getString(R.string.play_audio_after_current), R.drawable.play_next));
+                }
                 if (audio.getOwnerId() != Settings.get().accounts().getCurrent()) {
                     menus.add(new OptionRequest(AudioItem.add_item_audio, mContext.getString(R.string.action_add), R.drawable.list_add));
                     menus.add(new OptionRequest(AudioItem.add_and_download_button, mContext.getString(R.string.add_and_download_button), R.drawable.add_download));
@@ -425,6 +428,9 @@ public class AudioRecyclerAdapter extends RecyclerBindableAdapter<Audio, AudioRe
                                 if (Settings.get().other().isShow_mini_player())
                                     PlaceFactory.getPlayerPlace(Settings.get().accounts().getCurrent()).tryOpenWith(mContext);
                             }
+                            break;
+                        case AudioItem.play_item_after_current_audio:
+                            MusicPlaybackController.playAfterCurrent(audio);
                             break;
                         case AudioItem.edit_track:
                             if (mClickListener != null) {

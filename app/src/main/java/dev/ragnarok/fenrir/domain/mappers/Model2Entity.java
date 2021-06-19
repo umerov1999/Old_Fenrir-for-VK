@@ -1,5 +1,10 @@
 package dev.ragnarok.fenrir.domain.mappers;
 
+import static dev.ragnarok.fenrir.domain.mappers.MapUtil.mapAll;
+import static dev.ragnarok.fenrir.domain.mappers.MapUtil.mapAndAdd;
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -69,11 +74,6 @@ import dev.ragnarok.fenrir.model.VoiceMessage;
 import dev.ragnarok.fenrir.model.WallReply;
 import dev.ragnarok.fenrir.model.WikiPage;
 import dev.ragnarok.fenrir.util.Utils;
-
-import static dev.ragnarok.fenrir.domain.mappers.MapUtil.mapAll;
-import static dev.ragnarok.fenrir.domain.mappers.MapUtil.mapAndAdd;
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 
 public class Model2Entity {

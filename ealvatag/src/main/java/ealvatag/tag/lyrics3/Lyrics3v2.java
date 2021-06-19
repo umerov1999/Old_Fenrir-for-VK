@@ -96,9 +96,9 @@ public class Lyrics3v2 extends AbstractLyrics3 {
     /**
      * Creates a new Lyrics3v2 datatype.
      *
+     * @param byteBuffer
      * @throws TagNotFoundException
      * @throws IOException
-     * @param byteBuffer
      */
     public Lyrics3v2(ByteBuffer byteBuffer) throws TagNotFoundException, IOException {
         try {
@@ -411,6 +411,7 @@ public class Lyrics3v2 extends AbstractLyrics3 {
 
     /**
      * TODO
+     *
      * @param byteBuffer
      * @return
      */

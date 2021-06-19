@@ -106,8 +106,8 @@ public class Lyrics3v2Field extends AbstractTagFrame {
     /**
      * Creates a new Lyrics3v2Field datatype.
      *
-     * @throws InvalidTagException
      * @param byteBuffer
+     * @throws InvalidTagException
      */
     public Lyrics3v2Field(ByteBuffer byteBuffer) throws InvalidTagException {
         read(byteBuffer);

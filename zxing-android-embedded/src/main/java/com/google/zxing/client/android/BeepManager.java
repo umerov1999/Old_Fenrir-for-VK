@@ -56,7 +56,7 @@ public final class BeepManager {
 
     /**
      * Call updatePrefs() after setting this.
-     *
+     * <p>
      * If the device is in silent mode, it will not beep.
      *
      * @param beepEnabled true to enable beep

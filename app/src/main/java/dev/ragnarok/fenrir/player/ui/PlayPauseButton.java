@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import dev.ragnarok.fenrir.player.util.MusicUtils;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 import dev.ragnarok.fenrir.view.media.MaterialPlayPauseFab;
 import dev.ragnarok.fenrir.view.media.MediaActionDrawable;
 
@@ -18,14 +18,14 @@ public class PlayPauseButton extends MaterialPlayPauseFab implements OnClickList
 
     @Override
     public void onClick(View v) {
-        MusicUtils.playOrPause();
+        MusicPlaybackController.playOrPause();
         updateState();
     }
 
     public void updateState() {
-        if (MusicUtils.getCurrentAudio() == null) {
+        if (MusicPlaybackController.getCurrentAudio() == null) {
             setIcon(MediaActionDrawable.ICON_EMPTY, true);
-        } else if (MusicUtils.isPlaying()) {
+        } else if (MusicPlaybackController.isPlaying()) {
             setIcon(MediaActionDrawable.ICON_PAUSE, true);
         } else {
             setIcon(MediaActionDrawable.ICON_PLAY, true);

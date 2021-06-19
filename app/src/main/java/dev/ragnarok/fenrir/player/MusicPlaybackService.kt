@@ -32,6 +32,7 @@ import com.squareup.picasso.Picasso.LoadedFrom
 import com.squareup.picasso.Target
 import dev.ragnarok.fenrir.*
 import dev.ragnarok.fenrir.Extensions.Companion.fromIOToMain
+import dev.ragnarok.fenrir.Extensions.Companion.insertAfter
 import dev.ragnarok.fenrir.domain.IAudioInteractor
 import dev.ragnarok.fenrir.domain.InteractorFactory
 import dev.ragnarok.fenrir.media.exo.ExoUtil
@@ -540,9 +541,16 @@ class MusicPlaybackService : Service() {
                     skip(0, true)
                 } else {
                     val ps = mPlayListOrig?.indexOf(mPlayList?.get(mPlayPos))
+                    ps?.let {
+                        if (it < 0) {
+                            mPlayList?.get(mPlayPos)?.let { it1 -> mPlayListOrig?.add(0, it1) }
+                            mPlayPos = 0
+                        } else {
+                            mPlayPos = it
+                        }
+                    }
                     mPlayList?.clear()
                     mPlayListOrig?.let { mPlayList?.addAll(it) }
-                    ps?.let { mPlayPos = it }
                     notifyChange(META_CHANGED)
                 }
             }
@@ -676,6 +684,37 @@ class MusicPlaybackService : Service() {
                 return list
             }
         }
+
+    private val currentTrackNotSyncPos: Int
+        get() {
+            mPlayList?.let {
+                if (mPlayPos >= 0 && it.size > mPlayPos) {
+                    return mPlayPos
+                }
+            }
+            return -1
+        }
+
+    fun canPlayAfterCurrent(audio: Audio): Boolean {
+        synchronized(this) {
+            val current = currentTrackNotSyncPos
+            if (Utils.isEmpty(mPlayList) || current == -1 || mPlayList?.get(current) == audio) {
+                return false
+            }
+            return true
+        }
+    }
+
+    fun playAfterCurrent(audio: Audio) {
+        synchronized(this) {
+            val current = currentTrackNotSyncPos
+            if (Utils.isEmpty(mPlayList) || current == -1 || mPlayList?.get(current) == audio) {
+                return
+            }
+            mPlayList?.insertAfter(current, audio)
+            notifyChange(QUEUE_CHANGED)
+        }
+    }
 
     /**
      * Opens a list for playback
@@ -1100,6 +1139,14 @@ class MusicPlaybackService : Service() {
 
         override fun isInitialized(): Boolean {
             return mService.get()?.isInitialized == true
+        }
+
+        override fun canPlayAfterCurrent(audio: Audio): Boolean {
+            return mService.get()?.canPlayAfterCurrent(audio) == true
+        }
+
+        override fun playAfterCurrent(audio: Audio) {
+            mService.get()?.playAfterCurrent(audio)
         }
 
         override fun getQueue(): List<Audio>? {

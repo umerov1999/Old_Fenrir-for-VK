@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.domain.impl;
 
+import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +14,6 @@ import dev.ragnarok.fenrir.domain.mappers.Dto2Model;
 import dev.ragnarok.fenrir.model.Audio;
 import dev.ragnarok.fenrir.model.Video;
 import io.reactivex.rxjava3.core.Single;
-
-import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
 
 public class LocalServerInteractor implements ILocalServerInteractor {
 

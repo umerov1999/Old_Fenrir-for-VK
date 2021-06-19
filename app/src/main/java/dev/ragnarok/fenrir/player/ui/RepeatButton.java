@@ -9,8 +9,8 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.AppCompatImageButton;
 
 import dev.ragnarok.fenrir.R;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 import dev.ragnarok.fenrir.player.MusicPlaybackService;
-import dev.ragnarok.fenrir.player.util.MusicUtils;
 
 public class RepeatButton extends AppCompatImageButton implements OnClickListener {
 
@@ -21,12 +21,12 @@ public class RepeatButton extends AppCompatImageButton implements OnClickListene
 
     @Override
     public void onClick(View v) {
-        MusicUtils.cycleRepeat();
+        MusicPlaybackController.cycleRepeat();
         updateRepeatState();
     }
 
     public void updateRepeatState() {
-        switch (MusicUtils.getRepeatMode()) {
+        switch (MusicPlaybackController.getRepeatMode()) {
             case MusicPlaybackService.REPEAT_ALL:
                 setImageDrawable(AppCompatResources.getDrawable(getContext(), R.drawable.repeat));
                 break;

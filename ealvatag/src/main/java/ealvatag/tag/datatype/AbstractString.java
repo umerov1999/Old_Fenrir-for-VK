@@ -20,6 +20,8 @@
  */
 package ealvatag.tag.datatype;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
@@ -31,8 +33,6 @@ import ealvatag.tag.id3.AbstractTagFrameBody;
 import ealvatag.tag.id3.valuepair.TextEncoding;
 import ealvatag.utils.StandardCharsets;
 import okio.Buffer;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
 
 /**
  * A partial implementation for String based ID3 fields

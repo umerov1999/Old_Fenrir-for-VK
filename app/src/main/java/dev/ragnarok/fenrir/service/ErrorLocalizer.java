@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.service;
 
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 import android.content.Context;
 
 import java.net.SocketTimeoutException;
@@ -8,9 +11,6 @@ import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.api.ApiException;
 import dev.ragnarok.fenrir.api.model.Error;
 import dev.ragnarok.fenrir.exception.NotFoundException;
-
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class ErrorLocalizer {
 

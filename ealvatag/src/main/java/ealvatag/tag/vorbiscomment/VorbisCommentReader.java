@@ -19,6 +19,9 @@
  */
 package ealvatag.tag.vorbiscomment;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+
 import java.io.IOException;
 
 import ealvatag.audio.Utils;
@@ -28,9 +31,6 @@ import ealvatag.logging.EalvaTagLog;
 import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.logging.ErrorMessage;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Create the VorbisCommentTag by reading from the raw packet data
@@ -57,7 +57,7 @@ public class VorbisCommentReader {
     static final int FIELD_COMMENT_LENGTH_LENGTH = 4;
     // Logger Object
     private static final JLogger LOG = JLoggers.get(VorbisCommentReader.class, EalvaTagLog.MARKER);
-//    public static final int FIELD_VENDOR_STRING_POS = 4;
+    //    public static final int FIELD_VENDOR_STRING_POS = 4;
     private static final int FIELD_VENDOR_LENGTH_POS = 0;
     private static final int FIELD_VENDOR_LENGTH_LENGTH = 4;
     private static final int FIELD_USER_COMMENT_LIST_LENGTH = 4;

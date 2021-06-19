@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.adapter;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,8 +32,6 @@ import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.Logger;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.CircleRoadProgress;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class BigVkPhotosAdapter extends DifferentDataAdapter {
 

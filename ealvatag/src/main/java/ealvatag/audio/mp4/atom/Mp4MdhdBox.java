@@ -1,5 +1,7 @@
 package ealvatag.audio.mp4.atom;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+
 import com.google.common.base.Preconditions;
 
 import java.io.IOException;
@@ -13,8 +15,6 @@ import ealvatag.logging.EalvaTagLog;
 import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
 import okio.BufferedSource;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
 
 /**
  * MdhdBox ( media (stream) header), holds the Sampling Rate used.

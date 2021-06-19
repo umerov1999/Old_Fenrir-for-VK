@@ -15,13 +15,13 @@
  */
 package com.squareup.picasso;
 
+import static com.squareup.picasso.Picasso.Priority;
+
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
-
-import static com.squareup.picasso.Picasso.Priority;
 
 abstract class Action<T> {
     final Picasso picasso;

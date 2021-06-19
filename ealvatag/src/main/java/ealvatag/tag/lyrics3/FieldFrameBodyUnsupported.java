@@ -58,6 +58,7 @@ public class FieldFrameBodyUnsupported extends AbstractLyrics3v2FieldFrameBody {
 
     /**
      * Creates a new FieldBodyUnsupported datatype.
+     *
      * @param byteBuffer
      * @throws ealvatag.tag.InvalidTagException
      */

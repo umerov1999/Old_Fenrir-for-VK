@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -48,7 +50,7 @@ import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IAudiosView;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
-import dev.ragnarok.fenrir.player.util.MusicUtils;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
@@ -56,8 +58,6 @@ import dev.ragnarok.fenrir.util.DownloadWorkUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.MySearchView;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView>
         implements IAudiosView, HorizontalPlaylistAdapter.Listener {
@@ -201,7 +201,7 @@ public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView
 
         Goto.setOnLongClickListener(v -> {
             if (!isSelectMode && !isSaveMode) {
-                Audio curr = MusicUtils.getCurrentAudio();
+                Audio curr = MusicPlaybackController.getCurrentAudio();
                 if (curr != null) {
                     PlaceFactory.getPlayerPlace(Settings.get().accounts().getCurrent()).tryOpenWith(requireActivity());
                 } else {
@@ -246,7 +246,7 @@ public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView
                         object.enqueue();
                     }
                 } else {
-                    Audio curr = MusicUtils.getCurrentAudio();
+                    Audio curr = MusicPlaybackController.getCurrentAudio();
                     if (curr != null) {
                         int index = callPresenter(p -> p.getAudioPos(curr), -1);
                         if (index >= 0) {

@@ -20,8 +20,8 @@ import dev.ragnarok.fenrir.picasso.PicassoInstance.Companion.with
 import dev.ragnarok.fenrir.picasso.transforms.PolyTransformation
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation
 import dev.ragnarok.fenrir.place.PlaceFactory
-import dev.ragnarok.fenrir.player.util.MusicUtils
-import dev.ragnarok.fenrir.player.util.MusicUtils.PlayerStatus
+import dev.ragnarok.fenrir.player.MusicPlaybackController
+import dev.ragnarok.fenrir.player.MusicPlaybackController.PlayerStatus
 import dev.ragnarok.fenrir.settings.Settings
 import dev.ragnarok.fenrir.util.Objects
 import dev.ragnarok.fenrir.util.RxUtils
@@ -67,15 +67,15 @@ class MiniPlayerView : FrameLayout, TimeBar.OnScrubListener {
         val play = root.findViewById<View>(R.id.item_audio_play)
         playCover = root.findViewById(R.id.item_audio_play_cover)
         visual = root.findViewById(R.id.item_audio_visual)
-        root.visibility = if (MusicUtils.getMiniPlayerVisibility()) VISIBLE else GONE
+        root.visibility = if (MusicPlaybackController.getMiniPlayerVisibility()) VISIBLE else GONE
         val mPClosePlay = root.findViewById<ImageButton>(R.id.close_player)
         mPClosePlay.setOnClickListener {
-            MusicUtils.closeMiniPlayer()
+            MusicPlaybackController.closeMiniPlayer()
             root.visibility = GONE
         }
         play.setOnClickListener {
-            MusicUtils.playOrPause()
-            if (MusicUtils.isPlaying()) {
+            MusicPlaybackController.playOrPause()
+            if (MusicPlaybackController.isPlaying()) {
                 Utils.doWavesLottie(visual, true)
                 playCover.setColorFilter(Color.parseColor("#44000000"))
             } else {
@@ -84,7 +84,7 @@ class MiniPlayerView : FrameLayout, TimeBar.OnScrubListener {
             }
         }
         play.setOnLongClickListener {
-            MusicUtils.next()
+            MusicPlaybackController.next()
             true
         }
         val mOpenPlayer = root.findViewById<ImageButton>(R.id.open_player)
@@ -121,7 +121,7 @@ class MiniPlayerView : FrameLayout, TimeBar.OnScrubListener {
 
     private fun updatePlaybackControls() {
         if (Objects.nonNull(playCover)) {
-            if (MusicUtils.isPlaying()) {
+            if (MusicPlaybackController.isPlaying()) {
                 Utils.doWavesLottie(visual, true)
                 playCover.setColorFilter(Color.parseColor("#44000000"))
             } else {
@@ -164,14 +164,14 @@ class MiniPlayerView : FrameLayout, TimeBar.OnScrubListener {
 
     @SuppressLint("SetTextI18n")
     private fun updateNowPlayingInfo() {
-        val artist = MusicUtils.getArtistName()
-        val trackName = MusicUtils.getTrackName()
+        val artist = MusicPlaybackController.getArtistName()
+        val trackName = MusicPlaybackController.getTrackName()
         title.text = Utils.firstNonEmptyString(
             artist,
             " "
         ) + " - " + Utils.firstNonEmptyString(trackName, " ")
         if (Objects.nonNull(playCover)) {
-            val audio = MusicUtils.getCurrentAudio()
+            val audio = MusicPlaybackController.getCurrentAudio()
             val placeholder = AppCompatResources.getDrawable(context, audioCoverSimple)
             if (audio != null && placeholder != null && !Utils.isEmpty(audio.thumb_image_little)) {
                 with()
@@ -189,33 +189,33 @@ class MiniPlayerView : FrameLayout, TimeBar.OnScrubListener {
 
     private fun updateVisibility() {
         root.visibility =
-            if (MusicUtils.getMiniPlayerVisibility()) VISIBLE else GONE
+            if (MusicPlaybackController.getMiniPlayerVisibility()) VISIBLE else GONE
     }
 
     private fun resolveControlViews() {
-        val preparing = MusicUtils.isPreparing()
-        val initialized = MusicUtils.isInitialized()
+        val preparing = MusicPlaybackController.isPreparing()
+        val initialized = MusicPlaybackController.isInitialized()
         mProgress.isEnabled = !preparing && initialized
         //mProgress.setIndeterminate(preparing);
     }
 
     private fun refreshCurrentTime(): Long {
-        if (!MusicUtils.isInitialized()) {
+        if (!MusicPlaybackController.isInitialized()) {
             mProgress.setDuration(DefaultTimeBar.TIME_UNSET)
             mProgress.setPosition(DefaultTimeBar.TIME_UNSET)
             mProgress.setBufferedPosition(DefaultTimeBar.TIME_UNSET)
             return 500
         }
         try {
-            val pos = if (mPosOverride < 0) MusicUtils.position() else mPosOverride
-            val duration = MusicUtils.duration()
+            val pos = if (mPosOverride < 0) MusicPlaybackController.position() else mPosOverride
+            val duration = MusicPlaybackController.duration()
             if (pos >= 0 && duration > 0) {
                 mProgress.setDuration(duration)
                 mProgress.setPosition(pos)
-                mProgress.setBufferedPosition(MusicUtils.bufferPosition())
+                mProgress.setBufferedPosition(MusicPlaybackController.bufferPosition())
                 if (mFromTouch) {
                     return 500
-                } else if (!MusicUtils.isPlaying()) {
+                } else if (!MusicPlaybackController.isPlaying()) {
                     return 500
                 }
             } else {
@@ -232,13 +232,13 @@ class MiniPlayerView : FrameLayout, TimeBar.OnScrubListener {
 
     override fun onScrubStart(timeBar: TimeBar?, position: Long) {
         mFromTouch = true
-        if (MusicUtils.mService != null) {
+        if (MusicPlaybackController.mService != null) {
             mPosOverride = position
         }
     }
 
     override fun onScrubMove(timeBar: TimeBar?, position: Long) {
-        if (MusicUtils.mService == null) {
+        if (MusicPlaybackController.mService == null) {
             return
         }
         val now = SystemClock.elapsedRealtime()
@@ -255,7 +255,7 @@ class MiniPlayerView : FrameLayout, TimeBar.OnScrubListener {
 
     override fun onScrubStop(timeBar: TimeBar?, position: Long, canceled: Boolean) {
         if (mPosOverride != -1L) {
-            MusicUtils.seek(mPosOverride)
+            MusicPlaybackController.seek(mPosOverride)
             mPosOverride = -1
         }
         mFromTouch = false
@@ -275,7 +275,7 @@ class MiniPlayerView : FrameLayout, TimeBar.OnScrubListener {
             .subscribe { v: Int -> mAccountId = v }
         val next = refreshCurrentTime()
         queueNextRefresh(next)
-        mPlayerDisposable = MusicUtils.observeServiceBinding()
+        mPlayerDisposable = MusicPlaybackController.observeServiceBinding()
             .compose(RxUtils.applyObservableIOToMainSchedulers())
             .subscribe { status: Int -> onServiceBindEvent(status) }
     }

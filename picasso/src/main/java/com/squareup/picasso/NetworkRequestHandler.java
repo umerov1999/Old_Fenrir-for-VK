@@ -15,6 +15,9 @@
  */
 package com.squareup.picasso;
 
+import static com.squareup.picasso.Picasso.LoadedFrom.DISK;
+import static com.squareup.picasso.Picasso.LoadedFrom.NETWORK;
+
 import android.net.NetworkInfo;
 
 import java.io.IOException;
@@ -22,9 +25,6 @@ import java.io.IOException;
 import okhttp3.CacheControl;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-
-import static com.squareup.picasso.Picasso.LoadedFrom.DISK;
-import static com.squareup.picasso.Picasso.LoadedFrom.NETWORK;
 
 class NetworkRequestHandler extends RequestHandler {
     private static final String SCHEME_HTTP = "http";

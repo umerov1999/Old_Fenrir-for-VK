@@ -13,7 +13,7 @@ import android.widget.ImageButton;
 import androidx.appcompat.widget.AppCompatImageButton;
 
 import dev.ragnarok.fenrir.R;
-import dev.ragnarok.fenrir.player.util.MusicUtils;
+import dev.ragnarok.fenrir.player.MusicPlaybackController;
 
 /**
  * A {@link ImageButton} that will repeatedly call a 'listener' method as long
@@ -47,9 +47,9 @@ public class RepeatingImageButton extends AppCompatImageButton implements OnClic
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.action_button_previous) {
-            MusicUtils.previous(getContext());
+            MusicPlaybackController.previous(getContext());
         } else if (view.getId() == R.id.action_button_next) {
-            MusicUtils.next();
+            MusicPlaybackController.next();
         }
     }
 

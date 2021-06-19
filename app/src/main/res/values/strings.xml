@@ -17,11 +17,13 @@
     <string-array name="array_end_list_anim_names">
         <item>Success</item>
         <item>Balls</item>
+        <item>Wave</item>
     </string-array>
 
     <string-array name="array_end_list_anim_items" translatable="false">
         <item>0</item>
         <item>1</item>
+        <item>2</item>
     </string-array>
 
     <string-array name="array_chat_background_names">
@@ -1767,4 +1769,6 @@
     <string name="do_convert">Converting…</string>
     <string name="recording_to_opus">Recording voice to Opus</string>
     <string name="recording_to_opus_summary">Experimental, Android 10 and up</string>
+    <string name="do_convert_request">Do Convert?</string>
+    <string name="play_audio_after_current">Play After current</string>
 </resources>

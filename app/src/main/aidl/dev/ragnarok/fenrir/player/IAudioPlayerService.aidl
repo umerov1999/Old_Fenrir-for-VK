@@ -6,6 +6,8 @@ import java.util.List;
 interface IAudioPlayerService {
     void openFile(in Audio audio);
     void open(in List<Audio> list, int position);
+    void playAfterCurrent(in Audio audio);
+    boolean canPlayAfterCurrent(in Audio audio);
     void skip(int position);
     void stop();
     void pause();
