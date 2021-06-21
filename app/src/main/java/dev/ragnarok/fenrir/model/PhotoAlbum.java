@@ -181,6 +181,22 @@ public class PhotoAlbum extends AbsModel implements ISomeones {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof PhotoAlbum))
+            return false;
+
+        PhotoAlbum album = (PhotoAlbum) o;
+        return id == album.id && ownerId == album.ownerId;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + ownerId;
+        return result;
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }

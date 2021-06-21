@@ -205,14 +205,14 @@ public class PlaceFactory {
                 .withStringExtra(Extra.BODY, body);
     }
 
-    public static Place getPhotoAlbumGalleryPlace(int accountId, int albumId, int ownerId, @NonNull ArrayList<Photo> photos, int position) {
+    public static Place getPhotoAlbumGalleryPlace(int accountId, int albumId, int ownerId, @NonNull ArrayList<Photo> photos, int position, boolean readOnly, boolean invert) {
         return new Place(Place.VK_PHOTO_ALBUM_GALLERY)
-                .setArguments(PhotoPagerFragment.buildArgsForAlbum(accountId, albumId, ownerId, photos, position));
+                .setArguments(PhotoPagerFragment.buildArgsForAlbum(accountId, albumId, ownerId, photos, position, readOnly, invert));
     }
 
-    public static Place getPhotoAlbumGalleryPlace(int accountId, int albumId, int ownerId, @NonNull TmpSource source, int position) {
+    public static Place getPhotoAlbumGalleryPlace(int accountId, int albumId, int ownerId, @NonNull TmpSource source, int position, boolean readOnly, boolean invert) {
         return new Place(Place.VK_PHOTO_ALBUM_GALLERY_SAVED)
-                .setArguments(PhotoPagerFragment.buildArgsForAlbum(accountId, albumId, ownerId, source, position));
+                .setArguments(PhotoPagerFragment.buildArgsForAlbum(accountId, albumId, ownerId, source, position, readOnly, invert));
     }
 
     public static Place getSimpleGalleryPlace(int accountId, @NonNull ArrayList<Photo> photos, int position, boolean needRefresh) {
@@ -345,6 +345,11 @@ public class PlaceFactory {
                 .withIntExtra(Extra.ACCOUNT_ID, accountId)
                 .withIntExtra(Extra.OWNER_ID, messagesOwnerId)
                 .withParcelableExtra(Extra.PEER, peer);
+    }
+
+    public static Place getLocalServerPhotosPlace(int accountId) {
+        return new Place(Place.LOCAL_SERVER_PHOTO)
+                .withIntExtra(Extra.ACCOUNT_ID, accountId);
     }
 
     public static Place getVKPhotosAlbumPlace(int accountId, int ownerId, int albumId, String action) {

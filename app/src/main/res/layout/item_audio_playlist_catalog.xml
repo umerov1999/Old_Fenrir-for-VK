@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:ellipsize="end"
-                android:singleLine="true"
+                android:maxLines="1"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                 android:textSize="12sp"
                 tools:text="Artist" />
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="2dp"
-                android:singleLine="true"
+                android:maxLines="1"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 tools:text="year" />
 

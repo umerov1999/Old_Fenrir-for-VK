@@ -65,6 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
+                android:ellipsize="end"
                 android:maxLines="1"
                 android:padding="8dp"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"

@@ -72,6 +72,7 @@
                     android:id="@+id/video_owner_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
                     android:maxLines="1"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                     tools:text="Owner name" />
@@ -130,6 +131,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:ellipsize="end"
             android:maxLines="1"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"

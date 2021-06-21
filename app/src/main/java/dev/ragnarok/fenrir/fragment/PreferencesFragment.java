@@ -1097,7 +1097,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         View view = View.inflate(requireActivity(), R.layout.dialog_dedicated, null);
         RecyclerView pager = view.findViewById(R.id.dedicated_pager);
         pager.setLayoutManager(new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false));
-        pager.setAdapter(new ImageDedicatedAdapter(new int[]{R.drawable.dedicated1, R.drawable.dedicated2, R.drawable.dedicated3, R.drawable.dedicated4}));
+        pager.setAdapter(new ImageDedicatedAdapter(new int[]{R.drawable.dedicated1, R.drawable.dedicated2, R.drawable.dedicated3, R.drawable.dedicated4, R.drawable.dedicated5}));
         RLottieImageView anim = view.findViewById(R.id.dedicated_anim);
         pager.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {

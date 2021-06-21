@@ -6,6 +6,7 @@ import dev.ragnarok.fenrir.api.ILocalServerServiceProvider;
 import dev.ragnarok.fenrir.api.interfaces.ILocalServerApi;
 import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiAudio;
+import dev.ragnarok.fenrir.api.model.VKApiPhoto;
 import dev.ragnarok.fenrir.api.model.VKApiVideo;
 import dev.ragnarok.fenrir.api.model.response.BaseResponse;
 import dev.ragnarok.fenrir.util.Utils;
@@ -32,9 +33,9 @@ class LocalServerApi implements ILocalServerApi {
     }
 
     @Override
-    public Single<Items<VKApiVideo>> getVideos(Integer offset, Integer count) {
+    public Single<Items<VKApiVideo>> getVideos(Integer offset, Integer count, boolean reverse) {
         return service.provideLocalServerService()
-                .flatMap(service -> service.getVideos(offset, count)
+                .flatMap(service -> service.getVideos(offset, count, reverse ? 1 : 0)
                         .map(extractResponseWithErrorHandling()));
     }
 
@@ -42,6 +43,13 @@ class LocalServerApi implements ILocalServerApi {
     public Single<Items<VKApiAudio>> getAudios(Integer offset, Integer count, boolean reverse) {
         return service.provideLocalServerService()
                 .flatMap(service -> service.getAudios(offset, count, reverse ? 1 : 0)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<Items<VKApiPhoto>> getPhotos(Integer offset, Integer count, boolean reverse) {
+        return service.provideLocalServerService()
+                .flatMap(service -> service.getPhotos(offset, count, reverse ? 1 : 0)
                         .map(extractResponseWithErrorHandling()));
     }
 
@@ -56,6 +64,13 @@ class LocalServerApi implements ILocalServerApi {
     public Single<Items<VKApiVideo>> searchVideos(String query, Integer offset, Integer count) {
         return service.provideLocalServerService()
                 .flatMap(service -> service.searchVideos(query, offset, count)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
+    public Single<Items<VKApiPhoto>> searchPhotos(String query, Integer offset, Integer count) {
+        return service.provideLocalServerService()
+                .flatMap(service -> service.searchPhotos(query, offset, count)
                         .map(extractResponseWithErrorHandling()));
     }
 

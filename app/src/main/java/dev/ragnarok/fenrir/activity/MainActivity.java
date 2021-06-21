@@ -106,6 +106,7 @@ import dev.ragnarok.fenrir.fragment.NotificationPreferencesFragment;
 import dev.ragnarok.fenrir.fragment.OwnerArticlesFragment;
 import dev.ragnarok.fenrir.fragment.PhotoAllCommentFragment;
 import dev.ragnarok.fenrir.fragment.PhotoPagerFragment;
+import dev.ragnarok.fenrir.fragment.PhotosLocalServerFragment;
 import dev.ragnarok.fenrir.fragment.PlaylistsInCatalogFragment;
 import dev.ragnarok.fenrir.fragment.PollFragment;
 import dev.ragnarok.fenrir.fragment.PreferencesFragment;
@@ -1234,6 +1235,10 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
 
             case Place.SEARCH_BY_AUDIO:
                 attachToFront(AudiosRecommendationFragment.newInstance(args.getInt(Extra.ACCOUNT_ID), args.getInt(Extra.OWNER_ID), false, args.getInt(Extra.ID)));
+                break;
+
+            case Place.LOCAL_SERVER_PHOTO:
+                attachToFront(PhotosLocalServerFragment.newInstance(args.getInt(Extra.ACCOUNT_ID)));
                 break;
 
             case Place.VIDEO_ALBUM:

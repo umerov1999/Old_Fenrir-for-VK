@@ -13,11 +13,11 @@ import java.util.List;
 
 import dev.ragnarok.fenrir.db.Stores;
 import dev.ragnarok.fenrir.db.serialize.Serializers;
+import dev.ragnarok.fenrir.domain.ILocalServerInteractor;
 import dev.ragnarok.fenrir.domain.IPhotosInteractor;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
 import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.TmpSource;
-import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Analytics;
 import dev.ragnarok.fenrir.util.RxUtils;
 
@@ -25,19 +25,21 @@ public class PhotoAlbumPagerPresenter extends PhotoPagerPresenter {
 
     private static final int COUNT_PER_LOAD = 100;
     private final IPhotosInteractor photosInteractor;
+    private final ILocalServerInteractor localServerInteractor;
     private final int mOwnerId;
     private final int mAlbumId;
     private final boolean invertPhotoRev;
     private boolean canLoad;
 
-    public PhotoAlbumPagerPresenter(int index, int accountId, int ownerId, int albumId, ArrayList<Photo> photos, Context context,
+    public PhotoAlbumPagerPresenter(int index, int accountId, int ownerId, int albumId, ArrayList<Photo> photos, boolean readOnly, boolean invertPhotoRev, Context context,
                                     @Nullable Bundle savedInstanceState) {
-        super(new ArrayList<>(0), accountId, false, context, savedInstanceState);
+        super(new ArrayList<>(0), accountId, readOnly, context, savedInstanceState);
         photosInteractor = InteractorFactory.createPhotosInteractor();
+        localServerInteractor = InteractorFactory.createLocalServerInteractor();
         mOwnerId = ownerId;
         mAlbumId = albumId;
         canLoad = true;
-        invertPhotoRev = Settings.get().other().isInvertPhotoRev();
+        this.invertPhotoRev = invertPhotoRev;
 
         getData().addAll(photos);
         setCurrentIndex(index);
@@ -48,14 +50,15 @@ public class PhotoAlbumPagerPresenter extends PhotoPagerPresenter {
         refreshInfoViews(true);
     }
 
-    public PhotoAlbumPagerPresenter(int index, int accountId, int ownerId, int albumId, @NonNull TmpSource source, Context context,
+    public PhotoAlbumPagerPresenter(int index, int accountId, int ownerId, int albumId, @NonNull TmpSource source, boolean readOnly, boolean invertPhotoRev, Context context,
                                     @Nullable Bundle savedInstanceState) {
-        super(new ArrayList<>(0), accountId, false, context, savedInstanceState);
+        super(new ArrayList<>(0), accountId, readOnly, context, savedInstanceState);
         photosInteractor = InteractorFactory.createPhotosInteractor();
+        localServerInteractor = InteractorFactory.createLocalServerInteractor();
         mOwnerId = ownerId;
         mAlbumId = albumId;
         canLoad = true;
-        invertPhotoRev = Settings.get().other().isInvertPhotoRev();
+        this.invertPhotoRev = invertPhotoRev;
 
         setCurrentIndex(index);
         loadDataFromDatabase(source);
@@ -101,7 +104,7 @@ public class PhotoAlbumPagerPresenter extends PhotoPagerPresenter {
             return;
         changeLoadingNowState(true);
 
-        if (mAlbumId != -9001 && mAlbumId != -9000) {
+        if (mAlbumId != -9001 && mAlbumId != -9000 && mAlbumId != -311) {
             appendDisposable(photosInteractor.get(getAccountId(), mOwnerId, mAlbumId, COUNT_PER_LOAD, mPhotos.size(), !invertPhotoRev)
                     .compose(RxUtils.applySingleIOToMainSchedulers())
                     .subscribe(this::onActualPhotosReceived, this::onActualDataGetError));
@@ -109,8 +112,12 @@ public class PhotoAlbumPagerPresenter extends PhotoPagerPresenter {
             appendDisposable(photosInteractor.getUsersPhoto(getAccountId(), mOwnerId, 1, invertPhotoRev ? 1 : 0, mPhotos.size(), COUNT_PER_LOAD)
                     .compose(RxUtils.applySingleIOToMainSchedulers())
                     .subscribe(this::onActualPhotosReceived, this::onActualDataGetError));
-        } else {
+        } else if (mAlbumId == -9001) {
             appendDisposable(photosInteractor.getAll(getAccountId(), mOwnerId, 1, 1, mPhotos.size(), COUNT_PER_LOAD)
+                    .compose(RxUtils.applySingleIOToMainSchedulers())
+                    .subscribe(this::onActualPhotosReceived, this::onActualDataGetError));
+        } else {
+            appendDisposable(localServerInteractor.getPhotos(mPhotos.size(), COUNT_PER_LOAD, invertPhotoRev)
                     .compose(RxUtils.applySingleIOToMainSchedulers())
                     .subscribe(this::onActualPhotosReceived, this::onActualDataGetError));
         }

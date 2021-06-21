@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -118,6 +119,7 @@ public class StickersInteractor implements IStickersInteractor {
                 t.onComplete();
                 return;
             }
+            Arrays.sort(file_list, (o1, o2) -> Long.compare(o2.lastModified(), o1.lastModified()));
             Utils.getCachedMyStickers().clear();
             for (File u : file_list) {
                 if (u.isFile() && (u.getName().contains(".png") || u.getName().contains(".webp"))) {

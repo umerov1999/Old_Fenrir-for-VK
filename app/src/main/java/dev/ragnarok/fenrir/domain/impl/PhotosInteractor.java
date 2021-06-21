@@ -37,6 +37,7 @@ import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.PhotoAlbum;
 import dev.ragnarok.fenrir.model.criteria.PhotoAlbumsCriteria;
 import dev.ragnarok.fenrir.model.criteria.PhotoCriteria;
+import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.VKOwnIds;
 import io.reactivex.rxjava3.core.Completable;
@@ -220,24 +221,9 @@ public class PhotosInteractor implements IPhotosInteractor {
                     List<PhotoAlbumEntity> dbos = new ArrayList<>(dtos.size());
                     List<PhotoAlbum> albums = new ArrayList<>(dbos.size());
 
-                    VKApiPhotoAlbum usersPh = new VKApiPhotoAlbum();
-                    usersPh.title = "Фото с пользователем";
-                    usersPh.id = -9000;
-                    usersPh.owner_id = ownerId;
-                    usersPh.size = -1;
-
-                    if (ownerId >= 0) {
-                        for (VKApiPhotoAlbum dto : dtos) {
-                            if (dto.id == -9000) {
-                                usersPh = dto;
-                                break;
-                            }
-                        }
-                    }
-
                     if (offset == 0) {
                         VKApiPhotoAlbum Allph = new VKApiPhotoAlbum();
-                        Allph.title = "Все фото";
+                        Allph.title = "All photos";
                         Allph.id = -9001;
                         Allph.owner_id = ownerId;
                         Allph.size = -1;
@@ -245,17 +231,22 @@ public class PhotosInteractor implements IPhotosInteractor {
                         dbos.add(Dto2Entity.buildPhotoAlbumDbo(Allph));
                         albums.add(Dto2Model.transformPhotoAlbum(Allph));
 
-                        dbos.add(Dto2Entity.buildPhotoAlbumDbo(usersPh));
-                        albums.add(Dto2Model.transformPhotoAlbum(usersPh));
+                        if (Settings.get().other().getLocalServer().enabled && accountId == ownerId) {
+                            VKApiPhotoAlbum Srvph = new VKApiPhotoAlbum();
+                            Srvph.title = "Local Server";
+                            Srvph.id = -311;
+                            Srvph.owner_id = ownerId;
+                            Srvph.size = -1;
+
+                            dbos.add(Dto2Entity.buildPhotoAlbumDbo(Srvph));
+                            albums.add(Dto2Model.transformPhotoAlbum(Srvph));
+                        }
                     }
 
                     for (VKApiPhotoAlbum dto : dtos) {
-                        if (dto.id == -9000)
-                            continue;
                         dbos.add(Dto2Entity.buildPhotoAlbumDbo(dto));
                         albums.add(Dto2Model.transformPhotoAlbum(dto));
                     }
-
 
                     return cache.photoAlbums()
                             .store(accountId, ownerId, dbos, offset == 0)

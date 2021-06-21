@@ -35,6 +35,7 @@ import dev.ragnarok.fenrir.mvp.presenter.UserDetailsPresenter
 import dev.ragnarok.fenrir.mvp.view.IUserDetailsView
 import dev.ragnarok.fenrir.picasso.PicassoInstance
 import dev.ragnarok.fenrir.place.PlaceFactory
+import dev.ragnarok.fenrir.settings.Settings
 import dev.ragnarok.fenrir.util.CustomToast.Companion.CreateCustomToast
 import dev.ragnarok.fenrir.util.Objects
 import dev.ragnarok.fenrir.util.Utils
@@ -170,7 +171,15 @@ class UserDetailsFragment : BaseMvpFragment<UserDetailsPresenter, IUserDetailsVi
         photos: ArrayList<Photo>,
         position: Int
     ) {
-        PlaceFactory.getPhotoAlbumGalleryPlace(accountId, albumId, ownerId, photos, position)
+        PlaceFactory.getPhotoAlbumGalleryPlace(
+            accountId,
+            albumId,
+            ownerId,
+            photos,
+            position,
+            false,
+            Settings.get().other().isInvertPhotoRev
+        )
             .tryOpenWith(requireActivity())
     }
 

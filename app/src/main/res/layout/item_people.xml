@@ -52,6 +52,7 @@
         android:layout_marginEnd="16dp"
         android:layout_toStartOf="@+id/item_people_online"
         android:layout_toEndOf="@id/avatar_root"
+        android:ellipsize="end"
         android:maxLines="1"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
         tools:text="Name" />
@@ -65,6 +66,7 @@
         android:layout_marginEnd="16dp"
         android:layout_toStartOf="@+id/item_people_online"
         android:layout_toEndOf="@id/avatar_root"
+        android:ellipsize="end"
         android:maxLines="2"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
         tools:text="Time" />

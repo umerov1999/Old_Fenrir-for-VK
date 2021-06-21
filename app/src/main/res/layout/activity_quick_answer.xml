@@ -130,6 +130,7 @@
                         android:layout_toStartOf="@+id/activity_quick_answer_send"
                         android:layout_toEndOf="@+id/activity_quick_answer_to_dialog"
                         android:background="@drawable/background_message_round"
+                        android:ellipsize="end"
                         android:gravity="center_vertical"
                         android:hint="@string/text_hint"
                         android:maxLines="3"

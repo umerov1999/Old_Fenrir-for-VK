@@ -13,44 +13,44 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import dev.ragnarok.fenrir.db.Stores;
+import dev.ragnarok.fenrir.db.serialize.Serializers;
 import dev.ragnarok.fenrir.domain.ILocalServerInteractor;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
-import dev.ragnarok.fenrir.model.Video;
+import dev.ragnarok.fenrir.model.Photo;
+import dev.ragnarok.fenrir.model.TmpSource;
+import dev.ragnarok.fenrir.module.FenrirNative;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
-import dev.ragnarok.fenrir.mvp.view.IVideosLocalServerView;
+import dev.ragnarok.fenrir.mvp.view.IPhotosLocalServerView;
+import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.Analytics;
 import dev.ragnarok.fenrir.util.FindAt;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.Disposable;
 
-public class VideosLocalServerPresenter extends AccountDependencyPresenter<IVideosLocalServerView> {
+public class PhotosLocalServerPresenter extends AccountDependencyPresenter<IPhotosLocalServerView> {
 
     private static final int SEARCH_COUNT = 50;
     private static final int GET_COUNT = 100;
     private static final int WEB_SEARCH_DELAY = 1000;
-    private final List<Video> videos;
+    private final List<Photo> photos;
     private final ILocalServerInteractor fInteractor;
     private Disposable actualDataDisposable = Disposable.disposed();
     private int Foffset;
     private boolean actualDataReceived;
     private boolean endOfContent;
     private boolean actualDataLoading;
-    private FindAt search_at;
     private boolean reverse;
+    private FindAt search_at;
     private boolean doLoadTabs;
 
-    public VideosLocalServerPresenter(int accountId, @Nullable Bundle savedInstanceState) {
+    public PhotosLocalServerPresenter(int accountId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
-        videos = new ArrayList<>();
+        photos = new ArrayList<>();
         fInteractor = InteractorFactory.createLocalServerInteractor();
         search_at = new FindAt();
-    }
-
-    @Override
-    public void onGuiCreated(@NonNull IVideosLocalServerView view) {
-        super.onGuiCreated(view);
-        view.displayList(videos);
     }
 
     public void toggleReverse() {
@@ -60,12 +60,18 @@ public class VideosLocalServerPresenter extends AccountDependencyPresenter<IVide
         }
     }
 
+    @Override
+    public void onGuiCreated(@NonNull IPhotosLocalServerView view) {
+        super.onGuiCreated(view);
+        view.displayList(photos);
+    }
+
     private void loadActualData(int offset) {
         actualDataLoading = true;
 
         resolveRefreshingView();
 
-        appendDisposable(fInteractor.getVideos(offset, GET_COUNT, reverse)
+        appendDisposable(fInteractor.getPhotos(offset, GET_COUNT, reverse)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(data -> onActualDataReceived(offset, data), this::onActualDataGetError));
 
@@ -78,19 +84,19 @@ public class VideosLocalServerPresenter extends AccountDependencyPresenter<IVide
         resolveRefreshingView();
     }
 
-    private void onActualDataReceived(int offset, List<Video> data) {
+    private void onActualDataReceived(int offset, List<Photo> data) {
         Foffset = offset + GET_COUNT;
         actualDataLoading = false;
         endOfContent = data.isEmpty();
         actualDataReceived = true;
 
         if (offset == 0) {
-            videos.clear();
-            videos.addAll(data);
-            callView(IVideosLocalServerView::notifyListChanged);
+            photos.clear();
+            photos.addAll(data);
+            callView(IPhotosLocalServerView::notifyListChanged);
         } else {
-            int startSize = videos.size();
-            videos.addAll(data);
+            int startSize = photos.size();
+            photos.addAll(data);
             callView(view -> view.notifyDataAdded(startSize, data.size()));
         }
 
@@ -120,7 +126,7 @@ public class VideosLocalServerPresenter extends AccountDependencyPresenter<IVide
     }
 
     public boolean fireScrollToEnd() {
-        if (!endOfContent && nonEmpty(videos) && actualDataReceived && !actualDataLoading) {
+        if (!endOfContent && nonEmpty(photos) && actualDataReceived && !actualDataLoading) {
             if (search_at.isSearchMode()) {
                 search(false);
             } else {
@@ -134,24 +140,24 @@ public class VideosLocalServerPresenter extends AccountDependencyPresenter<IVide
     private void doSearch() {
         actualDataLoading = true;
         resolveRefreshingView();
-        appendDisposable(fInteractor.searchVideos(search_at.getQuery(), search_at.getOffset(), SEARCH_COUNT)
+        appendDisposable(fInteractor.searchPhotos(search_at.getQuery(), search_at.getOffset(), SEARCH_COUNT)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(data -> onSearched(new FindAt(Objects.requireNonNull(search_at.getQuery()), search_at.getOffset() + SEARCH_COUNT, data.size() < SEARCH_COUNT), data), this::onActualDataGetError));
     }
 
-    private void onSearched(FindAt search_at, List<Video> data) {
+    private void onSearched(FindAt search_at, List<Photo> data) {
         actualDataLoading = false;
         actualDataReceived = true;
         endOfContent = search_at.isEnded();
 
         if (this.search_at.getOffset() == 0) {
-            videos.clear();
-            videos.addAll(data);
-            callView(IVideosLocalServerView::notifyListChanged);
+            photos.clear();
+            photos.addAll(data);
+            callView(IPhotosLocalServerView::notifyListChanged);
         } else {
             if (nonEmpty(data)) {
-                int startSize = videos.size();
-                videos.addAll(data);
+                int startSize = photos.size();
+                photos.addAll(data);
                 callView(view -> view.notifyDataAdded(startSize, data.size()));
             }
         }
@@ -184,6 +190,31 @@ public class VideosLocalServerPresenter extends AccountDependencyPresenter<IVide
             } else {
                 fireRefresh(true);
             }
+        }
+    }
+
+    public void firePhotoClick(Photo photo) {
+        int Index = 0;
+        int it = 0;
+        boolean trig = false;
+        for (Photo i : photos) {
+            if (!trig && i.getId() == photo.getId() && i.getOwnerId() == photo.getOwnerId()) {
+                Index = it;
+                trig = true;
+            }
+            it++;
+        }
+        int finalIndex = Index;
+        if (!FenrirNative.isNativeLoaded() || !Settings.get().other().isNative_parcel()) {
+            TmpSource source = new TmpSource(getInstanceId(), 0);
+            fireTempDataUsage();
+            appendDisposable(Stores.getInstance()
+                    .tempStore()
+                    .put(source.getOwnerId(), source.getSourceId(), photos, Serializers.PHOTOS_SERIALIZER)
+                    .compose(RxUtils.applyCompletableIOToMainSchedulers())
+                    .subscribe(() -> callView(view -> view.displayGallery(getAccountId(), -311, getAccountId(), source, finalIndex, reverse)), Analytics::logUnexpectedError));
+        } else {
+            callView(view -> view.displayGalleryUnSafe(getAccountId(), -311, getAccountId(), new ArrayList<>(photos), finalIndex, reverse));
         }
     }
 

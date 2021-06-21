@@ -304,7 +304,7 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
 
     @Override
     public void openPhotoAlbum(int accountId, int ownerId, int albumId, ArrayList<Photo> photos, int position) {
-        PlaceFactory.getPhotoAlbumGalleryPlace(accountId, albumId, ownerId, photos, position)
+        PlaceFactory.getPhotoAlbumGalleryPlace(accountId, albumId, ownerId, photos, position, false, Settings.get().other().isInvertPhotoRev())
                 .tryOpenWith(requireActivity());
     }
 

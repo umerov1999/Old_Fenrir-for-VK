@@ -32,7 +32,7 @@
             android:layout_marginStart="8dp"
             android:ellipsize="end"
             android:gravity="center_vertical"
-            android:singleLine="true"
+            android:maxLines="1"
             android:textSize="@dimen/navi_drawer_font_size"
             tools:text="Test action" />
 

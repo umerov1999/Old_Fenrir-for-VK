@@ -100,7 +100,7 @@ object DownloadWorkUtils {
         '='
     )
 
-    private fun makeLegalFilenameNTV(filename: String): String {
+    private fun makeLegalFilenameFull(filename: String): String {
         var filename_temp = filename.trim { it <= ' ' }
 
         var s = '\u0000'
@@ -116,7 +116,7 @@ object DownloadWorkUtils {
 
     @JvmStatic
     fun makeLegalFilename(filename: String, extension: String?): String {
-        var result = makeLegalFilenameNTV(filename)
+        var result = makeLegalFilenameFull(filename)
         if (result.length > 90) result = result.substring(0, 90).trim { it <= ' ' }
         if (extension == null)
             return result
@@ -225,7 +225,8 @@ object DownloadWorkUtils {
     @JvmStatic
     fun doSyncRemoteAudio(context: Context) {
         val url =
-            Settings.get().other().localServer.url + "/method/audio.list?password=" + Settings.get()
+            Settings.get()
+                .other().localServer.url + "/method/audio.dumplist?password=" + Settings.get()
                 .other().localServer.password
         val result_filename = DownloadInfo(
             "local_server_audio_list",
@@ -244,7 +245,7 @@ object DownloadWorkUtils {
                 toDefaultInternalDownloader(context, url, result_filename)
             }
         } catch (e: Exception) {
-            CustomToast.CreateCustomToast(context).showToastError("audio.list: " + e.message)
+            CustomToast.CreateCustomToast(context).showToastError("audio.dumplist: " + e.message)
             return
         }
     }
@@ -335,7 +336,7 @@ object DownloadWorkUtils {
                 toDefaultInternalDownloader(context, link!!, result_filename)
             }
             Utils.getCachedMyStickers()
-                .add(Sticker.LocalSticker(result_filename.build(), sticker.isAnimated))
+                .add(0, Sticker.LocalSticker(result_filename.build(), sticker.isAnimated))
         } catch (e: Exception) {
             CustomToast.CreateCustomToast(context).showToastError("Sticker Error: " + e.message)
             return

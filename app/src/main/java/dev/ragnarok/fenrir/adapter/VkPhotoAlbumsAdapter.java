@@ -51,11 +51,11 @@ public class VkPhotoAlbumsAdapter extends RecyclerView.Adapter<VkPhotoAlbumsAdap
             holder.imageView.setImageResource(R.drawable.album);
         }
 
-        if (photoAlbum.getId() == -9001 || photoAlbum.getId() == -9000) {
+        if (photoAlbum.getId() == -9001 || photoAlbum.getId() == -311) {
             if (photoAlbum.getId() == -9001) {
                 holder.title.setText(holder.title.getContext().getString(R.string.all_photos));
             } else {
-                holder.title.setText(holder.title.getContext().getString(R.string.photo_with_user));
+                holder.title.setText(holder.title.getContext().getString(R.string.on_server));
             }
         } else {
             holder.title.setText(photoAlbum.getTitle());

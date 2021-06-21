@@ -45,6 +45,7 @@
                 android:id="@+id/item_local_album_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:gravity="start"
                 android:maxLines="2"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"

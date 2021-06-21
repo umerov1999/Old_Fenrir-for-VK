@@ -84,13 +84,17 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
             albumId: Int,
             ownerId: Int,
             source: TmpSource,
-            position: Int
+            position: Int,
+            readOnly: Boolean,
+            invert: Boolean
         ): Bundle {
             val args = Bundle()
             args.putInt(Extra.ACCOUNT_ID, aid)
             args.putInt(Extra.OWNER_ID, ownerId)
             args.putInt(Extra.ALBUM_ID, albumId)
             args.putInt(Extra.INDEX, position)
+            args.putBoolean(Extra.READONLY, readOnly)
+            args.putBoolean(Extra.INVERT, invert)
             args.putParcelable(Extra.SOURCE, source)
             return args
         }
@@ -101,13 +105,17 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
             albumId: Int,
             ownerId: Int,
             photos: ArrayList<Photo>,
-            position: Int
+            position: Int,
+            readOnly: Boolean,
+            invert: Boolean
         ): Bundle {
             val args = Bundle()
             args.putInt(Extra.ACCOUNT_ID, aid)
             args.putInt(Extra.OWNER_ID, ownerId)
             args.putInt(Extra.ALBUM_ID, albumId)
             args.putInt(Extra.INDEX, position)
+            args.putBoolean(Extra.READONLY, readOnly)
+            args.putBoolean(Extra.INVERT, invert)
             if (FenrirNative.isNativeLoaded() && Settings.get().other().isNative_parcel) {
                 args.putLong(EXTRA_PHOTOS, ParcelNative.createParcelableList(photos))
             } else {
@@ -344,6 +352,8 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
                         val indexx = requireArguments().getInt(Extra.INDEX)
                         val ownerId = requireArguments().getInt(Extra.OWNER_ID)
                         val albumId = requireArguments().getInt(Extra.ALBUM_ID)
+                        val readOnly = requireArguments().getBoolean(Extra.READONLY)
+                        val invert = requireArguments().getBoolean(Extra.INVERT)
                         val source: TmpSource = requireArguments().getParcelable(Extra.SOURCE)!!
                         return PhotoAlbumPagerPresenter(
                             indexx,
@@ -351,6 +361,8 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
                             ownerId,
                             albumId,
                             source,
+                            readOnly,
+                            invert,
                             requireActivity(),
                             saveInstanceState
                         )
@@ -359,6 +371,8 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
                         val indexx = requireArguments().getInt(Extra.INDEX)
                         val ownerId = requireArguments().getInt(Extra.OWNER_ID)
                         val albumId = requireArguments().getInt(Extra.ALBUM_ID)
+                        val readOnly = requireArguments().getBoolean(Extra.READONLY)
+                        val invert = requireArguments().getBoolean(Extra.INVERT)
                         val photos_album: ArrayList<Photo> =
                             if (FenrirNative.isNativeLoaded() && Settings.get()
                                     .other().isNative_parcel
@@ -378,6 +392,8 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
                             ownerId,
                             albumId,
                             photos_album,
+                            readOnly,
+                            invert,
                             requireActivity(),
                             saveInstanceState
                         )

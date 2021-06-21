@@ -52,6 +52,7 @@
                 android:id="@+id/item_article_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:gravity="center_horizontal"
                 android:maxLines="1"
                 android:padding="8dp"

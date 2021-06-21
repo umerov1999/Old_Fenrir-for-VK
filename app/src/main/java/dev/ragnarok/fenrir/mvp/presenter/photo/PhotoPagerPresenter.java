@@ -238,6 +238,9 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
     }
 
     private void showPhotoInfo(@NonNull Photo photo, PhotoAlbum album, IOwnersBundle bundle) {
+        if (photo.getAlbumId() == -311) {
+            return;
+        }
         String album_info = (album == null ? context.getString(R.string.open_photo_album) : album.getTitle());
         String user = (photo.getOwnerId() >= 0 ? context.getString(R.string.goto_user) : context.getString(R.string.goto_community));
         if (bundle != null) {
@@ -293,20 +296,22 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
         resolveOptionMenu();
         if (need_update && need_update_info() && hasPhotos()) {
             Photo photo = getCurrent();
-            appendDisposable(photosInteractor.getPhotosByIds(getAccountId(),
-                    Collections.singleton(new AccessIdPair(photo.getId(), photo.getOwnerId(), photo.getAccessKey())))
-                    .compose(RxUtils.applySingleIOToMainSchedulers())
-                    .subscribe(t -> {
-                        if (t.get(0).getId() == photo.getId()) {
-                            Photo ne = t.get(0);
-                            if (ne.getAccessKey() == null) {
-                                ne.setAccessKey(photo.getAccessKey());
+            if (photo.getAlbumId() != -311) {
+                appendDisposable(photosInteractor.getPhotosByIds(getAccountId(),
+                        Collections.singleton(new AccessIdPair(photo.getId(), photo.getOwnerId(), photo.getAccessKey())))
+                        .compose(RxUtils.applySingleIOToMainSchedulers())
+                        .subscribe(t -> {
+                            if (t.get(0).getId() == photo.getId()) {
+                                Photo ne = t.get(0);
+                                if (ne.getAccessKey() == null) {
+                                    ne.setAccessKey(photo.getAccessKey());
+                                }
+                                mPhotos.set(getCurrentIndex(), ne);
+                                refreshInfoViews(false);
                             }
-                            mPhotos.set(getCurrentIndex(), ne);
-                            refreshInfoViews(false);
-                        }
-                    }, throwable -> {
-                    }));
+                        }, throwable -> {
+                        }));
+            }
         }
     }
 
@@ -380,9 +385,18 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
 
         Photo photo = getCurrent();
 
-        appendDisposable(OwnerInfo.getRx(context, getAccountId(), photo.getOwnerId())
-                .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(userInfo -> DownloadResult(DownloadWorkUtils.makeLegalFilename(userInfo.getOwner().getFullName(), null), dir, photo), throwable -> DownloadResult(null, dir, photo)));
+        if (photo.getAlbumId() == -311) {
+            String path = photo.getText();
+            int ndx = path.indexOf('/');
+            if (ndx != -1) {
+                path = path.substring(0, ndx);
+            }
+            DownloadResult(path, dir, photo);
+        } else {
+            appendDisposable(OwnerInfo.getRx(context, getAccountId(), photo.getOwnerId())
+                    .compose(RxUtils.applySingleIOToMainSchedulers())
+                    .subscribe(userInfo -> DownloadResult(DownloadWorkUtils.makeLegalFilename(userInfo.getOwner().getFullName(), null), dir, photo), throwable -> DownloadResult(null, dir, photo)));
+        }
     }
 
     private String transform_owner(int owner_id) {
@@ -411,6 +425,9 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
 
     public void fireSaveYourselfClick() {
         Photo photo = getCurrent();
+        if (photo.getAlbumId() == -311) {
+            return;
+        }
         int accountId = getAccountId();
 
         appendDisposable(photosInteractor.copy(accountId, photo.getOwnerId(), photo.getId(), photo.getAccessKey())
@@ -479,6 +496,9 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
 
     private void deleteOrRestore(boolean detele) {
         Photo photo = getCurrent();
+        if (photo.getAlbumId() == -311) {
+            return;
+        }
         int photoId = photo.getId();
         int ownerId = photo.getOwnerId();
         int accountId = getAccountId();

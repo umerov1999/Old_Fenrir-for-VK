@@ -63,8 +63,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:singleLine="true"
+                    android:maxLines="1"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                     android:textSize="16sp"
                     tools:text="Name" />
@@ -74,8 +73,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:singleLine="true"
+                    android:maxLines="1"
                     android:textSize="12sp"
                     tools:text="SubTitle" />
 
@@ -116,7 +114,7 @@
                 android:layout_toStartOf="@+id/buttonUnpin"
                 android:layout_toEndOf="@+id/pinned_avatar"
                 android:ellipsize="end"
-                android:singleLine="true"
+                android:maxLines="1"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                 tools:text="User Name" />
 

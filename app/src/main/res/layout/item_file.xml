@@ -27,6 +27,7 @@
             android:id="@+id/item_file_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             tools:text="Directory" />
@@ -35,6 +36,7 @@
             android:id="@+id/item_file_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
             tools:text="details" />

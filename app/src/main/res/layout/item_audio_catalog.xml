@@ -26,6 +26,7 @@
                 android:id="@+id/item_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:maxLines="2"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                 android:textSize="18sp"
@@ -35,6 +36,7 @@
                 android:id="@+id/item_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:maxLines="2"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 tools:text="Subtitle" />

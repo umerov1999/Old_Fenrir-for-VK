@@ -189,10 +189,14 @@ public class VKPhotoAlbumsFragment extends BaseMvpFragment<PhotoAlbumsPresenter,
 
     @Override
     public void openAlbum(int accountId, @NonNull PhotoAlbum album, @Nullable Owner owner, @Nullable String action) {
-        PlaceFactory.getVKPhotosAlbumPlace(accountId, album.getOwnerId(), album.getId(), action)
-                .withParcelableExtra(Extra.ALBUM, album)
-                .withParcelableExtra(Extra.OWNER, new ParcelableOwnerWrapper(owner))
-                .tryOpenWith(requireActivity());
+        if (album.getId() == -311) {
+            PlaceFactory.getLocalServerPhotosPlace(accountId).tryOpenWith(requireActivity());
+        } else {
+            PlaceFactory.getVKPhotosAlbumPlace(accountId, album.getOwnerId(), album.getId(), action)
+                    .withParcelableExtra(Extra.ALBUM, album)
+                    .withParcelableExtra(Extra.OWNER, new ParcelableOwnerWrapper(owner))
+                    .tryOpenWith(requireActivity());
+        }
     }
 
     @Override

@@ -79,6 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:drawablePadding="4dp"
+            android:ellipsize="end"
             android:gravity="center"
             android:maxLines="2"
             android:padding="4dp"

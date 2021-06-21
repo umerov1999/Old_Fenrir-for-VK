@@ -29,8 +29,8 @@
             android:layout_gravity="center"
             android:background="?attr/selectableItemBackground"
             android:ellipsize="end"
+            android:maxLines="1"
             android:padding="2dp"
-            android:singleLine="true"
             android:text="@string/mention_user"
             android:textSize="16sp" />
     </LinearLayout>

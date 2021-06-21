@@ -12,6 +12,7 @@ import dev.ragnarok.fenrir.domain.ILocalServerInteractor;
 import dev.ragnarok.fenrir.domain.mappers.Dto2Entity;
 import dev.ragnarok.fenrir.domain.mappers.Dto2Model;
 import dev.ragnarok.fenrir.model.Audio;
+import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.Video;
 import io.reactivex.rxjava3.core.Single;
 
@@ -24,9 +25,9 @@ public class LocalServerInteractor implements ILocalServerInteractor {
     }
 
     @Override
-    public Single<List<Video>> getVideos(int offset, int count) {
+    public Single<List<Video>> getVideos(int offset, int count, boolean reverse) {
         return networker.localServerApi()
-                .getVideos(offset, count)
+                .getVideos(offset, count, reverse)
                 .flatMap(items -> {
                     List<VKApiVideo> dtos = listEmptyIfNull(items.getItems());
                     List<VideoEntity> dbos = new ArrayList<>(dtos.size());
@@ -63,6 +64,19 @@ public class LocalServerInteractor implements ILocalServerInteractor {
                     List<Audio> ret = new ArrayList<>();
                     for (int i = 0; i < out.size(); i++)
                         ret.add(Dto2Model.transform(out.get(i)).setIsLocalServer(true));
+                    return ret;
+                });
+    }
+
+    @Override
+    public Single<List<Photo>> getPhotos(int offset, int count, boolean reverse) {
+        return networker.localServerApi()
+                .getPhotos(offset, count, reverse)
+                .map(items -> listEmptyIfNull(items.getItems()))
+                .map(out -> {
+                    List<Photo> ret = new ArrayList<>();
+                    for (int i = 0; i < out.size(); i++)
+                        ret.add(Dto2Model.transform(out.get(i)));
                     return ret;
                 });
     }
@@ -107,6 +121,19 @@ public class LocalServerInteractor implements ILocalServerInteractor {
                     List<Audio> ret = new ArrayList<>();
                     for (int i = 0; i < out.size(); i++)
                         ret.add(Dto2Model.transform(out.get(i)).setIsLocalServer(true));
+                    return ret;
+                });
+    }
+
+    @Override
+    public Single<List<Photo>> searchPhotos(String q, int offset, int count) {
+        return networker.localServerApi()
+                .searchPhotos(q, offset, count)
+                .map(items -> listEmptyIfNull(items.getItems()))
+                .map(out -> {
+                    List<Photo> ret = new ArrayList<>();
+                    for (int i = 0; i < out.size(); i++)
+                        ret.add(Dto2Model.transform(out.get(i)));
                     return ret;
                 });
     }

@@ -29,6 +29,7 @@
             android:id="@+id/item_comment_owner_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             tools:text="Name" />

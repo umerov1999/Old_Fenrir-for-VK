@@ -25,8 +25,8 @@
         android:layout_marginStart="4dp"
         android:background="?attr/selectableItemBackground"
         android:ellipsize="end"
+        android:maxLines="1"
         android:padding="2dp"
-        android:singleLine="true"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
         android:textSize="16sp"
         tools:text="Share" />

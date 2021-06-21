@@ -38,7 +38,6 @@
             android:marqueeRepeatLimit="marquee_forever"
             android:maxLines="1"
             android:scrollHorizontally="true"
-            android:singleLine="true"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             android:textSize="12sp"
             tools:text="Original" />
@@ -53,7 +52,6 @@
             android:marqueeRepeatLimit="marquee_forever"
             android:maxLines="1"
             android:scrollHorizontally="true"
-            android:singleLine="true"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             tools:text="time" />
 
@@ -79,7 +77,6 @@
                 android:marqueeRepeatLimit="marquee_forever"
                 android:maxLines="1"
                 android:scrollHorizontally="true"
-                android:singleLine="true"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 tools:text="views" />
         </LinearLayout>

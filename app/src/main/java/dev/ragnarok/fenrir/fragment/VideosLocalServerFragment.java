@@ -41,7 +41,7 @@ public class VideosLocalServerFragment extends BaseMvpFragment<VideosLocalServer
             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
             () -> CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.permission_all_granted_text));
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private LocalServerVideosAdapter mAudioRecyclerAdapter;
+    private LocalServerVideosAdapter mVideoRecyclerAdapter;
 
     public static VideosLocalServerFragment newInstance(int accountId) {
         Bundle args = new Bundle();
@@ -57,8 +57,10 @@ public class VideosLocalServerFragment extends BaseMvpFragment<VideosLocalServer
 
         MySearchView searchView = root.findViewById(R.id.searchview);
         searchView.setOnQueryTextListener(this);
-        searchView.setRightButtonVisibility(false);
+        searchView.setRightButtonVisibility(true);
+        searchView.setRightIcon(R.drawable.ic_recent);
         searchView.setLeftIcon(R.drawable.magnify);
+        searchView.setOnAdditionalButtonClickListener(() -> callPresenter(VideosLocalServerPresenter::toggleReverse));
         searchView.setQuery("", true);
 
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
@@ -76,9 +78,9 @@ public class VideosLocalServerFragment extends BaseMvpFragment<VideosLocalServer
                 callPresenter(VideosLocalServerPresenter::fireScrollToEnd);
             }
         });
-        mAudioRecyclerAdapter = new LocalServerVideosAdapter(requireActivity(), Collections.emptyList());
-        mAudioRecyclerAdapter.setVideoOnClickListener(this);
-        recyclerView.setAdapter(mAudioRecyclerAdapter);
+        mVideoRecyclerAdapter = new LocalServerVideosAdapter(requireActivity(), Collections.emptyList());
+        mVideoRecyclerAdapter.setVideoOnClickListener(this);
+        recyclerView.setAdapter(mVideoRecyclerAdapter);
         return root;
     }
 
@@ -93,15 +95,15 @@ public class VideosLocalServerFragment extends BaseMvpFragment<VideosLocalServer
 
     @Override
     public void displayList(List<Video> videos) {
-        if (nonNull(mAudioRecyclerAdapter)) {
-            mAudioRecyclerAdapter.setData(videos);
+        if (nonNull(mVideoRecyclerAdapter)) {
+            mVideoRecyclerAdapter.setData(videos);
         }
     }
 
     @Override
     public void notifyListChanged() {
-        if (nonNull(mAudioRecyclerAdapter)) {
-            mAudioRecyclerAdapter.notifyDataSetChanged();
+        if (nonNull(mVideoRecyclerAdapter)) {
+            mVideoRecyclerAdapter.notifyDataSetChanged();
         }
     }
 
@@ -114,15 +116,15 @@ public class VideosLocalServerFragment extends BaseMvpFragment<VideosLocalServer
 
     @Override
     public void notifyItemChanged(int index) {
-        if (nonNull(mAudioRecyclerAdapter)) {
-            mAudioRecyclerAdapter.notifyItemChanged(index);
+        if (nonNull(mVideoRecyclerAdapter)) {
+            mVideoRecyclerAdapter.notifyItemChanged(index);
         }
     }
 
     @Override
     public void notifyDataAdded(int position, int count) {
-        if (nonNull(mAudioRecyclerAdapter)) {
-            mAudioRecyclerAdapter.notifyItemRangeInserted(position, count);
+        if (nonNull(mVideoRecyclerAdapter)) {
+            mVideoRecyclerAdapter.notifyItemRangeInserted(position, count);
         }
     }
 

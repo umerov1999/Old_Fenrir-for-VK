@@ -2,6 +2,7 @@ package dev.ragnarok.fenrir.api.services;
 
 import dev.ragnarok.fenrir.api.model.Items;
 import dev.ragnarok.fenrir.api.model.VKApiAudio;
+import dev.ragnarok.fenrir.api.model.VKApiPhoto;
 import dev.ragnarok.fenrir.api.model.VKApiVideo;
 import dev.ragnarok.fenrir.api.model.response.BaseResponse;
 import io.reactivex.rxjava3.core.Single;
@@ -24,9 +25,16 @@ public interface ILocalServerService {
                                                            @Field("reverse") Integer reverse);
 
     @FormUrlEncoded
+    @POST("photos.get")
+    Single<BaseResponse<Items<VKApiPhoto>>> getPhotos(@Field("offset") Integer offset,
+                                                      @Field("count") Integer count,
+                                                      @Field("reverse") Integer reverse);
+
+    @FormUrlEncoded
     @POST("video.get")
     Single<BaseResponse<Items<VKApiVideo>>> getVideos(@Field("offset") Integer offset,
-                                                      @Field("count") Integer count);
+                                                      @Field("count") Integer count,
+                                                      @Field("reverse") Integer reverse);
 
     @FormUrlEncoded
     @POST("audio.search")
@@ -43,6 +51,12 @@ public interface ILocalServerService {
     @FormUrlEncoded
     @POST("video.search")
     Single<BaseResponse<Items<VKApiVideo>>> searchVideos(@Field("q") String query,
+                                                         @Field("offset") Integer offset,
+                                                         @Field("count") Integer count);
+
+    @FormUrlEncoded
+    @POST("photos.search")
+    Single<BaseResponse<Items<VKApiPhoto>>> searchPhotos(@Field("q") String query,
                                                          @Field("offset") Integer offset,
                                                          @Field("count") Integer count);
 

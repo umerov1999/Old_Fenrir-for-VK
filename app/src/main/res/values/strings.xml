@@ -812,7 +812,7 @@
     <string name="repo">Repository: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="repo_local_server">Repository: https://github.com/umerov1999/FenrirMediaServer/releases</string>
     <string name="is_donated">Donate for verification</string>
-    <string name="is_donated_alert">Not included in the full version, it costs 60 rubles. Transfer money to 5469380058840926 and in the comments, be sure to link to your page. I will exhibit within 2 days</string>
+    <string name="is_donated_alert">Not included in the full version, it costs 60₽. Write to the developer\'s mail</string>
     <string name="project_dedicated_summary">Project Dedicated for Arnoldova Ekaterina, https://vk.com/id255645173</string>
     <string name="project_dedicated">Project Dedicated</string>
     <string name="comment">Comment</string>

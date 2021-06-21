@@ -285,12 +285,12 @@ public class VKPhotosFragment extends BaseMvpFragment<VkPhotosPresenter, IVkPhot
 
     @Override
     public void displayGallery(int accountId, int albumId, int ownerId, @NonNull TmpSource source, int position) {
-        PlaceFactory.getPhotoAlbumGalleryPlace(accountId, albumId, ownerId, source, position).tryOpenWith(requireActivity());
+        PlaceFactory.getPhotoAlbumGalleryPlace(accountId, albumId, ownerId, source, position, false, Settings.get().other().isInvertPhotoRev()).tryOpenWith(requireActivity());
     }
 
     @Override
     public void displayGalleryUnSafe(int accountId, int albumId, int ownerId, ArrayList<Photo> photos, int position) {
-        PlaceFactory.getPhotoAlbumGalleryPlace(accountId, albumId, ownerId, photos, position).tryOpenWith(requireActivity());
+        PlaceFactory.getPhotoAlbumGalleryPlace(accountId, albumId, ownerId, photos, position, false, Settings.get().other().isInvertPhotoRev()).tryOpenWith(requireActivity());
     }
 
     @Override

@@ -29,6 +29,7 @@ import dev.ragnarok.fenrir.model.SimplePrivacy;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.IPhotoAlbumsView;
+import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Analytics;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.RxUtils;
@@ -81,7 +82,8 @@ public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbum
 
     public void fireScrollToEnd() {
         if (!netLoadingNow && nonEmpty(mData) && !endOfContent) {
-            refreshFromNet(mData.size());
+            int reserved = (Settings.get().other().getLocalServer().enabled && getAccountId() == mOwnerId) ? 2 : 1;
+            refreshFromNet(Math.max(0, mData.size() - reserved));
         }
     }
 
@@ -141,7 +143,7 @@ public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbum
     private void onActualAlbumsReceived(int offset, List<PhotoAlbum> albums) {
         // reset cache loading
         cacheDisposable.clear();
-        endOfContent = albums.isEmpty();
+        endOfContent = albums.isEmpty() || mData.contains(albums.get(0)) && albums.size() < 50;
 
         netLoadingNow = false;
 
@@ -151,8 +153,16 @@ public class PhotoAlbumsPresenter extends AccountDependencyPresenter<IPhotoAlbum
             callView(IPhotoAlbumsView::notifyDataSetChanged);
         } else {
             int startSize = mData.size();
-            mData.addAll(albums);
-            callView(view -> view.notifyDataAdded(startSize, albums.size()));
+            int size = 0;
+            for (PhotoAlbum i : albums) {
+                if (mData.contains(i)) {
+                    continue;
+                }
+                size++;
+                mData.add(i);
+            }
+            int finalSize = size;
+            callView(view -> view.notifyDataAdded(startSize, finalSize));
         }
 
         resolveProgressView();
