@@ -21,8 +21,8 @@ import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 
 public class CheckDonate {
-    public static final List<Integer> donatedUsersRemote = new ArrayList<>();
-    public static final Integer[] donatedUsersLocal = {572488303, 365089125,
+    public static final List<Integer> donatedOwnersRemote = new ArrayList<>();
+    public static final Integer[] donatedOwnersLocal = {572488303, 365089125,
             164736208,
             87731802,
             633896460,
@@ -135,7 +135,7 @@ public class CheckDonate {
     };
 
     public static boolean isFullVersion(@NonNull Context context) {
-        if (!Constants.IS_DONATE && !Utils.isOneElementAssigned(Settings.get().accounts().getRegistered(), donatedUsersLocal) && !Utils.isOneElementAssigned(Settings.get().accounts().getRegistered(), donatedUsersRemote)) {
+        if (!Constants.IS_DONATE && !Utils.isOneElementAssigned(Settings.get().accounts().getRegistered(), donatedOwnersLocal) && !Utils.isOneElementAssigned(Settings.get().accounts().getRegistered(), donatedOwnersRemote)) {
             View view = LayoutInflater.from(context).inflate(R.layout.donate_alert, null);
             view.findViewById(R.id.item_donate).setOnClickListener(v -> LinkHelper.openLinkInBrowser(context, "https://play.google.com/store/apps/details?id=dev.ragnarok.fenrir_full"));
             RLottieImageView anim = view.findViewById(R.id.lottie_animation);
@@ -155,19 +155,19 @@ public class CheckDonate {
     }
 
     public static void isDonated(Activity context, int account_id) {
-        donatedUsersRemote.clear();
-        donatedUsersRemote.addAll(Settings.get().other().getDonates());
+        donatedOwnersRemote.clear();
+        donatedOwnersRemote.addAll(Settings.get().other().getDonates());
 
         //noinspection ResultOfMethodCallIgnored
         InteractorFactory.createDonateCheckInteractor().check()
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(t -> {
                     if (!Utils.isEmpty(t.donates)) {
-                        donatedUsersRemote.clear();
-                        donatedUsersRemote.addAll(t.donates);
-                        Settings.get().other().registerDonatesId(donatedUsersRemote);
+                        donatedOwnersRemote.clear();
+                        donatedOwnersRemote.addAll(t.donates);
+                        Settings.get().other().registerDonatesId(donatedOwnersRemote);
                     }
-                    boolean isDon = Utils.isValueAssigned(account_id, donatedUsersLocal) || Utils.isValueAssigned(account_id, donatedUsersRemote);
+                    boolean isDon = Utils.isValueAssigned(account_id, donatedOwnersLocal) || Utils.isValueAssigned(account_id, donatedOwnersRemote);
                     View view = LayoutInflater.from(context).inflate(R.layout.is_donate_alert, null);
                     ((TextView) view.findViewById(R.id.item_status)).setText(isDon ? R.string.button_yes : R.string.button_no);
                     RLottieImageView anim = view.findViewById(R.id.lottie_animation);
@@ -185,17 +185,17 @@ public class CheckDonate {
     }
 
     public static void updateDonateList() {
-        donatedUsersRemote.clear();
-        donatedUsersRemote.addAll(Settings.get().other().getDonates());
+        donatedOwnersRemote.clear();
+        donatedOwnersRemote.addAll(Settings.get().other().getDonates());
 
         //noinspection ResultOfMethodCallIgnored
         InteractorFactory.createDonateCheckInteractor().check()
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(t -> {
                     if (!Utils.isEmpty(t.donates)) {
-                        donatedUsersRemote.clear();
-                        donatedUsersRemote.addAll(t.donates);
-                        Settings.get().other().registerDonatesId(donatedUsersRemote);
+                        donatedOwnersRemote.clear();
+                        donatedOwnersRemote.addAll(t.donates);
+                        Settings.get().other().registerDonatesId(donatedOwnersRemote);
                     }
                 }, RxUtils.ignore());
     }

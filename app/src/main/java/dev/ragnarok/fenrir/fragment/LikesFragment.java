@@ -33,12 +33,6 @@ public class LikesFragment extends AbsOwnersListFragment<LikesListPresenter, ISi
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mHasToolbar = true;
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         ActionBar actionBar = ActivityUtils.supportToolbarFor(this);
@@ -66,5 +60,15 @@ public class LikesFragment extends AbsOwnersListFragment<LikesListPresenter, ISi
                 requireArguments().getString(Extra.FILTER),
                 saveInstanceState
         );
+    }
+
+    @Override
+    protected boolean hasToolbar() {
+        return true;
+    }
+
+    @Override
+    protected boolean needShowCount() {
+        return false;
     }
 }

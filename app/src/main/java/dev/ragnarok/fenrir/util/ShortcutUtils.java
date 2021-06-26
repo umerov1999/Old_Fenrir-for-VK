@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
-import com.squareup.picasso.Transformation;
+import com.squareup.picasso3.Transformation;
 
 import java.io.IOException;
 import java.util.ArrayList;

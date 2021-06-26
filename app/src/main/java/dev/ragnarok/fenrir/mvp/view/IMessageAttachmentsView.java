@@ -28,7 +28,7 @@ public interface IMessageAttachmentsView extends IMvpView, IErrorView {
 
     void displaySelectUploadFileSizeDialog(String file);
 
-    void changePercentageSmoothly(int dataPosition, int progress);
+    void changePercentageSmoothly(int id, int progress);
 
     void notifyItemChanged(int index);
 

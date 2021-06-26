@@ -28,9 +28,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
+import com.squareup.picasso3.BitmapTarget
+import com.squareup.picasso3.Callback
+import com.squareup.picasso3.Picasso
 import dev.ragnarok.fenrir.Constants
 import dev.ragnarok.fenrir.Extensions.Companion.toMainThread
 import dev.ragnarok.fenrir.Extra
@@ -392,7 +392,12 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
 
         coverAdapter = CoverAdapter()
         ivCoverPager?.adapter = coverAdapter
-        ivCoverPager?.setPageTransformer(dev.ragnarok.fenrir.view.DepthPageTransformer)
+        ivCoverPager?.setPageTransformer(
+            Utils.createPageTransform(
+                Settings.get().main().player_cover_transform
+            )
+        )
+        ivCoverPager?.offscreenPageLimit = 1
         ivCoverPager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -707,11 +712,8 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
         mFromTouch = false
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         // Set the playback drawables
         updatePlaybackControls()
         // Current info
@@ -760,7 +762,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
         coverAdapter?.updateAudios(MusicPlaybackController.getQueue())
     }
 
-    val target = object : Target {
+    val target = object : BitmapTarget {
         override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
             if (isAdded) {
                 playerGradientFirst?.visibility = View.VISIBLE
@@ -810,7 +812,11 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
 
         if (Settings.get().other().isBlur_for_player) {
             val coverUrl =
-                firstNonEmptyString(audioTrack?.thumb_image_very_big, audioTrack?.thumb_image_big)
+                firstNonEmptyString(
+                    audioTrack?.thumb_image_very_big,
+                    audioTrack?.thumb_image_big,
+                    audioTrack?.thumb_image_little
+                )
             if (coverUrl != null) {
                 PicassoInstance.with()
                     .load(coverUrl)
@@ -1154,14 +1160,18 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
 
         fun bind(audioTrack: Audio) {
             val coverUrl =
-                firstNonEmptyString(audioTrack.thumb_image_big, audioTrack.thumb_image_very_big)
+                firstNonEmptyString(
+                    audioTrack.thumb_image_big,
+                    audioTrack.thumb_image_very_big,
+                    audioTrack.thumb_image_little
+                )
             if (coverUrl != null) {
                 PicassoInstance.with()
                     .load(coverUrl)
                     .tag(PLAYER_TAG)
                     .into(ivCover, mPicassoLoadCallback)
             } else {
-                PicassoInstance.with().cancelRequest(target)
+                PicassoInstance.with().cancelRequest(ivCover)
                 ivCover.scaleType = ImageView.ScaleType.CENTER
                 if (FenrirNative.isNativeLoaded()) {
                     ivCover.fromRes(
@@ -1187,7 +1197,7 @@ class AudioPlayerFragment : BottomSheetDialogFragment(), TimeBar.OnScrubListener
             ivCover.scaleType = ImageView.ScaleType.FIT_START
         }
 
-        override fun onError(e: java.lang.Exception?) {
+        override fun onError(t: Throwable) {
             ivCover.scaleType = ImageView.ScaleType.CENTER
             if (FenrirNative.isNativeLoaded()) {
                 ivCover.fromRes(

@@ -24,6 +24,8 @@ import dev.ragnarok.fenrir.activity.ActivityUtils;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.model.Community;
 import dev.ragnarok.fenrir.model.GroupSettings;
+import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.Utils;
 
 public class CommunityControlFragment extends Fragment {
 
@@ -57,6 +59,7 @@ public class CommunityControlFragment extends Fragment {
 
         ViewPager2 pager = root.findViewById(R.id.view_pager);
         pager.setOffscreenPageLimit(1);
+        pager.setPageTransformer(Utils.createPageTransform(Settings.get().main().getViewpager_page_transform()));
 
         List<ITab> tabs = new ArrayList<>();
         if (mCommunity.getAdminLevel() > 0)

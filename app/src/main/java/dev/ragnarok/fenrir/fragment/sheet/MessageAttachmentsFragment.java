@@ -237,9 +237,9 @@ public class MessageAttachmentsFragment extends AbsPresenterBottomSheetFragment<
     }
 
     @Override
-    public void changePercentageSmoothly(int dataPosition, int progress) {
+    public void changePercentageSmoothly(int id, int progress) {
         if (nonNull(mAdapter)) {
-            mAdapter.changeUploadProgress(dataPosition, progress, true);
+            mAdapter.changeUploadProgress(id, progress, true);
         }
     }
 

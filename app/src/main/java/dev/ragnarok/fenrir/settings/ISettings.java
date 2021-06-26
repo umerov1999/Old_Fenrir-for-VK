@@ -21,6 +21,7 @@ import dev.ragnarok.fenrir.model.SideSwitchableCategory;
 import dev.ragnarok.fenrir.model.SwitchableCategory;
 import dev.ragnarok.fenrir.model.drawer.RecentChat;
 import dev.ragnarok.fenrir.place.Place;
+import dev.ragnarok.fenrir.view.pager.Transformers_Types;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -128,6 +129,8 @@ public interface ISettings {
         boolean isEnable_show_recent_dialogs();
 
         boolean is_side_navigation();
+
+        boolean is_side_no_stroke();
 
         boolean is_notification_force_link();
 
@@ -309,6 +312,12 @@ public interface ISettings {
 
         @PhotoSize
         int getPrefDisplayImageSize(@PhotoSize int byDefault);
+
+        @Transformers_Types
+        int getViewpager_page_transform();
+
+        @Transformers_Types
+        int getPlayer_cover_transform();
 
         int getStart_newsMode();
 

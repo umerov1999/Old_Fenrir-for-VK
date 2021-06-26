@@ -3,5 +3,5 @@
     android:drawable="@drawable/seekbar_thumb_unpressed_to_pressed">
     <target
         android:name="thumb_0"
-        android:animation="@anim/seekbar_thumb_unpressed_to_pressed_thumb_0_animation" />
+        android:animation="@animator/seekbar_thumb_unpressed_to_pressed_thumb_0_animation" />
 </animated-vector>

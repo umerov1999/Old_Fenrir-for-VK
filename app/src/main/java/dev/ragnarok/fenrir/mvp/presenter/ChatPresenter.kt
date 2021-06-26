@@ -436,9 +436,10 @@ class ChatPresenter(
 
                 if (index != -1) {
                     val upload = attachments[index].attachment as Upload
+                    val upId = attachments[index].id
                     if (upload.status == Upload.STATUS_UPLOADING) {
                         upload.progress = update.progress
-                        view?.notifyEditUploadProgressUpdate(index, update.progress)
+                        view?.notifyEditUploadProgressUpdate(upId, update.progress)
                     }
                 }
             }
@@ -684,6 +685,14 @@ class ChatPresenter(
 
     private fun fireCheckMessages() {
         if (Settings.get().other().isAuto_read) {
+            appendDisposable(
+                checkErrorMessages().compose(applySingleIOToMainSchedulers())
+                    .subscribe({ t -> if (t) startSendService() else readAllUnreadMessagesIfExists() }) { })
+        }
+    }
+
+    fun fireNetworkChenged() {
+        if (!isHiddenAccount(accountId)) {
             appendDisposable(
                 checkErrorMessages().compose(applySingleIOToMainSchedulers())
                     .subscribe({ t -> if (t) startSendService() else readAllUnreadMessagesIfExists() }) { })

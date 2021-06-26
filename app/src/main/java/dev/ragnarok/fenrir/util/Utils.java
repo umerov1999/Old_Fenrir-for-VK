@@ -50,6 +50,7 @@ import androidx.annotation.StringRes;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.caverock.androidsvg.SVG;
 import com.caverock.androidsvg.SVGParseException;
@@ -105,6 +106,15 @@ import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.view.emoji.EmojiconTextView;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
+import dev.ragnarok.fenrir.view.pager.BackgroundToForegroundTransformer;
+import dev.ragnarok.fenrir.view.pager.ClockSpinTransformer;
+import dev.ragnarok.fenrir.view.pager.CubeInDepthTransformer;
+import dev.ragnarok.fenrir.view.pager.DepthTransformer;
+import dev.ragnarok.fenrir.view.pager.FanTransformer;
+import dev.ragnarok.fenrir.view.pager.GateTransformer;
+import dev.ragnarok.fenrir.view.pager.SliderTransformer;
+import dev.ragnarok.fenrir.view.pager.Transformers_Types;
+import dev.ragnarok.fenrir.view.pager.ZoomOutTransformer;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import okhttp3.Call;
@@ -1667,6 +1677,31 @@ public class Utils {
         } catch (Throwable ignore) {
             CustomToast.CreateCustomToast(context).showToastError(R.string.remote_audio_error);
         }
+    }
+
+    @Nullable
+    public static ViewPager2.PageTransformer createPageTransform(@Transformers_Types int type) {
+        switch (type) {
+            case Transformers_Types.SLIDER_TRANSFORMER:
+                return new SliderTransformer(1);
+            case Transformers_Types.CLOCK_SPIN_TRANSFORMER:
+                return new ClockSpinTransformer();
+            case Transformers_Types.BACKGROUND_TO_FOREGROUND_TRANSFORMER:
+                return new BackgroundToForegroundTransformer();
+            case Transformers_Types.CUBE_IN_DEPTH_TRANSFORMER:
+                return new CubeInDepthTransformer();
+            case Transformers_Types.DEPTH_TRANSFORMER:
+                return new DepthTransformer();
+            case Transformers_Types.FAN_TRANSFORMER:
+                return new FanTransformer();
+            case Transformers_Types.GATE_TRANSFORMER:
+                return new GateTransformer();
+            case Transformers_Types.OFF:
+                return null;
+            case Transformers_Types.ZOOM_OUT_TRANSFORMER:
+                return new ZoomOutTransformer();
+        }
+        return null;
     }
 
     @Nullable

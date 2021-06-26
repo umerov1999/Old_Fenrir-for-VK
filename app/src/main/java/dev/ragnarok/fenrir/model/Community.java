@@ -4,6 +4,9 @@ import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
 
 import android.os.Parcel;
 
+import dev.ragnarok.fenrir.CheckDonate;
+import dev.ragnarok.fenrir.util.Utils;
+
 
 public class Community extends Owner {
 
@@ -25,6 +28,7 @@ public class Community extends Owner {
     private boolean admin;
     private int adminLevel;
     private boolean member;
+    private int membersCount;
     private int memberStatus;
     private int type;
     private String photo50;
@@ -46,6 +50,7 @@ public class Community extends Owner {
         admin = in.readByte() != 0;
         adminLevel = in.readInt();
         member = in.readByte() != 0;
+        membersCount = in.readInt();
         memberStatus = in.readInt();
         type = in.readInt();
         photo50 = in.readString();
@@ -74,6 +79,7 @@ public class Community extends Owner {
         dest.writeByte((byte) (admin ? 1 : 0));
         dest.writeInt(adminLevel);
         dest.writeByte((byte) (member ? 1 : 0));
+        dest.writeInt(membersCount);
         dest.writeInt(memberStatus);
         dest.writeInt(type);
         dest.writeString(photo50);
@@ -133,6 +139,15 @@ public class Community extends Owner {
 
     public Community setMember(boolean member) {
         this.member = member;
+        return this;
+    }
+
+    public int getMembersCount() {
+        return membersCount;
+    }
+
+    public Community setMembersCount(int membersCount) {
+        this.membersCount = membersCount;
         return this;
     }
 
@@ -211,8 +226,13 @@ public class Community extends Owner {
     }
 
     @Override
+    public boolean isDonated() {
+        return Utils.isValueAssigned(getOwnerId(), CheckDonate.donatedOwnersLocal) || Utils.isValueAssigned(getOwnerId(), CheckDonate.donatedOwnersRemote);
+    }
+
+    @Override
     public boolean isVerified() {
-        return verified;
+        return verified || isDonated();
     }
 
     public Community setVerified(boolean verified) {

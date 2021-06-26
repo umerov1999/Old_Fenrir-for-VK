@@ -91,6 +91,24 @@
             android:title="@string/autoplay_gif"
             app:iconSpaceReserved="false" />
 
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/array_pager_transform_names"
+            android:entryValues="@array/array_pager_transform_anim_items"
+            android:key="viewpager_page_transform"
+            android:title="@string/viewpager_page_transform"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/array_pager_transform_names"
+            android:entryValues="@array/array_pager_transform_anim_items"
+            android:key="player_cover_transform"
+            android:title="@string/player_cover_transform"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
         <SwitchPreference
             android:defaultValue="false"
             android:key="custom_tabs"
@@ -660,6 +678,13 @@
             android:key="is_side_navigation"
             android:summary="@string/need_restart"
             android:title="@string/is_side_navigation"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="is_side_navigation"
+            android:key="is_side_no_stroke"
+            android:title="@string/is_side_no_stroke"
             app:iconSpaceReserved="false" />
 
         <Preference

@@ -207,6 +207,9 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
             case 12:
                 paganSymbol.setImageResource(R.drawable.ic_odin);
                 break;
+            case 13:
+                paganSymbol.setImageResource(R.drawable.ic_cat);
+                break;
             default:
                 paganSymbol.setImageResource(R.drawable.ic_igdr);
                 break;

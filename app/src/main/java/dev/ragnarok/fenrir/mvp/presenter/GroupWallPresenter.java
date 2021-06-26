@@ -86,7 +86,7 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
 
     @OnGuiCreated
     private void resolveCounters() {
-        callView(v -> v.displayCounters(details.getMembersCount(), details.getTopicsCount(),
+        callView(v -> v.displayCounters(community.getMembersCount(), details.getTopicsCount(),
                 details.getDocsCount(), details.getPhotosCount(),
                 details.getAudiosCount(), details.getVideosCount(), details.getArticlesCount(), details.getProductsCount(), details.getChatsCount()));
     }
@@ -250,12 +250,16 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
         callView(v -> v.openDocuments(getAccountId(), ownerId, community));
     }
 
-    public void fireShowComunityInfoClick() {
-        callView(v -> v.goToShowComunityInfo(getAccountId(), community));
+    public void fireShowCommunityInfoClick() {
+        callView(v -> v.goToShowCommunityInfo(getAccountId(), community));
     }
 
-    public void fireShowComunityLinksInfoClick() {
-        callView(v -> v.goToShowComunityLinksInfo(getAccountId(), community));
+    public void fireShowCommunityLinksInfoClick() {
+        callView(v -> v.goToShowCommunityLinksInfo(getAccountId(), community));
+    }
+
+    public void fireShowCommunityAboutInfoClick() {
+        callView(v -> v.goToShowCommunityAboutInfo(getAccountId(), details));
     }
 
     public void fireGroupChatsClick() {

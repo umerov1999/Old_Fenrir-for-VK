@@ -33,6 +33,7 @@ import dev.ragnarok.fenrir.mvp.presenter.FriendsTabsPresenter;
 import dev.ragnarok.fenrir.mvp.view.IFriendsTabsView;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.Utils;
 
 public class FriendsTabsFragment extends BaseMvpFragment<FriendsTabsPresenter, IFriendsTabsView> implements IFriendsTabsView {
 
@@ -80,6 +81,7 @@ public class FriendsTabsFragment extends BaseMvpFragment<FriendsTabsPresenter, I
 
         viewPager = root.findViewById(R.id.viewpager);
         viewPager.setOffscreenPageLimit(1);
+        viewPager.setPageTransformer(Utils.createPageTransform(Settings.get().main().getViewpager_page_transform()));
 
         tabLayout = root.findViewById(R.id.tablayout);
         return root;

@@ -13,7 +13,7 @@ import android.view.View
 import android.widget.*
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
-import com.squareup.picasso.Transformation
+import com.squareup.picasso3.Transformation
 import dev.ragnarok.fenrir.Injection
 import dev.ragnarok.fenrir.R
 import dev.ragnarok.fenrir.picasso.PicassoInstance.Companion.with

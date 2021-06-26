@@ -3,6 +3,7 @@ package dev.ragnarok.fenrir.db.model.entity;
 import java.util.Collections;
 import java.util.List;
 
+import dev.ragnarok.fenrir.model.CommentedType;
 import dev.ragnarok.fenrir.util.AssertUtils;
 
 
@@ -12,7 +13,8 @@ public class CommentEntity {
 
     private final int sourceOwnerId;
 
-    private final int sourceType;
+    private final @CommentedType
+    int sourceType;
 
     private final String sourceAccessKey;
 
@@ -46,7 +48,7 @@ public class CommentEntity {
 
     private AttachmentsEntity attachments;
 
-    public CommentEntity(int sourceId, int sourceOwnerId, int sourceType, String sourceAccessKey, int id) {
+    public CommentEntity(int sourceId, int sourceOwnerId, @CommentedType int sourceType, String sourceAccessKey, int id) {
         this.sourceId = sourceId;
         this.sourceOwnerId = sourceOwnerId;
         this.sourceType = sourceType;
@@ -195,7 +197,8 @@ public class CommentEntity {
         return sourceOwnerId;
     }
 
-    public int getSourceType() {
+    public @CommentedType
+    int getSourceType() {
         return sourceType;
     }
 

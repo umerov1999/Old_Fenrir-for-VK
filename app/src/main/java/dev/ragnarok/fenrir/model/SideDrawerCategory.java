@@ -39,7 +39,7 @@ public class SideDrawerCategory implements Parcelable {
         return title;
     }
 
-    @SwitchableCategory
+    @SideSwitchableCategory
     public int getKey() {
         return key;
     }

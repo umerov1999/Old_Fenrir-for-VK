@@ -33,6 +33,7 @@ import dev.ragnarok.fenrir.mvp.view.IVideosListView;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.Utils;
 
 public class VideosTabsFragment extends BaseFragment {
 
@@ -82,6 +83,9 @@ public class VideosTabsFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         ViewPager2 viewPager = view.findViewById(R.id.fragment_videos_pager);
         viewPager.setOffscreenPageLimit(1);
+        viewPager.setPageTransformer(Utils.createPageTransform(
+                Settings.get().main().getViewpager_page_transform()
+        ));
         Adapter adapter = new Adapter(this);
         viewPager.setAdapter(adapter);
         adapter.addFragment(VIDEOS);

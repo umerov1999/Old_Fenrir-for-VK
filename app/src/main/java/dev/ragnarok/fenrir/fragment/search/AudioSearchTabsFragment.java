@@ -24,6 +24,7 @@ import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Accounts;
+import dev.ragnarok.fenrir.util.Utils;
 
 public class AudioSearchTabsFragment extends Fragment {
 
@@ -53,6 +54,7 @@ public class AudioSearchTabsFragment extends Fragment {
         Adapter mAdapter = new Adapter(this);
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(1);
+        mViewPager.setPageTransformer(Utils.createPageTransform(Settings.get().main().getViewpager_page_transform()));
 
         new TabLayoutMediator(root.findViewById(R.id.tablayout), mViewPager, (tab, position) -> {
             switch (position) {

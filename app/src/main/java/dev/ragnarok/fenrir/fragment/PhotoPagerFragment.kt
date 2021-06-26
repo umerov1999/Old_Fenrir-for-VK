@@ -19,7 +19,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.squareup.picasso.Callback
+import com.squareup.picasso3.Callback
 import dev.ragnarok.fenrir.Extra
 import dev.ragnarok.fenrir.R
 import dev.ragnarok.fenrir.activity.ActivityFeatures
@@ -211,6 +211,11 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
         (requireActivity() as AppCompatActivity).setSupportActionBar(mToolbar)
         mViewPager = root.findViewById(R.id.view_pager)
         mViewPager?.offscreenPageLimit = 1
+        mViewPager?.setPageTransformer(
+            Utils.createPageTransform(
+                Settings.get().main().viewpager_page_transform
+            )
+        )
         mViewPager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -666,7 +671,7 @@ class PhotoPagerFragment : BaseMvpFragment<PhotoPagerPresenter, IPhotoPagerView>
             reload.visibility = View.INVISIBLE
         }
 
-        override fun onError(e: Exception?) {
+        override fun onError(t: Throwable) {
             mLoadingNow = false
             resolveProgressVisibility()
             reload.visibility = View.VISIBLE

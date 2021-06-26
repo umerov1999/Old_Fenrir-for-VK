@@ -1,20 +1,23 @@
 package dev.ragnarok.fenrir.db.model.entity.feedback;
 
 import dev.ragnarok.fenrir.db.model.entity.CommentEntity;
+import dev.ragnarok.fenrir.model.feedback.FeedbackType;
 
 public class FeedbackEntity {
 
-    private final int type;
+    private final @FeedbackType
+    int type;
 
     private long date;
 
     private CommentEntity reply;
 
-    public FeedbackEntity(int type) {
+    public FeedbackEntity(@FeedbackType int type) {
         this.type = type;
     }
 
-    public int getType() {
+    public @FeedbackType
+    int getType() {
         return type;
     }
 

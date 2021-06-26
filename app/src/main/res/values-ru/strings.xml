@@ -79,6 +79,7 @@
         <item>Файер</item>
         <item>Файер веер</item>
         <item>Один</item>
+        <item>Кот</item>
     </string-array>
 
     <string-array name="array_accounts_input">
@@ -319,6 +320,13 @@
 
     <string name="groups">Группы</string>
     <string name="community">Сообщество</string>
+    <string name="type_event">мероприятие</string>
+    <string name="type_page">Публичная страница</string>
+    <string name="type_community">сообщество</string>
+    <string name="type_opened">Открытое %1$s</string>
+    <string name="type_closed">Закрытое %1$s</string>
+    <string name="members_count">%1$s участников</string>
+    <string name="people_count">%1$d чел.</string>
 
     <string name="api_error_internal_1">Сервер отдал повреждённый json</string>
     <string name="api_error_1">Произошла неизвестная ошибка</string>
@@ -1587,4 +1595,7 @@
     <string name="recording_to_opus_summary">Эксперементально, Android 10 и выше</string>
     <string name="do_convert_request">Конвертировать?</string>
     <string name="play_audio_after_current">Играть следующим</string>
+    <string name="viewpager_page_transform">Анимация Viewpager2</string>
+    <string name="player_cover_transform">Анимация свайпа обложки плеера</string>
+    <string name="is_side_no_stroke">Отключить контур в боковом меню</string>
 </resources>

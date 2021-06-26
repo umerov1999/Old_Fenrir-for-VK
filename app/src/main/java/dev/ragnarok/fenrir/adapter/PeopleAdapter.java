@@ -13,7 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Transformation;
+import com.squareup.picasso3.Transformation;
 
 import java.util.List;
 
@@ -26,6 +26,7 @@ import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.User;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
+import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 
@@ -74,8 +75,8 @@ public class PeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.tvName.setText(community.getName());
         holder.tvName.setTextColor(Utils.getVerifiedColor(mContext, community.isVerified()));
         holder.ivVerified.setVisibility(community.isVerified() ? View.VISIBLE : View.GONE);
-        String status = "@" + community.getScreenName();
-        holder.tvStatus.setText(status);
+        holder.tvType.setText(CommunitiesAdapter.getCommunityType(mContext, community));
+        holder.tvMembersCount.setText(mContext.getString(R.string.members_count, (community.getMembersCount() > 0 ? (AppTextUtils.getCounterWithK(community.getMembersCount())) : "-")));
 
         PicassoInstance.with()
                 .load(community.getMaxSquareAvatar())
@@ -157,14 +158,16 @@ public class PeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private static class CommunityHolder extends RecyclerView.ViewHolder {
 
         private final TextView tvName;
-        private final TextView tvStatus;
+        private final TextView tvType;
+        private final TextView tvMembersCount;
         private final ImageView ivAvatar;
         private final ImageView ivVerified;
 
         CommunityHolder(View root) {
             super(root);
             tvName = root.findViewById(R.id.item_group_name);
-            tvStatus = root.findViewById(R.id.item_group_status);
+            tvType = root.findViewById(R.id.item_group_type);
+            tvMembersCount = root.findViewById(R.id.item_group_members);
             ivAvatar = root.findViewById(R.id.item_group_avatar);
             ivVerified = itemView.findViewById(R.id.item_verified);
         }

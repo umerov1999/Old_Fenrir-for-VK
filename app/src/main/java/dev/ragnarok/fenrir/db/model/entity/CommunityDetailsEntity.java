@@ -19,8 +19,6 @@ public class CommunityDetailsEntity {
 
     private boolean isSubscribed;
 
-    private int membersCount;
-
     private int topicsCount;
 
     private int docsCount;
@@ -42,6 +40,8 @@ public class CommunityDetailsEntity {
     private AudioEntity statusAudio;
 
     private Cover cover;
+
+    private String description;
 
     public Cover getCover() {
         return cover;
@@ -142,12 +142,12 @@ public class CommunityDetailsEntity {
         return this;
     }
 
-    public int getMembersCount() {
-        return membersCount;
+    public String getDescription() {
+        return description;
     }
 
-    public CommunityDetailsEntity setMembersCount(int membersCount) {
-        this.membersCount = membersCount;
+    public CommunityDetailsEntity setDescription(String description) {
+        this.description = description;
         return this;
     }
 

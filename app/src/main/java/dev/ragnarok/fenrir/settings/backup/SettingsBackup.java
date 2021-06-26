@@ -34,6 +34,8 @@ public class SettingsBackup {
         settings.add(new SettingCollector("start_news", SettingTypes.TYPE_STRING));
         settings.add(new SettingCollector("crypt_version", SettingTypes.TYPE_STRING));
         settings.add(new SettingCollector("photo_preview_size", SettingTypes.TYPE_STRING));
+        settings.add(new SettingCollector("viewpager_page_transform", SettingTypes.TYPE_STRING));
+        settings.add(new SettingCollector("player_cover_transform", SettingTypes.TYPE_STRING));
         settings.add(new SettingCollector("pref_display_photo_size", SettingTypes.TYPE_INT));
         settings.add(new SettingCollector("photo_rounded_view", SettingTypes.TYPE_STRING));
         settings.add(new SettingCollector("font_size", SettingTypes.TYPE_STRING));
@@ -130,6 +132,7 @@ public class SettingsBackup {
         settings.add(new SettingCollector("player_background_json", SettingTypes.TYPE_STRING));
         settings.add(new SettingCollector("use_hls_downloader", SettingTypes.TYPE_BOOL));
         settings.add(new SettingCollector("is_side_navigation", SettingTypes.TYPE_BOOL));
+        settings.add(new SettingCollector("is_side_no_stroke", SettingTypes.TYPE_BOOL));
         settings.add(new SettingCollector("chats_notification_backup", SettingTypes.TYPE_STRING));
         settings.add(new SettingCollector("notification_force_link", SettingTypes.TYPE_BOOL));
         settings.add(new SettingCollector("recording_to_opus", SettingTypes.TYPE_BOOL));

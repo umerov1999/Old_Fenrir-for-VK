@@ -34,7 +34,9 @@ import dev.ragnarok.fenrir.model.selection.LocalVideosSelectableSource;
 import dev.ragnarok.fenrir.model.selection.Sources;
 import dev.ragnarok.fenrir.model.selection.Types;
 import dev.ragnarok.fenrir.model.selection.VkPhotosSelectableSource;
+import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Objects;
+import dev.ragnarok.fenrir.util.Utils;
 
 public class DualTabPhotosFragment extends BaseFragment implements BackPressCallback {
 
@@ -78,6 +80,7 @@ public class DualTabPhotosFragment extends BaseFragment implements BackPressCall
         mPagerAdapter = new Adapter(this, mSources);
         viewPager.setAdapter(mPagerAdapter);
         viewPager.setOffscreenPageLimit(1);
+        viewPager.setPageTransformer(Utils.createPageTransform(Settings.get().main().getViewpager_page_transform()));
 
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override

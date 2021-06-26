@@ -361,7 +361,7 @@ public class NotReadMessagesFragment extends PlaceSupportMvpFragment<NotReadMess
             name = name.trim();
             EmptyAvatar.setText(name);
             Avatar.setImageBitmap(
-                    new RoundTransformation().transform(
+                    new RoundTransformation().localTransform(
                             Utils.createGradientChatImage(
                                     200,
                                     200,

@@ -55,4 +55,8 @@ public abstract class Owner extends AbsModel {
     public boolean isVerified() {
         throw new UnsupportedOperationException();
     }
+
+    public boolean isDonated() {
+        throw new UnsupportedOperationException();
+    }
 }

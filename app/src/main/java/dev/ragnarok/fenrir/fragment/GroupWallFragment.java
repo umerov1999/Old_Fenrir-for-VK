@@ -7,7 +7,10 @@ import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,7 +28,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,6 +45,8 @@ import dev.ragnarok.fenrir.activity.LoginActivity;
 import dev.ragnarok.fenrir.adapter.horizontal.HorizontalOptionsAdapter;
 import dev.ragnarok.fenrir.fragment.search.SearchContentType;
 import dev.ragnarok.fenrir.fragment.search.criteria.PeopleSearchCriteria;
+import dev.ragnarok.fenrir.link.internal.LinkActionAdapter;
+import dev.ragnarok.fenrir.link.internal.OwnerLinkSpanFactory;
 import dev.ragnarok.fenrir.model.Community;
 import dev.ragnarok.fenrir.model.CommunityDetails;
 import dev.ragnarok.fenrir.model.GroupSettings;
@@ -73,6 +80,12 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
     private final AppPerms.doRequestPermissions requestWritePermission = AppPerms.requestPermissions(this,
             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
             () -> callPresenter(p -> p.fireShowQR(requireActivity())));
+    private final OwnerLinkSpanFactory.ActionListener ownerLinkAdapter = new LinkActionAdapter() {
+        @Override
+        public void onOwnerClick(int ownerId) {
+            callPresenter(p -> p.fireOwnerClick(ownerId));
+        }
+    };
     private GroupHeaderHolder mHeaderHolder;
 
     @Override
@@ -109,6 +122,32 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
         mHeaderHolder.tvScreenName.setText(screenName);
         mHeaderHolder.tvName.setTextColor(Utils.getVerifiedColor(requireActivity(), community.isVerified()));
         mHeaderHolder.tvScreenName.setTextColor(Utils.getVerifiedColor(requireActivity(), community.isVerified()));
+
+        int donate_anim = Settings.get().other().getDonate_anim_set();
+        if (donate_anim > 0 && community.isDonated()) {
+            mHeaderHolder.bDonate.setVisibility(View.VISIBLE);
+            mHeaderHolder.bDonate.setAutoRepeat(true);
+            if (donate_anim == 2) {
+                String cur = Settings.get().ui().getMainThemeKey();
+                if ("fire".equals(cur) || "fire_gray".equals(cur) || "yellow_violet".equals(cur)) {
+                    mHeaderHolder.tvName.setTextColor(Color.parseColor("#df9d00"));
+                    mHeaderHolder.tvScreenName.setTextColor(Color.parseColor("#df9d00"));
+                    Utils.setBackgroundTint(mHeaderHolder.ivVerified, Color.parseColor("#df9d00"));
+                    mHeaderHolder.bDonate.fromRes(R.raw.donater_fire, Utils.dp(100), Utils.dp(100), null);
+                } else {
+                    mHeaderHolder.tvName.setTextColor(CurrentTheme.getColorPrimary(requireActivity()));
+                    mHeaderHolder.tvScreenName.setTextColor(CurrentTheme.getColorPrimary(requireActivity()));
+                    Utils.setBackgroundTint(mHeaderHolder.ivVerified, CurrentTheme.getColorPrimary(requireActivity()));
+                    mHeaderHolder.bDonate.fromRes(R.raw.donater_fire, Utils.dp(100), Utils.dp(100), new int[]{0xFF812E, CurrentTheme.getColorPrimary(requireActivity())}, true);
+                }
+            } else {
+                mHeaderHolder.bDonate.fromRes(R.raw.donater, Utils.dp(100), Utils.dp(100), new int[]{0xffffff, CurrentTheme.getColorPrimary(requireActivity()), 0x777777, CurrentTheme.getColorSecondary(requireActivity())});
+            }
+            mHeaderHolder.bDonate.playAnimation();
+        } else {
+            mHeaderHolder.bDonate.setImageDrawable(null);
+            mHeaderHolder.bDonate.setVisibility(View.GONE);
+        }
         mHeaderHolder.ivVerified.setVisibility(community.isVerified() ? View.VISIBLE : View.GONE);
 
         if (!details.isCanMessage())
@@ -307,13 +346,34 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
     }
 
     @Override
-    public void goToShowComunityInfo(int accountId, Community community) {
+    public void goToShowCommunityInfo(int accountId, Community community) {
         PlaceFactory.getShowComunityInfoPlace(accountId, community).tryOpenWith(requireActivity());
     }
 
     @Override
-    public void goToShowComunityLinksInfo(int accountId, Community community) {
+    public void goToShowCommunityLinksInfo(int accountId, Community community) {
         PlaceFactory.getShowComunityLinksInfoPlace(accountId, community).tryOpenWith(requireActivity());
+    }
+
+    @Override
+    public void goToShowCommunityAboutInfo(int accountId, CommunityDetails details) {
+        if (Utils.isEmpty(details.getDescription())) {
+            return;
+        }
+        View root = View.inflate(requireActivity(), R.layout.dialog_selectable_text, null);
+        MaterialTextView tvText = root.findViewById(R.id.selectable_text);
+        if (nonNull(tvText)) {
+            Spannable subtitle = OwnerLinkSpanFactory.withSpans(details.getDescription(), true, false, ownerLinkAdapter);
+
+            tvText.setText(subtitle, TextView.BufferType.SPANNABLE);
+            tvText.setMovementMethod(LinkMovementMethod.getInstance());
+        }
+
+        new MaterialAlertDialogBuilder(requireActivity())
+                .setTitle(R.string.description_hint)
+                .setView(root)
+                .setPositiveButton(R.string.button_ok, null)
+                .show();
     }
 
     @Override
@@ -393,6 +453,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
         final ImageView vgCover;
         final ImageView ivAvatar;
         final ImageView ivVerified;
+        final RLottieImageView bDonate;
         final TextView tvName;
         final TextView tvStatus;
         final ImageView tvAudioStatus;
@@ -441,6 +502,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
             paganSymbol = root.findViewById(R.id.pagan_symbol);
             Runes = root.findViewById(R.id.runes_container);
             ivVerified = root.findViewById(R.id.item_verified);
+            bDonate = root.findViewById(R.id.donated_anim);
 
             RecyclerView filterList = root.findViewById(R.id.post_filter_recyclerview);
             filterList.setLayoutManager(new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false));
@@ -477,9 +539,11 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
                         }
                     });
             root.findViewById(R.id.header_group_contacts_container)
-                    .setOnClickListener(v -> callPresenter(GroupWallPresenter::fireShowComunityInfoClick));
+                    .setOnClickListener(v -> callPresenter(GroupWallPresenter::fireShowCommunityInfoClick));
             root.findViewById(R.id.header_group_links_container)
-                    .setOnClickListener(v -> callPresenter(GroupWallPresenter::fireShowComunityLinksInfoClick));
+                    .setOnClickListener(v -> callPresenter(GroupWallPresenter::fireShowCommunityLinksInfoClick));
+            root.findViewById(R.id.header_group_about_container)
+                    .setOnClickListener(v -> callPresenter(GroupWallPresenter::fireShowCommunityAboutInfoClick));
             bChatsContainer.setOnClickListener(v -> callPresenter(GroupWallPresenter::fireGroupChatsClick));
         }
     }

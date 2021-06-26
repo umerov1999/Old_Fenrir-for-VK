@@ -91,10 +91,10 @@ public class AttachmentsBottomSheetAdapter extends RecyclerView.Adapter<Recycler
 
     private void bindEntryHolder(EntryHolder holder, int position) {
         int dataPosition = position - 1;
-        holders.put(dataPosition, holder);
         holder.image.setBackgroundResource(R.drawable.background_unknown_image);
 
         AttachmenEntry entry = data.get(dataPosition);
+        holders.put(entry.getId(), holder);
         AbsModel model = entry.getAttachment();
 
         if (model instanceof Photo) {
@@ -368,8 +368,8 @@ public class AttachmentsBottomSheetAdapter extends RecyclerView.Adapter<Recycler
         }
     }
 
-    public void changeUploadProgress(int dataPosition, int progress, boolean smoothly) {
-        EntryHolder holder = holders.findOneByEntityId(dataPosition);
+    public void changeUploadProgress(int id, int progress, boolean smoothly) {
+        EntryHolder holder = holders.findOneByEntityId(id);
         if (nonNull(holder)) {
             String precentText = progress + "%";
             holder.title.setText(precentText);
@@ -430,7 +430,7 @@ public class AttachmentsBottomSheetAdapter extends RecyclerView.Adapter<Recycler
         }
     }
 
-    private static class EntryHolder extends RecyclerView.ViewHolder implements IdentificableHolder {
+    private class EntryHolder extends RecyclerView.ViewHolder implements IdentificableHolder {
 
         final ImageView image;
         final TextView title;
@@ -447,6 +447,7 @@ public class AttachmentsBottomSheetAdapter extends RecyclerView.Adapter<Recycler
             progress = itemView.findViewById(R.id.progress_view);
             tintView = itemView.findViewById(R.id.tint_view);
             Retry = itemView.findViewById(R.id.retry_upload);
+            itemView.setTag(generateHolderId());
         }
 
         @Override

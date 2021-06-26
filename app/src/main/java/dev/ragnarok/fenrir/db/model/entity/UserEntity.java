@@ -1,6 +1,9 @@
 package dev.ragnarok.fenrir.db.model.entity;
 
 
+import dev.ragnarok.fenrir.model.Sex;
+import dev.ragnarok.fenrir.model.UserPlatform;
+
 public class UserEntity {
 
     private final int id;
@@ -25,11 +28,13 @@ public class UserEntity {
 
     private long lastSeen;
 
-    private int platform;
+    private @UserPlatform
+    int platform;
 
     private String status;
 
-    private int sex;
+    private @Sex
+    int sex;
 
     private String domain;
 
@@ -132,11 +137,12 @@ public class UserEntity {
         return this;
     }
 
-    public int getPlatform() {
+    public @UserPlatform
+    int getPlatform() {
         return platform;
     }
 
-    public UserEntity setPlatform(int platform) {
+    public UserEntity setPlatform(@UserPlatform int platform) {
         this.platform = platform;
         return this;
     }
@@ -150,11 +156,12 @@ public class UserEntity {
         return this;
     }
 
-    public int getSex() {
+    public @Sex
+    int getSex() {
         return sex;
     }
 
-    public UserEntity setSex(int sex) {
+    public UserEntity setSex(@Sex int sex) {
         this.sex = sex;
         return this;
     }

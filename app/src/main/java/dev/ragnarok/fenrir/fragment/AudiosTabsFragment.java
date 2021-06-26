@@ -31,6 +31,7 @@ import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.Utils;
 
 public class AudiosTabsFragment extends BaseFragment {
 
@@ -79,6 +80,7 @@ public class AudiosTabsFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         ViewPager2 viewPager = view.findViewById(R.id.fragment_audios_pager);
         viewPager.setOffscreenPageLimit(1);
+        viewPager.setPageTransformer(Utils.createPageTransform(Settings.get().main().getViewpager_page_transform()));
         Adapter adapter = new Adapter(this);
         setupViewPager(viewPager, adapter);
 

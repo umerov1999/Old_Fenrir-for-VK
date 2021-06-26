@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.textview.MaterialTextView;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +29,6 @@ import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.mvp.presenter.SimpleOwnersPresenter;
 import dev.ragnarok.fenrir.mvp.view.ISimpleOwnersView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
-import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.ViewUtils;
 
 
@@ -35,19 +38,26 @@ public abstract class AbsOwnersListFragment<P extends SimpleOwnersPresenter<V>, 
     protected SwipeRefreshLayout mSwipeRefreshLayout;
     protected OwnersAdapter mOwnersAdapter;
     protected LinearLayoutManager mLinearLayoutManager;
+    private MaterialTextView mCount;
 
-    protected boolean mHasToolbar;
+    protected abstract boolean hasToolbar();
+
+    protected abstract boolean needShowCount();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(mHasToolbar ? R.layout.fragment_abs_friends_with_toolbar : R.layout.fragment_abs_friends, container, false);
+        View root = inflater.inflate(hasToolbar() ? R.layout.fragment_abs_friends_with_toolbar : R.layout.fragment_abs_friends, container, false);
 
-        if (mHasToolbar) {
+        if (hasToolbar()) {
             ((AppCompatActivity) requireActivity()).setSupportActionBar(root.findViewById(R.id.toolbar));
         }
 
         mRecyclerView = root.findViewById(R.id.list);
         mSwipeRefreshLayout = root.findViewById(R.id.refresh);
+        mCount = root.findViewById(R.id.count_data);
+        if (nonNull(mCount)) {
+            mCount.setVisibility(needShowCount() ? View.VISIBLE : View.GONE);
+        }
         mSwipeRefreshLayout.setOnRefreshListener(() -> callPresenter(SimpleOwnersPresenter::fireRefresh));
 
         ViewUtils.setupSwipeRefreshLayoutWithCurrentTheme(requireActivity(), mSwipeRefreshLayout);
@@ -71,28 +81,37 @@ public abstract class AbsOwnersListFragment<P extends SimpleOwnersPresenter<V>, 
 
     @Override
     public void displayOwnerList(List<Owner> owners) {
-        if (Objects.nonNull(mOwnersAdapter)) {
+        if (nonNull(mOwnersAdapter)) {
             mOwnersAdapter.setItems(owners);
+            if (nonNull(mCount)) {
+                mCount.setText(getString(R.string.people_count, owners.size()));
+            }
         }
     }
 
     @Override
     public void notifyDataSetChanged() {
-        if (Objects.nonNull(mOwnersAdapter)) {
+        if (nonNull(mOwnersAdapter)) {
             mOwnersAdapter.notifyDataSetChanged();
+            if (nonNull(mCount)) {
+                mCount.setText(getString(R.string.people_count, mOwnersAdapter.getItemCount()));
+            }
         }
     }
 
     @Override
     public void notifyDataAdded(int position, int count) {
-        if (Objects.nonNull(mOwnersAdapter)) {
+        if (nonNull(mOwnersAdapter)) {
             mOwnersAdapter.notifyItemRangeInserted(position, count);
+            if (nonNull(mCount)) {
+                mCount.setText(getString(R.string.people_count, mOwnersAdapter.getItemCount()));
+            }
         }
     }
 
     @Override
     public void displayRefreshing(boolean refreshing) {
-        if (Objects.nonNull(mSwipeRefreshLayout)) {
+        if (nonNull(mSwipeRefreshLayout)) {
             mSwipeRefreshLayout.setRefreshing(refreshing);
         }
     }

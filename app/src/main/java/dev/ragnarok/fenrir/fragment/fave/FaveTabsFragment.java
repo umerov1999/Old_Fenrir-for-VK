@@ -28,6 +28,7 @@ import dev.ragnarok.fenrir.link.types.FaveLink;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.settings.Settings;
+import dev.ragnarok.fenrir.util.Utils;
 
 public class FaveTabsFragment extends BaseFragment {
 
@@ -105,6 +106,7 @@ public class FaveTabsFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         ViewPager2 viewPager = view.findViewById(R.id.viewpager);
         viewPager.setOffscreenPageLimit(1);
+        viewPager.setPageTransformer(Utils.createPageTransform(Settings.get().main().getViewpager_page_transform()));
         setupViewPager(viewPager, view);
 
         if (getArguments().containsKey(Extra.TAB)) {

@@ -300,6 +300,11 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public boolean is_side_no_stroke() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("is_side_no_stroke", false);
+    }
+
+    @Override
     public boolean is_notification_force_link() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("notification_force_link", false);
     }

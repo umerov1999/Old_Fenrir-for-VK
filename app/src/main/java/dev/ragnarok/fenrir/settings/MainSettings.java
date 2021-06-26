@@ -1,5 +1,6 @@
 package dev.ragnarok.fenrir.settings;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -11,6 +12,7 @@ import java.util.Objects;
 import dev.ragnarok.fenrir.model.PhotoSize;
 import dev.ragnarok.fenrir.upload.Upload;
 import dev.ragnarok.fenrir.util.Optional;
+import dev.ragnarok.fenrir.view.pager.Transformers_Types;
 
 class MainSettings implements ISettings.IMainSettings {
 
@@ -108,8 +110,10 @@ class MainSettings implements ISettings.IMainSettings {
         }
     }
 
+    @SuppressLint("WrongConstant")
     @Override
-    public int getPrefPreviewImageSize() {
+    public @PhotoSize
+    int getPrefPreviewImageSize() {
         if (prefferedPhotoPreviewSize.isEmpty()) {
             prefferedPhotoPreviewSize = Optional.wrap(restorePhotoPreviewSize());
         }
@@ -132,6 +136,26 @@ class MainSettings implements ISettings.IMainSettings {
             return Integer.parseInt(getDefaultPreferences().getString("photo_preview_size", String.valueOf(PhotoSize.Y)));
         } catch (Exception e) {
             return PhotoSize.Y;
+        }
+    }
+
+    @Override
+    @Transformers_Types
+    public int getViewpager_page_transform() {
+        try {
+            return Integer.parseInt(getDefaultPreferences().getString("viewpager_page_transform", String.valueOf(Transformers_Types.OFF)));
+        } catch (Exception e) {
+            return Transformers_Types.OFF;
+        }
+    }
+
+    @Override
+    @Transformers_Types
+    public int getPlayer_cover_transform() {
+        try {
+            return Integer.parseInt(getDefaultPreferences().getString("player_cover_transform", String.valueOf(Transformers_Types.DEPTH_TRANSFORMER)));
+        } catch (Exception e) {
+            return Transformers_Types.DEPTH_TRANSFORMER;
         }
     }
 

@@ -11,7 +11,7 @@ import android.os.Bundle;
 
 import androidx.annotation.DrawableRes;
 
-import com.squareup.picasso.Transformation;
+import com.squareup.picasso3.Transformation;
 
 import java.io.IOException;
 

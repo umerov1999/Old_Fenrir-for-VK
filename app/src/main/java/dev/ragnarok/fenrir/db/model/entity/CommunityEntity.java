@@ -17,6 +17,8 @@ public class CommunityEntity {
 
     private boolean member;
 
+    private int membersCount;
+
     private int memberStatus;
 
     private int type;
@@ -88,6 +90,15 @@ public class CommunityEntity {
 
     public CommunityEntity setMember(boolean member) {
         this.member = member;
+        return this;
+    }
+
+    public int getMembersCount() {
+        return membersCount;
+    }
+
+    public CommunityEntity setMembersCount(int membersCount) {
+        this.membersCount = membersCount;
         return this;
     }
 

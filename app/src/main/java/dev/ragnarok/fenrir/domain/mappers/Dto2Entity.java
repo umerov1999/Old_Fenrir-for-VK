@@ -403,7 +403,8 @@ public class Dto2Entity {
                 .setType(community.type)
                 .setPhoto50(community.photo_50)
                 .setPhoto100(community.photo_100)
-                .setPhoto200(community.photo_200);
+                .setPhoto200(community.photo_200)
+                .setMembersCount(community.members_count);
     }
 
     public static FavePageEntity mapFavePage(FavePageResponse favePage) {
@@ -462,7 +463,6 @@ public class Dto2Entity {
                     .setOwnerWallCount(dto.counters.owner_wall)
                     .setPostponedWallCount(dto.counters.postponed_wall)
                     .setSuggestedWallCount(dto.counters.suggest_wall)
-                    .setMembersCount(dto.members_count)
                     .setTopicsCount(dto.counters.topics)
                     .setDocsCount(dto.counters.docs)
                     .setPhotosCount(dto.counters.photos)
@@ -488,6 +488,7 @@ public class Dto2Entity {
         } else {
             details.setCover(new CommunityDetailsEntity.Cover().setEnabled(false));
         }
+        details.setDescription(dto.description);
 
         return details;
     }

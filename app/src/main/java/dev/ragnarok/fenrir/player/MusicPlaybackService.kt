@@ -28,8 +28,8 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.RawResourceDataSource
-import com.squareup.picasso.Picasso.LoadedFrom
-import com.squareup.picasso.Target
+import com.squareup.picasso3.BitmapTarget
+import com.squareup.picasso3.Picasso.LoadedFrom
 import dev.ragnarok.fenrir.*
 import dev.ragnarok.fenrir.Extensions.Companion.fromIOToMain
 import dev.ragnarok.fenrir.Extensions.Companion.insertAfter
@@ -441,7 +441,7 @@ class MusicPlaybackService : Service() {
         }
         PicassoInstance.with()
             .load(albumCover)
-            .into(object : Target {
+            .into(object : BitmapTarget {
                 override fun onBitmapLoaded(bitmap: Bitmap, from: LoadedFrom) {
                     coverBitmap = bitmap
                     updateMetadata()
@@ -1252,7 +1252,6 @@ class MusicPlaybackService : Service() {
          */
         const val FOREGROUND_STATE_CHANGED = "dev.ragnarok.fenrir.player.fgstatechanged"
         const val NOW_IN_FOREGROUND = "nowinforeground"
-        const val FROM_MEDIA_BUTTON = "frommediabutton"
         const val REFRESH = "dev.ragnarok.fenrir.player.refresh"
 
         /**

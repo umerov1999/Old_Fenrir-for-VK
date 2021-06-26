@@ -30,6 +30,7 @@ import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.GifPagerPresenter;
 import dev.ragnarok.fenrir.mvp.view.IGifPagerView;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
+import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
@@ -86,6 +87,9 @@ public class GifPagerFragment extends AbsDocumentPreviewFragment<GifPagerPresent
 
         mViewPager = root.findViewById(R.id.view_pager);
         mViewPager.setOffscreenPageLimit(1);
+        mViewPager.setPageTransformer(Utils.createPageTransform(
+                Settings.get().main().getViewpager_page_transform()
+        ));
 
         mViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override

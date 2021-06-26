@@ -11,7 +11,7 @@ import android.graphics.drawable.GradientDrawable;
 
 import androidx.preference.PreferenceManager;
 
-import com.squareup.picasso.Transformation;
+import com.squareup.picasso3.Transformation;
 
 import java.io.File;
 

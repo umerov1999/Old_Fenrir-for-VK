@@ -30,4 +30,14 @@ public class OnlineFriendsFragment extends AbsOwnersListFragment<OnlineFriendsPr
                 getArguments().getInt(Extra.USER_ID),
                 saveInstanceState);
     }
+
+    @Override
+    protected boolean hasToolbar() {
+        return false;
+    }
+
+    @Override
+    protected boolean needShowCount() {
+        return false;
+    }
 }

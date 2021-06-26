@@ -21,8 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.zxing.integration.android.IntentIntegrator;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+import com.squareup.picasso3.BitmapTarget;
+import com.squareup.picasso3.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -437,9 +437,9 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
 
     public void fireDetectQRClick(Activity context) {
         PicassoInstance.with().load(getCurrent().getUrlForSize(PhotoSize.W, false))
-                .into(new Target() {
+                .into(new BitmapTarget() {
                     @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    public void onBitmapLoaded(@NonNull Bitmap bitmap, @NonNull Picasso.LoadedFrom from) {
                         String data = IntentIntegrator.decodeFromBitmap(bitmap);
                         new MaterialAlertDialogBuilder(context)
                                 .setIcon(R.drawable.qr_code)
@@ -457,8 +457,8 @@ public class PhotoPagerPresenter extends AccountDependencyPresenter<IPhotoPagerV
                     }
 
                     @Override
-                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                        CustomToast.CreateCustomToast(context).showToastError(e.getLocalizedMessage());
+                    public void onBitmapFailed(@NonNull Exception t, Drawable errorDrawable) {
+                        CustomToast.CreateCustomToast(context).showToastError(t.getLocalizedMessage());
                     }
 
                     @Override

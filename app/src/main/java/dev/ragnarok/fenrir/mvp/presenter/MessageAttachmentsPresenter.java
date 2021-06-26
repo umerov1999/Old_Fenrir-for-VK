@@ -147,6 +147,7 @@ public class MessageAttachmentsPresenter extends RxSupportPresenter<IMessageAtta
         for (IUploadManager.IProgressUpdate update : updates) {
             int index = findUploadObjectIndex(update.getId());
             if (index != -1) {
+                int upId = entries.get(index).getId();
                 Upload upload = (Upload) entries.get(index).getAttachment();
                 if (upload.getStatus() != Upload.STATUS_UPLOADING) {
                     // for uploading only
@@ -154,7 +155,7 @@ public class MessageAttachmentsPresenter extends RxSupportPresenter<IMessageAtta
                 }
 
                 upload.setProgress(update.getProgress());
-                callView(view -> view.changePercentageSmoothly(index, update.getProgress()));
+                callView(view -> view.changePercentageSmoothly(upId, update.getProgress()));
             }
         }
     }

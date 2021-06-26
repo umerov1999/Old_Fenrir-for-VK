@@ -8,9 +8,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.StatFs
 import android.provider.MediaStore
-import com.squareup.picasso.BitmapSafeResize
-import com.squareup.picasso.OkHttp3Downloader
-import com.squareup.picasso.Picasso
+import com.squareup.picasso3.BitmapSafeResize
+import com.squareup.picasso3.Picasso
 import dev.ragnarok.fenrir.Account_Types
 import dev.ragnarok.fenrir.Constants
 import dev.ragnarok.fenrir.api.ProxyUtil
@@ -37,6 +36,7 @@ class PicassoInstance @SuppressLint("CheckResult") private constructor(
             if (Objects.nonNull(singleton)) {
                 singleton!!.shutdown()
                 singleton = null
+                cache_data?.flush()
             }
             Logger.d(TAG, "Picasso singleton shutdown")
         }
@@ -77,7 +77,7 @@ class PicassoInstance @SuppressLint("CheckResult") private constructor(
         BitmapSafeResize.setMaxResolution(Settings.get().other().maxBitmapResolution)
         return Picasso.Builder(app)
             .defaultBitmapConfig(Bitmap.Config.ARGB_8888)
-            .downloader(OkHttp3Downloader(builder.build()))
+            .client(builder.build())
             .addRequestHandler(PicassoLocalRequestHandler())
             .addRequestHandler(PicassoMediaMetadataHandler())
             .build()

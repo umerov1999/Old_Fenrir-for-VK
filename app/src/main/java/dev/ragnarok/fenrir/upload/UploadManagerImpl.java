@@ -242,9 +242,11 @@ public class UploadManagerImpl implements IUploadManager {
 
     private void startIfNotStartedInternal() {
         synchronized (this) {
-            Upload first = findFirstQueue();
-            if (current != null) return;
+            if (current != null) {
+                return;
+            }
 
+            Upload first = findFirstQueue();
             if (first == null) {
                 stopNotification();
                 return;

@@ -10,8 +10,10 @@ import android.renderscript.ScriptIntrinsicBlur;
 
 import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.squareup.picasso.Transformation;
+import com.squareup.picasso3.RequestHandler;
+import com.squareup.picasso3.Transformation;
 
 public class BlurTransformation implements Transformation {
 
@@ -51,8 +53,25 @@ public class BlurTransformation implements Transformation {
         return TAG + "(radius=" + mRadius + ")";
     }
 
+    @NonNull
     @Override
-    public Bitmap transform(Bitmap source) {
+    public RequestHandler.Result.Bitmap transform(@NonNull RequestHandler.Result.Bitmap src) {
+        Bitmap source = src.getBitmap();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && source.getConfig() == Bitmap.Config.HARDWARE) {
+            source = source.copy(Bitmap.Config.ARGB_8888, true);
+        }
+
+        Bitmap bitmap = blurRenderScript(mContext, source, mRadius);
+        if (source != bitmap) {
+            source.recycle();
+        }
+
+        return new RequestHandler.Result.Bitmap(bitmap, src.loadedFrom, src.exifRotation);
+    }
+
+    @Nullable
+    @Override
+    public Bitmap localTransform(@Nullable Bitmap source) {
         if (source == null) {
             return null;
         }

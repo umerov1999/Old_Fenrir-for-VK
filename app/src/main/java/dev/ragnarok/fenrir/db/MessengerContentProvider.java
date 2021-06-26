@@ -373,6 +373,7 @@ public class MessengerContentProvider extends ContentProvider {
         sRelativeshipProjectionMap.put(RelationshipColumns.FOREIGN_SUBJECT_GROUP_IS_ADMIN, GroupColumns.FULL_IS_ADMIN + " AS " + RelationshipColumns.FOREIGN_SUBJECT_GROUP_IS_ADMIN);
         sRelativeshipProjectionMap.put(RelationshipColumns.FOREIGN_SUBJECT_GROUP_ADMIN_LEVEL, GroupColumns.FULL_ADMIN_LEVEL + " AS " + RelationshipColumns.FOREIGN_SUBJECT_GROUP_ADMIN_LEVEL);
         sRelativeshipProjectionMap.put(RelationshipColumns.FOREIGN_SUBJECT_GROUP_IS_MEMBER, GroupColumns.FULL_IS_MEMBER + " AS " + RelationshipColumns.FOREIGN_SUBJECT_GROUP_IS_MEMBER);
+        sRelativeshipProjectionMap.put(RelationshipColumns.FOREIGN_SUBJECT_GROUP_MEMBERS_COUNT, GroupColumns.FULL_MEMBERS_COUNT + " AS " + RelationshipColumns.FOREIGN_SUBJECT_GROUP_MEMBERS_COUNT);
         sRelativeshipProjectionMap.put(RelationshipColumns.FOREIGN_SUBJECT_GROUP_MEMBER_STATUS, GroupColumns.FULL_MEMBER_STATUS + " AS " + RelationshipColumns.FOREIGN_SUBJECT_GROUP_MEMBER_STATUS);
         sRelativeshipProjectionMap.put(RelationshipColumns.FOREIGN_SUBJECT_GROUP_TYPE, GroupColumns.FULL_TYPE + " AS " + RelationshipColumns.FOREIGN_SUBJECT_GROUP_TYPE);
 
@@ -570,6 +571,7 @@ public class MessengerContentProvider extends ContentProvider {
         sGroupsProjectionMap.put(GroupColumns.IS_ADMIN, GroupColumns.FULL_IS_ADMIN);
         sGroupsProjectionMap.put(GroupColumns.ADMIN_LEVEL, GroupColumns.FULL_ADMIN_LEVEL);
         sGroupsProjectionMap.put(GroupColumns.IS_MEMBER, GroupColumns.FULL_IS_MEMBER);
+        sGroupsProjectionMap.put(GroupColumns.MEMBERS_COUNT, GroupColumns.FULL_MEMBERS_COUNT);
         sGroupsProjectionMap.put(GroupColumns.MEMBER_STATUS, GroupColumns.FULL_MEMBER_STATUS);
         sGroupsProjectionMap.put(GroupColumns.TYPE, GroupColumns.FULL_TYPE);
         sGroupsProjectionMap.put(GroupColumns.PHOTO_50, GroupColumns.FULL_PHOTO_50);

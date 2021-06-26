@@ -62,6 +62,13 @@
                         android:background="@drawable/sel_button_round_5_white"
                         android:padding="1.5dp" />
 
+                    <dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView
+                        android:id="@+id/donated_anim"
+                        android:layout_width="@dimen/avatar_size_big"
+                        android:layout_height="@dimen/avatar_size_big"
+                        android:padding="1.5dp"
+                        android:visibility="gone" />
+
                     <ImageView
                         android:id="@+id/item_verified"
                         android:layout_width="24dp"
@@ -475,6 +482,20 @@
                 android:textAppearance="@style/ProfileSubText"
                 app:drawableTint="?android:attr/textColorPrimary"
                 app:drawableTopCompat="@drawable/share" />
+
+            <TextView
+                android:id="@+id/header_group_about_container"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="bottom"
+                android:padding="8dp"
+                android:stateListAnimator="@animator/clicked"
+                android:text="@string/description_hint"
+                android:textAppearance="@style/ProfileSubText"
+                app:drawableTint="?android:attr/textColorPrimary"
+                app:drawableTopCompat="@drawable/about_writed" />
 
         </LinearLayout>
 

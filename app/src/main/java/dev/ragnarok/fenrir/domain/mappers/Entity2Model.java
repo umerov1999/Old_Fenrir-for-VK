@@ -177,7 +177,8 @@ public class Entity2Model {
                 .setType(dbo.getType())
                 .setPhoto50(dbo.getPhoto50())
                 .setPhoto100(dbo.getPhoto100())
-                .setPhoto200(dbo.getPhoto200());
+                .setPhoto200(dbo.getPhoto200())
+                .setMembersCount(dbo.getMembersCount());
     }
 
     public static CommunityDetails buildCommunityDetailsFromDbo(CommunityDetailsEntity dbo) {
@@ -191,7 +192,6 @@ public class Entity2Model {
                 .setOwnerWallCount(dbo.getOwnerWallCount())
                 .setPostponedWallCount(dbo.getPostponedWallCount())
                 .setSuggestedWallCount(dbo.getSuggestedWallCount())
-                .setMembersCount(dbo.getMembersCount())
                 .setTopicsCount(dbo.getTopicsCount())
                 .setDocsCount(dbo.getDocsCount())
                 .setPhotosCount(dbo.getPhotosCount())
@@ -216,6 +216,7 @@ public class Entity2Model {
         } else {
             details.setCover(new CommunityDetails.Cover().setEnabled(false));
         }
+        details.setDescription(dbo.getDescription());
 
         return details;
     }
@@ -430,6 +431,7 @@ public class Entity2Model {
                 .setVerified(entity.isVerified())
                 .setMember(entity.isMember())
                 .setMemberStatus(entity.getMemberStatus())
+                .setMembersCount(entity.getMembersCount())
                 .setType(entity.getType());
     }
 

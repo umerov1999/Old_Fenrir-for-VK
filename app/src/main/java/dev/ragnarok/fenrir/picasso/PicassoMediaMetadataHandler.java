@@ -7,12 +7,11 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Request;
-import com.squareup.picasso.RequestHandler;
+import com.squareup.picasso3.Picasso;
+import com.squareup.picasso3.Request;
+import com.squareup.picasso3.RequestHandler;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import javax.annotation.Nullable;
@@ -44,11 +43,13 @@ public class PicassoMediaMetadataHandler extends RequestHandler {
         }
     }
 
-    public RequestHandler.Result load(Request request, int networkPolicy) throws IOException {
+    @Override
+    public void load(@NonNull Picasso picasso, @NonNull Request request, @NonNull Callback callback) {
         Bitmap target = getMetadataAudioThumbnail(Uri.parse(request.uri.toString().replace("share_", "")));
         if (Objects.isNull(target)) {
-            throw new IOException("Picasso Thumb Not Support");
+            callback.onError(new Throwable("Picasso Thumb Not Support"));
+            return;
         }
-        return new RequestHandler.Result(target, Picasso.LoadedFrom.DISK);
+        callback.onSuccess(new Result.Bitmap(target, Picasso.LoadedFrom.DISK));
     }
 }

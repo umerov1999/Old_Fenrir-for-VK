@@ -17,8 +17,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Transformation
+import com.squareup.picasso3.Callback
+import com.squareup.picasso3.Transformation
 import dev.ragnarok.fenrir.Constants
 import dev.ragnarok.fenrir.Extra
 import dev.ragnarok.fenrir.R
@@ -36,6 +36,7 @@ import dev.ragnarok.fenrir.mvp.view.IStoryPagerView
 import dev.ragnarok.fenrir.picasso.PicassoInstance
 import dev.ragnarok.fenrir.place.PlaceFactory
 import dev.ragnarok.fenrir.settings.CurrentTheme
+import dev.ragnarok.fenrir.settings.Settings
 import dev.ragnarok.fenrir.util.*
 import dev.ragnarok.fenrir.util.CustomToast.Companion.CreateCustomToast
 import dev.ragnarok.fenrir.util.Objects
@@ -101,6 +102,11 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
         Avatar = root.findViewById(R.id.toolbar_avatar)
         mViewPager = root.findViewById(R.id.view_pager)
         mViewPager?.offscreenPageLimit = 1
+        mViewPager?.setPageTransformer(
+            Utils.createPageTransform(
+                Settings.get().main().viewpager_page_transform
+            )
+        )
         mExp = root.findViewById(R.id.item_story_expires)
         mViewPager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -425,7 +431,7 @@ class StoryPagerFragment : BaseMvpFragment<StoryPagerPresenter, IStoryPagerView>
             reload.visibility = View.INVISIBLE
         }
 
-        override fun onError(e: Exception?) {
+        override fun onError(t: Throwable) {
             mLoadingNow = false
             resolveProgressVisibility()
             reload.visibility = View.VISIBLE

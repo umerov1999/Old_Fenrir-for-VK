@@ -33,4 +33,14 @@ public class MutualFriendsFragment extends AbsOwnersListFragment<MutualFriendsPr
                 saveInstanceState
         );
     }
+
+    @Override
+    protected boolean hasToolbar() {
+        return false;
+    }
+
+    @Override
+    protected boolean needShowCount() {
+        return false;
+    }
 }

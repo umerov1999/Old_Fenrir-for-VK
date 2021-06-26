@@ -4,7 +4,6 @@ import static dev.ragnarok.fenrir.util.Objects.isNull;
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 
-import android.annotation.SuppressLint;
 import android.util.Base64;
 
 import com.google.gson.Gson;
@@ -55,7 +54,6 @@ public class CryptHelper {
      * @param text текст сообщения
      * @return true - если сообщение является служебным, использовалось для обмена ключами шифрования
      */
-    @SuppressLint("WrongConstant")
     private static boolean isKeyExchangeServiceMessage(String text) {
         if (isEmpty(text)) {
             return false;
@@ -69,9 +67,9 @@ public class CryptHelper {
             String exchangeMessageBody = text.substring(3); // without RSA on start
             ExchangeMessage message = new Gson().fromJson(exchangeMessageBody, ExchangeMessage.class);
             return nonNull(message)
-                    && message.getSessionId() > 0
-                    && message.getVersion() > 0
-                    && message.getSenderSessionState() > 0;
+                    && 0 < message.getSessionId()
+                    && 0 < message.getVersion()
+                    && 0 < message.getSenderSessionState();
         } catch (Exception e) {
             return false;
         }
@@ -80,7 +78,7 @@ public class CryptHelper {
     // проверяем удовлетворяет ли текст формату AES{$key_location_policy}{$session_id}:{$encrypted_body}
     // (А-аптемезацея)
     private static boolean isAes(String text) {
-        if (isNull(text) || text.length() == 0) {
+        if (isNull(text) || 0 == text.length()) {
             return false;
         }
 
@@ -94,19 +92,19 @@ public class CryptHelper {
 
             switch (i) {
                 case 0:
-                    if (c == 'A') {
+                    if ('A' == c) {
                         yesAes = true;
                     } else {
                         break out;
                     }
                     break;
                 case 1:
-                    if (c != 'E') {
+                    if ('E' != c) {
                         yesAes = false;
                     }
                     break;
                 case 2:
-                    if (c != 'S') {
+                    if ('S' != c) {
                         yesAes = false;
                     }
                     break;
@@ -117,7 +115,7 @@ public class CryptHelper {
                     if (digit) {
                         digitsCount++;
                     } else {
-                        if (c == ':') {
+                        if (':' == c) {
                             hasDivider = true;
                             break out;
                         } else {
@@ -133,7 +131,7 @@ public class CryptHelper {
             }
         }
 
-        return yesAes && digitsCount > 1 && hasDivider;
+        return yesAes && 1 < digitsCount && hasDivider;
     }
 
     public static String encryptWithAes(String body, String key, String ifError, long sessionId,

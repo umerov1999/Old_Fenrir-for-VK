@@ -7,7 +7,8 @@ import android.app.Activity.RESULT_OK
 import android.app.Dialog
 import android.content.*
 import android.graphics.Color
-import android.net.Uri
+import android.net.*
+import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.util.SparseBooleanArray
@@ -129,6 +130,8 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
     private var EmptyAvatar: TextView? = null
 
     private var InputView: View? = null
+    private var receiver: NetworkBroadcastReceiver? = null
+    private var receiverPostM: NetworkBroadcastReceiverPostM? = null
 
     private val requestRecordPermission = AppPerms.requestPermissions(
         this, arrayOf(
@@ -626,7 +629,7 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
             name = name.trim { it <= ' ' }
             EmptyAvatar?.text = name
             Avatar?.setImageBitmap(
-                RoundTransformation().transform(
+                RoundTransformation().localTransform(
                     Utils.createGradientChatImage(
                         200,
                         200,
@@ -1127,13 +1130,13 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
             checkEmptyViewVisibility()
         }
 
-        fun notifyAttachmentProgressUpdate(index: Int, progress: Int) {
-            adapter.changeUploadProgress(index, progress, true)
+        fun notifyAttachmentProgressUpdate(id: Int, progress: Int) {
+            adapter.changeUploadProgress(id, progress, true)
         }
     }
 
-    override fun notifyEditUploadProgressUpdate(index: Int, progress: Int) {
-        editAttachmentsHolder?.notifyAttachmentProgressUpdate(index, progress)
+    override fun notifyEditUploadProgressUpdate(id: Int, progress: Int) {
+        editAttachmentsHolder?.notifyAttachmentProgressUpdate(id, progress)
     }
 
     override fun notifyEditAttachmentsAdded(position: Int, size: Int) {
@@ -1795,12 +1798,126 @@ class ChatFragment : PlaceSupportMvpFragment<ChatPresenter, IChatView>(), IChatV
         presenter?.saveDraftMessageBody()
     }
 
+    @Suppress("DEPRECATION")
+    private fun isNetworkAvailable(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val nw = connectivityManager.activeNetwork ?: return false
+            val actNw = connectivityManager.getNetworkCapabilities(nw)
+            actNw != null && (actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) || actNw.hasTransport(
+                NetworkCapabilities.TRANSPORT_CELLULAR
+            ) || actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) || actNw.hasTransport(
+                NetworkCapabilities.TRANSPORT_BLUETOOTH
+            ))
+        } else {
+            val nwInfo = connectivityManager.activeNetworkInfo
+            nwInfo != null && nwInfo.isConnected
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (Settings.get().other().isAuto_read) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                receiver = NetworkBroadcastReceiver(requireActivity()) {
+                    if (isNetworkAvailable(requireActivity())) {
+                        presenter?.fireNetworkChenged()
+                    }
+                }
+                receiver?.register()
+                receiverPostM = null
+            } else {
+                receiver = null
+                receiverPostM = NetworkBroadcastReceiverPostM(requireActivity()) {
+                    if (isNetworkAvailable(requireActivity())) {
+                        presenter?.fireNetworkChenged()
+                    }
+                }
+                receiverPostM?.register()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (Settings.get().other().isAuto_read) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                receiver?.unregister()
+            } else {
+                receiverPostM?.unregister()
+            }
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         inputViewController?.destroyView()
         inputViewController = null
     }
 
+    internal class NetworkBroadcastReceiverPostM(
+        private val context: Context,
+        private val call: Utils.safeCallInt
+    ) {
+        private var networkCallback: ConnectivityManager.NetworkCallback? = null
+        private var connectivityManager: ConnectivityManager? = null
+        fun register() {
+            connectivityManager =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            if (connectivityManager != null) {
+                networkCallback = object : ConnectivityManager.NetworkCallback() {
+                    override fun onAvailable(network: Network) {
+                        call.call()
+                    }
+
+                    override fun onLost(network: Network) {
+
+                    }
+                }
+                val networkRequest =
+                    NetworkRequest.Builder().addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                        .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+                        .addTransportType(NetworkCapabilities.TRANSPORT_ETHERNET)
+                        .addTransportType(NetworkCapabilities.TRANSPORT_BLUETOOTH)
+                connectivityManager?.registerNetworkCallback(
+                    networkRequest.build(),
+                    networkCallback!!
+                )
+            }
+        }
+
+        fun unregister() {
+            if (connectivityManager != null && networkCallback != null) {
+                connectivityManager!!.unregisterNetworkCallback(networkCallback!!)
+            }
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    class NetworkBroadcastReceiver(
+        private val context: Context,
+        private val call: Utils.safeCallInt
+    ) :
+        BroadcastReceiver() {
+        fun register() {
+            val filter = IntentFilter()
+            filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
+            context.registerReceiver(this, filter)
+        }
+
+        fun unregister() {
+            context.unregisterReceiver(this)
+        }
+
+        @SuppressLint("MissingPermission")
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            if (ConnectivityManager.CONNECTIVITY_ACTION == action) {
+                call.call()
+            }
+        }
+    }
 
     companion object {
         fun newInstance(accountId: Int, messagesOwnerId: Int, peer: Peer): ChatFragment {

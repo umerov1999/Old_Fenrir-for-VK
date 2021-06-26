@@ -40,6 +40,7 @@ class RelativeshipStorage extends AbsStorage implements IRelativeshipStorage {
                 .setAdminLevel(cursor.getInt(cursor.getColumnIndex(RelationshipColumns.FOREIGN_SUBJECT_GROUP_ADMIN_LEVEL)))
                 .setMember(cursor.getInt(cursor.getColumnIndex(RelationshipColumns.FOREIGN_SUBJECT_GROUP_IS_MEMBER)) == 1)
                 .setMemberStatus(cursor.getInt(cursor.getColumnIndex(RelationshipColumns.FOREIGN_SUBJECT_GROUP_MEMBER_STATUS)))
+                .setMembersCount(cursor.getInt(cursor.getColumnIndex(RelationshipColumns.FOREIGN_SUBJECT_GROUP_MEMBERS_COUNT)))
                 .setType(cursor.getInt(cursor.getColumnIndex(RelationshipColumns.FOREIGN_SUBJECT_GROUP_TYPE)))
                 .setPhoto50(cursor.getString(cursor.getColumnIndex(RelationshipColumns.FOREIGN_SUBJECT_GROUP_PHOTO_50)))
                 .setPhoto100(cursor.getString(cursor.getColumnIndex(RelationshipColumns.FOREIGN_SUBJECT_GROUP_PHOTO_100)))

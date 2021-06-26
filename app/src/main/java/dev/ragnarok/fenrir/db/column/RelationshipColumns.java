@@ -49,6 +49,7 @@ public class RelationshipColumns implements BaseColumns {
     public static final String FOREIGN_SUBJECT_GROUP_IS_ADMIN = "subject_group_is_admin";
     public static final String FOREIGN_SUBJECT_GROUP_ADMIN_LEVEL = "subject_group_admin_level";
     public static final String FOREIGN_SUBJECT_GROUP_IS_MEMBER = "subject_group_is_member";
+    public static final String FOREIGN_SUBJECT_GROUP_MEMBERS_COUNT = "subject_group_members_count";
     public static final String FOREIGN_SUBJECT_GROUP_MEMBER_STATUS = "subject_group_member_status";
     public static final String FOREIGN_SUBJECT_GROUP_TYPE = "subject_group_type";
 

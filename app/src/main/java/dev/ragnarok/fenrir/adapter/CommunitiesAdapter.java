@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Transformation;
+import com.squareup.picasso3.Transformation;
 
 import java.util.List;
 
@@ -18,6 +18,7 @@ import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.SelectionUtils;
 import dev.ragnarok.fenrir.adapter.multidata.MultyDataAdapter;
+import dev.ragnarok.fenrir.api.model.VKApiCommunity;
 import dev.ragnarok.fenrir.model.Community;
 import dev.ragnarok.fenrir.model.DataWrapper;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
@@ -36,6 +37,16 @@ public class CommunitiesAdapter extends MultyDataAdapter<Community, CommunitiesA
         super(dataWrappers, titles);
         transformation = CurrentTheme.createTransformationForAvatar();
         this.context = context;
+    }
+
+    public static String getCommunityType(@NonNull Context context, @NonNull Community community) {
+        switch (community.getType()) {
+            case VKApiCommunity.Type.EVENT:
+                return context.getString((community.getClosed() == VKApiCommunity.Status.OPEN ? R.string.type_opened : R.string.type_closed), context.getString(R.string.type_event));
+            case VKApiCommunity.Type.PAGE:
+                return context.getString(R.string.type_page);
+        }
+        return context.getString((community.getClosed() == VKApiCommunity.Status.OPEN ? R.string.type_opened : R.string.type_closed), context.getString(R.string.type_community));
     }
 
     @NonNull
@@ -60,7 +71,7 @@ public class CommunitiesAdapter extends MultyDataAdapter<Community, CommunitiesA
         holder.tvName.setText(community.getFullName());
         holder.tvName.setTextColor(Utils.getVerifiedColor(context, community.isVerified()));
         holder.ivVerified.setVisibility(community.isVerified() ? View.VISIBLE : View.GONE);
-        holder.subtitle.setText(R.string.community);
+        holder.subtitle.setText(getCommunityType(context, community));
 
         SelectionUtils.addSelectionProfileSupport(context, holder.avatar_root, community);
 

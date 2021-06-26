@@ -20,11 +20,11 @@ public interface IGroupWallView extends IWallView {
 
     void setupSecondaryButton(@StringRes Integer title);
 
-    void openTopics(int accoundId, int ownerId, @Nullable Owner owner);
+    void openTopics(int accountId, int ownerId, @Nullable Owner owner);
 
-    void openCommunityMembers(int accoundId, int groupId);
+    void openCommunityMembers(int accountId, int groupId);
 
-    void openDocuments(int accoundId, int ownerId, @Nullable Owner owner);
+    void openDocuments(int accountId, int ownerId, @Nullable Owner owner);
 
     void openProducts(int accountId, int ownerId, @Nullable Owner owner);
 
@@ -34,9 +34,11 @@ public interface IGroupWallView extends IWallView {
 
     void goToCommunityControl(int accountId, Community community, GroupSettings settings);
 
-    void goToShowComunityInfo(int accountId, Community community);
+    void goToShowCommunityInfo(int accountId, Community community);
 
-    void goToShowComunityLinksInfo(int accountId, Community community);
+    void goToShowCommunityLinksInfo(int accountId, Community community);
+
+    void goToShowCommunityAboutInfo(int accountId, CommunityDetails details);
 
     void goToGroupChats(int accountId, Community community);
 

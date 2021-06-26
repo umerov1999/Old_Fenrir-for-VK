@@ -18,6 +18,7 @@ import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
 import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +33,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Transformation;
+import com.squareup.picasso3.Transformation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,8 @@ import dev.ragnarok.fenrir.settings.ISettings;
 import dev.ragnarok.fenrir.settings.NightMode;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.RxUtils;
+import dev.ragnarok.fenrir.util.Utils;
+import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class SideNavigationFragment extends AbsNavigationFragment implements MenuListAdapter.ActionListener {
@@ -65,6 +68,8 @@ public class SideNavigationFragment extends AbsNavigationFragment implements Men
     private DrawerLayout mDrawerLayout;
     private View mFragmentContainerView;
     private ImageView ivHeaderAvatar;
+    private ImageView ivVerified;
+    private RLottieImageView bDonate;
     private TextView tvUserName;
     private TextView tvDomain;
     private List<RecentChat> mRecentChats;
@@ -168,6 +173,8 @@ public class SideNavigationFragment extends AbsNavigationFragment implements Men
         ivHeaderAvatar = vHeader.findViewById(R.id.header_navi_menu_avatar);
         tvUserName = vHeader.findViewById(R.id.header_navi_menu_username);
         tvDomain = vHeader.findViewById(R.id.header_navi_menu_usernick);
+        ivVerified = vHeader.findViewById(R.id.item_verified);
+        bDonate = vHeader.findViewById(R.id.donated_anim);
 
         ImageView ivHeaderDayNight = vHeader.findViewById(R.id.header_navi_menu_day_night);
         ImageView ivHeaderNotifications = vHeader.findViewById(R.id.header_navi_menu_notifications);
@@ -326,6 +333,36 @@ public class SideNavigationFragment extends AbsNavigationFragment implements Men
         String domailText = "@" + user.getDomain();
         tvDomain.setText(domailText);
         tvUserName.setText(user.getFullName());
+
+        tvUserName.setTextColor(Utils.getVerifiedColor(requireActivity(), user.isVerified()));
+        tvDomain.setTextColor(Utils.getVerifiedColor(requireActivity(), user.isVerified()));
+
+        int donate_anim = Settings.get().other().getDonate_anim_set();
+        if (donate_anim > 0 && user.isDonated()) {
+            bDonate.setVisibility(View.VISIBLE);
+            bDonate.setAutoRepeat(true);
+            if (donate_anim == 2) {
+                String cur = Settings.get().ui().getMainThemeKey();
+                if ("fire".equals(cur) || "fire_gray".equals(cur) || "yellow_violet".equals(cur)) {
+                    tvUserName.setTextColor(Color.parseColor("#df9d00"));
+                    tvDomain.setTextColor(Color.parseColor("#df9d00"));
+                    Utils.setBackgroundTint(ivVerified, Color.parseColor("#df9d00"));
+                    bDonate.fromRes(R.raw.donater_fire, Utils.dp(100), Utils.dp(100), null);
+                } else {
+                    tvUserName.setTextColor(CurrentTheme.getColorPrimary(requireActivity()));
+                    tvDomain.setTextColor(CurrentTheme.getColorPrimary(requireActivity()));
+                    Utils.setBackgroundTint(ivVerified, CurrentTheme.getColorPrimary(requireActivity()));
+                    bDonate.fromRes(R.raw.donater_fire, Utils.dp(100), Utils.dp(100), new int[]{0xFF812E, CurrentTheme.getColorPrimary(requireActivity())}, true);
+                }
+            } else {
+                bDonate.fromRes(R.raw.donater, Utils.dp(100), Utils.dp(100), new int[]{0xffffff, CurrentTheme.getColorPrimary(requireActivity()), 0x777777, CurrentTheme.getColorSecondary(requireActivity())});
+            }
+            bDonate.playAnimation();
+        } else {
+            bDonate.setImageDrawable(null);
+            bDonate.setVisibility(View.GONE);
+        }
+        ivVerified.setVisibility(user.isVerified() ? View.VISIBLE : View.GONE);
     }
 
     @Override

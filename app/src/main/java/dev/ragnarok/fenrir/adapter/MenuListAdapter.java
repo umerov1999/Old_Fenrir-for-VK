@@ -2,6 +2,7 @@ package dev.ragnarok.fenrir.adapter;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -9,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
-import com.squareup.picasso.Transformation;
+import com.squareup.picasso3.Transformation;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ import dev.ragnarok.fenrir.model.drawer.NoIconMenuItem;
 import dev.ragnarok.fenrir.model.drawer.RecentChat;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
+import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
 
 public class MenuListAdapter extends RecyclerBindableAdapter<AbsMenuItem, RecyclerView.ViewHolder> {
@@ -33,6 +35,7 @@ public class MenuListAdapter extends RecyclerBindableAdapter<AbsMenuItem, Recycl
     private final int dp;
     private final Transformation transformation;
     private final boolean paging;
+    private final boolean noStroke;
 
     public MenuListAdapter(@NonNull Context context, @NonNull List<AbsMenuItem> pageItems, @NonNull ActionListener actionListener, boolean paging) {
         super(pageItems);
@@ -44,6 +47,7 @@ public class MenuListAdapter extends RecyclerBindableAdapter<AbsMenuItem, Recycl
         transformation = CurrentTheme.createTransformationForAvatar();
         this.actionListener = actionListener;
         this.paging = paging;
+        noStroke = Settings.get().other().is_side_no_stroke();
     }
 
     @Override
@@ -53,7 +57,11 @@ public class MenuListAdapter extends RecyclerBindableAdapter<AbsMenuItem, Recycl
 
         switch (type) {
             case AbsMenuItem.TYPE_ICON:
-                bindIconHolder((NormalHolder) holder, (IconMenuItem) item);
+                if ((paging || !noStroke)) {
+                    bindIconHolder((NormalHolder) holder, (IconMenuItem) item);
+                } else {
+                    bindIconNoStrokeHolder((NormalNoStrokeHolder) holder, (IconMenuItem) item);
+                }
                 break;
             case AbsMenuItem.TYPE_RECENT_CHAT:
                 bindRecentChat((RecentChatHolder) holder, (RecentChat) item);
@@ -67,6 +75,25 @@ public class MenuListAdapter extends RecyclerBindableAdapter<AbsMenuItem, Recycl
     private void bindWithoutIcon(NoIconHolder holder, NoIconMenuItem item) {
         holder.txTitle.setText(item.getTitle());
         holder.txTitle.setTextColor(item.isSelected() ? colorOnPrimary : colorOnSurface);
+        holder.contentRoot.setOnClickListener(v -> actionListener.onDrawerItemClick(item));
+        holder.contentRoot.setOnLongClickListener(view -> {
+            actionListener.onDrawerItemLongClick(item);
+            return true;
+        });
+    }
+
+    private void bindIconNoStrokeHolder(NormalNoStrokeHolder holder, IconMenuItem item) {
+        holder.txtTitle.setText(item.getTitle());
+        holder.txtTitle.setTextColor(item.isSelected() ? colorOnPrimary : colorOnSurface);
+
+        holder.tvCount.setVisibility(item.getCount() > 0 ? View.VISIBLE : View.GONE);
+        holder.tvCount.setText(String.valueOf(item.getCount()));
+        holder.tvCount.setTextColor(item.isSelected() ? colorOnPrimary : colorPrimary);
+
+        holder.imgIcon.setImageResource(item.getIcon());
+        holder.imgIcon.setColorFilter(item.isSelected() ? colorOnPrimary : colorOnSurface);
+
+        holder.contentRoot.setBackgroundColor(item.isSelected() ? colorPrimary : colorSurface);
         holder.contentRoot.setOnClickListener(v -> actionListener.onDrawerItemClick(item));
         holder.contentRoot.setOnLongClickListener(view -> {
             actionListener.onDrawerItemLongClick(item);
@@ -126,7 +153,7 @@ public class MenuListAdapter extends RecyclerBindableAdapter<AbsMenuItem, Recycl
             case AbsMenuItem.TYPE_RECENT_CHAT:
                 return new RecentChatHolder(view);
             case AbsMenuItem.TYPE_ICON:
-                return new NormalHolder(view);
+                return (paging || !noStroke) ? new NormalHolder(view) : new NormalNoStrokeHolder(view);
             case AbsMenuItem.TYPE_WITHOUT_ICON:
                 return new NoIconHolder(view);
         }
@@ -141,7 +168,7 @@ public class MenuListAdapter extends RecyclerBindableAdapter<AbsMenuItem, Recycl
             case AbsMenuItem.TYPE_RECENT_CHAT:
                 return R.layout.item_navigation_recents;
             case AbsMenuItem.TYPE_ICON:
-                return paging ? R.layout.item_navigation : R.layout.drawer_list_item;
+                return paging ? R.layout.item_navigation : (noStroke ? R.layout.drawer_list_item_no_stroke : R.layout.drawer_list_item);
             case AbsMenuItem.TYPE_WITHOUT_ICON:
                 return R.layout.drawer_list_item_without_icon;
         }
@@ -168,6 +195,22 @@ public class MenuListAdapter extends RecyclerBindableAdapter<AbsMenuItem, Recycl
         final MaterialCardView contentRoot;
 
         NormalHolder(View view) {
+            super(view);
+            contentRoot = view.findViewById(R.id.content_root);
+            imgIcon = view.findViewById(R.id.icon);
+            txtTitle = view.findViewById(R.id.title);
+            tvCount = view.findViewById(R.id.counter);
+        }
+    }
+
+    private static class NormalNoStrokeHolder extends RecyclerView.ViewHolder {
+
+        final ImageView imgIcon;
+        final TextView txtTitle;
+        final TextView tvCount;
+        final ViewGroup contentRoot;
+
+        NormalNoStrokeHolder(View view) {
             super(view);
             contentRoot = view.findViewById(R.id.content_root);
             imgIcon = view.findViewById(R.id.icon);

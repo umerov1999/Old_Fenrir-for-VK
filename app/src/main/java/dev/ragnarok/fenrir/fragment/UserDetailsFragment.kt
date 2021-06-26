@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
+import com.squareup.picasso3.BitmapTarget
+import com.squareup.picasso3.Picasso
 import dev.ragnarok.fenrir.Extensions.Companion.fadeIn
 import dev.ragnarok.fenrir.Extensions.Companion.hide
 import dev.ragnarok.fenrir.Extra
@@ -86,7 +86,7 @@ class UserDetailsFragment : BaseMvpFragment<UserDetailsPresenter, IUserDetailsVi
         val ava: String? = Utils.firstNonEmptyString(user.photoMax, user.photo200, user.photo100)
         if (ivAvatar != null && ava != null) {
             PicassoInstance.with().load(ava)
-                .into(ivAvatar)
+                .into(ivAvatar!!)
         }
         ivMail?.visibility = if (user.canWritePrivateMessage) View.VISIBLE else View.GONE
     }
@@ -144,12 +144,12 @@ class UserDetailsFragment : BaseMvpFragment<UserDetailsPresenter, IUserDetailsVi
 
         PicassoInstance.with()
             .load(url)
-            .into(object : Target {
+            .into(object : BitmapTarget {
                 override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
 
-                override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {}
+                override fun onBitmapFailed(e: Exception, errorDrawable: Drawable?) {}
 
-                override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
                     ivAvatarHighRes?.setImageBitmap(bitmap)
                     ivAvatarHighRes?.fadeIn(700L) {
                         ivAvatar?.hide()

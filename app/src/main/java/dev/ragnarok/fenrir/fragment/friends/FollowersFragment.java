@@ -28,4 +28,14 @@ public class FollowersFragment extends AbsOwnersListFragment<FollowersPresenter,
                 getArguments().getInt(Extra.USER_ID),
                 saveInstanceState);
     }
+
+    @Override
+    protected boolean hasToolbar() {
+        return false;
+    }
+
+    @Override
+    protected boolean needShowCount() {
+        return true;
+    }
 }

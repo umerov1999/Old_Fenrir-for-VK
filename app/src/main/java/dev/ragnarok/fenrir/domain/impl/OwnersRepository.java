@@ -100,6 +100,8 @@ public class OwnersRepository implements IOwnersRepository {
             CITY, COUNTRY, PLACE, DESCRIPTION, WIKI_PAGE, MEMBERS_COUNT, COUNTERS, START_DATE,
             FINISH_DATE, CAN_POST, CAN_SEE_ALL_POSTS, STATUS, CONTACTS, LINKS, FIXED_POST,
             VERIFIED, BLACKLISTED, SITE, ACTIVITY, "member_status", "can_message", "cover", "chats_status");
+
+
     private static final BiFunction<List<User>, List<Community>, IOwnersBundle> TO_BUNDLE_FUNCTION = (users, communities) -> {
         SparseArrayOwnersBundle bundle = new SparseArrayOwnersBundle(users.size() + communities.size());
         bundle.putAll(users);

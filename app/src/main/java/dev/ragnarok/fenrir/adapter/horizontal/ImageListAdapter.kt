@@ -73,9 +73,11 @@ class ImageAdapter : RecyclerView.Adapter<ImageAdapter.ImageVewHolder>() {
         fun bind(pData: Photo, position: Int) {
             val previewUrl: String? = pData.getUrlForSize(PhotoSize.M, false)
             if (!Utils.isEmpty(previewUrl)) {
-                PicassoInstance.with()
-                    .load(previewUrl)
-                    .into(item_image_iv)
+                item_image_iv?.let {
+                    PicassoInstance.with()
+                        .load(previewUrl)
+                        .into(it)
+                }
             } else {
                 item_image_iv?.let { PicassoInstance.with().cancelRequest(it) }
             }

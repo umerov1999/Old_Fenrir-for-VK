@@ -148,6 +148,30 @@
         <item>2</item>
     </string-array>
 
+    <string-array name="array_pager_transform_names" translatable="false">
+        <item>Off</item>
+        <item>Depth Transformer</item>
+        <item>Zoom Out Transformer</item>
+        <item>Clock Spin Transformer</item>
+        <item>Background To Foreground Transformer</item>
+        <item>Cube In Depth Transformer</item>
+        <item>Fan Transformer</item>
+        <item>Gate Transformer</item>
+        <item>Slider Transformer</item>
+    </string-array>
+
+    <string-array name="array_pager_transform_anim_items" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+
     <string-array name="array_pagan_symbol_names">
         <item>Disabled.</item>
         <item>Yggdrasil</item>
@@ -162,6 +186,7 @@
         <item>Fire</item>
         <item>Fire Fan</item>
         <item>Odin</item>
+        <item>Cat</item>
     </string-array>
 
     <string-array name="array_pagan_symbol_items" translatable="false">
@@ -178,6 +203,7 @@
         <item>10</item>
         <item>11</item>
         <item>12</item>
+        <item>13</item>
     </string-array>
 
     <string-array name="array_accounts_input">
@@ -453,6 +479,13 @@
 
     <string name="groups">Groups</string>
     <string name="community">Community</string>
+    <string name="type_event">event</string>
+    <string name="type_page">Public page</string>
+    <string name="type_community">community</string>
+    <string name="type_opened">Opened %1$s</string>
+    <string name="type_closed">Closed %1$s</string>
+    <string name="members_count">%1$s members</string>
+    <string name="people_count">%1$d count</string>
 
     <string name="api_error_internal_1">The server returned the damaged JSON</string>
     <string name="api_error_1">An unknown error has occurred</string>
@@ -1771,4 +1804,7 @@
     <string name="recording_to_opus_summary">Experimental, Android 10 and up</string>
     <string name="do_convert_request">Do Convert?</string>
     <string name="play_audio_after_current">Play After current</string>
+    <string name="viewpager_page_transform">Page Transformer Viewpager2</string>
+    <string name="player_cover_transform">Player cover swipe animation</string>
+    <string name="is_side_no_stroke">Is side no stroke</string>
 </resources>

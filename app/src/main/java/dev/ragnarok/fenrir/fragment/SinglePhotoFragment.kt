@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.annotation.NonNull
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.squareup.picasso.Callback
+import com.squareup.picasso3.Callback
 import dev.ragnarok.fenrir.App.Companion.instance
 import dev.ragnarok.fenrir.Extra
 import dev.ragnarok.fenrir.R
@@ -258,7 +258,7 @@ class SinglePhotoFragment : BaseFragment(), GoBackCallback, BackPressCallback {
             reload.visibility = View.INVISIBLE
         }
 
-        override fun onError(e: Exception?) {
+        override fun onError(t: Throwable) {
             mLoadingNow = false
             resolveProgressVisibility()
             reload.visibility = View.VISIBLE

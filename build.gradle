@@ -4,17 +4,17 @@ buildscript {
     ext.fenrirNdk = '21.4.7075529'
     ext.fenrirMinSDK = 22
     ext.fenrirTargetSDK = 29
-    ext.FenrirVersionCode = 117
-    ext.FenrirVersionName = '2.7'
+    ext.FenrirVersionCode = 119
+    ext.FenrirVersionName = '2.9'
 
-    ext.kotlin_version = '1.5.10'
+    ext.kotlin_version = '1.5.20'
     ext.retrofitLibraryVersion = '2.9.0'
     ext.okhttpLibraryVersion = '5.0.0-alpha.2'
     ext.okioVersion = '3.0.0-alpha.6'
     ext.RxJavaVersion = '3.0.13'
     ext.GuavaVersion = '30.1.1-android'
     ext.exoLibraryVersion = '2.14.1'
-    ext.checkerQual = '3.14.0'
+    ext.checkerQual = '3.15.0'
 
     repositories {
         google()

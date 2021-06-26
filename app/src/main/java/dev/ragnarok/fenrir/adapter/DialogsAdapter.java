@@ -17,7 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Transformation;
+import com.squareup.picasso3.Transformation;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -349,7 +349,7 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 name = name.substring(0, 2);
             name = name.trim();
             holder.EmptyAvatar.setText(name);
-            holder.ivAvatar.setImageBitmap(mTransformation.transform(Utils.createGradientChatImage(200, 200, dialog.getId())));
+            holder.ivAvatar.setImageBitmap(mTransformation.localTransform(Utils.createGradientChatImage(200, 200, dialog.getId())));
         }
 
         holder.mContentRoot.setOnClickListener(v -> {

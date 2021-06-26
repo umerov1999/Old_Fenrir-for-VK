@@ -841,6 +841,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 " [" + GroupColumns.ADMIN_LEVEL + "] INTEGER, " +
                 " [" + GroupColumns.IS_MEMBER + "] BOOLEAN, " +
                 " [" + GroupColumns.MEMBER_STATUS + "] INTEGER, " +
+                " [" + GroupColumns.MEMBERS_COUNT + "] INTEGER, " +
                 " [" + GroupColumns.TYPE + "] INTEGER, " +
                 " [" + GroupColumns.PHOTO_50 + "] TEXT, " +
                 " [" + GroupColumns.PHOTO_100 + "] TEXT, " +
