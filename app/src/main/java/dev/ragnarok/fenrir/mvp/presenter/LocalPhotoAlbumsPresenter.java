@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +17,8 @@ import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
+
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 
 
 public class LocalPhotoAlbumsPresenter extends RxSupportPresenter<ILocalPhotoAlbumsView> {

@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,6 +35,8 @@ import dev.ragnarok.fenrir.mvp.presenter.LogsPresenter;
 import dev.ragnarok.fenrir.mvp.view.ILogsView;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 
 public class LogsFragement extends BaseMvpFragment<LogsPresenter, ILogsView>

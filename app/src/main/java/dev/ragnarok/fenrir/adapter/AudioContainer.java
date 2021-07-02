@@ -1,10 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import static dev.ragnarok.fenrir.player.MusicPlaybackController.observeServiceBinding;
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
-
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -64,6 +59,11 @@ import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleOnSubscribe;
 import io.reactivex.rxjava3.disposables.Disposable;
+
+import static dev.ragnarok.fenrir.player.MusicPlaybackController.observeServiceBinding;
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
 
 public class AudioContainer extends LinearLayout {
     private final IAudioInteractor mAudioInteractor = InteractorFactory.createAudioInteractor();

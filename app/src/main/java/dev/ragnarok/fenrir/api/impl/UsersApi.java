@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.api.impl;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,6 +19,9 @@ import dev.ragnarok.fenrir.api.services.IUsersService;
 import dev.ragnarok.fenrir.exception.NotFoundException;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 
 class UsersApi extends AbsApi implements IUsersApi {

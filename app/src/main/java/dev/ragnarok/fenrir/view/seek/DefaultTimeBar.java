@@ -1,9 +1,5 @@
 package dev.ragnarok.fenrir.view.seek;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -40,6 +36,10 @@ import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import dev.ragnarok.fenrir.R;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 /**
  * A time bar that shows a current position, buffered position, duration and ad markers.

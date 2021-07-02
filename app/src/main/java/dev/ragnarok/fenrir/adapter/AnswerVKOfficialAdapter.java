@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.squareup.picasso3.Transformation;
 
@@ -38,6 +39,8 @@ import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.LinkParser;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOfficialAdapter.Holder> {
 
@@ -264,6 +267,21 @@ public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOffici
             adapter.setPhotoSelectionListener((position1, photo) -> PlaceFactory.getSimpleGalleryPlace(Settings.get().accounts().getCurrent(), new ArrayList<>(Page.attachments), position1, true).tryOpenWith(context));
             holder.attachments.setAdapter(adapter);
         }
+        if (nonNull(Page.action)) {
+            if (Page.action.getType() == AnswerVKOfficial.Action_Types.URL) {
+                holder.actionButton.setText(R.string.more_info);
+            } else {
+                holder.actionButton.setText(R.string.open);
+            }
+            holder.actionButton.setVisibility(View.VISIBLE);
+        } else {
+            holder.actionButton.setVisibility(View.GONE);
+        }
+        holder.actionButton.setOnClickListener(v -> {
+            if (nonNull(Page.action)) {
+                clickListener.openAction(Page.action);
+            }
+        });
     }
 
     private @Nullable
@@ -380,10 +398,11 @@ public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOffici
 
     public interface ClickListener {
         void openOwnerWall(int owner_id);
+
+        void openAction(@NonNull AnswerVKOfficial.Action action);
     }
 
     public static class Holder extends RecyclerView.ViewHolder {
-
         final ImageView avatar;
         final TextView name;
         final TextView description;
@@ -394,6 +413,7 @@ public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOffici
         final ShapeableImageView additional;
         final ShapeableImageView photo_image;
         final RecyclerView attachments;
+        final MaterialButton actionButton;
 
         public Holder(View itemView) {
             super(itemView);
@@ -410,6 +430,7 @@ public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOffici
             additional = itemView.findViewById(R.id.additional_image);
             attachments = itemView.findViewById(R.id.attachments);
             photo_image = itemView.findViewById(R.id.photo_image);
+            actionButton = itemView.findViewById(R.id.action_button);
         }
     }
 }

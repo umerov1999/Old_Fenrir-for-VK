@@ -18,12 +18,6 @@
  */
 package ealvatag.tag.vorbiscomment;
 
-import static ealvatag.tag.vorbiscomment.VorbisCommentFieldKey.VENDOR;
-import static ealvatag.utils.Check.AT_LEAST_ONE_REQUIRED;
-import static ealvatag.utils.Check.CANNOT_BE_NULL;
-import static ealvatag.utils.Check.checkArgNotNull;
-import static ealvatag.utils.Check.checkVarArg0NotNull;
-
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -51,6 +45,12 @@ import ealvatag.tag.images.Artwork;
 import ealvatag.tag.images.ArtworkFactory;
 import ealvatag.tag.vorbiscomment.util.Base64Coder;
 import ealvatag.utils.StandardCharsets;
+
+import static ealvatag.tag.vorbiscomment.VorbisCommentFieldKey.VENDOR;
+import static ealvatag.utils.Check.AT_LEAST_ONE_REQUIRED;
+import static ealvatag.utils.Check.CANNOT_BE_NULL;
+import static ealvatag.utils.Check.checkArgNotNull;
+import static ealvatag.utils.Check.checkVarArg0NotNull;
 
 /**
  * This is the logical representation of  Vorbis Comment Data

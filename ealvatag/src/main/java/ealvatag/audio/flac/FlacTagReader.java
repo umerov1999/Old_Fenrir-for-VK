@@ -18,9 +18,6 @@
  */
 package ealvatag.audio.flac;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -38,6 +35,9 @@ import ealvatag.tag.InvalidFrameException;
 import ealvatag.tag.flac.FlacTag;
 import ealvatag.tag.vorbiscomment.VorbisCommentReader;
 import ealvatag.tag.vorbiscomment.VorbisCommentTag;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Read Flac Tag

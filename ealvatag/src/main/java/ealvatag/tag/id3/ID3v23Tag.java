@@ -15,16 +15,6 @@
  */
 package ealvatag.tag.id3;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
-import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
-import static ealvatag.utils.Check.CANNOT_BE_NULL;
-import static ealvatag.utils.Check.CANNOT_BE_NULL_OR_EMPTY;
-import static ealvatag.utils.Check.checkArgNotNull;
-import static ealvatag.utils.Check.checkArgNotNullOrEmpty;
-import static ealvatag.utils.Check.checkVarArg0NotNull;
-
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -75,6 +65,16 @@ import ealvatag.tag.id3.framebody.FrameBodyTIPL;
 import ealvatag.tag.id3.framebody.FrameBodyTMCL;
 import ealvatag.tag.id3.framebody.FrameBodyTYER;
 import okio.Buffer;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+import static ealvatag.utils.Check.CANNOT_BE_NULL;
+import static ealvatag.utils.Check.CANNOT_BE_NULL_OR_EMPTY;
+import static ealvatag.utils.Check.checkArgNotNull;
+import static ealvatag.utils.Check.checkArgNotNullOrEmpty;
+import static ealvatag.utils.Check.checkVarArg0NotNull;
 
 /**
  * Represents an ID3v2.3 tag.

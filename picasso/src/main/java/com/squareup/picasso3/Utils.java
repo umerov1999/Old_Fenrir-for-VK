@@ -15,11 +15,6 @@
  */
 package com.squareup.picasso3;
 
-import static android.content.pm.ApplicationInfo.FLAG_LARGE_HEAP;
-import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
-import static com.squareup.picasso3.Picasso.TAG;
-import static java.lang.String.format;
-
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -43,6 +38,11 @@ import java.util.concurrent.ThreadFactory;
 
 import okio.BufferedSource;
 import okio.ByteString;
+
+import static android.content.pm.ApplicationInfo.FLAG_LARGE_HEAP;
+import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
+import static com.squareup.picasso3.Picasso.TAG;
+import static java.lang.String.format;
 
 final class Utils {
     static final String THREAD_PREFIX = "Picasso-";

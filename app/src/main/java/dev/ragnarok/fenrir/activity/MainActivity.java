@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.activity;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
@@ -185,6 +182,9 @@ import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.zoomhelper.ZoomHelper;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class MainActivity extends AppCompatActivity implements AbsNavigationFragment.NavigationDrawerCallbacks,
         OnSectionResumeCallback, AppStyleable, PlaceProvider, ServiceConnection, NavigationBarView.OnItemSelectedListener {
@@ -400,6 +400,9 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
                             .subscribe(RxUtils.dummy(), t -> {/*TODO*/}));
 
                     Utils.checkMusicInPC(this);
+                    if (!Settings.get().other().appStoredVersionEqual() && Settings.get().other().isEnable_cache_ui_anim()) {
+                        PreferencesFragment.CleanUICache(this, false);
+                    }
 
                     if (Settings.get().other().isDelete_cache_images()) {
                         PreferencesFragment.CleanImageCache(this, false);
@@ -607,7 +610,7 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
                 return false;
             }
             openPlace(place);
-            if (place.type == Place.CHAT) {
+            if (place.getType() == Place.CHAT) {
                 return Settings.get().ui().getSwipes_chat_mode() != SwipesChatMode.SLIDR || Settings.get().ui().getSwipes_chat_mode() == SwipesChatMode.DISABLED;
             }
             return true;
@@ -1095,7 +1098,7 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
     @Override
     public void openPlace(Place place) {
         Bundle args = place.getArgs();
-        switch (place.type) {
+        switch (place.getType()) {
             case Place.VIDEO_PREVIEW:
                 attachToFront(VideoPreviewFragment.newInstance(args));
                 break;
@@ -1267,7 +1270,7 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
             case Place.SIMPLE_PHOTO_GALLERY:
             case Place.VK_PHOTO_TMP_SOURCE:
             case Place.VK_PHOTO_ALBUM_GALLERY_SAVED:
-                attachToFront(PhotoPagerFragment.newInstance(place.type, args));
+                attachToFront(PhotoPagerFragment.newInstance(place.getType(), args));
                 break;
 
             case Place.POLL:
@@ -1541,7 +1544,7 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
                 attachToFront(FriendsByPhonesFragment.newInstance(args));
                 break;
             default:
-                throw new IllegalArgumentException("Main activity can't open this place, type: " + place.type);
+                throw new IllegalArgumentException("Main activity can't open this place, type: " + place.getType());
         }
     }
 

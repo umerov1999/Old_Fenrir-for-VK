@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.Manifest;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -34,6 +32,8 @@ import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.MySearchView;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class VideosLocalServerFragment extends BaseMvpFragment<VideosLocalServerPresenter, IVideosLocalServerView>
         implements MySearchView.OnQueryTextListener, LocalServerVideosAdapter.VideoOnClickListener, IVideosLocalServerView {

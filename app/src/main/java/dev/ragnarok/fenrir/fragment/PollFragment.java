@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +36,8 @@ import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.AspectRatioImageView;
 import dev.ragnarok.fenrir.view.ProgressButton;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class PollFragment extends BaseMvpFragment<PollPresenter, IPollView>
         implements IPollView, PollAnswersAdapter.OnAnswerChangedCallback {

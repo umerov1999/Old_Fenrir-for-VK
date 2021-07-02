@@ -15,6 +15,18 @@
  */
 package com.squareup.picasso3;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
+
+import androidx.annotation.NonNull;
+
+import okio.Source;
+
 import static android.content.ContentResolver.SCHEME_CONTENT;
 import static android.content.ContentUris.parseId;
 import static android.provider.MediaStore.Images;
@@ -30,18 +42,6 @@ import static com.squareup.picasso3.MediaStoreRequestHandler.PicassoKind.MICRO;
 import static com.squareup.picasso3.MediaStoreRequestHandler.PicassoKind.MINI;
 import static com.squareup.picasso3.Picasso.LoadedFrom.DISK;
 import static com.squareup.picasso3.Utils.checkNotNull;
-
-import android.content.ContentResolver;
-import android.content.Context;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.provider.MediaStore;
-
-import androidx.annotation.NonNull;
-
-import okio.Source;
 
 class MediaStoreRequestHandler extends ContentStreamRequestHandler {
     private static final String[] CONTENT_ORIENTATION = {

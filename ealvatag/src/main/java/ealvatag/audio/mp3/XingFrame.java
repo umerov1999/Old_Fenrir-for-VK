@@ -1,8 +1,5 @@
 package ealvatag.audio.mp3;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.INFO;
-import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
-
 import java.io.EOFException;
 import java.util.Arrays;
 
@@ -12,6 +9,9 @@ import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.utils.ArrayUtil;
 import okio.Buffer;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.INFO;
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
 
 /**
  * Xing Frame

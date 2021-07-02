@@ -20,8 +20,6 @@
  */
 package ealvatag.tag.datatype;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-
 import com.google.common.base.Preconditions;
 
 import java.io.EOFException;
@@ -30,6 +28,8 @@ import ealvatag.tag.InvalidDataTypeException;
 import ealvatag.tag.id3.AbstractTagFrameBody;
 import ealvatag.tag.id3.ID3Tags;
 import okio.Buffer;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
 
 
 /**

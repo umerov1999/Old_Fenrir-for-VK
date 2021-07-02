@@ -34,11 +34,6 @@
  */
 package ealvatag.audio;
 
-import static ealvatag.utils.Check.CANNOT_BE_NULL;
-import static ealvatag.utils.Check.CANNOT_BE_NULL_OR_EMPTY;
-import static ealvatag.utils.Check.checkArgNotNull;
-import static ealvatag.utils.Check.checkArgNotNullOrEmpty;
-
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
@@ -58,6 +53,11 @@ import ealvatag.tag.TagFieldContainer;
 import ealvatag.tag.TagTextField;
 import ealvatag.tag.UnsupportedFieldException;
 import ealvatag.tag.images.Artwork;
+
+import static ealvatag.utils.Check.CANNOT_BE_NULL;
+import static ealvatag.utils.Check.CANNOT_BE_NULL_OR_EMPTY;
+import static ealvatag.utils.Check.checkArgNotNull;
+import static ealvatag.utils.Check.checkArgNotNullOrEmpty;
 
 /**
  * This class is the default implementation for

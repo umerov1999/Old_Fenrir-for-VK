@@ -15,10 +15,6 @@
  */
 package ealvatag.tag.id3;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
-
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 
@@ -46,6 +42,10 @@ import ealvatag.tag.id3.valuepair.TextEncoding;
 import ealvatag.utils.Characters;
 import ealvatag.utils.StandardCharsets;
 import okio.Buffer;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Represents an ID3v2.2 frame.

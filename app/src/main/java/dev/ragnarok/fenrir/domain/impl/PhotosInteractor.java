@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.domain.impl;
 
-import static dev.ragnarok.fenrir.domain.mappers.MapUtil.mapAll;
-
 import android.provider.BaseColumns;
 
 import java.util.ArrayList;
@@ -42,6 +40,8 @@ import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.VKOwnIds;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.domain.mappers.MapUtil.mapAll;
 
 public class PhotosInteractor implements IPhotosInteractor {
 

@@ -13,15 +13,15 @@
  */
 package ealvatag.tag.datatype;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
-
 import java.io.EOFException;
 
 import ealvatag.tag.InvalidDataTypeException;
 import ealvatag.tag.id3.AbstractTagFrameBody;
 import ealvatag.tag.id3.valuepair.EventTimingTypes;
 import okio.Buffer;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * A single event timing code. Part of a list of timing codes ({@link EventTimingCodeList}), that are contained in

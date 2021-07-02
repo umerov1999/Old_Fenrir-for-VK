@@ -15,22 +15,6 @@
  */
 package com.squareup.picasso3;
 
-import static android.net.ConnectivityManager.CONNECTIVITY_ACTION;
-import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
-import static com.squareup.picasso3.BitmapHunter.forRequest;
-import static com.squareup.picasso3.MemoryPolicy.shouldWriteToMemoryCache;
-import static com.squareup.picasso3.Utils.OWNER_DISPATCHER;
-import static com.squareup.picasso3.Utils.VERB_CANCELED;
-import static com.squareup.picasso3.Utils.VERB_DELIVERED;
-import static com.squareup.picasso3.Utils.VERB_ENQUEUED;
-import static com.squareup.picasso3.Utils.VERB_IGNORED;
-import static com.squareup.picasso3.Utils.VERB_PAUSED;
-import static com.squareup.picasso3.Utils.VERB_REPLAYING;
-import static com.squareup.picasso3.Utils.VERB_RETRYING;
-import static com.squareup.picasso3.Utils.getLogIdsForHunter;
-import static com.squareup.picasso3.Utils.hasPermission;
-import static com.squareup.picasso3.Utils.log;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
@@ -61,6 +45,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
+
+import static android.net.ConnectivityManager.CONNECTIVITY_ACTION;
+import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
+import static com.squareup.picasso3.BitmapHunter.forRequest;
+import static com.squareup.picasso3.MemoryPolicy.shouldWriteToMemoryCache;
+import static com.squareup.picasso3.Utils.OWNER_DISPATCHER;
+import static com.squareup.picasso3.Utils.VERB_CANCELED;
+import static com.squareup.picasso3.Utils.VERB_DELIVERED;
+import static com.squareup.picasso3.Utils.VERB_ENQUEUED;
+import static com.squareup.picasso3.Utils.VERB_IGNORED;
+import static com.squareup.picasso3.Utils.VERB_PAUSED;
+import static com.squareup.picasso3.Utils.VERB_REPLAYING;
+import static com.squareup.picasso3.Utils.VERB_RETRYING;
+import static com.squareup.picasso3.Utils.getLogIdsForHunter;
+import static com.squareup.picasso3.Utils.hasPermission;
+import static com.squareup.picasso3.Utils.log;
 
 class Dispatcher {
     static final int REQUEST_SUBMIT = 1;

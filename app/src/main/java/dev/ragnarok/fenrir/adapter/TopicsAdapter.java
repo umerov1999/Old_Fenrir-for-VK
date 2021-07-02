@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -27,6 +25,8 @@ import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
+
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 
 public class TopicsAdapter extends RecyclerBindableAdapter<Topic, TopicsAdapter.ViewHolder> {
 

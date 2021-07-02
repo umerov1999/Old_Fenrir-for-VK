@@ -17,12 +17,6 @@
  */
 package ealvatag.audio.mp3;
 
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
-import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
-
 import com.google.common.base.MoreObjects;
 
 import java.io.EOFException;
@@ -38,6 +32,12 @@ import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.logging.ErrorMessage;
 import ealvatag.utils.TimeUnits;
 import okio.Buffer;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 /**
  * Represents the audio header of an MP3 File

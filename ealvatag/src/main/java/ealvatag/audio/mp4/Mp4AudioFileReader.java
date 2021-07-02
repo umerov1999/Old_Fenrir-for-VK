@@ -17,9 +17,6 @@
 
 package ealvatag.audio.mp4;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -39,6 +36,9 @@ import ealvatag.logging.ErrorMessage;
 import ealvatag.tag.TagFieldContainer;
 import okio.BufferedSource;
 import okio.Okio;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Reads an Mp4 and parses it into an AudioFile

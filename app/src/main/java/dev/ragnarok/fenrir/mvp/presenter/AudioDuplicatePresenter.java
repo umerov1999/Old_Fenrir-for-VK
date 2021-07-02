@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
-import static dev.ragnarok.fenrir.player.MusicPlaybackController.observeServiceBinding;
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
@@ -27,6 +24,9 @@ import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.Disposable;
+
+import static dev.ragnarok.fenrir.player.MusicPlaybackController.observeServiceBinding;
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 
 
 public class AudioDuplicatePresenter extends RxSupportPresenter<IAudioDuplicateView> {

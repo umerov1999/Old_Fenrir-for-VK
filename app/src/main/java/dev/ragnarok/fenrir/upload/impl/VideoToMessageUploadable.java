@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.upload.impl;
 
-import static dev.ragnarok.fenrir.util.RxUtils.safelyCloseAction;
-import static dev.ragnarok.fenrir.util.Utils.safelyClose;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -29,6 +26,9 @@ import dev.ragnarok.fenrir.upload.Upload;
 import dev.ragnarok.fenrir.upload.UploadResult;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.RxUtils.safelyCloseAction;
+import static dev.ragnarok.fenrir.util.Utils.safelyClose;
 
 public class VideoToMessageUploadable implements IUploadable<Video> {
 

@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment.base;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.app.AlertDialog;
 import android.graphics.Color;
 import android.view.View;
@@ -33,6 +31,8 @@ import dev.ragnarok.fenrir.spots.SpotsDialog;
 import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public abstract class BaseMvpFragment<P extends AbsPresenter<V>, V extends IMvpView>
         extends AbsMvpFragment<P, V> implements IMvpView, IAccountDependencyView, IProgressView, IErrorView, IToastView, IToolbarView {

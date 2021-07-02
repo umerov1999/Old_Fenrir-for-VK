@@ -1,9 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -58,6 +54,10 @@ import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.upload.Upload;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.ViewUtils;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class DocsFragment extends BaseMvpFragment<DocsListPresenter, IDocListView>
         implements IDocListView, DocsAdapter.ActionListener, DocsUploadAdapter.ActionListener, DocsAsImagesAdapter.ActionListener {

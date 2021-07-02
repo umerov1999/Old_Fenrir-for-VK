@@ -155,7 +155,7 @@ public class RLottieShapeableImageView extends ShapeableImageView {
             return;
         }
         clearAnimationDrawable();
-        setAnimation(new RLottieDrawable(resId, "" + resId, w, h, false, colorReplacement, useMoveColor));
+        setAnimation(new RLottieDrawable(resId, "res_" + resId, w, h, false, colorReplacement, useMoveColor));
     }
 
     public void fromFile(@NonNull File file, int w, int h) {

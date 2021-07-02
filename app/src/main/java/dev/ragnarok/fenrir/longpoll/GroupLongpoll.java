@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.longpoll;
 
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import androidx.annotation.NonNull;
 
 import java.util.concurrent.TimeUnit;
@@ -14,6 +12,8 @@ import dev.ragnarok.fenrir.util.PersistentLogger;
 import dev.ragnarok.fenrir.util.RxUtils;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 class GroupLongpoll implements ILongpoll {
 

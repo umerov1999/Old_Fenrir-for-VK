@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.util;
 
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
@@ -23,6 +21,8 @@ import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.api.model.VKApiUser;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
+
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class ViewUtils {
 

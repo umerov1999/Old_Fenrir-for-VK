@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,6 +27,8 @@ import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.CommunityLinksPresenter;
 import dev.ragnarok.fenrir.mvp.view.ICommunityLinksView;
 import dev.ragnarok.fenrir.util.ViewUtils;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class CommunityLinksFragment extends BaseMvpFragment<CommunityLinksPresenter, ICommunityLinksView>
         implements ICommunityLinksView, CommunityLinksAdapter.ActionListener {

@@ -1,10 +1,5 @@
 package ealvatag.tag.datatype;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
-import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
-
 import java.io.EOFException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -25,6 +20,11 @@ import ealvatag.tag.options.PadNumberOption;
 import ealvatag.utils.EqualsUtil;
 import ealvatag.utils.StandardCharsets;
 import okio.Buffer;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Represents the form 01/10 whereby the second part is optional. This is used by frame such as TRCK and TPOS and MVNM

@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment.friends;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -39,6 +37,8 @@ import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.MySearchView;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class AllFriendsFragment extends BaseMvpFragment<AllFriendsPresenter, IAllFriendsView>
         implements FriendsRecycleAdapter.Listener, IAllFriendsView {

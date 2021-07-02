@@ -18,8 +18,6 @@
  */
 package ealvatag.tag.vorbiscomment;
 
-import static ealvatag.utils.StandardCharsets.UTF_8;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -30,6 +28,8 @@ import ealvatag.audio.AbstractTagCreator;
 import ealvatag.audio.Utils;
 import ealvatag.tag.TagField;
 import ealvatag.tag.TagFieldContainer;
+
+import static ealvatag.utils.StandardCharsets.UTF_8;
 
 /**
  * Create the raw packet data for a Vorbis Comment Tag

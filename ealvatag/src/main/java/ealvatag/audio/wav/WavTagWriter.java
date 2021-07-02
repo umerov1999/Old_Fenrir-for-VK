@@ -18,12 +18,6 @@
  */
 package ealvatag.audio.wav;
 
-import static ealvatag.audio.iff.IffHeaderChunk.SIGNATURE_LENGTH;
-import static ealvatag.audio.iff.IffHeaderChunk.SIZE_LENGTH;
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
-import static ealvatag.logging.EalvaTagLog.LogLevel.INFO;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -53,6 +47,12 @@ import ealvatag.tag.TagTextField;
 import ealvatag.tag.wav.WavInfoTag;
 import ealvatag.tag.wav.WavTag;
 import ealvatag.utils.StandardCharsets;
+
+import static ealvatag.audio.iff.IffHeaderChunk.SIGNATURE_LENGTH;
+import static ealvatag.audio.iff.IffHeaderChunk.SIZE_LENGTH;
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+import static ealvatag.logging.EalvaTagLog.LogLevel.INFO;
 
 /**
  * Write Wav Tag.

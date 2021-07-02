@@ -833,7 +833,7 @@
             app:iconSpaceReserved="false" />
 
         <EditTextPreference
-            android:defaultValue="-1"
+            android:defaultValue="4000"
             android:inputType="number"
             android:key="max_bitmap_resolution"
             android:title="@string/max_bitmap_resolution"

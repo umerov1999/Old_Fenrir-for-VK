@@ -26,11 +26,11 @@
  */
 package ealvatag.tag.datatype;
 
-import static ealvatag.utils.StandardCharsets.ISO_8859_1;
-
 import java.nio.charset.Charset;
 
 import ealvatag.tag.id3.AbstractTagFrameBody;
+
+import static ealvatag.utils.StandardCharsets.ISO_8859_1;
 
 /**
  * Represents a String which is not delimited by null character with fixed text encoding.

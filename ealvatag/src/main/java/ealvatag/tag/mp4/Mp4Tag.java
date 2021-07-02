@@ -18,17 +18,6 @@
  */
 package ealvatag.tag.mp4;
 
-import static ealvatag.tag.mp4.Mp4FieldKey.DISCNUMBER;
-import static ealvatag.tag.mp4.Mp4FieldKey.GENRE;
-import static ealvatag.tag.mp4.Mp4FieldKey.GENRE_CUSTOM;
-import static ealvatag.tag.mp4.Mp4FieldKey.KEY_OLD;
-import static ealvatag.tag.mp4.Mp4FieldKey.TRACK;
-import static ealvatag.utils.Check.AT_LEAST_ONE_REQUIRED;
-import static ealvatag.utils.Check.CANNOT_BE_NULL;
-import static ealvatag.utils.Check.checkArgNotNull;
-import static ealvatag.utils.Check.checkArgNotNullOrEmpty;
-import static ealvatag.utils.Check.checkVarArg0NotNull;
-
 import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
@@ -58,6 +47,17 @@ import ealvatag.tag.mp4.field.Mp4TagTextField;
 import ealvatag.tag.mp4.field.Mp4TagTextNumberField;
 import ealvatag.tag.mp4.field.Mp4TrackField;
 import ealvatag.utils.StandardCharsets;
+
+import static ealvatag.tag.mp4.Mp4FieldKey.DISCNUMBER;
+import static ealvatag.tag.mp4.Mp4FieldKey.GENRE;
+import static ealvatag.tag.mp4.Mp4FieldKey.GENRE_CUSTOM;
+import static ealvatag.tag.mp4.Mp4FieldKey.KEY_OLD;
+import static ealvatag.tag.mp4.Mp4FieldKey.TRACK;
+import static ealvatag.utils.Check.AT_LEAST_ONE_REQUIRED;
+import static ealvatag.utils.Check.CANNOT_BE_NULL;
+import static ealvatag.utils.Check.checkArgNotNull;
+import static ealvatag.utils.Check.checkArgNotNullOrEmpty;
+import static ealvatag.utils.Check.checkVarArg0NotNull;
 
 /**
  * A Logical representation of Mp4Tag, i.e the meta information stored in an Mp4 file underneath the

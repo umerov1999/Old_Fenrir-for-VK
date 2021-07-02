@@ -1,9 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
-import static dev.ragnarok.fenrir.util.Utils.findIndexById;
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,6 +19,10 @@ import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IUserBannedView;
 import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.RxUtils;
+
+import static dev.ragnarok.fenrir.util.Utils.findIndexById;
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 
 public class UserBannedPresenter extends AccountDependencyPresenter<IUserBannedView> {

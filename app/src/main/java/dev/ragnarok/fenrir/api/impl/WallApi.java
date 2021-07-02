@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.api.impl;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import java.util.Collection;
 
 import dev.ragnarok.fenrir.api.IServiceProvider;
@@ -16,6 +14,8 @@ import dev.ragnarok.fenrir.api.model.response.WallResponse;
 import dev.ragnarok.fenrir.api.model.response.WallSearchResponse;
 import dev.ragnarok.fenrir.api.services.IWallService;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 
 class WallApi extends AbsApi implements IWallApi {

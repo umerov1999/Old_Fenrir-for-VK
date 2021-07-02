@@ -22,11 +22,11 @@
  */
 package ealvatag.tag.datatype;
 
-import static ealvatag.utils.StandardCharsets.ISO_8859_1;
-
 import java.nio.charset.Charset;
 
 import ealvatag.tag.id3.AbstractTagFrameBody;
+
+import static ealvatag.utils.StandardCharsets.ISO_8859_1;
 
 /**
  * Represents a String whose size is determined by finding of a null character at the end of the String with fixed text encoding.

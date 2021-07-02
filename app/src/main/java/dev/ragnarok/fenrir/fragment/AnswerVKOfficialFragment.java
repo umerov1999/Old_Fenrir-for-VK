@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,9 +21,11 @@ import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
 import dev.ragnarok.fenrir.adapter.AnswerVKOfficialAdapter;
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
+import dev.ragnarok.fenrir.link.LinkHelper;
 import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.listener.PicassoPauseOnScrollListener;
+import dev.ragnarok.fenrir.model.AnswerVKOfficial;
 import dev.ragnarok.fenrir.model.AnswerVKOfficialList;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.AnswerVKOfficialPresenter;
@@ -34,6 +34,8 @@ import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.ViewUtils;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class AnswerVKOfficialFragment extends BaseMvpFragment<AnswerVKOfficialPresenter, IAnswerVKOfficialView> implements SwipeRefreshLayout.OnRefreshListener, IAnswerVKOfficialView, AnswerVKOfficialAdapter.ClickListener {
 
@@ -145,6 +147,16 @@ public class AnswerVKOfficialFragment extends BaseMvpFragment<AnswerVKOfficialPr
     @Override
     public void openOwnerWall(int owner_id) {
         PlaceFactory.getOwnerWallPlace(Settings.get().accounts().getCurrent(), owner_id, null).tryOpenWith(requireActivity());
+    }
+
+    @Override
+    public void openAction(@NonNull AnswerVKOfficial.Action action) {
+        if (action.getType() == AnswerVKOfficial.Action_Types.URL) {
+            LinkHelper.openLinkInBrowser(requireActivity(), ((AnswerVKOfficial.ActionURL) action).url);
+        } else if (action.getType() == AnswerVKOfficial.Action_Types.MESSAGE) {
+            AnswerVKOfficial.ActionMessage msg = (AnswerVKOfficial.ActionMessage) action;
+            PlaceFactory.getMessagesLookupPlace(Settings.get().accounts().getCurrent(), msg.peerId, msg.messageId, null).tryOpenWith(requireActivity());
+        }
     }
 
     @Override

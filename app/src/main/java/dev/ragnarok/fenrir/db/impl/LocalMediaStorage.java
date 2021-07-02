@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.db.impl;
 
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
-
 import android.content.ContentUris;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -33,6 +31,8 @@ import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 class LocalMediaStorage extends AbsStorage implements ILocalMediaStorage {
 

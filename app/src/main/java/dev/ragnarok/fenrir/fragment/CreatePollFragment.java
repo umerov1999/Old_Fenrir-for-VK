@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -31,6 +29,8 @@ import dev.ragnarok.fenrir.model.Poll;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.CreatePollPresenter;
 import dev.ragnarok.fenrir.mvp.view.ICreatePollView;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class CreatePollFragment extends BaseMvpFragment<CreatePollPresenter, ICreatePollView> implements ICreatePollView {
 

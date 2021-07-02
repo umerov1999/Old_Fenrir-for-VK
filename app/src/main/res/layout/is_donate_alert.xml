@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -23,6 +24,7 @@
         android:layout_gravity="center" />
 
     <TextView
+        android:id="@+id/item_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -31,10 +33,10 @@
         android:ellipsize="end"
         android:gravity="center"
         android:minHeight="48dp"
-        android:padding="4dp"
-        android:text="@string/is_donated_alert"
+        android:padding="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textIsSelectable="true"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        tools:text="@string/is_donated_alert" />
 
 </LinearLayout>

@@ -20,12 +20,6 @@
  */
 package ealvatag.audio.mp3;
 
-import static com.google.common.base.Preconditions.checkState;
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
-import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
@@ -72,6 +66,12 @@ import ealvatag.tag.id3.ID3v24Tag;
 import ealvatag.tag.id3.Id3v2Header;
 import ealvatag.tag.lyrics3.AbstractLyrics3;
 import okio.Buffer;
+
+import static com.google.common.base.Preconditions.checkState;
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * This class represents a physical MP3 File

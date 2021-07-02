@@ -1,9 +1,5 @@
 package dev.ragnarok.fenrir.adapter.feedback;
 
-import static dev.ragnarok.fenrir.util.AppTextUtils.getDateFromUnixTime;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.text.Spannable;
@@ -47,6 +43,10 @@ import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.ViewUtils;
+
+import static dev.ragnarok.fenrir.util.AppTextUtils.getDateFromUnixTime;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class FeedbackViewBinder {
 

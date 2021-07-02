@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +42,9 @@ import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.upload.Upload;
 import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.view.CircleRoadProgress;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 
 public class AttachmentsBottomSheetAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

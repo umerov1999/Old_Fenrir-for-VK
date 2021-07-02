@@ -114,7 +114,7 @@ public class NotReadMessagesActivity extends NoMainActivity implements PlaceProv
     @Override
     public void openPlace(Place place) {
         Bundle args = place.getArgs();
-        switch (place.type) {
+        switch (place.getType()) {
             case Place.CHAT:
                 Peer peer = args.getParcelable(Extra.PEER);
                 AssertUtils.requireNonNull(peer);
@@ -131,7 +131,7 @@ public class NotReadMessagesActivity extends NoMainActivity implements PlaceProv
             case Place.SIMPLE_PHOTO_GALLERY:
             case Place.VK_PHOTO_TMP_SOURCE:
             case Place.VK_PHOTO_ALBUM_GALLERY_SAVED:
-                attachToFront(PhotoPagerFragment.newInstance(place.type, args));
+                attachToFront(PhotoPagerFragment.newInstance(place.getType(), args));
                 break;
 
             case Place.SINGLE_PHOTO:

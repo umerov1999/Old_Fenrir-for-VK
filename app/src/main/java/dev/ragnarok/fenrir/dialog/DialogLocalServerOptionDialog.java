@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.dialog;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +12,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import dev.ragnarok.fenrir.R;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class DialogLocalServerOptionDialog extends BottomSheetDialogFragment {
 

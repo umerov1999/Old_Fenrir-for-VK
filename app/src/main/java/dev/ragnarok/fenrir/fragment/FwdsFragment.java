@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +31,8 @@ import dev.ragnarok.fenrir.model.VoiceMessage;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.FwdsPresenter;
 import dev.ragnarok.fenrir.mvp.view.IFwdsView;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class FwdsFragment extends PlaceSupportMvpFragment<FwdsPresenter, IFwdsView>
         implements MessagesAdapter.OnMessageActionListener, IFwdsView, AttachmentsViewBinder.VoiceActionListener {

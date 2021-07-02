@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.domain.impl;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +30,9 @@ import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.VKOwnIds;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class NewsfeedInteractor implements INewsfeedInteractor {
 

@@ -1,10 +1,5 @@
 package ealvatag.tag.mp4;
 
-import static ealvatag.tag.mp4.field.Mp4FieldType.COVERART_JPEG;
-import static ealvatag.tag.mp4.field.Mp4FieldType.IMPLICIT;
-import static ealvatag.tag.mp4.field.Mp4FieldType.INTEGER;
-import static ealvatag.tag.mp4.field.Mp4FieldType.TEXT;
-
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +7,11 @@ import org.jetbrains.annotations.NotNull;
 import ealvatag.tag.mp4.field.Mp4FieldType;
 import ealvatag.tag.mp4.field.Mp4TagReverseDnsField;
 import ealvatag.tag.reference.Tagger;
+
+import static ealvatag.tag.mp4.field.Mp4FieldType.COVERART_JPEG;
+import static ealvatag.tag.mp4.field.Mp4FieldType.IMPLICIT;
+import static ealvatag.tag.mp4.field.Mp4FieldType.INTEGER;
+import static ealvatag.tag.mp4.field.Mp4FieldType.TEXT;
 
 /**
  * Starting list of known mp4 metadata fields that follow the Parent,Data or ---,issuer,name,data

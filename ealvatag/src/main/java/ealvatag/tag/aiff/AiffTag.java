@@ -1,8 +1,5 @@
 package ealvatag.tag.aiff;
 
-import static ealvatag.utils.Check.CANNOT_BE_NULL;
-import static ealvatag.utils.Check.checkArgNotNull;
-
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -25,6 +22,9 @@ import ealvatag.tag.UnsupportedFieldException;
 import ealvatag.tag.id3.AbstractID3v2Tag;
 import ealvatag.tag.id3.Id3SupportingTag;
 import ealvatag.tag.images.Artwork;
+
+import static ealvatag.utils.Check.CANNOT_BE_NULL;
+import static ealvatag.utils.Check.checkArgNotNull;
 
 /**
  * Wraps ID3Tag for most of its metadata.

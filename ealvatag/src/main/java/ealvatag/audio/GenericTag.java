@@ -16,10 +16,6 @@
  */
 package ealvatag.audio;
 
-import static ealvatag.utils.Check.CANNOT_BE_NULL;
-import static ealvatag.utils.Check.checkArgNotNull;
-import static ealvatag.utils.Check.checkVarArg0NotNull;
-
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 
@@ -35,6 +31,10 @@ import ealvatag.tag.TagTextField;
 import ealvatag.tag.UnsupportedFieldException;
 import ealvatag.tag.images.Artwork;
 import ealvatag.utils.StandardCharsets;
+
+import static ealvatag.utils.Check.CANNOT_BE_NULL;
+import static ealvatag.utils.Check.checkArgNotNull;
+import static ealvatag.utils.Check.checkVarArg0NotNull;
 
 /**
  * This is a complete example implementation of  {@link AbstractTag}

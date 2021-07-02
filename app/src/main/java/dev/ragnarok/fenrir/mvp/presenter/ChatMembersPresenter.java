@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,6 +17,9 @@ import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IChatMembersView;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
+
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 
 public class ChatMembersPresenter extends AccountDependencyPresenter<IChatMembersView> {

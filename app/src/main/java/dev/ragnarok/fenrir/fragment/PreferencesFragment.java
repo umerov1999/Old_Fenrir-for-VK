@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -25,7 +23,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.DrawableRes;
+import androidx.annotation.AnyRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,7 +37,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 import com.squareup.picasso3.BitmapSafeResize;
@@ -98,6 +95,9 @@ import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
+import dev.ragnarok.fenrir.view.natives.video.AnimatedShapeableImageView;
+
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 
 public class PreferencesFragment extends PreferenceFragmentCompat {
 
@@ -1107,7 +1107,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         View view = View.inflate(requireActivity(), R.layout.dialog_dedicated, null);
         RecyclerView pager = view.findViewById(R.id.dedicated_pager);
         pager.setLayoutManager(new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false));
-        pager.setAdapter(new ImageDedicatedAdapter(new int[]{R.drawable.dedicated1, R.drawable.dedicated2, R.drawable.dedicated3, R.drawable.dedicated4, R.drawable.dedicated5, R.drawable.dedicated6}));
+        pager.setAdapter(new ImageDedicatedAdapter(new ImageDedicatedAdapter.SourceType[]{new ImageDedicatedAdapter.SourceType(R.drawable.dedicated1),
+                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated2),
+                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated3),
+                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated4),
+                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated5),
+                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated6),
+                new ImageDedicatedAdapter.SourceType(R.raw.dedicated_video, true)}));
         RLottieImageView anim = view.findViewById(R.id.dedicated_anim);
         pager.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -1151,10 +1157,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     private static class ImageDedicatedAdapter extends RecyclerView.Adapter<ImageHolder> {
 
-        private final @DrawableRes
-        int[] drawables;
+        private final SourceType[] drawables;
 
-        public ImageDedicatedAdapter(@DrawableRes int[] drawables) {
+        public ImageDedicatedAdapter(SourceType[] drawables) {
             this.drawables = drawables;
         }
 
@@ -1166,14 +1171,42 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         @Override
         public void onBindViewHolder(@NonNull ImageHolder holder, int position) {
-            @DrawableRes int res = drawables[position];
-            ShapeableImageView imageView = holder.itemView.findViewById(R.id.dedicated_photo);
-            imageView.setImageResource(res);
+            SourceType res = drawables[position];
+            AnimatedShapeableImageView imageView = holder.itemView.findViewById(R.id.dedicated_photo);
+            if (!res.isVideo) {
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imageView.setImageResource(res.res);
+            } else {
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imageView.setDecoderCallback(success -> {
+                    if (success) {
+                        imageView.playAnimation();
+                    } else {
+                        imageView.setImageResource(R.drawable.report_red);
+                    }
+                });
+                imageView.fromRes(res.res);
+            }
         }
 
         @Override
         public int getItemCount() {
             return drawables.length;
+        }
+
+        public static class SourceType {
+            public boolean isVideo;
+            public @AnyRes
+            int res;
+
+            public SourceType(@AnyRes int res, boolean isVideo) {
+                this.isVideo = isVideo;
+                this.res = res;
+            }
+            public SourceType(@AnyRes int res) {
+                isVideo = false;
+                this.res = res;
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package dev.ragnarok.fenrir.view.natives.video
 
 import android.content.Context
 import android.util.Log
+import androidx.annotation.RawRes
 import dev.ragnarok.fenrir.Constants
 import java.io.File
 import java.io.InputStream
@@ -17,13 +18,25 @@ class NetworkCache(context: Context) {
         return cachedFile
     }
 
+    fun fetch(@RawRes res: Int): File? {
+        val cachedFile = getCachedFile(res) ?: return null
+        if (Constants.IS_DEBUG) {
+            Log.d("NetworkCache", "Cache hit for $res at ${cachedFile.absolutePath}")
+        }
+        return cachedFile
+    }
+
     fun isCachedFile(url: String): Boolean {
-        return File(parentDir(), filenameForUrl(url, false)).exists()
+        return File(parentDir(appContext), filenameForUrl(url, false)).exists()
+    }
+
+    fun isCachedRes(@RawRes res: Int): Boolean {
+        return File(parentDir(appContext), filenameForRes(res, false)).exists()
     }
 
     fun writeTempCacheFile(url: String, stream: InputStream): File {
         val fileName = filenameForUrl(url, true)
-        val file = File(parentDir(), fileName)
+        val file = File(parentDir(appContext), fileName)
         file.outputStream().use {
             stream.copyTo(it)
             it.flush()
@@ -34,7 +47,26 @@ class NetworkCache(context: Context) {
 
     fun renameTempFile(url: String) {
         val fileName = filenameForUrl(url, true)
-        val file = File(parentDir(), fileName)
+        val file = File(parentDir(appContext), fileName)
+        val newFileName = file.absolutePath.replace(".temp", "")
+        val newFile = File(newFileName)
+        val renamed = file.renameTo(newFile)
+        if (Constants.IS_DEBUG) {
+            Log.d("NetworkCache", "Copying temp file to real file ($newFile)")
+        }
+        if (!renamed) {
+            if (Constants.IS_DEBUG) {
+                Log.w(
+                    "NetworkCache",
+                    "Unable to rename cache file ${file.absolutePath} to ${newFile.absolutePath}."
+                )
+            }
+        }
+    }
+
+    fun renameTempFile(@RawRes res: Int) {
+        val fileName = filenameForRes(res, true)
+        val file = File(parentDir(appContext), fileName)
         val newFileName = file.absolutePath.replace(".temp", "")
         val newFile = File(newFileName)
         val renamed = file.renameTo(newFile)
@@ -52,7 +84,7 @@ class NetworkCache(context: Context) {
     }
 
     fun clear() {
-        val parentDir = parentDir()
+        val parentDir = parentDir(appContext)
         if (parentDir.exists()) {
             val files = parentDir.listFiles()
             if (!files.isNullOrEmpty()) {
@@ -65,30 +97,40 @@ class NetworkCache(context: Context) {
     }
 
     private fun getCachedFile(url: String): File? {
-        val file = File(parentDir(), filenameForUrl(url, false))
+        val file = File(parentDir(appContext), filenameForUrl(url, false))
         return if (file.exists()) {
             file
         } else null
     }
 
-    private fun parentDir(): File {
-        val file = File(appContext.cacheDir, "video_network_cache")
-        if (file.isFile) {
-            file.delete()
-        }
-        if (!file.exists()) {
-            file.mkdirs()
-        }
-        return file
+    private fun getCachedFile(@RawRes res: Int): File? {
+        val file = File(parentDir(appContext), filenameForRes(res, false))
+        return if (file.exists()) {
+            file
+        } else null
     }
 
     companion object {
-        private const val TEMP_JSON_EXTENSION = ".temp.video"
-        private const val JSON_EXTENSION = ".video"
+        private const val TEMP_EXTENSION = ".temp.video"
+        private const val EXTENSION = ".video"
         fun filenameForUrl(url: String, isTemp: Boolean) =
             "video_cache_" + url.replace(
                 "\\W+".toRegex(),
                 ""
-            ) + if (isTemp) TEMP_JSON_EXTENSION else JSON_EXTENSION
+            ) + if (isTemp) TEMP_EXTENSION else EXTENSION
+
+        fun filenameForRes(@RawRes res: Int, isTemp: Boolean) =
+            "video_res_cache_" + res + if (isTemp) TEMP_EXTENSION else EXTENSION
+
+        fun parentDir(context: Context): File {
+            val file = File(context.cacheDir, "video_network_cache")
+            if (file.isFile) {
+                file.delete()
+            }
+            if (!file.exists()) {
+                file.mkdirs()
+            }
+            return file
+        }
     }
 }

@@ -1,13 +1,13 @@
 package dev.ragnarok.fenrir.view.pager;
 
-import static dev.ragnarok.fenrir.util.Utils.dpToPx;
-
 import android.content.Context;
 import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
 
 import dev.ragnarok.fenrir.view.FlingRelativeLayout;
+
+import static dev.ragnarok.fenrir.util.Utils.dpToPx;
 
 public abstract class CloseOnFlingListener implements FlingRelativeLayout.OnSingleFlingListener {
 

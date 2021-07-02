@@ -15,11 +15,6 @@
  */
 package com.squareup.picasso3;
 
-import static com.squareup.picasso3.BitmapUtils.decodeStream;
-import static com.squareup.picasso3.Picasso.LoadedFrom.DISK;
-import static com.squareup.picasso3.Picasso.LoadedFrom.NETWORK;
-import static com.squareup.picasso3.Utils.checkNotNull;
-
 import android.graphics.Bitmap;
 import android.net.Uri;
 
@@ -31,6 +26,11 @@ import okhttp3.CacheControl;
 import okhttp3.Call;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+
+import static com.squareup.picasso3.BitmapUtils.decodeStream;
+import static com.squareup.picasso3.Picasso.LoadedFrom.DISK;
+import static com.squareup.picasso3.Picasso.LoadedFrom.NETWORK;
+import static com.squareup.picasso3.Utils.checkNotNull;
 
 final class NetworkRequestHandler extends RequestHandler {
     private static final String SCHEME_HTTP = "http";

@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter.search;
 
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -16,6 +14,8 @@ import dev.ragnarok.fenrir.model.Video;
 import dev.ragnarok.fenrir.mvp.view.search.IVideosSearchView;
 import dev.ragnarok.fenrir.util.Pair;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class VideosSearchPresenter extends AbsSearchPresenter<IVideosSearchView, VideoSearchCriteria, Video, IntNextFrom> {
 

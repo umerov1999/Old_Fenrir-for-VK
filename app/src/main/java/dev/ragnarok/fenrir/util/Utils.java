@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.util;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -122,6 +120,8 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
 
 public class Utils {
     private static final List<Integer> reload_news = new ArrayList<>();
@@ -1176,6 +1176,8 @@ public class Utils {
                 return Color.parseColor("#8500ff");
             case "fuxia_neon_yellow":
                 return Color.parseColor("#fe59c2");
+            case "fuxia_neon_violet":
+                return Color.parseColor("#fe4164");
             case "green_violet":
                 return Color.parseColor("#268000");
             case "gray":

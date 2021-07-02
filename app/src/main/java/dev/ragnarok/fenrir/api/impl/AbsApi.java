@@ -1,9 +1,5 @@
 package dev.ragnarok.fenrir.api.impl;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import dev.ragnarok.fenrir.api.ApiException;
 import dev.ragnarok.fenrir.api.IServiceProvider;
 import dev.ragnarok.fenrir.api.TokenType;
@@ -14,6 +10,10 @@ import dev.ragnarok.fenrir.api.model.response.BlockResponse;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.exceptions.Exceptions;
 import io.reactivex.rxjava3.functions.Function;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 class AbsApi {
 

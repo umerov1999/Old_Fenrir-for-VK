@@ -53,7 +53,7 @@ public class VideoSelectActivity extends NoMainActivity implements PlaceProvider
 
     @Override
     public void openPlace(Place place) {
-        if (place.type == Place.VIDEO_ALBUM) {
+        if (place.getType() == Place.VIDEO_ALBUM) {
             Fragment fragment = VideosFragment.newInstance(place.getArgs());
             getSupportFragmentManager()
                     .beginTransaction()
@@ -61,7 +61,7 @@ public class VideoSelectActivity extends NoMainActivity implements PlaceProvider
                     .replace(getMainContainerViewId(), fragment)
                     .addToBackStack("video-album")
                     .commit();
-        } else if (place.type == Place.SINGLE_SEARCH) {
+        } else if (place.getType() == Place.SINGLE_SEARCH) {
             SingleTabSearchFragment singleTabSearchFragment = SingleTabSearchFragment.newInstance(place.getArgs());
             getSupportFragmentManager()
                     .beginTransaction()
@@ -69,7 +69,7 @@ public class VideoSelectActivity extends NoMainActivity implements PlaceProvider
                     .replace(getMainContainerViewId(), singleTabSearchFragment)
                     .addToBackStack("video-search")
                     .commit();
-        } else if (place.type == Place.VIDEO_PREVIEW) {
+        } else if (place.getType() == Place.VIDEO_PREVIEW) {
             Intent intent = new Intent();
             intent.putParcelableArrayListExtra(Extra.ATTACHMENTS, Utils.singletonArrayList(place.getArgs().getParcelable(Extra.VIDEO)));
             setResult(Activity.RESULT_OK, intent);

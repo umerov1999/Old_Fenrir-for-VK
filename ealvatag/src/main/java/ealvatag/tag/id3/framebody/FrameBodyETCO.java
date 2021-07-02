@@ -15,8 +15,6 @@
  */
 package ealvatag.tag.id3.framebody;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
-
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,6 +36,8 @@ import ealvatag.tag.datatype.NumberHashMap;
 import ealvatag.tag.id3.ID3v24Frames;
 import ealvatag.tag.id3.valuepair.EventTimingTimestampTypes;
 import okio.Buffer;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Event timing codes frame.

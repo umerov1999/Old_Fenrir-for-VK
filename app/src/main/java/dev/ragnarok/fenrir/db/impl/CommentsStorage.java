@@ -1,9 +1,5 @@
 package dev.ragnarok.fenrir.db.impl;
 
-import static dev.ragnarok.fenrir.db.impl.AttachmentsStorage.appendAttachOperationWithBackReference;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
-
 import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
 import android.content.ContentValues;
@@ -38,6 +34,10 @@ import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.subjects.PublishSubject;
+
+import static dev.ragnarok.fenrir.db.impl.AttachmentsStorage.appendAttachOperationWithBackReference;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 class CommentsStorage extends AbsStorage implements ICommentsStorage {
 

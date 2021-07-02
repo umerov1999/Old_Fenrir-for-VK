@@ -216,6 +216,8 @@ public interface ISettings {
 
         int getEndListAnimation();
 
+        boolean appStoredVersionEqual();
+
         @NonNull
         LocalServerSettings getLocalServer();
 

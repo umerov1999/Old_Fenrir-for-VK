@@ -55,7 +55,7 @@ public class AttachmentsActivity extends NoMainActivity implements PlaceProvider
 
     @Override
     public void openPlace(Place place) {
-        if (place.type == Place.VIDEO_ALBUM) {
+        if (place.getType() == Place.VIDEO_ALBUM) {
             Fragment fragment = VideosFragment.newInstance(place.getArgs());
             getSupportFragmentManager()
                     .beginTransaction()

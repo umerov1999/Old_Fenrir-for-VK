@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,6 +21,8 @@ import dev.ragnarok.fenrir.mvp.view.ICommunityManagerEditView;
 import dev.ragnarok.fenrir.mvp.view.IProgressView;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 
 public class CommunityManagerEditPresenter extends AccountDependencyPresenter<ICommunityManagerEditView> {

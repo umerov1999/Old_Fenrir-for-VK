@@ -1,8 +1,5 @@
 package ealvatag.audio.mp4;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
-
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -23,6 +20,9 @@ import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.logging.ErrorMessage;
 import ealvatag.utils.tree.DefaultMutableTreeNode;
 import ealvatag.utils.tree.DefaultTreeModel;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Tree representing atoms in the mp4 file

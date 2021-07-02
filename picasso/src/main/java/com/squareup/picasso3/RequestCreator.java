@@ -15,23 +15,6 @@
  */
 package com.squareup.picasso3;
 
-import static com.squareup.picasso3.BitmapHunter.forRequest;
-import static com.squareup.picasso3.MemoryPolicy.shouldReadFromMemoryCache;
-import static com.squareup.picasso3.MemoryPolicy.shouldWriteToMemoryCache;
-import static com.squareup.picasso3.Picasso.LoadedFrom.MEMORY;
-import static com.squareup.picasso3.Picasso.Priority;
-import static com.squareup.picasso3.PicassoDrawable.setPlaceholder;
-import static com.squareup.picasso3.PicassoDrawable.setResult;
-import static com.squareup.picasso3.RemoteViewsAction.AppWidgetAction;
-import static com.squareup.picasso3.RemoteViewsAction.NotificationAction;
-import static com.squareup.picasso3.Utils.OWNER_MAIN;
-import static com.squareup.picasso3.Utils.VERB_CHANGED;
-import static com.squareup.picasso3.Utils.VERB_COMPLETED;
-import static com.squareup.picasso3.Utils.VERB_CREATED;
-import static com.squareup.picasso3.Utils.checkMain;
-import static com.squareup.picasso3.Utils.checkNotMain;
-import static com.squareup.picasso3.Utils.log;
-
 import android.app.Notification;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -55,6 +38,23 @@ import com.squareup.picasso3.RequestHandler.Result;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.squareup.picasso3.BitmapHunter.forRequest;
+import static com.squareup.picasso3.MemoryPolicy.shouldReadFromMemoryCache;
+import static com.squareup.picasso3.MemoryPolicy.shouldWriteToMemoryCache;
+import static com.squareup.picasso3.Picasso.LoadedFrom.MEMORY;
+import static com.squareup.picasso3.Picasso.Priority;
+import static com.squareup.picasso3.PicassoDrawable.setPlaceholder;
+import static com.squareup.picasso3.PicassoDrawable.setResult;
+import static com.squareup.picasso3.RemoteViewsAction.AppWidgetAction;
+import static com.squareup.picasso3.RemoteViewsAction.NotificationAction;
+import static com.squareup.picasso3.Utils.OWNER_MAIN;
+import static com.squareup.picasso3.Utils.VERB_CHANGED;
+import static com.squareup.picasso3.Utils.VERB_COMPLETED;
+import static com.squareup.picasso3.Utils.VERB_CREATED;
+import static com.squareup.picasso3.Utils.checkMain;
+import static com.squareup.picasso3.Utils.checkNotMain;
+import static com.squareup.picasso3.Utils.log;
 
 /**
  * Fluent API for building an image download request.

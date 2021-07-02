@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter.search;
 
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -17,6 +15,8 @@ import dev.ragnarok.fenrir.model.Community;
 import dev.ragnarok.fenrir.mvp.view.search.ICommunitiesSearchView;
 import dev.ragnarok.fenrir.util.Pair;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class CommunitiesSearchPresenter extends AbsSearchPresenter<ICommunitiesSearchView,
         GroupSearchCriteria, Community, IntNextFrom> {

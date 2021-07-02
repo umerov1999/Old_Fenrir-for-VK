@@ -29,7 +29,7 @@ public class ProxyManagerActivity extends NoMainActivity implements PlaceProvide
 
     @Override
     public void openPlace(Place place) {
-        if (place.type == Place.PROXY_ADD) {
+        if (place.getType() == Place.PROXY_ADD) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .setCustomAnimations(R.anim.fragment_enter_pop, R.anim.fragment_exit_pop)

@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.settings;
 
-import static dev.ragnarok.fenrir.util.Utils.hasFlag;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -21,6 +19,8 @@ import java.util.Map;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.Peer;
 import dev.ragnarok.fenrir.util.Utils;
+
+import static dev.ragnarok.fenrir.util.Utils.hasFlag;
 
 public class NotificationsPrefs implements ISettings.INotificationSettings {
 

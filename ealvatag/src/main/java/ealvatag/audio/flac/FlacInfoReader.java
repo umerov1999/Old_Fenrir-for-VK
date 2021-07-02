@@ -18,9 +18,6 @@
  */
 package ealvatag.audio.flac;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.INFO;
-import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -34,6 +31,9 @@ import ealvatag.audio.flac.metadatablock.MetadataBlockHeader;
 import ealvatag.logging.EalvaTagLog;
 import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.INFO;
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
 
 /**
  * Read info from Flac file

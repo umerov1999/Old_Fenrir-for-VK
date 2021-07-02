@@ -36,7 +36,7 @@ public class PhotosActivity extends NoMainActivity implements PlaceProvider {
 
     @Override
     public void openPlace(Place place) {
-        if (place.type == Place.LOCAL_IMAGE_ALBUM) {
+        if (place.getType() == Place.LOCAL_IMAGE_ALBUM) {
             int maxSelectionCount = getIntent().getIntExtra(EXTRA_MAX_SELECTION_COUNT, 10);
             LocalImageAlbum album = place.getArgs().getParcelable(Extra.ALBUM);
             LocalPhotosFragment localPhotosFragment = LocalPhotosFragment.newInstance(maxSelectionCount, album, false);
@@ -46,7 +46,7 @@ public class PhotosActivity extends NoMainActivity implements PlaceProvider {
                     .replace(R.id.fragment, localPhotosFragment)
                     .addToBackStack("photos")
                     .commit();
-        } else if (place.type == Place.SINGLE_PHOTO) {
+        } else if (place.getType() == Place.SINGLE_PHOTO) {
             SinglePhotoFragment localPhotosFragment = SinglePhotoFragment.newInstance(place.getArgs());
             getSupportFragmentManager()
                     .beginTransaction()

@@ -845,7 +845,8 @@
     <string name="repo">Repository: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="repo_local_server">Repository: https://github.com/umerov1999/FenrirMediaServer/releases</string>
     <string name="is_donated">Donate for verification</string>
-    <string name="is_donated_alert">Not included in the full version, it costs 60₽. Write to the developer\'s mail</string>
+    <string name="is_donated_alert">Not included in the full version, only visible in this client. Cost for a page - %1$d₽, for a group - %2$d₽. Write to the developer\'s mail</string>
+    <string name="is_donated_alert_disabled">Option disabled</string>
     <string name="project_dedicated_summary">Project Dedicated for Arnoldova Ekaterina, https://vk.com/id255645173</string>
     <string name="project_dedicated">Project Dedicated</string>
     <string name="comment">Comment</string>

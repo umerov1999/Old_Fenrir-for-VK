@@ -1,8 +1,5 @@
 package ealvatag.audio.wav;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -18,6 +15,9 @@ import ealvatag.logging.EalvaTagLog;
 import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.logging.Hex;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
 
 /**
  * Experimental, reads the length of data chiunk and removes all data after that, useful for removing screwed up tags

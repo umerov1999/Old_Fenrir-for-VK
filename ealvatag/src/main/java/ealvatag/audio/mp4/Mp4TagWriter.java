@@ -18,10 +18,6 @@
  */
 package ealvatag.audio.mp4;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
-import static ealvatag.logging.ErrorMessage.MP4_CHANGES_TO_FILE_FAILED_INCORRECT_NUMBER_OF_TRACKS;
-
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -45,6 +41,10 @@ import ealvatag.tag.TagOptionSingleton;
 import ealvatag.tag.mp4.Mp4Tag;
 import ealvatag.tag.mp4.Mp4TagCreator;
 import ealvatag.utils.tree.DefaultMutableTreeNode;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+import static ealvatag.logging.ErrorMessage.MP4_CHANGES_TO_FILE_FAILED_INCORRECT_NUMBER_OF_TRACKS;
 
 
 /**

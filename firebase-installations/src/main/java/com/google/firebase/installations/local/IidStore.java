@@ -14,8 +14,6 @@
 
 package com.google.firebase.installations.local;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Base64;
@@ -37,6 +35,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Read existing iid only for default (first initialized) instance of this firebase application.*

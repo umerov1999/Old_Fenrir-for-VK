@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -58,6 +56,8 @@ import dev.ragnarok.fenrir.util.DownloadWorkUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.MySearchView;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class AudiosFragment extends BaseMvpFragment<AudiosPresenter, IAudiosView>
         implements IAudiosView, HorizontalPlaylistAdapter.Listener {

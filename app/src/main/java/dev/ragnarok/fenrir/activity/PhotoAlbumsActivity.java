@@ -36,7 +36,7 @@ public class PhotoAlbumsActivity extends NoMainActivity implements PlaceProvider
 
     @Override
     public void openPlace(Place place) {
-        if (place.type == Place.VK_PHOTO_ALBUM) {
+        if (place.getType() == Place.VK_PHOTO_ALBUM) {
             VKPhotosFragment fragment = VKPhotosFragment.newInstance(place.getArgs());
             getSupportFragmentManager()
                     .beginTransaction()

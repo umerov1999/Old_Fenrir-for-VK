@@ -1,13 +1,13 @@
 package dev.ragnarok.fenrir.longpoll;
 
-import static dev.ragnarok.fenrir.util.Utils.hasFlag;
-
 import android.content.Context;
 
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.settings.ISettings;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Logger;
+
+import static dev.ragnarok.fenrir.util.Utils.hasFlag;
 
 public class LongPollNotificationHelper {
 

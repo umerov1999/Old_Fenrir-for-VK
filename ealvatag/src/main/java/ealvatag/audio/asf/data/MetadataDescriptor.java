@@ -18,9 +18,6 @@
  */
 package ealvatag.audio.asf.data;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
-import static ealvatag.logging.ErrorMessage.WMA_LENGTH_OF_DATA_IS_TOO_LARGE;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -34,6 +31,9 @@ import ealvatag.logging.EalvaTagLog;
 import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.tag.TagOptionSingleton;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+import static ealvatag.logging.ErrorMessage.WMA_LENGTH_OF_DATA_IS_TOO_LARGE;
 
 /**
  * This structure represents metadata objects in ASF {@link MetadataContainer}.<br>

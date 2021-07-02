@@ -24,7 +24,7 @@ public class AccountsActivity extends NoMainActivity implements PlaceProvider {
 
     @Override
     public void openPlace(Place place) {
-        if (place.type == Place.PREFERENCES) {
+        if (place.getType() == Place.PREFERENCES) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(getMainContainerViewId(), PreferencesFragment.newInstance(place.getArgs()))

@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment.fave;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +28,8 @@ import dev.ragnarok.fenrir.mvp.presenter.FaveProductsPresenter;
 import dev.ragnarok.fenrir.mvp.view.IFaveProductsView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.util.ViewUtils;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class FaveProductsFragment extends BaseMvpFragment<FaveProductsPresenter, IFaveProductsView>
         implements IFaveProductsView, SwipeRefreshLayout.OnRefreshListener, MarketAdapter.ClickListener {

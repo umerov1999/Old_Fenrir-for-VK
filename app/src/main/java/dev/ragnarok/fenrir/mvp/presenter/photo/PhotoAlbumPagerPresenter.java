@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter.photo;
 
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
-
 import android.content.Context;
 import android.os.Bundle;
 
@@ -20,6 +18,8 @@ import dev.ragnarok.fenrir.model.Photo;
 import dev.ragnarok.fenrir.model.TmpSource;
 import dev.ragnarok.fenrir.util.Analytics;
 import dev.ragnarok.fenrir.util.RxUtils;
+
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 
 public class PhotoAlbumPagerPresenter extends PhotoPagerPresenter {
 

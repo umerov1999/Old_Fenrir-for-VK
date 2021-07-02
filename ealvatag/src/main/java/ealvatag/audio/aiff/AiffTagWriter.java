@@ -18,9 +18,6 @@
  */
 package ealvatag.audio.aiff;
 
-import static ealvatag.audio.iff.IffHeaderChunk.SIGNATURE_LENGTH;
-import static ealvatag.audio.iff.IffHeaderChunk.SIZE_LENGTH;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -43,6 +40,9 @@ import ealvatag.logging.EalvaTagLog.LogLevel;
 import ealvatag.tag.Tag;
 import ealvatag.tag.TagOptionSingleton;
 import ealvatag.tag.aiff.AiffTag;
+
+import static ealvatag.audio.iff.IffHeaderChunk.SIGNATURE_LENGTH;
+import static ealvatag.audio.iff.IffHeaderChunk.SIZE_LENGTH;
 
 
 /**

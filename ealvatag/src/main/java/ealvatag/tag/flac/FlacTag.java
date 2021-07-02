@@ -1,11 +1,5 @@
 package ealvatag.tag.flac;
 
-import static ealvatag.utils.Check.CANNOT_BE_NULL;
-import static ealvatag.utils.Check.CANNOT_BE_NULL_OR_EMPTY;
-import static ealvatag.utils.Check.checkArgNotNull;
-import static ealvatag.utils.Check.checkArgNotNullOrEmpty;
-import static ealvatag.utils.Check.checkVarArg0NotNull;
-
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -31,6 +25,12 @@ import ealvatag.tag.vorbiscomment.ContainsVorbisCommentField;
 import ealvatag.tag.vorbiscomment.VorbisCommentFieldKey;
 import ealvatag.tag.vorbiscomment.VorbisCommentTag;
 import ealvatag.utils.StandardCharsets;
+
+import static ealvatag.utils.Check.CANNOT_BE_NULL;
+import static ealvatag.utils.Check.CANNOT_BE_NULL_OR_EMPTY;
+import static ealvatag.utils.Check.checkArgNotNull;
+import static ealvatag.utils.Check.checkArgNotNullOrEmpty;
+import static ealvatag.utils.Check.checkVarArg0NotNull;
 
 /**
  * Flac uses Vorbis Comment for most of its metadata and a Flac Picture Block for images

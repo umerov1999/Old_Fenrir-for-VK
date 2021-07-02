@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +27,8 @@ import dev.ragnarok.fenrir.mvp.presenter.CommunityFriendsPresenter;
 import dev.ragnarok.fenrir.mvp.view.ICommunityFriendsView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.view.MySearchView;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class CommunityFriendsFragment extends BaseMvpBottomSheetDialogFragment<CommunityFriendsPresenter, ICommunityFriendsView>
         implements ICommunityFriendsView, PeopleAdapter.ClickListener {

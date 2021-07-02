@@ -1,5 +1,9 @@
 package ealvatag.tag.id3;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 import static ealvatag.tag.id3.ID3v24Frames.FRAME_ID_ACCOMPANIMENT;
 import static ealvatag.tag.id3.ID3v24Frames.FRAME_ID_ALBUM;
 import static ealvatag.tag.id3.ID3v24Frames.FRAME_ID_ALBUM_ARTIST_SORT_ORDER_ITUNES;
@@ -85,10 +89,6 @@ import static ealvatag.tag.id3.ID3v24Frames.FRAME_ID_URL_PUBLISHERS;
 import static ealvatag.tag.id3.ID3v24Frames.FRAME_ID_USER_DEFINED_INFO;
 import static ealvatag.tag.id3.ID3v24Frames.FRAME_ID_USER_DEFINED_URL;
 import static ealvatag.tag.id3.ID3v24Frames.FRAME_ID_YEAR;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 
 /**
  * Orders frame Ids so that the most important frames are written first

@@ -1,9 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -34,6 +30,10 @@ import dev.ragnarok.fenrir.mvp.view.IGroupWallView;
 import dev.ragnarok.fenrir.settings.ISettings;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 
 public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
 

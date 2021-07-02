@@ -87,6 +87,16 @@ public class AnswerVKOfficialDtoAdapter extends AbsAdapter implements JsonDeseri
             JsonObject root_item = i.getAsJsonObject();
             AnswerVKOfficial dto = new AnswerVKOfficial();
 
+            if (hasObject(root_item, "action")) {
+                JsonObject action_item = root_item.get("action").getAsJsonObject();
+                if ("authorize".equals(optString(action_item, "type"))) {
+                    dto.action = new AnswerVKOfficial.ActionURL(optString(action_item, "url"));
+                } else if ("message_open".equals(optString(action_item, "type")) && hasObject(action_item, "context")) {
+                    JsonObject context_item = action_item.get("context").getAsJsonObject();
+                    dto.action = new AnswerVKOfficial.ActionMessage(optInt(context_item, "peer_id", 0), optInt(context_item, "id", 0));
+                }
+            }
+
             dto.iconType = optString(root_item, "icon_type");
             dto.header = optString(root_item, "header");
             if (dto.header != null) {

@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.api.model.longpoll;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent.ACTION_COUNTER_UNREAD_WAS_CHANGED;
 import static dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent.ACTION_MESSAGES_FLAGS_RESET;
 import static dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent.ACTION_MESSAGES_FLAGS_SET;
@@ -13,9 +16,6 @@ import static dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent.ACTION_USE
 import static dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent.ACTION_USER_WRITE_TEXT_IN_DIALOG;
 import static dev.ragnarok.fenrir.api.model.longpoll.AbsLongpollEvent.ACTION_USER_WRITE_VOICE_IN_DIALOG;
 import static dev.ragnarok.fenrir.util.Utils.safeCountOfMultiple;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class VkApiLongpollUpdates {
 

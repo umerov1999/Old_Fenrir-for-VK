@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.ContextMenu;
@@ -31,6 +28,9 @@ import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.OnlineView;
+
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class ChatMembersListAdapter extends RecyclerView.Adapter<ChatMembersListAdapter.ViewHolder> {
 

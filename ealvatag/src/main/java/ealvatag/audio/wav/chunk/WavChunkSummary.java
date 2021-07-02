@@ -1,13 +1,13 @@
 package ealvatag.audio.wav.chunk;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
-
 import ealvatag.audio.iff.ChunkSummary;
 import ealvatag.audio.wav.WavChunkType;
 import ealvatag.logging.EalvaTagLog;
 import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.tag.wav.WavTag;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
 
 /**
  * AIFF Specific methods for ChunkSummarys

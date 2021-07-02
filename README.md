@@ -8,7 +8,7 @@
 
 <b>Инструкция по сборке:</b>
 Требуется:
-  1) Android Studio Arctic Fox (2020.3.1) Beta 4 или выше. Kotlin 1.5.*
+  1) Android Studio 4.2.2 или выше. Kotlin 1.5.*
   2) Android SDK 30
   3) Android NDK 21.4.7075529
   

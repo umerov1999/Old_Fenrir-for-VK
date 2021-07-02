@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +28,8 @@ import dev.ragnarok.fenrir.mvp.presenter.ChatUsersDomainPresenter;
 import dev.ragnarok.fenrir.mvp.view.IChatUsersDomainView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.view.MySearchView;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class ChatUsersDomainFragment extends BaseMvpBottomSheetDialogFragment<ChatUsersDomainPresenter, IChatUsersDomainView>
         implements IChatUsersDomainView, ChatMembersListDomainAdapter.ActionListener {

@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.upload.impl;
 
-import static dev.ragnarok.fenrir.util.RxUtils.safelyCloseAction;
-import static dev.ragnarok.fenrir.util.Utils.safelyClose;
-
 import android.content.Context;
 
 import androidx.annotation.NonNull;
@@ -28,6 +25,9 @@ import dev.ragnarok.fenrir.upload.UploadUtils;
 import dev.ragnarok.fenrir.util.Objects;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.RxUtils.safelyCloseAction;
+import static dev.ragnarok.fenrir.util.Utils.safelyClose;
 
 public class Photo2WallUploadable implements IUploadable<Photo> {
 

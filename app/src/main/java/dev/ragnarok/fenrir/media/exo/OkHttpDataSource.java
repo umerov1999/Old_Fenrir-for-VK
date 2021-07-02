@@ -15,10 +15,6 @@
  */
 package dev.ragnarok.fenrir.media.exo;
 
-import static com.google.android.exoplayer2.upstream.HttpUtil.buildRangeRequestHeader;
-import static com.google.android.exoplayer2.util.Util.castNonNull;
-import static java.lang.Math.min;
-
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
@@ -56,6 +52,10 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+
+import static com.google.android.exoplayer2.upstream.HttpUtil.buildRangeRequestHeader;
+import static com.google.android.exoplayer2.util.Util.castNonNull;
+import static java.lang.Math.min;
 
 /**
  * An {@link HttpDataSource} that delegates to Square's {@link Call.Factory}.

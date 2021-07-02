@@ -1,9 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter.wallattachments;
 
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -27,6 +23,10 @@ import dev.ragnarok.fenrir.mvp.view.wallattachments.IWallPhotosAttachmentsView;
 import dev.ragnarok.fenrir.util.Analytics;
 import dev.ragnarok.fenrir.util.RxUtils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 public class WallPhotosAttachmentsPresenter extends PlaceSupportPresenter<IWallPhotosAttachmentsView> {
 

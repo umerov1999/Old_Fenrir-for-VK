@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir;
 
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 
@@ -32,6 +30,8 @@ import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Logger;
 import dev.ragnarok.fenrir.util.PersistentLogger;
 import dev.ragnarok.fenrir.util.RxUtils;
+
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 
 public class FcmListenerService extends FirebaseMessagingService {
 

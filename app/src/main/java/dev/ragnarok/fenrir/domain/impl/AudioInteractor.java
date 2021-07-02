@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.domain.impl;
 
-import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
-
 import android.content.Context;
 
 import androidx.annotation.NonNull;
@@ -31,6 +29,8 @@ import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
 
 public class AudioInteractor implements IAudioInteractor {
 

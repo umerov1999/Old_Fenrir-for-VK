@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
@@ -32,6 +30,8 @@ import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.OnlineView;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
+
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class AccountAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

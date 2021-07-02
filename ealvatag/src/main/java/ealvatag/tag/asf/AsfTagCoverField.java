@@ -1,7 +1,5 @@
 package ealvatag.tag.asf;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
-
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
@@ -14,6 +12,8 @@ import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.logging.ErrorMessage;
 import ealvatag.tag.id3.valuepair.ImageFormats;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Encapsulates the WM/Pictures provides some convenience methods for decoding

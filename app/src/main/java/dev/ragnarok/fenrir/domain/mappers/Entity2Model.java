@@ -1,11 +1,5 @@
 package dev.ragnarok.fenrir.domain.mappers;
 
-import static dev.ragnarok.fenrir.domain.mappers.MapUtil.mapAll;
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -118,6 +112,12 @@ import dev.ragnarok.fenrir.model.WikiPage;
 import dev.ragnarok.fenrir.model.database.Country;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.VKOwnIds;
+
+import static dev.ragnarok.fenrir.domain.mappers.MapUtil.mapAll;
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 
 public class Entity2Model {

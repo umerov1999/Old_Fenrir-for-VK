@@ -1,11 +1,11 @@
 package ealvatag.audio.ogg.util;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-
 import ealvatag.logging.EalvaTagLog;
 import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.utils.StandardCharsets;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
 
 /**
  * Vorbis Setup header

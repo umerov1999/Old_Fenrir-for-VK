@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +32,8 @@ import dev.ragnarok.fenrir.mvp.presenter.ProductAlbumsPresenter;
 import dev.ragnarok.fenrir.mvp.view.IProductAlbumsView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.util.ViewUtils;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class ProductAlbumsFragment extends BaseMvpFragment<ProductAlbumsPresenter, IProductAlbumsView>
         implements IProductAlbumsView, SwipeRefreshLayout.OnRefreshListener, MarketAlbumAdapter.ClickListener {

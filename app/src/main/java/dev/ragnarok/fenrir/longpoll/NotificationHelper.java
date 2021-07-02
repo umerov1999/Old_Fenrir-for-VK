@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.longpoll;
 
-import static dev.ragnarok.fenrir.util.Utils.hasFlag;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -57,6 +54,9 @@ import dev.ragnarok.fenrir.util.Utils;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import static dev.ragnarok.fenrir.util.Utils.hasFlag;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 
 public class NotificationHelper {
 

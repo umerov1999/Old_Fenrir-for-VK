@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.domain.impl;
 
-import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
-
 import java.util.List;
 
 import dev.ragnarok.fenrir.Constants;
@@ -19,6 +17,8 @@ import dev.ragnarok.fenrir.model.Community;
 import dev.ragnarok.fenrir.model.Owner;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
+
+import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
 
 
 public class CommunitiesInteractor implements ICommunitiesInteractor {

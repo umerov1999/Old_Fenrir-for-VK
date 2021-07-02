@@ -2,6 +2,7 @@ package dev.ragnarok.fenrir;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -170,6 +171,12 @@ public class CheckDonate {
                     boolean isDon = Utils.isValueAssigned(account_id, donatedOwnersLocal) || Utils.isValueAssigned(account_id, donatedOwnersRemote);
                     View view = LayoutInflater.from(context).inflate(R.layout.is_donate_alert, null);
                     ((TextView) view.findViewById(R.id.item_status)).setText(isDon ? R.string.button_yes : R.string.button_no);
+                    if (t.disabled) {
+                        ((TextView) view.findViewById(R.id.item_description)).setTextColor(Color.parseColor("#ff0000"));
+                        ((TextView) view.findViewById(R.id.item_description)).setText(R.string.is_donated_alert_disabled);
+                    } else {
+                        ((TextView) view.findViewById(R.id.item_description)).setText(context.getString(R.string.is_donated_alert, t.page, t.group));
+                    }
                     RLottieImageView anim = view.findViewById(R.id.lottie_animation);
                     anim.setAutoRepeat(true);
                     anim.fromRes(isDon ? R.raw.is_donated : R.raw.is_not_donated, Utils.dp(200), Utils.dp(200));

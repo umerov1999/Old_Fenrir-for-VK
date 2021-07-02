@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.fragment;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -52,6 +49,9 @@ import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.CircleCounterButton;
 import dev.ragnarok.fenrir.view.emoji.EmojiconTextView;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class WallPostFragment extends PlaceSupportMvpFragment<WallPostPresenter, IWallPostView>
         implements EmojiconTextView.OnHashTagClickListener, IWallPostView {

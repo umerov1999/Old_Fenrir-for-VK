@@ -18,8 +18,6 @@
  */
 package ealvatag.audio.mp4.atom;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -36,6 +34,8 @@ import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.logging.EalvaTagLog.LogLevel;
 import ealvatag.utils.StandardCharsets;
 import okio.BufferedSource;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
 
 /**
  * Everything in MP4s are held in boxes (aka atoms). They are held as a hierarchical tree within the MP4.

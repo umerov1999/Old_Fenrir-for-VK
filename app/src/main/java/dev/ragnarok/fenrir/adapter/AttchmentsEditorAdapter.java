@@ -1,9 +1,5 @@
 package dev.ragnarok.fenrir.adapter;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
@@ -47,6 +43,10 @@ import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.upload.Upload;
 import dev.ragnarok.fenrir.view.CircleRoadProgress;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class AttchmentsEditorAdapter extends RecyclerBindableAdapter<AttachmenEntry, AttchmentsEditorAdapter.ViewHolder> {
 

@@ -18,10 +18,6 @@
  */
 package ealvatag.tag.wav;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.INFO;
-import static ealvatag.utils.Check.CANNOT_BE_NULL;
-import static ealvatag.utils.Check.checkArgNotNull;
-
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -50,6 +46,10 @@ import ealvatag.tag.UnsupportedFieldException;
 import ealvatag.tag.id3.AbstractID3v2Tag;
 import ealvatag.tag.id3.Id3SupportingTag;
 import ealvatag.tag.images.Artwork;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.INFO;
+import static ealvatag.utils.Check.CANNOT_BE_NULL;
+import static ealvatag.utils.Check.checkArgNotNull;
 
 /**
  * Represent wav metadata found in a Wav file

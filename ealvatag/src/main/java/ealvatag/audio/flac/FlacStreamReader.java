@@ -1,7 +1,5 @@
 package ealvatag.audio.flac;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -13,6 +11,8 @@ import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.logging.ErrorMessage;
 import ealvatag.tag.id3.AbstractID3v2Tag;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Flac Stream

@@ -47,7 +47,7 @@ public class AudioSelectActivity extends NoMainActivity implements PlaceProvider
 
     @Override
     public void openPlace(Place place) {
-        if (place.type == Place.SINGLE_SEARCH) {
+        if (place.getType() == Place.SINGLE_SEARCH) {
             SingleTabSearchFragment singleTabSearchFragment = SingleTabSearchFragment.newInstance(place.getArgs());
             getSupportFragmentManager()
                     .beginTransaction()
@@ -55,7 +55,7 @@ public class AudioSelectActivity extends NoMainActivity implements PlaceProvider
                     .replace(getMainContainerViewId(), singleTabSearchFragment)
                     .addToBackStack("audio-search-select")
                     .commit();
-        } else if (place.type == Place.AUDIOS_IN_ALBUM) {
+        } else if (place.getType() == Place.AUDIOS_IN_ALBUM) {
             Bundle args = place.getArgs();
             getSupportFragmentManager()
                     .beginTransaction()

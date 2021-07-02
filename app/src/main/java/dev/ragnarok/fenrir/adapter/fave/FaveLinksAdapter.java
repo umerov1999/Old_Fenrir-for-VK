@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.adapter.fave;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.content.Context;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -23,6 +21,8 @@ import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class FaveLinksAdapter extends RecyclerView.Adapter<FaveLinksAdapter.Holder> {
 

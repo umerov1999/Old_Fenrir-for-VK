@@ -119,7 +119,7 @@ public class Place implements Parcelable {
             return new Place[size];
         }
     };
-    public final int type;
+    private final int type;
     private String requestListenerKey;
     private FragmentResultListener requestListener;
     private Bundle args;

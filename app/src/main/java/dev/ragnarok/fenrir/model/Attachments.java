@@ -1,12 +1,5 @@
 package dev.ragnarok.fenrir.model;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.cloneListAsArrayList;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOfMultiple;
-import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -16,6 +9,13 @@ import java.util.ArrayList;
 
 import dev.ragnarok.fenrir.adapter.DocLink;
 import dev.ragnarok.fenrir.adapter.PostImage;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.cloneListAsArrayList;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOfMultiple;
+import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
 
 public class Attachments implements Parcelable, Cloneable {
 

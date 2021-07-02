@@ -1,13 +1,5 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
-import static dev.ragnarok.fenrir.util.AppPerms.hasCameraPermission;
-import static dev.ragnarok.fenrir.util.AppPerms.hasReadStoragePermission;
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.findInfoByPredicate;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOfMultiple;
-
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -36,6 +28,14 @@ import dev.ragnarok.fenrir.upload.Upload;
 import dev.ragnarok.fenrir.util.FileUtil;
 import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.Predicate;
+
+import static dev.ragnarok.fenrir.util.AppPerms.hasCameraPermission;
+import static dev.ragnarok.fenrir.util.AppPerms.hasReadStoragePermission;
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.findInfoByPredicate;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOfMultiple;
 
 
 public abstract class AbsAttachmentsEditPresenter<V extends IBaseAttachmentsEditView>

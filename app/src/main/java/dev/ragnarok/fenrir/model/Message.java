@@ -1,10 +1,5 @@
 package dev.ragnarok.fenrir.model;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
-
 import android.content.Context;
 import android.os.Parcel;
 import android.text.TextUtils;
@@ -17,6 +12,11 @@ import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.api.model.Identificable;
 import dev.ragnarok.fenrir.util.ParcelUtils;
 import dev.ragnarok.fenrir.util.Utils;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 public class Message extends AbsModel implements Identificable, ISelectable {
 

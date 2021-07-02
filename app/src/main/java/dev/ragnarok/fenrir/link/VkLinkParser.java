@@ -1,8 +1,5 @@
 package dev.ragnarok.fenrir.link;
 
-import static java.lang.Integer.parseInt;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import androidx.annotation.Nullable;
 
 import java.net.URLDecoder;
@@ -39,6 +36,9 @@ import dev.ragnarok.fenrir.link.types.WallLink;
 import dev.ragnarok.fenrir.link.types.WallPostLink;
 import dev.ragnarok.fenrir.model.Peer;
 import dev.ragnarok.fenrir.util.Optional;
+
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static java.lang.Integer.parseInt;
 
 public class VkLinkParser {
 

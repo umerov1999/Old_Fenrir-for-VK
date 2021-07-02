@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import dev.ragnarok.fenrir.BuildConfig;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.api.model.LocalServerSettings;
 import dev.ragnarok.fenrir.api.model.PlayerCoverBackgroundSettings;
@@ -131,9 +132,9 @@ class OtherSettings implements ISettings.IOtherSettings {
     @Override
     public int getMaxBitmapResolution() {
         try {
-            return Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(app).getString("max_bitmap_resolution", "-1").trim());
+            return Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(app).getString("max_bitmap_resolution", "4000").trim());
         } catch (Exception e) {
-            return -1;
+            return 4000;
         }
     }
 
@@ -317,6 +318,15 @@ class OtherSettings implements ISettings.IOtherSettings {
     @Override
     public boolean isUse_internal_downloader() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("use_internal_downloader", true);
+    }
+
+    @Override
+    public boolean appStoredVersionEqual() {
+        boolean ret = PreferenceManager.getDefaultSharedPreferences(app).getInt("app_stored_versuion", 0) == BuildConfig.VERSION_CODE;
+        if (!ret) {
+            PreferenceManager.getDefaultSharedPreferences(app).edit().putInt("app_stored_versuion", BuildConfig.VERSION_CODE).apply();
+        }
+        return ret;
     }
 
     @Override

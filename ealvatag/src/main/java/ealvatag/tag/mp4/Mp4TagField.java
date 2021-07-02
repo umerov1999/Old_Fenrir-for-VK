@@ -18,8 +18,6 @@
  */
 package ealvatag.tag.mp4;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -34,6 +32,8 @@ import ealvatag.tag.TagField;
 import ealvatag.tag.mp4.atom.Mp4DataBox;
 import ealvatag.tag.mp4.field.Mp4FieldType;
 import ealvatag.utils.StandardCharsets;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
 
 /**
  * This abstract class represents a link between piece of data, and how it is stored as an mp4 atom

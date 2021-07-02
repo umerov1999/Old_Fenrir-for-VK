@@ -1,10 +1,5 @@
 package dev.ragnarok.fenrir.api.adapters;
 
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.hasFlag;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-
 import androidx.annotation.Nullable;
 
 import com.google.gson.JsonArray;
@@ -32,6 +27,11 @@ import dev.ragnarok.fenrir.api.model.longpoll.UserIsOnlineUpdate;
 import dev.ragnarok.fenrir.api.model.longpoll.WriteTextInDialogUpdate;
 import dev.ragnarok.fenrir.api.util.VKStringUtils;
 import dev.ragnarok.fenrir.model.Peer;
+
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.hasFlag;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class LongpollUpdateAdapter extends AbsAdapter implements JsonDeserializer<AbsLongpollEvent> {
 

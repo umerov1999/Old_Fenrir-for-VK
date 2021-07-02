@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.fragment.wallattachments;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +33,8 @@ import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.wallattachments.WallLinksAttachmentsPresenter;
 import dev.ragnarok.fenrir.mvp.view.wallattachments.IWallLinksAttachmentsView;
 import dev.ragnarok.fenrir.util.ViewUtils;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class WallLinksAttachmentsFragment extends PlaceSupportMvpFragment<WallLinksAttachmentsPresenter, IWallLinksAttachmentsView>
         implements IWallLinksAttachmentsView, LinksAdapter.ActionListener {

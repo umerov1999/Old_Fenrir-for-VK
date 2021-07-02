@@ -9,14 +9,17 @@ import android.util.AttributeSet;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RawRes;
 
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Objects;
 
+import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.module.FenrirNative;
 import dev.ragnarok.fenrir.module.video.AnimatedFileDrawable;
@@ -29,6 +32,7 @@ import okhttp3.Response;
 
 public class AnimatedShapeableImageView extends ShapeableImageView {
 
+    private static final ThreadLocal<byte[]> bufferLocal = new ThreadLocal<>();
     private final NetworkCache cache;
     private final int defaultWidth;
     private final int defaultHeight;
@@ -71,6 +75,21 @@ public class AnimatedShapeableImageView extends ShapeableImageView {
         playAnimation();
     }
 
+    private void setAnimationByResCache(@RawRes int res) {
+        if (!FenrirNative.isNativeLoaded()) {
+            decoderCallback.onLoaded(false);
+            return;
+        }
+        File ch = cache.fetch(res);
+        if (ch == null) {
+            setImageDrawable(null);
+            decoderCallback.onLoaded(false);
+            return;
+        }
+        setAnimation(new AnimatedFileDrawable(ch, 0, defaultWidth, defaultHeight, () -> decoderCallback.onLoaded(false)));
+        playAnimation();
+    }
+
     public void fromNet(String url, OkHttpClient.Builder client) {
         if (!FenrirNative.isNativeLoaded() || url == null || url.isEmpty()) {
             decoderCallback.onLoaded(false);
@@ -88,7 +107,7 @@ public class AnimatedShapeableImageView extends ShapeableImageView {
                         .build();
                 Response response = client.build().newCall(request).execute();
                 if (!response.isSuccessful()) {
-                    u.onComplete();
+                    u.onError(new Throwable("Not success connection"));
                     return;
                 }
                 InputStream bfr = Objects.requireNonNull(response.body()).byteStream();
@@ -97,11 +116,41 @@ public class AnimatedShapeableImageView extends ShapeableImageView {
                 input.close();
                 cache.renameTempFile(url);
             } catch (Exception e) {
-                u.onComplete();
+                u.onError(e);
                 return;
             }
             u.onComplete();
         }).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() -> setAnimationByUrlCache(url), e -> decoderCallback.onLoaded(false));
+    }
+
+    public void fromRes(@RawRes int res) {
+        if (!FenrirNative.isNativeLoaded()) {
+            decoderCallback.onLoaded(false);
+            return;
+        }
+        clearAnimationDrawable();
+        if (cache.isCachedRes(res)) {
+            setAnimationByResCache(res);
+            return;
+        }
+        mDisposable = Completable.create(u -> {
+            try {
+                if (!copyRes(res)) {
+                    u.onError(new Throwable("Copy video res error"));
+                    return;
+                }
+                cache.renameTempFile(res);
+            } catch (Exception e) {
+                u.onError(e);
+                return;
+            }
+            u.onComplete();
+        }).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() -> setAnimationByResCache(res), e -> {
+            if (Constants.IS_DEBUG) {
+                e.printStackTrace();
+            }
+            decoderCallback.onLoaded(false);
+        });
     }
 
     private void setAnimation(@NonNull AnimatedFileDrawable videoDrawable) {
@@ -230,6 +279,29 @@ public class AnimatedShapeableImageView extends ShapeableImageView {
     public @Nullable
     AnimatedFileDrawable getAnimatedDrawable() {
         return drawable;
+    }
+
+    private boolean copyRes(@RawRes int rawRes) {
+        try (InputStream inputStream = FenrirNative.getAppContext().getResources().openRawResource(rawRes)) {
+            File out = new File(NetworkCache.Companion.parentDir(getContext()), NetworkCache.Companion.filenameForRes(rawRes, true));
+            FileOutputStream o = new FileOutputStream(out);
+            byte[] buffer = bufferLocal.get();
+            if (buffer == null) {
+                buffer = new byte[4096];
+                bufferLocal.set(buffer);
+            }
+            while (inputStream.read(buffer, 0, buffer.length) >= 0) {
+                o.write(buffer);
+            }
+            o.flush();
+            o.close();
+        } catch (Throwable e) {
+            if (Constants.IS_DEBUG) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+        return true;
     }
 
     public interface onDecoderInit {

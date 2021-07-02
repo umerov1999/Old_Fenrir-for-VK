@@ -15,9 +15,6 @@
  */
 package com.squareup.picasso3;
 
-import static android.graphics.Color.WHITE;
-import static com.squareup.picasso3.Picasso.LoadedFrom.MEMORY;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -34,6 +31,9 @@ import android.widget.ImageView;
 import androidx.annotation.Nullable;
 
 import com.squareup.picasso3.RequestHandler.Result;
+
+import static android.graphics.Color.WHITE;
+import static com.squareup.picasso3.Picasso.LoadedFrom.MEMORY;
 
 final class PicassoDrawable extends BitmapDrawable {
     // Only accessed from main thread.

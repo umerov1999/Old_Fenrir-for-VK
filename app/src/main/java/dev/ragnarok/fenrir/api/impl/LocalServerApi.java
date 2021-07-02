@@ -1,7 +1,5 @@
 package dev.ragnarok.fenrir.api.impl;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 import dev.ragnarok.fenrir.api.ILocalServerServiceProvider;
 import dev.ragnarok.fenrir.api.interfaces.ILocalServerApi;
 import dev.ragnarok.fenrir.api.model.Items;
@@ -13,6 +11,8 @@ import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.exceptions.Exceptions;
 import io.reactivex.rxjava3.functions.Function;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 class LocalServerApi implements ILocalServerApi {
 

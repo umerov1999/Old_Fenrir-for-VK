@@ -1,7 +1,5 @@
 package ealvatag.tag.mp4.field;
 
-import static ealvatag.logging.EalvaTagLog.LogLevel.INFO;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -15,6 +13,8 @@ import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.tag.TagField;
 import ealvatag.tag.mp4.Mp4TagField;
 import ealvatag.utils.StandardCharsets;
+
+import static ealvatag.logging.EalvaTagLog.LogLevel.INFO;
 
 /**
  * Represents raw binary data
