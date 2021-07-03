@@ -25,6 +25,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.AnyRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -92,11 +93,12 @@ import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.settings.VkPushRegistration;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
-import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
+import dev.ragnarok.fenrir.view.MySearchView;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.view.natives.video.AnimatedShapeableImageView;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 
 public class PreferencesFragment extends PreferenceFragmentCompat {
@@ -240,6 +242,42 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         Bitmap tmp = Bitmap.createScaledBitmap(bitmap, mWidth, mHeight, true);
         bitmap.recycle();
         return tmp;
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View root = super.onCreateView(inflater, container, savedInstanceState);
+        assert root != null;
+        MySearchView searchView = root.findViewById(R.id.searchview);
+        searchView.setOnQueryTextListener(new MySearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Preference pref = findPreferenceByName(query);
+                if (nonNull(pref)) {
+                    scrollToPreference(pref);
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Preference pref = findPreferenceByName(newText);
+                if (nonNull(pref)) {
+                    scrollToPreference(pref);
+                }
+                return false;
+            }
+        });
+        searchView.setRightButtonVisibility(false);
+        searchView.setLeftIcon(R.drawable.magnify);
+        searchView.setQuery("", true);
+        return root;
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.preference_fenrir_list_fragment;
     }
 
     private void selectLocalImage(boolean isDark) {
@@ -536,7 +574,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
 
         Preference security = findPreference(KEY_SECURITY);
-        if (Objects.nonNull(security)) {
+        if (nonNull(security)) {
             security.setOnPreferenceClickListener(preference -> {
                 onSecurityClick();
                 return true;
@@ -1203,6 +1241,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 this.isVideo = isVideo;
                 this.res = res;
             }
+
             public SourceType(@AnyRes int res) {
                 isVideo = false;
                 this.res = res;

@@ -39,6 +39,7 @@ import dev.ragnarok.fenrir.upload.impl.OwnerPhotoUploadable;
 import dev.ragnarok.fenrir.upload.impl.Photo2AlbumUploadable;
 import dev.ragnarok.fenrir.upload.impl.Photo2MessageUploadable;
 import dev.ragnarok.fenrir.upload.impl.Photo2WallUploadable;
+import dev.ragnarok.fenrir.upload.impl.RemoteAudioPlayUploadable;
 import dev.ragnarok.fenrir.upload.impl.StoryUploadable;
 import dev.ragnarok.fenrir.upload.impl.Video2WallUploadable;
 import dev.ragnarok.fenrir.upload.impl.VideoToMessageUploadable;
@@ -130,6 +131,7 @@ public class UploadManagerImpl implements IUploadManager {
                 }
                 break;
             case Method.STORY:
+            case Method.REMOTE_PLAY_AUDIO:
             case Method.TO_MESSAGE:
                 //do nothink
                 break;
@@ -429,6 +431,8 @@ public class UploadManagerImpl implements IUploadManager {
                 return new StoryUploadable(context, networker);
             case Method.AUDIO:
                 return new AudioUploadable(context, networker);
+            case Method.REMOTE_PLAY_AUDIO:
+                return new RemoteAudioPlayUploadable(context, networker);
             case Method.TO_MESSAGE:
                 if (destination.getMessageMethod() == MessageMethod.PHOTO)
                     return new Photo2MessageUploadable(context, networker, attachmentsRepository, storages.messages());

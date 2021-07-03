@@ -261,4 +261,9 @@ public class AudiosLocalFragment extends BaseMvpFragment<AudiosLocalPresenter, I
     public void onUpload(int position, Audio audio) {
         callPresenter(p -> p.fireFileForUploadSelected(audio.getUrl()));
     }
+
+    @Override
+    public void onRemotePlay(int position, Audio audio) {
+        callPresenter(p -> p.fireFileForRemotePlaySelected(audio.getUrl()));
+    }
 }

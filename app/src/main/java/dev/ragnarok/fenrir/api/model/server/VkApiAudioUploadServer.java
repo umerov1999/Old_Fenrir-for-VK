@@ -21,6 +21,10 @@ public class VkApiAudioUploadServer implements Parcelable, UploadServer {
     public VkApiAudioUploadServer() {
     }
 
+    public VkApiAudioUploadServer(String url) {
+        upload_url = url;
+    }
+
     protected VkApiAudioUploadServer(Parcel in) {
         upload_url = in.readString();
     }

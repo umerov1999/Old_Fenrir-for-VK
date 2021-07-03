@@ -471,6 +471,7 @@
     <string name="play_hls">Потоковое видео</string>
 
     <string name="play">Воспроизвести</string>
+    <string name="play_remote">Играть через сервер</string>
     <string name="upload">Загрузить</string>
     <string name="for_video">к видеозаписи</string>
 

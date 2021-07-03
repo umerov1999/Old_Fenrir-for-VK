@@ -29,6 +29,10 @@ public interface IUploadService {
 
     @Multipart
     @POST
+    Single<BaseResponse<Integer>> remotePlayAudioRx(@Url String server, @Part MultipartBody.Part file);
+
+    @Multipart
+    @POST
     Single<BaseResponse<UploadStoryDto>> uploadStoryRx(@Url String server, @Part MultipartBody.Part file);
 
     @Multipart

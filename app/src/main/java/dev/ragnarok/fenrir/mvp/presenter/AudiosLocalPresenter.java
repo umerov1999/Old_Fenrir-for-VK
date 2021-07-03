@@ -42,6 +42,7 @@ public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLoca
     private final IUploadManager uploadManager;
     private final List<Upload> uploadsData;
     private final UploadDestination destination;
+    private final UploadDestination remotePlay;
     private boolean actualReceived;
     private boolean loadingNow;
     private String query;
@@ -52,6 +53,7 @@ public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLoca
     public AudiosLocalPresenter(int accountId, @Nullable Bundle savedInstanceState) {
         super(accountId, savedInstanceState);
         destination = UploadDestination.forAudio(accountId);
+        remotePlay = UploadDestination.forRemotePlay();
         uploadManager = Injection.provideUploadManager();
         uploadsData = new ArrayList<>(0);
         audios = new ArrayList<>();
@@ -77,7 +79,7 @@ public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLoca
                 .subscribe(this::onUploadDeleted));
 
         appendDisposable(uploadManager.observeResults()
-                .filter(pair -> destination.compareTo(pair.getFirst().getDestination()))
+                .filter(pair -> destination.compareTo(pair.getFirst().getDestination()) || remotePlay.compareTo(pair.getFirst().getDestination()))
                 .observeOn(provideMainThreadScheduler())
                 .subscribe(this::onUploadResults));
 
@@ -198,6 +200,14 @@ public class AudiosLocalPresenter extends AccountDependencyPresenter<IAudiosLoca
 
     public void fireFileForUploadSelected(String file) {
         UploadIntent intent = new UploadIntent(getAccountId(), destination)
+                .setAutoCommit(true)
+                .setFileUri(Uri.parse(file));
+
+        uploadManager.enqueue(Collections.singletonList(intent));
+    }
+
+    public void fireFileForRemotePlaySelected(String file) {
+        UploadIntent intent = new UploadIntent(getAccountId(), remotePlay)
                 .setAutoCommit(true)
                 .setFileUri(Uri.parse(file));
 

@@ -58,6 +58,10 @@ public class UploadDestination implements Parcelable {
         return new UploadDestination(NO_ID, ownerId, Method.AUDIO, MessageMethod.NULL);
     }
 
+    public static UploadDestination forRemotePlay() {
+        return new UploadDestination(NO_ID, NO_ID, Method.REMOTE_PLAY_AUDIO, MessageMethod.NULL);
+    }
+
     public static UploadDestination forStory(@MessageMethod int msg_method) {
         return new UploadDestination(NO_ID, NO_ID, Method.STORY, msg_method);
     }

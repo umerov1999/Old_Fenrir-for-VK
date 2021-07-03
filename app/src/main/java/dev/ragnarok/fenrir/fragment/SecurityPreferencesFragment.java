@@ -3,12 +3,15 @@ package dev.ragnarok.fenrir.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
@@ -30,6 +33,9 @@ import dev.ragnarok.fenrir.settings.ISettings;
 import dev.ragnarok.fenrir.settings.SecuritySettings;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AssertUtils;
+import dev.ragnarok.fenrir.view.MySearchView;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class SecurityPreferencesFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener {
     private final ActivityResultLauncher<Intent> requestChangePin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -52,6 +58,42 @@ public class SecurityPreferencesFragment extends PreferenceFragmentCompat implem
                     mUsePinForSecurityPreference.setChecked(true);
                 }
             });
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View root = super.onCreateView(inflater, container, savedInstanceState);
+        assert root != null;
+        MySearchView searchView = root.findViewById(R.id.searchview);
+        searchView.setOnQueryTextListener(new MySearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Preference pref = findPreferenceByName(query);
+                if (nonNull(pref)) {
+                    scrollToPreference(pref);
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Preference pref = findPreferenceByName(newText);
+                if (nonNull(pref)) {
+                    scrollToPreference(pref);
+                }
+                return false;
+            }
+        });
+        searchView.setRightButtonVisibility(false);
+        searchView.setLeftIcon(R.drawable.magnify);
+        searchView.setQuery("", true);
+        return root;
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.preference_fenrir_list_fragment;
+    }
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {

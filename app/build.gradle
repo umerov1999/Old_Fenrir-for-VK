@@ -143,7 +143,6 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01'
     implementation 'androidx.browser:browser:1.3.0'
     implementation 'androidx.webkit:webkit:1.4.0'
-    implementation 'androidx.preference:preference-ktx:1.1.1'
     implementation 'androidx.exifinterface:exifinterface:1.3.2'
     implementation 'com.google.code.gson:gson:2.8.7'
     implementation "io.reactivex.rxjava3:rxjava:$RxJavaVersion"
@@ -166,6 +165,7 @@ dependencies {
     implementation project(path: ':ucrop')
     implementation project(path: ':image')
     implementation project(path: ':material')
+    implementation project(path: ':preference')
     implementation project(path: ':zxing-android-embedded')
     implementation "com.squareup.retrofit2:retrofit:$retrofitLibraryVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitLibraryVersion"

@@ -206,6 +206,9 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
 
             menus.add(new OptionRequest(AudioItem.save_item_audio, mContext.getString(R.string.upload), R.drawable.web));
             menus.add(new OptionRequest(AudioItem.play_item_audio, mContext.getString(R.string.play), R.drawable.play));
+            if (Settings.get().other().getLocalServer().enabled) {
+                menus.add(new OptionRequest(AudioItem.share_button, mContext.getString(R.string.play_remote), R.drawable.remote_cloud));
+            }
             if (MusicPlaybackController.canPlayAfterCurrent(audio)) {
                 menus.add(new OptionRequest(AudioItem.play_item_after_current_audio, mContext.getString(R.string.play_audio_after_current), R.drawable.play_next));
             }
@@ -220,6 +223,11 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
                     case AudioItem.save_item_audio:
                         if (mClickListener != null) {
                             mClickListener.onUpload(position, audio);
+                        }
+                        break;
+                    case AudioItem.share_button:
+                        if (mClickListener != null) {
+                            mClickListener.onRemotePlay(position, audio);
                         }
                         break;
                     case AudioItem.play_item_audio:
@@ -307,6 +315,8 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
         void onDelete(int position);
 
         void onUpload(int position, Audio audio);
+
+        void onRemotePlay(int position, Audio audio);
     }
 
     class AudioHolder extends RecyclerView.ViewHolder {

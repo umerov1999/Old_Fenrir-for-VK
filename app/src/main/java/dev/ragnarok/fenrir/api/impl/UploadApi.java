@@ -60,6 +60,13 @@ public class UploadApi implements IUploadApi {
     }
 
     @Override
+    public Single<BaseResponse<Integer>> remotePlayAudioRx(String server, String filename, @NonNull InputStream is, PercentagePublisher listener) {
+        ProgressRequestBody body = new ProgressRequestBody(is, wrapPercentageListener(listener), MediaType.parse("*/*"));
+        MultipartBody.Part part = MultipartBody.Part.createFormData("audio", filename, body);
+        return service().remotePlayAudioRx(server, part);
+    }
+
+    @Override
     public Single<BaseResponse<UploadStoryDto>> uploadStoryRx(String server, String filename, @NonNull InputStream is, PercentagePublisher listener, boolean isVideo) {
         ProgressRequestBody body = new ProgressRequestBody(is, wrapPercentageListener(listener), MediaType.parse("*/*"));
         MultipartBody.Part part = MultipartBody.Part.createFormData(!isVideo ? "photo" : "video_file", filename, body);

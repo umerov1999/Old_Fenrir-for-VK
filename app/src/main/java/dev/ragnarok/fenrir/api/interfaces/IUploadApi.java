@@ -22,6 +22,8 @@ public interface IUploadApi {
 
     Single<UploadAudioDto> uploadAudioRx(String server, String filename, @NonNull InputStream is, PercentagePublisher listener);
 
+    Single<BaseResponse<Integer>> remotePlayAudioRx(String server, String filename, @NonNull InputStream is, PercentagePublisher listener);
+
     Single<BaseResponse<UploadStoryDto>> uploadStoryRx(String server, String filename, @NonNull InputStream is, PercentagePublisher listener, boolean isVideo);
 
     Single<UploadVideoDto> uploadVideoRx(String server, String filename, @NonNull InputStream video, PercentagePublisher listener);

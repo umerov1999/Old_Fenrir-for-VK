@@ -635,6 +635,7 @@
     <string name="play_1080" translatable="false">1080p</string>
 
     <string name="play">Play</string>
+    <string name="play_remote">Play via server</string>
     <string name="upload">Upload</string>
     <string name="for_video">to the video</string>
 
