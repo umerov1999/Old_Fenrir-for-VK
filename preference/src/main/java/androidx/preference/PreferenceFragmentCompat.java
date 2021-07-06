@@ -691,6 +691,7 @@ public abstract class PreferenceFragmentCompat extends Fragment implements
                     position = ((PreferenceGroup.PreferencePositionCallback) adapter)
                             .getPreferenceAdapterPosition(key);
                 }
+                ((PreferenceGroup.PreferencePositionCallback) adapter).setSelectedPreference(position);
                 if (position != RecyclerView.NO_POSITION) {
                     mList.scrollToPosition(position);
                 } else {

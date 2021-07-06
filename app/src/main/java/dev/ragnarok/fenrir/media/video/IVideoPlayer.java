@@ -40,4 +40,8 @@ public interface IVideoPlayer {
     interface IVideoSizeChangeListener {
         void onVideoSizeChanged(@NonNull IVideoPlayer player, VideoSize size);
     }
+
+    interface IUpdatePlayListener {
+        void onPlayChanged(boolean isPause);
+    }
 }

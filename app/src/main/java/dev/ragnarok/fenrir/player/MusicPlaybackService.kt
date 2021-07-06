@@ -775,27 +775,33 @@ class MusicPlaybackService : Service() {
         }
     }
 
+    fun pauseNonSync() {
+        if (D) Logger.d(TAG, "Pausing playback")
+        if (isPlaying) {
+            mPlayer?.pause()
+            scheduleDelayedShutdown()
+            isPlaying = false
+            notifyChange(PLAYSTATE_CHANGED)
+        }
+    }
+
     /**
      * Changes from the current track to the next track
      */
-    fun gotoNext(force: Boolean) {
+    fun gotoNext(force: Boolean): Boolean {
         if (D) Logger.d(TAG, "Going to next track")
         synchronized(this) {
             if (Utils.safeCountOf(mPlayList) <= 0) {
                 if (D) Logger.d(TAG, "No play queue")
                 scheduleDelayedShutdown()
-                return
+                return true
             }
             val pos = getNextPosition(force)
-            Logger.d(TAG, pos.toString())
+            if (D) Logger.d(TAG, pos.toString())
             if (pos < 0) {
-                pause()
-                scheduleDelayedShutdown()
-                if (isPlaying) {
-                    isPlaying = false
-                    notifyChange(PLAYSTATE_CHANGED)
-                }
-                return
+                seek(0)
+                pauseNonSync()
+                return false
             }
             mPlayPos = pos
             stop(false)
@@ -803,6 +809,7 @@ class MusicPlaybackService : Service() {
             playCurrentTrack(true)
             notifyChange(META_CHANGED)
         }
+        return true
     }
 
     fun skip(pos: Int, force: Boolean) {
@@ -815,14 +822,10 @@ class MusicPlaybackService : Service() {
                 scheduleDelayedShutdown()
                 return
             }
-            Logger.d(TAG, pos.toString())
+            if (D) Logger.d(TAG, pos.toString())
             if (pos < 0) {
-                pause()
-                scheduleDelayedShutdown()
-                if (isPlaying) {
-                    isPlaying = false
-                    notifyChange(PLAYSTATE_CHANGED)
-                }
+                seek(0)
+                pauseNonSync()
                 return
             }
             mPlayPos = pos
@@ -1046,8 +1049,7 @@ class MusicPlaybackService : Service() {
                             mService.get()?.play()
                         }
                         Player.STATE_ENDED -> if (!isPreparing && isInitialized) {
-                            isInitialized = false
-                            mService.get()?.gotoNext(false)
+                            isInitialized = mService.get()?.gotoNext(false) == false
                         }
                         else -> {
                         }

@@ -36,8 +36,18 @@ public class ExoVideoPlayer implements IVideoPlayer {
     private boolean supposedToBePlaying;
     private boolean prepareCalled;
 
-    public ExoVideoPlayer(Context context, String url, ProxyConfig config, @InternalVideoSize int size) {
+    public ExoVideoPlayer(Context context, String url, ProxyConfig config, @InternalVideoSize int size, @NonNull IUpdatePlayListener playListener) {
         player = createPlayer(context);
+        player.addListener(new Player.Listener() {
+            @Override
+            public void onPlaybackStateChanged(int state) {
+                if (state == Player.STATE_ENDED) {
+                    player.seekTo(0);
+                    pause();
+                    playListener.onPlayChanged(true);
+                }
+            }
+        });
         player.addVideoListener(onVideoSizeChangedListener);
         source = createMediaSource(context, url, config, size == InternalVideoSize.SIZE_HLS || size == InternalVideoSize.SIZE_LIVE);
     }

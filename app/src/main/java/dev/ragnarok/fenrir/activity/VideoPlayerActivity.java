@@ -206,7 +206,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
         ProxyConfig config = settings.getActiveProxy();
 
         String url = getFileUrl();
-        return new ExoVideoPlayer(this, url, config, size);
+        return new ExoVideoPlayer(this, url, config, size, isPause -> mControllerView.updatePausePlay());
     }
 
     private void resolveControlsVisibility() {

@@ -1151,7 +1151,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 new ImageDedicatedAdapter.SourceType(R.drawable.dedicated4),
                 new ImageDedicatedAdapter.SourceType(R.drawable.dedicated5),
                 new ImageDedicatedAdapter.SourceType(R.drawable.dedicated6),
-                new ImageDedicatedAdapter.SourceType(R.raw.dedicated_video, true)}));
+                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated7),
+                new ImageDedicatedAdapter.SourceType(R.raw.dedicated_video1, true),
+                new ImageDedicatedAdapter.SourceType(R.raw.dedicated_video2, true)}));
         RLottieImageView anim = view.findViewById(R.id.dedicated_anim);
         pager.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {

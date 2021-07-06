@@ -596,6 +596,8 @@ public abstract class PreferenceGroup extends Preference {
          * if not found
          */
         int getPreferenceAdapterPosition(Preference preference);
+
+        void setSelectedPreference(int pos);
     }
 
     /**

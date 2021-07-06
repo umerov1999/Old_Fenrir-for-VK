@@ -428,6 +428,15 @@ public class PreferenceGroupAdapter extends RecyclerView.Adapter<PreferenceViewH
     }
 
     @Override
+    public void setSelectedPreference(int pos) {
+        int size = mVisiblePreferences.size();
+        for (int i = 0; i < size; i++) {
+            Preference candidate = mVisiblePreferences.get(i);
+            candidate.setSelected(i == pos);
+        }
+    }
+
+    @Override
     public int getPreferenceAdapterPosition(Preference preference) {
         int size = mVisiblePreferences.size();
         for (int i = 0; i < size; i++) {

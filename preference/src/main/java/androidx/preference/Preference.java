@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -172,6 +173,7 @@ public class Preference implements Comparable<Preference> {
     private boolean mBaseMethodCalled;
     private OnPreferenceCopyListener mOnCopyListener;
     private SummaryProvider mSummaryProvider;
+    private boolean isSelected;
 
     /**
      * Perform inflation from XML and apply a class-specific base style. This constructor allows
@@ -312,6 +314,26 @@ public class Preference implements Comparable<Preference> {
      */
     public Preference(Context context) {
         this(context, null);
+    }
+
+    private static int getColorPrimary(Context context) {
+        return getColorFromAttrs(com.google.android.material.R.attr.colorPrimary, context, "#000000");
+    }
+
+    private static int getTextColorPrimary(Context context) {
+        return getColorFromAttrs(android.R.attr.textColorPrimary, context, "#000000");
+    }
+
+    private static int getTextColorSecondary(Context context) {
+        return getColorFromAttrs(android.R.attr.textColorSecondary, context, "#000000");
+    }
+
+    private static int getColorFromAttrs(int resId, Context context, String defaultColor) {
+        int[] attribute = {resId};
+        TypedArray array = context.getTheme().obtainStyledAttributes(attribute);
+        int color = array.getColor(0, Color.parseColor(defaultColor));
+        array.recycle();
+        return color;
     }
 
     /**
@@ -498,6 +520,13 @@ public class Preference implements Comparable<Preference> {
 
         TextView summaryView = (TextView) holder.findViewById(android.R.id.summary);
         if (summaryView != null) {
+            if (!(this instanceof PreferenceCategory) && !(this instanceof ExpandButton)) {
+                if (isSelected) {
+                    summaryView.setTextColor(getColorPrimary(summaryView.getContext()));
+                } else {
+                    summaryView.setTextColor(getTextColorSecondary(summaryView.getContext()));
+                }
+            }
             CharSequence summary = getSummary();
             if (!TextUtils.isEmpty(summary)) {
                 summaryView.setText(summary);
@@ -510,6 +539,13 @@ public class Preference implements Comparable<Preference> {
 
         TextView titleView = (TextView) holder.findViewById(android.R.id.title);
         if (titleView != null) {
+            if (!(this instanceof PreferenceCategory) && !(this instanceof ExpandButton)) {
+                if (isSelected) {
+                    titleView.setTextColor(getColorPrimary(titleView.getContext()));
+                } else {
+                    titleView.setTextColor(getTextColorPrimary(titleView.getContext()));
+                }
+            }
             CharSequence title = getTitle();
             if (!TextUtils.isEmpty(title)) {
                 titleView.setText(title);
@@ -710,6 +746,11 @@ public class Preference implements Comparable<Preference> {
     public void setIcon(int iconResId) {
         setIcon(AppCompatResources.getDrawable(mContext, iconResId));
         mIconResId = iconResId;
+    }
+
+    public void setSelected(boolean isSelected) {
+        this.isSelected = isSelected;
+        notifyChanged();
     }
 
     /**
