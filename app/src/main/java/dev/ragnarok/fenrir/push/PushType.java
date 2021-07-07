@@ -2,6 +2,7 @@ package dev.ragnarok.fenrir.push;
 
 public final class PushType {
     public static final String MSG = "msg";
+    public static final String CHAT = "chat";
     public static final String POST = "post";
     public static final String REPLY = "reply";
     public static final String COMMENT = "comment";

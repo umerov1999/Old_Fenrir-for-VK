@@ -526,6 +526,12 @@
 
         <SwitchPreference
             android:defaultValue="true"
+            android:key="headers_in_dialog"
+            android:title="@string/headers_in_dialog"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="true"
             android:key="info_reading"
             android:title="@string/info_reading"
             app:iconSpaceReserved="false" />
@@ -908,7 +914,7 @@
             app:iconSpaceReserved="false" />
 
         <ListPreference
-            android:defaultValue="1"
+            android:defaultValue="2"
             android:entries="@array/array_donate_anim_names"
             android:entryValues="@array/array_donate_anim_items"
             android:key="donate_anim_set"

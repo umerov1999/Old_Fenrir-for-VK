@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Collections;
-import java.util.List;
 
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
@@ -79,7 +78,7 @@ public class ThemeFragment extends AbsMvpFragment<ThemePresenter, IThemeView> im
     }
 
     @Override
-    public void displayData(List<ThemeValue> data) {
+    public void displayData(ThemeValue[] data) {
         if (Objects.nonNull(mAdapter)) {
             mAdapter.setData(data);
         }

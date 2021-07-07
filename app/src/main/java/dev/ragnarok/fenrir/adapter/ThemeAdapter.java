@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Arrays;
 import java.util.List;
 
 import dev.ragnarok.fenrir.R;
@@ -73,8 +74,8 @@ public class ThemeAdapter extends RecyclerView.Adapter<ThemeAdapter.ViewHolder> 
         return data.size();
     }
 
-    public void setData(List<ThemeValue> data) {
-        this.data = data;
+    public void setData(ThemeValue[] data) {
+        this.data = Arrays.asList(data);
         notifyDataSetChanged();
     }
 

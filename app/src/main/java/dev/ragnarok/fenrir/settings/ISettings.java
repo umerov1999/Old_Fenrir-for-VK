@@ -142,6 +142,8 @@ public interface ISettings {
 
         boolean isNot_read_show();
 
+        boolean isHeaders_in_dialog();
+
         String getMusicDir();
 
         String getPhotoDir();

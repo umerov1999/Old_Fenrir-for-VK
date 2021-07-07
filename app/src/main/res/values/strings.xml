@@ -174,6 +174,7 @@
 
     <string-array name="array_pagan_symbol_names">
         <item>Disabled.</item>
+        <item>Cat</item>
         <item>Yggdrasil</item>
         <item>Valknut</item>
         <item>Mjolnir</item>
@@ -186,7 +187,6 @@
         <item>Fire</item>
         <item>Fire Fan</item>
         <item>Odin</item>
-        <item>Cat</item>
     </string-array>
 
     <string-array name="array_pagan_symbol_items" translatable="false">
@@ -1809,4 +1809,5 @@
     <string name="viewpager_page_transform">Page Transformer Viewpager2</string>
     <string name="player_cover_transform">Player cover swipe animation</string>
     <string name="is_side_no_stroke">Is side no stroke</string>
+    <string name="headers_in_dialog">Date header in dialog</string>
 </resources>

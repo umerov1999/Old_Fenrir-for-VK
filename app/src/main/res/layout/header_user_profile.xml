@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         app:loopAnimation="true"
-        tools:src="@drawable/ic_igdr" />
+        tools:src="@drawable/ic_cat" />
 
     <include
         android:id="@+id/runes_container"

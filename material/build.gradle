@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 
-//1.4.0-rc01
+//1.4.0
 
 def srcDirs = [
   'com/google/android/material/animation',

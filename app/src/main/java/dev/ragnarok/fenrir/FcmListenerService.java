@@ -53,30 +53,13 @@ public class FcmListenerService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage message) {
         super.onMessageReceived(message);
         Context context = getApplicationContext();
-        Logger.d(TAG, message.getData().size() > 0 ? "Data-notification" : "Notification-notification");
-
         String pushType = message.getData().get("type");
-
-        Logger.d(TAG, "onMessage, from: " + message.getFrom() + ", pushType: " + pushType + ", data: " + message.getData());
-        if (isEmpty(pushType) || Settings.get().other().isSettings_no_push()) {
-            return;
-        }
-
-        StringBuilder bundleDump = new StringBuilder();
-        for (Map.Entry<String, String> entry : message.getData().entrySet()) {
-            try {
-                String line = "key: " + entry.getKey() + ", value: " + entry.getValue() + ", class: " + (entry.getValue() == null ? "null" : entry.getValue().getClass());
-                Logger.d(TAG, line);
-                bundleDump.append("\n").append(line);
-            } catch (Exception ignored) {
-            }
-        }
 
         int accountId = Settings.get()
                 .accounts()
                 .getCurrent();
 
-        if (accountId == ISettings.IAccountsSettings.INVALID_ID) {
+        if (accountId == ISettings.IAccountsSettings.INVALID_ID || isEmpty(pushType) || Settings.get().other().isSettings_no_push()) {
             return;
         }
 
@@ -87,17 +70,25 @@ public class FcmListenerService extends FirebaseMessagingService {
             return;
         }
 
-        /*
-        if(Settings.get().other().isDebug_mode() && !pushType.equals(PushType.MSG) && !pushType.equals("chat") && !pushType.equals("erase") && !pushType.equals(PushType.VALIDATE_DEVICE)) {
-            PersistentLogger.logThrowable("Push issues", new Exception("Found Push event, key: " + pushType + ", dump: " + bundleDump));
+        if (Constants.IS_DEBUG) {
+            Logger.d(TAG, "onMessage, from: " + message.getFrom() + ", pushType: " + pushType + ", data: " + message.getData());
+            StringBuilder bundleDump = new StringBuilder();
+            for (Map.Entry<String, String> entry : message.getData().entrySet()) {
+                try {
+                    String line = "key: " + entry.getKey() + ", value: " + entry.getValue() + ", class: " + (entry.getValue() == null ? "null" : entry.getValue().getClass());
+                    Logger.d(TAG, line);
+                    bundleDump.append("\n").append(line);
+                } catch (Exception ignored) {
+                }
+            }
+            PersistentLogger.logThrowable("Push received", new Exception("Found Push event, key: " + pushType + ", dump: " + bundleDump));
         }
-         */
 
         try {
             switch (pushType) {
                 case PushType.VALIDATE_DEVICE:
                 case PushType.MSG:
-                case "chat":
+                case PushType.CHAT:
                     FCMMessage.fromRemoteMessage(message).notify(context, accountId);
                     break;
                 case PushType.POST:
@@ -115,7 +106,6 @@ public class FcmListenerService extends FirebaseMessagingService {
                 case PushType.LIKE:
                     new LikeFCMMessage(accountId, message).notifyIfNeed(context);
                     break;
-
                 case PushType.REPLY:
                     ReplyFCMMessage.fromRemoteMessage(message).notify(context, accountId);
                     break;
@@ -135,7 +125,6 @@ public class FcmListenerService extends FirebaseMessagingService {
                     NotificationHelper.showSimpleNotification(context, message.getData().get("body"), message.getData().get("title"), null);
                     break;
                 default:
-                    //PersistentLogger.logThrowable("Push issues", new Exception("Unespected Push event, collapse_key: " + pushType + ", dump: " + bundleDump));
                     break;
             }
         } catch (Exception e) {

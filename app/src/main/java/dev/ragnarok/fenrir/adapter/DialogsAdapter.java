@@ -37,6 +37,7 @@ import dev.ragnarok.fenrir.model.User;
 import dev.ragnarok.fenrir.model.UserPlatform;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.CurrentTheme;
+import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Utils;
@@ -64,6 +65,7 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final RecyclerView.AdapterDataObserver mDataObserver;
     private final Set<Integer> hidden;
     private final List<Integer> silentChats;
+    private final boolean headerInDialog;
     private boolean showHidden;
     private List<Dialog> mDialogs;
     private long mStartOfToday;
@@ -72,6 +74,7 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public DialogsAdapter(Context context, @NonNull List<Dialog> dialogs) {
         mContext = context;
         mDialogs = dialogs;
+        headerInDialog = Settings.get().other().isHeaders_in_dialog();
         silentChats = new ArrayList<>();
         mTransformation = CurrentTheme.createTransformationForAvatar();
         mForegroundColorSpan = new ForegroundColorSpan(CurrentTheme.getPrimaryTextColorCode(context));
@@ -298,33 +301,37 @@ public class DialogsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         long lastMessageJavaTime = dialog.getLastMessageDate() * 1000;
         int headerStatus = getDivided(dialog, previous);
 
-        switch (headerStatus) {
-            case DIV_DISABLE:
-            case DIV_TODAY:
-                holder.mHeaderTitle.setVisibility(View.GONE);
-                //holder.mHeaderTitle.setVisibility(View.VISIBLE);
-                //holder.mHeaderTitle.setText(R.string.dialog_day_today);
-                break;
-            case DIV_TODAY_OTHER_PINNED:
-                holder.mHeaderTitle.setVisibility(View.VISIBLE);
-                holder.mHeaderTitle.setText(R.string.dialog_day_today);
-                break;
-            case DIV_OLD:
-                holder.mHeaderTitle.setVisibility(View.VISIBLE);
-                holder.mHeaderTitle.setText(R.string.dialog_day_older);
-                break;
-            case DIV_YESTERDAY:
-                holder.mHeaderTitle.setVisibility(View.VISIBLE);
-                holder.mHeaderTitle.setText(R.string.dialog_day_yesterday);
-                break;
-            case DIV_THIS_WEEK:
-                holder.mHeaderTitle.setVisibility(View.VISIBLE);
-                holder.mHeaderTitle.setText(R.string.dialog_day_ten_days);
-                break;
-            case DIV_PINNED:
-                holder.mHeaderTitle.setVisibility(View.VISIBLE);
-                holder.mHeaderTitle.setText(R.string.dialog_pinned);
-                break;
+        if (headerInDialog) {
+            switch (headerStatus) {
+                case DIV_DISABLE:
+                case DIV_TODAY:
+                    holder.mHeaderTitle.setVisibility(View.GONE);
+                    //holder.mHeaderTitle.setVisibility(View.VISIBLE);
+                    //holder.mHeaderTitle.setText(R.string.dialog_day_today);
+                    break;
+                case DIV_TODAY_OTHER_PINNED:
+                    holder.mHeaderTitle.setVisibility(View.VISIBLE);
+                    holder.mHeaderTitle.setText(R.string.dialog_day_today);
+                    break;
+                case DIV_OLD:
+                    holder.mHeaderTitle.setVisibility(View.VISIBLE);
+                    holder.mHeaderTitle.setText(R.string.dialog_day_older);
+                    break;
+                case DIV_YESTERDAY:
+                    holder.mHeaderTitle.setVisibility(View.VISIBLE);
+                    holder.mHeaderTitle.setText(R.string.dialog_day_yesterday);
+                    break;
+                case DIV_THIS_WEEK:
+                    holder.mHeaderTitle.setVisibility(View.VISIBLE);
+                    holder.mHeaderTitle.setText(R.string.dialog_day_ten_days);
+                    break;
+                case DIV_PINNED:
+                    holder.mHeaderTitle.setVisibility(View.VISIBLE);
+                    holder.mHeaderTitle.setText(R.string.dialog_pinned);
+                    break;
+            }
+        } else {
+            holder.mHeaderTitle.setVisibility(View.GONE);
         }
 
         DATE.setTime(lastMessageJavaTime);

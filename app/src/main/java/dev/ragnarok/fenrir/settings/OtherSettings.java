@@ -259,9 +259,9 @@ class OtherSettings implements ISettings.IOtherSettings {
     @Override
     public int getDonate_anim_set() {
         try {
-            return Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(app).getString("donate_anim_set", "1").trim());
+            return Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(app).getString("donate_anim_set", "2").trim());
         } catch (Exception e) {
-            return 1;
+            return 2;
         }
     }
 
@@ -288,6 +288,11 @@ class OtherSettings implements ISettings.IOtherSettings {
     @Override
     public boolean isNot_read_show() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("not_read_show", true);
+    }
+
+    @Override
+    public boolean isHeaders_in_dialog() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("headers_in_dialog", true);
     }
 
     @Override

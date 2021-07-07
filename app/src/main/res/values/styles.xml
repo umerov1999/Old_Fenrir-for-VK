@@ -123,7 +123,7 @@
         <item name="colorSecondary">#FFA726</item>
         <item name="colorOnPrimary">#FFF</item>
         <item name="colorOnSecondary">#FFF</item>
-        <item name="icon_color_active">#448AFF</item>
+        <item name="icon_color_active">#AA448AFF</item>
         <item name="icon_color_inactive">#AAFF0000</item>
     </style>
 
@@ -148,12 +148,12 @@
     </style>
 
     <style name="App.DayNight.VioletRed" parent="App.DayNight">
-        <item name="colorPrimary">#9800ff</item>
-        <item name="colorControlNormal">#9800ff</item>
+        <item name="colorPrimary">#9800FF</item>
+        <item name="colorControlNormal">#9800FF</item>
         <item name="colorSecondary">#F44336</item>
         <item name="colorOnPrimary">#FFF</item>
         <item name="colorOnSecondary">#FFF</item>
-        <item name="icon_color_active">#F44336</item>
+        <item name="icon_color_active">#AAF44336</item>
         <item name="icon_color_inactive">#AA151515</item>
     </style>
 
@@ -172,49 +172,59 @@
 
     <style name="App.DayNight.RedViolet" parent="App.DayNight">
         <item name="colorPrimary">#F44336</item>
-        <item name="colorControlNormal">#9800ff</item>
-        <item name="colorSecondary">#9800ff</item>
+        <item name="colorControlNormal">#9800FF</item>
+        <item name="colorSecondary">#9800FF</item>
         <item name="colorOnPrimary">#FFF</item>
         <item name="colorOnSecondary">#FFF</item>
-        <item name="icon_color_active">#9800FF</item>
+        <item name="icon_color_active">#AA9800FF</item>
         <item name="icon_color_inactive">#AA151515</item>
     </style>
 
     <style name="App.DayNight.Violet" parent="App.DayNight">
-        <item name="colorPrimary">#9800ff</item>
-        <item name="colorControlNormal">#9800ff</item>
-        <item name="colorSecondary">#8500ff</item>
+        <item name="colorPrimary">#9800FF</item>
+        <item name="colorControlNormal">#9800FF</item>
+        <item name="colorSecondary">#8500FF</item>
         <item name="colorOnPrimary">#FFF</item>
         <item name="colorOnSecondary">#FFF</item>
         <item name="icon_color_active">#AA9800FF</item>
         <item name="icon_color_inactive">#AAFF0000</item>
-        <item name="my_messages_bubble_color">#CBD438FF</item>
+        <item name="my_messages_bubble_color">#AAD438FF</item>
         <item name="my_messages_secondary_bubble_color">#BF6539DF</item>
     </style>
 
     <style name="App.DayNight.BlueViolet" parent="App.DayNight">
         <item name="colorPrimary">#448AFF</item>
         <item name="colorControlNormal">#448AFF</item>
-        <item name="colorSecondary">#8500ff</item>
+        <item name="colorSecondary">#8500FF</item>
         <item name="colorOnPrimary">#FFF</item>
         <item name="colorOnSecondary">#FFF</item>
-        <item name="icon_color_active">#448AFF</item>
+        <item name="icon_color_active">#AA448AFF</item>
         <item name="icon_color_inactive">#AAFF0000</item>
     </style>
 
     <style name="App.DayNight.YellowViolet" parent="App.DayNight">
         <item name="colorPrimary">#FF9800</item>
         <item name="colorControlNormal">#FF9800</item>
-        <item name="colorSecondary">#8500ff</item>
+        <item name="colorSecondary">#8500FF</item>
         <item name="colorOnPrimary">#FFF</item>
         <item name="colorOnSecondary">#FFF</item>
-        <item name="icon_color_active">#FF9800</item>
+        <item name="icon_color_active">#AAFF9800</item>
         <item name="icon_color_inactive">#AAFF0000</item>
     </style>
 
+    <style name="App.DayNight.NeonYellowIce" parent="App.DayNight">
+        <item name="colorPrimary">#AAD300</item>
+        <item name="colorControlNormal">#AAD300</item>
+        <item name="colorSecondary">#04D9FF</item>
+        <item name="colorOnPrimary">#FFF</item>
+        <item name="colorOnSecondary">#FFF</item>
+        <item name="icon_color_active">#AAAAD300</item>
+        <item name="icon_color_inactive">#AA444444</item>
+    </style>
+
     <style name="App.DayNight.VioletYellow" parent="App.DayNight">
-        <item name="colorPrimary">#8500ff</item>
-        <item name="colorControlNormal">#8500ff</item>
+        <item name="colorPrimary">#8500FF</item>
+        <item name="colorControlNormal">#8500FF</item>
         <item name="colorSecondary">#FF9800</item>
         <item name="colorOnPrimary">#FFF</item>
         <item name="colorOnSecondary">#FFF</item>
@@ -223,9 +233,9 @@
     </style>
 
     <style name="App.DayNight.FuxiaNeonYellow" parent="App.DayNight">
-        <item name="colorPrimary">#fe59c2</item>
-        <item name="colorControlNormal">#fe59c2</item>
-        <item name="colorSecondary">#cfff04</item>
+        <item name="colorPrimary">#FE59c2</item>
+        <item name="colorControlNormal">#FE59c2</item>
+        <item name="colorSecondary">#CFFf04</item>
         <item name="colorOnPrimary">#FFF</item>
         <item name="colorOnSecondary">#FFF</item>
         <item name="icon_color_active">#AAFE59C2</item>
@@ -233,9 +243,9 @@
     </style>
 
     <style name="App.DayNight.FuxiaNeonViolet" parent="App.DayNight">
-        <item name="colorPrimary">#fe4164</item>
-        <item name="colorControlNormal">#fe4164</item>
-        <item name="colorSecondary">#bc13fe</item>
+        <item name="colorPrimary">#FE4164</item>
+        <item name="colorControlNormal">#FE4164</item>
+        <item name="colorSecondary">#BC13fe</item>
         <item name="colorOnPrimary">#FFF</item>
         <item name="colorOnSecondary">#FFF</item>
         <item name="icon_color_active">#AAFE4164</item>
@@ -243,8 +253,8 @@
     </style>
 
     <style name="App.DayNight.VioletGreen" parent="App.DayNight">
-        <item name="colorPrimary">#8500ff</item>
-        <item name="colorControlNormal">#8500ff</item>
+        <item name="colorPrimary">#8500FF</item>
+        <item name="colorControlNormal">#8500FF</item>
         <item name="colorSecondary">#268000</item>
         <item name="colorOnPrimary">#FFF</item>
         <item name="colorOnSecondary">#FFF</item>
@@ -255,10 +265,10 @@
     <style name="App.DayNight.GreenViolet" parent="App.DayNight">
         <item name="colorPrimary">#268000</item>
         <item name="colorControlNormal">#268000</item>
-        <item name="colorSecondary">#8500ff</item>
+        <item name="colorSecondary">#8500FF</item>
         <item name="colorOnPrimary">#FFF</item>
         <item name="colorOnSecondary">#FFF</item>
-        <item name="icon_color_active">#268000</item>
+        <item name="icon_color_active">#AA268000</item>
         <item name="icon_color_inactive">#AAFF0000</item>
     </style>
 
@@ -268,13 +278,13 @@
         <item name="colorSecondary">#4CAF50</item>
         <item name="colorOnPrimary">#FFF</item>
         <item name="colorOnSecondary">#FFF</item>
-        <item name="icon_color_active">#268000</item>
+        <item name="icon_color_active">#AA268000</item>
         <item name="icon_color_inactive">#AAFF0000</item>
     </style>
 
     <style name="App.DayNight.VioletGray" parent="App.DayNight">
-        <item name="colorPrimary">#8500ff</item>
-        <item name="colorControlNormal">#8500ff</item>
+        <item name="colorPrimary">#8500FF</item>
+        <item name="colorControlNormal">#8500FF</item>
         <item name="colorSecondary">#444444</item>
         <item name="colorOnPrimary">#FFF</item>
         <item name="colorOnSecondary">#FFF</item>
@@ -315,10 +325,10 @@
     <style name="App.DayNight.Lineage" parent="App.DayNight">
         <item name="colorPrimary">#167C80</item>
         <item name="colorControlNormal">#167C80</item>
-        <item name="colorSecondary">#63ffde</item>
+        <item name="colorSecondary">#63FFDE</item>
         <item name="colorOnPrimary">#FFF</item>
         <item name="colorOnSecondary">#FFF</item>
-        <item name="icon_color_active">#167C80</item>
+        <item name="icon_color_active">#AA167C80</item>
         <item name="icon_color_inactive">#AAFF0000</item>
     </style>
 
@@ -353,6 +363,8 @@
     <style name="App.DayNight.FuxiaNeonYellow.Amoled" parent="App.DayNight.FuxiaNeonYellow" />
 
     <style name="App.DayNight.FuxiaNeonViolet.Amoled" parent="App.DayNight.FuxiaNeonViolet" />
+
+    <style name="App.DayNight.NeonYellowIce.Amoled" parent="App.DayNight.NeonYellowIce" />
 
     <style name="App.DayNight.VioletGreen.Amoled" parent="App.DayNight.VioletGreen" />
 

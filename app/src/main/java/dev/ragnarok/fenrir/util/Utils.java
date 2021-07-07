@@ -1170,14 +1170,16 @@ public class Utils {
             case "violet":
             case "violet_red":
             case "violet_gray":
-                return Color.parseColor("#9800ff");
+                return Color.parseColor("#9800FF");
             case "violet_green":
             case "violet_yellow":
-                return Color.parseColor("#8500ff");
+                return Color.parseColor("#8500FF");
             case "fuxia_neon_yellow":
-                return Color.parseColor("#fe59c2");
+                return Color.parseColor("#FE59C2");
             case "fuxia_neon_violet":
-                return Color.parseColor("#fe4164");
+                return Color.parseColor("#FE4164");
+            case "neon_yellow_ice":
+                return Color.parseColor("#AAD300");
             case "green_violet":
                 return Color.parseColor("#268000");
             case "gray":

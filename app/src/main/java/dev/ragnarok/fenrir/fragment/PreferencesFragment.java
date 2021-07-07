@@ -46,12 +46,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.CheckDonate;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
+import dev.ragnarok.fenrir.HelperSimple;
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
@@ -1152,6 +1155,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 new ImageDedicatedAdapter.SourceType(R.drawable.dedicated5),
                 new ImageDedicatedAdapter.SourceType(R.drawable.dedicated6),
                 new ImageDedicatedAdapter.SourceType(R.drawable.dedicated7),
+                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated8),
+                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated9),
                 new ImageDedicatedAdapter.SourceType(R.raw.dedicated_video1, true),
                 new ImageDedicatedAdapter.SourceType(R.raw.dedicated_video2, true)}));
         RLottieImageView anim = view.findViewById(R.id.dedicated_anim);
@@ -1197,10 +1202,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     private static class ImageDedicatedAdapter extends RecyclerView.Adapter<ImageHolder> {
 
-        private final SourceType[] drawables;
+        private final List<SourceType> drawables;
 
         public ImageDedicatedAdapter(SourceType[] drawables) {
-            this.drawables = drawables;
+            this.drawables = Arrays.asList(drawables);
+            if (!HelperSimple.INSTANCE.needHelp(HelperSimple.DEDICATED_COUNTER, 2)) {
+                Collections.shuffle(this.drawables);
+            }
         }
 
         @NonNull
@@ -1211,7 +1219,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         @Override
         public void onBindViewHolder(@NonNull ImageHolder holder, int position) {
-            SourceType res = drawables[position];
+            SourceType res = drawables.get(position);
             AnimatedShapeableImageView imageView = holder.itemView.findViewById(R.id.dedicated_photo);
             if (!res.isVideo) {
                 imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
@@ -1231,7 +1239,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         @Override
         public int getItemCount() {
-            return drawables.length;
+            return drawables.size();
         }
 
         public static class SourceType {
