@@ -81,12 +81,14 @@ class App : Application() {
         )
         RxJavaPlugins.setErrorHandler {
             Handler(mainLooper).post {
-                CreateCustomToast(this).showToastError(
-                    ErrorLocalizer.localizeThrowable(
-                        this,
-                        it
+                if (Settings.get().other().isDeveloper_mode) {
+                    CreateCustomToast(this).showToastError(
+                        ErrorLocalizer.localizeThrowable(
+                            this,
+                            it
+                        )
                     )
-                )
+                }
             }
         }
     }

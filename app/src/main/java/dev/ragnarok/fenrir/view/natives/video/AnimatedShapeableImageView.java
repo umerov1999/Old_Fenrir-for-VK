@@ -24,11 +24,14 @@ import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.module.FenrirNative;
 import dev.ragnarok.fenrir.module.video.AnimatedFileDrawable;
 import dev.ragnarok.fenrir.util.RxUtils;
-import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleOnSubscribe;
 import io.reactivex.rxjava3.disposables.Disposable;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class AnimatedShapeableImageView extends ShapeableImageView {
 
@@ -62,37 +65,55 @@ public class AnimatedShapeableImageView extends ShapeableImageView {
 
     private void setAnimationByUrlCache(String url) {
         if (!FenrirNative.isNativeLoaded()) {
-            decoderCallback.onLoaded(false);
+            if (nonNull(decoderCallback)) {
+                decoderCallback.onLoaded(false);
+            }
             return;
         }
         File ch = cache.fetch(url);
         if (ch == null) {
             setImageDrawable(null);
-            decoderCallback.onLoaded(false);
+            if (nonNull(decoderCallback)) {
+                decoderCallback.onLoaded(false);
+            }
             return;
         }
-        setAnimation(new AnimatedFileDrawable(ch, 0, defaultWidth, defaultHeight, () -> decoderCallback.onLoaded(false)));
+        setAnimation(new AnimatedFileDrawable(ch, 0, defaultWidth, defaultHeight, () -> {
+            if (nonNull(decoderCallback)) {
+                decoderCallback.onLoaded(false);
+            }
+        }));
         playAnimation();
     }
 
     private void setAnimationByResCache(@RawRes int res) {
         if (!FenrirNative.isNativeLoaded()) {
-            decoderCallback.onLoaded(false);
+            if (nonNull(decoderCallback)) {
+                decoderCallback.onLoaded(false);
+            }
             return;
         }
         File ch = cache.fetch(res);
         if (ch == null) {
             setImageDrawable(null);
-            decoderCallback.onLoaded(false);
+            if (nonNull(decoderCallback)) {
+                decoderCallback.onLoaded(false);
+            }
             return;
         }
-        setAnimation(new AnimatedFileDrawable(ch, 0, defaultWidth, defaultHeight, () -> decoderCallback.onLoaded(false)));
+        setAnimation(new AnimatedFileDrawable(ch, 0, defaultWidth, defaultHeight, () -> {
+            if (nonNull(decoderCallback)) {
+                decoderCallback.onLoaded(false);
+            }
+        }));
         playAnimation();
     }
 
     public void fromNet(String url, OkHttpClient.Builder client) {
         if (!FenrirNative.isNativeLoaded() || url == null || url.isEmpty()) {
-            decoderCallback.onLoaded(false);
+            if (nonNull(decoderCallback)) {
+                decoderCallback.onLoaded(false);
+            }
             return;
         }
         clearAnimationDrawable();
@@ -100,14 +121,14 @@ public class AnimatedShapeableImageView extends ShapeableImageView {
             setAnimationByUrlCache(url);
             return;
         }
-        mDisposable = Completable.create(u -> {
+        mDisposable = Single.create((SingleOnSubscribe<Boolean>) u -> {
             try {
                 Request request = new Request.Builder()
                         .url(url)
                         .build();
                 Response response = client.build().newCall(request).execute();
                 if (!response.isSuccessful()) {
-                    u.onError(new Throwable("Not success connection"));
+                    u.onSuccess(false);
                     return;
                 }
                 InputStream bfr = Objects.requireNonNull(response.body()).byteStream();
@@ -116,16 +137,26 @@ public class AnimatedShapeableImageView extends ShapeableImageView {
                 input.close();
                 cache.renameTempFile(url);
             } catch (Exception e) {
-                u.onError(e);
+                u.onSuccess(false);
                 return;
             }
-            u.onComplete();
-        }).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() -> setAnimationByUrlCache(url), e -> decoderCallback.onLoaded(false));
+            u.onSuccess(true);
+        }).compose(RxUtils.applySingleComputationToMainSchedulers()).subscribe(u -> {
+            if (u) {
+                setAnimationByUrlCache(url);
+            } else {
+                if (nonNull(decoderCallback)) {
+                    decoderCallback.onLoaded(false);
+                }
+            }
+        }, RxUtils.ignore());
     }
 
     public void fromRes(@RawRes int res) {
         if (!FenrirNative.isNativeLoaded()) {
-            decoderCallback.onLoaded(false);
+            if (nonNull(decoderCallback)) {
+                decoderCallback.onLoaded(false);
+            }
             return;
         }
         clearAnimationDrawable();
@@ -133,28 +164,31 @@ public class AnimatedShapeableImageView extends ShapeableImageView {
             setAnimationByResCache(res);
             return;
         }
-        mDisposable = Completable.create(u -> {
+        mDisposable = Single.create((SingleOnSubscribe<Boolean>) u -> {
             try {
                 if (!copyRes(res)) {
-                    u.onError(new Throwable("Copy video res error"));
+                    u.onSuccess(false);
                     return;
                 }
                 cache.renameTempFile(res);
             } catch (Exception e) {
-                u.onError(e);
+                u.onSuccess(false);
                 return;
             }
-            u.onComplete();
-        }).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() -> setAnimationByResCache(res), e -> {
-            if (Constants.IS_DEBUG) {
-                e.printStackTrace();
+            u.onSuccess(true);
+        }).compose(RxUtils.applySingleComputationToMainSchedulers()).subscribe(u -> {
+            if (u) {
+                setAnimationByResCache(res);
+            } else {
+                if (nonNull(decoderCallback)) {
+                    decoderCallback.onLoaded(false);
+                }
             }
-            decoderCallback.onLoaded(false);
-        });
+        }, RxUtils.ignore());
     }
 
     private void setAnimation(@NonNull AnimatedFileDrawable videoDrawable) {
-        if (decoderCallback != null) {
+        if (nonNull(decoderCallback)) {
             decoderCallback.onLoaded(videoDrawable.isDecoded());
         }
         if (!videoDrawable.isDecoded())
@@ -167,14 +201,21 @@ public class AnimatedShapeableImageView extends ShapeableImageView {
 
     public void fromFile(@NonNull File file) {
         if (!FenrirNative.isNativeLoaded()) {
-            decoderCallback.onLoaded(false);
+            if (nonNull(decoderCallback)) {
+                decoderCallback.onLoaded(false);
+            }
             return;
         }
         clearAnimationDrawable();
-        setAnimation(new AnimatedFileDrawable(file, 0, defaultWidth, defaultHeight, () -> decoderCallback.onLoaded(false)));
+        setAnimation(new AnimatedFileDrawable(file, 0, defaultWidth, defaultHeight, () -> {
+            if (nonNull(decoderCallback)) {
+                decoderCallback.onLoaded(false);
+            }
+        }));
     }
 
     public void clearAnimationDrawable() {
+        mDisposable.dispose();
         if (drawable != null) {
             drawable.stop();
             drawable.setParentView(null);
@@ -199,12 +240,12 @@ public class AnimatedShapeableImageView extends ShapeableImageView {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        mDisposable.dispose();
         attachedToWindow = false;
         if (drawable != null) {
             drawable.stop();
             drawable.setParentView(null);
         }
-        mDisposable.dispose();
     }
 
     public boolean isPlaying() {
@@ -215,11 +256,11 @@ public class AnimatedShapeableImageView extends ShapeableImageView {
     public void setImageDrawable(@Nullable Drawable dr) {
         super.setImageDrawable(dr);
         if (!(dr instanceof AnimatedFileDrawable)) {
+            mDisposable.dispose();
             if (drawable != null) {
                 drawable.stop();
                 drawable.setParentView(null);
             }
-            mDisposable.dispose();
             drawable = null;
         }
     }
@@ -227,22 +268,22 @@ public class AnimatedShapeableImageView extends ShapeableImageView {
     @Override
     public void setImageBitmap(@Nullable Bitmap bm) {
         super.setImageBitmap(bm);
+        mDisposable.dispose();
         if (drawable != null) {
             drawable.stop();
             drawable.setParentView(null);
         }
-        mDisposable.dispose();
         drawable = null;
     }
 
     @Override
     public void setImageResource(int resId) {
         super.setImageResource(resId);
+        mDisposable.dispose();
         if (drawable != null) {
             drawable.stop();
             drawable.setParentView(null);
         }
-        mDisposable.dispose();
         drawable = null;
     }
 
@@ -295,7 +336,7 @@ public class AnimatedShapeableImageView extends ShapeableImageView {
             }
             o.flush();
             o.close();
-        } catch (Throwable e) {
+        } catch (Exception e) {
             if (Constants.IS_DEBUG) {
                 e.printStackTrace();
             }

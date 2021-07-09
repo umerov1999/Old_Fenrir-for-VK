@@ -23,7 +23,8 @@ import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.module.FenrirNative;
 import dev.ragnarok.fenrir.module.rlottie.RLottieDrawable;
 import dev.ragnarok.fenrir.util.RxUtils;
-import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleOnSubscribe;
 import io.reactivex.rxjava3.disposables.Disposable;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -104,14 +105,14 @@ public class RLottieShapeableImageView extends ShapeableImageView {
             setAnimationByUrlCache(url, w, h);
             return;
         }
-        mDisposable = Completable.create(u -> {
+        mDisposable = Single.create((SingleOnSubscribe<Boolean>) u -> {
             try {
                 Request request = new Request.Builder()
                         .url(url)
                         .build();
                 Response response = client.build().newCall(request).execute();
                 if (!response.isSuccessful()) {
-                    u.onComplete();
+                    u.onSuccess(false);
                     return;
                 }
                 InputStream bfr = Objects.requireNonNull(response.body()).byteStream();
@@ -120,11 +121,15 @@ public class RLottieShapeableImageView extends ShapeableImageView {
                 input.close();
                 cache.renameTempFile(url);
             } catch (Exception e) {
-                u.onComplete();
+                u.onSuccess(false);
                 return;
             }
-            u.onComplete();
-        }).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() -> setAnimationByUrlCache(url, w, h), RxUtils.ignore());
+            u.onSuccess(true);
+        }).compose(RxUtils.applySingleComputationToMainSchedulers()).subscribe(u -> {
+            if (u) {
+                setAnimationByUrlCache(url, w, h);
+            }
+        }, RxUtils.ignore());
     }
 
     private void setAnimation(@NonNull RLottieDrawable rLottieDrawable) {
@@ -167,6 +172,7 @@ public class RLottieShapeableImageView extends ShapeableImageView {
     }
 
     public void clearAnimationDrawable() {
+        mDisposable.dispose();
         if (drawable != null) {
             drawable.stop();
             drawable.setCurrentParentView(null);
@@ -191,12 +197,12 @@ public class RLottieShapeableImageView extends ShapeableImageView {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        mDisposable.dispose();
         attachedToWindow = false;
         if (drawable != null) {
             drawable.stop();
             drawable.setCurrentParentView(null);
         }
-        mDisposable.dispose();
     }
 
     public boolean isPlaying() {
@@ -218,6 +224,7 @@ public class RLottieShapeableImageView extends ShapeableImageView {
     public void setImageDrawable(@Nullable Drawable dr) {
         super.setImageDrawable(dr);
         if (!(dr instanceof RLottieDrawable)) {
+            mDisposable.dispose();
             if (drawable != null) {
                 drawable.stop();
                 drawable.setCurrentParentView(null);
@@ -229,6 +236,7 @@ public class RLottieShapeableImageView extends ShapeableImageView {
     @Override
     public void setImageBitmap(@Nullable Bitmap bm) {
         super.setImageBitmap(bm);
+        mDisposable.dispose();
         if (drawable != null) {
             drawable.stop();
             drawable.setCurrentParentView(null);
@@ -239,6 +247,7 @@ public class RLottieShapeableImageView extends ShapeableImageView {
     @Override
     public void setImageResource(int resId) {
         super.setImageResource(resId);
+        mDisposable.dispose();
         if (drawable != null) {
             drawable.stop();
             drawable.setCurrentParentView(null);

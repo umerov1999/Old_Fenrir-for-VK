@@ -20,11 +20,14 @@ public class FeedbackUserArrayDtoAdapter extends AbsAdapter implements JsonDeser
 
         dto.count = optInt(root, "count");
 
-        if (root.has("items")) {
+        if (hasArray(root, "items")) {
             JsonArray array = root.getAsJsonArray("items");
             dto.ids = new int[array.size()];
 
             for (int i = 0; i < array.size(); i++) {
+                if (!checkObject(array.get(i))) {
+                    continue;
+                }
                 dto.ids[i] = array.get(i).getAsJsonObject().get("from_id").getAsInt();
             }
         } else {

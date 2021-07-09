@@ -13,8 +13,6 @@ import dev.ragnarok.fenrir.api.model.CommentsDto;
 import dev.ragnarok.fenrir.api.model.VKApiVideo;
 import dev.ragnarok.fenrir.api.model.VkApiPrivacy;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 public class VideoDtoAdapter extends AbsAdapter implements JsonDeserializer<VKApiVideo> {
     private static final String TAG = VideoDtoAdapter.class.getSimpleName();
 
@@ -36,23 +34,20 @@ public class VideoDtoAdapter extends AbsAdapter implements JsonDeserializer<VKAp
         dto.adding_date = optLong(root, "adding_date");
         dto.views = optInt(root, "views");
 
-        JsonElement commentJson = root.get("comments");
-        if (nonNull(commentJson)) {
-            if (commentJson.isJsonObject()) {
-                //for example, newsfeed.getComment
-                dto.comments = context.deserialize(commentJson, CommentsDto.class);
-            } else {
-                // video.get
-                dto.comments = new CommentsDto();
-                dto.comments.count = commentJson.getAsInt();
-            }
+        if (hasObject(root, "comments")) {
+            //for example, newsfeed.getComment
+            dto.comments = context.deserialize(root.get("comments"), CommentsDto.class);
+        } else {
+            // video.get
+            dto.comments = new CommentsDto();
+            dto.comments.count = optInt(root, "comments", 0);
         }
 
         dto.player = optString(root, "player");
         dto.access_key = optString(root, "access_key");
         dto.album_id = optInt(root, "album_id");
 
-        if (root.has("likes")) {
+        if (hasObject(root, "likes")) {
             JsonObject likesRoot = root.getAsJsonObject("likes");
             dto.likes = optInt(likesRoot, "count");
             dto.user_likes = optIntAsBoolean(likesRoot, "user_likes");
@@ -62,15 +57,15 @@ public class VideoDtoAdapter extends AbsAdapter implements JsonDeserializer<VKAp
         dto.can_repost = optIntAsBoolean(root, "can_repost");
         dto.repeat = optIntAsBoolean(root, "repeat");
 
-        if (root.has("privacy_view")) {
+        if (hasObject(root, "privacy_view")) {
             dto.privacy_view = context.deserialize(root.get("privacy_view"), VkApiPrivacy.class);
         }
 
-        if (root.has("privacy_comment")) {
+        if (hasObject(root, "privacy_comment")) {
             dto.privacy_comment = context.deserialize(root.get("privacy_comment"), VkApiPrivacy.class);
         }
 
-        if (root.has("files")) {
+        if (hasObject(root, "files")) {
             JsonObject filesRoot = root.getAsJsonObject("files");
             dto.mp4_240 = optString(filesRoot, "mp4_240");
             dto.mp4_360 = optString(filesRoot, "mp4_360");
@@ -82,7 +77,7 @@ public class VideoDtoAdapter extends AbsAdapter implements JsonDeserializer<VKAp
             dto.live = optString(filesRoot, "live");
         }
 
-        if (root.has("image")) {
+        if (hasArray(root, "image")) {
             JsonArray images = root.getAsJsonArray("image");
             if (images.size() > 0) {
                 for (int i = 0; i < images.size(); i++) {
@@ -94,8 +89,7 @@ public class VideoDtoAdapter extends AbsAdapter implements JsonDeserializer<VKAp
                 if (dto.image == null)
                     dto.image = images.get(images.size() - 1).getAsJsonObject().get("url").getAsString();
             }
-        }
-        if (dto.image == null && root.has("first_frame")) {
+        } else if (dto.image == null && hasArray(root, "first_frame")) {
             JsonArray images = root.getAsJsonArray("first_frame");
             if (images.size() > 0) {
                 for (int i = 0; i < images.size(); i++) {
@@ -107,9 +101,7 @@ public class VideoDtoAdapter extends AbsAdapter implements JsonDeserializer<VKAp
                 if (dto.image == null)
                     dto.image = images.get(images.size() - 1).getAsJsonObject().get("url").getAsString();
             }
-        }
-
-        if (dto.image == null) {
+        } else if (dto.image == null) {
             if (root.has("photo_800")) {
                 dto.image = optString(root, "photo_800");
             } else if (root.has("photo_320")) {
