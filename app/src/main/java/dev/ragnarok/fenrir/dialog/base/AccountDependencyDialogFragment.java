@@ -164,12 +164,12 @@ public abstract class AccountDependencyDialogFragment extends BaseDialogFragment
 
     @Override
     public void onUrlOpen(@NonNull String url) {
-        LinkHelper.openLinkInBrowserInternal(requireActivity(), getAccountId(), url);
+        PlaceFactory.getExternalLinkPlace(getAccountId(), url).tryOpenWith(requireActivity());
     }
 
     @Override
     public void onWikiPageOpen(@NonNull WikiPage page) {
-        PlaceFactory.getWikiPagePlace(getAccountId(), page.getViewUrl()).tryOpenWith(requireActivity());
+        PlaceFactory.getExternalLinkPlace(getAccountId(), page.getViewUrl()).tryOpenWith(requireActivity());
     }
 
     @Override

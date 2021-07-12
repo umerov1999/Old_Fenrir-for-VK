@@ -1617,7 +1617,8 @@
     <string name="open_avatar">Open avatar</string>
     <string name="add_and_download_button">Download and add</string>
     <string name="delete_cache_images">Clear image cache on startup</string>
-    <string name="voice_click">Ab</string>
+    <string name="voice_click" translatable="false">Ab</string>
+    <string name="voice_speed" translatable="false">2x</string>
     <string name="remote_audio_error">Error getting the list of saved audio on PC</string>
     <string name="audio_catalog">Catalog</string>
     <string name="audio_goto_artist">Go to artist</string>
@@ -1704,7 +1705,9 @@
     <string name="do_auto_play_video">Auto select video quality</string>
     <string name="video_not_have_link">Video has no link</string>
     <string name="change_upload_size">Show picture sending quality settings</string>
-    <string name="go_donate">Donate</string>
+    <string name="go_buy" translatable="false">Google Play</string>
+    <string name="go_donate_info">Or Donate to the verification, but will be tied only to the current page id</string>
+    <string name="go_donate">Verification</string>
     <string name="in_full_version">Available in full version!</string>
     <string name="wall_themed">Wall decoration for pagans</string>
     <string name="runes_show">Show runes</string>

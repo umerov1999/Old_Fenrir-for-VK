@@ -181,22 +181,24 @@ public class AttachmentsViewBinder {
         }
     }
 
-    public void bindVoiceHolderById(int holderId, boolean play, boolean paused, float progress, boolean amin) {
+    public void bindVoiceHolderById(int holderId, boolean play, boolean paused, float progress, boolean amin, boolean speed) {
         VoiceHolder holder = mVoiceSharedHolders.findHolderByHolderId(holderId);
         if (nonNull(holder)) {
-            bindVoiceHolderPlayState(holder, play, paused, progress, amin);
+            bindVoiceHolderPlayState(holder, play, paused, progress, amin, speed);
         }
     }
 
-    private void bindVoiceHolderPlayState(VoiceHolder holder, boolean play, boolean paused, float progress, boolean anim) {
+    private void bindVoiceHolderPlayState(VoiceHolder holder, boolean play, boolean paused, float progress, boolean anim, boolean speed) {
         @DrawableRes
         int icon = play && !paused ? R.drawable.pause : R.drawable.play;
 
         holder.mButtonPlay.setImageResource(icon);
         holder.mWaveFormView.setCurrentActiveProgress(play ? progress : 1.0f, anim);
+        holder.mSpeed.setTextColor(speed ? CurrentTheme.getColorPrimary(mContext) : CurrentTheme.getColorOnSurface(mContext));
+        holder.mSpeed.setVisibility(play ? View.VISIBLE : View.GONE);
     }
 
-    public void configNowVoiceMessagePlaying(int voiceMessageId, float progress, boolean paused, boolean amin) {
+    public void configNowVoiceMessagePlaying(int voiceMessageId, float progress, boolean paused, boolean amin, boolean speed) {
         SparseArray<Set<WeakReference<VoiceHolder>>> holders = mVoiceSharedHolders.getCache();
         for (int i = 0; i < holders.size(); i++) {
             int key = holders.keyAt(i);
@@ -207,7 +209,7 @@ public class AttachmentsViewBinder {
             for (WeakReference<VoiceHolder> reference : set) {
                 VoiceHolder holder = reference.get();
                 if (nonNull(holder)) {
-                    bindVoiceHolderPlayState(holder, play, paused, progress, amin);
+                    bindVoiceHolderPlayState(holder, play, paused, progress, amin, speed);
                 }
             }
         }
@@ -225,7 +227,7 @@ public class AttachmentsViewBinder {
             for (WeakReference<VoiceHolder> reference : set) {
                 VoiceHolder holder = reference.get();
                 if (nonNull(holder)) {
-                    bindVoiceHolderPlayState(holder, false, false, 0f, false);
+                    bindVoiceHolderPlayState(holder, false, false, 0f, false, false);
                 }
             }
         }
@@ -274,6 +276,12 @@ public class AttachmentsViewBinder {
         holder.mButtonPlay.setOnClickListener(v -> {
             if (nonNull(mVoiceActionListener)) {
                 mVoiceActionListener.onVoicePlayButtonClick(holder.getHolderId(), voiceMessageId, voice);
+            }
+        });
+
+        holder.mSpeed.setOnClickListener(v -> {
+            if (nonNull(mVoiceActionListener)) {
+                mVoiceActionListener.onVoiceTogglePlaybackSpeed();
             }
         });
 
@@ -933,6 +941,8 @@ public class AttachmentsViewBinder {
 
         void onVoicePlayButtonClick(int voiceHolderId, int voiceMessageId, @NonNull VoiceMessage voiceMessage);
 
+        void onVoiceTogglePlaybackSpeed();
+
         void onTranscript(String voiceMessageId, int messageId);
     }
 
@@ -1044,6 +1054,7 @@ public class AttachmentsViewBinder {
         final TextView mDurationText;
         final TextView TranscriptText;
         final TextView mDoTranscript;
+        final TextView mSpeed;
 
         VoiceHolder(View itemView) {
             mWaveFormView = itemView.findViewById(R.id.item_voice_wave_form_view);
@@ -1056,6 +1067,7 @@ public class AttachmentsViewBinder {
 
             TranscriptText = itemView.findViewById(R.id.transcription_text);
             mDoTranscript = itemView.findViewById(R.id.item_voice_translate);
+            mSpeed = itemView.findViewById(R.id.item_voice_speed);
         }
 
         @Override

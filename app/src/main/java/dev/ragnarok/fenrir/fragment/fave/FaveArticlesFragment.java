@@ -21,7 +21,6 @@ import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.adapter.fave.FaveArticlesAdapter;
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
-import dev.ragnarok.fenrir.link.LinkHelper;
 import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener;
 import dev.ragnarok.fenrir.listener.PicassoPauseOnScrollListener;
 import dev.ragnarok.fenrir.model.Article;
@@ -126,7 +125,7 @@ public class FaveArticlesFragment extends BaseMvpFragment<FaveArticlesPresenter,
 
     @Override
     public void goToArticle(int accountId, String url) {
-        LinkHelper.openLinkInBrowser(requireActivity(), url);
+        PlaceFactory.getExternalLinkPlace(accountId, url).tryOpenWith(requireActivity());
     }
 
     @Override

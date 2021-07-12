@@ -23,6 +23,10 @@ public interface IVoicePlayer {
 
     boolean isSupposedToPlay();
 
+    boolean isPlaybackSpeed();
+
+    void togglePlaybackSpeed();
+
     void release();
 
     interface IPlayerStatusListener {

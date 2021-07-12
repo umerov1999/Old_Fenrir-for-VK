@@ -204,12 +204,13 @@ public abstract class PlaceSupportMvpFragment<P extends PlaceSupportPresenter<V>
 
     @Override
     public void openUrl(int accountId, @NonNull String url) {
-        LinkHelper.openLinkInBrowserInternal(requireActivity(), accountId, url);
+        PlaceFactory.getExternalLinkPlace(accountId, url)
+                .tryOpenWith(requireActivity());
     }
 
     @Override
     public void openWikiPage(int accountId, @NonNull WikiPage page) {
-        PlaceFactory.getWikiPagePlace(accountId, page.getViewUrl())
+        PlaceFactory.getExternalLinkPlace(accountId, page.getViewUrl())
                 .tryOpenWith(requireActivity());
     }
 

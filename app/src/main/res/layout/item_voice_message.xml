@@ -47,12 +47,24 @@
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             android:textColor="?colorPrimary"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/item_voice_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:stateListAnimator="@animator/clicked"
+            android:text="@string/voice_speed"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:textColor="?colorOnSurface"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <dev.ragnarok.fenrir.view.WaveFormView
         android:id="@+id/item_voice_wave_form_view"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/item_voice_duration"
         android:layout_alignBottom="@id/item_voice_buttons"
         android:layout_marginStart="12dp"

@@ -25,7 +25,6 @@ import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
 import dev.ragnarok.fenrir.adapter.OwnerArticlesAdapter;
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
-import dev.ragnarok.fenrir.link.LinkHelper;
 import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener;
 import dev.ragnarok.fenrir.listener.OnSectionResumeCallback;
 import dev.ragnarok.fenrir.listener.PicassoPauseOnScrollListener;
@@ -133,7 +132,7 @@ public class OwnerArticlesFragment extends BaseMvpFragment<OwnerArticlesPresente
 
     @Override
     public void goToArticle(int accountId, String url) {
-        LinkHelper.openLinkInBrowser(requireActivity(), url);
+        PlaceFactory.getExternalLinkPlace(accountId, url).tryOpenWith(requireActivity());
     }
 
     @Override

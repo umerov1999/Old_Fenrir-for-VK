@@ -54,7 +54,7 @@ public class ExoVoicePlayerSensored implements IVoicePlayer, SensorEventListener
     private boolean isProximityNear;
     private boolean isPlaying;
     private boolean HasPlaying;
-
+    private boolean playbackSpeed;
     private boolean Registered;
     private boolean ProximitRegistered;
     private boolean isHeadset;
@@ -210,6 +210,7 @@ public class ExoVoicePlayerSensored implements IVoicePlayer, SensorEventListener
 
         exoPlayer.setPlayWhenReady(supposedToBePlaying);
         exoPlayer.setMediaSource(mediaSource);
+        exoPlayer.setPlaybackSpeed(playbackSpeed ? 2f : 1f);
         exoPlayer.prepare();
     }
 
@@ -287,6 +288,19 @@ public class ExoVoicePlayerSensored implements IVoicePlayer, SensorEventListener
     @Override
     public boolean isSupposedToPlay() {
         return supposedToBePlaying;
+    }
+
+    @Override
+    public boolean isPlaybackSpeed() {
+        return playbackSpeed;
+    }
+
+    @Override
+    public void togglePlaybackSpeed() {
+        if (nonNull(exoPlayer)) {
+            playbackSpeed = !playbackSpeed;
+            exoPlayer.setPlaybackSpeed(playbackSpeed ? 2f : 1f);
+        }
     }
 
     @Override

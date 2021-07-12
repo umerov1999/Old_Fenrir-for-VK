@@ -323,6 +323,11 @@ public class QuickAnswerActivity extends AppCompatActivity {
                 }
 
                 @Override
+                public void onVoiceTogglePlaybackSpeed() {
+
+                }
+
+                @Override
                 public void onTranscript(String voiceMessageId, int messageId) {
 
                 }

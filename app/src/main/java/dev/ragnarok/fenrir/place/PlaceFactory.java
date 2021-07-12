@@ -364,10 +364,6 @@ public class PlaceFactory {
                 .withParcelableExtra(Extra.OWNER, ownerWrapper);
     }
 
-    public static Place getWikiPagePlace(int accountId, String url) {
-        return new Place(Place.WIKI_PAGE).setArguments(BrowserFragment.buildArgs(accountId, url));
-    }
-
     public static Place getExternalLinkPlace(int accountId, String url) {
         return new Place(Place.EXTERNAL_LINK).setArguments(BrowserFragment.buildArgs(accountId, url));
     }

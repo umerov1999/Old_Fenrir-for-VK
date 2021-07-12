@@ -213,13 +213,18 @@ public abstract class AbsMessageListPresenter<V extends IBasicMessageListView> e
             } else {
                 boolean paused = !mVoicePlayer.isSupposedToPlay();
                 float progress = mVoicePlayer.getProgress();
-                callView(v -> v.bindVoiceHolderById(voiceHolderId, true, paused, progress, false));
+                boolean isSpeed = mVoicePlayer.isPlaybackSpeed();
+                callView(v -> v.bindVoiceHolderById(voiceHolderId, true, paused, progress, false, isSpeed));
             }
         } catch (PrepareException ignored) {
 
         }
 
         syncVoiceLookupState();
+    }
+
+    public void fireVoicePlaybackSpeed() {
+        mVoicePlayer.togglePlaybackSpeed();
     }
 
     private void resolveVoiceMessagePlayingState(boolean anim) {
@@ -231,8 +236,8 @@ public abstract class AbsMessageListPresenter<V extends IBasicMessageListView> e
         } else {
             float progress = mVoicePlayer.getProgress();
             boolean paused = !mVoicePlayer.isSupposedToPlay();
-
-            callView(v -> v.configNowVoiceMessagePlaying(optionalVoiceMessageId.get(), progress, paused, anim));
+            boolean isSpeed = mVoicePlayer.isPlaybackSpeed();
+            callView(v -> v.configNowVoiceMessagePlaying(optionalVoiceMessageId.get(), progress, paused, anim, isSpeed));
         }
     }
 
@@ -250,8 +255,9 @@ public abstract class AbsMessageListPresenter<V extends IBasicMessageListView> e
         Optional<Integer> currentVoiceId = mVoicePlayer.getPlayingVoiceId();
         boolean play = currentVoiceId.nonEmpty() && currentVoiceId.get() == voiceMessageId;
         boolean paused = play && !mVoicePlayer.isSupposedToPlay();
+        boolean isSpeed = mVoicePlayer.isPlaybackSpeed();
 
-        callView(v -> v.bindVoiceHolderById(voiceHolderId, play, paused, mVoicePlayer.getProgress(), false));
+        callView(v -> v.bindVoiceHolderById(voiceHolderId, play, paused, mVoicePlayer.getProgress(), false, isSpeed));
     }
 
     @Override

@@ -1410,7 +1410,6 @@
     <string name="open_avatar">Открыть аватар</string>
     <string name="add_and_download_button">Скачать и добавить</string>
     <string name="delete_cache_images">Очищать кэш изображений при входе</string>
-    <string name="voice_click">Ab</string>
     <string name="remote_audio_error">Ошибка получения списка сохранённых аудио на ПК</string>
     <string name="audio_catalog">Каталог</string>
     <string name="audio_goto_artist">Перейти к исполнителю</string>
@@ -1497,7 +1496,8 @@
     <string name="do_auto_play_video">Автовыбор качества видео</string>
     <string name="video_not_have_link">У видео нет ссылки</string>
     <string name="change_upload_size">Настройки качества отправки фото</string>
-    <string name="go_donate">Пожертвовать</string>
+    <string name="go_donate_info">Или Донат на галочку верефикации, но будет привязано только к текущему id страницы</string>
+    <string name="go_donate">Галочка</string>
     <string name="in_full_version">Доступно в полной версии!</string>
     <string name="wall_themed">Оформление стены для язычников</string>
     <string name="runes_show">Показывать руны</string>

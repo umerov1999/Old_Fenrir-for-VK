@@ -491,12 +491,12 @@ public class MessagesAdapter extends RecyclerBindableAdapter<Message, RecyclerVi
         attachmentsViewBinder.setVoiceActionListener(voiceActionListener);
     }
 
-    public void configNowVoiceMessagePlaying(int voiceId, float progress, boolean paused, boolean amin) {
-        attachmentsViewBinder.configNowVoiceMessagePlaying(voiceId, progress, paused, amin);
+    public void configNowVoiceMessagePlaying(int voiceId, float progress, boolean paused, boolean amin, boolean speed) {
+        attachmentsViewBinder.configNowVoiceMessagePlaying(voiceId, progress, paused, amin, speed);
     }
 
-    public void bindVoiceHolderById(int holderId, boolean play, boolean paused, float progress, boolean amin) {
-        attachmentsViewBinder.bindVoiceHolderById(holderId, play, paused, progress, amin);
+    public void bindVoiceHolderById(int holderId, boolean play, boolean paused, float progress, boolean amin, boolean speed) {
+        attachmentsViewBinder.bindVoiceHolderById(holderId, play, paused, progress, amin, speed);
     }
 
     public void disableVoiceMessagePlaying() {

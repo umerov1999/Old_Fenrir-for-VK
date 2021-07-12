@@ -1111,7 +1111,6 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
                 attachToFront(FriendsTabsFragment.newInstance(args));
                 break;
 
-            case Place.WIKI_PAGE:
             case Place.EXTERNAL_LINK:
                 attachToFront(BrowserFragment.newInstance(args));
                 break;

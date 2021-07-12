@@ -18,9 +18,9 @@ public interface IBasicMessageListView extends IMvpView, IAttachmentsPlacesView,
 
     void notifyMessagesDownAdded(int count);
 
-    void configNowVoiceMessagePlaying(int id, float progress, boolean paused, boolean amin);
+    void configNowVoiceMessagePlaying(int id, float progress, boolean paused, boolean amin, boolean speed);
 
-    void bindVoiceHolderById(int holderId, boolean play, boolean paused, float progress, boolean amin);
+    void bindVoiceHolderById(int holderId, boolean play, boolean paused, float progress, boolean amin, boolean speed);
 
     void disableVoicePlaying();
 

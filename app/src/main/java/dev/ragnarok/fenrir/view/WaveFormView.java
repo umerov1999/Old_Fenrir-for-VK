@@ -91,7 +91,7 @@ public class WaveFormView extends View {
                     1, 5, 7, 18, 1, 10, 16, 6, 12, 31, 8, 15, 5, 13, 11, 11, 13, 10, 13, 9, 23, 17,
                     8, 7, 5, 7, 6, 3, 6, 2, 8, 9, 9, 1, 2, 29, 16, 8, 10, 10, 6, 3, 1, 1, 3, 2, 5,
                     9, 11, 13, 14, 7, 3, 6, 2, 3, 5, 5, 9, 10, 11, 11, 2, 0, 1, 2, 6, 7, 8, 5, 2,
-                    3, 1, 1, 1, 3, 1, 5, 4, 1, 1, 3});
+                    3, 1, 1, 1, 3, 1, 5, 4, 1, 1, 3, 6, 8, 4});
         }
     }
 
@@ -174,7 +174,7 @@ public class WaveFormView extends View {
     }
 
     private float calculateSectionWidth() {
-        int count = (int) (mWaveForm.length * 3.5 - 1);
+        int count = (int) (mWaveForm.length * 3.03 - 1);
         return (float) getWidth() / (float) count;
     }
 

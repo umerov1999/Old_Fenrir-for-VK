@@ -1160,6 +1160,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 new ImageDedicatedAdapter.SourceType(R.drawable.dedicated10),
                 new ImageDedicatedAdapter.SourceType(R.drawable.dedicated11),
                 new ImageDedicatedAdapter.SourceType(R.drawable.dedicated12),
+                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated13),
+                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated14),
+                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated15),
                 new ImageDedicatedAdapter.SourceType(R.raw.dedicated_video1, true),
                 new ImageDedicatedAdapter.SourceType(R.raw.dedicated_video2, true)}));
         RLottieImageView anim = view.findViewById(R.id.dedicated_anim);

@@ -29,6 +29,7 @@ import dev.ragnarok.fenrir.model.LastReadId;
 import dev.ragnarok.fenrir.model.Message;
 import dev.ragnarok.fenrir.model.VoiceMessage;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
+import dev.ragnarok.fenrir.mvp.presenter.AbsMessageListPresenter;
 import dev.ragnarok.fenrir.mvp.presenter.FwdsPresenter;
 import dev.ragnarok.fenrir.mvp.view.IFwdsView;
 
@@ -149,16 +150,16 @@ public class FwdsFragment extends PlaceSupportMvpFragment<FwdsPresenter, IFwdsVi
     }
 
     @Override
-    public void configNowVoiceMessagePlaying(int voiceId, float progress, boolean paused, boolean amin) {
+    public void configNowVoiceMessagePlaying(int voiceId, float progress, boolean paused, boolean amin, boolean speed) {
         if (nonNull(mAdapter)) {
-            mAdapter.configNowVoiceMessagePlaying(voiceId, progress, paused, amin);
+            mAdapter.configNowVoiceMessagePlaying(voiceId, progress, paused, amin, speed);
         }
     }
 
     @Override
-    public void bindVoiceHolderById(int holderId, boolean play, boolean paused, float progress, boolean amin) {
+    public void bindVoiceHolderById(int holderId, boolean play, boolean paused, float progress, boolean amin, boolean speed) {
         if (nonNull(mAdapter)) {
-            mAdapter.bindVoiceHolderById(holderId, play, paused, progress, amin);
+            mAdapter.bindVoiceHolderById(holderId, play, paused, progress, amin, speed);
         }
     }
 
@@ -204,6 +205,11 @@ public class FwdsFragment extends PlaceSupportMvpFragment<FwdsPresenter, IFwdsVi
     @Override
     public void onVoicePlayButtonClick(int voiceHolderId, int voiceMessageId, @NonNull VoiceMessage voiceMessage) {
         callPresenter(p -> p.fireVoicePlayButtonClick(voiceHolderId, voiceMessageId, voiceMessage));
+    }
+
+    @Override
+    public void onVoiceTogglePlaybackSpeed() {
+        callPresenter(AbsMessageListPresenter::fireVoicePlaybackSpeed);
     }
 
     @Override

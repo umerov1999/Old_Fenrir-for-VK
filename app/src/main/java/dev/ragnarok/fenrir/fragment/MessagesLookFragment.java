@@ -164,13 +164,13 @@ public class MessagesLookFragment extends PlaceSupportMvpFragment<MessagesLookPr
     }
 
     @Override
-    public void configNowVoiceMessagePlaying(int id, float progress, boolean paused, boolean amin) {
-        mMessagesAdapter.configNowVoiceMessagePlaying(id, progress, paused, amin);
+    public void configNowVoiceMessagePlaying(int id, float progress, boolean paused, boolean amin, boolean speed) {
+        mMessagesAdapter.configNowVoiceMessagePlaying(id, progress, paused, amin, speed);
     }
 
     @Override
-    public void bindVoiceHolderById(int holderId, boolean play, boolean paused, float progress, boolean amin) {
-        mMessagesAdapter.bindVoiceHolderById(holderId, play, paused, progress, amin);
+    public void bindVoiceHolderById(int holderId, boolean play, boolean paused, float progress, boolean amin, boolean speed) {
+        mMessagesAdapter.bindVoiceHolderById(holderId, play, paused, progress, amin, speed);
     }
 
     @Override

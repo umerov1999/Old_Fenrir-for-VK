@@ -196,7 +196,7 @@ public class LinkHelper {
                 break;
 
             case AbsLink.PAGE:
-                PlaceFactory.getWikiPagePlace(accountId, ((PageLink) link).getLink()).tryOpenWith(activity);
+                PlaceFactory.getExternalLinkPlace(accountId, ((PageLink) link).getLink()).tryOpenWith(activity);
                 break;
 
             case AbsLink.DOC:

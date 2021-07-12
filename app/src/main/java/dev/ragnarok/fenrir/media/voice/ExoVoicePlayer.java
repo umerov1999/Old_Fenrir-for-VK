@@ -38,6 +38,7 @@ public class ExoVoicePlayer implements IVoicePlayer {
     private boolean supposedToBePlaying;
     private IPlayerStatusListener statusListener;
     private IErrorListener errorListener;
+    private boolean playbackSpeed;
 
     public ExoVoicePlayer(Context context, ProxyConfig config) {
         app = context.getApplicationContext();
@@ -114,6 +115,7 @@ public class ExoVoicePlayer implements IVoicePlayer {
         exoPlayer.setAudioAttributes(new AudioAttributes.Builder().setContentType(C.CONTENT_TYPE_MUSIC).setUsage(C.USAGE_MEDIA).build(), true);
         exoPlayer.setPlayWhenReady(supposedToBePlaying);
         exoPlayer.setMediaSource(mediaSource);
+        exoPlayer.setPlaybackSpeed(playbackSpeed ? 2f : 1f);
         exoPlayer.prepare();
     }
 
@@ -190,6 +192,19 @@ public class ExoVoicePlayer implements IVoicePlayer {
     @Override
     public boolean isSupposedToPlay() {
         return supposedToBePlaying;
+    }
+
+    @Override
+    public boolean isPlaybackSpeed() {
+        return playbackSpeed;
+    }
+
+    @Override
+    public void togglePlaybackSpeed() {
+        if (nonNull(exoPlayer)) {
+            playbackSpeed = !playbackSpeed;
+            exoPlayer.setPlaybackSpeed(playbackSpeed ? 2f : 1f);
+        }
     }
 
     @Override
