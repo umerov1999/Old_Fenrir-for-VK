@@ -118,6 +118,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
         } else {
             doAudioLoadTabs = true;
         }
+        callResumedView(IAudioPlaylistsView::showHelper);
         if (getAccountId() == owner_id) {
             appendDisposable(fInteractor.getDualPlaylists(getAccountId(), owner_id, -21, -22)
                     .compose(RxUtils.applySingleIOToMainSchedulers())

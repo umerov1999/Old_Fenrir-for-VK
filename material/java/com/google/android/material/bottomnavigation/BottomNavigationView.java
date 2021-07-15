@@ -19,9 +19,12 @@ package com.google.android.material.bottomnavigation;
 import com.google.android.material.R;
 
 import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP;
+import static java.lang.Math.min;
 
 import android.content.Context;
 import android.os.Build.VERSION;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.appcompat.widget.TintTypedArray;
 import android.util.AttributeSet;
 import android.view.View;
@@ -34,6 +37,8 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior;
 import com.google.android.material.internal.ThemeEnforcement;
+import com.google.android.material.internal.ViewUtils;
+import com.google.android.material.internal.ViewUtils.RelativePadding;
 import com.google.android.material.navigation.NavigationBarMenuView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.shape.MaterialShapeDrawable;
@@ -114,11 +119,61 @@ public class BottomNavigationView extends NavigationBarView {
         attributes.getBoolean(
             R.styleable.BottomNavigationView_itemHorizontalTranslationEnabled, true));
 
+    if (attributes.hasValue(R.styleable.BottomNavigationView_android_minHeight)) {
+      setMinimumHeight(
+          attributes.getDimensionPixelSize(R.styleable.BottomNavigationView_android_minHeight, 0));
+    }
+
     attributes.recycle();
 
     if (shouldDrawCompatibilityTopDivider()) {
       addCompatibilityTopDivider(context);
     }
+
+    applyWindowInsets();
+  }
+
+  private void applyWindowInsets() {
+    ViewUtils.doOnApplyWindowInsets(
+        this,
+        new ViewUtils.OnApplyWindowInsetsListener() {
+          @NonNull
+          @Override
+          public WindowInsetsCompat onApplyWindowInsets(
+              View view,
+              @NonNull WindowInsetsCompat insets,
+              @NonNull RelativePadding initialPadding) {
+            // Apply the bottom, start, and end padding for a BottomNavigationView
+            // to dodge the system navigation bar
+            initialPadding.bottom += insets.getSystemWindowInsetBottom();
+
+            boolean isRtl = ViewCompat.getLayoutDirection(view) == ViewCompat.LAYOUT_DIRECTION_RTL;
+            int systemWindowInsetLeft = insets.getSystemWindowInsetLeft();
+            int systemWindowInsetRight = insets.getSystemWindowInsetRight();
+            initialPadding.start += isRtl ? systemWindowInsetRight : systemWindowInsetLeft;
+            initialPadding.end += isRtl ? systemWindowInsetLeft : systemWindowInsetRight;
+            initialPadding.applyToView(view);
+            return insets;
+          }
+        });
+  }
+
+  @Override
+  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    int minHeightSpec = makeMinHeightSpec(heightMeasureSpec);
+    super.onMeasure(widthMeasureSpec, minHeightSpec);
+  }
+
+  private int makeMinHeightSpec(int measureSpec) {
+    int minHeight = getSuggestedMinimumHeight();
+    if (MeasureSpec.getMode(measureSpec) != MeasureSpec.EXACTLY && minHeight > 0) {
+      minHeight += getPaddingTop() + getPaddingBottom();
+
+      return MeasureSpec.makeMeasureSpec(
+          min(MeasureSpec.getSize(measureSpec), minHeight), MeasureSpec.EXACTLY);
+    }
+
+    return measureSpec;
   }
 
   /**
@@ -192,6 +247,8 @@ public class BottomNavigationView extends NavigationBarView {
    *
    * @param listener The listener to notify
    * @see #setOnNavigationItemReselectedListener(OnNavigationItemReselectedListener)
+   * @deprecated Use {@link NavigationBarView#setOnItemSelectedListener(OnItemSelectedListener)}
+   *     instead.
    */
   @Deprecated
   public void setOnNavigationItemSelectedListener(
@@ -205,6 +262,8 @@ public class BottomNavigationView extends NavigationBarView {
    *
    * @param listener The listener to notify
    * @see #setOnNavigationItemSelectedListener(OnNavigationItemSelectedListener)
+   * @deprecated Use {@link NavigationBarView#setOnItemReselectedListener(OnItemReselectedListener)}
+   *     instead.
    */
   @Deprecated
   public void setOnNavigationItemReselectedListener(
@@ -212,11 +271,19 @@ public class BottomNavigationView extends NavigationBarView {
     setOnItemReselectedListener(listener);
   }
 
-  /** Listener for handling selection events on bottom navigation items. */
+  /**
+   * Listener for handling selection events on bottom navigation items.
+   *
+   * @deprecated Use {@link NavigationBarView.OnItemSelectedListener} instead.
+   */
   @Deprecated
   public interface OnNavigationItemSelectedListener extends OnItemSelectedListener {}
 
-  /** Listener for handling reselection events on bottom navigation items. */
+  /**
+   * Listener for handling reselection events on bottom navigation items.
+   *
+   * @deprecated Use {@link NavigationBarView.OnItemReselectedListener} instead.
+   */
   @Deprecated
   public interface OnNavigationItemReselectedListener extends OnItemReselectedListener {}
 }

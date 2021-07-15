@@ -205,4 +205,32 @@ class FaveApi extends AbsApi implements IFaveApi {
                         .map(extractResponseWithErrorHandling())
                         .map(response -> response == 1));
     }
+
+    @Override
+    public Single<Boolean> pushFirst(int owner_id) {
+        return provideService(IFaveService.class)
+                .flatMap(service -> service.pushFirst("var owner_id = Args.owner_id;\n" +
+                        "if (owner_id >= 0) {\n" +
+                        "   var ret = API.fave.removePage({\"user_id\":owner_id});\n" +
+                        "   if (ret != 1) {\n" +
+                        "       return 0;\n" +
+                        "   }\n" +
+                        "   ret = API.fave.addPage({\"user_id\":owner_id});\n" +
+                        "   if (ret != 1) {\n" +
+                        "       return 0;\n" +
+                        "   }\n" +
+                        "} else {\n" +
+                        "   var ret = API.fave.removePage({\"group_id\":-owner_id});\n" +
+                        "   if (ret != 1) {\n" +
+                        "       return 0;\n" +
+                        "   }\n" +
+                        "   ret = API.fave.addPage({\"group_id\":-owner_id});\n" +
+                        "   if (ret != 1) {\n" +
+                        "       return 0;\n" +
+                        "   }\n" +
+                        "}\n" +
+                        "return 1;", owner_id)
+                        .map(extractResponseWithErrorHandling())
+                        .map(response -> response == 1));
+    }
 }

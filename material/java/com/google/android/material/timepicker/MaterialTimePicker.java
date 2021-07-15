@@ -27,6 +27,7 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import androidx.fragment.app.DialogFragment;
+import androidx.core.view.ViewCompat;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.util.TypedValue;
@@ -91,6 +92,7 @@ public final class MaterialTimePicker extends DialogFragment {
   static final String OVERRIDE_THEME_RES_ID = "TIME_PICKER_OVERRIDE_THEME_RES_ID";
 
   private MaterialButton modeButton;
+  private Button cancelButton;
 
   @InputMode private int inputMode = INPUT_MODE_CLOCK;
 
@@ -165,6 +167,8 @@ public final class MaterialTimePicker extends DialogFragment {
     window.requestFeature(Window.FEATURE_NO_TITLE);
     // On some Android APIs the dialog won't wrap content by default. Explicitly update here.
     window.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    // This has to be done after requestFeature() is called on API <= 23.
+    background.setElevation(ViewCompat.getElevation(window.getDecorView()));
 
     return dialog;
   }
@@ -243,7 +247,7 @@ public final class MaterialTimePicker extends DialogFragment {
           }
         });
 
-    Button cancelButton = root.findViewById(R.id.material_timepicker_cancel_button);
+    cancelButton = root.findViewById(R.id.material_timepicker_cancel_button);
     cancelButton.setOnClickListener(
         new OnClickListener() {
           @Override
@@ -254,6 +258,7 @@ public final class MaterialTimePicker extends DialogFragment {
             dismiss();
           }
         });
+    updateCancelButtonVisibility();
 
     modeButton.setOnClickListener(
         new OnClickListener() {
@@ -293,6 +298,12 @@ public final class MaterialTimePicker extends DialogFragment {
     super.onDismiss(dialogInterface);
   }
 
+  @Override
+  public void setCancelable(boolean cancelable) {
+    super.setCancelable(cancelable);
+    updateCancelButtonVisibility();
+  }
+
   private void updateInputMode(MaterialButton modeButton) {
     if (activePresenter != null) {
       activePresenter.hide();
@@ -304,6 +315,12 @@ public final class MaterialTimePicker extends DialogFragment {
     Pair<Integer, Integer> buttonData = dataForMode(inputMode);
     modeButton.setIconResource(buttonData.first);
     modeButton.setContentDescription(getResources().getString(buttonData.second));
+  }
+
+  private void updateCancelButtonVisibility() {
+    if (cancelButton != null) {
+      cancelButton.setVisibility(isCancelable() ? View.VISIBLE : View.GONE);
+    }
   }
 
   private TimePickerPresenter initializeOrRetrieveActivePresenterForMode(int mode) {

@@ -137,4 +137,9 @@ public interface IFaveService {
     Single<BaseResponse<Integer>> removeVideo(@Field("owner_id") Integer owner_id,
                                               @Field("id") Integer id);
 
+    @FormUrlEncoded
+    @POST("execute")
+    Single<BaseResponse<Integer>> pushFirst(@Field("code") String code,
+                                            @Field("owner_id") int ownerId);
+
 }

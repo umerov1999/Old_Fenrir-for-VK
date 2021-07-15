@@ -54,6 +54,7 @@ import android.view.PointerIcon;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewOutlineProvider;
+import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import androidx.annotation.AnimatorRes;
@@ -164,9 +165,13 @@ public class Chip extends AppCompatCheckBox implements Delegate, Shapeable {
   private static final String BUTTON_ACCESSIBILITY_CLASS_NAME = "android.widget.Button";
   private static final String COMPOUND_BUTTON_ACCESSIBILITY_CLASS_NAME =
       "android.widget.CompoundButton";
+  private static final String RADIO_BUTTON_ACCESSIBILITY_CLASS_NAME =
+      "android.widget.RadioButton";
   private static final String GENERIC_VIEW_ACCESSIBILITY_CLASS_NAME = "android.view.View";
 
   @NonNull private final ChipTouchHelper touchHelper;
+  private boolean touchHelperEnabled;
+
   private final Rect rect = new Rect();
   private final RectF rectF = new RectF();
   private final TextAppearanceFontCallback fontCallback =
@@ -266,14 +271,7 @@ public class Chip extends AppCompatCheckBox implements Delegate, Shapeable {
   @Override
   public void onInitializeAccessibilityNodeInfo(@NonNull AccessibilityNodeInfo info) {
     super.onInitializeAccessibilityNodeInfo(info);
-    if (isCheckable() || isClickable()) {
-      info.setClassName(
-          isCheckable()
-              ? COMPOUND_BUTTON_ACCESSIBILITY_CLASS_NAME
-              : BUTTON_ACCESSIBILITY_CLASS_NAME);
-    } else {
-      info.setClassName(GENERIC_VIEW_ACCESSIBILITY_CLASS_NAME);
-    }
+    info.setClassName(getAccessibilityClassName());
     info.setCheckable(isCheckable());
     info.setClickable(isClickable());
 
@@ -298,9 +296,11 @@ public class Chip extends AppCompatCheckBox implements Delegate, Shapeable {
   private void updateAccessibilityDelegate() {
     if (hasCloseIcon() && isCloseIconVisible() && onCloseIconClickListener != null) {
       ViewCompat.setAccessibilityDelegate(this, touchHelper);
+      touchHelperEnabled = true;
     } else {
       // Avoid setting custom ExploreByTouchHelper if the trailing icon is only decorative.
       ViewCompat.setAccessibilityDelegate(this, null);
+      touchHelperEnabled = false;
     }
   }
 
@@ -751,8 +751,10 @@ public class Chip extends AppCompatCheckBox implements Delegate, Shapeable {
       result = false;
     }
 
-    touchHelper.sendEventForVirtualView(
-        CLOSE_ICON_VIRTUAL_ID, AccessibilityEvent.TYPE_VIEW_CLICKED);
+    if (touchHelperEnabled) {
+      touchHelper.sendEventForVirtualView(
+          CLOSE_ICON_VIRTUAL_ID, AccessibilityEvent.TYPE_VIEW_CLICKED);
+    }
     return result;
   }
 
@@ -848,6 +850,9 @@ public class Chip extends AppCompatCheckBox implements Delegate, Shapeable {
 
   @Override
   protected boolean dispatchHoverEvent(@NonNull MotionEvent event) {
+    if (!touchHelperEnabled) {
+      return super.dispatchHoverEvent(event);
+    }
     return handleAccessibilityExit(event)
         || touchHelper.dispatchHoverEvent(event)
         || super.dispatchHoverEvent(event);
@@ -855,6 +860,9 @@ public class Chip extends AppCompatCheckBox implements Delegate, Shapeable {
 
   @Override
   public boolean dispatchKeyEvent(KeyEvent event) {
+    if (!touchHelperEnabled) {
+      return super.dispatchKeyEvent(event);
+    }
     boolean handled = touchHelper.dispatchKeyEvent(event);
     // If the key event moves focus one beyond the end of the virtual view hierarchy in the
     // traversal direction (i.e. beyond the last virtual view while moving forward or before the
@@ -872,13 +880,16 @@ public class Chip extends AppCompatCheckBox implements Delegate, Shapeable {
   @Override
   protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
     super.onFocusChanged(focused, direction, previouslyFocusedRect);
-    touchHelper.onFocusChanged(focused, direction, previouslyFocusedRect);
+    if (touchHelperEnabled) {
+      touchHelper.onFocusChanged(focused, direction, previouslyFocusedRect);
+    }
   }
 
   @Override
   public void getFocusedRect(@NonNull Rect r) {
-    if (touchHelper.getKeyboardFocusedVirtualViewId() == CLOSE_ICON_VIRTUAL_ID
-        || touchHelper.getAccessibilityFocusedVirtualViewId() == CLOSE_ICON_VIRTUAL_ID) {
+    if (touchHelperEnabled
+        && (touchHelper.getKeyboardFocusedVirtualViewId() == CLOSE_ICON_VIRTUAL_ID
+        || touchHelper.getAccessibilityFocusedVirtualViewId() == CLOSE_ICON_VIRTUAL_ID)) {
       r.set(getCloseIconTouchBoundsInt());
     } else {
       super.getFocusedRect(r);
@@ -1051,14 +1062,7 @@ public class Chip extends AppCompatCheckBox implements Delegate, Shapeable {
     protected void onPopulateNodeForHost(@NonNull AccessibilityNodeInfoCompat node) {
       node.setCheckable(isCheckable());
       node.setClickable(isClickable());
-      if (isCheckable() || isClickable()) {
-        node.setClassName(
-            isCheckable()
-                ? COMPOUND_BUTTON_ACCESSIBILITY_CLASS_NAME
-                : BUTTON_ACCESSIBILITY_CLASS_NAME);
-      } else {
-        node.setClassName(GENERIC_VIEW_ACCESSIBILITY_CLASS_NAME);
-      }
+      node.setClassName(getAccessibilityClassName());
       CharSequence chipText = getText();
       if (VERSION.SDK_INT >= VERSION_CODES.M) {
         node.setText(chipText);
@@ -2335,6 +2339,23 @@ public class Chip extends AppCompatCheckBox implements Delegate, Shapeable {
     insetChipBackgroundDrawable(deltaX, deltaY, deltaX, deltaY);
     updateBackgroundDrawable();
     return true;
+  }
+
+  @Override
+  @NonNull
+  public CharSequence getAccessibilityClassName() {
+    if (isCheckable()) {
+      ViewParent parent = getParent();
+      if (parent instanceof ChipGroup && ((ChipGroup) parent).isSingleSelection()) {
+        return RADIO_BUTTON_ACCESSIBILITY_CLASS_NAME;
+      } else {
+        return COMPOUND_BUTTON_ACCESSIBILITY_CLASS_NAME;
+      }
+    } else if (isClickable()) {
+      return BUTTON_ACCESSIBILITY_CLASS_NAME;
+    } else {
+      return GENERIC_VIEW_ACCESSIBILITY_CLASS_NAME;
+    }
   }
 
   private void removeBackgroundInset() {

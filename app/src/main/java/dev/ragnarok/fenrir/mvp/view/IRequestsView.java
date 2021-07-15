@@ -2,6 +2,7 @@ package dev.ragnarok.fenrir.mvp.view;
 
 import java.util.List;
 
+import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.User;
 import dev.ragnarok.fenrir.model.UsersPart;
 import dev.ragnarok.fenrir.mvp.core.IMvpView;
@@ -20,4 +21,6 @@ public interface IRequestsView extends IMvpView, IErrorView, IAccountDependencyV
     void showUserWall(int accountId, User user);
 
     void showRefreshing(boolean refreshing);
+
+    void showNotRequests(List<Owner> data, int accountId);
 }

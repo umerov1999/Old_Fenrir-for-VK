@@ -63,6 +63,9 @@ public interface IFaveApi {
     Single<Boolean> removeVideo(Integer owner_id, Integer id);
 
     @CheckResult
+    Single<Boolean> pushFirst(int owner_id);
+
+    @CheckResult
     Single<Boolean> addVideo(Integer owner_id, Integer id, String access_key);
 
     @CheckResult

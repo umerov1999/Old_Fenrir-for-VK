@@ -29,6 +29,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.CustomTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -753,111 +754,131 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             });
         }
 
-        findPreference("music_dir")
-                .setOnPreferenceClickListener(preference -> {
-                    if (!AppPerms.hasReadStoragePermission(requireActivity())) {
-                        requestReadPermission.launch();
-                        return true;
-                    }
-                    DialogProperties properties = new DialogProperties();
-                    properties.selection_mode = DialogConfigs.SINGLE_MODE;
-                    properties.selection_type = DialogConfigs.DIR_SELECT;
-                    properties.root = Environment.getExternalStorageDirectory();
-                    properties.error_dir = Environment.getExternalStorageDirectory();
-                    properties.offset = new File(Settings.get().other().getMusicDir());
-                    properties.extensions = null;
-                    properties.show_hidden_files = true;
-                    FilePickerDialog dialog = new FilePickerDialog(requireActivity(), properties, Settings.get().ui().getMainTheme());
-                    dialog.setTitle(R.string.music_dir);
-                    dialog.setDialogSelectionListener(files -> PreferenceManager.getDefaultSharedPreferences(Injection.provideApplicationContext()).edit().putString("music_dir", files[0]).apply());
-                    dialog.show();
+        CustomTextPreference music_dir = findPreference("music_dir");
+        if (nonNull(music_dir)) {
+            music_dir.setOnPreferenceClickListener(preference -> {
+                if (!AppPerms.hasReadStoragePermission(requireActivity())) {
+                    requestReadPermission.launch();
                     return true;
+                }
+                DialogProperties properties = new DialogProperties();
+                properties.selection_mode = DialogConfigs.SINGLE_MODE;
+                properties.selection_type = DialogConfigs.DIR_SELECT;
+                properties.root = Environment.getExternalStorageDirectory();
+                properties.error_dir = Environment.getExternalStorageDirectory();
+                properties.offset = new File(Settings.get().other().getMusicDir());
+                properties.extensions = null;
+                properties.show_hidden_files = true;
+                FilePickerDialog dialog = new FilePickerDialog(requireActivity(), properties, Settings.get().ui().getMainTheme());
+                dialog.setTitle(R.string.music_dir);
+                dialog.setDialogSelectionListener(files -> {
+                    PreferenceManager.getDefaultSharedPreferences(Injection.provideApplicationContext()).edit().putString("music_dir", files[0]).apply();
+                    music_dir.refresh();
                 });
-
-        findPreference("photo_dir")
-                .setOnPreferenceClickListener(preference -> {
-                    if (!AppPerms.hasReadStoragePermission(requireActivity())) {
-                        requestReadPermission.launch();
-                        return true;
-                    }
-                    DialogProperties properties = new DialogProperties();
-                    properties.selection_mode = DialogConfigs.SINGLE_MODE;
-                    properties.selection_type = DialogConfigs.DIR_SELECT;
-                    properties.root = Environment.getExternalStorageDirectory();
-                    properties.error_dir = Environment.getExternalStorageDirectory();
-                    properties.offset = new File(Settings.get().other().getPhotoDir());
-                    properties.extensions = null;
-                    properties.show_hidden_files = true;
-                    FilePickerDialog dialog = new FilePickerDialog(requireActivity(), properties, Settings.get().ui().getMainTheme());
-                    dialog.setTitle(R.string.photo_dir);
-                    dialog.setDialogSelectionListener(files -> PreferenceManager.getDefaultSharedPreferences(Injection.provideApplicationContext()).edit().putString("photo_dir", files[0]).apply());
-                    dialog.show();
+                dialog.show();
+                return true;
+            });
+        }
+        CustomTextPreference photo_dir = findPreference("photo_dir");
+        if (nonNull(photo_dir)) {
+            photo_dir.setOnPreferenceClickListener(preference -> {
+                if (!AppPerms.hasReadStoragePermission(requireActivity())) {
+                    requestReadPermission.launch();
                     return true;
+                }
+                DialogProperties properties = new DialogProperties();
+                properties.selection_mode = DialogConfigs.SINGLE_MODE;
+                properties.selection_type = DialogConfigs.DIR_SELECT;
+                properties.root = Environment.getExternalStorageDirectory();
+                properties.error_dir = Environment.getExternalStorageDirectory();
+                properties.offset = new File(Settings.get().other().getPhotoDir());
+                properties.extensions = null;
+                properties.show_hidden_files = true;
+                FilePickerDialog dialog = new FilePickerDialog(requireActivity(), properties, Settings.get().ui().getMainTheme());
+                dialog.setTitle(R.string.photo_dir);
+                dialog.setDialogSelectionListener(files -> {
+                    PreferenceManager.getDefaultSharedPreferences(Injection.provideApplicationContext()).edit().putString("photo_dir", files[0]).apply();
+                    photo_dir.refresh();
                 });
-
-        findPreference("video_dir")
-                .setOnPreferenceClickListener(preference -> {
-                    if (!AppPerms.hasReadStoragePermission(requireActivity())) {
-                        requestReadPermission.launch();
-                        return true;
-                    }
-                    DialogProperties properties = new DialogProperties();
-                    properties.selection_mode = DialogConfigs.SINGLE_MODE;
-                    properties.selection_type = DialogConfigs.DIR_SELECT;
-                    properties.root = Environment.getExternalStorageDirectory();
-                    properties.error_dir = Environment.getExternalStorageDirectory();
-                    properties.offset = new File(Settings.get().other().getVideoDir());
-                    properties.extensions = null;
-                    properties.show_hidden_files = true;
-                    FilePickerDialog dialog = new FilePickerDialog(requireActivity(), properties, Settings.get().ui().getMainTheme());
-                    dialog.setTitle(R.string.video_dir);
-                    dialog.setDialogSelectionListener(files -> PreferenceManager.getDefaultSharedPreferences(Injection.provideApplicationContext()).edit().putString("video_dir", files[0]).apply());
-                    dialog.show();
+                dialog.show();
+                return true;
+            });
+        }
+        CustomTextPreference video_dir = findPreference("video_dir");
+        if (nonNull(video_dir)) {
+            video_dir.setOnPreferenceClickListener(preference -> {
+                if (!AppPerms.hasReadStoragePermission(requireActivity())) {
+                    requestReadPermission.launch();
                     return true;
+                }
+                DialogProperties properties = new DialogProperties();
+                properties.selection_mode = DialogConfigs.SINGLE_MODE;
+                properties.selection_type = DialogConfigs.DIR_SELECT;
+                properties.root = Environment.getExternalStorageDirectory();
+                properties.error_dir = Environment.getExternalStorageDirectory();
+                properties.offset = new File(Settings.get().other().getVideoDir());
+                properties.extensions = null;
+                properties.show_hidden_files = true;
+                FilePickerDialog dialog = new FilePickerDialog(requireActivity(), properties, Settings.get().ui().getMainTheme());
+                dialog.setTitle(R.string.video_dir);
+                dialog.setDialogSelectionListener(files -> {
+                    PreferenceManager.getDefaultSharedPreferences(Injection.provideApplicationContext()).edit().putString("video_dir", files[0]).apply();
+                    video_dir.refresh();
                 });
-
-        findPreference("docs_dir")
-                .setOnPreferenceClickListener(preference -> {
-                    if (!AppPerms.hasReadStoragePermission(requireActivity())) {
-                        requestReadPermission.launch();
-                        return true;
-                    }
-                    DialogProperties properties = new DialogProperties();
-                    properties.selection_mode = DialogConfigs.SINGLE_MODE;
-                    properties.selection_type = DialogConfigs.DIR_SELECT;
-                    properties.root = Environment.getExternalStorageDirectory();
-                    properties.error_dir = Environment.getExternalStorageDirectory();
-                    properties.offset = new File(Settings.get().other().getDocDir());
-                    properties.extensions = null;
-                    properties.show_hidden_files = true;
-                    FilePickerDialog dialog = new FilePickerDialog(requireActivity(), properties, Settings.get().ui().getMainTheme());
-                    dialog.setTitle(R.string.docs_dir);
-                    dialog.setDialogSelectionListener(files -> PreferenceManager.getDefaultSharedPreferences(Injection.provideApplicationContext()).edit().putString("docs_dir", files[0]).apply());
-                    dialog.show();
+                dialog.show();
+                return true;
+            });
+        }
+        CustomTextPreference docs_dir = findPreference("docs_dir");
+        if (nonNull(docs_dir)) {
+            docs_dir.setOnPreferenceClickListener(preference -> {
+                if (!AppPerms.hasReadStoragePermission(requireActivity())) {
+                    requestReadPermission.launch();
                     return true;
+                }
+                DialogProperties properties = new DialogProperties();
+                properties.selection_mode = DialogConfigs.SINGLE_MODE;
+                properties.selection_type = DialogConfigs.DIR_SELECT;
+                properties.root = Environment.getExternalStorageDirectory();
+                properties.error_dir = Environment.getExternalStorageDirectory();
+                properties.offset = new File(Settings.get().other().getDocDir());
+                properties.extensions = null;
+                properties.show_hidden_files = true;
+                FilePickerDialog dialog = new FilePickerDialog(requireActivity(), properties, Settings.get().ui().getMainTheme());
+                dialog.setTitle(R.string.docs_dir);
+                dialog.setDialogSelectionListener(files -> {
+                    PreferenceManager.getDefaultSharedPreferences(Injection.provideApplicationContext()).edit().putString("docs_dir", files[0]).apply();
+                    docs_dir.refresh();
                 });
-
-        findPreference("sticker_dir")
-                .setOnPreferenceClickListener(preference -> {
-                    if (!AppPerms.hasReadStoragePermission(requireActivity())) {
-                        requestReadPermission.launch();
-                        return true;
-                    }
-                    DialogProperties properties = new DialogProperties();
-                    properties.selection_mode = DialogConfigs.SINGLE_MODE;
-                    properties.selection_type = DialogConfigs.DIR_SELECT;
-                    properties.root = Environment.getExternalStorageDirectory();
-                    properties.error_dir = Environment.getExternalStorageDirectory();
-                    properties.offset = new File(Settings.get().other().getStickerDir());
-                    properties.extensions = null;
-                    properties.show_hidden_files = true;
-                    FilePickerDialog dialog = new FilePickerDialog(requireActivity(), properties, Settings.get().ui().getMainTheme());
-                    dialog.setTitle(R.string.docs_dir);
-                    dialog.setDialogSelectionListener(files -> PreferenceManager.getDefaultSharedPreferences(Injection.provideApplicationContext()).edit().putString("sticker_dir", files[0]).apply());
-                    dialog.show();
+                dialog.show();
+                return true;
+            });
+        }
+        CustomTextPreference sticker_dir = findPreference("sticker_dir");
+        if (nonNull(sticker_dir)) {
+            sticker_dir.setOnPreferenceClickListener(preference -> {
+                if (!AppPerms.hasReadStoragePermission(requireActivity())) {
+                    requestReadPermission.launch();
                     return true;
+                }
+                DialogProperties properties = new DialogProperties();
+                properties.selection_mode = DialogConfigs.SINGLE_MODE;
+                properties.selection_type = DialogConfigs.DIR_SELECT;
+                properties.root = Environment.getExternalStorageDirectory();
+                properties.error_dir = Environment.getExternalStorageDirectory();
+                properties.offset = new File(Settings.get().other().getStickerDir());
+                properties.extensions = null;
+                properties.show_hidden_files = true;
+                FilePickerDialog dialog = new FilePickerDialog(requireActivity(), properties, Settings.get().ui().getMainTheme());
+                dialog.setTitle(R.string.docs_dir);
+                dialog.setDialogSelectionListener(files -> {
+                    PreferenceManager.getDefaultSharedPreferences(Injection.provideApplicationContext()).edit().putString("sticker_dir", files[0]).apply();
+                    sticker_dir.refresh();
                 });
-
+                dialog.show();
+                return true;
+            });
+        }
         findPreference("kate_gms_token").setVisible(Constants.DEFAULT_ACCOUNT_TYPE == Account_Types.KATE);
 
         findPreference("show_logs")
@@ -1163,6 +1184,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 new ImageDedicatedAdapter.SourceType(R.drawable.dedicated13),
                 new ImageDedicatedAdapter.SourceType(R.drawable.dedicated14),
                 new ImageDedicatedAdapter.SourceType(R.drawable.dedicated15),
+                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated16),
+                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated17),
+                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated18),
+                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated19),
+                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated20),
                 new ImageDedicatedAdapter.SourceType(R.raw.dedicated_video1, true),
                 new ImageDedicatedAdapter.SourceType(R.raw.dedicated_video2, true)}));
         RLottieImageView anim = view.findViewById(R.id.dedicated_anim);

@@ -4,6 +4,7 @@ import androidx.preference.PreferenceManager
 
 object HelperSimple {
     const val DIALOG_SEND_HELPER = "dialog_send_helper"
+    const val PLAYLIST_HELPER = "playlist_helper"
     const val DEDICATED_COUNTER = "dedicated_counter"
     fun needHelp(key: String, count: Int): Boolean {
         val app = Injection.provideApplicationContext()

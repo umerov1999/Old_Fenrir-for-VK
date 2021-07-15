@@ -745,6 +745,20 @@ public class Utils {
         return -1;
     }
 
+    public static int indexOfOwner(List<Owner> data, int id) {
+        if (data == null) {
+            return -1;
+        }
+
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).getOwnerId() == id) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
     public static boolean safeIsEmpty(CharSequence text) {
         return isNull(text) || text.length() == 0;
     }

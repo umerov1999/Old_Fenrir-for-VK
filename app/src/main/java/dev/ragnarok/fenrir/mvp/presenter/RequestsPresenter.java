@@ -12,14 +12,17 @@ import java.util.concurrent.TimeUnit;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.domain.IRelationshipInteractor;
 import dev.ragnarok.fenrir.domain.InteractorFactory;
+import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.User;
 import dev.ragnarok.fenrir.model.UsersPart;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.IRequestsView;
+import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.RxUtils;
+import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
@@ -61,9 +64,6 @@ public class RequestsPresenter extends AccountDependencyPresenter<IRequestsView>
         data.add(ALL, new UsersPart(R.string.all_friends, new ArrayList<>(), true));
         data.add(SEACRH_CACHE, new UsersPart(R.string.results_in_the_cache, new ArrayList<>(), false));
         data.add(SEARCH_WEB, new UsersPart(R.string.results_in_a_network, new ArrayList<>(), false));
-        if (getAccountId() == userId) {
-            loadAllCachedData();
-        }
     }
 
     private static boolean allow(User user, String preparedQ) {
@@ -71,7 +71,7 @@ public class RequestsPresenter extends AccountDependencyPresenter<IRequestsView>
         return full.contains(preparedQ);
     }
 
-    private void requestActualData(int offset) {
+    private void requestActualData(int offset, boolean do_scan) {
         int accountId = getAccountId();
         if (accountId != userId) {
             cacheLoadingNow = false;
@@ -81,9 +81,9 @@ public class RequestsPresenter extends AccountDependencyPresenter<IRequestsView>
         actualDataLoadingNow = true;
         resolveRefreshingView();
 
-        actualDataDisposable.add(relationshipInteractor.getRequests(accountId, offset, 200)
+        actualDataDisposable.add(relationshipInteractor.getRequests(accountId, offset, Settings.get().other().isNot_friend_show() ? 1000 : 200)
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(users -> onActualDataReceived(offset, users), this::onActualDataGetError));
+                .subscribe(users -> onActualDataReceived(offset, users, do_scan), this::onActualDataGetError));
     }
 
     private void onActualDataGetError(Throwable t) {
@@ -111,10 +111,24 @@ public class RequestsPresenter extends AccountDependencyPresenter<IRequestsView>
         } else {
             doLoadTabs = true;
         }
-        requestActualData(0);
+        loadAllCachedData();
+        if (!Settings.get().other().isNot_friend_show()) {
+            requestActualData(0, false);
+        }
     }
 
-    private void onActualDataReceived(int offset, List<User> users) {
+    private void onActualDataReceived(int offset, List<User> users, boolean do_scan) {
+        if (do_scan && Settings.get().other().isNot_friend_show()) {
+            List<Owner> not_friends = new ArrayList<>();
+            for (User i : getAllData()) {
+                if (Utils.indexOf(users, i.getId()) == -1) {
+                    not_friends.add(i);
+                }
+            }
+            if (not_friends.size() > 0) {
+                callView(view -> view.showNotRequests(not_friends, getAccountId()));
+            }
+        }
         // reset cache loading
         cacheDisposable.clear();
         cacheLoadingNow = false;
@@ -163,6 +177,9 @@ public class RequestsPresenter extends AccountDependencyPresenter<IRequestsView>
         getAllData().addAll(users);
 
         safelyNotifyDataSetChanged();
+        if (Settings.get().other().isNot_friend_show()) {
+            requestActualData(0, users.size() > 0);
+        }
     }
 
     private void safelyNotifyDataSetChanged() {
@@ -180,7 +197,7 @@ public class RequestsPresenter extends AccountDependencyPresenter<IRequestsView>
             cacheLoadingNow = false;
             actualDataLoadingNow = false;
 
-            requestActualData(0);
+            requestActualData(0, false);
         }
     }
 
@@ -330,7 +347,7 @@ public class RequestsPresenter extends AccountDependencyPresenter<IRequestsView>
                 return;
             }
 
-            requestActualData(getAllData().size());
+            requestActualData(getAllData().size(), false);
         }
     }
 

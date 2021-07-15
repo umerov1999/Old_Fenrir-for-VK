@@ -320,14 +320,6 @@ public class Preference implements Comparable<Preference> {
         return getColorFromAttrs(com.google.android.material.R.attr.colorPrimary, context, "#000000");
     }
 
-    private static int getTextColorPrimary(Context context) {
-        return getColorFromAttrs(android.R.attr.textColorPrimary, context, "#000000");
-    }
-
-    private static int getTextColorSecondary(Context context) {
-        return getColorFromAttrs(android.R.attr.textColorSecondary, context, "#000000");
-    }
-
     private static int getColorFromAttrs(int resId, Context context, String defaultColor) {
         int[] attribute = {resId};
         TypedArray array = context.getTheme().obtainStyledAttributes(attribute);
@@ -520,12 +512,8 @@ public class Preference implements Comparable<Preference> {
 
         TextView summaryView = (TextView) holder.findViewById(android.R.id.summary);
         if (summaryView != null) {
-            if (!(this instanceof PreferenceCategory) && !(this instanceof ExpandButton)) {
-                if (isSelected) {
-                    summaryView.setTextColor(getColorPrimary(summaryView.getContext()));
-                } else {
-                    summaryView.setTextColor(getTextColorSecondary(summaryView.getContext()));
-                }
+            if (isSelected) {
+                summaryView.setTextColor(getColorPrimary(summaryView.getContext()));
             }
             CharSequence summary = getSummary();
             if (!TextUtils.isEmpty(summary)) {
@@ -539,12 +527,8 @@ public class Preference implements Comparable<Preference> {
 
         TextView titleView = (TextView) holder.findViewById(android.R.id.title);
         if (titleView != null) {
-            if (!(this instanceof PreferenceCategory) && !(this instanceof ExpandButton)) {
-                if (isSelected) {
-                    titleView.setTextColor(getColorPrimary(titleView.getContext()));
-                } else {
-                    titleView.setTextColor(getTextColorPrimary(titleView.getContext()));
-                }
+            if (isSelected) {
+                titleView.setTextColor(getColorPrimary(titleView.getContext()));
             }
             CharSequence title = getTitle();
             if (!TextUtils.isEmpty(title)) {

@@ -165,4 +165,9 @@ public class FavePagesFragment extends BaseMvpFragment<FavePagesPresenter, IFave
     public void onDelete(int index, Owner owner) {
         callPresenter(p -> p.fireOwnerDelete(owner));
     }
+
+    @Override
+    public void onPushFirst(int index, Owner owner) {
+        callPresenter(p -> p.firePushFirst(owner));
+    }
 }

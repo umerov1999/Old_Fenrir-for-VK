@@ -19,4 +19,6 @@ public interface IAudioPlaylistsView extends IAccountDependencyView, IMvpView, I
     void showRefreshing(boolean refreshing);
 
     void doAddAudios(int accountId);
+
+    void showHelper();
 }

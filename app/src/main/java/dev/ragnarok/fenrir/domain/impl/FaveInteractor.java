@@ -420,6 +420,13 @@ public class FaveInteractor implements IFaveInteractor {
     }
 
     @Override
+    public Single<Boolean> pushFirst(int accountId, int owner_id) {
+        return networker.vkDefault(accountId)
+                .fave()
+                .pushFirst(owner_id);
+    }
+
+    @Override
     public Completable addPage(int accountId, int ownerId) {
         return networker.vkDefault(accountId)
                 .fave()

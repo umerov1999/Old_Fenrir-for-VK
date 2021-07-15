@@ -228,6 +228,22 @@
         <item>•••••• </item>
     </string-array>
 
+    <!-- Google Play-->
+    <string name="developer">Developer: Umerov Artyom</string>
+    <string name="helped_developer">Helped: Danilyuk Dmitry</string>
+    <string name="first_pagan">First pagan</string>
+    <string name="repo">Repository: https://github.com/umerov1999/Fenrir-for-VK</string>
+    <string name="repo_local_server">Repository: https://github.com/umerov1999/FenrirMediaServer/releases</string>
+    <string name="is_donated">Donate for verification</string>
+    <string name="is_donated_alert">Not included in the full version, only visible in this client. Cost for a page - %1$d₽, for a group - %2$d₽. Write to the developer\'s mail</string>
+    <string name="is_donated_alert_disabled">Option disabled</string>
+    <string name="project_dedicated_summary">Project Dedicated for Arnoldova Ekaterina, https://vk.com/id255645173</string>
+    <string name="project_dedicated">Project Dedicated</string>
+    <string name="go_buy" translatable="false">Google Play</string>
+    <string name="go_donate_info">Or Donate to the verification, but will be tied only to the current page id</string>
+    <string name="go_donate">Verification</string>
+    <string name="in_full_version">Available in full version!</string>
+
     <!-- Dialogs-->
     <string name="dialogs">Dialogs</string>
     <string name="dialog_day_today">Today</string>
@@ -840,16 +856,6 @@
     <string name="avatar_style_title">Avatar style</string>
 
     <string name="save_changes_question">Save changes ?</string>
-    <string name="developer">Developer: Umerov Artyom</string>
-    <string name="helped_developer">Helped: Danilyuk Dmitry</string>
-    <string name="first_pagan">First pagan</string>
-    <string name="repo">Repository: https://github.com/umerov1999/Fenrir-for-VK</string>
-    <string name="repo_local_server">Repository: https://github.com/umerov1999/FenrirMediaServer/releases</string>
-    <string name="is_donated">Donate for verification</string>
-    <string name="is_donated_alert">Not included in the full version, only visible in this client. Cost for a page - %1$d₽, for a group - %2$d₽. Write to the developer\'s mail</string>
-    <string name="is_donated_alert_disabled">Option disabled</string>
-    <string name="project_dedicated_summary">Project Dedicated for Arnoldova Ekaterina, https://vk.com/id255645173</string>
-    <string name="project_dedicated">Project Dedicated</string>
     <string name="comment">Comment</string>
     <string name="search">Search</string>
     <string name="input">Input</string>
@@ -1697,6 +1703,9 @@
     <string name="delete_photo">Delete photo</string>
     <string name="not_friend">No longer friends:</string>
     <string name="new_friend">New friends:</string>
+    <string name="not_follower">No longer followers:</string>
+    <string name="new_follower">New followers:</string>
+    <string name="not_request">No longer requests:</string>
     <string name="keyboard">Keyboard</string>
     <string name="not_friend_show">No longer friends</string>
     <string name="not_friend_show_summary">Show who has removed you from the friends list</string>
@@ -1705,10 +1714,6 @@
     <string name="do_auto_play_video">Auto select video quality</string>
     <string name="video_not_have_link">Video has no link</string>
     <string name="change_upload_size">Show picture sending quality settings</string>
-    <string name="go_buy" translatable="false">Google Play</string>
-    <string name="go_donate_info">Or Donate to the verification, but will be tied only to the current page id</string>
-    <string name="go_donate">Verification</string>
-    <string name="in_full_version">Available in full version!</string>
     <string name="wall_themed">Wall decoration for pagans</string>
     <string name="runes_show">Show runes</string>
     <string name="pagan_symbol">Symbol</string>
@@ -1728,6 +1733,7 @@
     <string name="registration_date">Registration date</string>
     <string name="not_permitted">No permissions granted! Function not available</string>
     <string name="dialog_send_helper">You can forward it by swiping the dialogue</string>
+    <string name="playlist_helper">You can add audio only to your playlists (long click on the playlist)</string>
     <string name="language_ui">Language</string>
     <string name="please_wait_internal">Please wait…</string>
     <string name="end_list_anim">End of list animation</string>
@@ -1813,4 +1819,5 @@
     <string name="player_cover_transform">Player cover swipe animation</string>
     <string name="is_side_no_stroke">Is side no stroke</string>
     <string name="headers_in_dialog">Date header in dialog</string>
+    <string name="push_first">Move to first</string>
 </resources>

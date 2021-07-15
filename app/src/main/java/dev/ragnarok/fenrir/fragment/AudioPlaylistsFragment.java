@@ -12,6 +12,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -20,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +30,7 @@ import java.util.List;
 
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
+import dev.ragnarok.fenrir.HelperSimple;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
@@ -278,6 +282,20 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
     @Override
     public void doAddAudios(int accountId) {
         requestAudioSelect.launch(AudioSelectActivity.createIntent(requireActivity(), accountId));
+    }
+
+    @Override
+    public void showHelper() {
+        if (HelperSimple.INSTANCE.needHelp(HelperSimple.PLAYLIST_HELPER, 2)) {
+            showSnackbar(R.string.playlist_helper, true);
+        }
+    }
+
+    private void showSnackbar(@StringRes int res, boolean isLong) {
+        View view = getView();
+        if (nonNull(view)) {
+            Snackbar.make(view, res, isLong ? BaseTransientBottomBar.LENGTH_LONG : BaseTransientBottomBar.LENGTH_SHORT).show();
+        }
     }
 
     @Override

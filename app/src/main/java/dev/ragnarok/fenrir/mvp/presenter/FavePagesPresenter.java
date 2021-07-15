@@ -213,6 +213,13 @@ public class FavePagesPresenter extends AccountDependencyPresenter<IFaveUsersVie
                 .subscribe(() -> onUserRemoved(accountId, owner.getOwnerId()), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
     }
 
+    public void firePushFirst(Owner owner) {
+        int accountId = getAccountId();
+        appendDisposable(faveInteractor.pushFirst(accountId, owner.getOwnerId())
+                .compose(RxUtils.applySingleIOToMainSchedulers())
+                .subscribe(o -> fireRefresh(), t -> callView(v -> showError(v, getCauseIfRuntime(t)))));
+    }
+
     private class FindPage extends FindAtWithContent<FavePage> {
         public FindPage(CompositeDisposable disposable) {
             super(disposable, SEARCH_VIEW_COUNT, SEARCH_COUNT);

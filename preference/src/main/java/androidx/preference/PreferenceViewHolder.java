@@ -37,6 +37,7 @@ public class PreferenceViewHolder extends RecyclerView.ViewHolder {
     private final Drawable mBackground;
     private final SparseArray<View> mCachedViews = new SparseArray<>(4);
     private ColorStateList mTitleTextColors;
+    private ColorStateList mSummaryTextColors;
     private boolean mDividerAllowedAbove;
     private boolean mDividerAllowedBelow;
 
@@ -44,6 +45,7 @@ public class PreferenceViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
 
         TextView titleView = itemView.findViewById(android.R.id.title);
+        TextView summaryView = itemView.findViewById(android.R.id.summary);
 
         // Pre-cache the views that we know in advance we'll want to find
         mCachedViews.put(android.R.id.title, titleView);
@@ -56,6 +58,9 @@ public class PreferenceViewHolder extends RecyclerView.ViewHolder {
         mBackground = itemView.getBackground();
         if (titleView != null) {
             mTitleTextColors = titleView.getTextColors();
+        }
+        if (summaryView != null) {
+            mSummaryTextColors = summaryView.getTextColors();
         }
     }
 
@@ -149,6 +154,12 @@ public class PreferenceViewHolder extends RecyclerView.ViewHolder {
         if (titleView != null && mTitleTextColors != null) {
             if (!titleView.getTextColors().equals(mTitleTextColors)) {
                 titleView.setTextColor(mTitleTextColors);
+            }
+        }
+        TextView summaryView = (TextView) findViewById(android.R.id.summary);
+        if (summaryView != null && mSummaryTextColors != null) {
+            if (!summaryView.getTextColors().equals(mSummaryTextColors)) {
+                summaryView.setTextColor(mSummaryTextColors);
             }
         }
     }

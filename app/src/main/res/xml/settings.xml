@@ -714,32 +714,37 @@
             app:icon="@drawable/security_settings"
             app:iconSpaceReserved="false" />
 
-        <Preference
+        <CustomTextPreference
             android:key="music_dir"
             android:title="@string/music_dir"
             app:icon="@drawable/dir_song"
-            app:iconSpaceReserved="false" />
-        <Preference
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+        <CustomTextPreference
             android:key="photo_dir"
             android:title="@string/photo_dir"
             app:icon="@drawable/dir_photo"
-            app:iconSpaceReserved="false" />
-        <Preference
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+        <CustomTextPreference
             android:key="video_dir"
             android:title="@string/video_dir"
             app:icon="@drawable/dir_video"
-            app:iconSpaceReserved="false" />
-        <Preference
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+        <CustomTextPreference
             android:key="docs_dir"
             android:title="@string/docs_dir"
             app:icon="@drawable/dir_doc"
-            app:iconSpaceReserved="false" />
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
 
-        <Preference
+        <CustomTextPreference
             android:key="sticker_dir"
             android:title="@string/sticker_dir"
             app:icon="@drawable/dir_sticker"
-            app:iconSpaceReserved="false" />
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
 
         <SwitchPreference
             android:defaultValue="true"

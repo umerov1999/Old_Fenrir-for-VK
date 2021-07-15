@@ -57,6 +57,8 @@ public interface IFaveInteractor {
 
     Single<Boolean> removeVideo(int accountId, Integer owner_id, Integer id);
 
+    Single<Boolean> pushFirst(int accountId, int owner_id);
+
     Completable addPage(int accountId, int ownerId);
 
     Completable addLink(int accountId, String link);

@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -21,15 +23,18 @@ import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.adapter.FriendsRecycleAdapter;
+import dev.ragnarok.fenrir.adapter.OwnersAdapter;
 import dev.ragnarok.fenrir.fragment.base.BaseMvpFragment;
 import dev.ragnarok.fenrir.listener.EndlessRecyclerOnScrollListener;
 import dev.ragnarok.fenrir.listener.PicassoPauseOnScrollListener;
+import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.User;
 import dev.ragnarok.fenrir.model.UsersPart;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.RequestsPresenter;
 import dev.ragnarok.fenrir.mvp.view.IRequestsView;
 import dev.ragnarok.fenrir.place.PlaceFactory;
+import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.MySearchView;
 
@@ -145,6 +150,18 @@ public class RequestsFragment extends BaseMvpFragment<RequestsPresenter, IReques
         if (nonNull(mSwipeRefreshLayout)) {
             mSwipeRefreshLayout.setRefreshing(refreshing);
         }
+    }
+
+    @Override
+    public void showNotRequests(List<Owner> data, int accountId) {
+        OwnersAdapter adapter = new OwnersAdapter(requireActivity(), data);
+        adapter.setClickListener(owner -> PlaceFactory.getOwnerWallPlace(accountId, owner.getOwnerId(), null).tryOpenWith(requireContext()));
+        new MaterialAlertDialogBuilder(requireActivity())
+                .setTitle(requireActivity().getString(R.string.not_request))
+                .setView(Utils.createAlertRecycleFrame(requireActivity(), adapter, null))
+                .setPositiveButton("OK", null)
+                .setCancelable(true)
+                .show();
     }
 
     @Override

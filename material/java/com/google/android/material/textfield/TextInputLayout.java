@@ -81,6 +81,8 @@ import androidx.annotation.VisibleForTesting;
 import androidx.core.content.ContextCompat;
 import androidx.core.text.BidiFormatter;
 import androidx.customview.view.AbsSavedState;
+import androidx.transition.Fade;
+import androidx.transition.TransitionManager;
 import com.google.android.material.animation.AnimationUtils;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.internal.CheckableImageButton;
@@ -182,6 +184,8 @@ public class TextInputLayout extends LinearLayout {
 
   /** Duration for the label's scale up and down animations. */
   private static final int LABEL_SCALE_ANIMATION_DURATION = 167;
+  private static final long PLACEHOLDER_FADE_DURATION = 87;
+  private static final long PLACEHOLDER_START_DELAY = 67;
 
   private static final int INVALID_MAX_LENGTH = -1;
   private static final int NO_WIDTH = -1;
@@ -212,6 +216,8 @@ public class TextInputLayout extends LinearLayout {
   private TextView placeholderTextView;
   @Nullable private ColorStateList placeholderTextColor;
   private int placeholderTextAppearance;
+  @Nullable private Fade placeholderFadeIn;
+  @Nullable private Fade placeholderFadeOut;
 
   @Nullable private ColorStateList counterTextColor;
   @Nullable private ColorStateList counterOverflowTextColor;
@@ -713,19 +719,23 @@ public class TextInputLayout extends LinearLayout {
           (ViewGroup.MarginLayoutParams) endIconView.getLayoutParams();
       MarginLayoutParamsCompat.setMarginStart(lp, 0);
     }
-    endIconDelegates.append(END_ICON_CUSTOM, new CustomEndIconDelegate(this));
+    int endIconDrawableId = a.getResourceId(R.styleable.TextInputLayout_endIconDrawable, 0);
+    endIconDelegates.append(END_ICON_CUSTOM, new CustomEndIconDelegate(this, endIconDrawableId));
     endIconDelegates.append(END_ICON_NONE, new NoEndIconDelegate(this));
-    endIconDelegates.append(END_ICON_PASSWORD_TOGGLE, new PasswordToggleEndIconDelegate(this));
-    endIconDelegates.append(END_ICON_CLEAR_TEXT, new ClearTextEndIconDelegate(this));
-    endIconDelegates.append(END_ICON_DROPDOWN_MENU, new DropdownMenuEndIconDelegate(this));
+    endIconDelegates.append(END_ICON_PASSWORD_TOGGLE,
+        new PasswordToggleEndIconDelegate(
+            this,
+            endIconDrawableId == 0
+                ? a.getResourceId(R.styleable.TextInputLayout_passwordToggleDrawable, 0)
+                : endIconDrawableId));
+    endIconDelegates.append(
+        END_ICON_CLEAR_TEXT, new ClearTextEndIconDelegate(this, endIconDrawableId));
+    endIconDelegates.append(
+        END_ICON_DROPDOWN_MENU, new DropdownMenuEndIconDelegate(this, endIconDrawableId));
     // Set up the end icon if any.
     if (a.hasValue(R.styleable.TextInputLayout_endIconMode)) {
       // Specific defaults depending on which end icon mode is set
       setEndIconMode(a.getInt(R.styleable.TextInputLayout_endIconMode, END_ICON_NONE));
-      // Overwrite default values if user specified any different ones
-      if (a.hasValue(R.styleable.TextInputLayout_endIconDrawable)) {
-        setEndIconDrawable(a.getDrawable(R.styleable.TextInputLayout_endIconDrawable));
-      }
       if (a.hasValue(R.styleable.TextInputLayout_endIconContentDescription)) {
         setEndIconContentDescription(
             a.getText(R.styleable.TextInputLayout_endIconContentDescription));
@@ -736,7 +746,6 @@ public class TextInputLayout extends LinearLayout {
       boolean passwordToggleEnabled =
           a.getBoolean(R.styleable.TextInputLayout_passwordToggleEnabled, false);
       setEndIconMode(passwordToggleEnabled ? END_ICON_PASSWORD_TOGGLE : END_ICON_NONE);
-      setEndIconDrawable(a.getDrawable(R.styleable.TextInputLayout_passwordToggleDrawable));
       setEndIconContentDescription(
           a.getText(R.styleable.TextInputLayout_passwordToggleContentDescription));
       if (a.hasValue(R.styleable.TextInputLayout_passwordToggleTint)) {
@@ -995,8 +1004,7 @@ public class TextInputLayout extends LinearLayout {
               .getDimensionPixelSize(R.dimen.material_filled_edittext_font_2_0_padding_top),
           ViewCompat.getPaddingEnd(editText),
           getResources()
-              .getDimensionPixelSize(
-                  R.dimen.material_filled_edittext_font_2_0_padding_bottom));
+              .getDimensionPixelSize(R.dimen.material_filled_edittext_font_2_0_padding_bottom));
     } else if (MaterialResources.isFontScaleAtLeast1_3(getContext())) {
       ViewCompat.setPaddingRelative(
           editText,
@@ -1594,8 +1602,8 @@ public class TextInputLayout extends LinearLayout {
   }
 
   /**
-   * Sets the maximum width of the text field. The layout will be at most this dimension wide if
-   * its {@code layout_width} is set to {@code wrap_content}.
+   * Sets the maximum width of the text field. The layout will be at most this dimension wide if its
+   * {@code layout_width} is set to {@code wrap_content}.
    *
    * @param maxWidth The maximum width to be set
    * @attr ref com.google.android.material.R.styleable#TextInputLayout_android_maxWidth
@@ -1610,8 +1618,8 @@ public class TextInputLayout extends LinearLayout {
   }
 
   /**
-   * Sets the maximum width of the text field. The layout will be at most this dimension wide if
-   * its {@code layout_width} is set to {@code wrap_content}.
+   * Sets the maximum width of the text field. The layout will be at most this dimension wide if its
+   * {@code layout_width} is set to {@code wrap_content}.
    *
    * @param maxWidthId The id of the maximum width dimension resource to be set
    * @attr ref com.google.android.material.R.styleable#TextInputLayout_android_maxWidth
@@ -2271,6 +2279,11 @@ public class TextInputLayout extends LinearLayout {
       placeholderTextView = new AppCompatTextView(getContext());
       placeholderTextView.setId(R.id.textinput_placeholder);
 
+      placeholderFadeIn = createPlaceholderFadeTransition();
+      placeholderFadeIn.setStartDelay(PLACEHOLDER_START_DELAY);
+
+      placeholderFadeOut = createPlaceholderFadeTransition();
+
       ViewCompat.setAccessibilityLiveRegion(
           placeholderTextView, ViewCompat.ACCESSIBILITY_LIVE_REGION_POLITE);
 
@@ -2282,6 +2295,13 @@ public class TextInputLayout extends LinearLayout {
       placeholderTextView = null;
     }
     this.placeholderEnabled = placeholderEnabled;
+  }
+
+  private Fade createPlaceholderFadeTransition() {
+    Fade placeholderFadeTransition = new Fade();
+    placeholderFadeTransition.setDuration(PLACEHOLDER_FADE_DURATION);
+    placeholderFadeTransition.setInterpolator(AnimationUtils.LINEAR_INTERPOLATOR);
+    return placeholderFadeTransition;
   }
 
   private void updatePlaceholderText() {
@@ -2299,6 +2319,7 @@ public class TextInputLayout extends LinearLayout {
   private void showPlaceholderText() {
     if (placeholderTextView != null && placeholderEnabled) {
       placeholderTextView.setText(placeholderText);
+      TransitionManager.beginDelayedTransition(inputFrame, placeholderFadeIn);
       placeholderTextView.setVisibility(VISIBLE);
       placeholderTextView.bringToFront();
     }
@@ -2307,6 +2328,7 @@ public class TextInputLayout extends LinearLayout {
   private void hidePlaceholderText() {
     if (placeholderTextView != null && placeholderEnabled) {
       placeholderTextView.setText(null);
+      TransitionManager.beginDelayedTransition(inputFrame, placeholderFadeOut);
       placeholderTextView.setVisibility(INVISIBLE);
     }
   }
@@ -2837,7 +2859,7 @@ public class TextInputLayout extends LinearLayout {
       super(source, loader);
       error = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source);
       isEndIconChecked = (source.readInt() == 1);
-      hintText =  TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source);
+      hintText = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source);
       helperText = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source);
       placeholderText = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(source);
     }
@@ -2996,8 +3018,8 @@ public class TextInputLayout extends LinearLayout {
   }
 
   /**
-   * Sets whether the hint should expand to occupy the input area when the text field is
-   * unpopulated and not focused.
+   * Sets whether the hint should expand to occupy the input area when the text field is unpopulated
+   * and not focused.
    *
    * @see #isExpandedHintEnabled()
    * @attr ref com.google.android.material.R.styleable#TextInputLayout_hintExpadedEnabled
@@ -3085,6 +3107,7 @@ public class TextInputLayout extends LinearLayout {
   public void setStartIconDrawable(@Nullable Drawable startIconDrawable) {
     startIconView.setImageDrawable(startIconDrawable);
     if (startIconDrawable != null) {
+      applyStartIconTint();
       setStartIconVisible(true);
       refreshStartIconDrawableState();
     } else {
@@ -3439,7 +3462,10 @@ public class TextInputLayout extends LinearLayout {
    */
   public void setEndIconDrawable(@Nullable Drawable endIconDrawable) {
     endIconView.setImageDrawable(endIconDrawable);
-    refreshEndIconDrawableState();
+    if (endIconDrawable != null) {
+      applyEndIconTint();
+      refreshEndIconDrawableState();
+    }
   }
 
   /**
@@ -4087,7 +4113,7 @@ public class TextInputLayout extends LinearLayout {
     ((CutoutDrawable) boxBackground).setCutout(cutoutBounds);
   }
 
-  /** If stroke changed width, cutout bounds need to be recalculated.  **/
+  /** If stroke changed width, cutout bounds need to be recalculated. **/
   private void updateCutout() {
     if (cutoutEnabled() && !hintExpanded && boxLabelCutoutHeight != boxStrokeWidthPx) {
       closeCutout();

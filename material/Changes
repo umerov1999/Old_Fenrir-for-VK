@@ -2,17 +2,17 @@
 
 
 @Nullable
-  private View getCurrentViewWithVP2(ViewPager2 viewPager) {
-    final int currentItem = viewPager.getCurrentItem();
-    View child = viewPager.getChildAt(0);
-    if (child instanceof RecyclerView) {
-      if(((RecyclerView) child).getLayoutManager() == null)
-        return null;
-      child = ((RecyclerView) child).getLayoutManager().findViewByPosition(currentItem);
-    }
+    private View getCurrentViewFromViewPager2(ViewPager2 viewPager) {
+        int currentItem = viewPager.getCurrentItem();
+        View child = viewPager.getChildAt(0);
+        if (child instanceof RecyclerView) {
+            if (((RecyclerView) child).getLayoutManager() == null)
+                return null;
+            child = ((RecyclerView) child).getLayoutManager().findViewByPosition(currentItem);
+        }
 
-    return child;
-  }
+        return child;
+    }
 
   @Nullable
   @VisibleForTesting
@@ -21,11 +21,10 @@
       return view;
     }
     if (view instanceof ViewPager2) {
-      ViewPager2 viewPager2 = (ViewPager2) view;
-      View currentViewPagerChild = getCurrentViewWithVP2(viewPager2);
-      if (currentViewPagerChild != null) {
-        return findScrollingChild(currentViewPagerChild);
-      }
+        View currentViewPagerChild = getCurrentViewFromViewPager2((ViewPager2) view);
+        if (currentViewPagerChild != null) {
+            return findScrollingChild(currentViewPagerChild);
+        }
     }
     if (view instanceof ViewGroup) {
       ViewGroup group = (ViewGroup) view;

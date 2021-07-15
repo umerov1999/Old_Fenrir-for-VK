@@ -94,6 +94,21 @@
         <item>Мужской</item>
     </string-array>
 
+    <!-- Google Play-->
+    <string name="developer">Разработчик: Умеров Артём</string>
+    <string name="helped_developer">Помогал: Данилюк Дмитрий</string>
+    <string name="first_pagan">Первый языческий</string>
+    <string name="repo">Репозиторий: https://github.com/umerov1999/Fenrir-for-VK</string>
+    <string name="repo_local_server">Репозиторий: https://github.com/umerov1999/FenrirMediaServer/releases</string>
+    <string name="is_donated">Донат на галочку верефикации</string>
+    <string name="is_donated_alert">Не входит в полную версию, видно только в этом клиенте. Стоимость для страницы - %1$d₽, для группы - %2$d₽. Писать на почту разработчика</string>
+    <string name="is_donated_alert_disabled">Возможность отключена</string>
+    <string name="project_dedicated_summary">Проект посвящён Арнольдове Екатерине, https://vk.com/id255645173</string>
+    <string name="project_dedicated">Проект посвящён</string>
+    <string name="go_donate_info">Или Донат на галочку верефикации, но будет привязано только к текущему id страницы</string>
+    <string name="go_donate">Галочка</string>
+    <string name="in_full_version">Доступно в полной версии!</string>
+
     <!-- Dialogs-->
     <string name="dialogs">Диалоги</string>
     <string name="dialog_day_today">Сегодня</string>
@@ -676,16 +691,6 @@
     <string name="avatar_style_title">Стиль аватарок</string>
 
     <string name="save_changes_question">Сохранить изменения ?</string>
-    <string name="developer">Разработчик: Умеров Артём</string>
-    <string name="helped_developer">Помогал: Данилюк Дмитрий</string>
-    <string name="first_pagan">Первый языческий</string>
-    <string name="repo">Репозиторий: https://github.com/umerov1999/Fenrir-for-VK</string>
-    <string name="repo_local_server">Репозиторий: https://github.com/umerov1999/FenrirMediaServer/releases</string>
-    <string name="is_donated">Донат на галочку верефикации</string>
-    <string name="is_donated_alert">Не входит в полную версию, видно только в этом клиенте. Стоимость для страницы - %1$d₽, для группы - %2$d₽. Писать на почту разработчика</string>
-    <string name="is_donated_alert_disabled">Возможность отключена</string>
-    <string name="project_dedicated_summary">Проект посвящён Арнольдове Екатерине, https://vk.com/id255645173</string>
-    <string name="project_dedicated">Проект посвящён</string>
     <string name="comment">Комментарий</string>
     <string name="search">Поиск</string>
     <string name="input">Ввод</string>
@@ -1488,6 +1493,9 @@
     <string name="delete_photo">Удалить Фото</string>
     <string name="not_friend">Больше не друзья:</string>
     <string name="new_friend">Новые друзья:</string>
+    <string name="not_follower">Больше не подписчики:</string>
+    <string name="new_follower">Новые подписчики:</string>
+    <string name="not_request">Больше не подписаны:</string>
     <string name="keyboard">Клавиатура</string>
     <string name="not_friend_show">Больше не друзья</string>
     <string name="not_friend_show_summary">Показывать, кто убрался из друзей</string>
@@ -1496,9 +1504,6 @@
     <string name="do_auto_play_video">Автовыбор качества видео</string>
     <string name="video_not_have_link">У видео нет ссылки</string>
     <string name="change_upload_size">Настройки качества отправки фото</string>
-    <string name="go_donate_info">Или Донат на галочку верефикации, но будет привязано только к текущему id страницы</string>
-    <string name="go_donate">Галочка</string>
-    <string name="in_full_version">Доступно в полной версии!</string>
     <string name="wall_themed">Оформление стены для язычников</string>
     <string name="runes_show">Показывать руны</string>
     <string name="pagan_symbol">Символ</string>
@@ -1518,6 +1523,7 @@
     <string name="registration_date">Дата регистрации</string>
     <string name="not_permitted">Разрешения не предоставлены! Функция не доступна</string>
     <string name="dialog_send_helper">Переслать можно свайпом диалога</string>
+    <string name="playlist_helper">Добавлять аудио можно только в свои плейлисты (лонгклик по плейлисту)</string>
     <string name="language_ui">Язык</string>
     <string name="please_wait_internal">Пожалуйста, подождите…</string>
     <string name="end_list_anim">Анимация \"конец списка\"</string>
@@ -1601,4 +1607,5 @@
     <string name="player_cover_transform">Анимация свайпа обложки плеера</string>
     <string name="is_side_no_stroke">Отключить контур в боковом меню</string>
     <string name="headers_in_dialog">Заголовок даты в диалоге</string>
+    <string name="push_first">Поместить в начало</string>
 </resources>
