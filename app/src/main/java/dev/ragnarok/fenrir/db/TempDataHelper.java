@@ -1,13 +1,13 @@
 package dev.ragnarok.fenrir.db;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
 import dev.ragnarok.fenrir.db.column.TempDataColumns;
-
-import static dev.ragnarok.fenrir.util.Objects.isNull;
 
 
 public class TempDataHelper extends SQLiteOpenHelper {

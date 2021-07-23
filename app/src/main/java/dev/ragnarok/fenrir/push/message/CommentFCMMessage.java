@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.push.message;
 
+import static dev.ragnarok.fenrir.push.NotificationUtils.configOtherPushNotification;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -26,8 +28,6 @@ import dev.ragnarok.fenrir.push.OwnerInfo;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
-
-import static dev.ragnarok.fenrir.push.NotificationUtils.configOtherPushNotification;
 
 public class CommentFCMMessage {
 

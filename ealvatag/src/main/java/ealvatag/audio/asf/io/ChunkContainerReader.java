@@ -1,5 +1,7 @@
 package ealvatag.audio.asf.io;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -16,8 +18,6 @@ import ealvatag.audio.asf.util.Utils;
 import ealvatag.logging.EalvaTagLog;
 import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
 
 /**
  * This class represents a reader implementation, which is able to read ASF

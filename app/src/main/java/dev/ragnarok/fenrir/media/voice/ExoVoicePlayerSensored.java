@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.media.voice;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -33,9 +36,6 @@ import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Logger;
 import dev.ragnarok.fenrir.util.Optional;
 import dev.ragnarok.fenrir.util.Utils;
-
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class ExoVoicePlayerSensored implements IVoicePlayer, SensorEventListener {
 
@@ -250,9 +250,9 @@ public class ExoVoicePlayerSensored implements IVoicePlayer, SensorEventListener
 
     private long getDuration() {
         if (isNull(playingEntry) || isNull(playingEntry.getAudio()) || playingEntry.getAudio().getDuration() == 0) {
-            return Math.max(exoPlayer.getDuration(), 1);
+            return Math.max(exoPlayer.getDuration(), 1L);
         }
-        return playingEntry.getAudio().getDuration() * 1000;
+        return playingEntry.getAudio().getDuration() * 1000L;
     }
 
     @Override

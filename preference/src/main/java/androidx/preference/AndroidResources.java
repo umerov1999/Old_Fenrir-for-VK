@@ -16,11 +16,11 @@
 
 package androidx.preference;
 
+import static androidx.annotation.RestrictTo.Scope.LIBRARY;
+
 import android.annotation.SuppressLint;
 
 import androidx.annotation.RestrictTo;
-
-import static androidx.annotation.RestrictTo.Scope.LIBRARY;
 
 /**
  * Utility class for attributes unavailable on older APIs

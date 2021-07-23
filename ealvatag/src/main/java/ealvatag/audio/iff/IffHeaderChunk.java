@@ -1,5 +1,7 @@
 package ealvatag.audio.iff;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
@@ -7,8 +9,6 @@ import ealvatag.audio.Utils;
 import ealvatag.logging.EalvaTagLog;
 import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
 
 /**
  * Common to all IFF formats such as Wav and Aiff

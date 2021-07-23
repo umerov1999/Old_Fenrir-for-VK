@@ -273,9 +273,9 @@
 
     <string name="general_settings">Commons</string>
     <string name="about_settings">About application</string>
-    <string name="account_cache_cleaner">Clear cache for this account</string>
-    <string name="picture_cache_cleaner">Clear image cache</string>
-    <string name="ui_cache_cleaner">Clear UI cache</string>
+    <string name="account_cache_cleaner">Clear cache and sql</string>
+    <string name="cache_cleaner">Clear cache</string>
+    <string name="ui_cache_cleaner">Clear only UI</string>
     <!-- Quick Reply-->
     <string name="go_to_dialog">To dialog</string>
     <string name="send">Send</string>
@@ -1787,6 +1787,7 @@
     <string name="video_controller_to_decor">Video controller to decor view</string>
     <string name="video_swipes">Enable video swipes</string>
     <string name="extra_debug">Extra Debug</string>
+    <string name="dump_fcm">Debug firebase</string>
     <string name="kate_gms_token">Kate GMS Token</string>
     <string name="need_restart">Restart required</string>
     <string name="enable_native">Enable native libraries</string>
@@ -1820,4 +1821,5 @@
     <string name="is_side_no_stroke">Is side no stroke</string>
     <string name="headers_in_dialog">Date header in dialog</string>
     <string name="push_first">Move to first</string>
+    <string name="revert_play_audio">Play button - menu</string>
 </resources>

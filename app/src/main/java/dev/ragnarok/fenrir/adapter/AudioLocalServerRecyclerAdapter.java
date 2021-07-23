@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.adapter;
 
+import static dev.ragnarok.fenrir.player.MusicPlaybackController.observeServiceBinding;
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -54,9 +57,6 @@ import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleOnSubscribe;
 import io.reactivex.rxjava3.disposables.Disposable;
-
-import static dev.ragnarok.fenrir.player.MusicPlaybackController.observeServiceBinding;
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
 
 public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioLocalServerRecyclerAdapter.AudioHolder> {
 
@@ -134,6 +134,118 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
         }
     }
 
+    private void doMenu(AudioHolder holder, int position, View view, Audio audio) {
+        ModalBottomSheetDialogFragment.Builder menus = new ModalBottomSheetDialogFragment.Builder();
+
+        menus.add(new OptionRequest(AudioItem.save_item_audio, mContext.getString(R.string.download), R.drawable.save));
+        menus.add(new OptionRequest(AudioItem.play_item_audio, mContext.getString(R.string.play), R.drawable.play));
+        if (MusicPlaybackController.canPlayAfterCurrent(audio)) {
+            menus.add(new OptionRequest(AudioItem.play_item_after_current_audio, mContext.getString(R.string.play_audio_after_current), R.drawable.play_next));
+        }
+        menus.add(new OptionRequest(AudioItem.bitrate_item_audio, mContext.getString(R.string.get_bitrate), R.drawable.high_quality));
+        menus.add(new OptionRequest(AudioItem.add_item_audio, mContext.getString(R.string.delete), R.drawable.ic_outline_delete));
+        menus.add(new OptionRequest(AudioItem.edit_track, mContext.getString(R.string.update_time), R.drawable.ic_recent));
+        menus.add(new OptionRequest(AudioItem.goto_artist, mContext.getString(R.string.edit), R.drawable.about_writed));
+
+        menus.header(firstNonEmptyString(audio.getArtist(), " ") + " - " + audio.getTitle(), R.drawable.song, audio.getThumb_image_little());
+        menus.columns(2);
+        menus.show(((FragmentActivity) mContext).getSupportFragmentManager(), "audio_options", option -> {
+            switch (option.getId()) {
+                case AudioItem.save_item_audio:
+                    if (!AppPerms.hasReadWriteStoragePermission(mContext)) {
+                        if (mClickListener != null) {
+                            mClickListener.onRequestWritePermissions();
+                        }
+                        break;
+                    }
+                    holder.saved.setVisibility(View.VISIBLE);
+                    holder.saved.setImageResource(R.drawable.save);
+                    Utils.setColorFilter(holder.saved, CurrentTheme.getColorPrimary(mContext));
+                    int ret = DownloadWorkUtils.doDownloadAudio(mContext, audio, Settings.get().accounts().getCurrent(), false, true);
+                    if (ret == 0)
+                        CustomToast.CreateCustomToast(mContext).showToastBottom(R.string.saved_audio);
+                    else if (ret == 1 || ret == 2) {
+                        Utils.ThemedSnack(view, ret == 1 ? R.string.audio_force_download : R.string.audio_force_download_pc, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.button_yes,
+                                v1 -> DownloadWorkUtils.doDownloadAudio(mContext, audio, Settings.get().accounts().getCurrent(), true, true)).show();
+                    } else {
+                        holder.saved.setVisibility(View.GONE);
+                        CustomToast.CreateCustomToast(mContext).showToastBottom(R.string.error_audio);
+                    }
+                    break;
+                case AudioItem.play_item_audio:
+                    if (mClickListener != null) {
+                        mClickListener.onClick(position, audio);
+                        if (Settings.get().other().isShow_mini_player())
+                            PlaceFactory.getPlayerPlace(Settings.get().accounts().getCurrent()).tryOpenWith(mContext);
+                    }
+                    break;
+                case AudioItem.play_item_after_current_audio:
+                    MusicPlaybackController.playAfterCurrent(audio);
+                    break;
+                case AudioItem.bitrate_item_audio:
+                    getBitrate(audio.getUrl(), audio.getDuration());
+                    break;
+                case AudioItem.edit_track:
+                    String hash = VkLinkParser.parseLocalServerURL(audio.getUrl());
+                    if (Utils.isEmpty(hash)) {
+                        break;
+                    }
+                    audioListDisposable = mAudioInteractor.update_time(hash).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> CustomToast.CreateCustomToast(mContext).showToast(R.string.success), t -> Utils.showErrorInAdapter((Activity) mContext, t));
+                    break;
+                case AudioItem.goto_artist:
+                    String hash2 = VkLinkParser.parseLocalServerURL(audio.getUrl());
+                    if (Utils.isEmpty(hash2)) {
+                        break;
+                    }
+                    audioListDisposable = mAudioInteractor.get_file_name(hash2).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> {
+                        View root = View.inflate(mContext, R.layout.entry_file_name, null);
+                        ((TextInputEditText) root.findViewById(R.id.edit_file_name)).setText(t);
+                        new MaterialAlertDialogBuilder(mContext)
+                                .setTitle(R.string.change_name)
+                                .setCancelable(true)
+                                .setView(root)
+                                .setPositiveButton(R.string.button_ok, (dialog, which) -> audioListDisposable = mAudioInteractor.update_file_name(hash2, ((TextInputEditText) root.findViewById(R.id.edit_file_name)).getText().toString().trim())
+                                        .compose(RxUtils.applySingleIOToMainSchedulers())
+                                        .subscribe(t1 -> CustomToast.CreateCustomToast(mContext).showToast(R.string.success), o -> Utils.showErrorInAdapter((Activity) mContext, o)))
+                                .setNegativeButton(R.string.button_cancel, null)
+                                .show();
+                    }, t -> Utils.showErrorInAdapter((Activity) mContext, t));
+                    break;
+                case AudioItem.add_item_audio:
+                    new MaterialAlertDialogBuilder(mContext)
+                            .setMessage(R.string.do_delete)
+                            .setTitle(R.string.confirmation)
+                            .setCancelable(true)
+                            .setPositiveButton(R.string.button_yes, (dialog, which) -> {
+                                String hash1 = VkLinkParser.parseLocalServerURL(audio.getUrl());
+                                if (Utils.isEmpty(hash1)) {
+                                    return;
+                                }
+                                audioListDisposable = mAudioInteractor.delete_media(hash1).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> CustomToast.CreateCustomToast(mContext).showToast(R.string.success), o -> Utils.showErrorInAdapter((Activity) mContext, o));
+                            })
+                            .setNegativeButton(R.string.button_cancel, null)
+                            .show();
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
+
+    private void doPlay(int position, Audio audio) {
+        if (MusicPlaybackController.isNowPlayingOrPreparingOrPaused(audio)) {
+            if (!Settings.get().other().isUse_stop_audio()) {
+                MusicPlaybackController.playOrPause();
+            } else {
+                MusicPlaybackController.stop();
+            }
+        } else {
+            if (mClickListener != null) {
+                mClickListener.onClick(position, audio);
+            }
+        }
+    }
+
     @NonNull
     @Override
     public AudioHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -197,16 +309,10 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
         });
 
         holder.play.setOnClickListener(v -> {
-            if (MusicPlaybackController.isNowPlayingOrPreparingOrPaused(audio)) {
-                if (!Settings.get().other().isUse_stop_audio()) {
-                    MusicPlaybackController.playOrPause();
-                } else {
-                    MusicPlaybackController.stop();
-                }
+            if (Settings.get().main().isRevert_play_audio()) {
+                doMenu(holder, position, v, audio);
             } else {
-                if (mClickListener != null) {
-                    mClickListener.onClick(position, audio);
-                }
+                doPlay(position, audio);
             }
         });
 
@@ -236,102 +342,11 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
         holder.Track.setOnClickListener(view -> {
             holder.cancelSelectionAnimation();
             holder.startSomeAnimation();
-
-            ModalBottomSheetDialogFragment.Builder menus = new ModalBottomSheetDialogFragment.Builder();
-
-            menus.add(new OptionRequest(AudioItem.save_item_audio, mContext.getString(R.string.download), R.drawable.save));
-            menus.add(new OptionRequest(AudioItem.play_item_audio, mContext.getString(R.string.play), R.drawable.play));
-            if (MusicPlaybackController.canPlayAfterCurrent(audio)) {
-                menus.add(new OptionRequest(AudioItem.play_item_after_current_audio, mContext.getString(R.string.play_audio_after_current), R.drawable.play_next));
+            if (Settings.get().main().isRevert_play_audio()) {
+                doPlay(position, audio);
+            } else {
+                doMenu(holder, position, view, audio);
             }
-            menus.add(new OptionRequest(AudioItem.bitrate_item_audio, mContext.getString(R.string.get_bitrate), R.drawable.high_quality));
-            menus.add(new OptionRequest(AudioItem.add_item_audio, mContext.getString(R.string.delete), R.drawable.ic_outline_delete));
-            menus.add(new OptionRequest(AudioItem.edit_track, mContext.getString(R.string.update_time), R.drawable.ic_recent));
-            menus.add(new OptionRequest(AudioItem.goto_artist, mContext.getString(R.string.edit), R.drawable.about_writed));
-
-            menus.header(firstNonEmptyString(audio.getArtist(), " ") + " - " + audio.getTitle(), R.drawable.song, audio.getThumb_image_little());
-            menus.columns(2);
-            menus.show(((FragmentActivity) mContext).getSupportFragmentManager(), "audio_options", option -> {
-                switch (option.getId()) {
-                    case AudioItem.save_item_audio:
-                        if (!AppPerms.hasReadWriteStoragePermission(mContext)) {
-                            if (mClickListener != null) {
-                                mClickListener.onRequestWritePermissions();
-                            }
-                            break;
-                        }
-                        holder.saved.setVisibility(View.VISIBLE);
-                        holder.saved.setImageResource(R.drawable.save);
-                        Utils.setColorFilter(holder.saved, CurrentTheme.getColorPrimary(mContext));
-                        int ret = DownloadWorkUtils.doDownloadAudio(mContext, audio, Settings.get().accounts().getCurrent(), false, true);
-                        if (ret == 0)
-                            CustomToast.CreateCustomToast(mContext).showToastBottom(R.string.saved_audio);
-                        else if (ret == 1 || ret == 2) {
-                            Utils.ThemedSnack(view, ret == 1 ? R.string.audio_force_download : R.string.audio_force_download_pc, BaseTransientBottomBar.LENGTH_LONG).setAction(R.string.button_yes,
-                                    v1 -> DownloadWorkUtils.doDownloadAudio(mContext, audio, Settings.get().accounts().getCurrent(), true, true)).show();
-                        } else {
-                            holder.saved.setVisibility(View.GONE);
-                            CustomToast.CreateCustomToast(mContext).showToastBottom(R.string.error_audio);
-                        }
-                        break;
-                    case AudioItem.play_item_audio:
-                        if (mClickListener != null) {
-                            mClickListener.onClick(position, audio);
-                            if (Settings.get().other().isShow_mini_player())
-                                PlaceFactory.getPlayerPlace(Settings.get().accounts().getCurrent()).tryOpenWith(mContext);
-                        }
-                        break;
-                    case AudioItem.play_item_after_current_audio:
-                        MusicPlaybackController.playAfterCurrent(audio);
-                        break;
-                    case AudioItem.bitrate_item_audio:
-                        getBitrate(audio.getUrl(), audio.getDuration());
-                        break;
-                    case AudioItem.edit_track:
-                        String hash = VkLinkParser.parseLocalServerURL(audio.getUrl());
-                        if (Utils.isEmpty(hash)) {
-                            break;
-                        }
-                        audioListDisposable = mAudioInteractor.update_time(hash).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> CustomToast.CreateCustomToast(mContext).showToast(R.string.success), t -> Utils.showErrorInAdapter((Activity) mContext, t));
-                        break;
-                    case AudioItem.goto_artist:
-                        String hash2 = VkLinkParser.parseLocalServerURL(audio.getUrl());
-                        if (Utils.isEmpty(hash2)) {
-                            break;
-                        }
-                        audioListDisposable = mAudioInteractor.get_file_name(hash2).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> {
-                            View root = View.inflate(mContext, R.layout.entry_file_name, null);
-                            ((TextInputEditText) root.findViewById(R.id.edit_file_name)).setText(t);
-                            new MaterialAlertDialogBuilder(mContext)
-                                    .setTitle(R.string.change_name)
-                                    .setCancelable(true)
-                                    .setView(root)
-                                    .setPositiveButton(R.string.button_ok, (dialog, which) -> audioListDisposable = mAudioInteractor.update_file_name(hash2, ((TextInputEditText) root.findViewById(R.id.edit_file_name)).getText().toString().trim())
-                                            .compose(RxUtils.applySingleIOToMainSchedulers())
-                                            .subscribe(t1 -> CustomToast.CreateCustomToast(mContext).showToast(R.string.success), o -> Utils.showErrorInAdapter((Activity) mContext, o)))
-                                    .setNegativeButton(R.string.button_cancel, null)
-                                    .show();
-                        }, t -> Utils.showErrorInAdapter((Activity) mContext, t));
-                        break;
-                    case AudioItem.add_item_audio:
-                        new MaterialAlertDialogBuilder(mContext)
-                                .setMessage(R.string.do_delete)
-                                .setTitle(R.string.confirmation)
-                                .setCancelable(true)
-                                .setPositiveButton(R.string.button_yes, (dialog, which) -> {
-                                    String hash1 = VkLinkParser.parseLocalServerURL(audio.getUrl());
-                                    if (Utils.isEmpty(hash1)) {
-                                        return;
-                                    }
-                                    audioListDisposable = mAudioInteractor.delete_media(hash1).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> CustomToast.CreateCustomToast(mContext).showToast(R.string.success), o -> Utils.showErrorInAdapter((Activity) mContext, o));
-                                })
-                                .setNegativeButton(R.string.button_cancel, null)
-                                .show();
-                        break;
-                    default:
-                        break;
-                }
-            });
         });
     }
 

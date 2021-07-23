@@ -1,14 +1,5 @@
 package dev.ragnarok.fenrir.settings;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
-import androidx.preference.PreferenceManager;
-
-import dev.ragnarok.fenrir.model.SideSwitchableCategory;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.subjects.PublishSubject;
-
 import static dev.ragnarok.fenrir.model.SideSwitchableCategory.BOOKMARKS;
 import static dev.ragnarok.fenrir.model.SideSwitchableCategory.DIALOGS;
 import static dev.ragnarok.fenrir.model.SideSwitchableCategory.DOCS;
@@ -22,6 +13,15 @@ import static dev.ragnarok.fenrir.model.SideSwitchableCategory.PHOTOS;
 import static dev.ragnarok.fenrir.model.SideSwitchableCategory.SEARCH;
 import static dev.ragnarok.fenrir.model.SideSwitchableCategory.VIDEOS;
 import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import androidx.preference.PreferenceManager;
+
+import dev.ragnarok.fenrir.model.SideSwitchableCategory;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.PublishSubject;
 
 class SideDrawerSettings implements ISettings.ISideDrawerSettings {
 

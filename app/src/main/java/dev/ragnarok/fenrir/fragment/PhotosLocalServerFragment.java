@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,8 +39,6 @@ import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.MySearchView;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class PhotosLocalServerFragment extends BaseMvpFragment<PhotosLocalServerPresenter, IPhotosLocalServerView>
         implements MySearchView.OnQueryTextListener, LocalServerPhotosAdapter.PhotoSelectionListener, IPhotosLocalServerView {

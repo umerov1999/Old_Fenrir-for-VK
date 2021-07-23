@@ -16,6 +16,8 @@
 
 package androidx.preference;
 
+import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX;
+
 import android.os.Bundle;
 import android.view.View;
 
@@ -25,8 +27,6 @@ import androidx.core.view.AccessibilityDelegateCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerViewAccessibilityDelegate;
-
-import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX;
 
 /**
  * The accessibility delegate used by the {@link RecyclerView} that displays views for

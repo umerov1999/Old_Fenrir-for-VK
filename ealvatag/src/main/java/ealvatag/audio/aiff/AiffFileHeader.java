@@ -1,5 +1,12 @@
 package ealvatag.audio.aiff;
 
+import static java.nio.ByteOrder.BIG_ENDIAN;
+import static ealvatag.audio.aiff.AiffType.AIFC;
+import static ealvatag.audio.aiff.AiffType.AIFF;
+import static ealvatag.audio.iff.IffHeaderChunk.HEADER_LENGTH;
+import static ealvatag.audio.iff.IffHeaderChunk.TYPE_LENGTH;
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -9,13 +16,6 @@ import ealvatag.audio.exceptions.CannotReadException;
 import ealvatag.logging.EalvaTagLog;
 import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
-
-import static ealvatag.audio.aiff.AiffType.AIFC;
-import static ealvatag.audio.aiff.AiffType.AIFF;
-import static ealvatag.audio.iff.IffHeaderChunk.HEADER_LENGTH;
-import static ealvatag.audio.iff.IffHeaderChunk.TYPE_LENGTH;
-import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
-import static java.nio.ByteOrder.BIG_ENDIAN;
 
 /**
  * <p>

@@ -25,8 +25,8 @@ public class Constants {
     public static final String AUTH_VERSION = DEFAULT_ACCOUNT_TYPE == Account_Types.KATE ? API_VERSION : "5.122";
     public static final String FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".file_provider";
 
-    public static final String VK_ANDROID_APP_VERSION_NAME = "6.45";
-    public static final String VK_ANDROID_APP_VERSION_CODE = "8572";
+    public static final String VK_ANDROID_APP_VERSION_NAME = "6.46";
+    public static final String VK_ANDROID_APP_VERSION_CODE = "8666";
     public static final String KATE_APP_VERSION_NAME = "76 lite";
     public static final String KATE_APP_VERSION_CODE = "495";
     public static final String KATE_RECEIPT_GMS_TOKEN = BuildConfig.KATE_RECEIPT_GMS_TOKEN;

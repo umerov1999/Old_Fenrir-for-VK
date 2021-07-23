@@ -1,5 +1,9 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.isLandscape;
+
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -69,10 +73,7 @@ import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.LoadMoreFooterHelper;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.isLandscape;
+import dev.ragnarok.fenrir.view.natives.video.AnimatedShapeableImageView;
 
 public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPresenter<V>>
         extends PlaceSupportMvpFragment<P, V> implements IWallView, WallAdapter.ClickListener, WallAdapter.NonPublishedPostActionListener {
@@ -144,7 +145,7 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
         view.setEnabled(count > 0);
     }
 
-    protected void setupPaganContent(@NonNull View Runes, @NonNull RLottieImageView paganSymbol) {
+    protected void setupPaganContent(@NonNull View Runes, @NonNull RLottieImageView paganSymbol, @NonNull AnimatedShapeableImageView paganVideo) {
         Runes.setVisibility(Settings.get().other().isRunes_show() ? View.VISIBLE : View.GONE);
         int symbol = Settings.get().other().getPaganSymbol();
         paganSymbol.setVisibility(symbol != 0 ? View.VISIBLE : View.GONE);

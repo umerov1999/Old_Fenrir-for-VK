@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 import android.Manifest;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -46,9 +49,6 @@ import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.CircleCounterButton;
 import dev.ragnarok.fenrir.view.TouchImageView;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class DocPreviewFragment extends BaseFragment implements View.OnClickListener {
 

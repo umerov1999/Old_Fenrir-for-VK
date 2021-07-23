@@ -18,6 +18,7 @@ public class AppNotificationChannels {
     public static final String AUDIO_CHANNEL_ID = "audio_channel";
     public static final String COMMENTS_CHANNEL_ID = "comments_channel";
     public static final String NEW_POST_CHANNEL_ID = "new_post_channel";
+    public static final String MENTION_CHANNEL_ID = "mention_channel";
     public static final String DOWNLOAD_CHANNEL_ID = "download_channel";
     public static final String GROUP_INVITES_CHANNEL_ID = "group_invites_channel";
     public static final String FRIEND_REQUESTS_CHANNEL_ID = "friend_requests_channel";
@@ -92,6 +93,15 @@ public class AppNotificationChannels {
     public static NotificationChannel getNewPostChannel(Context context) {
         String channelName = context.getString(R.string.new_posts_channel);
         NotificationChannel channel = new NotificationChannel(NEW_POST_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_LOW);
+        channel.enableLights(true);
+        channel.enableVibration(true);
+        return channel;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static NotificationChannel getMentionChannel(Context context) {
+        String channelName = context.getString(R.string.mentions);
+        NotificationChannel channel = new NotificationChannel(MENTION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_LOW);
         channel.enableLights(true);
         channel.enableVibration(true);
         return channel;

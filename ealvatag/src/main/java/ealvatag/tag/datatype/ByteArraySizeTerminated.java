@@ -20,13 +20,13 @@
  */
 package ealvatag.tag.datatype;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+
 import java.io.EOFException;
 
 import ealvatag.tag.InvalidDataTypeException;
 import ealvatag.tag.id3.AbstractTagFrameBody;
 import okio.Buffer;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
 
 /**
  * Represents a stream of bytes, continuing until the end of the buffer. Usually used for binary data or where

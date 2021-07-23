@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.adapter;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,9 +19,6 @@ import dev.ragnarok.fenrir.adapter.base.RecyclerBindableAdapter;
 import dev.ragnarok.fenrir.model.Document;
 import dev.ragnarok.fenrir.model.PhotoSize;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class DocsAsImagesAdapter extends RecyclerBindableAdapter<Document, DocsAsImagesAdapter.DocViewHolder> {
 

@@ -18,6 +18,9 @@
  */
 package ealvatag.audio.ogg.util;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -32,9 +35,6 @@ import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.logging.ErrorMessage;
 import ealvatag.tag.id3.AbstractID3v2Tag;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 
 /**

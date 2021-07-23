@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir;
 
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 
@@ -8,8 +10,8 @@ import androidx.annotation.WorkerThread;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-
-import java.util.Map;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import dev.ragnarok.fenrir.longpoll.NotificationHelper;
 import dev.ragnarok.fenrir.push.IPushRegistrationResolver;
@@ -21,6 +23,7 @@ import dev.ragnarok.fenrir.push.message.FriendAcceptedFCMMessage;
 import dev.ragnarok.fenrir.push.message.FriendFCMMessage;
 import dev.ragnarok.fenrir.push.message.GroupInviteFCMMessage;
 import dev.ragnarok.fenrir.push.message.LikeFCMMessage;
+import dev.ragnarok.fenrir.push.message.MentionMessage;
 import dev.ragnarok.fenrir.push.message.NewPostPushMessage;
 import dev.ragnarok.fenrir.push.message.ReplyFCMMessage;
 import dev.ragnarok.fenrir.push.message.WallPostFCMMessage;
@@ -30,8 +33,6 @@ import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Logger;
 import dev.ragnarok.fenrir.util.PersistentLogger;
 import dev.ragnarok.fenrir.util.RxUtils;
-
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 
 public class FcmListenerService extends FirebaseMessagingService {
 
@@ -70,23 +71,18 @@ public class FcmListenerService extends FirebaseMessagingService {
             return;
         }
 
-        if (Constants.IS_DEBUG) {
-            Logger.d(TAG, "onMessage, from: " + message.getFrom() + ", pushType: " + pushType + ", data: " + message.getData());
-            StringBuilder bundleDump = new StringBuilder();
-            for (Map.Entry<String, String> entry : message.getData().entrySet()) {
-                try {
-                    String line = "key: " + entry.getKey() + ", value: " + entry.getValue() + ", class: " + (entry.getValue() == null ? "null" : entry.getValue().getClass());
-                    Logger.d(TAG, line);
-                    bundleDump.append("\n").append(line);
-                } catch (Exception ignored) {
-                }
+        if (Settings.get().other().isDump_fcm() && !PushType.ERASE.equals(pushType)) {
+            Gson gson = new GsonBuilder()
+                    .setPrettyPrinting()
+                    .create();
+            if (Constants.IS_DEBUG) {
+                Logger.d(TAG, "onMessage, from: " + message.getFrom() + ", pushType: " + pushType + ", data: " + gson.toJson(message.getData()));
             }
-            PersistentLogger.logThrowable("Push received", new Exception("Found Push event, key: " + pushType + ", dump: " + bundleDump));
+            PersistentLogger.logThrowable("Push received", new Exception("Key: " + pushType + ", Dump: " + gson.toJson(message.getData())));
         }
 
         try {
             switch (pushType) {
-                case PushType.VALIDATE_DEVICE:
                 case PushType.MSG:
                 case PushType.CHAT:
                     FCMMessage.fromRemoteMessage(message).notify(context, accountId);
@@ -121,8 +117,14 @@ public class FcmListenerService extends FirebaseMessagingService {
                 case PushType.BIRTHDAY:
                     BirthdayFCMMessage.fromRemoteMessage(message).notify(context, accountId);
                     break;
+                case PushType.VALIDATE_DEVICE:
+                    NotificationHelper.showSimpleNotification(context, message.getData().get("body"), message.getData().get("title"), null, message.getData().get("url"));
+                    break;
                 case PushType.SHOW_MESSAGE:
-                    NotificationHelper.showSimpleNotification(context, message.getData().get("body"), message.getData().get("title"), null);
+                    NotificationHelper.showSimpleNotification(context, message.getData().get("body"), message.getData().get("title"), null, null);
+                    break;
+                case PushType.MENTION:
+                    MentionMessage.fromRemoteMessage(message).notify(context, accountId);
                     break;
                 default:
                     break;

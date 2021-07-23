@@ -1,5 +1,10 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -71,12 +76,8 @@ import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.OnlineView;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
+import dev.ragnarok.fenrir.view.natives.video.AnimatedShapeableImageView;
 import me.minetsh.imaging.IMGEditActivity;
-
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPresenter>
         implements IUserWallView {
@@ -312,7 +313,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
     protected void onHeaderInflated(View headerRootView) {
         mHeaderHolder = new UserHeaderHolder(headerRootView);
         mHeaderHolder.ivAvatar.setOnClickListener(v -> callPresenter(UserWallPresenter::fireAvatarClick));
-        setupPaganContent(mHeaderHolder.Runes, mHeaderHolder.paganSymbol);
+        setupPaganContent(mHeaderHolder.Runes, mHeaderHolder.paganSymbol, mHeaderHolder.paganVideo);
     }
 
     @NonNull
@@ -554,6 +555,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
         final RLottieImageView bDonate;
 
         final RLottieImageView paganSymbol;
+        final AnimatedShapeableImageView paganVideo;
         final View Runes;
 
         final HorizontalOptionsAdapter<PostFilter> mPostFilterAdapter;
@@ -580,6 +582,7 @@ public class UserWallFragment extends AbsWallFragment<IUserWallView, UserWallPre
             fabMoreInfo = root.findViewById(R.id.info_btn);
             bPrimaryAction = root.findViewById(R.id.subscribe_btn);
             paganSymbol = root.findViewById(R.id.pagan_symbol);
+            paganVideo = root.findViewById(R.id.pagan_video);
             Runes = root.findViewById(R.id.runes_container);
             ivVerified = root.findViewById(R.id.item_verified);
             bDonate = root.findViewById(R.id.donated_anim);

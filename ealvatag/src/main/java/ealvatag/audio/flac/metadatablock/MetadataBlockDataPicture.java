@@ -1,5 +1,7 @@
 package ealvatag.audio.flac.metadatablock;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -16,8 +18,6 @@ import ealvatag.tag.InvalidFrameException;
 import ealvatag.tag.TagField;
 import ealvatag.tag.reference.PictureTypes;
 import ealvatag.utils.StandardCharsets;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
 
 /**
  * Picture Block

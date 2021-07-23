@@ -123,7 +123,7 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
   /** The bottom sheet is hidden. */
   public static final int STATE_HIDDEN = 5;
 
-  /** The bottom sheet is half-expanded (used when mFitToContents is false). */
+  /** The bottom sheet is half-expanded (used when fitToContents is false). */
   public static final int STATE_HALF_EXPANDED = 6;
 
   /** @hide */
@@ -572,7 +572,7 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
     if (state == STATE_DRAGGING && action == MotionEvent.ACTION_DOWN) {
       return true;
     }
-    if (viewDragHelper != null) {
+    if (shouldHandleDraggingWithHelper()) {
       viewDragHelper.processTouchEvent(event);
     }
     // Record the velocity
@@ -585,7 +585,7 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
     velocityTracker.addMovement(event);
     // The ViewDragHelper tries to capture only the top-most View. We have to explicitly tell it
     // to capture the bottom sheet in case it is not captured and the touch slop is passed.
-    if (viewDragHelper != null && action == MotionEvent.ACTION_MOVE && !ignoreEvents) {
+    if (shouldHandleDraggingWithHelper() && action == MotionEvent.ACTION_MOVE && !ignoreEvents) {
       if (Math.abs(initialY - event.getY()) > viewDragHelper.getTouchSlop()) {
         viewDragHelper.captureChildView(child, event.getPointerId(event.getActionIndex()));
       }
@@ -1390,6 +1390,12 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
       }
     }
     return null;
+  }
+
+  private boolean shouldHandleDraggingWithHelper() {
+    // If it's not draggable, do not forward events to viewDragHelper; however, if it's already
+    // dragging, let it finish.
+    return viewDragHelper != null && (draggable || state == STATE_DRAGGING);
   }
 
   private void createMaterialShapeDrawable(

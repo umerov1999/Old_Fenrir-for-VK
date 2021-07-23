@@ -1,5 +1,7 @@
 package ealvatag.tag.id3;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
@@ -8,8 +10,6 @@ import ealvatag.audio.mp3.MPEGFrameHeader;
 import ealvatag.logging.EalvaTagLog;
 import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
 
 /**
  * Performs unsynchronization and synchronization tasks on a buffer.

@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.crypt;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -51,9 +54,6 @@ import dev.ragnarok.fenrir.util.Unixtime;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class KeyExchangeService extends Service {
 

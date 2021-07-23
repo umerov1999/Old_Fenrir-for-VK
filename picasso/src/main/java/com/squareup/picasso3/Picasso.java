@@ -15,6 +15,20 @@
  */
 package com.squareup.picasso3;
 
+import static com.squareup.picasso3.Dispatcher.HUNTER_COMPLETE;
+import static com.squareup.picasso3.Dispatcher.REQUEST_BATCH_RESUME;
+import static com.squareup.picasso3.MemoryPolicy.shouldReadFromMemoryCache;
+import static com.squareup.picasso3.Picasso.LoadedFrom.MEMORY;
+import static com.squareup.picasso3.Utils.OWNER_MAIN;
+import static com.squareup.picasso3.Utils.VERB_COMPLETED;
+import static com.squareup.picasso3.Utils.VERB_ERRORED;
+import static com.squareup.picasso3.Utils.VERB_RESUMED;
+import static com.squareup.picasso3.Utils.calculateDiskCacheSize;
+import static com.squareup.picasso3.Utils.checkMain;
+import static com.squareup.picasso3.Utils.checkNotNull;
+import static com.squareup.picasso3.Utils.createDefaultCacheDir;
+import static com.squareup.picasso3.Utils.log;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
@@ -50,20 +64,6 @@ import java.util.concurrent.ThreadFactory;
 
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
-
-import static com.squareup.picasso3.Dispatcher.HUNTER_COMPLETE;
-import static com.squareup.picasso3.Dispatcher.REQUEST_BATCH_RESUME;
-import static com.squareup.picasso3.MemoryPolicy.shouldReadFromMemoryCache;
-import static com.squareup.picasso3.Picasso.LoadedFrom.MEMORY;
-import static com.squareup.picasso3.Utils.OWNER_MAIN;
-import static com.squareup.picasso3.Utils.VERB_COMPLETED;
-import static com.squareup.picasso3.Utils.VERB_ERRORED;
-import static com.squareup.picasso3.Utils.VERB_RESUMED;
-import static com.squareup.picasso3.Utils.calculateDiskCacheSize;
-import static com.squareup.picasso3.Utils.checkMain;
-import static com.squareup.picasso3.Utils.checkNotNull;
-import static com.squareup.picasso3.Utils.createDefaultCacheDir;
-import static com.squareup.picasso3.Utils.log;
 
 /**
  * Image downloading, transformation, and caching manager.

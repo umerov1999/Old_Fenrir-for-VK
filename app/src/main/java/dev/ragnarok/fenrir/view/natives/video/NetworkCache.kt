@@ -31,7 +31,7 @@ class NetworkCache(context: Context) {
     }
 
     fun isCachedRes(@RawRes res: Int): Boolean {
-        return File(parentDir(appContext), filenameForRes(res, false)).exists()
+        return File(parentResDir(appContext), filenameForRes(res, false)).exists()
     }
 
     fun writeTempCacheFile(url: String, stream: InputStream): File {
@@ -66,7 +66,7 @@ class NetworkCache(context: Context) {
 
     fun renameTempFile(@RawRes res: Int) {
         val fileName = filenameForRes(res, true)
-        val file = File(parentDir(appContext), fileName)
+        val file = File(parentResDir(appContext), fileName)
         val newFileName = file.absolutePath.replace(".temp", "")
         val newFile = File(newFileName)
         val renamed = file.renameTo(newFile)
@@ -83,19 +83,6 @@ class NetworkCache(context: Context) {
         }
     }
 
-    fun clear() {
-        val parentDir = parentDir(appContext)
-        if (parentDir.exists()) {
-            val files = parentDir.listFiles()
-            if (!files.isNullOrEmpty()) {
-                for (f in files) {
-                    f.delete()
-                }
-            }
-            parentDir.delete()
-        }
-    }
-
     private fun getCachedFile(url: String): File? {
         val file = File(parentDir(appContext), filenameForUrl(url, false))
         return if (file.exists()) {
@@ -104,7 +91,7 @@ class NetworkCache(context: Context) {
     }
 
     private fun getCachedFile(@RawRes res: Int): File? {
-        val file = File(parentDir(appContext), filenameForRes(res, false))
+        val file = File(parentResDir(appContext), filenameForRes(res, false))
         return if (file.exists()) {
             file
         } else null
@@ -124,6 +111,17 @@ class NetworkCache(context: Context) {
 
         fun parentDir(context: Context): File {
             val file = File(context.cacheDir, "video_network_cache")
+            if (file.isFile) {
+                file.delete()
+            }
+            if (!file.exists()) {
+                file.mkdirs()
+            }
+            return file
+        }
+
+        fun parentResDir(context: Context): File {
+            val file = File(context.cacheDir, "video_resource_cache")
             if (file.isFile) {
                 file.delete()
             }

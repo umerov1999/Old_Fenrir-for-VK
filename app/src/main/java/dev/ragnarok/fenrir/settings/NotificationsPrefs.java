@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.settings;
 
+import static dev.ragnarok.fenrir.util.Utils.hasFlag;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -19,8 +21,6 @@ import java.util.Map;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.model.Peer;
 import dev.ragnarok.fenrir.util.Utils;
-
-import static dev.ragnarok.fenrir.util.Utils.hasFlag;
 
 public class NotificationsPrefs implements ISettings.INotificationSettings {
 
@@ -126,6 +126,12 @@ public class NotificationsPrefs implements ISettings.INotificationSettings {
     public boolean isBirthdayNotifyEnabled() {
         return isOtherNotificationsEnable() && PreferenceManager.getDefaultSharedPreferences(app)
                 .getBoolean("birtday_notification", true);
+    }
+
+    @Override
+    public boolean isMentionNotifyEnabled() {
+        return isOtherNotificationsEnable() && PreferenceManager.getDefaultSharedPreferences(app)
+                .getBoolean("mention_notification", true);
     }
 
     @Override

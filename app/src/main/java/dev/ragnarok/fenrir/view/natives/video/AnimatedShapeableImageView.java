@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.view.natives.video;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -30,8 +32,6 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class AnimatedShapeableImageView extends ShapeableImageView {
 
@@ -324,7 +324,7 @@ public class AnimatedShapeableImageView extends ShapeableImageView {
 
     private boolean copyRes(@RawRes int rawRes) {
         try (InputStream inputStream = FenrirNative.getAppContext().getResources().openRawResource(rawRes)) {
-            File out = new File(NetworkCache.Companion.parentDir(getContext()), NetworkCache.Companion.filenameForRes(rawRes, true));
+            File out = new File(NetworkCache.Companion.parentResDir(getContext()), NetworkCache.Companion.filenameForRes(rawRes, true));
             FileOutputStream o = new FileOutputStream(out);
             byte[] buffer = bufferLocal.get();
             if (buffer == null) {

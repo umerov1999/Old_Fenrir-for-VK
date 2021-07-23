@@ -1,11 +1,11 @@
 package dev.ragnarok.fenrir.model;
 
+import static dev.ragnarok.fenrir.util.Utils.firstNonNull;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import dev.ragnarok.fenrir.module.parcel.ParcelNative;
-
-import static dev.ragnarok.fenrir.util.Utils.firstNonNull;
 
 
 public class PhotoSizes implements Parcelable, ParcelNative.ParcelableNative {

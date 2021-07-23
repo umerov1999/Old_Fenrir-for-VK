@@ -19,6 +19,9 @@
  */
 package ealvatag.tag.vorbiscomment;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+
 import java.io.IOException;
 
 import ealvatag.audio.Utils;
@@ -28,9 +31,6 @@ import ealvatag.logging.EalvaTagLog;
 import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.logging.ErrorMessage;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Create the VorbisCommentTag by reading from the raw packet data

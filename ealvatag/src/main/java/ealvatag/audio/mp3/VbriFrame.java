@@ -1,5 +1,7 @@
 package ealvatag.audio.mp3;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+
 import com.google.common.base.MoreObjects;
 
 import java.io.EOFException;
@@ -9,8 +11,6 @@ import ealvatag.logging.EalvaTagLog;
 import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
 import okio.Buffer;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
 
 /**
  * Vrbi Frame

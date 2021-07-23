@@ -16,6 +16,8 @@
 
 package androidx.preference;
 
+import static androidx.annotation.RestrictTo.Scope.LIBRARY;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -40,8 +42,6 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
-import static androidx.annotation.RestrictTo.Scope.LIBRARY;
 
 /**
  * Abstract base class which presents a dialog associated with a {@link DialogPreference}. Since

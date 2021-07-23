@@ -16,6 +16,8 @@
 
 package androidx.preference;
 
+import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX;
+
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -51,8 +53,6 @@ import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX;
 
 /**
  * The basic building block that represents an individual setting displayed to a user in the

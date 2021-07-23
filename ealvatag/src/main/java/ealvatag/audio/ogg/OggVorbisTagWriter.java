@@ -19,6 +19,8 @@
  */
 package ealvatag.audio.ogg;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -37,8 +39,6 @@ import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.tag.TagFieldContainer;
 import ealvatag.tag.id3.AbstractID3v1Tag;
 import ealvatag.tag.vorbiscomment.VorbisCommentTag;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
 
 /**
  * Write Vorbis Tag within an ogg

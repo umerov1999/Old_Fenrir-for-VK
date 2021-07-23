@@ -1,5 +1,11 @@
 package dev.ragnarok.fenrir.upload;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -54,12 +60,6 @@ import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.processors.PublishProcessor;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.firstNonEmptyString;
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class UploadManagerImpl implements IUploadManager {
 

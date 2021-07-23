@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.longpoll;
 
+import static dev.ragnarok.fenrir.util.Utils.hasFlag;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -55,9 +58,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import static dev.ragnarok.fenrir.util.Utils.hasFlag;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-
 public class NotificationHelper {
 
     public static final int NOTIFICATION_MESSAGE = 62;
@@ -75,6 +75,7 @@ public class NotificationHelper {
     public static final int NOTIFICATION_DOWNLOADING = 74;
     public static final int NOTIFICATION_DOWNLOAD = 75;
     public static final int NOTIFICATION_DOWNLOAD_MANAGER = 76;
+    public static final int NOTIFICATION_MENTION = 77;
     private static final Object bubbleLock = new Object();
     private static String bubbleOpened;
 
@@ -371,7 +372,7 @@ public class NotificationHelper {
         }
     }
 
-    public static void showSimpleNotification(Context context, String body, String Title, String Type) {
+    public static void showSimpleNotification(Context context, String body, String title, @Nullable String type, @Nullable String url) {
         boolean hideBody = Settings.get()
                 .security()
                 .needHideMessagesBodyForNotif();
@@ -389,17 +390,28 @@ public class NotificationHelper {
             nManager.createNotificationChannel(AppNotificationChannels.getGroupChatMessageChannel(context));
         }
 
-        if (Type != null)
-            Title += ", Type: " + Type;
+        if (!isEmpty(type)) {
+            title += ", Type: " + type;
+        }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, AppNotificationChannels.CHAT_MESSAGE_CHANNEL_ID)
                 .setSmallIcon(R.drawable.client_round)
                 .setContentText(text)
-                .setContentTitle(Title)
+                .setContentTitle(title)
                 .setAutoCancel(true);
 
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);
-
+        if (!isEmpty(url)) {
+            int aid = Settings.get()
+                    .accounts()
+                    .getCurrent();
+            Intent intent = new Intent(context, MainActivity.class);
+            intent.putExtra(Extra.PLACE, PlaceFactory.getExternalLinkPlace(aid, url));
+            intent.setAction(MainActivity.ACTION_OPEN_PLACE);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            PendingIntent contentIntent = PendingIntent.getActivity(context, url.hashCode(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+            builder.setContentIntent(contentIntent);
+        }
         Notification notification = builder.build();
 
         nManager.notify("simple " + Settings.get().accounts().getCurrent(), NOTIFICATION_MESSAGE, notification);

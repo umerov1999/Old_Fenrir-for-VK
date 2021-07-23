@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,8 +36,6 @@ import dev.ragnarok.fenrir.settings.SecuritySettings;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.view.MySearchView;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class SecurityPreferencesFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener {
     private final ActivityResultLauncher<Intent> requestChangePin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),

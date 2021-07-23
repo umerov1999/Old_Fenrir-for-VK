@@ -1,5 +1,8 @@
 package ealvatag.tag.id3;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.ErrorMessage.ID3_UNABLE_TO_DECOMPRESS_FRAME;
+
 import java.nio.ByteBuffer;
 import java.util.Locale;
 import java.util.zip.DataFormatException;
@@ -9,9 +12,6 @@ import ealvatag.logging.EalvaTagLog;
 import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.tag.InvalidFrameException;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-import static ealvatag.logging.ErrorMessage.ID3_UNABLE_TO_DECOMPRESS_FRAME;
 
 /**
  * compresses frame data

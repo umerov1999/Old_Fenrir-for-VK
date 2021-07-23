@@ -15,6 +15,15 @@
  */
 package ealvatag.tag.id3;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+import static ealvatag.logging.ErrorMessage.MP3_UNABLE_TO_ADJUST_PADDING;
+import static ealvatag.utils.Check.CANNOT_BE_NULL;
+import static ealvatag.utils.Check.checkArgNotNull;
+import static ealvatag.utils.Check.checkVarArg0NotNull;
+
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -95,15 +104,6 @@ import ealvatag.tag.images.ArtworkFactory;
 import ealvatag.tag.reference.Languages;
 import ealvatag.utils.Check;
 import okio.Buffer;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
-import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
-import static ealvatag.logging.ErrorMessage.MP3_UNABLE_TO_ADJUST_PADDING;
-import static ealvatag.utils.Check.CANNOT_BE_NULL;
-import static ealvatag.utils.Check.checkArgNotNull;
-import static ealvatag.utils.Check.checkVarArg0NotNull;
 
 
 /**

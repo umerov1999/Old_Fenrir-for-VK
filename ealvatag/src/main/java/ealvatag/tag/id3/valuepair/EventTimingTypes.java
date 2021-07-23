@@ -19,9 +19,9 @@
  */
 package ealvatag.tag.id3.valuepair;
 
-import ealvatag.utils.InclusiveIntegerRange;
-
 import static com.google.common.base.Strings.nullToEmpty;
+
+import ealvatag.utils.InclusiveIntegerRange;
 
 public class EventTimingTypes implements SimpleIntStringMap {
     @SuppressWarnings("WeakerAccess")

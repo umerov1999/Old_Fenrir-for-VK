@@ -16,6 +16,8 @@
  */
 package ealvatag.tag.datatype;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+
 import java.io.EOFException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +25,6 @@ import java.util.List;
 import ealvatag.tag.InvalidDataTypeException;
 import ealvatag.tag.id3.AbstractTagFrameBody;
 import okio.Buffer;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
 
 /**
  * Represents a list of {@link Cloneable}(!!) {@link AbstractDataType}s, continuing until the end of the buffer.

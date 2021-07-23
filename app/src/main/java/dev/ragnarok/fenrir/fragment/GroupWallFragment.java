@@ -1,5 +1,9 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -63,10 +67,7 @@ import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
-
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import dev.ragnarok.fenrir.view.natives.video.AnimatedShapeableImageView;
 
 public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWallPresenter> implements IGroupWallView {
 
@@ -209,7 +210,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
     @Override
     protected void onHeaderInflated(View headerRootView) {
         mHeaderHolder = new GroupHeaderHolder(headerRootView);
-        setupPaganContent(mHeaderHolder.Runes, mHeaderHolder.paganSymbol);
+        setupPaganContent(mHeaderHolder.Runes, mHeaderHolder.paganSymbol, mHeaderHolder.paganVideo);
     }
 
     @Override
@@ -476,6 +477,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
         final HorizontalOptionsAdapter<PostFilter> mFiltersAdapter;
 
         final RLottieImageView paganSymbol;
+        final AnimatedShapeableImageView paganVideo;
         final View Runes;
 
         GroupHeaderHolder(@NonNull View root) {
@@ -500,6 +502,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
             fabMessage = root.findViewById(R.id.header_group_fab_message);
 
             paganSymbol = root.findViewById(R.id.pagan_symbol);
+            paganVideo = root.findViewById(R.id.pagan_video);
             Runes = root.findViewById(R.id.runes_container);
             ivVerified = root.findViewById(R.id.item_verified);
             bDonate = root.findViewById(R.id.donated_anim);

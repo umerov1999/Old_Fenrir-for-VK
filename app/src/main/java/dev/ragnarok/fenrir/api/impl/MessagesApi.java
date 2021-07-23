@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.api.impl;
 
+import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +28,6 @@ import dev.ragnarok.fenrir.api.model.response.MessageImportantResponse;
 import dev.ragnarok.fenrir.api.services.IMessageService;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
-
-import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
 
 class MessagesApi extends AbsApi implements IMessagesApi {
 

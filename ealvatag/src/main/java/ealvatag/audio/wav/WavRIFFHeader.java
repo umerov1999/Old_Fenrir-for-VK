@@ -18,14 +18,14 @@
  */
 package ealvatag.audio.wav;
 
+import static ealvatag.audio.iff.IffHeaderChunk.HEADER_LENGTH;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
 import ealvatag.audio.Utils;
 import ealvatag.audio.exceptions.CannotReadException;
-
-import static ealvatag.audio.iff.IffHeaderChunk.HEADER_LENGTH;
 
 /**
  * Processes the Wav Header

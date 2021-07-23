@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.activity;
 
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
@@ -182,9 +185,6 @@ import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.zoomhelper.ZoomHelper;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class MainActivity extends AppCompatActivity implements AbsNavigationFragment.NavigationDrawerCallbacks,
         OnSectionResumeCallback, AppStyleable, PlaceProvider, ServiceConnection, NavigationBarView.OnItemSelectedListener {
@@ -400,12 +400,12 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
                             .subscribe(RxUtils.dummy(), t -> {/*TODO*/}));
 
                     Utils.checkMusicInPC(this);
-                    if (!Settings.get().other().appStoredVersionEqual() && Settings.get().other().isEnable_cache_ui_anim()) {
+                    if (!Settings.get().other().appStoredVersionEqual()) {
                         PreferencesFragment.CleanUICache(this, false);
                     }
 
                     if (Settings.get().other().isDelete_cache_images()) {
-                        PreferencesFragment.CleanImageCache(this, false);
+                        PreferencesFragment.CleanCache(this, false);
                     }
                 }
 

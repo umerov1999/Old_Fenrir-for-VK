@@ -16,6 +16,8 @@
 
 package androidx.preference.internal;
 
+import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -24,8 +26,6 @@ import android.widget.ImageView;
 
 import androidx.annotation.RestrictTo;
 import androidx.preference.R;
-
-import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX;
 
 /**
  * Extension of {@link ImageView} that correctly applies maxWidth and maxHeight.

@@ -51,19 +51,6 @@ class NetworkCache(context: Context) {
         }
     }
 
-    fun clear() {
-        val parentDir = parentDir()
-        if (parentDir.exists()) {
-            val files = parentDir.listFiles()
-            if (!files.isNullOrEmpty()) {
-                for (f in files) {
-                    f.delete()
-                }
-            }
-            parentDir.delete()
-        }
-    }
-
     private fun getCachedFile(url: String): File? {
         val file = File(parentDir(), filenameForUrl(url, false))
         return if (file.exists()) {
@@ -72,7 +59,7 @@ class NetworkCache(context: Context) {
     }
 
     private fun parentDir(): File {
-        val file = File(appContext.cacheDir, "lottie_network_cache")
+        val file = File(appContext.cacheDir, "lottie_cache")
         if (file.isFile) {
             file.delete()
         }

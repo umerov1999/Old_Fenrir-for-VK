@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
@@ -69,8 +71,6 @@ import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.InputTextDialog;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsView>
         implements IDialogsView, DialogsAdapter.ClickListener {

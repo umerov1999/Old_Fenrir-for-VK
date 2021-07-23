@@ -15,6 +15,8 @@
  */
 package ealvatag.tag.id3.framebody;
 
+import static ealvatag.utils.Check.checkArgNotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -31,8 +33,6 @@ import ealvatag.tag.id3.ID3v24Frames;
 import ealvatag.tag.id3.valuepair.TextEncoding;
 import ealvatag.tag.reference.Languages;
 import okio.Buffer;
-
-import static ealvatag.utils.Check.checkArgNotNull;
 
 /**
  * Comments frame.

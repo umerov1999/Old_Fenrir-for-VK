@@ -15,12 +15,12 @@
  */
 package com.squareup.picasso3;
 
+import static androidx.annotation.RestrictTo.Scope.LIBRARY;
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
 import androidx.annotation.RestrictTo;
 
 import java.lang.annotation.Retention;
-
-import static androidx.annotation.RestrictTo.Scope.LIBRARY;
-import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 @Retention(SOURCE)
 @RestrictTo(LIBRARY)

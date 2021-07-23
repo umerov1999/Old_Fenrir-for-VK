@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -102,9 +105,6 @@ import dev.ragnarok.fenrir.view.MySearchView;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 import dev.ragnarok.fenrir.view.natives.video.AnimatedShapeableImageView;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-
 public class PreferencesFragment extends PreferenceFragmentCompat {
 
     public static final String KEY_DEFAULT_CATEGORY = "default_category";
@@ -163,7 +163,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         return new File(context.getFilesDir(), light ? "chat_light.jpg" : "chat_dark.jpg");
     }
 
-    public static void CleanImageCache(Context context, boolean notify) {
+    public static void CleanCache(Context context, boolean notify) {
         try {
             PicassoInstance.clear_cache();
             File cache = new File(context.getCacheDir(), "notif-cache");
@@ -171,7 +171,21 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 String[] children = cache.list();
                 assert children != null;
                 for (String child : children) {
-                    new File(cache, child).delete();
+                    File rem = new File(cache, child);
+                    if (rem.isFile()) {
+                        rem.delete();
+                    }
+                }
+            }
+            cache = new File(context.getCacheDir(), "lottie_cache");
+            if (cache.exists() && cache.isDirectory()) {
+                String[] children = cache.list();
+                assert children != null;
+                for (String child : children) {
+                    File rem = new File(cache, child);
+                    if (rem.isFile()) {
+                        rem.delete();
+                    }
                 }
             }
             cache = new File(context.getCacheDir(), "video_network_cache");
@@ -179,7 +193,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 String[] children = cache.list();
                 assert children != null;
                 for (String child : children) {
-                    new File(cache, child).delete();
+                    File rem = new File(cache, child);
+                    if (rem.isFile()) {
+                        rem.delete();
+                    }
                 }
             }
             cache = AudioRecordWrapper.getRecordingDirectory(context);
@@ -187,7 +204,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 String[] children = cache.list();
                 assert children != null;
                 for (String child : children) {
-                    new File(cache, child).delete();
+                    File rem = new File(cache, child);
+                    if (rem.isFile()) {
+                        rem.delete();
+                    }
                 }
             }
             if (notify)
@@ -201,20 +221,26 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     public static void CleanUICache(Context context, boolean notify) {
         try {
-            File cache = new File(context.getCacheDir(), "lottie_network_cache/acache");
+            File cache = new File(context.getCacheDir(), "lottie_cache/rendered");
             if (cache.exists() && cache.isDirectory()) {
                 String[] children = cache.list();
                 assert children != null;
                 for (String child : children) {
-                    new File(cache, child).delete();
+                    File rem = new File(cache, child);
+                    if (rem.isFile()) {
+                        rem.delete();
+                    }
                 }
             }
-            cache = new File(context.getCacheDir(), "lottie_network_cache");
+            cache = new File(context.getCacheDir(), "video_resource_cache");
             if (cache.exists() && cache.isDirectory()) {
                 String[] children = cache.list();
                 assert children != null;
                 for (String child : children) {
-                    new File(cache, child).delete();
+                    File rem = new File(cache, child);
+                    if (rem.isFile()) {
+                        rem.delete();
+                    }
                 }
             }
             if (notify)
@@ -893,9 +919,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     return true;
                 });
 
-        findPreference("picture_cache_cleaner")
+        findPreference("cache_cleaner")
                 .setOnPreferenceClickListener(preference -> {
-                    CleanImageCache(requireActivity(), true);
+                    CleanUICache(requireActivity(), false);
+                    CleanCache(requireActivity(), true);
                     return true;
                 });
 
@@ -909,7 +936,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 .setOnPreferenceClickListener(preference -> {
                     DBHelper.removeDatabaseFor(requireActivity(), getAccountId());
                     CleanUICache(requireActivity(), false);
-                    CleanImageCache(requireActivity(), true);
+                    CleanCache(requireActivity(), true);
                     return true;
                 });
 

@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.util;
 
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -28,9 +31,6 @@ import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
-
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class ShortcutUtils {
 

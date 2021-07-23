@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.adapter;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +19,6 @@ import dev.ragnarok.fenrir.adapter.holder.IdentificableHolder;
 import dev.ragnarok.fenrir.adapter.holder.SharedHolders;
 import dev.ragnarok.fenrir.upload.Upload;
 import dev.ragnarok.fenrir.view.CircleRoadProgress;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class DocsUploadAdapter extends RecyclerView.Adapter<DocsUploadAdapter.Holder> {
 

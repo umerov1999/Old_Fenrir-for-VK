@@ -16,6 +16,8 @@
 
 package androidx.preference;
 
+import static androidx.annotation.RestrictTo.Scope.LIBRARY;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -25,8 +27,6 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
-
-import static androidx.annotation.RestrictTo.Scope.LIBRARY;
 
 public class EditTextPreferenceDialogFragmentCompat extends PreferenceDialogFragmentCompat {
 

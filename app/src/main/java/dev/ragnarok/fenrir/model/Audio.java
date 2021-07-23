@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.model;
 
+import static dev.ragnarok.fenrir.util.Utils.stringEmptyIfNull;
+
 import android.os.Parcel;
 
 import java.util.Map;
@@ -8,8 +10,6 @@ import java.util.regex.Pattern;
 
 import dev.ragnarok.fenrir.api.model.VKApiAudio;
 import dev.ragnarok.fenrir.util.Utils;
-
-import static dev.ragnarok.fenrir.util.Utils.stringEmptyIfNull;
 
 public class Audio extends AbsModel {
 

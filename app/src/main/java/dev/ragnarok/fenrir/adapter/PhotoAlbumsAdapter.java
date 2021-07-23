@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.adapter;
 
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +22,6 @@ import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.Utils;
-
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class PhotoAlbumsAdapter extends RecyclerView.Adapter<PhotoAlbumsAdapter.Holder> {
 

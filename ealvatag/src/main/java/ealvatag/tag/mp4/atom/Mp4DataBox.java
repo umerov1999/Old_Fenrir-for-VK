@@ -31,7 +31,7 @@ public class Mp4DataBox extends AbstractMp4Box {
     private static final int VERSION_LENGTH = 1;
     private static final int LOCALE_LENGTH = 4;
     public static final int PRE_DATA_LENGTH = VERSION_LENGTH + TYPE_LENGTH + LOCALE_LENGTH;
-    public static final int DATA_HEADER_LENGTH = Mp4BoxHeader.HEADER_LENGTH + PRE_DATA_LENGTH;
+    public static final int PRE_DATA_HEADER_LENGTH = Mp4BoxHeader.HEADER_LENGTH + PRE_DATA_LENGTH;
     private static final int TYPE_POS = VERSION_LENGTH;
 
     //For use externally

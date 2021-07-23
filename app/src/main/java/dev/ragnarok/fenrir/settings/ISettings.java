@@ -68,6 +68,8 @@ public interface ISettings {
 
         boolean isExtra_debug();
 
+        boolean isDump_fcm();
+
         boolean isAutoplay_gif();
 
         boolean isStrip_news_repost();
@@ -296,6 +298,8 @@ public interface ISettings {
 
         boolean isUse_long_click_download();
 
+        boolean isRevert_play_audio();
+
         boolean isShow_bot_keyboard();
 
         boolean isPlayer_support_volume();
@@ -390,6 +394,8 @@ public interface ISettings {
         boolean isQuickReplyImmediately();
 
         boolean isBirthdayNotifyEnabled();
+
+        boolean isMentionNotifyEnabled();
 
         void putChatNotificationSettingsBackup(int aid, int peerId, int mask);
 

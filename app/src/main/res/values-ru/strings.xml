@@ -138,9 +138,9 @@
 
     <string name="general_settings">Общие</string>
     <string name="about_settings">О приложении</string>
-    <string name="account_cache_cleaner">Очистить кэш для данного аккаунта</string>
-    <string name="picture_cache_cleaner">Очистить кэш изображений</string>
-    <string name="ui_cache_cleaner">Очистить кэш UI</string>
+    <string name="account_cache_cleaner">Очистить кэш и базу данных</string>
+    <string name="cache_cleaner">Очистить кэш</string>
+    <string name="ui_cache_cleaner">Очистить только UI кэш</string>
     <!-- Quick Reply-->
     <string name="go_to_dialog">К диалогу</string>
     <string name="send">Отправить</string>
@@ -1575,6 +1575,7 @@
     <string name="video_controller_to_decor">Видео кнопки в DecorView</string>
     <string name="video_swipes">Свайпы у видео</string>
     <string name="extra_debug">Расширенная отладка</string>
+    <string name="dump_fcm">Отладка firebase</string>
     <string name="kate_gms_token">Kate GMS Токен</string>
     <string name="need_restart">Требуется перезапуск</string>
     <string name="enable_native">Использовать нативные библиотеки</string>
@@ -1608,4 +1609,5 @@
     <string name="is_side_no_stroke">Отключить контур в боковом меню</string>
     <string name="headers_in_dialog">Заголовок даты в диалоге</string>
     <string name="push_first">Поместить в начало</string>
+    <string name="revert_play_audio">Кнопка плей - меню</string>
 </resources>

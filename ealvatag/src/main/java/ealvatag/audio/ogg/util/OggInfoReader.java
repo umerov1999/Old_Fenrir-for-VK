@@ -19,6 +19,8 @@
  */
 package ealvatag.audio.ogg.util;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
@@ -32,8 +34,6 @@ import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.logging.ErrorMessage;
 import ealvatag.tag.id3.AbstractID3v2Tag;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
 
 /**
  * Read encoding info, only implemented for vorbis streams

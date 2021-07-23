@@ -16,6 +16,8 @@
 
 package androidx.preference;
 
+import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX;
+
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -33,8 +35,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX;
 
 /**
  * An adapter that connects a {@link RecyclerView} to the {@link Preference}s contained in

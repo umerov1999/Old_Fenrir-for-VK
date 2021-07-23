@@ -18,6 +18,8 @@
  */
 package ealvatag.tag.mp4;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -32,8 +34,6 @@ import ealvatag.tag.TagField;
 import ealvatag.tag.mp4.atom.Mp4DataBox;
 import ealvatag.tag.mp4.field.Mp4FieldType;
 import ealvatag.utils.StandardCharsets;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
 
 /**
  * This abstract class represents a link between piece of data, and how it is stored as an mp4 atom
@@ -156,7 +156,7 @@ public abstract class Mp4TagField implements TagField {
             //Create Data Box
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             byte[] data = getDataBytes();
-            baos.write(Utils.getSizeBEInt32(Mp4DataBox.DATA_HEADER_LENGTH + data.length));
+            baos.write(Utils.getSizeBEInt32(Mp4DataBox.PRE_DATA_HEADER_LENGTH + data.length));
             baos.write(Mp4DataBox.IDENTIFIER.getBytes(StandardCharsets.ISO_8859_1));
             baos.write(new byte[]{0});
             baos.write(new byte[]{0, 0, (byte) getFieldType().getFileClassId()});

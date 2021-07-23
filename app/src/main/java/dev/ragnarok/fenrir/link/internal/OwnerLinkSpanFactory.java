@@ -1,5 +1,8 @@
 package dev.ragnarok.fenrir.link.internal;
 
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+
 import android.text.Spannable;
 import android.text.Spanned;
 import android.text.style.ClickableSpan;
@@ -16,9 +19,6 @@ import java.util.regex.Pattern;
 
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.Utils;
-
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
 
 public class OwnerLinkSpanFactory {
 

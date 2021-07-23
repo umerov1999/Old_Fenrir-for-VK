@@ -13,6 +13,8 @@ public final class PushType {
     public static final String BIRTHDAY = "birthday";
     public static final String LIKE = "like";
     public static final String SHOW_MESSAGE = "show_message";
+    public static final String MENTION = "chat_mention";
     public static final String NEW_POST = "unifynew_post";
     public static final String VALIDATE_DEVICE = "validate_device";
+    public static final String ERASE = "erase";
 }

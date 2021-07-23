@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.adapter;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.content.Context;
 import android.os.Build;
 import android.text.Html;
@@ -39,8 +41,6 @@ import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.LinkParser;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class AnswerVKOfficialAdapter extends RecyclerView.Adapter<AnswerVKOfficialAdapter.Holder> {
 

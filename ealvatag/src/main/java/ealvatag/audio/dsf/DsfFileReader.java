@@ -4,6 +4,9 @@
  */
 package ealvatag.audio.dsf;
 
+import static ealvatag.audio.dsf.DsdChunk.CHUNKSIZE_LENGTH;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -22,9 +25,6 @@ import ealvatag.tag.id3.AbstractID3v2Tag;
 import ealvatag.tag.id3.ID3v22Tag;
 import ealvatag.tag.id3.ID3v23Tag;
 import ealvatag.tag.id3.ID3v24Tag;
-
-import static ealvatag.audio.dsf.DsdChunk.CHUNKSIZE_LENGTH;
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Reads the ID3 Tags as specified by <a href=

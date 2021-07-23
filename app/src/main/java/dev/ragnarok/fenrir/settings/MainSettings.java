@@ -49,6 +49,11 @@ class MainSettings implements ISettings.IMainSettings {
     }
 
     @Override
+    public boolean isRevert_play_audio() {
+        return getDefaultPreferences().getBoolean("revert_play_audio", false);
+    }
+
+    @Override
     public boolean isPlayer_support_volume() {
         return getDefaultPreferences().getBoolean("is_player_support_volume", false);
     }

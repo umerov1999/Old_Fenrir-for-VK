@@ -18,6 +18,9 @@
  */
 package ealvatag.audio.asf;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,9 +58,6 @@ import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.logging.ErrorMessage;
 import ealvatag.tag.TagException;
 import ealvatag.tag.asf.AsfTag;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * This reader can read ASF files containing any content (stream type). <br>

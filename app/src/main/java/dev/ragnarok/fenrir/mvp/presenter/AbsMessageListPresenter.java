@@ -1,5 +1,9 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import static dev.ragnarok.fenrir.util.Utils.countOfSelection;
+import static dev.ragnarok.fenrir.util.Utils.getSelected;
+import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
+
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -27,10 +31,6 @@ import dev.ragnarok.fenrir.mvp.view.IBasicMessageListView;
 import dev.ragnarok.fenrir.util.Lookup;
 import dev.ragnarok.fenrir.util.Optional;
 import dev.ragnarok.fenrir.util.Utils;
-
-import static dev.ragnarok.fenrir.util.Utils.countOfSelection;
-import static dev.ragnarok.fenrir.util.Utils.getSelected;
-import static dev.ragnarok.fenrir.util.Utils.safeIsEmpty;
 
 public abstract class AbsMessageListPresenter<V extends IBasicMessageListView> extends
         PlaceSupportPresenter<V> implements IVoicePlayer.IPlayerStatusListener {

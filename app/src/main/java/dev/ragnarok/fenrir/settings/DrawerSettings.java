@@ -1,14 +1,5 @@
 package dev.ragnarok.fenrir.settings;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
-import androidx.preference.PreferenceManager;
-
-import dev.ragnarok.fenrir.model.SwitchableCategory;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.subjects.PublishSubject;
-
 import static dev.ragnarok.fenrir.model.SwitchableCategory.BOOKMARKS;
 import static dev.ragnarok.fenrir.model.SwitchableCategory.DOCS;
 import static dev.ragnarok.fenrir.model.SwitchableCategory.FRIENDS;
@@ -18,6 +9,15 @@ import static dev.ragnarok.fenrir.model.SwitchableCategory.NEWSFEED_COMMENTS;
 import static dev.ragnarok.fenrir.model.SwitchableCategory.PHOTOS;
 import static dev.ragnarok.fenrir.model.SwitchableCategory.VIDEOS;
 import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import androidx.preference.PreferenceManager;
+
+import dev.ragnarok.fenrir.model.SwitchableCategory;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.PublishSubject;
 
 class DrawerSettings implements ISettings.IDrawerSettings {
 

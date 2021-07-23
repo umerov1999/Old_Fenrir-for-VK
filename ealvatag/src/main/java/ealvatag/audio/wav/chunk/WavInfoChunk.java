@@ -1,5 +1,8 @@
 package ealvatag.audio.wav.chunk;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
@@ -12,9 +15,6 @@ import ealvatag.tag.FieldDataInvalidException;
 import ealvatag.tag.wav.WavInfoTag;
 import ealvatag.tag.wav.WavTag;
 import ealvatag.utils.StandardCharsets;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
 
 /**
  * Stores basic only metadata but only exists as part of a LIST chunk, doesn't have its own size field

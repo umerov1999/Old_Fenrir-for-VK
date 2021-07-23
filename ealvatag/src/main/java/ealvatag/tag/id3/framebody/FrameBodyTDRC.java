@@ -20,6 +20,10 @@
  */
 package ealvatag.tag.id3.framebody;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.INFO;
+import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+
 import java.nio.ByteBuffer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,10 +41,6 @@ import ealvatag.tag.id3.ID3v23Frames;
 import ealvatag.tag.id3.ID3v24Frames;
 import ealvatag.tag.id3.valuepair.TextEncoding;
 import okio.Buffer;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.INFO;
-import static ealvatag.logging.EalvaTagLog.LogLevel.TRACE;
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 
 public class FrameBodyTDRC extends AbstractFrameBodyTextInfo implements ID3v24FrameBody {

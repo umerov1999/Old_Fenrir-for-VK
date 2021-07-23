@@ -24,6 +24,9 @@
  */
 package ealvatag.tag.id3;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
+import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -34,9 +37,6 @@ import java.util.regex.Pattern;
 import ealvatag.logging.EalvaTagLog;
 import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.DEBUG;
-import static ealvatag.logging.EalvaTagLog.LogLevel.ERROR;
 
 /**
  * This is the abstract base class for all ID3v1 tags.

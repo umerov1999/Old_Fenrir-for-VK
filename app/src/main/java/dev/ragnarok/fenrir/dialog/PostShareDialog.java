@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.dialog;
 
+import static dev.ragnarok.fenrir.util.RxUtils.ignore;
+
 import android.app.Dialog;
 import android.os.Bundle;
 
@@ -24,8 +26,6 @@ import dev.ragnarok.fenrir.model.menu.Item;
 import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.RxUtils;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-
-import static dev.ragnarok.fenrir.util.RxUtils.ignore;
 
 public class PostShareDialog extends DialogFragment {
 

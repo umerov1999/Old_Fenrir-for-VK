@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.mvp.presenter.search;
 
+import static dev.ragnarok.fenrir.util.Utils.trimmedNonEmpty;
+
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -15,8 +17,6 @@ import dev.ragnarok.fenrir.mvp.view.search.IMessagesSearchView;
 import dev.ragnarok.fenrir.util.Objects;
 import dev.ragnarok.fenrir.util.Pair;
 import io.reactivex.rxjava3.core.Single;
-
-import static dev.ragnarok.fenrir.util.Utils.trimmedNonEmpty;
 
 public class MessagesSearchPresenter extends AbsSearchPresenter<IMessagesSearchView, MessageSeachCriteria, Message, IntNextFrom> {
 

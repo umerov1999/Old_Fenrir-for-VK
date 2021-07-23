@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.media.gif;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.view.SurfaceHolder;
 
 import androidx.annotation.NonNull;
@@ -21,8 +23,6 @@ import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.Logger;
 import dev.ragnarok.fenrir.util.Utils;
 
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-
 public class ExoGifPlayer implements IGifPlayer {
 
     private final String url;
@@ -42,6 +42,12 @@ public class ExoGifPlayer implements IGifPlayer {
         @Override
         public void onRenderedFirstFrame() {
 
+        }
+
+        @Override
+        public void onPlaybackStateChanged(@Player.State int state) {
+            Logger.d("FenrirExo", "onPlaybackStateChanged, state: " + state);
+            onInternalPlayerStateChanged(state);
         }
     };
     private SimpleExoPlayer internalPlayer;
@@ -103,15 +109,7 @@ public class ExoGifPlayer implements IGifPlayer {
 
         MediaSource mediaSource = new ProgressiveMediaSource.Factory(Utils.getExoPlayerFactory(userAgent, proxyConfig)).createMediaSource(Utils.makeMediaItem((url)));
         internalPlayer.setRepeatMode(isRepeat ? Player.REPEAT_MODE_ONE : Player.REPEAT_MODE_OFF);
-        internalPlayer.addListener(new Player.Listener() {
-            @Override
-            public void onPlaybackStateChanged(@Player.State int state) {
-                Logger.d("FenrirExo", "onPlaybackStateChanged, state: " + state);
-                onInternalPlayerStateChanged(state);
-            }
-        });
-
-        internalPlayer.addVideoListener(videoListener);
+        internalPlayer.addListener(videoListener);
         internalPlayer.setPlayWhenReady(true);
         internalPlayer.setMediaSource(mediaSource);
         internalPlayer.prepare();
@@ -155,6 +153,7 @@ public class ExoGifPlayer implements IGifPlayer {
     public void release() {
         if (nonNull(internalPlayer)) {
             try {
+                internalPlayer.removeListener(videoListener);
                 internalPlayer.release();
             } catch (Exception e) {
                 e.printStackTrace();

@@ -1,5 +1,10 @@
 package dev.ragnarok.fenrir.db.impl;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.join;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
+
 import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
 import android.content.ContentValues;
@@ -30,11 +35,6 @@ import dev.ragnarok.fenrir.model.FeedSourceCriteria;
 import dev.ragnarok.fenrir.model.criteria.FeedCriteria;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.join;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
 
 class FeedStorage extends AbsStorage implements IFeedStorage {
 

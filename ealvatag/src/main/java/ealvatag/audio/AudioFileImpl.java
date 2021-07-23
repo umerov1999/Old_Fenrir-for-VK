@@ -18,6 +18,9 @@
  */
 package ealvatag.audio;
 
+import static ealvatag.utils.Check.checkArgNotNull;
+import static ealvatag.utils.Check.checkArgNotNullOrEmpty;
+
 import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.io.Files;
@@ -38,9 +41,6 @@ import ealvatag.tag.id3.ID3v23Tag;
 import ealvatag.tag.id3.ID3v24Tag;
 import ealvatag.tag.reference.ID3V2Version;
 import ealvatag.utils.Check;
-
-import static ealvatag.utils.Check.checkArgNotNull;
-import static ealvatag.utils.Check.checkArgNotNullOrEmpty;
 
 /**
  * <p>This is the main object manipulated by the user representing an audiofile, its properties and its tag.

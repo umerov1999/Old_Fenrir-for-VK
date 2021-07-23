@@ -1,5 +1,9 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.trimmedIsEmpty;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -25,10 +29,6 @@ import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.trimmedIsEmpty;
 
 
 public class RequestsPresenter extends AccountDependencyPresenter<IRequestsView> {

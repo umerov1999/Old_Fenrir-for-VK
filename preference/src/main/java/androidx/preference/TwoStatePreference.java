@@ -16,6 +16,8 @@
 
 package androidx.preference;
 
+import static androidx.annotation.RestrictTo.Scope.LIBRARY;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Parcel;
@@ -26,8 +28,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.RestrictTo;
-
-import static androidx.annotation.RestrictTo.Scope.LIBRARY;
 
 /**
  * Common base class for preferences that have two selectable states, save a boolean value, and

@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.adapter;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -27,8 +29,6 @@ import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public class PeopleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

@@ -480,6 +480,11 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public boolean isDump_fcm() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("dump_fcm", false);
+    }
+
+    @Override
     public boolean isHint_stickers() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("hint_stickers", true);
     }

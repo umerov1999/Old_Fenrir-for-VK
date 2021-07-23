@@ -1,5 +1,10 @@
 package dev.ragnarok.fenrir.fragment;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,10 +38,9 @@ import dev.ragnarok.fenrir.model.LogEventWrapper;
 import dev.ragnarok.fenrir.mvp.core.IPresenterFactory;
 import dev.ragnarok.fenrir.mvp.presenter.LogsPresenter;
 import dev.ragnarok.fenrir.mvp.view.ILogsView;
+import dev.ragnarok.fenrir.util.CustomToast;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 
 public class LogsFragement extends BaseMvpFragment<LogsPresenter, ILogsView>
@@ -170,6 +174,15 @@ public class LogsFragement extends BaseMvpFragment<LogsPresenter, ILogsView>
     public void onShareClick(LogEventWrapper wrapper) {
         LogEvent event = wrapper.getEvent();
         Utils.shareLink(requireActivity(), event.getBody(), event.getTag());
+    }
+
+    @Override
+    public void onCopyClick(LogEventWrapper wrapper) {
+        LogEvent event = wrapper.getEvent();
+        ClipboardManager clipboard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText(event.getTag(), event.getBody());
+        clipboard.setPrimaryClip(clip);
+        CustomToast.CreateCustomToast(requireActivity()).showToast(R.string.copied_to_clipboard);
     }
 
     @Override

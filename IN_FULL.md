@@ -13,7 +13,6 @@
 11. Смена иконки
 12. Локальный медиа сервер
 13. Настройки фона плеера
-14. Донатная анимация (можно отключить)
 
 # Full version available:
 
@@ -30,4 +29,3 @@
 11. Change icon
 12. Local media server
 13. Player background settings
-14. Donate animation (can be disabled)

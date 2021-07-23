@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.fragment.conversation;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +24,6 @@ import dev.ragnarok.fenrir.listener.PicassoPauseOnScrollListener;
 import dev.ragnarok.fenrir.mvp.presenter.conversations.BaseChatAttachmentsPresenter;
 import dev.ragnarok.fenrir.mvp.view.conversations.IBaseChatAttachmentsView;
 import dev.ragnarok.fenrir.util.ViewUtils;
-
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
 public abstract class AbsChatAttachmentsFragment<T, P extends BaseChatAttachmentsPresenter<T, V>, V extends IBaseChatAttachmentsView<T>>
         extends PlaceSupportMvpFragment<P, V> implements IBaseChatAttachmentsView<T> {

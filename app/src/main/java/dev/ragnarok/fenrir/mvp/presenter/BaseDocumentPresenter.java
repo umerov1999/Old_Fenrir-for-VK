@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.mvp.presenter;
 
+import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
@@ -14,8 +16,6 @@ import dev.ragnarok.fenrir.model.Document;
 import dev.ragnarok.fenrir.mvp.presenter.base.AccountDependencyPresenter;
 import dev.ragnarok.fenrir.mvp.view.IBasicDocumentView;
 import dev.ragnarok.fenrir.util.RxUtils;
-
-import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 
 
 public class BaseDocumentPresenter<V extends IBasicDocumentView> extends AccountDependencyPresenter<V> {

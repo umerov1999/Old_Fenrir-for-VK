@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.media.video;
 
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+
 import android.content.Context;
 import android.view.SurfaceHolder;
 
@@ -48,7 +50,7 @@ public class ExoVideoPlayer implements IVideoPlayer {
                 }
             }
         });
-        player.addVideoListener(onVideoSizeChangedListener);
+        player.addListener(onVideoSizeChangedListener);
         source = createMediaSource(context, url, config, size == InternalVideoSize.SIZE_HLS || size == InternalVideoSize.SIZE_LIVE);
     }
 
@@ -107,8 +109,14 @@ public class ExoVideoPlayer implements IVideoPlayer {
 
     @Override
     public void release() {
-        player.removeVideoListener(onVideoSizeChangedListener);
-        player.release();
+        if (nonNull(player)) {
+            try {
+                player.removeListener(onVideoSizeChangedListener);
+                player.release();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

@@ -209,6 +209,13 @@
             android:title="@string/birthdays"
             app:iconSpaceReserved="false" />
 
+        <SwitchPreference
+            android:defaultValue="true"
+            android:dependency="other_notifications_enable"
+            android:key="mention_notification"
+            android:title="@string/mentions"
+            app:iconSpaceReserved="false" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -15,13 +15,6 @@
  */
 package com.squareup.picasso3;
 
-import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.view.Gravity;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.VisibleForTesting;
-
 import static androidx.exifinterface.media.ExifInterface.ORIENTATION_FLIP_HORIZONTAL;
 import static androidx.exifinterface.media.ExifInterface.ORIENTATION_FLIP_VERTICAL;
 import static androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180;
@@ -31,6 +24,13 @@ import static androidx.exifinterface.media.ExifInterface.ORIENTATION_TRANSPOSE;
 import static androidx.exifinterface.media.ExifInterface.ORIENTATION_TRANSVERSE;
 import static com.squareup.picasso3.BitmapUtils.shouldResize;
 import static com.squareup.picasso3.RequestHandler.Result;
+
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.view.Gravity;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
 final class MatrixTransformation implements Transformation {
     private final Request data;

@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.domain.impl;
 
+import static dev.ragnarok.fenrir.util.Utils.isEmpty;
+
 import dev.ragnarok.fenrir.api.interfaces.INetworker;
 import dev.ragnarok.fenrir.db.interfaces.IStorages;
 import dev.ragnarok.fenrir.domain.IDialogsInteractor;
@@ -8,8 +10,6 @@ import dev.ragnarok.fenrir.exception.NotFoundException;
 import dev.ragnarok.fenrir.model.Chat;
 import dev.ragnarok.fenrir.model.Peer;
 import io.reactivex.rxjava3.core.Single;
-
-import static dev.ragnarok.fenrir.util.Utils.isEmpty;
 
 public class DialogsInteractor implements IDialogsInteractor {
 

@@ -1,5 +1,7 @@
 package dev.ragnarok.fenrir.adapter;
 
+import static dev.ragnarok.fenrir.util.Utils.safeLenghtOf;
+
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.ContextMenu;
@@ -27,8 +29,6 @@ import dev.ragnarok.fenrir.settings.CurrentTheme;
 import dev.ragnarok.fenrir.util.AppTextUtils;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.CircleCounterButton;
-
-import static dev.ragnarok.fenrir.util.Utils.safeLenghtOf;
 
 public class FeedAdapter extends RecyclerBindableAdapter<News, FeedAdapter.PostHolder> {
 

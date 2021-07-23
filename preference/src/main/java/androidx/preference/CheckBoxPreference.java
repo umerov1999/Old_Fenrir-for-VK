@@ -16,6 +16,8 @@
 
 package androidx.preference;
 
+import static androidx.annotation.RestrictTo.Scope.LIBRARY;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
@@ -26,8 +28,6 @@ import android.widget.CompoundButton;
 
 import androidx.annotation.RestrictTo;
 import androidx.core.content.res.TypedArrayUtils;
-
-import static androidx.annotation.RestrictTo.Scope.LIBRARY;
 
 /**
  * A {@link Preference} that provides checkbox widget functionality.

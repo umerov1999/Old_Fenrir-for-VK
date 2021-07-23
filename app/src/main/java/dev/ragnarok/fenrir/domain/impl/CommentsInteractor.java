@@ -1,5 +1,12 @@
 package dev.ragnarok.fenrir.domain.impl;
 
+import static java.util.Collections.emptyList;
+import static dev.ragnarok.fenrir.util.Objects.isNull;
+import static dev.ragnarok.fenrir.util.Objects.nonNull;
+import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
+import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
+import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -56,13 +63,6 @@ import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleTransformer;
 import io.reactivex.rxjava3.functions.BooleanSupplier;
-
-import static dev.ragnarok.fenrir.util.Objects.isNull;
-import static dev.ragnarok.fenrir.util.Objects.nonNull;
-import static dev.ragnarok.fenrir.util.Utils.listEmptyIfNull;
-import static dev.ragnarok.fenrir.util.Utils.nonEmpty;
-import static dev.ragnarok.fenrir.util.Utils.safeCountOf;
-import static java.util.Collections.emptyList;
 
 public class CommentsInteractor implements ICommentsInteractor {
 

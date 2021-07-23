@@ -16,13 +16,13 @@
 
 package androidx.preference;
 
+import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
 import androidx.annotation.RestrictTo;
-
-import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX;
 
 /**
  * Custom {@link LinearLayout} that does not propagate the pressed state down to its children.

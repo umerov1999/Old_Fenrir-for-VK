@@ -1,12 +1,12 @@
 package ealvatag.tag.id3;
 
+import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
+
 import ealvatag.logging.EalvaTagLog;
 import ealvatag.logging.EalvaTagLog.JLogger;
 import ealvatag.logging.EalvaTagLog.JLoggers;
 import ealvatag.tag.TagOptionSingleton;
 import ealvatag.tag.id3.valuepair.TextEncoding;
-
-import static ealvatag.logging.EalvaTagLog.LogLevel.WARN;
 
 /**
  * Functions to encode text according to encodingoptions and ID3 version

@@ -16,13 +16,13 @@
 
 package androidx.preference;
 
+import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX;
+
 import android.content.Context;
 import android.util.AttributeSet;
 
 import androidx.annotation.RestrictTo;
 import androidx.core.content.res.TypedArrayUtils;
-
-import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX;
 
 /**
  * A top-level container that represents a settings screen. This is the root component of your
