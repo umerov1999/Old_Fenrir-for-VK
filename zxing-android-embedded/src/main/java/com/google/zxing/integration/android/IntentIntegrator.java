@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResult;
@@ -117,9 +118,16 @@ public class IntentIntegrator {
         return new IntentResult(intent);
     }
 
-    public static String decodeFromBitmap(@Nullable Bitmap generatedQRCode) {
-        if (generatedQRCode == null) {
+    public static String decodeFromBitmap(@Nullable Bitmap gen) {
+        if (gen == null) {
             return "error";
+        }
+        Bitmap generatedQRCode = gen;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && generatedQRCode.getConfig() == Bitmap.Config.HARDWARE) {
+            generatedQRCode = generatedQRCode.copy(Bitmap.Config.ARGB_8888, true);
+            if (generatedQRCode == null) {
+                return "error";
+            }
         }
         int width = generatedQRCode.getWidth();
         int height = generatedQRCode.getHeight();

@@ -303,6 +303,7 @@ public class InputViewController {
             mInputField.requestFocus();
             if (!Utils.isEmpty(text))
                 mInputField.setSelection(mInputField.getText().length());
+            callback.onInputTextChanged(txt + " " + text);
             mInputField.addTextChangedListener(mTextWatcher);
         }
     }

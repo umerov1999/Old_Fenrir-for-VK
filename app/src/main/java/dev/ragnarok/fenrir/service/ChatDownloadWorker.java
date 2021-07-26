@@ -534,7 +534,7 @@ public class ChatDownloadWorker extends Worker {
             builder = new NotificationCompat.Builder(getApplicationContext(), "worker_channel").setPriority(Notification.PRIORITY_MIN);
         }
         builder.setContentTitle(getApplicationContext().getString(R.string.work_manager))
-                .setContentText(getApplicationContext().getString(R.string.may_down_charge))
+                .setContentText(getApplicationContext().getString(R.string.foreground_downloader))
                 .setSmallIcon(R.drawable.web)
                 .setColor(Color.parseColor("#dd0000"))
                 .setOngoing(true);

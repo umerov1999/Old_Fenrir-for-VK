@@ -164,7 +164,7 @@ public class MenuListAdapter extends RecyclerBindableAdapter<AbsMenuItem, Recycl
     protected int layoutId(int type) {
         switch (type) {
             case AbsMenuItem.TYPE_DIVIDER:
-                return R.layout.drawer_list_item_divider;
+                return (noStroke ? R.layout.drawer_list_item_divider_no_stroke : R.layout.drawer_list_item_divider);
             case AbsMenuItem.TYPE_RECENT_CHAT:
                 return R.layout.item_navigation_recents;
             case AbsMenuItem.TYPE_ICON:

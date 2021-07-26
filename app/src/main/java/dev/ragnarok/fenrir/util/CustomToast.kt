@@ -3,6 +3,7 @@ package dev.ragnarok.fenrir.util
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.os.Build
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -80,6 +81,10 @@ class CustomToast private constructor(context: Context?, Timage: Bitmap?) {
     @Suppress("DEPRECATION")
     fun showToastError(message: String?) {
         if (mContext == null) return
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
+            showToastErrorS(message)
+            return
+        }
         val view = View.inflate(mContext, R.layout.toast_error, null)
         val subtitle = view.findViewById<TextView>(R.id.text)
         val imagev = view.findViewById<ImageView>(R.id.icon_toast_error)
@@ -89,6 +94,15 @@ class CustomToast private constructor(context: Context?, Timage: Bitmap?) {
         val toast = Toast(mContext)
         toast.duration = duration
         toast.view = view
+        toast.setGravity(Gravity.CENTER_HORIZONTAL or Gravity.TOP, 0, 0)
+        toast.show()
+    }
+
+    fun showToastErrorS(message: String?) {
+        if (mContext == null) return
+        val toast = Toast(mContext)
+        toast.duration = duration
+        toast.setText(message)
         toast.setGravity(Gravity.CENTER_HORIZONTAL or Gravity.TOP, 0, 0)
         toast.show()
     }
@@ -105,8 +119,18 @@ class CustomToast private constructor(context: Context?, Timage: Bitmap?) {
         }
     }
 
+    private fun getToastS(context: Context, message: String?): Toast {
+        val toast = Toast(context)
+        toast.setText(message)
+        toast.duration = duration
+        return toast
+    }
+
     @Suppress("DEPRECATION")
     private fun getToast(context: Context, message: String?, bgColor: Int): Toast {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
+            return getToastS(context, message)
+        }
         val toast = Toast(context)
         val view: View = View.inflate(context, R.layout.custom_toast_base, null)
         val cardView: CardView = view.findViewById(R.id.toast_card_view)

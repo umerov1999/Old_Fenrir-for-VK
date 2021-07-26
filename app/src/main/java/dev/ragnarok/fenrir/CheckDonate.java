@@ -21,7 +21,6 @@ import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.RxUtils;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
-import io.reactivex.rxjava3.disposables.Disposable;
 
 public class CheckDonate {
     public static final List<Integer> donatedOwnersRemote = new ArrayList<>();
@@ -162,23 +161,19 @@ public class CheckDonate {
         if (!BuildConfig.IS_FULL && !Utils.isOneElementAssigned(Settings.get().accounts().getRegistered(), donatedOwnersLocal) && !Utils.isOneElementAssigned(Settings.get().accounts().getRegistered(), donatedOwnersRemote)) {
             View view = LayoutInflater.from(context).inflate(R.layout.dialog_buy_full_alert, null);
             view.findViewById(R.id.item_buy).setOnClickListener(v -> LinkHelper.openLinkInBrowser(context, "https://play.google.com/store/apps/details?id=dev.ragnarok.fenrir_full"));
-            view.findViewById(R.id.item_donate).setOnClickListener(v -> isDonated((Activity) context, Settings.get().accounts().getCurrent()));
+            view.findViewById(R.id.item_features).setOnClickListener(v -> {
+                view.findViewById(R.id.item_features).setVisibility(View.GONE);
+                view.findViewById(R.id.item_features_full).setVisibility(View.VISIBLE);
+            });
             RLottieImageView anim = view.findViewById(R.id.lottie_animation);
             anim.setAutoRepeat(true);
             anim.fromRes(R.raw.google_store, Utils.dp(200), Utils.dp(200));
             anim.playAnimation();
-            Disposable disposable = InteractorFactory.createDonateCheckInteractor().check()
-                    .compose(RxUtils.applySingleIOToMainSchedulers())
-                    .subscribe(t -> {
-                        view.findViewById(R.id.item_donate).setVisibility((!t.disabled && t.show_donate_in_buy) ? View.VISIBLE : View.GONE);
-                        view.findViewById(R.id.alt_item_donate).setVisibility((!t.disabled && t.show_donate_in_buy) ? View.VISIBLE : View.GONE);
-                    }, RxUtils.ignore());
 
             new MaterialAlertDialogBuilder(context)
                     .setTitle(R.string.info)
                     .setIcon(R.drawable.client_round)
                     .setCancelable(true)
-                    .setOnDismissListener(dialog -> disposable.dispose())
                     .setView(view)
                     .show();
             return false;

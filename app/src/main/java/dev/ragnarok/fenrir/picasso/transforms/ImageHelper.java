@@ -16,7 +16,12 @@ public class ImageHelper {
             return null;
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && bitmap.getConfig() == Bitmap.Config.HARDWARE) {
-            bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+            Bitmap tmpBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+            bitmap.recycle();
+            bitmap = tmpBitmap;
+            if (bitmap == null) {
+                return null;
+            }
         }
 
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
@@ -38,7 +43,12 @@ public class ImageHelper {
             return null;
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && bitmap.getConfig() == Bitmap.Config.HARDWARE) {
-            bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+            Bitmap tmpBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+            bitmap.recycle();
+            bitmap = tmpBitmap;
+            if (bitmap == null) {
+                return null;
+            }
         }
 
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);

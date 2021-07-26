@@ -39,7 +39,7 @@ import dev.ragnarok.fenrir.link.VkLinkParser;
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.ModalBottomSheetDialogFragment;
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.OptionRequest;
 import dev.ragnarok.fenrir.model.Audio;
-import dev.ragnarok.fenrir.model.menu.AudioItem;
+import dev.ragnarok.fenrir.model.menu.options.AudioLocalServerOption;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.picasso.transforms.PolyTransformation;
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation;
@@ -137,21 +137,21 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
     private void doMenu(AudioHolder holder, int position, View view, Audio audio) {
         ModalBottomSheetDialogFragment.Builder menus = new ModalBottomSheetDialogFragment.Builder();
 
-        menus.add(new OptionRequest(AudioItem.save_item_audio, mContext.getString(R.string.download), R.drawable.save));
-        menus.add(new OptionRequest(AudioItem.play_item_audio, mContext.getString(R.string.play), R.drawable.play));
+        menus.add(new OptionRequest(AudioLocalServerOption.save_item_audio, mContext.getString(R.string.download), R.drawable.save));
+        menus.add(new OptionRequest(AudioLocalServerOption.play_item_audio, mContext.getString(R.string.play), R.drawable.play));
         if (MusicPlaybackController.canPlayAfterCurrent(audio)) {
-            menus.add(new OptionRequest(AudioItem.play_item_after_current_audio, mContext.getString(R.string.play_audio_after_current), R.drawable.play_next));
+            menus.add(new OptionRequest(AudioLocalServerOption.play_item_after_current_audio, mContext.getString(R.string.play_audio_after_current), R.drawable.play_next));
         }
-        menus.add(new OptionRequest(AudioItem.bitrate_item_audio, mContext.getString(R.string.get_bitrate), R.drawable.high_quality));
-        menus.add(new OptionRequest(AudioItem.add_item_audio, mContext.getString(R.string.delete), R.drawable.ic_outline_delete));
-        menus.add(new OptionRequest(AudioItem.edit_track, mContext.getString(R.string.update_time), R.drawable.ic_recent));
-        menus.add(new OptionRequest(AudioItem.goto_artist, mContext.getString(R.string.edit), R.drawable.about_writed));
+        menus.add(new OptionRequest(AudioLocalServerOption.bitrate_item_audio, mContext.getString(R.string.get_bitrate), R.drawable.high_quality));
+        menus.add(new OptionRequest(AudioLocalServerOption.delete_item_audio, mContext.getString(R.string.delete), R.drawable.ic_outline_delete));
+        menus.add(new OptionRequest(AudioLocalServerOption.update_time_item_audio, mContext.getString(R.string.update_time), R.drawable.ic_recent));
+        menus.add(new OptionRequest(AudioLocalServerOption.edit_item_audio, mContext.getString(R.string.edit), R.drawable.about_writed));
 
         menus.header(firstNonEmptyString(audio.getArtist(), " ") + " - " + audio.getTitle(), R.drawable.song, audio.getThumb_image_little());
         menus.columns(2);
         menus.show(((FragmentActivity) mContext).getSupportFragmentManager(), "audio_options", option -> {
             switch (option.getId()) {
-                case AudioItem.save_item_audio:
+                case AudioLocalServerOption.save_item_audio:
                     if (!AppPerms.hasReadWriteStoragePermission(mContext)) {
                         if (mClickListener != null) {
                             mClickListener.onRequestWritePermissions();
@@ -172,27 +172,27 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
                         CustomToast.CreateCustomToast(mContext).showToastBottom(R.string.error_audio);
                     }
                     break;
-                case AudioItem.play_item_audio:
+                case AudioLocalServerOption.play_item_audio:
                     if (mClickListener != null) {
                         mClickListener.onClick(position, audio);
                         if (Settings.get().other().isShow_mini_player())
                             PlaceFactory.getPlayerPlace(Settings.get().accounts().getCurrent()).tryOpenWith(mContext);
                     }
                     break;
-                case AudioItem.play_item_after_current_audio:
+                case AudioLocalServerOption.play_item_after_current_audio:
                     MusicPlaybackController.playAfterCurrent(audio);
                     break;
-                case AudioItem.bitrate_item_audio:
+                case AudioLocalServerOption.bitrate_item_audio:
                     getBitrate(audio.getUrl(), audio.getDuration());
                     break;
-                case AudioItem.edit_track:
+                case AudioLocalServerOption.update_time_item_audio:
                     String hash = VkLinkParser.parseLocalServerURL(audio.getUrl());
                     if (Utils.isEmpty(hash)) {
                         break;
                     }
                     audioListDisposable = mAudioInteractor.update_time(hash).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> CustomToast.CreateCustomToast(mContext).showToast(R.string.success), t -> Utils.showErrorInAdapter((Activity) mContext, t));
                     break;
-                case AudioItem.goto_artist:
+                case AudioLocalServerOption.edit_item_audio:
                     String hash2 = VkLinkParser.parseLocalServerURL(audio.getUrl());
                     if (Utils.isEmpty(hash2)) {
                         break;
@@ -211,7 +211,7 @@ public class AudioLocalServerRecyclerAdapter extends RecyclerView.Adapter<AudioL
                                 .show();
                     }, t -> Utils.showErrorInAdapter((Activity) mContext, t));
                     break;
-                case AudioItem.add_item_audio:
+                case AudioLocalServerOption.delete_item_audio:
                     new MaterialAlertDialogBuilder(mContext)
                             .setMessage(R.string.do_delete)
                             .setTitle(R.string.confirmation)

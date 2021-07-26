@@ -1,6 +1,7 @@
 package dev.ragnarok.fenrir.util;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -30,12 +31,6 @@ public class Accounts {
         if (aid == ISettings.IAccountsSettings.INVALID_ID) {
             return;
         }
-
-        View view = View.inflate(context, R.layout.account_change_toast, null);
-
-        ImageView avatar = view.findViewById(R.id.avatar);
-        TextView subtitle = view.findViewById(R.id.subtitle);
-
         User user;
 
         try {
@@ -46,6 +41,19 @@ public class Accounts {
             // NotFountException
             return;
         }
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
+            Toast toast = new Toast(context);
+            toast.setDuration(Toast.LENGTH_SHORT);
+            toast.setText(user.getFullName());
+            toast.setGravity(Gravity.FILL_HORIZONTAL | Gravity.TOP, 0, 0);
+            toast.show();
+            return;
+        }
+
+        View view = View.inflate(context, R.layout.account_change_toast, null);
+
+        ImageView avatar = view.findViewById(R.id.avatar);
+        TextView subtitle = view.findViewById(R.id.subtitle);
 
         PicassoInstance.with()
                 .load(user.getMaxSquareAvatar())

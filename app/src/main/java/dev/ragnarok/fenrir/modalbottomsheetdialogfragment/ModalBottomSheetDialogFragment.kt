@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.squareup.picasso3.Callback
 import dev.ragnarok.fenrir.R
 import dev.ragnarok.fenrir.picasso.PicassoInstance
 import dev.ragnarok.fenrir.picasso.transforms.PolyTransformation
@@ -318,13 +319,22 @@ class ModalBottomSheetDialogFragment(listener: Listener) : BottomSheetDialogFrag
         fun bind(header: String?, url: String?, @DrawableRes res: Int) {
             text.text = header
             PicassoInstance.with().cancelRequest(av)
-            av.setImageResource(res)
             if (!Utils.isEmpty(url)) {
                 PicassoInstance.with()
                     .load(url)
                     .transform(PolyTransformation())
-                    .into(av)
+                    .into(av, object : Callback {
+                        override fun onSuccess() {
+
+                        }
+
+                        override fun onError(t: Throwable) {
+                            av.setImageResource(res)
+                            Utils.setColorFilter(av, CurrentTheme.getColorPrimary(av.context))
+                        }
+                    })
             } else {
+                av.setImageResource(res)
                 Utils.setColorFilter(av, CurrentTheme.getColorPrimary(av.context))
             }
         }

@@ -240,9 +240,24 @@
     <string name="project_dedicated_summary">Project Dedicated for Arnoldova Ekaterina, https://vk.com/id255645173</string>
     <string name="project_dedicated">Project Dedicated</string>
     <string name="go_buy" translatable="false">Google Play</string>
-    <string name="go_donate_info">Or Donate to the verification, but will be tied only to the current page id</string>
-    <string name="go_donate">Verification</string>
     <string name="in_full_version">Available in full version!</string>
+    <string name="features">Features:</string>
+    <string name="features_full">
+        Features:
+        \n
+        \n1. Downloading music
+        \n2. Download video
+        \n3. Downloading voice
+        \n4. Downloading Stickers
+        \n5. Sending your stickers
+        \n6. Downloading correspondence
+        \n7. Mentions
+        \n8. Hide chats (hold the pencil button to show hidden ones)
+        \n9. Products
+        \n10. All photo comments
+        \n11. Change icon (Android >= 8.1)
+        \n12. Local media server
+        \n13. Player background settings.</string>
 
     <!-- Dialogs-->
     <string name="dialogs">Dialogs</string>
@@ -1135,31 +1150,31 @@
 
     <string name="encryption_terms_of_use">
         TERMS OF USE
-        \ n
-        \ n1. FUNCTIONAL FEATURES
-        \ n1.1. The option implies encryption of only the text of messages, attachment protection is not implemented.
-        \ n1.2. This option is not available for group or community conversations.
-        \ n1.3. In order to start the exchange of encrypted messages, the interlocutors must go through the key exchange procedure.
-        \ n1.4. Messages can be decrypted only on the device that participated in the exchange of a specific key pair, on other devices, in other applications or in the browser, the user will not be able to read the original text of the messages.
-        \ n
-        \ n2. EXCHANGE OF ENCRYPTION KEYS
-        \ n2.1. To transfer the keys, the application will send several service messages directly to the dialog.
-        \ n2.2. The compromise of service messages does not pose a security threat, they perform exclusively a transport role and do not contain encryption keys in clear text.
-        \ n2.3. Removing service messages from the dialog will not affect the encryption functionality in any way.
-        \ n2.4. Key exchange can be repeated an infinite number of times, while new messages will be encrypted with new keys, and old ones can still be decrypted with old ones.
-        \ n
-        \ n3. STORING KEYS
-        \ n3.1. Encryption keys are stored locally on the devices of the interlocutors in permanent or random access memory (depending on the selected mode).
-        \ n3.2. If the encryption keys are lost, the user will not be able to read encrypted incoming and outgoing messages.
-        \ n3.3. The user will lose encryption keys in the following cases:
-        \ n- remove the application from the device;
-        \ n- clearing application data;
-        \ n- after using the \ "Delete keys \" option in the application settings;
-        \ n- after closing the application (only for key storage mode in RAM);
-        \ n- when deleting an account from the application.
-        \ n
-        \ n4. DENIAL OF RESPONSIBILITY
-        \ n4.1. The developers of the Fenrir application are not responsible for the loss of user data in the event of loss of encryption keys or incorrect use of this option.</string>
+        \n
+        \n1. FUNCTIONAL FEATURES
+        \n1.1. The option implies encryption of only the text of messages, attachment protection is not implemented.
+        \n1.2. This option is not available for group or community conversations.
+        \n1.3. In order to start the exchange of encrypted messages, the interlocutors must go through the key exchange procedure.
+        \n1.4. Messages can be decrypted only on the device that participated in the exchange of a specific key pair, on other devices, in other applications or in the browser, the user will not be able to read the original text of the messages.
+        \n
+        \n2. EXCHANGE OF ENCRYPTION KEYS
+        \n2.1. To transfer the keys, the application will send several service messages directly to the dialog.
+        \n2.2. The compromise of service messages does not pose a security threat, they perform exclusively a transport role and do not contain encryption keys in clear text.
+        \n2.3. Removing service messages from the dialog will not affect the encryption functionality in any way.
+        \n2.4. Key exchange can be repeated an infinite number of times, while new messages will be encrypted with new keys, and old ones can still be decrypted with old ones.
+        \n
+        \n3. STORING KEYS
+        \n3.1. Encryption keys are stored locally on the devices of the interlocutors in permanent or random access memory (depending on the selected mode).
+        \n3.2. If the encryption keys are lost, the user will not be able to read encrypted incoming and outgoing messages.
+        \n3.3. The user will lose encryption keys in the following cases:
+        \n- remove the application from the device;
+        \n- clearing application data;
+        \n- after using the \ "Delete keys \" option in the application settings;
+        \n- after closing the application (only for key storage mode in RAM);
+        \n- when deleting an account from the application.
+        \n
+        \n4. DENIAL OF RESPONSIBILITY
+        \n4.1. The developers of the Fenrir application are not responsible for the loss of user data in the event of loss of encryption keys or incorrect use of this option.</string>
     <string name="choose_location_key_store">Choose where to store your keys</string>
     <string name="clear_storage_of_encryption_keys">Clear encryption key store</string>
     <string name="delete_keys">Delete keys</string>
@@ -1822,4 +1837,6 @@
     <string name="headers_in_dialog">Date header in dialog</string>
     <string name="push_first">Move to first</string>
     <string name="revert_play_audio">Play button - menu</string>
+    <string name="foreground_downloader">Foreground Downloader</string>
+    <string name="side_transition">Side animated transition</string>
 </resources>

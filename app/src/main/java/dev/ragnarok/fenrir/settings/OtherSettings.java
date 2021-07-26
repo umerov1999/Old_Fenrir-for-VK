@@ -311,6 +311,11 @@ class OtherSettings implements ISettings.IOtherSettings {
     }
 
     @Override
+    public boolean is_side_transition() {
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("side_transition", false);
+    }
+
+    @Override
     public boolean is_notification_force_link() {
         return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("notification_force_link", false);
     }

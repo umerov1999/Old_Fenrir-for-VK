@@ -699,6 +699,13 @@
             android:title="@string/is_side_no_stroke"
             app:iconSpaceReserved="false" />
 
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="is_side_navigation"
+            android:key="side_transition"
+            android:title="@string/side_transition"
+            app:iconSpaceReserved="false" />
+
         <Preference
             android:dependency="is_side_navigation"
             android:dialogTitle="@string/side_drawer_categories_title"

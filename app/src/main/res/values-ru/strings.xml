@@ -105,9 +105,24 @@
     <string name="is_donated_alert_disabled">Возможность отключена</string>
     <string name="project_dedicated_summary">Проект посвящён Арнольдове Екатерине, https://vk.com/id255645173</string>
     <string name="project_dedicated">Проект посвящён</string>
-    <string name="go_donate_info">Или Донат на галочку верефикации, но будет привязано только к текущему id страницы</string>
-    <string name="go_donate">Галочка</string>
     <string name="in_full_version">Доступно в полной версии!</string>
+    <string name="features">Функции:</string>
+    <string name="features_full">
+        Функции:
+        \n
+        \n1.Скачивание музыки
+        \n2.Скачивание видео
+        \n3.Скачивание голосовых
+        \n4.Скачивание стикеров
+        \n5.Отправка своих стикеров
+        \n6.Скачивание переписок
+        \n7.Упоминания
+        \n8.Скрытие чатов (удерживать кнопку карандаш, чтобы показать скрытые)
+        \n9.Товары
+        \n10.Все коментарии фоток
+        \n11.Смена иконки (Android >= 8.1)
+        \n12.Локальный медиа сервер
+        \n13.Настройки фона плеера</string>
 
     <!-- Dialogs-->
     <string name="dialogs">Диалоги</string>
@@ -1610,4 +1625,6 @@
     <string name="headers_in_dialog">Заголовок даты в диалоге</string>
     <string name="push_first">Поместить в начало</string>
     <string name="revert_play_audio">Кнопка плей - меню</string>
+    <string name="foreground_downloader">Менеджер загрузок</string>
+    <string name="side_transition">Анимированный переход</string>
 </resources>

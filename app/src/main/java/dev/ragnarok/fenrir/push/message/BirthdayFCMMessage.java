@@ -31,6 +31,42 @@ public class BirthdayFCMMessage {
     private String body;
     private String title;
 
+    /*
+    public static class tst {
+        public Map<String, String> data;
+    }
+    public static void test(Context ctx) {
+        BirthdayFCMMessage message = new BirthdayFCMMessage();
+        Map<String, String> data = new ArrayMap<>();
+        data = new Gson().fromJson("{ \"data\": {\n" +
+                "  \"subtype\": \"birthday\",\n" +
+                "  \"image_type\": \"user\",\n" +
+                "  \"need_track_interaction\": \"1\",\n" +
+                "  \"from_id\": \"647737194\",\n" +
+                "  \"id\": \"friend_647737194\",\n" +
+                "  \"url\": \"https://vk.com/id647737194\",\n" +
+                "  \"body\": \"Отправьте подарок сейчас, чтобы точно не забыть поздравить\",\n" +
+                "  \"icon\": \"gift_24\",\n" +
+                "  \"stat\": \"time_sent\\u003d1626588192317\\u0026provider\\u003dfcm\\u0026is_feedback\\u003d1\\u0026subtype\\u003dbirthday\\u0026notify_sent_time\\u003d1626587947\",\n" +
+                "  \"time\": \"1626588192\",\n" +
+                "  \"type\": \"birthday\",\n" +
+                "  \"category\": \"birthday\",\n" +
+                "  \"image\": \"[{\\\"width\\\":200,\\\"url\\\":\\\"https:\\\\/\\\\/sun9-4.userapi.com\\\\/bz_33e8I8PLH1GiuInIZf1NNm11hYV5r4eWCzQ\\\\/3SypfdXM0-E.jpg\\\",\\\"height\\\":200},{\\\"width\\\":100,\\\"url\\\":\\\"https:\\\\/\\\\/sun9-74.userapi.com\\\\/rWpMl1okQy4AfL60WiGl_oIMmb-VGg1aCZOqNw\\\\/LEwSkGEPC1A.jpg\\\",\\\"height\\\":100},{\\\"width\\\":50,\\\"url\\\":\\\"https:\\\\/\\\\/sun9-72.userapi.com\\\\/SkPJ3NVl9pSDgEmC6QYvffqlOCsz8FeHF_Maiw\\\\/Vlt-jsdxha0.jpg\\\",\\\"height\\\":50}]\",\n" +
+                "  \"sound\": \"0\",\n" +
+                "  \"title\": \"День рождения у Бибы\",\n" +
+                "  \"to_id\": \"581662705\",\n" +
+                "  \"group_id\": \"birthdays\",\n" +
+                "  \"context\": \"{\\\"feedback\\\":true,\\\"user_id\\\":647737194}\",\n" +
+                "  \"notify_sent_time\": \"1626587947\"\n" +
+                "}}", tst.class).data;
+        BirthdayContext context = GSON.fromJson(data.get("context"), BirthdayContext.class);
+        message.user_id = context.user_id;
+        message.body = data.get("body");
+        message.title = data.get("title");
+        message.notify(ctx, Settings.get().accounts().getCurrent());
+    }
+     */
+
     public static BirthdayFCMMessage fromRemoteMessage(RemoteMessage remote) {
         BirthdayFCMMessage message = new BirthdayFCMMessage();
         Map<String, String> data = remote.getData();

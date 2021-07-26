@@ -29,7 +29,7 @@ public class BlurTransformation implements Transformation {
     }
 
     public static Bitmap blurRenderScript(Context context, Bitmap inputBitmap, @FloatRange(from = 0.0f, to = 25.0f) float radius) {
-        if (radius <= 0) {
+        if (radius <= 0 || inputBitmap == null) {
             return inputBitmap;
         }
         Bitmap outputBitmap = inputBitmap.copy(inputBitmap.getConfig(), true);
@@ -58,7 +58,9 @@ public class BlurTransformation implements Transformation {
     public RequestHandler.Result.Bitmap transform(@NonNull RequestHandler.Result.Bitmap src) {
         Bitmap source = src.getBitmap();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && source.getConfig() == Bitmap.Config.HARDWARE) {
-            source = source.copy(Bitmap.Config.ARGB_8888, true);
+            Bitmap tmpSource = source.copy(Bitmap.Config.ARGB_8888, true);
+            source.recycle();
+            source = tmpSource;
         }
 
         Bitmap bitmap = blurRenderScript(mContext, source, mRadius);
@@ -76,7 +78,9 @@ public class BlurTransformation implements Transformation {
             return null;
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && source.getConfig() == Bitmap.Config.HARDWARE) {
-            source = source.copy(Bitmap.Config.ARGB_8888, true);
+            Bitmap tmpSource = source.copy(Bitmap.Config.ARGB_8888, true);
+            source.recycle();
+            source = tmpSource;
         }
 
         Bitmap bitmap = blurRenderScript(mContext, source, mRadius);

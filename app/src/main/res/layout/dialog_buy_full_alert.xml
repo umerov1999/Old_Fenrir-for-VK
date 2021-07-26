@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -41,21 +41,8 @@
             app:icon="@drawable/ic_market_outline"
             app:iconTint="@android:color/black" />
 
-        <TextView
-            android:id="@+id/alt_item_donate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:padding="2dp"
-            android:text="@string/go_donate_info"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="18sp"
-            android:visibility="gone" />
-
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/item_donate"
+            android:id="@+id/item_features"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,11 +51,26 @@
             android:layout_marginBottom="2dp"
             android:backgroundTint="#FFFFFF"
             android:stateListAnimator="@animator/clicked"
-            android:text="@string/go_donate"
+            android:text="@string/features"
             android:textColor="@android:color/black"
-            android:visibility="gone"
-            app:icon="@drawable/verified"
+            app:icon="@drawable/about_writed"
             app:iconTint="@android:color/black" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/item_features_full"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:animateLayoutChanges="true"
+            android:ellipsize="end"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:text="@string/features_full"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="16sp"
+            android:visibility="gone" />
 
     </LinearLayout>
 </ScrollView>

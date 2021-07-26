@@ -39,7 +39,7 @@ import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.ModalBottomSheetDialogFragment;
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.OptionRequest;
 import dev.ragnarok.fenrir.model.Audio;
-import dev.ragnarok.fenrir.model.menu.AudioItem;
+import dev.ragnarok.fenrir.model.menu.options.AudioLocalOption;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.picasso.transforms.PolyTransformation;
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation;
@@ -145,46 +145,46 @@ public class AudioLocalRecyclerAdapter extends RecyclerView.Adapter<AudioLocalRe
     private void doMenu(int position, View view, Audio audio) {
         ModalBottomSheetDialogFragment.Builder menus = new ModalBottomSheetDialogFragment.Builder();
 
-        menus.add(new OptionRequest(AudioItem.save_item_audio, mContext.getString(R.string.upload), R.drawable.web));
-        menus.add(new OptionRequest(AudioItem.play_item_audio, mContext.getString(R.string.play), R.drawable.play));
+        menus.add(new OptionRequest(AudioLocalOption.upload_item_audio, mContext.getString(R.string.upload), R.drawable.web));
+        menus.add(new OptionRequest(AudioLocalOption.play_item_audio, mContext.getString(R.string.play), R.drawable.play));
         if (Settings.get().other().getLocalServer().enabled) {
-            menus.add(new OptionRequest(AudioItem.share_button, mContext.getString(R.string.play_remote), R.drawable.remote_cloud));
+            menus.add(new OptionRequest(AudioLocalOption.play_via_local_server, mContext.getString(R.string.play_remote), R.drawable.remote_cloud));
         }
         if (MusicPlaybackController.canPlayAfterCurrent(audio)) {
-            menus.add(new OptionRequest(AudioItem.play_item_after_current_audio, mContext.getString(R.string.play_audio_after_current), R.drawable.play_next));
+            menus.add(new OptionRequest(AudioLocalOption.play_item_after_current_audio, mContext.getString(R.string.play_audio_after_current), R.drawable.play_next));
         }
-        menus.add(new OptionRequest(AudioItem.bitrate_item_audio, mContext.getString(R.string.get_bitrate), R.drawable.high_quality));
-        menus.add(new OptionRequest(AudioItem.add_item_audio, mContext.getString(R.string.delete), R.drawable.ic_outline_delete));
+        menus.add(new OptionRequest(AudioLocalOption.bitrate_item_audio, mContext.getString(R.string.get_bitrate), R.drawable.high_quality));
+        menus.add(new OptionRequest(AudioLocalOption.delete_item_audio, mContext.getString(R.string.delete), R.drawable.ic_outline_delete));
 
 
         menus.header(firstNonEmptyString(audio.getArtist(), " ") + " - " + audio.getTitle(), R.drawable.song, audio.getThumb_image_little());
         menus.columns(2);
         menus.show(((FragmentActivity) mContext).getSupportFragmentManager(), "audio_options", option -> {
             switch (option.getId()) {
-                case AudioItem.save_item_audio:
+                case AudioLocalOption.upload_item_audio:
                     if (mClickListener != null) {
                         mClickListener.onUpload(position, audio);
                     }
                     break;
-                case AudioItem.share_button:
+                case AudioLocalOption.play_via_local_server:
                     if (mClickListener != null) {
                         mClickListener.onRemotePlay(position, audio);
                     }
                     break;
-                case AudioItem.play_item_audio:
+                case AudioLocalOption.play_item_audio:
                     if (mClickListener != null) {
                         mClickListener.onClick(position, audio);
                         if (Settings.get().other().isShow_mini_player())
                             PlaceFactory.getPlayerPlace(Settings.get().accounts().getCurrent()).tryOpenWith(mContext);
                     }
                     break;
-                case AudioItem.play_item_after_current_audio:
+                case AudioLocalOption.play_item_after_current_audio:
                     MusicPlaybackController.playAfterCurrent(audio);
                     break;
-                case AudioItem.bitrate_item_audio:
+                case AudioLocalOption.bitrate_item_audio:
                     getLocalBitrate(audio.getUrl());
                     break;
-                case AudioItem.add_item_audio:
+                case AudioLocalOption.delete_item_audio:
                     try {
                         if (mContext.getContentResolver().delete(Uri.parse(audio.getUrl()), null, null) == 1) {
                             Snackbar.make(view, R.string.success, BaseTransientBottomBar.LENGTH_LONG).show();

@@ -3,6 +3,8 @@ package dev.ragnarok.fenrir.activity;
 import static dev.ragnarok.fenrir.util.Objects.isNull;
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
@@ -19,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -350,6 +353,28 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
 
         DrawerLayout mDrawerLayout = findViewById(R.id.my_drawer_layout);
         if (nonNull(mDrawerLayout)) {
+            if (Settings.get().other().is_side_transition()) {
+                ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(findViewById(R.id.main_root), PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 1f, 0.6f),
+                        PropertyValuesHolder.ofFloat(View.TRANSLATION_X, 0f, 0f, 100f));
+                anim.setInterpolator(new LinearInterpolator());
+                mDrawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+                    @Override
+                    public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+                        anim.setCurrentFraction(slideOffset);
+                    }
+
+                    @Override
+                    public void onDrawerOpened(View drawerView) {
+                        anim.start();
+                    }
+
+                    @Override
+                    public void onDrawerClosed(View drawerView) {
+                        anim.cancel();
+                    }
+                });
+            }
+
             mDrawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
                 @Override
                 public void onDrawerStateChanged(int newState) {

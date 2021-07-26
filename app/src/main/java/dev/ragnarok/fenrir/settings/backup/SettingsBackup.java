@@ -134,6 +134,7 @@ public class SettingsBackup {
                 new SettingCollector("use_hls_downloader", SettingTypes.TYPE_BOOL),
                 new SettingCollector("is_side_navigation", SettingTypes.TYPE_BOOL),
                 new SettingCollector("is_side_no_stroke", SettingTypes.TYPE_BOOL),
+                new SettingCollector("side_transition", SettingTypes.TYPE_BOOL),
                 new SettingCollector("chats_notification_backup", SettingTypes.TYPE_STRING),
                 new SettingCollector("notification_force_link", SettingTypes.TYPE_BOOL),
                 new SettingCollector("recording_to_opus", SettingTypes.TYPE_BOOL)

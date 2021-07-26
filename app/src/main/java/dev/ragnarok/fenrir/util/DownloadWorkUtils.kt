@@ -701,7 +701,7 @@ object DownloadWorkUtils {
                         .setPriority(Notification.PRIORITY_MIN)
                 }
             builder.setContentTitle(applicationContext.getString(R.string.work_manager))
-                .setContentText(applicationContext.getString(R.string.may_down_charge))
+                .setContentText(applicationContext.getString(R.string.foreground_downloader))
                 .setSmallIcon(R.drawable.web)
                 .setColor(Color.parseColor("#dd0000"))
                 .setOngoing(true)

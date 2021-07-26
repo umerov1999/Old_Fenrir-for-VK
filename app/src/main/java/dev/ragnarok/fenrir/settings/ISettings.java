@@ -134,6 +134,8 @@ public interface ISettings {
 
         boolean is_side_no_stroke();
 
+        boolean is_side_transition();
+
         boolean is_notification_force_link();
 
         boolean isEnable_show_audio_top();

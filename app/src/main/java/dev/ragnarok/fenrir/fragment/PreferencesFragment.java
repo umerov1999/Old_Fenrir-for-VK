@@ -381,6 +381,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             return true;
         });
 
+        findPreference("side_transition").setOnPreferenceChangeListener((preference, newValue) -> {
+            requireActivity().recreate();
+            return true;
+        });
+
         findPreference("donate_anim_set").setOnPreferenceChangeListener((preference, newValue) -> {
             requireActivity().recreate();
             return true;

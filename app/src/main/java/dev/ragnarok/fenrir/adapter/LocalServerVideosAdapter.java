@@ -27,7 +27,7 @@ import dev.ragnarok.fenrir.link.VkLinkParser;
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.ModalBottomSheetDialogFragment;
 import dev.ragnarok.fenrir.modalbottomsheetdialogfragment.OptionRequest;
 import dev.ragnarok.fenrir.model.Video;
-import dev.ragnarok.fenrir.model.menu.AudioItem;
+import dev.ragnarok.fenrir.model.menu.options.VideoLocalServerOption;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
@@ -82,16 +82,16 @@ public class LocalServerVideosAdapter extends RecyclerView.Adapter<LocalServerVi
         });
         holder.card.setOnLongClickListener(v -> {
             ModalBottomSheetDialogFragment.Builder menus = new ModalBottomSheetDialogFragment.Builder();
-            menus.add(new OptionRequest(AudioItem.save_item_audio, context.getString(R.string.download), R.drawable.save));
-            menus.add(new OptionRequest(AudioItem.play_item_audio, context.getString(R.string.play), R.drawable.play));
-            menus.add(new OptionRequest(AudioItem.edit_track, context.getString(R.string.update_time), R.drawable.ic_recent));
-            menus.add(new OptionRequest(AudioItem.add_item_audio, context.getString(R.string.delete), R.drawable.ic_outline_delete));
-            menus.add(new OptionRequest(AudioItem.goto_artist, context.getString(R.string.edit), R.drawable.about_writed));
+            menus.add(new OptionRequest(VideoLocalServerOption.save_item_video, context.getString(R.string.download), R.drawable.save));
+            menus.add(new OptionRequest(VideoLocalServerOption.play_item_video, context.getString(R.string.play), R.drawable.play));
+            menus.add(new OptionRequest(VideoLocalServerOption.update_time_item_video, context.getString(R.string.update_time), R.drawable.ic_recent));
+            menus.add(new OptionRequest(VideoLocalServerOption.delete_item_video, context.getString(R.string.delete), R.drawable.ic_outline_delete));
+            menus.add(new OptionRequest(VideoLocalServerOption.edit_item_video, context.getString(R.string.edit), R.drawable.about_writed));
             menus.header(firstNonEmptyString(video.getDescription(), " ") + " - " + video.getTitle(), R.drawable.video, null);
             menus.columns(2);
             menus.show(((FragmentActivity) context).getSupportFragmentManager(), "server_video_options", option -> {
                 switch (option.getId()) {
-                    case AudioItem.save_item_audio:
+                    case VideoLocalServerOption.save_item_video:
                         if (!AppPerms.hasReadWriteStoragePermission(context)) {
                             if (videoOnClickListener != null) {
                                 videoOnClickListener.onRequestWritePermissions();
@@ -100,19 +100,19 @@ public class LocalServerVideosAdapter extends RecyclerView.Adapter<LocalServerVi
                         }
                         DownloadWorkUtils.doDownloadVideo(context, video, video.getMp4link720(), "Local");
                         break;
-                    case AudioItem.play_item_audio:
+                    case VideoLocalServerOption.play_item_video:
                         if (videoOnClickListener != null) {
                             videoOnClickListener.onVideoClick(position, video);
                         }
                         break;
-                    case AudioItem.edit_track:
+                    case VideoLocalServerOption.update_time_item_video:
                         String hash = VkLinkParser.parseLocalServerURL(video.getMp4link720());
                         if (Utils.isEmpty(hash)) {
                             break;
                         }
                         listDisposable = mVideoInteractor.update_time(hash).compose(RxUtils.applySingleIOToMainSchedulers()).subscribe(t -> CustomToast.CreateCustomToast(context).showToast(R.string.success), t -> Utils.showErrorInAdapter((Activity) context, t));
                         break;
-                    case AudioItem.goto_artist:
+                    case VideoLocalServerOption.edit_item_video:
                         String hash2 = VkLinkParser.parseLocalServerURL(video.getMp4link720());
                         if (Utils.isEmpty(hash2)) {
                             break;
@@ -131,7 +131,7 @@ public class LocalServerVideosAdapter extends RecyclerView.Adapter<LocalServerVi
                                     .show();
                         }, t -> Utils.showErrorInAdapter((Activity) context, t));
                         break;
-                    case AudioItem.add_item_audio:
+                    case VideoLocalServerOption.delete_item_video:
                         new MaterialAlertDialogBuilder(context)
                                 .setMessage(R.string.do_delete)
                                 .setTitle(R.string.confirmation)

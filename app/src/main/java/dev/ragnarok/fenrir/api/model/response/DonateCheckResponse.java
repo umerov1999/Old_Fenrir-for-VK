@@ -7,8 +7,6 @@ import java.util.List;
 public class DonateCheckResponse {
     @SerializedName("disabled")
     public boolean disabled;
-    @SerializedName("show_donate_in_buy")
-    public boolean show_donate_in_buy;
     @SerializedName("page")
     public int page;
     @SerializedName("group")
