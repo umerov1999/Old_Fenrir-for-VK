@@ -191,7 +191,7 @@ public class PlaylistsInCatalogFragment extends BaseMvpFragment<PlaylistsInCatal
     }
 
     @Override
-    public void onAdd(int index, AudioPlaylist album) {
-        callPresenter(p -> p.onAdd(album));
+    public void onAdd(int index, AudioPlaylist album, boolean clone) {
+        callPresenter(p -> p.onAdd(album, clone));
     }
 }

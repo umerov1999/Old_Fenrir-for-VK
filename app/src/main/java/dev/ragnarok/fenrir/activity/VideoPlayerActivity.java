@@ -439,7 +439,8 @@ public class VideoPlayerActivity extends AppCompatActivity implements SurfaceHol
             case InternalVideoSize.SIZE_LIVE:
                 return video.getLive();
             default:
-                throw new IllegalArgumentException("Unknown video size");
+                finish();
+                return "null";
         }
     }
 

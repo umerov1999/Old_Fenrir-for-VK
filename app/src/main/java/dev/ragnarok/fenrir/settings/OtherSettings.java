@@ -312,7 +312,7 @@ class OtherSettings implements ISettings.IOtherSettings {
 
     @Override
     public boolean is_side_transition() {
-        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("side_transition", false);
+        return PreferenceManager.getDefaultSharedPreferences(app).getBoolean("is_side_transition", true);
     }
 
     @Override

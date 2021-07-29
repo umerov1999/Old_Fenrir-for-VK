@@ -21,8 +21,8 @@
         android:title="@string/copy_id" />
 
     <item
-        android:id="@+id/action_add_to_news"
-        android:title="@string/add_to_news" />
+        android:id="@+id/action_add_to_shortcut"
+        android:title="@string/add_to_launcher_shortcuts" />
 
     <item
         android:id="@+id/action_open_url"

@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.MenuItem;
@@ -181,6 +182,7 @@ import dev.ragnarok.fenrir.util.Accounts;
 import dev.ragnarok.fenrir.util.Action;
 import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.CustomToast;
+import dev.ragnarok.fenrir.util.HelperSimple;
 import dev.ragnarok.fenrir.util.Logger;
 import dev.ragnarok.fenrir.util.MainActivityTransforms;
 import dev.ragnarok.fenrir.util.Pair;
@@ -198,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
     public static final String ACTION_OPEN_AUDIO_PLAYER = "dev.ragnarok.fenrir.activity.MainActivity.openAudioPlayer";
     public static final String ACTION_SEND_ATTACHMENTS = "dev.ragnarok.fenrir.ACTION_SEND_ATTACHMENTS";
     public static final String ACTION_SWITH_ACCOUNT = "dev.ragnarok.fenrir.ACTION_SWITH_ACCOUNT";
+    public static final String ACTION_SHORTCUT_WALL = "dev.ragnarok.fenrir.ACTION_SHORTCUT_WALL";
     public static final String ACTION_OPEN_WALL = "dev.ragnarok.fenrir.ACTION_OPEN_WALL";
 
     public static final String EXTRA_NO_REQUIRE_PIN = "no_require_pin";
@@ -360,7 +363,11 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
                 mDrawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
                     @Override
                     public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-                        anim.setCurrentFraction(slideOffset);
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) {
+                            anim.setCurrentPlayTime(Math.min((int) (slideOffset * anim.getDuration()), anim.getDuration()));
+                        } else {
+                            anim.setCurrentFraction(slideOffset);
+                        }
                     }
 
                     @Override
@@ -409,7 +416,6 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
                 place.tryOpenWith(this);
             }
             checkFCMRegistration();
-            CheckDonate.updateDonateList();
 
             if (!isAuthValid()) {
                 startAccountsActivity();
@@ -425,6 +431,17 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
                             .subscribe(RxUtils.dummy(), t -> {/*TODO*/}));
 
                     Utils.checkMusicInPC(this);
+                    CheckDonate.floodControl();
+
+                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP && HelperSimple.INSTANCE.needHelp(HelperSimple.LOLLIPOP_21, 1)) {
+                        new MaterialAlertDialogBuilder(this)
+                                .setTitle(R.string.info)
+                                .setMessage(R.string.lolipop21)
+                                .setCancelable(false)
+                                .setPositiveButton(R.string.button_ok, null)
+                                .show();
+                    }
+
                     if (!Settings.get().other().appStoredVersionEqual()) {
                         PreferencesFragment.CleanUICache(this, false);
                     }
@@ -585,6 +602,18 @@ public class MainActivity extends AppCompatActivity implements AbsNavigationFrag
 
             mAccountId = newAccountId;
             intent.setAction(ACTION_MAIN);
+        }
+
+        if (ACTION_SHORTCUT_WALL.equals(intent.getAction())) {
+            int newAccountId = intent.getExtras().getInt(Extra.ACCOUNT_ID);
+            int ownerId = intent.getExtras().getInt(Extra.OWNER_ID);
+            Settings.get()
+                    .accounts()
+                    .setCurrent(newAccountId);
+
+            mAccountId = newAccountId;
+            openPlace(PlaceFactory.getOwnerWallPlace(mAccountId, ownerId, null));
+            return true;
         }
 
         Bundle extras = intent.getExtras();

@@ -38,7 +38,6 @@ import java.util.List;
 
 import dev.ragnarok.fenrir.CheckDonate;
 import dev.ragnarok.fenrir.Extra;
-import dev.ragnarok.fenrir.HelperSimple;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
@@ -68,6 +67,7 @@ import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AssertUtils;
 import dev.ragnarok.fenrir.util.CustomToast;
+import dev.ragnarok.fenrir.util.HelperSimple;
 import dev.ragnarok.fenrir.util.InputTextDialog;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.util.ViewUtils;
@@ -303,7 +303,7 @@ public class DialogsFragment extends BaseMvpFragment<DialogsPresenter, IDialogsV
         String delete = getString(R.string.delete);
         String addToHomeScreen = getString(R.string.add_to_home_screen);
         String notificationSettings = getString(R.string.peer_notification_settings);
-        String addToShortcuts = getString(R.string.add_to_launcer_shortcuts);
+        String addToShortcuts = getString(R.string.add_to_launcher_shortcuts);
 
         String setHide = getString(R.string.hide_dialog);
         String setShow = getString(R.string.set_no_hide_dialog);

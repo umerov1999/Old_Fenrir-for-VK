@@ -50,9 +50,9 @@ public class AudioPlaylistSearchPresenter extends AbsSearchPresenter<IAudioPlayl
                 .map(audio -> Pair.Companion.create(audio, nextFrom));
     }
 
-    public void onAdd(AudioPlaylist album) {
+    public void onAdd(AudioPlaylist album, boolean clone) {
         int accountId = getAccountId();
-        appendDisposable(audioInteractor.followPlaylist(accountId, album.getId(), album.getOwnerId(), album.getAccess_key())
+        appendDisposable((clone ? audioInteractor.clonePlaylist(accountId, album.getId(), album.getOwnerId()) : audioInteractor.followPlaylist(accountId, album.getId(), album.getOwnerId(), album.getAccess_key()))
                 .compose(RxUtils.applySingleIOToMainSchedulers())
                 .subscribe(data -> callView(v -> v.getCustomToast().showToast(R.string.success)), throwable ->
                         callView(v -> showError(v, throwable))));

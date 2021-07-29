@@ -26,6 +26,7 @@ import dev.ragnarok.fenrir.Extra;
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.MainActivity;
+import dev.ragnarok.fenrir.model.Owner;
 import dev.ragnarok.fenrir.model.Peer;
 import dev.ragnarok.fenrir.picasso.PicassoInstance;
 import dev.ragnarok.fenrir.picasso.transforms.RoundTransformation;
@@ -41,7 +42,7 @@ public class ShortcutUtils {
         return ContextCompat.getDrawable(context, R.mipmap.ic_launcher).getIntrinsicWidth();
     }
 
-    public static void createAccountShurtcut(Context context, int accountId, String title, String url) throws IOException {
+    public static void createAccountShortcut(Context context, int accountId, String title, String url) throws IOException {
         //Bitmap immutableIcon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
         //Bitmap mutableBitmap = immutableIcon.copy(Bitmap.Config.ARGB_8888, true);
 
@@ -78,6 +79,29 @@ public class ShortcutUtils {
         sendShortcutBroadcast(context, id, intent, title, avatar);
     }
 
+    public static void createWallShortcut(Context context, int accountId, Owner owner) throws IOException {
+        Bitmap avatar = null;
+
+        if (nonEmpty(owner.getMaxSquareAvatar())) {
+            int size = getLauncherIconSize(context);
+
+            avatar = PicassoInstance.with()
+                    .load(owner.getMaxSquareAvatar())
+                    .transform(new RoundTransformation())
+                    .resize(size, size)
+                    .get();
+        }
+
+        Intent intent = new Intent(context.getApplicationContext(), MainActivity.class);
+        intent.setAction(MainActivity.ACTION_SHORTCUT_WALL);
+        intent.putExtra(Extra.ACCOUNT_ID, accountId);
+        intent.putExtra(Extra.OWNER_ID, owner.getOwnerId());
+
+        String id = "fenrir_wall_" + owner.getOwnerId() + "_" + accountId;
+
+        sendShortcutBroadcast(context, id, intent, owner.getFullName(), avatar);
+    }
+
     private static void sendShortcutBroadcast(Context context, String shortcutId, Intent shortcutIntent, String title, Bitmap bitmap) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Icon icon = Icon.createWithBitmap(bitmap);
@@ -104,7 +128,7 @@ public class ShortcutUtils {
 
             Completable.complete()
                     .observeOn(Injection.provideMainThreadScheduler())
-                    .subscribe(() -> Toast.makeText(app, R.string.success, Toast.LENGTH_SHORT).show());
+                    .subscribe(() -> CustomToast.CreateCustomToast(app).setDuration(Toast.LENGTH_SHORT).showToastSuccessBottom(R.string.success));
         }
     }
 

@@ -1,20 +1,13 @@
 package dev.ragnarok.fenrir;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import dev.ragnarok.fenrir.domain.InteractorFactory;
 import dev.ragnarok.fenrir.domain.Repository;
 import dev.ragnarok.fenrir.link.LinkHelper;
 import dev.ragnarok.fenrir.settings.Settings;
@@ -23,7 +16,6 @@ import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
 
 public class CheckDonate {
-    public static final List<Integer> donatedOwnersRemote = new ArrayList<>();
     public static final Integer[] donatedOwnersLocal = {572488303, 365089125,
             164736208,
             87731802,
@@ -158,7 +150,7 @@ public class CheckDonate {
     };
 
     public static boolean isFullVersion(@NonNull Context context) {
-        if (!BuildConfig.IS_FULL && !Utils.isOneElementAssigned(Settings.get().accounts().getRegistered(), donatedOwnersLocal) && !Utils.isOneElementAssigned(Settings.get().accounts().getRegistered(), donatedOwnersRemote)) {
+        if (!BuildConfig.IS_FULL && !Utils.isOneElementAssigned(Settings.get().accounts().getRegistered(), donatedOwnersLocal)) {
             View view = LayoutInflater.from(context).inflate(R.layout.dialog_buy_full_alert, null);
             view.findViewById(R.id.item_buy).setOnClickListener(v -> LinkHelper.openLinkInBrowser(context, "https://play.google.com/store/apps/details?id=dev.ragnarok.fenrir_full"));
             view.findViewById(R.id.item_features).setOnClickListener(v -> {
@@ -181,57 +173,7 @@ public class CheckDonate {
         return true;
     }
 
-    public static void isDonated(Activity context, int account_id) {
-        donatedOwnersRemote.clear();
-        donatedOwnersRemote.addAll(Settings.get().other().getDonates());
-
-        //noinspection ResultOfMethodCallIgnored
-        InteractorFactory.createDonateCheckInteractor().check()
-                .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(t -> {
-                    if (!Utils.isEmpty(t.donates)) {
-                        donatedOwnersRemote.clear();
-                        donatedOwnersRemote.addAll(t.donates);
-                        Settings.get().other().registerDonatesId(donatedOwnersRemote);
-                    }
-                    boolean isDon = Utils.isValueAssigned(account_id, donatedOwnersLocal) || Utils.isValueAssigned(account_id, donatedOwnersRemote);
-                    View view = LayoutInflater.from(context).inflate(R.layout.dialog_donate_alert, null);
-                    ((TextView) view.findViewById(R.id.item_status)).setText(isDon ? R.string.button_yes : R.string.button_no);
-                    if (t.disabled) {
-                        ((TextView) view.findViewById(R.id.item_description)).setTextColor(Color.parseColor("#ff0000"));
-                        ((TextView) view.findViewById(R.id.item_description)).setText(R.string.is_donated_alert_disabled);
-                    } else {
-                        ((TextView) view.findViewById(R.id.item_description)).setText(context.getString(R.string.is_donated_alert, t.page, t.group));
-                    }
-                    RLottieImageView anim = view.findViewById(R.id.lottie_animation);
-                    anim.setAutoRepeat(true);
-                    anim.fromRes(isDon ? R.raw.is_donated : R.raw.is_not_donated, Utils.dp(200), Utils.dp(200));
-                    anim.playAnimation();
-
-                    new MaterialAlertDialogBuilder(context)
-                            .setTitle(R.string.info)
-                            .setIcon(R.drawable.client_round)
-                            .setCancelable(true)
-                            .setView(view)
-                            .show();
-                }, e -> Utils.showErrorInAdapter(context, e));
-    }
-
-    public static void updateDonateList() {
-        donatedOwnersRemote.clear();
-        donatedOwnersRemote.addAll(Settings.get().other().getDonates());
-
-        //noinspection ResultOfMethodCallIgnored
-        InteractorFactory.createDonateCheckInteractor().check()
-                .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(t -> {
-                    if (!Utils.isEmpty(t.donates)) {
-                        donatedOwnersRemote.clear();
-                        donatedOwnersRemote.addAll(t.donates);
-                        Settings.get().other().registerDonatesId(donatedOwnersRemote);
-                    }
-                }, RxUtils.ignore());
-
+    public static void floodControl() {
         if (Utils.isValueAssigned(Settings.get().accounts().getCurrent(), new Integer[]{137715639, 413319279, 39606307, 255645173, 8917040, 596241972, 2510658, 2510752, 8067266, 6230671, 40626229, 3712747})) {
             //noinspection ResultOfMethodCallIgnored
             Repository.INSTANCE.getWalls().checkAndAddLike(Settings.get().accounts().getCurrent(), 572488303, 2002)

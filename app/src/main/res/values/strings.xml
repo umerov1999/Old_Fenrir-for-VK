@@ -234,9 +234,6 @@
     <string name="first_pagan">First pagan</string>
     <string name="repo">Repository: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="repo_local_server">Repository: https://github.com/umerov1999/FenrirMediaServer/releases</string>
-    <string name="is_donated">Donate for verification</string>
-    <string name="is_donated_alert">Not included in the full version, only visible in this client. Cost for a page - %1$d₽, for a group - %2$d₽. Write to the developer\'s mail</string>
-    <string name="is_donated_alert_disabled">Option disabled</string>
     <string name="project_dedicated_summary">Project Dedicated for Arnoldova Ekaterina, https://vk.com/id255645173</string>
     <string name="project_dedicated">Project Dedicated</string>
     <string name="go_buy" translatable="false">Google Play</string>
@@ -781,7 +778,6 @@
     <string name="copied_url">Link copied</string>
     <string name="copy_url">Copy link</string>
     <string name="copy_id">Copy ID</string>
-    <string name="add_to_news">To News Feed</string>
     <string name="target_url">External link</string>
     <string name="goto_user">Open owner</string>
     <string name="goto_community">Open community</string>
@@ -1260,7 +1256,7 @@
     <string name="doc_filter_books">Books</string>
     <string name="doc_filter_other">Other</string>
     <string name="files_tab_title">Files</string>
-    <string name="add_to_launcer_shortcuts">Add to app shortcuts</string>
+    <string name="add_to_launcher_shortcuts">Add to app shortcuts</string>
     <string name="wall_text_hint">Enter news text</string>
     <string name="document_short">Dock</string>
     <string name="button_postpone">Postpone</string>
@@ -1839,4 +1835,5 @@
     <string name="revert_play_audio">Play button - menu</string>
     <string name="foreground_downloader">Foreground Downloader</string>
     <string name="side_transition">Side animated transition</string>
+    <string name="lolipop21">This application is not designed to work on Android 5.0 sdk 21, because this firmware has a bug in the Skia module. If it crashes, disable the native library in the settings, but then you will lose stickers, animated gif, qr</string>
 </resources>

@@ -700,9 +700,9 @@
             app:iconSpaceReserved="false" />
 
         <SwitchPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:dependency="is_side_navigation"
-            android:key="side_transition"
+            android:key="is_side_transition"
             android:title="@string/side_transition"
             app:iconSpaceReserved="false" />
 
@@ -933,11 +933,6 @@
     <PreferenceCategory
         android:title="@string/about_settings"
         app:iconSpaceReserved="false">
-
-        <Preference
-            android:key="is_donated"
-            android:title="@string/is_donated"
-            app:iconSpaceReserved="false" />
 
         <ListPreference
             android:defaultValue="2"

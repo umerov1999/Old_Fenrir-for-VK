@@ -58,7 +58,6 @@ import dev.ragnarok.fenrir.Account_Types;
 import dev.ragnarok.fenrir.CheckDonate;
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
-import dev.ragnarok.fenrir.HelperSimple;
 import dev.ragnarok.fenrir.Injection;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
@@ -100,6 +99,7 @@ import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.settings.VkPushRegistration;
 import dev.ragnarok.fenrir.util.AppPerms;
 import dev.ragnarok.fenrir.util.CustomToast;
+import dev.ragnarok.fenrir.util.HelperSimple;
 import dev.ragnarok.fenrir.util.Utils;
 import dev.ragnarok.fenrir.view.MySearchView;
 import dev.ragnarok.fenrir.view.natives.rlottie.RLottieImageView;
@@ -381,7 +381,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        findPreference("side_transition").setOnPreferenceChangeListener((preference, newValue) -> {
+        findPreference("is_side_transition").setOnPreferenceChangeListener((preference, newValue) -> {
             requireActivity().recreate();
             return true;
         });
@@ -706,14 +706,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     return true;
                 });
             }
-        }
-
-        Preference is_donated = findPreference("is_donated");
-        if (is_donated != null) {
-            is_donated.setOnPreferenceClickListener(preference -> {
-                CheckDonate.isDonated(requireActivity(), getAccountId());
-                return true;
-            });
         }
 
         ListPreference chat_background = findPreference("chat_background");
@@ -1201,28 +1193,30 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         View view = View.inflate(requireActivity(), R.layout.dialog_dedicated, null);
         RecyclerView pager = view.findViewById(R.id.dedicated_pager);
         pager.setLayoutManager(new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false));
-        pager.setAdapter(new ImageDedicatedAdapter(new ImageDedicatedAdapter.SourceType[]{new ImageDedicatedAdapter.SourceType(R.drawable.dedicated1),
-                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated2),
-                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated3),
-                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated4),
-                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated5),
-                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated6),
-                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated7),
-                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated8),
-                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated9),
-                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated10),
-                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated11),
-                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated12),
-                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated13),
-                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated14),
-                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated15),
-                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated16),
-                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated17),
-                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated18),
-                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated19),
-                new ImageDedicatedAdapter.SourceType(R.drawable.dedicated20),
-                new ImageDedicatedAdapter.SourceType(R.raw.dedicated_video1, true),
-                new ImageDedicatedAdapter.SourceType(R.raw.dedicated_video2, true)}));
+        pager.setAdapter(new ImageDedicatedAdapter(new ImageDedicatedAdapter.SourceType[]{new ImageDedicatedAdapter.SourceType("dedicated1.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated2.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated3.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated4.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated5.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated6.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated7.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated8.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated9.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated10.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated11.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated12.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated13.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated14.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated15.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated16.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated17.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated18.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated19.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated20.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated21.webp"),
+                new ImageDedicatedAdapter.SourceType("dedicated22.webp"),
+                new ImageDedicatedAdapter.SourceType(R.raw.dedicated_video1),
+                new ImageDedicatedAdapter.SourceType(R.raw.dedicated_video2)}));
         RLottieImageView anim = view.findViewById(R.id.dedicated_anim);
         pager.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -1285,9 +1279,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         public void onBindViewHolder(@NonNull ImageHolder holder, int position) {
             SourceType res = drawables.get(position);
             AnimatedShapeableImageView imageView = holder.itemView.findViewById(R.id.dedicated_photo);
+            PicassoInstance.with().cancelRequest(imageView);
             if (!res.isVideo) {
                 imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                imageView.setImageResource(res.res);
+                PicassoInstance.with().load(res.asset).into(imageView);
             } else {
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setDecoderCallback(success -> {
@@ -1310,15 +1305,16 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             public boolean isVideo;
             public @AnyRes
             int res;
+            public String asset;
 
-            public SourceType(@AnyRes int res, boolean isVideo) {
-                this.isVideo = isVideo;
-                this.res = res;
+            public SourceType(@AnyRes int video_res) {
+                isVideo = true;
+                res = video_res;
             }
 
-            public SourceType(@AnyRes int res) {
+            public SourceType(@NonNull String asset_file) {
                 isVideo = false;
-                this.res = res;
+                asset = "file:///android_asset/dedicated/" + asset_file;
             }
         }
     }

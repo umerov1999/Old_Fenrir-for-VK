@@ -183,7 +183,7 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
                 }, throwable -> callView(v -> showError(v, throwable))));
     }
 
-    public void onEdit(Context context, int index, AudioPlaylist album) {
+    public void onEdit(Context context, AudioPlaylist album) {
         View root = View.inflate(context, R.layout.entry_playlist_info, null);
         ((TextInputEditText) root.findViewById(R.id.edit_title)).setText(album.getTitle());
         ((TextInputEditText) root.findViewById(R.id.edit_description)).setText(album.getDescription());
@@ -219,11 +219,16 @@ public class AudioPlaylistsPresenter extends AccountDependencyPresenter<IAudioPl
                 .show();
     }
 
-    public void onAdd(AudioPlaylist album) {
+    public void onAdd(AudioPlaylist album, boolean clone) {
         int accountId = getAccountId();
-        appendDisposable(fInteractor.followPlaylist(accountId, album.getId(), album.getOwnerId(), album.getAccess_key())
+        appendDisposable((clone ? fInteractor.clonePlaylist(accountId, album.getId(), album.getOwnerId()) : fInteractor.followPlaylist(accountId, album.getId(), album.getOwnerId(), album.getAccess_key()))
                 .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(data -> callView(v -> v.getCustomToast().showToast(R.string.success)), throwable ->
+                .subscribe(data -> {
+                    callView(v -> v.getCustomToast().showToast(R.string.success));
+                    if (clone && (album.getId() == -21 || album.getId() == -22)) {
+                        fireRefresh();
+                    }
+                }, throwable ->
                         callView(v -> showError(v, throwable))));
     }
 

@@ -100,9 +100,6 @@
     <string name="first_pagan">Первый языческий</string>
     <string name="repo">Репозиторий: https://github.com/umerov1999/Fenrir-for-VK</string>
     <string name="repo_local_server">Репозиторий: https://github.com/umerov1999/FenrirMediaServer/releases</string>
-    <string name="is_donated">Донат на галочку верефикации</string>
-    <string name="is_donated_alert">Не входит в полную версию, видно только в этом клиенте. Стоимость для страницы - %1$d₽, для группы - %2$d₽. Писать на почту разработчика</string>
-    <string name="is_donated_alert_disabled">Возможность отключена</string>
     <string name="project_dedicated_summary">Проект посвящён Арнольдове Екатерине, https://vk.com/id255645173</string>
     <string name="project_dedicated">Проект посвящён</string>
     <string name="in_full_version">Доступно в полной версии!</string>
@@ -616,7 +613,6 @@
     <string name="copied_url">Ссылка скопирована</string>
     <string name="copy_url">Копировать ссылку</string>
     <string name="copy_id">Копировать ID</string>
-    <string name="add_to_news">В Новостную ленту</string>
     <string name="target_url">Внешняя ссылка</string>
     <string name="goto_user">Открыть владельца</string>
     <string name="goto_community">Открыть сообщество</string>
@@ -1067,7 +1063,7 @@
     <string name="doc_filter_books">Книги</string>
     <string name="doc_filter_other">Другие</string>
     <string name="files_tab_title">Файлы</string>
-    <string name="add_to_launcer_shortcuts">Добавить в ярлыки приложения</string>
+    <string name="add_to_launcher_shortcuts">Добавить в ярлыки</string>
     <string name="wall_text_hint">Введите текст новости</string>
     <string name="document_short">Док</string>
     <string name="button_postpone">Отложить</string>
@@ -1627,4 +1623,5 @@
     <string name="revert_play_audio">Кнопка плей - меню</string>
     <string name="foreground_downloader">Менеджер загрузок</string>
     <string name="side_transition">Анимированный переход</string>
+    <string name="lolipop21">Данное приложение не расчитанно для работы на Android 5.0 sdk 21, ибо у этой прошивки есть баг в модуле Skia. Если будет вылетать, отключите нативную библиотеку в настройках, но тогда лишитесь стикеров, анимированных gif, qr</string>
 </resources>

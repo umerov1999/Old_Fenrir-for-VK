@@ -8,7 +8,6 @@ import dev.ragnarok.fenrir.domain.impl.CommunitiesInteractor;
 import dev.ragnarok.fenrir.domain.impl.DatabaseInteractor;
 import dev.ragnarok.fenrir.domain.impl.DialogsInteractor;
 import dev.ragnarok.fenrir.domain.impl.DocsInteractor;
-import dev.ragnarok.fenrir.domain.impl.DonateCheckInteractor;
 import dev.ragnarok.fenrir.domain.impl.FaveInteractor;
 import dev.ragnarok.fenrir.domain.impl.FeedInteractor;
 import dev.ragnarok.fenrir.domain.impl.FeedbackInteractor;
@@ -101,10 +100,6 @@ public class InteractorFactory {
 
     public static IFaveInteractor createFaveInteractor() {
         return new FaveInteractor(Injection.provideNetworkInterfaces(), Injection.provideStores(), Repository.INSTANCE.getOwners());
-    }
-
-    public static IDonateCheckInteractor createDonateCheckInteractor() {
-        return new DonateCheckInteractor(Injection.provideNetworkInterfaces());
     }
 
     public static ILocalServerInteractor createLocalServerInteractor() {

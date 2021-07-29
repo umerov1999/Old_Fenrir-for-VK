@@ -350,8 +350,8 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
         } else if (item.getItemId() == R.id.action_copy_id) {
             callPresenter(AbsWallPresenter::fireCopyIdClick);
             return true;
-        } else if (item.getItemId() == R.id.action_add_to_news) {
-            callPresenter(AbsWallPresenter::fireAddToNewsClick);
+        } else if (item.getItemId() == R.id.action_add_to_shortcut) {
+            callPresenter(AbsWallPresenter::fireAddToShortcutClick);
             return true;
         } else if (item.getItemId() == R.id.action_search) {
             callPresenter(AbsWallPresenter::fireSearchClick);
@@ -400,8 +400,8 @@ public abstract class AbsWallFragment<V extends IWallView, P extends AbsWallPres
         menu.findItem(R.id.action_open_url).setVisible(isDebug);
         //menu.findItem(R.id.action_copy_id).setVisible(isDebug);
         menu.findItem(R.id.search_stories).setVisible(isDebug);
-        menu.findItem(R.id.action_add_to_news).setVisible(isDebug);
         menu.findItem(R.id.action_edit).setVisible(view.isMy);
+        menu.findItem(R.id.action_add_to_shortcut).setVisible(!view.isMy);
     }
 
     @Override

@@ -269,7 +269,7 @@ public class User extends Owner implements Identificable {
 
     @Override
     public boolean isDonated() {
-        return Utils.isValueAssigned(getOwnerId(), CheckDonate.donatedOwnersLocal) || Utils.isValueAssigned(getOwnerId(), CheckDonate.donatedOwnersRemote);
+        return Utils.isValueAssigned(getOwnerId(), CheckDonate.donatedOwnersLocal);
     }
 
     @Override

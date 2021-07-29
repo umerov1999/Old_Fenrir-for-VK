@@ -4,6 +4,7 @@ import static dev.ragnarok.fenrir.util.Objects.isNull;
 import static dev.ragnarok.fenrir.util.Objects.nonNull;
 import static dev.ragnarok.fenrir.util.Utils.getCauseIfRuntime;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import dev.ragnarok.fenrir.Injection;
@@ -33,7 +33,9 @@ import dev.ragnarok.fenrir.mvp.reflect.OnGuiCreated;
 import dev.ragnarok.fenrir.mvp.view.IGroupWallView;
 import dev.ragnarok.fenrir.settings.ISettings;
 import dev.ragnarok.fenrir.util.RxUtils;
+import dev.ragnarok.fenrir.util.ShortcutUtils;
 import dev.ragnarok.fenrir.util.Utils;
+import io.reactivex.rxjava3.core.Completable;
 
 public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
 
@@ -43,11 +45,13 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
     private final ICommunitiesInteractor communitiesInteractor;
     private final IWallsRepository wallsRepository;
     private final List<PostFilter> filters;
+    private final Context context;
     private Community community;
     private CommunityDetails details;
 
-    public GroupWallPresenter(int accountId, int ownerId, @Nullable Community owner, @Nullable Bundle savedInstanceState) {
+    public GroupWallPresenter(int accountId, int ownerId, @Nullable Community owner, Context context, @Nullable Bundle savedInstanceState) {
         super(accountId, ownerId, savedInstanceState);
+        this.context = context;
         community = owner;
         details = new CommunityDetails();
 
@@ -555,10 +559,12 @@ public class GroupWallPresenter extends AbsWallPresenter<IGroupWallView> {
     }
 
     @Override
-    public void fireAddToNewsClick() {
-        appendDisposable(InteractorFactory.createFeedInteractor().saveList(getAccountId(), community.getFullName(), Collections.singleton(community.getOwnerId()))
-                .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(i -> callView(v -> v.showSnackbar(R.string.success, true)), t -> callView(v -> showError(v, t))));
+    public void fireAddToShortcutClick() {
+        appendDisposable(Completable.create(emitter -> {
+            ShortcutUtils.createWallShortcut(context, getAccountId(), community);
+            emitter.onComplete();
+        }).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() -> {
+        }, t -> callView(v -> v.showError(t.getLocalizedMessage()))));
     }
 
     @Override

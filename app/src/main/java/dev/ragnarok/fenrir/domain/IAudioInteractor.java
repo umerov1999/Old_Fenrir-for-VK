@@ -66,6 +66,8 @@ public interface IAudioInteractor {
 
     Single<AudioPlaylist> followPlaylist(int accountId, int playlist_id, int ownerId, String accessKey);
 
+    Single<AudioPlaylist> clonePlaylist(int accountId, int playlist_id, int ownerId);
+
     Single<AudioPlaylist> getPlaylistById(int accountId, int playlist_id, int ownerId, String accessKey);
 
     Single<Integer> deletePlaylist(int accountId, int playlist_id, int ownerId);

@@ -198,7 +198,7 @@ public class GroupWallFragment extends AbsWallFragment<IGroupWallView, GroupWall
             ParcelableOwnerWrapper wrapper = requireArguments().getParcelable(Extra.OWNER);
             AssertUtils.requireNonNull(wrapper);
 
-            return new GroupWallPresenter(accountId, ownerId, (Community) wrapper.get(), saveInstanceState);
+            return new GroupWallPresenter(accountId, ownerId, (Community) wrapper.get(), requireActivity(), saveInstanceState);
         };
     }
 

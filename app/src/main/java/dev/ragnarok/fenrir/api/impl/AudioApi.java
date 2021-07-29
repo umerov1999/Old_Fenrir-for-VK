@@ -165,6 +165,14 @@ class AudioApi extends AbsApi implements IAudioApi {
     }
 
     @Override
+    public Single<VKApiAudioPlaylist> clonePlaylist(int playlist_id, int ownerId) {
+        return provideService(IAudioService.class)
+                .flatMap(service -> service
+                        .clonePlaylist(playlist_id, ownerId)
+                        .map(extractResponseWithErrorHandling()));
+    }
+
+    @Override
     public Single<VKApiAudioPlaylist> getPlaylistById(int playlist_id, int ownerId, String accessKey) {
         return provideService(IAudioService.class)
                 .flatMap(service -> service

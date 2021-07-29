@@ -679,7 +679,7 @@ public class AccountsFragment extends BaseFragment implements View.OnClickListen
 
         appendDisposable(Completable.create(emitter -> {
             String avaUrl = user == null ? null : user.getMaxSquareAvatar();
-            ShortcutUtils.createAccountShurtcut(app, account.getId(), account.getDisplayName(), avaUrl);
+            ShortcutUtils.createAccountShortcut(app, account.getId(), account.getDisplayName(), avaUrl);
             emitter.onComplete();
         }).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() -> {
                 },

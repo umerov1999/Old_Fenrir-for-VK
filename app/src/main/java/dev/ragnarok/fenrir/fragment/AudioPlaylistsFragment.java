@@ -32,7 +32,6 @@ import java.util.List;
 
 import dev.ragnarok.fenrir.Constants;
 import dev.ragnarok.fenrir.Extra;
-import dev.ragnarok.fenrir.HelperSimple;
 import dev.ragnarok.fenrir.R;
 import dev.ragnarok.fenrir.activity.ActivityFeatures;
 import dev.ragnarok.fenrir.activity.ActivityUtils;
@@ -53,6 +52,7 @@ import dev.ragnarok.fenrir.place.Place;
 import dev.ragnarok.fenrir.place.PlaceFactory;
 import dev.ragnarok.fenrir.settings.Settings;
 import dev.ragnarok.fenrir.util.AssertUtils;
+import dev.ragnarok.fenrir.util.HelperSimple;
 import dev.ragnarok.fenrir.util.ViewUtils;
 import dev.ragnarok.fenrir.view.MySearchView;
 
@@ -271,7 +271,7 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
 
     @Override
     public void onEdit(int index, AudioPlaylist album) {
-        callPresenter(p -> p.onEdit(requireActivity(), index, album));
+        callPresenter(p -> p.onEdit(requireActivity(), album));
     }
 
     @Override
@@ -299,7 +299,7 @@ public class AudioPlaylistsFragment extends BaseMvpFragment<AudioPlaylistsPresen
     }
 
     @Override
-    public void onAdd(int index, AudioPlaylist album) {
-        callPresenter(p -> p.onAdd(album));
+    public void onAdd(int index, AudioPlaylist album, boolean clone) {
+        callPresenter(p -> p.onAdd(album, clone));
     }
 }

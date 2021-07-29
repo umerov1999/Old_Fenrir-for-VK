@@ -85,6 +85,9 @@ public interface IAudioApi {
     Single<VKApiAudioPlaylist> followPlaylist(int playlist_id, int ownerId, String accessKey);
 
     @CheckResult
+    Single<VKApiAudioPlaylist> clonePlaylist(int playlist_id, int ownerId);
+
+    @CheckResult
     Single<VKApiAudioPlaylist> getPlaylistById(int playlist_id, int ownerId, String accessKey);
 
     @CheckResult

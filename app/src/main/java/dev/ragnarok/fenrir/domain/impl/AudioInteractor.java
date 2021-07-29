@@ -254,6 +254,14 @@ public class AudioInteractor implements IAudioInteractor {
     }
 
     @Override
+    public Single<AudioPlaylist> clonePlaylist(int accountId, int playlist_id, int ownerId) {
+        return networker.vkDefault(accountId)
+                .audio()
+                .clonePlaylist(playlist_id, ownerId)
+                .map(Dto2Model::transform);
+    }
+
+    @Override
     public Single<AudioPlaylist> getPlaylistById(int accountId, int playlist_id, int ownerId, String accessKey) {
         return networker.vkDefault(accountId)
                 .audio()

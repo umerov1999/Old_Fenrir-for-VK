@@ -125,7 +125,7 @@ public class AudioPlaylistsAdapter extends RecyclerView.Adapter<AudioPlaylistsAd
 
         void onAddAudios(int index, AudioPlaylist album);
 
-        void onAdd(int index, AudioPlaylist album);
+        void onAdd(int index, AudioPlaylist album, boolean clone);
     }
 
     public class Holder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
@@ -184,7 +184,7 @@ public class AudioPlaylistsAdapter extends RecyclerView.Adapter<AudioPlaylistsAd
                 } else {
                     menu.add(0, v.getId(), 0, R.string.save).setOnMenuItemClickListener(item -> {
                         if (clickListener != null) {
-                            clickListener.onAdd(position, playlist);
+                            clickListener.onAdd(position, playlist, false);
                         }
                         return true;
                     });
@@ -197,6 +197,13 @@ public class AudioPlaylistsAdapter extends RecyclerView.Adapter<AudioPlaylistsAd
                         return true;
                     });
                 }
+            } else {
+                menu.add(0, v.getId(), 0, R.string.save).setOnMenuItemClickListener(item -> {
+                    if (clickListener != null) {
+                        clickListener.onAdd(position, playlist, true);
+                    }
+                    return true;
+                });
             }
             menu.add(0, v.getId(), 0, R.string.open).setOnMenuItemClickListener(item -> {
                 if (clickListener != null) {

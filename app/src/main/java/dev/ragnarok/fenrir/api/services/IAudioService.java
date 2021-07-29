@@ -144,6 +144,11 @@ public interface IAudioService {
                                                             @Field("access_key") String accessKey);
 
     @FormUrlEncoded
+    @POST("audio.savePlaylistAsCopy")
+    Single<BaseResponse<VKApiAudioPlaylist>> clonePlaylist(@Field("playlist_id") int playlist_id,
+                                                           @Field("owner_id") int ownerId);
+
+    @FormUrlEncoded
     @POST("audio.getPlaylistById")
     Single<BaseResponse<VKApiAudioPlaylist>> getPlaylistById(@Field("playlist_id") int playlist_id,
                                                              @Field("owner_id") int ownerId,

@@ -58,7 +58,9 @@ import dev.ragnarok.fenrir.upload.UploadResult;
 import dev.ragnarok.fenrir.upload.UploadUtils;
 import dev.ragnarok.fenrir.util.Pair;
 import dev.ragnarok.fenrir.util.RxUtils;
+import dev.ragnarok.fenrir.util.ShortcutUtils;
 import dev.ragnarok.fenrir.util.Utils;
+import io.reactivex.rxjava3.core.Completable;
 
 public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
 
@@ -699,10 +701,12 @@ public class UserWallPresenter extends AbsWallPresenter<IUserWallView> {
     }
 
     @Override
-    public void fireAddToNewsClick() {
-        appendDisposable(InteractorFactory.createFeedInteractor().saveList(getAccountId(), user.getShortFullName(), Collections.singleton(user.getOwnerId()))
-                .compose(RxUtils.applySingleIOToMainSchedulers())
-                .subscribe(i -> callView(v -> v.showSnackbar(R.string.success, true)), t -> callView(v -> showError(v, t))));
+    public void fireAddToShortcutClick() {
+        appendDisposable(Completable.create(emitter -> {
+            ShortcutUtils.createWallShortcut(context, getAccountId(), user);
+            emitter.onComplete();
+        }).compose(RxUtils.applyCompletableIOToMainSchedulers()).subscribe(() -> {
+        }, t -> callView(v -> v.showError(t.getLocalizedMessage()))));
     }
 
     @Override

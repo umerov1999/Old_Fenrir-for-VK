@@ -615,7 +615,7 @@ public abstract class AbsWallPresenter<V extends IWallView> extends PlaceSupport
         callView(v -> v.copyToClipboard(getString(R.string.id), String.valueOf(ownerId)));
     }
 
-    public abstract void fireAddToNewsClick();
+    public abstract void fireAddToShortcutClick();
 
     public boolean isCommunity() {
         return ownerId < 0;
